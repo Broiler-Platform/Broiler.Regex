@@ -16,13 +16,15 @@ This project is the long-term replacement for that translation layer: a direct
 implementation of the spec's backtracking matcher (§22.2.2), so the hard cases
 are correct *by construction* rather than by patch.
 
-> **Status: skeleton + working core.** The parser and the backtracking matcher
-> implement the common grammar and the gap cases below. Unicode property escapes
-> (`\p{…}`), `v`-mode set operations, and full `Canonicalize` case-folding tables
-> are stubbed with clear `TODO`s and documented limitations (see
-> [Unicode/UnicodeCharSets.cs](Unicode/UnicodeCharSets.cs)). The engine is **not
-> yet wired into `JSRegExp`** — see *Integration plan* below. Nothing here changes
-> existing runtime behaviour.
+> **Status: working core, wired into `JSRegExp`.** The parser and the backtracking
+> matcher implement the common grammar and the gap cases below. Unicode property
+> escapes (`\p{…}`), `v`-mode set operations, and full `Canonicalize` case-folding
+> tables are stubbed with clear `TODO`s and documented limitations (see
+> [Unicode/UnicodeCharSets.cs](Unicode/UnicodeCharSets.cs)). As of issue #923 the
+> engine is **wired into `JSRegExp`** behind a conservative gap-feature router
+> (`JSRegExp.TryBuildBroilerForGaps`): only patterns that hit a documented JS/.NET
+> gap *and* use no stubbed feature are matched here; everything else still uses the
+> .NET translator unchanged — see *Integration plan* below.
 
 ---
 
@@ -100,19 +102,26 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 - Performance: the matcher is a clarity-first interpreter (per-step capture
   cloning, no DFA/JIT). Correctness first; optimisation later.
 
-## Integration plan (not yet applied)
+## Integration plan
 
-`JSRegExp` currently holds a `System.Text.RegularExpressions.Regex value` and
-calls `value.Match(input, start)`. Adoption is incremental and low-risk:
+`JSRegExp` holds a `System.Text.RegularExpressions.Regex value` and calls
+`value.Match(input, start)`. Adoption is incremental and low-risk:
 
-1. Land this engine standalone with its own unit tests (this commit).
-2. Add a feature flag in `JSRegExp.CreateRegex` that, for patterns using a
-   gap feature (lookbehind + back-ref, nullable quantifier, astral back-ref),
-   compiles a `BroilerRegex` instead of a .NET `Regex`.
-3. Make `JSRegExp.Exec` / `Match` / `Split` / `Replace` consume a small common
-   match-result interface implemented by both backends.
-4. Grow `BroilerRegex` coverage (property escapes, `v`-mode) against test262
-   until it can subsume the .NET backend entirely, then retire the translator.
+1. ✅ Land this engine standalone with its own unit tests.
+2. ✅ Route gap-feature patterns to Broiler in `JSRegExp.CreateRegex`
+   (`TryBuildBroilerForGaps` re-parses with this engine and walks the AST: it
+   routes a pattern only when it hits a documented gap — lookbehind with a
+   capture/back-ref, a nullable quantifier, a `u`-mode back-ref, or an astral /
+   lone-surrogate atom — *and* uses no stubbed feature, bailing on `\p{…}` and
+   `v`-mode set operations). The `out BroilerRegex broiler` is stored on the
+   instance; the .NET `value` is still built (gap patterns compile in .NET, they
+   just match wrong), so `Split` / `Replace` / `IJSRegExp.Value` keep using it.
+3. ✅ `JSRegExp.Exec` (RegExpBuiltinExec) consumes a common `RegexMatchData`
+   (`RunMatch` dispatches to whichever backend is active). `Split` / `Replace`
+   still use the .NET backend for now.
+4. ⏳ Grow `BroilerRegex` coverage (property escapes, `v`-mode, full case-fold)
+   against test262 until it can subsume the .NET backend entirely, then route
+   `Split` / `Replace` through it too and retire the translator.
 
 See [`docs/ecmascript-mapping.md`](docs/ecmascript-mapping.md) for the
 node-by-node mapping to ECMA-262 §22.2.2.
