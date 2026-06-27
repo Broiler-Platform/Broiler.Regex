@@ -1,12 +1,17 @@
 # Broiler.Regex
 
-A from-scratch, **ECMAScript-conformant** regular-expression engine for the
+A from-scratch, **ECMAScript-oriented** regular-expression engine for the
 Broiler.JS runtime.
+
+> **Preview status:** The engine is incomplete, its routing integration is incremental,
+> and it must not be described as fully conformant while the limitations below remain.
+> Substantial implementation work was AI-assisted. It is **not human-approved for preview
+> use** while the repository [human review](../HUMAN_REVIEW.md) remains `PENDING`.
 
 It exists to close the gap between the ECMAScript regular-expression grammar /
 matching semantics (ECMA-262 §22.2) and what `System.Text.RegularExpressions`
 can express. The existing engine
-([`JSRegExp.cs`](../Broiler.JavaScript.BuiltIns/RegExp/JSRegExp.cs)) translates a
+([`JSRegExp.cs`](../../Broiler.JS/Broiler.JavaScript.BuiltIns/RegExp/JSRegExp.cs)) translates a
 JS pattern into a .NET `Regex` through ~5000 lines of source-to-source patches.
 That strategy has carried us a long way, but a class of failures is **structurally
 impossible** to fix by pattern rewriting, because they are differences in the
@@ -125,3 +130,8 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 
 See [`docs/ecmascript-mapping.md`](docs/ecmascript-mapping.md) for the
 node-by-node mapping to ECMA-262 §22.2.2.
+
+## License
+
+Broiler.Regex is licensed under the [Apache License 2.0](../LICENSE). The license
+provides the software on an “AS IS” basis without warranties or conditions.
