@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
@@ -24,8 +23,8 @@ public sealed class RegexParser
     /// <summary>Map of group name → 1-based capture index, available after parsing.</summary>
     public IReadOnlyDictionary<string, int> GroupNames => _groupNames;
 
-    private readonly Dictionary<string, int> _groupNames = new();
-    private readonly Dictionary<string, int> _declaredNames = new();
+    private readonly Dictionary<string, int> _groupNames = [];
+    private readonly Dictionary<string, int> _declaredNames = [];
     private int _totalCaptureGroups;
 
     public RegexParser(string pattern, RegexFlags flags)
