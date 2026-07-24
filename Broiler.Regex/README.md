@@ -5,8 +5,9 @@ Broiler.JS runtime.
 
 > **Preview status:** The engine is incomplete, its routing integration is incremental,
 > and it must not be described as fully conformant while the limitations below remain.
-> Substantial implementation work was AI-assisted. It is **not human-approved for preview
-> use** while the repository [human review](../HUMAN_REVIEW.md) remains `PENDING`.
+> Substantial implementation work was AI-assisted. Human-review approval is
+> revision-scoped; consult the repository [human review](../HUMAN_REVIEW.md) for the
+> reviewed revision and conditions before describing the current checkout as approved.
 
 It exists to close the gap between the ECMAScript regular-expression grammar /
 matching semantics (ECMA-262 §22.2) and what `System.Text.RegularExpressions`
@@ -107,26 +108,15 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 - Performance: the matcher is a clarity-first interpreter (per-step capture
   cloning, no DFA/JIT). Correctness first; optimisation later.
 
-## Integration plan
+## Integration status
 
-`JSRegExp` holds a `System.Text.RegularExpressions.Regex value` and calls
-`value.Match(input, start)`. Adoption is incremental and low-risk:
+`JSRegExp` currently routes a conservative set of patterns with known .NET
+semantic gaps through Broiler.Regex. `RegExpBuiltinExec` consumes common match
+data from either backend; `Split`, `Replace`, and `IJSRegExp.Value` still use
+the .NET backend.
 
-1. ✅ Land this engine standalone with its own unit tests.
-2. ✅ Route gap-feature patterns to Broiler in `JSRegExp.CreateRegex`
-   (`TryBuildBroilerForGaps` re-parses with this engine and walks the AST: it
-   routes a pattern only when it hits a documented gap — lookbehind with a
-   capture/back-ref, a nullable quantifier, a `u`-mode back-ref, or an astral /
-   lone-surrogate atom — *and* uses no stubbed feature, bailing on `\p{…}` and
-   `v`-mode set operations). The `out BroilerRegex broiler` is stored on the
-   instance; the .NET `value` is still built (gap patterns compile in .NET, they
-   just match wrong), so `Split` / `Replace` / `IJSRegExp.Value` keep using it.
-3. ✅ `JSRegExp.Exec` (RegExpBuiltinExec) consumes a common `RegexMatchData`
-   (`RunMatch` dispatches to whichever backend is active). `Split` / `Replace`
-   still use the .NET backend for now.
-4. ⏳ Grow `BroilerRegex` coverage (property escapes, `v`-mode, full case-fold)
-   against test262 until it can subsume the .NET backend entirely, then route
-   `Split` / `Replace` through it too and retire the translator.
+The remaining correctness and adoption gates are tracked in the
+[repository roadmap](../docs/roadmap.md).
 
 See [`docs/ecmascript-mapping.md`](docs/ecmascript-mapping.md) for the
 node-by-node mapping to ECMA-262 §22.2.2.

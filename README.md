@@ -5,8 +5,12 @@ semantics for Broiler.JS. The implementation and limitations are documented in t
 [engine README](Broiler.Regex/README.md).
 
 > **Preview status:** This is unstable, substantially AI-assisted software with known
-> unsupported ECMAScript features. It is **not human-approved for preview use** while
-> [HUMAN_REVIEW.md](HUMAN_REVIEW.md) remains `PENDING`.
+> unsupported ECMAScript features. Human-review approval is revision-scoped; consult
+> [HUMAN_REVIEW.md](HUMAN_REVIEW.md) for the reviewed revision and conditions before
+> describing the current checkout as approved.
+
+Remaining implementation and Broiler.JS adoption work is tracked in the
+[current roadmap](docs/roadmap.md).
 
 Build and test with:
 

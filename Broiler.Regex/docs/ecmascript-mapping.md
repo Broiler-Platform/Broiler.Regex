@@ -63,7 +63,7 @@ loops forever nor terminates one iteration too early.
 `d g i m s u v y` parse to `RegexFlags`; `i`/`m`/`s` are the only flags an inline
 modifier group may toggle (`ModifierGroupNode`).
 
-## Not yet mapped (see README "Known limitations")
+## Not yet mapped
 
 - §22.2.1 `CharacterClassEscape :: p{…}` Unicode property escapes
   (`Unicode/UnicodeCharSets.ResolveProperty` — stub).
@@ -71,3 +71,6 @@ modifier group may toggle (`ModifierGroupNode`).
   (`CharSet.UsesSetOperations` — parsed, not evaluated).
 - The complete §22.2.2.9.4 case-fold table (current coverage: ASCII + a
   documented subset of non-ASCII simple folds).
+
+These implementation gates are tracked in the
+[repository roadmap](../../docs/roadmap.md).
