@@ -116,8 +116,7 @@ public sealed class RegexParser
         var terms = new List<RegexNode>();
         while (true)
         {
-            var c = Peek();
-            if (c is '\0' or '|' or ')')
+            if (AtEnd || Peek() is '|' or ')')
                 break;
             terms.Add(ParseTerm());
         }
@@ -254,6 +253,9 @@ public sealed class RegexParser
 
     private RegexNode ParseAtom()
     {
+        if (AtEnd)
+            throw new RegexSyntaxException("Unexpected end of atom", _pos);
+
         var c = Peek();
         switch (c)
         {
@@ -268,7 +270,6 @@ public sealed class RegexParser
                 return ParseAtomEscape();
             case ')':
             case '|':
-            case '\0':
                 throw new RegexSyntaxException("Unexpected end of atom", _pos);
             case '*':
             case '+':
@@ -431,9 +432,10 @@ public sealed class RegexParser
 
         while (true)
         {
-            var c = Peek();
-            if (c == '\0')
+            if (AtEnd)
                 throw new RegexSyntaxException("Unterminated character class", _pos);
+
+            var c = Peek();
             if (c == ']')
             {
                 _pos++;
@@ -452,7 +454,7 @@ public sealed class RegexParser
 
             // A range "a-z": only when '-' is followed by another class atom (not
             // the closing ']') and both ends are literal code points.
-            if (firstIsLiteral && Peek() == '-' && PeekAt(1) != ']' && PeekAt(1) != '\0')
+            if (firstIsLiteral && Peek() == '-' && HasAt(1) && PeekAt(1) != ']')
             {
                 _pos++; // consume '-'
                 var second = ReadClassAtom(set, out var secondIsLiteral);
@@ -528,6 +530,13 @@ public sealed class RegexParser
     /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0 identity.</summary>
     private int ReadCharacterEscape()
     {
+        // A '\' with nothing after it: \ is never a pattern character of its own
+        // (ECMA-262 §22.2.1 — every production that admits it consumes a second
+        // character). Reported as a syntax error rather than running off the end of
+        // the string in ReadSourceCodePoint below.
+        if (AtEnd)
+            throw new RegexSyntaxException("Trailing '\\' at end of pattern", _pos);
+
         var c = Peek();
         switch (c)
         {
@@ -648,7 +657,7 @@ public sealed class RegexParser
             throw new RegexSyntaxException("Expected '{' after \\p", _pos);
         _pos++;
         var sb = new StringBuilder();
-        while (Peek() != '}' && Peek() != '\0')
+        while (!AtEnd && Peek() != '}')
             sb.Append(_src[_pos++]);
         if (Peek() != '}')
             throw new RegexSyntaxException("Unterminated \\p{…}", _pos);
@@ -679,7 +688,7 @@ public sealed class RegexParser
     private string ReadGroupName()
     {
         var sb = new StringBuilder();
-        while (Peek() != '>' && Peek() != '\0')
+        while (!AtEnd && Peek() != '>')
         {
             // RegExpIdentifierName allows \u escapes; decode them so the stored
             // name matches a JS string key.
@@ -701,6 +710,17 @@ public sealed class RegexParser
     }
 
     // ----- Low-level cursor helpers ------------------------------------------
+
+    /// <summary>
+    /// True once the cursor is past the last character. Every end-of-pattern test
+    /// goes through this rather than through <see cref="Peek"/>'s <c>'\0'</c>: U+0000
+    /// is a perfectly ordinary pattern character, so comparing against the sentinel
+    /// would end the parse in the middle of a pattern that merely contains one.
+    /// </summary>
+    private bool AtEnd => _pos >= _src.Length;
+
+    /// <summary>True when a character exists <paramref name="offset"/> ahead of the cursor.</summary>
+    private bool HasAt(int offset) => _pos + offset < _src.Length;
 
     private char Peek() => _pos < _src.Length ? _src[_pos] : '\0';
     private char PeekAt(int offset) => _pos + offset < _src.Length ? _src[_pos + offset] : '\0';
