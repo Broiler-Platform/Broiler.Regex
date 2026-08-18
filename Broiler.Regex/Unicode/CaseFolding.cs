@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace Broiler.Regex.Unicode;
 
@@ -65,24 +66,51 @@ public static class CaseFolding
             case 0x1E9E: return 0x00DF; // ẞ LATIN CAPITAL SHARP S → ß
         }
 
-        if (codePoint <= 0xFFFF)
-        {
-            var lower = char.ToLowerInvariant((char)codePoint);
-            if (lower != (char)codePoint)
-                return lower;
+        if (codePoint > 0xFFFF)
+            return AstralFold(codePoint);
 
-            // Some letters only have an upper form whose lower we want as the rep.
-            var upper = char.ToUpperInvariant((char)codePoint);
-            if (upper != (char)codePoint)
-            {
-                var upperLower = char.ToLowerInvariant(upper);
-                if (upperLower != (char)codePoint)
-                    return upperLower;
-            }
+        var lower = char.ToLowerInvariant((char)codePoint);
+        if (lower != (char)codePoint)
+            return lower;
+
+        // Some letters only have an upper form whose lower we want as the rep.
+        var upper = char.ToUpperInvariant((char)codePoint);
+        if (upper != (char)codePoint)
+        {
+            var upperLower = char.ToLowerInvariant(upper);
+            if (upperLower != (char)codePoint)
+                return upperLower;
         }
 
         return codePoint;
     }
+
+    /// <summary>
+    /// Simple fold of a supplementary-plane code point. <see cref="char"/> casing is
+    /// defined on single UTF-16 code units and leaves every astral code point alone, so
+    /// the bicameral supplementary scripts — Deseret, Osage, Warang Citi, Medefaidrin,
+    /// Adlam, Vithkuqi, Old Hungarian — folded to themselves and <c>/𐐀/iu</c> matched
+    /// only the capital. <see cref="Rune"/> casing is defined on code points and has the
+    /// mappings; the upper-then-lower round trip is the same representative the JS layer's
+    /// astral fold table uses, so both engines answer one equivalence class.
+    /// </summary>
+    private static int AstralFold(int codePoint)
+    {
+        // Garay (Unicode 16.0) is assigned but carries no simple case mapping in .NET's
+        // tables yet, so the round trip below leaves each letter in a class of its own.
+        // Fold its capitals (U+10D50..U+10D65) onto their small letters (U+10D70..U+10D85)
+        // explicitly; the day the tables catch up this agrees with them.
+        if (codePoint >= GarayCapitalFirst && codePoint <= GarayCapitalLast)
+            return codePoint + GarayCapitalToSmall;
+
+        var rune = new Rune(codePoint);
+        return Rune.ToLowerInvariant(Rune.ToUpperInvariant(rune)).Value;
+    }
+
+    private const int GarayCapitalFirst = 0x10D50;
+    private const int GarayCapitalLast = 0x10D65;
+    private const int GaraySmallFirst = 0x10D70;
+    private const int GarayCapitalToSmall = GaraySmallFirst - GarayCapitalFirst;
 
     /// <summary>
     /// Yields the small set of code points known to be case-fold siblings of
@@ -115,14 +143,29 @@ public static class CaseFolding
             case 0x00DF: yield return 0x1E9E; break;
         }
 
-        if (codePoint <= 0xFFFF)
+        if (codePoint > 0xFFFF)
         {
-            var ch = (char)codePoint;
-            var upper = char.ToUpperInvariant(ch);
-            if (upper != ch) yield return upper;
-            var lower = char.ToLowerInvariant(ch);
-            if (lower != ch) yield return lower;
+            // Same reason AstralFold exists: char casing has no mapping for a
+            // supplementary code point, so the siblings have to come from Rune casing
+            // (plus Garay, which .NET has no mapping for either).
+            if (codePoint >= GarayCapitalFirst && codePoint <= GarayCapitalLast)
+                yield return codePoint + GarayCapitalToSmall;
+            else if (codePoint >= GaraySmallFirst && codePoint <= GaraySmallFirst + (GarayCapitalLast - GarayCapitalFirst))
+                yield return codePoint - GarayCapitalToSmall;
+
+            var rune = new Rune(codePoint);
+            var upperRune = Rune.ToUpperInvariant(rune).Value;
+            if (upperRune != codePoint) yield return upperRune;
+            var lowerRune = Rune.ToLowerInvariant(rune).Value;
+            if (lowerRune != codePoint) yield return lowerRune;
+            yield break;
         }
+
+        var bmp = (char)codePoint;
+        var bmpUpper = char.ToUpperInvariant(bmp);
+        if (bmpUpper != bmp) yield return bmpUpper;
+        var bmpLower = char.ToLowerInvariant(bmp);
+        if (bmpLower != bmp) yield return bmpLower;
     }
 
     /// <summary>True when the two code points are case-equivalent in the given mode.</summary>
