@@ -21,7 +21,7 @@ public class SyntaxTests
         Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("a", flags));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void ValidFlags_AreParsed()
     {
         var re = new BroilerRegex("a", "gimsuyd");

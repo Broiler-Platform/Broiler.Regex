@@ -45,7 +45,7 @@ public class AstralCaseFoldingTests
         Assert.Equal(member + equivalent, m.Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void AstralAtom_DoesNotFoldWithoutIgnoreCase()
     {
         var re = new BroilerRegex(DeseretCapitalLongI, RegexFlags.Unicode);
@@ -53,7 +53,7 @@ public class AstralCaseFoldingTests
         Assert.True(re.Match(DeseretCapitalLongI).Success);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void AstralAtom_DoesNotFoldAcrossUnrelatedCodePoints()
     {
         var re = new BroilerRegex(DeseretCapitalLongI, RegexFlags.IgnoreCase | RegexFlags.Unicode);

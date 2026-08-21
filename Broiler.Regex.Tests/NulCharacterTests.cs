@@ -42,7 +42,7 @@ public class NulCharacterTests
         "\u2000-⯿" +   // U+2000 … U+2BFF
         "]*$";
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void GoogleNoLetterClass_Compiles_AndMatchesOnlyNonLetters()
     {
         var re = new BroilerRegex(GoogleNoLetterClass);
@@ -70,7 +70,7 @@ public class NulCharacterTests
         Assert.False(re.IsMatch("a"));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NulInsideClass_IsAMember_NotTheEndOfTheClass()
     {
         var re = new BroilerRegex("[a\u0000b]");
@@ -80,7 +80,7 @@ public class NulCharacterTests
         Assert.False(re.IsMatch("c"));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NulAsRangeEnd_IsARange_NotTheEndOfTheClass()
     {
         // '-' before a NUL is a range operator like any other: [\0-\0] is the
@@ -89,7 +89,7 @@ public class NulCharacterTests
         Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a-\u0000]"));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NulAsAtom_IsMatchedLiterally_AndDoesNotTruncateThePattern()
     {
         var re = new BroilerRegex("a\u0000b");
@@ -102,7 +102,7 @@ public class NulCharacterTests
         Assert.False(quantified.IsMatch("a\u0000"));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NulSurvivesAlternationAndQuantifiers()
     {
         var re = new BroilerRegex("^(x\u0000|y)*$");
@@ -112,7 +112,7 @@ public class NulCharacterTests
         Assert.True(new BroilerRegex("^\u0000*$").IsMatch("\u0000\u0000"));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NulInAGroupName_IsPartOfTheName()
     {
         var re = new BroilerRegex("(?<a\u0000b>x)");
@@ -136,7 +136,7 @@ public class NulCharacterTests
         Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a\\", flags));
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void GenuinelyUnterminatedConstructs_AreStillReported()
     {
         // The end-of-pattern rewrite must not soften these: each really does end

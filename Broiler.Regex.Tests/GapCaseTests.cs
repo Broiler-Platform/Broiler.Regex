@@ -9,7 +9,7 @@ public class GapCaseTests
 {
     // ----- #8 Nullable quantifier (RepeatMatcher empty-iteration guard) -------
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NullableQuantifier_Terminates_AndMatchesGreedily()
     {
         // Without the empty-match guard this either loops forever or matches short.
@@ -19,7 +19,7 @@ public class GapCaseTests
         Assert.Equal("aaa", m.Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NullableQuantifier_EmptyAlternative_Terminates()
     {
         var re = new BroilerRegex("(a|)*");
@@ -28,7 +28,7 @@ public class GapCaseTests
         Assert.Equal("aa", m.Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void NullableQuantifier_OptionalGroup_DoesNotInfiniteLoop()
     {
         var re = new BroilerRegex("(?:a?)*b");
@@ -39,7 +39,7 @@ public class GapCaseTests
 
     // ----- #3 / #4 Look-behind with captures and back-references --------------
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void Lookbehind_PreservesSourceCaptureOrder()
     {
         // Matched right-to-left, but group 1 = "a", group 2 = "b" (source order).
@@ -51,7 +51,7 @@ public class GapCaseTests
         Assert.Equal("b", m.Groups[2].Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void Lookbehind_BackreferenceToCapture_MatchesJsSemantics()
     {
         // Inside a look-behind terms run right-to-left, so \1 (still unset) matches
@@ -64,7 +64,7 @@ public class GapCaseTests
         Assert.Equal("ab", m.Groups[1].Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void Lookbehind_Negative()
     {
         var re = new BroilerRegex("(?<!a)b");
@@ -74,7 +74,7 @@ public class GapCaseTests
 
     // ----- #6 Unicode (code-point) back-references ----------------------------
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void Backreference_AstralCodePoint()
     {
         var re = new BroilerRegex("(\\u{1F438})\\1", "u");
@@ -83,7 +83,7 @@ public class GapCaseTests
         Assert.Equal("\U0001F438", m.Groups[1].Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void Backreference_CaseFolded()
     {
         var re = new BroilerRegex("(?<x>a)\\k<x>", "i");
@@ -94,7 +94,7 @@ public class GapCaseTests
 
     // ----- #7 Braced Unicode escape as a single astral atom -------------------
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void BracedUnicodeEscape_MatchesAstralCharacter()
     {
         var re = new BroilerRegex("^\\u{1F438}$", "u");
@@ -103,7 +103,7 @@ public class GapCaseTests
         Assert.Equal("\U0001F438", m.Value);
     }
 
-    [Fact]
+    [Fact(Timeout = 600000)]
     public void AstralAtom_WithQuantifier_IsOneCodePoint()
     {
         // The pair is a single atom, so {2} requires two frogs, not four units.
