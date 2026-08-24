@@ -15,14 +15,22 @@ internal sealed class Budget
 
     /// <summary>Consumes one step; returns false once the limit is exhausted.</summary>
     public bool Step() => ++_steps <= _limit;
+
+    /// <summary>Resets the counter so one instance can serve every start position of a
+    /// single run — each start gets the same fresh allowance a new instance would, with
+    /// no per-start allocation.</summary>
+    public void Reset() => _steps = 0;
 }
 
 /// <summary>
 /// The ECMAScript matcher "State" (§22.2.2.1): an end index plus the list of
-/// capture spans. Immutable with copy-on-write captures so backtracking simply
-/// discards derived states. The whole-match span is captures[0].
+/// capture spans. A <c>readonly struct</c> value type so deriving a state on every
+/// atom (<see cref="WithPosition"/> runs once per matched code point) copies four
+/// fields by value instead of allocating — the capture array is still shared by
+/// reference and copied on write, so backtracking simply discards derived states.
+/// The whole-match span is captures[0].
 /// </summary>
-internal sealed class MatchState(string input, int position, int[] captures, Budget budget)
+internal readonly struct MatchState(string input, int position, int[] captures, Budget budget)
 {
     public readonly string Input = input;
     public readonly int Position = position;

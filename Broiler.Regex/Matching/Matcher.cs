@@ -70,14 +70,22 @@ internal sealed class Matcher
     /// </summary>
     public RegexMatch? Run(string input, int start)
     {
+        // One budget and one initial-captures array serve every start position. Matching
+        // never writes the initial array in place (WithCapture/WithResetCaptures copy on
+        // write), so it only has to be re-filled with "unset" before each attempt, and the
+        // budget is reset to a fresh per-start allowance — identical semantics to a new
+        // instance each time, but without the per-start allocation a pattern that fails near
+        // the start would otherwise pay while retrying at 1, 2, 3, ….
+        var budget = new Budget(StepLimit);
+        var captures = NewCaptures();
         for (var at = start; at <= input.Length; at++)
         {
-            var budget = new Budget(StepLimit);
-            var captures = NewCaptures();
+            budget.Reset();
+            Array.Fill(captures, -1);
             var state = new MatchState(input, at, captures, budget);
             var result = _root(state, s => s);
             if (result != null)
-                return BuildMatch(input, at, result);
+                return BuildMatch(input, at, result.Value);
 
             if (_sticky)
                 break;
@@ -152,9 +160,38 @@ internal sealed class Matcher
 
     private CompiledMatcher CompileSequence(IReadOnlyList<RegexNode> terms, Direction dir, Flags flags)
     {
-        var matchers = new CompiledMatcher[terms.Count];
-        for (var i = 0; i < terms.Count; i++)
-            matchers[i] = Compile(terms[i], dir, flags);
+        // Fold a maximal run of two or more single-code-point atoms (a literal substring,
+        // an atom run like `\d\d/`) into one deterministic matcher that checks them in a
+        // loop — no per-term continuation closure and no per-character state, where the CPS
+        // chain would allocate one closure per term on every invocation. Forward only:
+        // look-behind reverses term order and is rare, so it keeps the simple chain.
+        var built = new List<CompiledMatcher>(terms.Count);
+        var t = 0;
+        while (t < terms.Count)
+        {
+            if (dir == Direction.Forward && TryGetSingleCharPredicate(terms[t], flags, out var p0))
+            {
+                var run = new List<CharPredicate> { p0 };
+                var j = t + 1;
+                while (j < terms.Count && TryGetSingleCharPredicate(terms[j], flags, out var pj))
+                {
+                    run.Add(pj);
+                    j++;
+                }
+                if (run.Count == 1)
+                    built.Add(Compile(terms[t], dir, flags));
+                else
+                    built.Add(CompileAtomRun([.. run]));
+                t = j;
+            }
+            else
+            {
+                built.Add(Compile(terms[t], dir, flags));
+                t++;
+            }
+        }
+
+        var matchers = built.ToArray();
 
         // Forward: apply left-to-right. Backward (look-behind): apply right-to-left
         // — the spec composes Alternative terms in reverse under direction −1.
@@ -172,6 +209,31 @@ internal sealed class Matcher
                 k = state => m(state, next);
             }
             return k(s);
+        };
+    }
+
+    /// <summary>
+    /// A forward run of single-code-point atoms matched in one loop: each consumes exactly
+    /// one code point deterministically, so the whole run either advances the cursor past
+    /// all of them and hands off to the continuation once, or fails — with no per-atom
+    /// closure and no intermediate <see cref="MatchState"/>.
+    /// </summary>
+    private CompiledMatcher CompileAtomRun(CharPredicate[] predicates)
+    {
+        return (s, c) =>
+        {
+            var input = s.Input;
+            var pos = s.Position;
+            foreach (var predicate in predicates)
+            {
+                if (pos >= input.Length)
+                    return null;
+                var (cp, width) = CodePointAt(input, pos);
+                if (!predicate(cp))
+                    return null;
+                pos += width;
+            }
+            return c(s.WithPosition(pos));
         };
     }
 
@@ -225,43 +287,326 @@ internal sealed class Matcher
 
     private CompiledMatcher CompileQuantifier(QuantifierNode q, Direction dir, Flags flags)
     {
-        var inner = Compile(q.Child, dir, flags);
-        var capIndices = CollectCaptureIndices(q.Child);
         var min = q.Min;
         var max = q.Max;
         var greedy = q.Greedy;
 
-        // RepeatMatcher (§22.2.2.3.1). The empty-iteration guard — abandoning a
-        // min=0 iteration that consumed nothing — is what makes a nullable
-        // quantifier match the JS-correct (longer) string (fixes #8).
-        MatchState? Repeat(int remMin, int remMax, MatchState x, Continuation c)
-        {
-            if (!x.Budget.Step())
-                return null;
-            if (remMax == 0)
-                return c(x);
+        // Iterative fast path: a body that consumes exactly one code point, sets no
+        // captures, and matches at most one way at each position — a literal char, `.`,
+        // or a character class — repeats deterministically, so its repetition is a linear
+        // scan with an index-based backtrack. This is the common quantifier (`.*`, `\d+`,
+        // `[^"]*`); it avoids the general driver's per-match re-execution entirely.
+        if (TryGetSingleCharPredicate(q.Child, flags, out var predicate))
+            return CompileSingleCharQuantifier(predicate, min, max, greedy, dir);
 
-            MatchState? d(MatchState y)
+        var inner = Compile(q.Child, dir, flags);
+        var capIndices = CollectCaptureIndices(q.Child);
+        return CompileGeneralQuantifier(inner, capIndices, min, max, greedy);
+    }
+
+    /// <summary>
+    /// One active iteration level of the iterative RepeatMatcher: the state at entry, the
+    /// remaining min/max, and how far its body-match enumeration and its "stop" branch have
+    /// been explored. Held on an explicit heap stack so the iteration dimension — the one
+    /// that grows with the subject length — no longer consumes a native stack frame apiece.
+    /// </summary>
+    private sealed class RepeatFrame
+    {
+        public int RemMin;
+        public int RemMax;
+        public MatchState X;      // state at this iteration level
+        public MatchState Xr;     // X with the quantifier's captures reset (body start)
+        public bool XrReady;
+        public int Skip;          // index of the next body match to fetch
+        public bool BodyExhausted;
+        public bool StopTried;    // whether the c(X) "stop" branch has been taken
+    }
+
+    /// <summary>
+    /// RepeatMatcher (§22.2.2.3.1) for an arbitrary body, driven by an explicit heap stack
+    /// instead of recursion so a repeat over a long subject cannot overflow the native
+    /// stack — the payoff being that any quantifier, not just a single-code-point one,
+    /// matches a subject of any length natively. Body matches at each level are enumerated
+    /// lazily in the body's own backtracking order (see <see cref="TryMatchBodyNth"/>);
+    /// greedy tries every body-match subtree before the "stop" branch, lazy the reverse,
+    /// and the empty-iteration guard abandons a min=0 iteration that consumed nothing (the
+    /// nullable-quantifier fix, #8). This is exactly what the recursive form computed; only
+    /// the iteration dimension moved off the call stack.
+    /// </summary>
+    private CompiledMatcher CompileGeneralQuantifier(CompiledMatcher inner, int[] capIndices, int min, int max, bool greedy)
+    {
+        return (s, c) =>
+        {
+            // The one place native recursion can still deepen is a body (`inner`) or a
+            // continuation (`c`) reached through nested pattern structure — bounded by the
+            // pattern's nesting depth, exactly like the recursive-descent parser that
+            // already accepted this pattern, never by the subject length. Check once per
+            // driver entry so a pathologically nested pattern degrades to a signal (which
+            // the caller turns into a .NET fallback) rather than crashing the process.
+            if (!System.Runtime.CompilerServices.RuntimeHelpers.TryEnsureSufficientExecutionStack())
+                throw new RegexOverflowException();
+
+            var stack = new Stack<RepeatFrame>();
+            stack.Push(new RepeatFrame { RemMin = min, RemMax = max, X = s });
+
+            while (stack.Count > 0)
             {
-                if (remMin == 0 && y.Position == x.Position)
-                    return null; // empty match for an optional repeat → stop
-                var nextMin = remMin == 0 ? 0 : remMin - 1;
-                var nextMax = remMax == QuantifierNode.Unbounded ? QuantifierNode.Unbounded : remMax - 1;
-                return Repeat(nextMin, nextMax, y, c);
+                var f = stack.Peek();
+
+                // Lazy: the "stop" branch (match zero more, hand off to c) comes first.
+                if (!greedy && !f.StopTried)
+                {
+                    f.StopTried = true;
+                    if (f.RemMin == 0)
+                    {
+                        if (!s.Budget.Step())
+                            return null;
+                        var r = c(f.X);
+                        if (r != null)
+                            return r;
+                    }
+                }
+
+                // Body branch: try to match the body once more and descend a level.
+                if (f.RemMax != 0 && !f.BodyExhausted)
+                {
+                    if (!f.XrReady)
+                    {
+                        f.Xr = f.X.WithResetCaptures(capIndices);
+                        f.XrReady = true;
+                    }
+                    if (!s.Budget.Step())
+                        return null;
+                    if (TryMatchBodyNth(inner, f.Xr, f.Skip, out var y))
+                    {
+                        f.Skip++;
+                        // Empty-iteration guard: abandon a min=0 iteration that consumed
+                        // nothing and try the next body match instead (as `d` returning
+                        // failure would make the recursive form backtrack).
+                        if (f.RemMin == 0 && y.Position == f.X.Position)
+                            continue;
+                        var nextMin = f.RemMin == 0 ? 0 : f.RemMin - 1;
+                        var nextMax = f.RemMax == QuantifierNode.Unbounded ? QuantifierNode.Unbounded : f.RemMax - 1;
+                        stack.Push(new RepeatFrame { RemMin = nextMin, RemMax = nextMax, X = y });
+                        continue;
+                    }
+                    f.BodyExhausted = true;
+                }
+
+                // Greedy: the "stop" branch comes after every body-match subtree failed.
+                if (greedy && !f.StopTried)
+                {
+                    f.StopTried = true;
+                    if (f.RemMin == 0)
+                    {
+                        if (!s.Budget.Step())
+                            return null;
+                        var r = c(f.X);
+                        if (r != null)
+                            return r;
+                    }
+                }
+
+                // This level is exhausted; drop it and let the parent try its next body match.
+                stack.Pop();
             }
 
-            var xr = x.WithResetCaptures(capIndices);
+            return null;
+        };
+    }
 
-            if (remMin != 0)
-                return inner(xr, d);
-
-            if (greedy)
-                return inner(xr, d) ?? c(x);
-
-            return c(x) ?? inner(xr, d);
+    /// <summary>
+    /// Yields the <paramref name="skip"/>-th body match (0-based) that <paramref name="inner"/>
+    /// produces starting at <paramref name="xr"/>, in the body's natural backtracking order,
+    /// or returns false when the body has no more matches. Works by running the body with a
+    /// continuation that fails the first <paramref name="skip"/> times — forcing the
+    /// backtracker on to its next alternative — and succeeds on the next, capturing that
+    /// state. The body's own matching still recurses, but only to the (pattern-bounded) depth
+    /// of the body's structure, never to the subject length.
+    /// </summary>
+    private static bool TryMatchBodyNth(CompiledMatcher inner, MatchState xr, int skip, out MatchState result)
+    {
+        MatchState? captured = null;
+        var seen = 0;
+        MatchState? Counting(MatchState y)
+        {
+            if (seen == skip)
+            {
+                captured = y;
+                return y; // stop backtracking: this is the match we want
+            }
+            seen++;
+            return null; // fail so the body backtracks to its next match
         }
 
-        return (s, c) => Repeat(min, max, s, c);
+        var r = inner(xr, Counting);
+        result = captured ?? default;
+        return r != null;
+    }
+
+    /// <summary>A single-code-point membership test with the atom's flags baked in.</summary>
+    private delegate bool CharPredicate(int codePoint);
+
+    /// <summary>
+    /// Recognises a quantifier body that consumes exactly one code point, sets no
+    /// captures, and matches at most one way per position — a literal char, <c>.</c>,
+    /// or a character class without <c>\q{…}</c> string members — and, when so, hands
+    /// back a predicate identical to the atom's own matcher. Such a body cannot match
+    /// the empty string and has no internal backtracking, so <see cref="CompileSingleCharQuantifier"/>
+    /// can iterate it instead of recursing. A class carrying string members is not
+    /// eligible: it is an alternation, not a single-character matcher.
+    /// </summary>
+    private bool TryGetSingleCharPredicate(RegexNode child, Flags flags, out CharPredicate predicate)
+    {
+        var ignoreCase = flags.IgnoreCase;
+        var unicode = _unicode;
+        switch (child)
+        {
+            case CharNode ch:
+                var target = ch.CodePoint;
+                predicate = cp => CaseFolding.Equal(cp, target, ignoreCase, unicode);
+                return true;
+            case AnyCharNode:
+                var dotAll = flags.DotAll;
+                predicate = cp => dotAll || !IsLineTerminator(cp);
+                return true;
+            case CharClassNode cls when !cls.Set.HasStrings:
+                var set = cls.Set;
+                predicate = cp => set.Contains(cp, ignoreCase, unicode);
+                return true;
+            default:
+                predicate = null;
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Iterative, allocation-free RepeatMatcher for a single-code-point body. A greedy
+    /// quantifier scans as far as the body matches, then hands cursors to the continuation
+    /// furthest-first, recomputing each earlier cursor by stepping back exactly one code
+    /// point (the body consumed one per iteration); a lazy one tries the continuation with
+    /// the fewest iterations first, matching one more code point each time it fails. This
+    /// is what the recursive <c>Repeat</c> computed for such a body, but with no per-iteration
+    /// heap — neither a stack frame nor a positions list — so a repeat over a long subject
+    /// stays flat and cheap.
+    /// </summary>
+    private CompiledMatcher CompileSingleCharQuantifier(CharPredicate predicate, int min, int max, bool greedy, Direction dir)
+    {
+        if (greedy)
+        {
+            return (s, c) =>
+            {
+                var input = s.Input;
+                var pos = s.Position;
+                var count = 0;
+                while (max == QuantifierNode.Unbounded || count < max)
+                {
+                    // Keep the shared catastrophic-backtracking budget honest: each
+                    // iteration is one step, as it is in the recursive Repeat.
+                    if (!s.Budget.Step())
+                        break;
+                    if (!TryReadMatching(input, dir, pos, predicate, out var nextPos))
+                        break;
+                    pos = nextPos;
+                    count++;
+                }
+
+                if (count < min)
+                    return null;
+
+                for (var k = count; ; k--)
+                {
+                    var r = c(s.WithPosition(pos));
+                    if (r != null)
+                        return r;
+                    if (k == min)
+                        return null;
+                    pos = StepBack(input, dir, pos);
+                }
+            };
+        }
+
+        return (s, c) =>
+        {
+            var input = s.Input;
+            var pos = s.Position;
+            var count = 0;
+
+            // The mandatory iterations must all match, or the quantifier fails outright.
+            while (count < min)
+            {
+                if (!s.Budget.Step())
+                    return null;
+                if (!TryReadMatching(input, dir, pos, predicate, out var nextPos))
+                    return null;
+                pos = nextPos;
+                count++;
+            }
+
+            while (true)
+            {
+                var r = c(s.WithPosition(pos));
+                if (r != null)
+                    return r;
+                if (max != QuantifierNode.Unbounded && count == max)
+                    return null;
+                if (!s.Budget.Step())
+                    return null;
+                if (!TryReadMatching(input, dir, pos, predicate, out var nextPos))
+                    return null;
+                pos = nextPos;
+                count++;
+            }
+        };
+    }
+
+    /// <summary>Reverses one single-code-point iteration: the cursor before the code point
+    /// the body consumed at <paramref name="pos"/> in <paramref name="dir"/>.</summary>
+    private int StepBack(string input, Direction dir, int pos)
+        => dir == Direction.Forward
+            ? pos - CodePointBefore(input, pos).width
+            : pos + CodePointAt(input, pos).width;
+
+    /// <summary>
+    /// Reads one code point at <paramref name="pos"/> in <paramref name="dir"/> and, if it
+    /// satisfies <paramref name="predicate"/>, yields the cursor past it. Mirrors
+    /// <see cref="ReadCodePoint"/> but works from an explicit position so the iterative
+    /// quantifier need not thread a <see cref="MatchState"/> through the scan.
+    /// </summary>
+    private bool TryReadMatching(string input, Direction dir, int pos, CharPredicate predicate, out int nextPos)
+    {
+        if (dir == Direction.Forward)
+        {
+            if (pos >= input.Length)
+            {
+                nextPos = pos;
+                return false;
+            }
+            var (cp, width) = CodePointAt(input, pos);
+            if (!predicate(cp))
+            {
+                nextPos = pos;
+                return false;
+            }
+            nextPos = pos + width;
+            return true;
+        }
+        else
+        {
+            if (pos <= 0)
+            {
+                nextPos = pos;
+                return false;
+            }
+            var (cp, width) = CodePointBefore(input, pos);
+            if (!predicate(cp))
+            {
+                nextPos = pos;
+                return false;
+            }
+            nextPos = pos - width;
+            return true;
+        }
     }
 
     private CompiledMatcher CompileBackreference(BackreferenceNode br, Direction dir, Flags flags)
@@ -323,8 +668,8 @@ internal sealed class Matcher
             AnchorKind.EndOfInput => (s, c) =>
                 (s.Position == s.Input.Length || (multiline && IsLineTerminator(CodePointAt(s.Input, s.Position).cp)))
                     ? c(s) : null,
-            AnchorKind.WordBoundary => (s, c) => IsWordBoundary(s) ? c(s) : null,
-            AnchorKind.NonWordBoundary => (s, c) => !IsWordBoundary(s) ? c(s) : null,
+            AnchorKind.WordBoundary => (s, c) => IsWordBoundary(s, flags) ? c(s) : null,
+            AnchorKind.NonWordBoundary => (s, c) => !IsWordBoundary(s, flags) ? c(s) : null,
             _ => throw new InvalidOperationException(),
         };
     }
@@ -343,7 +688,7 @@ internal sealed class Matcher
             if (matched == null)
                 return null;
             // Positive look-around keeps the captures it set, but restores position.
-            return c(new MatchState(s.Input, s.Position, matched.Captures, s.Budget));
+            return c(new MatchState(s.Input, s.Position, matched.Value.Captures, s.Budget));
         };
     }
 
@@ -379,6 +724,10 @@ internal sealed class Matcher
     {
         var ignoreCase = flags.IgnoreCase;
         var unicode = _unicode;
+
+        if (set.HasStrings)
+            return CompileCharClassWithStrings(set, dir, ignoreCase, unicode);
+
         return (s, c) =>
         {
             if (!ReadCodePoint(s, dir, out var actual, out var nextPos))
@@ -386,6 +735,62 @@ internal sealed class Matcher
             return set.Contains(actual, ignoreCase, unicode)
                 ? c(s.WithPosition(nextPos)) : null;
         };
+    }
+
+    /// <summary>
+    /// A <c>v</c>-mode class holding multi-code-point members (<c>\q{…}</c> or a property
+    /// of strings) is the one CharSet that is not a single-character matcher: §22.2.2.9
+    /// compiles it to the alternation of its strings followed by its code points, longest
+    /// alternative first, and each alternative is a backtracking point of its own.
+    /// </summary>
+    private CompiledMatcher CompileCharClassWithStrings(CharSet set, Direction dir, bool ignoreCase, bool unicode)
+    {
+        var strings = new string[set.Strings.Count];
+        for (var i = 0; i < strings.Length; i++)
+            strings[i] = set.Strings[i];
+
+        return (s, c) =>
+        {
+            foreach (var candidate in strings)
+            {
+                if (!TryMatchLiteral(s, dir, candidate, ignoreCase, unicode, out var after))
+                    continue;
+                var result = c(s.WithPosition(after));
+                if (result != null)
+                    return result;
+            }
+
+            if (!ReadCodePoint(s, dir, out var actual, out var nextPos))
+                return null;
+            return set.Contains(actual, ignoreCase, unicode)
+                ? c(s.WithPosition(nextPos)) : null;
+        };
+    }
+
+    /// <summary>Matches a literal string at the cursor in <paramref name="dir"/>.</summary>
+    private static bool TryMatchLiteral(MatchState s, Direction dir, string literal,
+        bool ignoreCase, bool unicode, out int after)
+    {
+        int from;
+        if (dir == Direction.Forward)
+        {
+            from = s.Position;
+            after = from + literal.Length;
+            if (after > s.Input.Length)
+                return false;
+        }
+        else
+        {
+            after = s.Position - literal.Length;
+            from = after;
+            if (from < 0)
+                return false;
+        }
+
+        // A `v`-mode class folded its string members at parse time and the fold is
+        // idempotent, so canonicalizing both sides here still compares the subject
+        // against the folded member.
+        return RegionEquals(s.Input, from, literal, 0, literal.Length, ignoreCase, unicode);
     }
 
     /// <summary>Reads the code point in <paramref name="dir"/>, yielding the next position.</summary>
@@ -438,14 +843,19 @@ internal sealed class Matcher
     private static bool IsLineTerminator(int cp)
         => cp is 0x000A or 0x000D or 0x2028 or 0x2029;
 
-    private bool IsWordBoundary(MatchState s)
+    private bool IsWordBoundary(MatchState s, Flags flags)
     {
-        var before = s.Position > 0 && IsWordChar(CodePointBefore(s.Input, s.Position).cp);
-        var after = s.Position < s.Input.Length && IsWordChar(CodePointAt(s.Input, s.Position).cp);
+        var before = s.Position > 0 && IsWordChar(CodePointBefore(s.Input, s.Position).cp, flags);
+        var after = s.Position < s.Input.Length && IsWordChar(CodePointAt(s.Input, s.Position).cp, flags);
         return before != after;
     }
 
-    private static bool IsWordChar(int cp) => UnicodeCharSets.IsWord(cp);
+    /// <summary>
+    /// §22.2.2.5 IsWordChar reads WordCharacters, which under <c>iu</c> also holds every
+    /// code point that folds into the basic set — so <c>ſ</c> and <c>K</c> are word
+    /// characters for <c>\b</c> exactly when they are members of <c>\w</c>.
+    /// </summary>
+    private bool IsWordChar(int cp, Flags flags) => UnicodeCharSets.IsWord(cp, flags.IgnoreCase, _unicode);
 
     /// <summary>Code-point-aware, case-fold-aware comparison of two equal-length regions.</summary>
     private static bool RegionEquals(string a, int aStart, string b, int bStart, int len,

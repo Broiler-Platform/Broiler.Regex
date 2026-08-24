@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Broiler.Regex.Unicode;
 
@@ -8,165 +8,65 @@ namespace Broiler.Regex.Unicode;
 /// (ECMA-262 §22.2.2.9.4 Canonicalize).
 /// </summary>
 /// <remarks>
-/// The spec distinguishes two modes:
+/// The spec distinguishes two modes, and both are table-driven here from the
+/// Unicode Character Database revision named by
+/// <see cref="CaseFoldingData.UnicodeVersion"/>:
 /// <list type="bullet">
-/// <item><b>non-Unicode</b>: canonicalize via <c>toUppercase</c>, but a multi-char
-/// uppercasing or a result that leaves the ASCII range when the input was ASCII is
-/// rejected (so <c>ſ</c> does NOT fold to <c>s</c>).</item>
+/// <item><b>non-Unicode</b>: canonicalize via <c>toUppercase</c> of the single code
+/// unit, discarding a multi-code-unit uppercasing and a result that would leave a
+/// non-ASCII input inside ASCII (so <c>ſ</c> does NOT fold to <c>s</c>).</item>
 /// <item><b>Unicode (<c>u</c>/<c>v</c>)</b>: canonicalize via the Unicode
 /// <c>CaseFolding.txt</c> "common + simple" mapping (so <c>ſ→s</c>, <c>K→k</c>).</item>
 /// </list>
-/// This implementation covers ASCII fully plus a documented subset of the
-/// non-ASCII simple folds that test262 exercises (the Greek/Latin special cases
-/// the .NET translator also special-cased). TODO: replace with the full
-/// <c>Broiler.Unicode</c> simple-fold table for complete conformance.
+/// The generated tables replace the earlier <c>char</c>/<see cref="System.Text.Rune"/>
+/// casing round trip, which had no mapping at all for supplementary code points and
+/// disagreed with <c>scf</c> wherever a script's uppercase and folding directions
+/// differ (Cherokee, Deseret, Adlam, Vithkuqi, Garay, Old Hungarian, Warang Citi).
 /// </remarks>
 public static class CaseFolding
 {
     /// <summary>
     /// Returns the canonical representative of <paramref name="codePoint"/> for the
     /// given mode. Two code points are case-equivalent iff their canonical forms are
-    /// equal.
+    /// equal, and the mapping is idempotent, so a canonical form canonicalizes to
+    /// itself.
     /// </summary>
     public static int Canonicalize(int codePoint, bool unicode)
     {
-        if (unicode)
-            return SimpleFold(codePoint);
-
-        // Non-Unicode Canonicalize: ToUppercase of the single code unit, with the
-        // ASCII guard (a non-ASCII char must not fold into the ASCII range).
-        if (codePoint > 0xFFFF)
-            return codePoint;
-
-        var ch = (char)codePoint;
-        var upper = char.ToUpperInvariant(ch);
-        if (upper == ch)
-            return codePoint;
-
-        // Reject a fold that crosses into ASCII from a non-ASCII source.
-        if (codePoint >= 0x80 && upper < 0x80)
-            return codePoint;
-
-        return upper;
-    }
-
-    /// <summary>
-    /// Unicode "simple" case fold: lower-cases the code point, with a few
-    /// special-cased folds that <c>ToLowerInvariant</c> alone gets wrong for
-    /// regex equivalence.
-    /// </summary>
-    private static int SimpleFold(int codePoint)
-    {
-        switch (codePoint)
-        {
-            case 0x017F: return 's';    // ſ LATIN SMALL LETTER LONG S → s
-            case 0x212A: return 'k';    // K KELVIN SIGN → k
-            case 0x212B: return 0x00E5; // Å ANGSTROM SIGN → å
-            case 0x2126: return 0x03C9; // Ω OHM SIGN → ω
-            case 0x1E9E: return 0x00DF; // ẞ LATIN CAPITAL SHARP S → ß
-        }
-
-        if (codePoint > 0xFFFF)
-            return AstralFold(codePoint);
-
-        var lower = char.ToLowerInvariant((char)codePoint);
-        if (lower != (char)codePoint)
-            return lower;
-
-        // Some letters only have an upper form whose lower we want as the rep.
-        var upper = char.ToUpperInvariant((char)codePoint);
-        if (upper != (char)codePoint)
-        {
-            var upperLower = char.ToLowerInvariant(upper);
-            if (upperLower != (char)codePoint)
-                return upperLower;
-        }
-
-        return codePoint;
-    }
-
-    /// <summary>
-    /// Simple fold of a supplementary-plane code point. <see cref="char"/> casing is
-    /// defined on single UTF-16 code units and leaves every astral code point alone, so
-    /// the bicameral supplementary scripts — Deseret, Osage, Warang Citi, Medefaidrin,
-    /// Adlam, Vithkuqi, Old Hungarian — folded to themselves and <c>/𐐀/iu</c> matched
-    /// only the capital. <see cref="Rune"/> casing is defined on code points and has the
-    /// mappings; the upper-then-lower round trip is the same representative the JS layer's
-    /// astral fold table uses, so both engines answer one equivalence class.
-    /// </summary>
-    private static int AstralFold(int codePoint)
-    {
-        // Garay (Unicode 16.0) is assigned but carries no simple case mapping in .NET's
-        // tables yet, so the round trip below leaves each letter in a class of its own.
-        // Fold its capitals (U+10D50..U+10D65) onto their small letters (U+10D70..U+10D85)
-        // explicitly; the day the tables catch up this agrees with them.
-        if (codePoint >= GarayCapitalFirst && codePoint <= GarayCapitalLast)
-            return codePoint + GarayCapitalToSmall;
-
-        var rune = new Rune(codePoint);
-        return Rune.ToLowerInvariant(Rune.ToUpperInvariant(rune)).Value;
-    }
-
-    private const int GarayCapitalFirst = 0x10D50;
-    private const int GarayCapitalLast = 0x10D65;
-    private const int GaraySmallFirst = 0x10D70;
-    private const int GarayCapitalToSmall = GaraySmallFirst - GarayCapitalFirst;
-
-    /// <summary>
-    /// Yields the small set of code points known to be case-fold siblings of
-    /// <paramref name="codePoint"/> (used to test class membership in both
-    /// directions). This is the inverse of the special-case table above.
-    /// </summary>
-    public static IEnumerable<int> SimpleSiblings(int codePoint, bool unicode)
-    {
         if (!unicode)
         {
-            if (codePoint <= 0xFFFF)
-            {
-                var ch = (char)codePoint;
-                var upper = char.ToUpperInvariant(ch);
-                if (upper != ch && !(codePoint < 0x80 && upper >= 0x80))
-                    yield return upper;
-                var lower = char.ToLowerInvariant(ch);
-                if (lower != ch && !(codePoint < 0x80 && lower >= 0x80))
-                    yield return lower;
-            }
-            yield break;
+            // The non-Unicode branch is defined on a single UTF-16 code unit; a
+            // supplementary code point can only reach here through a `u`-less pattern
+            // that already matches per code unit, so it is left alone.
+            if (codePoint is < 0 or > 0xFFFF)
+                return codePoint;
+            return UpperTable.Map(codePoint);
         }
 
-        switch (codePoint)
-        {
-            case 's': yield return 0x017F; break;
-            case 'k': yield return 0x212A; break;
-            case 0x00E5: yield return 0x212B; break;
-            case 0x03C9: yield return 0x2126; break;
-            case 0x00DF: yield return 0x1E9E; break;
-        }
-
-        if (codePoint > 0xFFFF)
-        {
-            // Same reason AstralFold exists: char casing has no mapping for a
-            // supplementary code point, so the siblings have to come from Rune casing
-            // (plus Garay, which .NET has no mapping for either).
-            if (codePoint >= GarayCapitalFirst && codePoint <= GarayCapitalLast)
-                yield return codePoint + GarayCapitalToSmall;
-            else if (codePoint >= GaraySmallFirst && codePoint <= GaraySmallFirst + (GarayCapitalLast - GarayCapitalFirst))
-                yield return codePoint - GarayCapitalToSmall;
-
-            var rune = new Rune(codePoint);
-            var upperRune = Rune.ToUpperInvariant(rune).Value;
-            if (upperRune != codePoint) yield return upperRune;
-            var lowerRune = Rune.ToLowerInvariant(rune).Value;
-            if (lowerRune != codePoint) yield return lowerRune;
-            yield break;
-        }
-
-        var bmp = (char)codePoint;
-        var bmpUpper = char.ToUpperInvariant(bmp);
-        if (bmpUpper != bmp) yield return bmpUpper;
-        var bmpLower = char.ToLowerInvariant(bmp);
-        if (bmpLower != bmp) yield return bmpLower;
+        return codePoint < 0 ? codePoint : SimpleTable.Map(codePoint);
     }
+
+    /// <summary>
+    /// Returns every code point whose canonical form is <paramref name="canonical"/> —
+    /// the fold orbit of a canonical representative, always including
+    /// <paramref name="canonical"/> itself.
+    /// </summary>
+    /// <remarks>
+    /// §22.2.2.10 CharacterSetMatcher asks whether the class holds <i>any</i> member
+    /// that canonicalizes to the input's canonical form. Canonicalizing every member of
+    /// a class is impossible for a set the size of <c>\p{L}</c>, so the test runs the
+    /// other way: the orbit is small (rarely more than four code points) and membership
+    /// of each orbit element is a plain range lookup.
+    /// </remarks>
+    public static IReadOnlyList<int> Orbit(int canonical, bool unicode)
+        => (unicode ? SimpleTable : UpperTable).Orbit(canonical);
+
+    /// <summary>
+    /// The code-point runs that have a simple case fold — every code point <c>c</c> with
+    /// <c>scf(c) ≠ c</c>. §22.2.2.9 AllCharacters excludes exactly these from the universe
+    /// a <c>v</c>-mode complement is taken against when <c>i</c> is on.
+    /// </summary>
+    public static IEnumerable<(int Lo, int Hi)> SimpleFoldSources => SimpleTable.Sources;
 
     /// <summary>True when the two code points are case-equivalent in the given mode.</summary>
     public static bool Equal(int a, int b, bool ignoreCase, bool unicode)
@@ -176,5 +76,148 @@ public static class CaseFolding
         if (!ignoreCase)
             return false;
         return Canonicalize(a, unicode) == Canonicalize(b, unicode);
+    }
+
+    private static readonly FoldTable SimpleTable = new(CaseFoldingData.SimpleFold);
+    private static readonly FoldTable UpperTable = new(CaseFoldingData.UpperFold);
+
+    /// <summary>
+    /// One generated fold table: runs of <c>lo..hi</c> that all shift by the same delta,
+    /// searched forward, plus the inverse (orbit) map built on first use.
+    /// </summary>
+    private sealed class FoldTable
+    {
+        private readonly int[] _lo;
+        private readonly int[] _hi;
+        private readonly int[] _delta;
+
+        private Dictionary<int, int[]> _orbits;
+        private readonly object _gate = new();
+
+        public FoldTable(string encoded)
+        {
+            var runs = CountRuns(encoded);
+            _lo = new int[runs];
+            _hi = new int[runs];
+            _delta = new int[runs];
+
+            var index = 0;
+            var pos = 0;
+            while (pos < encoded.Length)
+            {
+                var lo = ReadHex(encoded, ref pos);
+                var hi = lo;
+                if (pos < encoded.Length && encoded[pos] == '.')
+                {
+                    pos++;
+                    hi = ReadHex(encoded, ref pos);
+                }
+                pos++; // ':'
+                var negative = encoded[pos] == '-';
+                if (negative)
+                    pos++;
+                var delta = ReadHex(encoded, ref pos);
+                if (pos < encoded.Length)
+                    pos++; // ','
+
+                _lo[index] = lo;
+                _hi[index] = hi;
+                _delta[index] = negative ? -delta : delta;
+                index++;
+            }
+        }
+
+        public IEnumerable<(int Lo, int Hi)> Sources
+        {
+            get
+            {
+                for (var run = 0; run < _lo.Length; run++)
+                    yield return (_lo[run], _hi[run]);
+            }
+        }
+
+        /// <summary>The canonical form of <paramref name="codePoint"/>, or itself when unmapped.</summary>
+        public int Map(int codePoint)
+        {
+            var lo = 0;
+            var hi = _lo.Length - 1;
+            while (lo <= hi)
+            {
+                var mid = (lo + hi) >> 1;
+                if (codePoint < _lo[mid])
+                    hi = mid - 1;
+                else if (codePoint > _hi[mid])
+                    lo = mid + 1;
+                else
+                    return codePoint + _delta[mid];
+            }
+            return codePoint;
+        }
+
+        public IReadOnlyList<int> Orbit(int canonical)
+        {
+            var orbits = _orbits;
+            if (orbits == null)
+            {
+                lock (_gate)
+                    _orbits = orbits = BuildOrbits();
+            }
+
+            return orbits.TryGetValue(canonical, out var members) ? members : [canonical];
+        }
+
+        private Dictionary<int, int[]> BuildOrbits()
+        {
+            var pending = new Dictionary<int, List<int>>();
+            for (var run = 0; run < _lo.Length; run++)
+            {
+                for (var cp = _lo[run]; cp <= _hi[run]; cp++)
+                {
+                    var target = cp + _delta[run];
+                    if (!pending.TryGetValue(target, out var members))
+                        pending[target] = members = [target];
+                    members.Add(cp);
+                }
+            }
+
+            var result = new Dictionary<int, int[]>(pending.Count);
+            foreach (var (target, members) in pending)
+                result[target] = [.. members];
+            return result;
+        }
+
+        private static int CountRuns(string encoded)
+        {
+            if (encoded.Length == 0)
+                return 0;
+            var count = 1;
+            foreach (var ch in encoded)
+            {
+                if (ch == ',')
+                    count++;
+            }
+            return count;
+        }
+
+        private static int ReadHex(string encoded, ref int pos)
+        {
+            var value = 0;
+            while (pos < encoded.Length)
+            {
+                var digit = HexValue(encoded[pos]);
+                if (digit < 0)
+                    break;
+                value = value * 16 + digit;
+                pos++;
+            }
+            return value;
+        }
+
+        private static int HexValue(char c) => c switch
+        {
+            >= '0' and <= '9' => c - '0',
+            >= 'A' and <= 'F' => c - 'A' + 10,
+            _ => -1,
+        };
     }
 }

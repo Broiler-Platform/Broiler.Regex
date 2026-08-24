@@ -4,10 +4,11 @@
     Broiler.Regex — a from-scratch, ECMAScript-conformant regular-expression
     engine for the Broiler.JS runtime.
 
-    It is intentionally dependency-free (no reference to the JS engine, runtime,
-    or System.Text.RegularExpressions). That keeps it independently testable and
-    lets the JavaScript layer adopt it incrementally — see README.md for the
-    motivation, the JS/.NET gap analysis, and the integration plan.
+    It references no JS engine, runtime, or System.Text.RegularExpressions type.
+    That keeps it independently testable and lets the JavaScript layer adopt it
+    incrementally — see README.md for the motivation, the JS/.NET gap analysis,
+    and the integration plan. Its only dependency is the generated Unicode data
+    below, which `\p{…}` and the `v`-mode class sets resolve against.
   -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -18,5 +19,23 @@
     <RootNamespace>Broiler.Regex</RootNamespace>
     <AssemblyName>Broiler.Regex</AssemblyName>
   </PropertyGroup>
+
+  <!--
+    Unicode property data. Broiler.Regex carries its own Broiler.Unicode submodule so it
+    builds and tests standalone, but when it is nested inside Broiler.JS that repository
+    has its own checkout of the same pin, and every other project there references THAT
+    one. Referencing both would put two projects with the assembly name
+    `Broiler.Unicode.Properties` in one build, so the outer checkout wins whenever it
+    exists. Set `BroilerUnicodeRoot` on the command line to point somewhere else.
+  -->
+  <PropertyGroup>
+    <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\src\UnicodeProperties\UnicodeProperties.csproj')">$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\</BroilerUnicodeRoot>
+    <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == ''">$(MSBuildThisFileDirectory)..\Broiler.Unicode\</BroilerUnicodeRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(BroilerUnicodeRoot)src\UnicodeProperties\UnicodeProperties.csproj" />
+    <ProjectReference Include="$(BroilerUnicodeRoot)src\UnicodeEmoji.StringProperties\UnicodeEmoji.StringProperties.csproj" />
+  </ItemGroup>
 
 </Project>

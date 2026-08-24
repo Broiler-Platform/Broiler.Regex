@@ -20,6 +20,10 @@ code in this project. Section numbers refer to ECMA-262 (2024+).
 | `CharacterClass` `[ … ]` | `ParseCharacterClass` | `CharClassNode` + `CharSet` |
 | `AtomEscape` back-reference | `ParseAtomEscape` | `BackreferenceNode` |
 | `CharacterClassEscape` `\d \w \s …` | `TryReadClassEscape` | `CharClassNode` / `CharSet` |
+| `CharacterClassEscape` `\p{…}` / `\P{…}` | `AddPropertyEscape` | `CharClassNode` / `CharSet` |
+| `ClassSetExpression` (`v` mode) | `ParseClassSetExpression` | `CharClassNode` / `CharSet` |
+| `ClassSetOperand`, `NestedClass` | `ParseClassSetOperand`, `ParseNestedClass` | `CodePointSet` |
+| `ClassStringDisjunction` `\q{…}` | `ParseClassStringDisjunction` | `CharSet.Strings` |
 | `CharacterEscape` `\n \xHH \uHHHH \u{…} \cX` | `ReadCharacterEscape` | `CharNode` |
 
 ## §22.2.2 Pattern semantics (the matcher) → `Matching/Matcher.cs`
@@ -38,6 +42,11 @@ Broiler.Regex models these directly:
 | §22.2.2.4 Assertions / look-around | `CompileAnchor`, `CompileLookaround` |
 | §22.2.2.7 AtomEscape (character) | `CompileChar` |
 | §22.2.2.9 BackreferenceMatcher | `CompileBackreference` |
+| §22.2.2.9 CompileToCharSet | `RegexParser` class parsing → `CharSet` |
+| §22.2.2.9.2 WordCharacters | `UnicodeCharSets.WordSet` |
+| §22.2.2.9.4 AllCharacters | `UnicodeCharSets.AllCharacters` |
+| §22.2.2.9.5 MaybeSimpleCaseFolding | `RegexParser.Fold` / `CodePointSet.Map` |
+| §22.2.2.9.6 CharacterComplement | `RegexParser.ComplementOperand` |
 | §22.2.2.9.4 Canonicalize | `Unicode/CaseFolding.cs` |
 | §22.2.2.10 CharacterSetMatcher | `CompileCharClass` / `CharSet.Contains` |
 
@@ -63,14 +72,23 @@ loops forever nor terminates one iteration too early.
 `d g i m s u v y` parse to `RegexFlags`; `i`/`m`/`s` are the only flags an inline
 modifier group may toggle (`ModifierGroupNode`).
 
+### Why the fold order matters (`v` mode)
+
+§22.2.2.9.5 folds each class-set operand through `scf` **before** §22.2.2.9.6 complements
+it, and §22.2.2.9.4 makes that complement's universe the code points that fold to
+themselves. `RegexParser.Fold` and `ComplementOperand` keep exactly that order, which is
+the whole reason `[^\p{Lu}]` matches neither `A` nor `a` under `vi` while it matches `a`
+under `ui`. Because every operand is folded, `CharSet.CaseFolded` lets the matcher
+canonicalize the subject and test membership directly instead of walking its fold orbit —
+the two are equivalent once the set holds only canonical members.
+
 ## Not yet mapped
 
-- §22.2.1 `CharacterClassEscape :: p{…}` Unicode property escapes
-  (`Unicode/UnicodeCharSets.ResolveProperty` — stub).
-- §22.2.1 `v`-mode `ClassSetExpression` set operations and `\q{…}`
-  (`CharSet.UsesSetOperations` — parsed, not evaluated).
-- The complete §22.2.2.9.4 case-fold table (current coverage: ASCII + a
-  documented subset of non-ASCII simple folds).
+- §22.2.6.11 `RegExp.prototype[@@replace]` and §22.2.6.14 `[@@split]` on the JavaScript
+  side still build a .NET `Regex`; only `RegExpBuiltinExec` reads Broiler match data.
+- Two deliberate divergences from V8 under `vi` — a lone binary property's set and a
+  one-character `\q{…}` alternative — recorded in
+  [the engine README](../README.md#known-limitations-stubbed--todo).
 
 These implementation gates are tracked in the
 [repository roadmap](../../docs/roadmap.md).
