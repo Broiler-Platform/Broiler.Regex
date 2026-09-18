@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Broiler.Regex — a from-scratch, ECMAScript-conformant regular-expression
@@ -11,30 +11,15 @@
     below, which `\p{…}` and the `v`-mode class sets resolve against.
   -->
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <RootNamespace>Broiler.Regex</RootNamespace>
     <AssemblyName>Broiler.Regex</AssemblyName>
   </PropertyGroup>
 
-  <!--
-    Unicode property data. Broiler.Regex carries its own Broiler.Unicode submodule so it
-    builds and tests standalone, but when it is nested inside Broiler.JS that repository
-    has its own checkout of the same pin, and every other project there references THAT
-    one. Referencing both would put two projects with the assembly name
-    `Broiler.Unicode.Properties` in one build, so the outer checkout wins whenever it
-    exists. Set `BroilerUnicodeRoot` on the command line to point somewhere else.
-  -->
-  <PropertyGroup>
-    <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\src\UnicodeProperties\UnicodeProperties.csproj')">$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\</BroilerUnicodeRoot>
-    <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == ''">$(MSBuildThisFileDirectory)..\Broiler.Unicode\</BroilerUnicodeRoot>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Broiler.Unicode.Properties" Version="0.1.0-preview.1" />
-    <PackageReference Include="UnicodeEmoji.StringProperties" Version="0.1.0-preview.1" />
+    <PackageReference Include="Broiler.Unicode.Properties" />
+    <PackageReference Include="UnicodeEmoji.StringProperties" />
   </ItemGroup>
 
 </Project>

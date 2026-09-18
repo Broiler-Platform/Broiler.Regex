@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Broiler.Regex.Matching;
@@ -42,7 +43,7 @@ public sealed class RegexMatch
     public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }
 
     public static readonly RegexMatch Empty =
-        new(false, -1, 0, "", new RegexGroup[0], new Dictionary<string, RegexGroup>());
+        new(false, -1, 0, "", Array.Empty<RegexGroup>(), new Dictionary<string, RegexGroup>());
 
     internal RegexMatch(bool success, int index, int length, string value,
         IReadOnlyList<RegexGroup> groups, IReadOnlyDictionary<string, RegexGroup> namedGroups)

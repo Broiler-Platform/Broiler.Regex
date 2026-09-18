@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
 
@@ -23,6 +24,7 @@ namespace Broiler.Regex.Matching;
 internal sealed class Matcher
 {
     private delegate MatchState? Continuation(MatchState state);
+    private static readonly Continuation IdentityContinuation = static s => s;
     private delegate MatchState? CompiledMatcher(MatchState state, Continuation cont);
 
     /// <summary>Matching direction: +1 forward, −1 backward (inside a look-behind).</summary>
@@ -83,7 +85,7 @@ internal sealed class Matcher
             budget.Reset();
             Array.Fill(captures, -1);
             var state = new MatchState(input, at, captures, budget);
-            var result = _root(state, s => s);
+            var result = _root(state, IdentityContinuation);
             if (result != null)
                 return BuildMatch(input, at, result.Value);
 
@@ -456,7 +458,7 @@ internal sealed class Matcher
     /// can iterate it instead of recursing. A class carrying string members is not
     /// eligible: it is an alternation, not a single-character matcher.
     /// </summary>
-    private bool TryGetSingleCharPredicate(RegexNode child, Flags flags, out CharPredicate predicate)
+    private bool TryGetSingleCharPredicate(RegexNode child, Flags flags, [NotNullWhen(true)] out CharPredicate? predicate)
     {
         var ignoreCase = flags.IgnoreCase;
         var unicode = _unicode;
@@ -823,12 +825,7 @@ internal sealed class Matcher
     // ----- Code-point / character helpers ------------------------------------
 
     private (int cp, int width) CodePointAt(string input, int pos)
-    {
-        var c = input[pos];
-        if (_unicode && char.IsHighSurrogate(c) && pos + 1 < input.Length && char.IsLowSurrogate(input[pos + 1]))
-            return (char.ConvertToUtf32(c, input[pos + 1]), 2);
-        return (c, 1);
-    }
+        => ReadAt(input, pos, _unicode);
 
     private (int cp, int width) CodePointBefore(string input, int pos)
     {

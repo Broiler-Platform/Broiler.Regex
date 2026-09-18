@@ -91,7 +91,7 @@ public static class CaseFolding
         private readonly int[] _hi;
         private readonly int[] _delta;
 
-        private Dictionary<int, int[]> _orbits;
+        private Dictionary<int, int[]>? _orbits;
         private readonly object _gate = new();
 
         public FoldTable(string encoded)

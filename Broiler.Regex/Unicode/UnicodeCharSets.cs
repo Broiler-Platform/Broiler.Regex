@@ -124,7 +124,7 @@ public static class UnicodeCharSets
     /// <c>_</c>, <c>-</c> and spaces — by the Broiler.Unicode tables, so the canonical
     /// names and the ECMAScript aliases both resolve.
     /// </remarks>
-    public static PropertyMatch ResolveProperty(string name, string value)
+    public static PropertyMatch? ResolveProperty(string name, string? value = null)
     {
         if (string.IsNullOrEmpty(name))
             return null;
@@ -244,11 +244,16 @@ public static class UnicodeCharSets
     private static CodePointSet BuildSpaceSet()
     {
         var set = new CodePointSet();
-        for (var cp = 0; cp <= 0xFEFF; cp++)
-        {
-            if (IsSpace(cp))
-                set.AddCodePoint(cp);
-        }
+        set.AddRange(0x0009, 0x000D); // tab, LF, VT, FF, CR
+        set.AddCodePoint(0x0020);     // space
+        set.AddCodePoint(0x00A0);     // no-break space
+        set.AddCodePoint(0x1680);     // ogham space mark
+        set.AddRange(0x2000, 0x200A); // en quad … hair space
+        set.AddRange(0x2028, 0x2029); // line / paragraph separator
+        set.AddCodePoint(0x202F);     // narrow no-break space
+        set.AddCodePoint(0x205F);     // medium mathematical space
+        set.AddCodePoint(0x3000);     // ideographic space
+        set.AddCodePoint(0xFEFF);     // zero-width no-break space (BOM)
         return set;
     }
 

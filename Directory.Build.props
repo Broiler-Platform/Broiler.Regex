@@ -1,0 +1,13 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)eng/Broiler.Packaging.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Configurations>Debug;Release</Configurations>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageProjectUrl>https://github.com/Broiler-Platform/Broiler.Regex</PackageProjectUrl>
+    <PackageTags>broiler;regex;ecmascript;regexp</PackageTags>
+    <Description>ECMAScript-conformant regular-expression engine for Broiler.JS.</Description>
+  </PropertyGroup>
+</Project>

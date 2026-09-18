@@ -14,8 +14,8 @@ namespace Broiler.Regex.Ast;
 public sealed class CharSet
 {
     private readonly CodePointSet _set = new();
-    private List<string> _strings;
-    private HashSet<string> _members;
+    private List<string>? _strings;
+    private HashSet<string>? _members;
 
     /// <summary>True for a negated class <c>[^…]</c>.</summary>
     public bool Negated { get; set; }
