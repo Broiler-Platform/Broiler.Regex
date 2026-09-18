@@ -32,10 +32,9 @@
     <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == '' And Exists('$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\src\UnicodeProperties\UnicodeProperties.csproj')">$(MSBuildThisFileDirectory)..\..\Broiler.Unicode\</BroilerUnicodeRoot>
     <BroilerUnicodeRoot Condition="'$(BroilerUnicodeRoot)' == ''">$(MSBuildThisFileDirectory)..\Broiler.Unicode\</BroilerUnicodeRoot>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="$(BroilerUnicodeRoot)src\UnicodeProperties\UnicodeProperties.csproj" />
-    <ProjectReference Include="$(BroilerUnicodeRoot)src\UnicodeEmoji.StringProperties\UnicodeEmoji.StringProperties.csproj" />
+    <PackageReference Include="Broiler.Unicode.Properties" Version="0.1.0-preview.1" />
+    <PackageReference Include="UnicodeEmoji.StringProperties" Version="0.1.0-preview.1" />
   </ItemGroup>
 
 </Project>

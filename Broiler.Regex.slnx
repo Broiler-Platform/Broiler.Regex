@@ -1,7 +1,4 @@
 <Solution>
   <Project Path="Broiler.Regex.Tests/Broiler.Regex.Tests.csproj" />
   <Project Path="Broiler.Regex/Broiler.Regex.csproj" />
-  <Project Path="Broiler.Unicode/src/UnicodeCldr.LocaleData/UnicodeCldr.LocaleData.csproj" />
-  <Project Path="Broiler.Unicode/src/UnicodeEmoji.StringProperties/UnicodeEmoji.StringProperties.csproj" />
-  <Project Path="Broiler.Unicode/src/UnicodeProperties/UnicodeProperties.csproj" />
 </Solution>
