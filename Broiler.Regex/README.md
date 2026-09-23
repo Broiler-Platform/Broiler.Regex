@@ -26,7 +26,7 @@ are correct *by construction* rather than by patch.
 > matcher implement the common grammar and the gap cases below. Unicode property
 > escapes (`\p{…}`), `v`-mode class-set expressions and the `Canonicalize` case-fold
 > tables are implemented and resolve against the pinned
-> [Broiler.Unicode](../Broiler.Unicode) data. As of issue #923 the engine is **wired
+> [Broiler.UniCode](https://github.com/Broiler-Platform/Broiler.UniCode) data. As of issue #923 the engine is **wired
 > into `JSRegExp`** behind a conservative gap-feature router
 > (`JSRegExp.TryBuildBroilerForGaps`): only patterns that hit a documented JS/.NET
 > gap are matched here; everything else still uses the .NET translator unchanged —
@@ -86,7 +86,7 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   difference and complement. Every class member kind reduces to one of these, so
   `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand.
 * **`Unicode/UnicodeCharSets.cs`** — the `\d \D \w \W \s \S` sets, `AllCharacters`,
-  and `\p{…}` resolution against the generated `Broiler.Unicode` property tables
+  and `\p{…}` resolution against the generated `Broiler.UniCode` property tables
   (General_Category, binary properties, `Script`, `Script_Extensions`, and the UTS #51
   properties of strings).
 * **`Unicode/CaseFolding.cs`** + **`Unicode/Generated/CaseFoldingData.g.cs`** — both

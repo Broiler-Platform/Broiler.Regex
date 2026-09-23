@@ -14,11 +14,9 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 env:
   PACKAGE_VERSION: ${{ inputs.package-version }}
-  NuGetPackageSourceCredentials_github: Username=${{ github.actor }};Password=${{ secrets.GITHUB_TOKEN }};ValidAuthenticationTypes=Basic
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -66,6 +64,11 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: ./eng/pack.ps1 -Version $env:PACKAGE_VERSION
+
+      - name: Verify package consumer using nuget.org dependencies
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: ./eng/verify-feed.ps1
 
       - name: Upload packages
         if: matrix.os == 'windows-latest'

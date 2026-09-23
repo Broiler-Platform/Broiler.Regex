@@ -79,31 +79,42 @@ function readPackages() {
   return packages;
 }
 
-async function main() {
-  const packages = readPackages();
+// Keep retired-feed releases in a checked-in ledger so removing a feed never
+// resets the sequence. No credentials or access to the retired feed are needed.
+export async function resolveVersion(packages, history, env = process.env, fetchImpl = fetch) {
+  if (!packages.length || new Set(packages.map(p => p.PackageVersion)).size !== 1) {
+    throw new Error('All packages must share the configured preview version.');
+  }
   const configured = packages[0].PackageVersion;
   parsePreview(configured);
   const packageIds = packages.map(p => p.PackageId);
-  const target = process.env.TARGET || 'nuget';
-  if (!['nuget', 'github'].includes(target)) throw new Error(`Unknown target '${target}'.`);
-  // NuGet.org is the baseline even when publishing to GitHub Packages.
-  const published = await readVersions('https://api.nuget.org/v3/index.json', packageIds);
-  if (target === 'github') {
-    const { GITHUB_REPOSITORY_OWNER: owner, GITHUB_ACTOR: actor, GITHUB_TOKEN: token } = process.env;
-    if (!owner || !actor || !token) throw new Error('GitHub feed lookup requires owner, actor, and token.');
-    const authorization = `Basic ${Buffer.from(`${actor}:${token}`).toString('base64')}`;
-    published.push(...await readVersions(
-      `https://nuget.pkg.github.com/${owner}/index.json`, packageIds, { authorization }));
+  if (!history || typeof history !== 'object' || Array.isArray(history)) {
+    throw new Error('Preview version history must map package IDs to version arrays.');
   }
-  const tag = process.env.GITHUB_EVENT_NAME === 'push'
-    ? (process.env.GITHUB_REF || '').replace(/^refs\/tags\//, '') : '';
-  if (process.env.GITHUB_EVENT_NAME === 'push' && !tag.startsWith('v')) {
+  const historical = [];
+  for (const [id, versions] of Object.entries(history)) {
+    if (!Array.isArray(versions)) throw new Error(`Invalid preview version history for ${id}.`);
+    versions.forEach(parsePreview);
+    if (packageIds.some(packageId => packageId.toLowerCase() === id.toLowerCase())) {
+      historical.push(...versions);
+    }
+  }
+  const published = await readVersions('https://api.nuget.org/v3/index.json', packageIds, {}, fetchImpl);
+  const tag = env.GITHUB_EVENT_NAME === 'push'
+    ? (env.GITHUB_REF || '').replace(/^refs\/tags\//, '') : '';
+  if (env.GITHUB_EVENT_NAME === 'push' && !/^refs\/tags\/v/.test(env.GITHUB_REF || '')) {
     throw new Error('Publishing on push requires a v-prefixed preview tag.');
   }
-  const version = chooseVersion(configured, published, {
-    suffix: process.env.VERSION_SUFFIX || '', tag,
+  return chooseVersion(configured, [...published, ...historical], {
+    suffix: env.VERSION_SUFFIX || '', tag,
   });
-  console.log(`Version: ${version} -> ${target} (${packageIds.length} packages; dry-run: ${process.env.DRY_RUN ?? 'true'})`);
+}
+
+async function main() {
+  const packages = readPackages();
+  const history = JSON.parse(readFileSync(resolve(root, 'eng/preview-version-history.json'), 'utf8'));
+  const version = await resolveVersion(packages, history);
+  console.log(`Version: ${version} -> nuget.org (${packages.length} packages; includes retired-feed history; dry-run: ${process.env.DRY_RUN ?? 'true'})`);
   if (process.env.GITHUB_OUTPUT) {
     appendFileSync(process.env.GITHUB_OUTPUT,
       `version=${version}\nversion_args=-p:Version=${version} -p:PackageVersion=${version}\n`);

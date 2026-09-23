@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { chooseVersion, readVersions } from './resolve-preview-version.mjs';
+import { chooseVersion, readVersions, resolveVersion } from './resolve-preview-version.mjs';
 
 test('first publish uses the configured preview; later publishes increment numerically', () => {
   assert.equal(chooseVersion('0.1.0-preview.1', []), '0.1.0-preview.1');
@@ -58,4 +58,51 @@ test('feed failures and malformed responses stop publication', async () => {
     throw new Error('Network unavailable');
   }));
   await assert.rejects(readVersions('https://feed/index.json', ['Core'], {}, async () => Response.json({})));
+});
+
+const packages = [{ PackageId: 'Broiler.Regex', PackageVersion: '0.1.0-preview.1' }];
+
+function nugetFeed(versions) {
+  return async (url, options) => {
+    assert.deepEqual(options.headers, {}); // Public lookup needs no feed credentials.
+    if (url === 'https://api.nuget.org/v3/index.json') return Response.json({
+      resources: [{ '@type': 'PackageBaseAddress/3.0.0', '@id': 'https://api.nuget.org/v3-flatcontainer/' }],
+    });
+    assert.equal(url, 'https://api.nuget.org/v3-flatcontainer/broiler.regex/index.json');
+    return versions === null ? new Response(null, { status: 404 }) : Response.json({ versions });
+  };
+}
+
+test('retired-feed preview.3 plus nuget.org preview.2 resolves cumulatively to preview.4', async () => {
+  const history = { 'Broiler.Regex': ['0.1.0-preview.3'] };
+  assert.equal(await resolveVersion(packages, history, {}, nugetFeed(['0.1.0-preview.2'])), '0.1.0-preview.4');
+  for (const env of [
+    { VERSION_SUFFIX: 'preview.3' },
+    { GITHUB_EVENT_NAME: 'push', GITHUB_REF: 'refs/tags/v0.1.0-preview.3' },
+  ]) {
+    await assert.rejects(resolveVersion(packages, history, env, nugetFeed(['0.1.0-preview.2'])), /at least '0.1.0-preview.4'/);
+  }
+});
+
+test('nuget.org and case-insensitive history contribute only to their own package and release line', async () => {
+  const history = { 'broiler.regex': ['0.1.0-preview.3', '0.2.0-preview.99'], Other: ['0.1.0-preview.99'] };
+  assert.equal(await resolveVersion(packages, history, {}, nugetFeed(null)), '0.1.0-preview.4');
+  assert.equal(await resolveVersion(packages, history, {}, nugetFeed(['0.1.0-preview.10'])), '0.1.0-preview.11');
+  assert.equal(await resolveVersion(packages, {}, {}, nugetFeed(null)), '0.1.0-preview.1');
+});
+
+test('explicit suffixes and tags must respect the cumulative sequence', async () => {
+  const history = { 'Broiler.Regex': ['0.1.0-preview.3'] };
+  const env = { GITHUB_EVENT_NAME: 'push', GITHUB_REF: 'refs/tags/v0.1.0-preview.4', VERSION_SUFFIX: 'preview.4' };
+  assert.equal(await resolveVersion(packages, history, env, nugetFeed([])), '0.1.0-preview.4');
+  await assert.rejects(resolveVersion(packages, history, { ...env, VERSION_SUFFIX: 'preview.5' }, nugetFeed([])), /must agree/);
+  await assert.rejects(resolveVersion(packages, history, { ...env, GITHUB_REF: 'refs/heads/v0.1.0-preview.4' }, nugetFeed([])), /preview tag/);
+});
+
+test('invalid history and feed failures cannot silently reset the sequence', async () => {
+  for (const history of [null, [], { 'Broiler.Regex': '0.1.0-preview.3' }, { 'Broiler.Regex': ['typo'] }]) {
+    await assert.rejects(resolveVersion(packages, history, {}, nugetFeed([])));
+  }
+  await assert.rejects(resolveVersion(packages, { 'Broiler.Regex': ['0.1.0-preview.3'] }, {}, async () =>
+    new Response(null, { status: 503 })), /HTTP 503/);
 });

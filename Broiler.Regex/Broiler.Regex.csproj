@@ -18,8 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Broiler.Unicode.Properties" />
-    <PackageReference Include="UnicodeEmoji.StringProperties" />
+    <PackageReference Include="Broiler.UniCode.Properties" />
+    <PackageReference Include="Broiler.UniCode.Emoji.StringProperties" />
   </ItemGroup>
 
 </Project>

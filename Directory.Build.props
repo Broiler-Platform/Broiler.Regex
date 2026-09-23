@@ -6,8 +6,8 @@
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release</Configurations>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PackageProjectUrl>https://github.com/Broiler-Platform/Broiler.Regex</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Broiler-Platform/Broiler.RegEx</PackageProjectUrl>
     <PackageTags>broiler;regex;ecmascript;regexp</PackageTags>
-    <Description>ECMAScript-conformant regular-expression engine for Broiler.JS.</Description>
+    <Description>Experimental .NET 10 regular-expression engine implementing ECMAScript matching semantics for Broiler.JS. Preview with documented limitations.</Description>
   </PropertyGroup>
 </Project>
