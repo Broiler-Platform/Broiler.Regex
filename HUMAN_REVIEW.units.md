@@ -86,19 +86,19 @@ are listed in `CODE-ASSURANCE.md`.
 
 | File | Units | Relevant | Exempt | Unverified | IP risk | Security risk | Criteria |
 |---|---:|---:|---:|---:|---|---|---:|
-| `Broiler.Regex/Ast/CharSet.cs` | 27 | 14 | 13 | 14 | Low | Medium | 7/0 |
+| `Broiler.Regex/Ast/CharSet.cs` | 27 | 14 | 13 | 14 | Low | High | 8/2 |
 | `Broiler.Regex/Ast/CodePointSet.cs` | 21 | 17 | 4 | 17 | Low | Medium | 12/0 |
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
 | `Broiler.Regex/BroilerRegex.cs` | 11 | 6 | 5 | 6 | Low | High | 6/6 |
 | `Broiler.Regex/Matching/MatchState.cs` | 15 | 8 | 7 | 8 | Low | Medium | 8/0 |
-| `Broiler.Regex/Matching/Matcher.cs` | 62 | 44 | 18 | 44 | Low | High | 35/13 |
+| `Broiler.Regex/Matching/Matcher.cs` | 62 | 44 | 18 | 44 | Low | High | 35/29 |
 | `Broiler.Regex/Matching/RegexMatch.cs` | 17 | 4 | 13 | 4 | None | Low | 2/0 |
 | `Broiler.Regex/Parsing/RegexParser.cs` | 74 | 59 | 15 | 59 | Low | High | 57/49 |
-| `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 3/1 |
+| `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
 | `Broiler.Regex/RegexOverflowException.cs` | 2 | 2 | 0 | 2 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
-| `Broiler.Regex/Unicode/CaseFolding.cs` | 21 | 16 | 5 | 16 | Low | High | 14/1 |
-| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 29 | 27 | 2 | 27 | Low | High | 23/2 |
+| `Broiler.Regex/Unicode/CaseFolding.cs` | 21 | 16 | 5 | 16 | Low | High | 15/4 |
+| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 29 | 27 | 2 | 27 | Low | High | 24/4 |
 
 ## 7. Decisions Recorded
 
@@ -115,6 +115,10 @@ The units at the top of the security vocabulary, with the observation that would
 one wrong and the human line it carries. The set is read from the assessments rather than
 written out, so a unit that becomes `High` joins it at the next generation.
 
+- `Broiler.Regex.Ast.CharSet` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=none cited, `BD9DC9`, PENDING
+  - Falsified if: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
+- `Broiler.Regex.Ast.CharSet.AddRange(int, int)` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=none cited, `13A512`, PENDING
+  - Falsified if: a class range written high to low, such as [z-a], is added to the set instead of throwing RegexSyntaxException
 - `Broiler.Regex.BroilerRegex` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `1B83F8`, PENDING
   - Falsified if: two threads making their first Match calls at the same time on one instance built from [zab] both normalize the class's out-of-order range list in place, and one throws or misses a match that a single thread finds
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, string?)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `BD448B`, PENDING
@@ -122,9 +126,9 @@ written out, so a unit that becomes `High` joins it at the next generation.
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `7C6C9D`, PENDING
   - Falsified if: a pattern of 50,000 nested opening parentheses ends the process with a stack overflow inside RegexParser.Parse instead of raising a catchable exception
 - `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `EBD5A7`, PENDING
-  - Falsified if: a subject whose match at index 0 needs more than 10,000,000 steps is reported at a later index, or as RegexMatch.Empty, instead of at index 0
+  - Falsified if: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `FC8D95`, PENDING
-  - Falsified if: IsMatch returns false for a subject that does match, because every start position's 10,000,000-step allowance ran out before the match completed
+  - Falsified if: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start
 - `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `5971A9`, PENDING
   - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
 - `Broiler.Regex.Matching.Matcher` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=ECMA-262 s22.2.2, `3E4382`, PENDING
@@ -137,6 +141,8 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a group nesting depth that the parser accepts overflows the native stack inside Compile, which has no TryEnsureSufficientExecutionStack check, instead of raising RegexOverflowException
 - `Broiler.Regex.Matching.Matcher.CompileSequence(IReadOnlyList<RegexNode>, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3A255D`, PENDING
   - Falsified if: a pattern of 100_000 consecutive \b assertions recurses once per term through the continuation chain and ends the process with a stack overflow instead of raising RegexOverflowException
+- `Broiler.Regex.Matching.Matcher.CompileAtomRun(CharPredicate[])` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `6E2087`, PENDING
+  - Falsified if: /abc/ on 'ab' throws IndexOutOfRangeException instead of failing when the subject ends partway through the run
 - `Broiler.Regex.Matching.Matcher.CompileDisjunction(IReadOnlyList<RegexNode>, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3D9C19`, PENDING
   - Falsified if: a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
 - `Broiler.Regex.Matching.Matcher.CompileGroup(GroupNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `C2F071`, PENDING
@@ -147,12 +153,42 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the empty alternative of /(?:a|)*b/ on 'c' is accepted as an iteration, so the attempt runs until the 10_000_000-step budget ends it instead of failing after a few steps
 - `Broiler.Regex.Matching.Matcher.TryMatchBodyNth(CompiledMatcher, MatchState, int, out MatchState)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `C40A56`, PENDING
   - Falsified if: for the body (?:a|ab) at the start of 'ab', a skip of 1 yields a state at index 1 instead of 2, or a skip of 2 returns true
+- `Broiler.Regex.Matching.Matcher.TryGetSingleCharPredicate(RegexNode, Flags, out CharPredicate?)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `39E79B`, PENDING
+  - Falsified if: /[\q{abc}]*/v on 'abc' matches only the empty string because a class with string members was treated as a single-code-point body
 - `Broiler.Regex.Matching.Matcher.CompileSingleCharQuantifier(CharPredicate, int, int, bool, Direction)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `CC68C7`, PENDING
   - Falsified if: a greedy /a*/ on a subject of 10_000_001 'a' characters reports a match of length 10_000_000, because budget exhaustion ends the scan early instead of failing the attempt
+- `Broiler.Regex.Matching.Matcher.StepBack(string, Direction, int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `8ECA52`, PENDING
+  - Falsified if: under the u flag, with a match started on the low half of a surrogate pair, stepping back from index 2 of 😀 returns 0, before the repeat's own start at 1
+- `Broiler.Regex.Matching.Matcher.TryReadMatching(string, Direction, int, CharPredicate, out int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `5EC77A`, PENDING
+  - Falsified if: under the u flag, a backward read from index 2 of 😀 moves the cursor to 1 instead of 0
+- `Broiler.Regex.Matching.Matcher.CompileBackreference(BackreferenceNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `66411A`, PENDING
+  - Falsified if: /\1(a)/ on 'a' fails, although a back-reference to a group that has not captured yet matches the empty string
+- `Broiler.Regex.Matching.Matcher.CompileAnchor(AnchorKind, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `2187F5`, PENDING
+  - Falsified if: without the m flag, /^b/ matches 'a\nb' at index 2
 - `Broiler.Regex.Matching.Matcher.CompileLookaround(LookaroundNode, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `60FAD8`, PENDING
   - Falsified if: a positive look-behind leaves the cursor where its body ended, so /(?<=ab)c/ fails on 'abc' or reports a match index other than 2
+- `Broiler.Regex.Matching.Matcher.CompileChar(int, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `43E20F`, PENDING
+  - Falsified if: under the u flag, /\u{1F600}$/u fails on the surrogate pair 😀 because the character matcher advances by one UTF-16 unit instead of two
+- `Broiler.Regex.Matching.Matcher.CompileAnyChar(Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3AB966`, PENDING
+  - Falsified if: without the s flag, /./ matches U+2028 LINE SEPARATOR
+- `Broiler.Regex.Matching.Matcher.CompileCharClass(CharSet, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `A79481`, PENDING
+  - Falsified if: under the u flag, /^[^a]$/u fails on the surrogate pair 😀 because the class consumes only its high half
 - `Broiler.Regex.Matching.Matcher.CompileCharClassWithStrings(CharSet, Direction, bool, bool)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `6F1EA6`, PENDING
   - Falsified if: /[\q{abc|ab}]c/v fails on 'abc' because the class does not fall back from its longest string member to a shorter one
+- `Broiler.Regex.Matching.Matcher.TryMatchLiteral(MatchState, Direction, string, bool, bool, out int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3693E8`, PENDING
+  - Falsified if: in a look-behind, a string member longer than the text before the cursor, such as \q{abc} at index 2, is read from a negative index instead of failing
+- `Broiler.Regex.Matching.Matcher.ReadCodePoint(MatchState, Direction, out int, out int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `A65667`, PENDING
+  - Falsified if: a forward read at the end of the subject, or a backward read at index 0, reports success
+- `Broiler.Regex.Matching.Matcher.CodePointAt(string, int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `0722EA`, PENDING
+  - Falsified if: without the u flag, a surrogate pair is read as one code point of width 2
+- `Broiler.Regex.Matching.Matcher.CodePointBefore(string, int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `B85E41`, PENDING
+  - Falsified if: under the u flag, the code point before index 2 of 😀 is returned as U+DE00 with width 1 instead of U+1F600 with width 2
+- `Broiler.Regex.Matching.Matcher.IsWordBoundary(MatchState, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `645B40`, PENDING
+  - Falsified if: \b reports a boundary at index 0 of an empty subject
+- `Broiler.Regex.Matching.Matcher.RegionEquals(string, int, string, int, int, bool, bool)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `662E7A`, PENDING
+  - Falsified if: a region whose last unit is the high half of a surrogate pair compares equal although the pair's low half lies past the region's end
+- `Broiler.Regex.Matching.Matcher.ReadAt(string, int, bool)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `BA00B4`, PENDING
+  - Falsified if: under the u flag, a high surrogate at the last index of the subject reads input[pos + 1] and throws IndexOutOfRangeException
 - `Broiler.Regex.Parsing.RegexParser` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `0CA2F0`, PENDING
   - Falsified if: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
 - `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, out int, out IReadOnlyDictionary<string, int>)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=none cited, `3E8A2B`, PENDING
@@ -251,14 +287,26 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: it returns a digit value for a character outside 0-9, a-f and A-F; the neighbours are '/', ':', '@', 'G', '`' and 'g'
 - `Broiler.Regex.Parsing.RegexParser.IsSyntaxChar(char)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `4387A7`, PENDING
   - Falsified if: it returns true for '/', '-' or ',', or false for one of ^ $ \ . * + ? ( ) [ ] { } |
+- `Broiler.Regex.RegexFlagsParser` in `Broiler.Regex/RegexFlags.cs` - Security=High, Spec=none cited, `8E3CEF`, PENDING
+  - Falsified if: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
 - `Broiler.Regex.RegexFlagsParser.Parse(string?)` in `Broiler.Regex/RegexFlags.cs` - Security=High, Spec=ECMA-262 s22.2.3.1, `A19067`, PENDING
   - Falsified if: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
+- `Broiler.Regex.Unicode.CaseFolding` in `Broiler.Regex/Unicode/CaseFolding.cs` - Security=High, Spec=none cited, `E899C9`, PENDING
+  - Falsified if: two threads calling Orbit(0x0073, unicode: true) at the same moment, before the simple table's orbit map is built, get lists that differ, one of them lacking U+017F
+- `Broiler.Regex.Unicode.CaseFolding.Orbit(int, bool)` in `Broiler.Regex/Unicode/CaseFolding.cs` - Security=High, Spec=none cited, `139B38`, PENDING
+  - Falsified if: Orbit(0x006B, unicode: true) omits U+212A KELVIN SIGN, although its simple case fold is 0x006B
+- `Broiler.Regex.Unicode.CaseFolding.FoldTable` in `Broiler.Regex/Unicode/CaseFolding.cs` - Security=High, Spec=none cited, `F228E1`, PENDING
+  - Falsified if: _orbits is assigned anywhere other than inside lock (_gate)
 - `Broiler.Regex.Unicode.CaseFolding.FoldTable.Orbit(int)` in `Broiler.Regex/Unicode/CaseFolding.cs` - Security=High, Spec=none cited, `6ADA75`, PENDING
   - Falsified if: a thread that calls Orbit while another thread is still inside the first BuildOrbits gets back an orbit missing members that a later call returns
+- `Broiler.Regex.Unicode.UnicodeCharSets` in `Broiler.Regex/Unicode/UnicodeCharSets.cs` - Security=High, Spec=none cited, `7E3895`, PENDING
+  - Falsified if: ResolveProperty("General_Category", "Lu") and ResolveProperty("Lu") return code-point sets that differ
 - `Broiler.Regex.Unicode.UnicodeCharSets.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/UnicodeCharSets.cs` - Security=High, Spec=none cited, `3B515A`, PENDING
   - Falsified if: a loosely spelled key such as \p{GC=Lu} or \p{general_category=Lu} resolves to a set instead of returning null, though ECMAScript accepts only General_Category, gc, Script, sc, Script_Extensions and scx
 - `Broiler.Regex.Unicode.UnicodeCharSets.ResolveStringProperty(EmojiSequenceProperties)` in `Broiler.Regex/Unicode/UnicodeCharSets.cs` - Security=High, Spec=none cited, `18D9C8`, PENDING
   - Falsified if: the cached match's CodePoints set is still un-normalized when the lock is released, so two threads first compiling [\p{RGI_Emoji}] under v both run CodePointSet.Normalize on that shared set outside the lock
+- `Broiler.Regex.Unicode.UnicodeCharSets.Normalize(string)` in `Broiler.Regex/Unicode/UnicodeCharSets.cs` - Security=High, Spec=none cited, `0FBA70`, PENDING
+  - Falsified if: with the current culture set to tr-TR, the key "SCRIPT" normalizes to something other than "script"
 
 ## 10. What This Record Does Not Say
 

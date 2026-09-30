@@ -77,7 +77,7 @@ public sealed class CodePointSet
         }
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=4; Fingerprint=23B869
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=23B869
     // Broiler-Human:        PENDING
     public bool IsEmpty
     {

@@ -9,7 +9,7 @@
 // Human-reviewed:   0/44
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         35/13
+// Criteria:         35/29
 // Resource impact:  8/10 max
 // Unverified:       44
 //
@@ -273,7 +273,7 @@ internal sealed class Matcher
     /// all of them and hands off to the continuation once, or fails — with no per-atom
     /// closure and no intermediate <see cref="MatchState"/>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=6E2087
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=6E2087
     // Broiler-Falsified-If: /abc/ on 'ab' throws IndexOutOfRangeException instead of failing when the subject ends partway through the run
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileAtomRun(CharPredicate[] predicates)
@@ -535,7 +535,7 @@ internal sealed class Matcher
     /// can iterate it instead of recursing. A class carrying string members is not
     /// eligible: it is an alternation, not a single-character matcher.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=39E79B
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=39E79B
     // Broiler-Falsified-If: /[\q{abc}]*/v on 'abc' matches only the empty string because a class with string members was treated as a single-code-point body
     // Broiler-Human:        PENDING
     private bool TryGetSingleCharPredicate(RegexNode child, Flags flags, [NotNullWhen(true)] out CharPredicate? predicate)
@@ -647,7 +647,7 @@ internal sealed class Matcher
 
     /// <summary>Reverses one single-code-point iteration: the cursor before the code point
     /// the body consumed at <paramref name="pos"/> in <paramref name="dir"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=8ECA52
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=8ECA52
     // Broiler-Falsified-If: under the u flag, with a match started on the low half of a surrogate pair, stepping back from index 2 of 😀 returns 0, before the repeat's own start at 1
     // Broiler-Human:        PENDING
     private int StepBack(string input, Direction dir, int pos)
@@ -661,7 +661,7 @@ internal sealed class Matcher
     /// <see cref="ReadCodePoint"/> but works from an explicit position so the iterative
     /// quantifier need not thread a <see cref="MatchState"/> through the scan.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=5EC77A
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=5EC77A
     // Broiler-Falsified-If: under the u flag, a backward read from index 2 of 😀 moves the cursor to 1 instead of 0
     // Broiler-Human:        PENDING
     private bool TryReadMatching(string input, Direction dir, int pos, CharPredicate predicate, out int nextPos)
@@ -700,7 +700,7 @@ internal sealed class Matcher
         }
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=66411A
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=66411A
     // Broiler-Falsified-If: /\1(a)/ on 'a' fails, although a back-reference to a group that has not captured yet matches the empty string
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileBackreference(BackreferenceNode br, Direction dir, Flags flags)
@@ -751,7 +751,7 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=2187F5
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=2187F5
     // Broiler-Falsified-If: without the m flag, /^b/ matches 'a\nb' at index 2
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileAnchor(AnchorKind kind, Flags flags)
@@ -794,7 +794,7 @@ internal sealed class Matcher
 
     // ----- Atom matchers ------------------------------------------------------
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=43E20F
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=43E20F
     // Broiler-Falsified-If: under the u flag, /\u{1F600}$/u fails on the surrogate pair 😀 because the character matcher advances by one UTF-16 unit instead of two
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileChar(int codePoint, Direction dir, Flags flags)
@@ -810,7 +810,7 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=3AB966
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=3AB966
     // Broiler-Falsified-If: without the s flag, /./ matches U+2028 LINE SEPARATOR
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileAnyChar(Direction dir, Flags flags)
@@ -826,7 +826,7 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=A79481
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=A79481
     // Broiler-Falsified-If: under the u flag, /^[^a]$/u fails on the surrogate pair 😀 because the class consumes only its high half
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileCharClass(CharSet set, Direction dir, Flags flags)
@@ -880,7 +880,7 @@ internal sealed class Matcher
     }
 
     /// <summary>Matches a literal string at the cursor in <paramref name="dir"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=3693E8
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=3693E8
     // Broiler-Falsified-If: in a look-behind, a string member longer than the text before the cursor, such as \q{abc} at index 2, is read from a negative index instead of failing
     // Broiler-Human:        PENDING
     private static bool TryMatchLiteral(MatchState s, Direction dir, string literal,
@@ -909,7 +909,7 @@ internal sealed class Matcher
     }
 
     /// <summary>Reads the code point in <paramref name="dir"/>, yielding the next position.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=A65667
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=A65667
     // Broiler-Falsified-If: a forward read at the end of the subject, or a backward read at index 0, reports success
     // Broiler-Human:        PENDING
     private bool ReadCodePoint(MatchState s, Direction dir, out int codePoint, out int nextPos)
@@ -940,13 +940,13 @@ internal sealed class Matcher
 
     // ----- Code-point / character helpers ------------------------------------
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=0722EA
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=0722EA
     // Broiler-Falsified-If: without the u flag, a surrogate pair is read as one code point of width 2
     // Broiler-Human:        PENDING
     private (int cp, int width) CodePointAt(string input, int pos)
         => ReadAt(input, pos, _unicode);
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=B85E41
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=B85E41
     // Broiler-Falsified-If: under the u flag, the code point before index 2 of 😀 is returned as U+DE00 with width 1 instead of U+1F600 with width 2
     // Broiler-Human:        PENDING
     private (int cp, int width) CodePointBefore(string input, int pos)
@@ -965,7 +965,7 @@ internal sealed class Matcher
     private static bool IsLineTerminator(int cp)
         => cp is 0x000A or 0x000D or 0x2028 or 0x2029;
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=645B40
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=645B40
     // Broiler-Falsified-If: \b reports a boundary at index 0 of an empty subject
     // Broiler-Human:        PENDING
     private bool IsWordBoundary(MatchState s, Flags flags)
@@ -980,13 +980,13 @@ internal sealed class Matcher
     /// code point that folds into the basic set — so <c>ſ</c> and <c>K</c> are word
     /// characters for <c>\b</c> exactly when they are members of <c>\w</c>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=AF970C
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=AF970C
     // Broiler-Falsified-If: without the u flag, /\b/i treats U+017F LATIN SMALL LETTER LONG S as a word character
     // Broiler-Human:        PENDING
     private bool IsWordChar(int cp, Flags flags) => UnicodeCharSets.IsWord(cp, flags.IgnoreCase, _unicode);
 
     /// <summary>Code-point-aware, case-fold-aware comparison of two equal-length regions.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=662E7A
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=662E7A
     // Broiler-Falsified-If: a region whose last unit is the high half of a surrogate pair compares equal although the pair's low half lies past the region's end
     // Broiler-Human:        PENDING
     private static bool RegionEquals(string a, int aStart, string b, int bStart, int len,
@@ -1006,7 +1006,7 @@ internal sealed class Matcher
         return ai == aEnd;
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=BA00B4
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=BA00B4
     // Broiler-Falsified-If: under the u flag, a high surrogate at the last index of the subject reads input[pos + 1] and throws IndexOutOfRangeException
     // Broiler-Human:        PENDING
     private static (int cp, int width) ReadAt(string input, int pos, bool unicode)

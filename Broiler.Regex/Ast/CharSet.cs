@@ -8,8 +8,8 @@
 // Exempt:           13
 // Human-reviewed:   0/14
 // IP risk:          Low
-// Security risk:    Medium
-// Criteria:         7/0
+// Security risk:    High
+// Criteria:         8/2
 // Resource impact:  4/10 max
 // Unverified:       14
 //
@@ -28,7 +28,7 @@ namespace Broiler.Regex.Ast;
 /// reduces to one <see cref="CodePointSet"/>, optionally negated as a whole
 /// (ECMA-262 §22.2.1 CharacterClass / ClassSetExpression).
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=BD9DC9
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=BD9DC9
 // Broiler-Falsified-If: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
 // Broiler-Human:        PENDING
 public sealed class CharSet
@@ -91,11 +91,11 @@ public sealed class CharSet
     // Broiler-Human:        PENDING
     public bool MatchesEmptyString => _members?.Contains("") == true;
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=547200
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=547200
     // Broiler-Human:        PENDING
     public void AddCodePoint(int codePoint) => _set.AddCodePoint(codePoint);
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=13A512
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=13A512
     // Broiler-Falsified-If: a class range written high to low, such as [z-a], is added to the set instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public void AddRange(int lo, int hi)
@@ -111,7 +111,8 @@ public sealed class CharSet
     public void AddEscape(ClassEscape escape, bool ignoreCase, bool unicode)
         => _set.AddAll(UnicodeCharSets.EscapeSet(escape, ignoreCase, unicode));
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=4; Fingerprint=597BF4
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=597BF4
+    // Broiler-Falsified-If: two threads first compiling [\p{RGI_Emoji}] under v at the same moment both normalize the cached property's code-point set in place through AddSet, and one throws or builds a class missing a code point
     // Broiler-Human:        PENDING
     public void AddSet(CodePointSet set) => _set.AddAll(set);
 

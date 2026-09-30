@@ -9,7 +9,7 @@
 // Human-reviewed:   0/27
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         23/2
+// Criteria:         24/4
 // Resource impact:  3/10 max
 // Unverified:       27
 //
@@ -33,7 +33,8 @@ namespace Broiler.Regex.Unicode;
 /// generated UCD revision the JavaScript layer's translator reads — so both engines
 /// answer one set for a given property name.
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=7E3895
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=7E3895
+// Broiler-Falsified-If: ResolveProperty("General_Category", "Lu") and ResolveProperty("Lu") return code-point sets that differ
 // Broiler-Human:        PENDING
 public static class UnicodeCharSets
 {
@@ -248,7 +249,7 @@ public static class UnicodeCharSets
         return set;
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=0FBA70
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=0FBA70
     // Broiler-Falsified-If: with the current culture set to tr-TR, the key "SCRIPT" normalizes to something other than "script"
     // Broiler-Human:        PENDING
     private static string Normalize(string s)

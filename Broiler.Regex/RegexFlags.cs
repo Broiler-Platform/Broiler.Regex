@@ -9,7 +9,7 @@
 // Human-reviewed:   0/4
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         3/1
+// Criteria:         4/2
 // Resource impact:  1/10 max
 // Unverified:       4
 //
@@ -61,7 +61,8 @@ public enum RegexFlags
 /// + §22.2.6). Each flag may appear at most once; <c>u</c> and <c>v</c> are
 /// mutually exclusive; an unknown letter is a syntax error.
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=8E3CEF
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=8E3CEF
+// Broiler-Falsified-If: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
 // Broiler-Human:        PENDING
 public static class RegexFlagsParser
 {

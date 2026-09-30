@@ -9,7 +9,7 @@
 // Human-reviewed:   0/16
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         14/1
+// Criteria:         15/4
 // Resource impact:  2/10 max
 // Unverified:       16
 //
@@ -40,7 +40,8 @@ namespace Broiler.Regex.Unicode;
 /// disagreed with <c>scf</c> wherever a script's uppercase and folding directions
 /// differ (Cherokee, Deseret, Adlam, Vithkuqi, Garay, Old Hungarian, Warang Citi).
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=E899C9
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=E899C9
+// Broiler-Falsified-If: two threads calling Orbit(0x0073, unicode: true) at the same moment, before the simple table's orbit map is built, get lists that differ, one of them lacking U+017F
 // Broiler-Human:        PENDING
 public static class CaseFolding
 {
@@ -80,7 +81,7 @@ public static class CaseFolding
     /// other way: the orbit is small (rarely more than four code points) and membership
     /// of each orbit element is a plain range lookup.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=139B38
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=2; Fingerprint=139B38
     // Broiler-Falsified-If: Orbit(0x006B, unicode: true) omits U+212A KELVIN SIGN, although its simple case fold is 0x006B
     // Broiler-Human:        PENDING
     public static IReadOnlyList<int> Orbit(int canonical, bool unicode)
@@ -122,7 +123,7 @@ public static class CaseFolding
     /// One generated fold table: runs of <c>lo..hi</c> that all shift by the same delta,
     /// searched forward, plus the inverse (orbit) map built on first use.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=F228E1
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=F228E1
     // Broiler-Falsified-If: _orbits is assigned anywhere other than inside lock (_gate)
     // Broiler-Human:        PENDING
     private sealed class FoldTable

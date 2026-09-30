@@ -74,7 +74,7 @@ public sealed class BroilerRegex
     /// <see cref="RegexMatch.Empty"/> when there is no match.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=EBD5A7
-    // Broiler-Falsified-If: a subject whose match at index 0 needs more than 10,000,000 steps is reported at a later index, or as RegexMatch.Empty, instead of at index 0
+    // Broiler-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
     // Broiler-Human:        PENDING
     public RegexMatch Match(string input, int start = 0)
     {
@@ -86,7 +86,7 @@ public sealed class BroilerRegex
 
     /// <summary>True when the pattern matches anywhere at or after <paramref name="start"/>.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=FC8D95
-    // Broiler-Falsified-If: IsMatch returns false for a subject that does match, because every start position's 10,000,000-step allowance ran out before the match completed
+    // Broiler-Falsified-If: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start
     // Broiler-Human:        PENDING
     public bool IsMatch(string input, int start = 0) => Match(input, start).Success;
 
