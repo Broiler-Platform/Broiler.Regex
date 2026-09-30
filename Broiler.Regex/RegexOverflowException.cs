@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2026 Broiler Platform contributors
+// SPDX-License-Identifier: Apache-2.0
+//
+// Broiler Code Assurance
+// ----------------------
+// Relevant units:   2
+// Annotated:        2/2
+// Exempt:           0
+// Human-reviewed:   0/2
+// IP risk:          Low
+// Security risk:    Low
+// Criteria:         0/0
+// Resource impact:  0/10 max
+// Unverified:       2
+//
+// GENERATED - DO NOT EDIT MANUALLY
+
 using System;
 
 namespace Broiler.Regex;
@@ -18,8 +35,12 @@ namespace Broiler.Regex;
 /// than silently returning, because the correct answer for a deep-but-valid match still
 /// exists and can be produced by an iterative engine.
 /// </remarks>
+// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=C1DF8E
+// Broiler-Human:        PENDING
 public sealed class RegexOverflowException : Exception
 {
+    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=A639B9
+    // Broiler-Human:        PENDING
     public RegexOverflowException()
         : base("Regular-expression match exceeded the available stack depth.")
     {
