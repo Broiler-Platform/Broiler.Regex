@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2026 Broiler Platform contributors
+// SPDX-License-Identifier: Apache-2.0
+//
+// Broiler Code Assurance
+// ----------------------
+// Relevant units:   14
+// Annotated:        14/14
+// Exempt:           13
+// Human-reviewed:   0/14
+// IP risk:          Low
+// Security risk:    Medium
+// Criteria:         7/0
+// Resource impact:  4/10 max
+// Unverified:       14
+//
+// GENERATED - DO NOT EDIT MANUALLY
+
 using System;
 using System.Collections.Generic;
 using Broiler.Regex.Unicode;
@@ -11,6 +28,9 @@ namespace Broiler.Regex.Ast;
 /// reduces to one <see cref="CodePointSet"/>, optionally negated as a whole
 /// (ECMA-262 §22.2.1 CharacterClass / ClassSetExpression).
 /// </summary>
+// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=BD9DC9
+// Broiler-Falsified-If: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
+// Broiler-Human:        PENDING
 public sealed class CharSet
 {
     private readonly CodePointSet _set = new();
@@ -46,14 +66,20 @@ public sealed class CharSet
     public bool CaseFolded { get; set; }
 
     /// <summary>The code points this class accepts, before <see cref="Negated"/>.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=280671
+    // Broiler-Human:        PENDING
     public CodePointSet CodePoints => _set;
 
     /// <summary>
     /// Multi-code-point members contributed by <c>\q{…}</c> or by a property of strings
     /// (<c>\p{RGI_Emoji}</c>), longest first. Empty for every non-<c>v</c> class.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E7AA94
+    // Broiler-Human:        PENDING
     public IReadOnlyList<string> Strings => _strings ?? (IReadOnlyList<string>)Array.Empty<string>();
 
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A23CDD
+    // Broiler-Human:        PENDING
     public bool HasStrings => _strings is { Count: > 0 };
 
     /// <summary>
@@ -61,10 +87,17 @@ public sealed class CharSet
     /// It is the one character class that matches without consuming a code point, which
     /// the quantifier's empty-iteration guard has to know about.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=032173
+    // Broiler-Human:        PENDING
     public bool MatchesEmptyString => _members?.Contains("") == true;
 
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=547200
+    // Broiler-Human:        PENDING
     public void AddCodePoint(int codePoint) => _set.AddCodePoint(codePoint);
 
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=13A512
+    // Broiler-Falsified-If: a class range written high to low, such as [z-a], is added to the set instead of throwing RegexSyntaxException
+    // Broiler-Human:        PENDING
     public void AddRange(int lo, int hi)
     {
         if (lo > hi)
@@ -72,9 +105,14 @@ public sealed class CharSet
         _set.AddRange(lo, hi);
     }
 
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=BAD743
+    // Broiler-Falsified-If: two threads first parsing \w under the i and u flags at the same moment both sort the shared static folded word set in place inside Clone, and one receives a copy with a lost or duplicated range
+    // Broiler-Human:        PENDING
     public void AddEscape(ClassEscape escape, bool ignoreCase, bool unicode)
         => _set.AddAll(UnicodeCharSets.EscapeSet(escape, ignoreCase, unicode));
 
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=4; Fingerprint=597BF4
+    // Broiler-Human:        PENDING
     public void AddSet(CodePointSet set) => _set.AddAll(set);
 
     /// <summary>
@@ -82,6 +120,9 @@ public sealed class CharSet
     /// the code-point set, per <c>ClassStringDisjunction</c>'s handling of a single
     /// <c>ClassSetCharacter</c>.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=2AADD1
+    // Broiler-Falsified-If: a string holding exactly one surrogate pair, such as U+1F600, lands in Strings instead of in the code-point set
+    // Broiler-Human:        PENDING
     public void AddString(string value)
     {
         if (CodePointLength(value) == 1)
@@ -97,6 +138,9 @@ public sealed class CharSet
     }
 
     /// <summary>Orders the string members longest first, as leftmost-longest matching needs.</summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=328D46
+    // Broiler-Falsified-If: for \q{ab|abc} the sorted Strings list puts "ab" ahead of "abc", so the shorter alternative is tried first
+    // Broiler-Human:        PENDING
     public void SortStrings()
         => _strings?.Sort(static (a, b) =>
         {
@@ -108,6 +152,9 @@ public sealed class CharSet
     /// Tests whether <paramref name="codePoint"/> is a member of this class
     /// (§22.2.2.10 CharacterSetMatcher).
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=091D6A
+    // Broiler-Falsified-If: a CharSet with both CaseFolded and Negated set answers as if it were not negated, because the CaseFolded branch returns before Negated is applied
+    // Broiler-Human:        PENDING
     public bool Contains(int codePoint, bool ignoreCase, bool unicode)
     {
         // A `v`-mode class folded its operands during construction and complemented the
@@ -137,6 +184,9 @@ public sealed class CharSet
         return Negated ? !member : member;
     }
 
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=6C9E67
+    // Broiler-Falsified-If: an unpaired high surrogate followed by an ASCII letter is counted as one code point instead of two
+    // Broiler-Human:        PENDING
     private static int CodePointLength(string value)
     {
         var count = 0;
@@ -151,6 +201,8 @@ public sealed class CharSet
 }
 
 /// <summary>A built-in character-class escape usable inside or outside a class.</summary>
+// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=C35DA6
+// Broiler-Human:        PENDING
 public enum ClassEscape
 {
     /// <summary><c>\d</c></summary>

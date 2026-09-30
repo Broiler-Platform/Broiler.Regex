@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2026 Broiler Platform contributors
+// SPDX-License-Identifier: Apache-2.0
+//
+// Broiler Code Assurance
+// ----------------------
+// Relevant units:   16
+// Annotated:        16/16
+// Exempt:           5
+// Human-reviewed:   0/16
+// IP risk:          Low
+// Security risk:    High
+// Criteria:         14/1
+// Resource impact:  2/10 max
+// Unverified:       16
+//
+// GENERATED - DO NOT EDIT MANUALLY
+
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +40,8 @@ namespace Broiler.Regex.Unicode;
 /// disagreed with <c>scf</c> wherever a script's uppercase and folding directions
 /// differ (Cherokee, Deseret, Adlam, Vithkuqi, Garay, Old Hungarian, Warang Citi).
 /// </remarks>
+// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=E899C9
+// Broiler-Human:        PENDING
 public static class CaseFolding
 {
     /// <summary>
@@ -31,6 +50,9 @@ public static class CaseFolding
     /// equal, and the mapping is idempotent, so a canonical form canonicalizes to
     /// itself.
     /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=Low; Security=Medium; Resources=0; Fingerprint=B81B4B
+    // Broiler-Falsified-If: Canonicalize(0x017F, unicode: false) returns 0x0053, folding a non-ASCII code point into ASCII where the non-Unicode branch must return it unchanged
+    // Broiler-Human:        PENDING
     public static int Canonicalize(int codePoint, bool unicode)
     {
         if (!unicode)
@@ -58,6 +80,9 @@ public static class CaseFolding
     /// other way: the orbit is small (rarely more than four code points) and membership
     /// of each orbit element is a plain range lookup.
     /// </remarks>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=139B38
+    // Broiler-Falsified-If: Orbit(0x006B, unicode: true) omits U+212A KELVIN SIGN, although its simple case fold is 0x006B
+    // Broiler-Human:        PENDING
     public static IReadOnlyList<int> Orbit(int canonical, bool unicode)
         => (unicode ? SimpleTable : UpperTable).Orbit(canonical);
 
@@ -66,9 +91,15 @@ public static class CaseFolding
     /// <c>scf(c) ≠ c</c>. §22.2.2.9 AllCharacters excludes exactly these from the universe
     /// a <c>v</c>-mode complement is taken against when <c>i</c> is on.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=9BA0D0
+    // Broiler-Falsified-If: a yielded run contains a code point whose simple case fold is itself, such as U+0061
+    // Broiler-Human:        PENDING
     public static IEnumerable<(int Lo, int Hi)> SimpleFoldSources => SimpleTable.Sources;
 
     /// <summary>True when the two code points are case-equivalent in the given mode.</summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=276B89
+    // Broiler-Falsified-If: Equal(0x212A, 0x006B, ignoreCase: true, unicode: false) returns true, though only the Unicode branch folds the Kelvin sign to 0x006B
+    // Broiler-Human:        PENDING
     public static bool Equal(int a, int b, bool ignoreCase, bool unicode)
     {
         if (a == b)
@@ -78,13 +109,22 @@ public static class CaseFolding
         return Canonicalize(a, unicode) == Canonicalize(b, unicode);
     }
 
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=2; Fingerprint=78EC85
+    // Broiler-Falsified-If: SimpleTable.Map(0x1E9E) returns anything other than 0x00DF, the simple fold of LATIN CAPITAL LETTER SHARP S
+    // Broiler-Human:        PENDING
     private static readonly FoldTable SimpleTable = new(CaseFoldingData.SimpleFold);
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=2; Fingerprint=E6AC99
+    // Broiler-Falsified-If: UpperTable.Map(0x00DF) returns anything other than 0x00DF, although its uppercase is the two code units SS and must be discarded
+    // Broiler-Human:        PENDING
     private static readonly FoldTable UpperTable = new(CaseFoldingData.UpperFold);
 
     /// <summary>
     /// One generated fold table: runs of <c>lo..hi</c> that all shift by the same delta,
     /// searched forward, plus the inverse (orbit) map built on first use.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=F228E1
+    // Broiler-Falsified-If: _orbits is assigned anywhere other than inside lock (_gate)
+    // Broiler-Human:        PENDING
     private sealed class FoldTable
     {
         private readonly int[] _lo;
@@ -94,6 +134,9 @@ public static class CaseFolding
         private Dictionary<int, int[]>? _orbits;
         private readonly object _gate = new();
 
+        // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=2; Fingerprint=BE47EA
+        // Broiler-Falsified-If: a run with a negative delta, such as 178:-79, decodes to U+0178 plus 0x79 instead of U+00FF
+        // Broiler-Human:        PENDING
         public FoldTable(string encoded)
         {
             var runs = CountRuns(encoded);
@@ -127,6 +170,8 @@ public static class CaseFolding
             }
         }
 
+        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=F58F34
+        // Broiler-Human:        PENDING
         public IEnumerable<(int Lo, int Hi)> Sources
         {
             get
@@ -137,6 +182,9 @@ public static class CaseFolding
         }
 
         /// <summary>The canonical form of <paramref name="codePoint"/>, or itself when unmapped.</summary>
+        // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=CC6A39
+        // Broiler-Falsified-If: Map(0x005B), one past the 41..5A run, returns 0x007B instead of 0x005B
+        // Broiler-Human:        PENDING
         public int Map(int codePoint)
         {
             var lo = 0;
@@ -154,6 +202,9 @@ public static class CaseFolding
             return codePoint;
         }
 
+        // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=6ADA75
+        // Broiler-Falsified-If: a thread that calls Orbit while another thread is still inside the first BuildOrbits gets back an orbit missing members that a later call returns
+        // Broiler-Human:        PENDING
         public IReadOnlyList<int> Orbit(int canonical)
         {
             var orbits = _orbits;
@@ -166,6 +217,9 @@ public static class CaseFolding
             return orbits.TryGetValue(canonical, out var members) ? members : [canonical];
         }
 
+        // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=2; Fingerprint=58D056
+        // Broiler-Falsified-If: the orbit built for 0x0073 from the simple table does not hold exactly 0x0073, 0x0053 and U+017F
+        // Broiler-Human:        PENDING
         private Dictionary<int, int[]> BuildOrbits()
         {
             var pending = new Dictionary<int, List<int>>();
@@ -186,6 +240,9 @@ public static class CaseFolding
             return result;
         }
 
+        // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=CEB974
+        // Broiler-Falsified-If: CountRuns returns a count different from the number of runs the constructor decodes from SimpleFold or UpperFold
+        // Broiler-Human:        PENDING
         private static int CountRuns(string encoded)
         {
             if (encoded.Length == 0)
@@ -199,6 +256,9 @@ public static class CaseFolding
             return count;
         }
 
+        // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=777DCD
+        // Broiler-Falsified-If: ReadHex stops before the last hex digit of a bound, such as reading 1E9E as 0x1E9
+        // Broiler-Human:        PENDING
         private static int ReadHex(string encoded, ref int pos)
         {
             var value = 0;
@@ -213,6 +273,9 @@ public static class CaseFolding
             return value;
         }
 
+        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=84B6E2
+        // Broiler-Falsified-If: the generated table holds a lowercase hex digit, which HexValue reads as -1 and so cuts that value short
+        // Broiler-Human:        PENDING
         private static int HexValue(char c) => c switch
         {
             >= '0' and <= '9' => c - '0',
