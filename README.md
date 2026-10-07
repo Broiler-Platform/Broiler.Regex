@@ -42,7 +42,7 @@ dotnet test Broiler.Regex.slnx
 ```
 
 See the [preview publishing guide](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/publishing.md)
-for dry runs, cumulative preview numbering, package verification, and nuget.org setup.
+for CI validation, cumulative preview numbering, package verification, and nuget.org setup.
 
 Broiler.Regex is licensed under the [Apache License 2.0](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/LICENSE), which provides the
 software on an “AS IS” basis without warranties or conditions.
