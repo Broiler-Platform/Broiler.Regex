@@ -65,7 +65,7 @@ jobs:
         shell: pwsh
         run: ./eng/pack.ps1 -Version $env:PACKAGE_VERSION
 
-      - name: Verify package consumer using nuget.org dependencies
+      - name: Verify consumer restore from nuget.org (dry run)
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: ./eng/verify-feed.ps1
