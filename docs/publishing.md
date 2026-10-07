@@ -39,17 +39,15 @@ the release instead of treating the feed as empty.
 The optional workflow `version-suffix` input must be `preview.N` and at least the
 automatically selected next version. A pushed tag such as `v0.1.0-preview.4` must
 meet the same rule; the workflow publishes exactly that tagged version or fails.
-A dry run does not reserve a version, so a later run resolves it again.
 
 ## Validate and publish
 
-1. Run the **Publish** workflow with `dry-run: true` (the default), leaving
-   `version-suffix` empty for automatic numbering. This needs no publishing key.
-2. Inspect the `nuget-packages` artifact. CI builds and tests on Windows and Linux,
-   checks the `.nupkg` and `.snupkg`, and runs a separate consumer using the local
-   package plus dependencies from nuget.org with an isolated package cache.
-3. Run **Publish** with `dry-run: false`, or push the desired `vX.Y.Z-preview.N`
-   tag. The workflow validates again and pushes the package and symbols to
+1. Inspect the `nuget-packages` artifact of a CI run. CI builds and tests on Windows
+   and Linux, checks the `.nupkg` and `.snupkg`, and runs a separate consumer using the
+   local package plus dependencies from nuget.org with an isolated package cache. This
+   is the no-push rehearsal; **Publish** has no dry-run mode.
+2. Run **Publish**, leaving `version-suffix` empty for automatic numbering, or push the
+   desired `vX.Y.Z-preview.N` tag. The workflow validates again and pushes the package and symbols to
    nuget.org. Publishing runs are serialized to avoid competing version choices.
 
 For local validation, use the version printed by the resolver:
