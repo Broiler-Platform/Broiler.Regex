@@ -199,13 +199,15 @@ tests; it holds an expected-failures list in which every entry belongs to the ho
 every test of duplicate named groups passes. The **host-free library job** runs the literal syntax tests,
 `property-escapes/generated` and `unicodeSets/generated` under the JIT and through the Native AOT probe.
 The retained commit is the branch of SJL-11.5 until it merges, then Broiler.JS's default branch; no
-commit is named yet. R5's, R6's and R10's exit criteria are met by these jobs.
+commit is named yet. R5's, R6's and R10's exit criteria are read as met when these jobs run green at a
+reading's commit.
 
 **The backend (decision D5).** The matcher is replaced by a new backtracking machine written here: a
 compiled instruction program run by a loop with an explicit frame stack and an undo trail
 (defunctionalised continuations). Broiler.VM's matcher is its specification, for its design and for its
-charging units (decision D8), and **no code is ported from it**, as decision SJL-D-14 (a) requires and
-its branch (b) excludes. The parser, the public syntax tree, the `CodePointSet` algebra and the flag
+charging units (decision D8), and **no code is ported from it**, as decision SJL-D-14 requires: it took
+(a), under which Broiler.VM's matcher is deleted, and not (b), which would have made that matcher this
+package's implementation. The parser, the public syntax tree, the `CodePointSet` algebra and the flag
 parser stay; the fast paths are re-expressed as instructions that charge the meter. This is the step
 section 4 already names, "the compiled/bytecode path with an explicit backtrack stack".
 
@@ -223,9 +225,10 @@ exception, and the instance it was charged for then answers a new call as a new 
 own; the provider's is read. The programme's convention 1 is read as admitting the provider contract
 `IUnicodeTables` in a public signature (decision SJL-D-6 (c)).
 
-**The version and the break (decision D12).** R11 and R8 break the `0.1` surface: the constructors that
-take no tables, the public `CaseFolding` and `UnicodeCharSets`, the shape of `GroupNames`, and
-`RegexOverflowException`. The SJL-11 surface ships as **`0.2.0-preview.1`**, validated against
+**The version and the break (decision D12).** The SJL-11 work breaks the `0.1` surface: R11 removes the
+constructors that take no tables and the public `CaseFolding` and `UnicodeCharSets`; R6 reshapes
+`GroupNames`; and the new backend that meets R1 and R4 (decision D5) removes `RegexOverflowException`, the
+old matcher's stack guard (decision D20). The SJL-11 surface ships as **`0.2.0-preview.1`**, validated against
 `0.1.0-preview.4` with every break suppressed and listed with its R item. The string-bearing `RegexMatch`
 stays, as R8 allows; no shim is kept for a member R11 makes impossible. Decision SJL-D-3's "inside a
 major version" is read, for a `0.x` preview, as inside a `0.y` minor version. **No release of either
