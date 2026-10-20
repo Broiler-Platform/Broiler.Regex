@@ -18,8 +18,9 @@ EX-30).
   in its part D and Broiler.JS's in its part C; each engine commits its copy in its own bundle `sjl-11-001`, under
   `docs/evidence/sjl-11-001/inputs/adversarial/`. Nothing generated is committed here.
 
-The corpus is judged as committed with the rule. A change after that commit is a revision under the rule's
-"Revisions" section: a new dated file beside the rule, and the engines' manifests then name a different SHA-256.
+The corpus is judged as committed with the rule, in the set of changes that files them both. A change after that
+set of changes merges is a revision under the rule's "Revisions" section: a new dated file beside the rule, and the
+engines' manifests then name a different SHA-256.
 
 ## 1. Format
 
@@ -99,10 +100,33 @@ eight times its step ceiling or more. Each frame pushed and each cell written to
 dispatched instruction, which is charged (JSD-0081's decision D8), so the step ceiling is reached first. The M
 rows set no step ceiling.
 
-**What the statuses presume.** The backend searches in the specification's order, without memoization and without
-a required-literal analysis, as decision D5 specifies; the only prefilter is the literal-prefix one of SJL-11.2,
-which charges its skips. Rows that end in an unmatched literal put that literal earlier in the subject where they
-can (K01, K03, K04, A01, A02), so that a test for its presence would not shortcut them.
+**What the statuses presume.** Three presumptions about SJL-11.2's backend are this corpus's own. Decisions D5 and
+D8 do not state them: D8 charges a run per character it examines, but neither says which quantifier is a run or
+what a run holds. They are constraints this corpus places on SJL-11.2's tasks 2.4 to 2.4c, and SJL-11.1's report
+names them for that work package.
+
+1. **No memoization.** The backend searches in the specification's order and does not remember that an
+   instruction failed at a position. Every K, A, L and W row's margin counts the specification's paths, which a
+   memoizing backend would not walk.
+2. **No required-literal analysis.** The only prefilter is task 2.4c's literal-prefix one, which charges its
+   skips. Rows that end in an unmatched literal put that literal earlier in the subject where they can (K01,
+   K03, K04, A01, A02), so that a test for its presence in the subject would not shortcut them; a test for it at
+   or after the start position would. K02 cannot put its `b` earlier, because `(a*)*` matches the empty string
+   and a `b` before the run would match at once, so a test for presence alone would answer it. K05 requires no
+   literal.
+3. **A greedy run.** A greedy quantifier over one character class runs as one instruction with one backtrack
+   point: it adds no frame and writes no trail cell per character, and charges one unit per character it
+   examines (decision D8). This is Broiler.VM's `Op.Run` (`JsRegExpMatcher.cs`, `EmitRepeat` and `TakeRun`, at
+   `aaa39fb`), the form this corpus expects task 2.4c's single-code-point quantifier path to take as
+   instructions. Broiler.VM uses it for a class body only: its `a*`, a literal body, is a loop that pushes a frame
+   and writes a trail cell per character. The G rows, O05 and O06 therefore write their run as the class `[a]`.
+   In the loop form, their 10,000,001 characters would pass the frame ceilings: the G rows' engine cases would
+   end exhausted in Broiler.VM and with a `RangeError` in Broiler.JS, and O05 and O06 with `limit:frames`, rather
+   than complete. The library's G rows, declared `limit:steps`, reach their step ceiling first in either form.
+   The M rows' bodies are alternations, which are not runs; their margin is the loop's.
+
+A backend that breaks one of these presumptions can answer as the specification does and still fail part C.
+That is why they are stated here and handed to task 2.4.
 
 ## 4. The rows
 
@@ -126,9 +150,9 @@ policy, meter, status, validate entry or anchored argument. Paths are under `Bro
 | L05 `$(?<!(?:b(a+)+\|ca*))` /u on `c`a³⁰ | `limit:steps` at 10⁶ | As L04 | A match at 31, where the specification has none |
 | W01 `(?:(a+)+b\|a*c)` on a³⁰`c` | `limit:steps` at 10⁶ | From index 0, the first alternative visits 2³⁰ − 1 compositions before the second matches | The exhausted alternative reads as failure, the spent allowance fails the second too, and a later start position matches (`Matching/Matcher.cs:317-326`): a wrong index |
 | W02 as W01, /u | `limit:steps` at 10⁶ | As W01 | As W01 |
-| G01 `a*` on a¹⁰⁰⁰⁰⁰⁰¹ | `limit:steps` at 5 × 10⁴ | RepeatMatcher invokes the atom once per character: ≥ 10,000,002 ≥ 5 × 10⁶ | A match of length 10,000,000: the greedy loop stops when the allowance is spent and offers the shorter run (`Matching/Matcher.cs:587-597`) |
+| G01 `[a]*` on a¹⁰⁰⁰⁰⁰⁰¹ | `limit:steps` at 5 × 10⁴ | RepeatMatcher invokes the atom once per character: ≥ 10,000,002 ≥ 5 × 10⁶ | A match of length 10,000,000: the greedy loop stops when the allowance is spent and offers the shorter run (`Matching/Matcher.cs:587-597`); a class takes the same single-code-point path a literal does (`Matching/Matcher.cs:541-563`) |
 | G02 as G01, /u | `limit:steps` at 5 × 10⁴ | As G01 | As G01 |
-| G03 `^a*$` /u on a¹⁰⁰⁰⁰⁰⁰¹ | `limit:steps` at 5 × 10⁴ | As G01 | No match |
+| G03 `^[a]*$` /u on a¹⁰⁰⁰⁰⁰⁰¹ | `limit:steps` at 5 × 10⁴ | As G01 | No match |
 | M01 `(?:a\|ab)*c` on (`ab`)¹⁰⁰⁰⁰`c` | `limit:frames` at 100 | Each completed iteration leaves RepeatMatcher's "stop here" alternative pending until the match ends: 10,000 ≥ 100 × 100. O14 is its small instance | No ceiling: completes, holding its iterations on the general quantifier's heap stack (`Matching/Matcher.cs:423`) |
 | M02 `(?:(a)\|b)*c` on a¹⁰⁰⁰⁰`c` | `limit:trail` at 100 | Each iteration writes capture 1 while its "stop here" alternative is pending, so the write must be undoable: 10,000 ≥ 100 × 100. Frames stay far below their ceiling. O15 is its small instance | No ceiling: completes, cloning the capture array per write (`Matching/MatchState.cs:84-90`) |
 | N01, N07, N13: 511 nested `(`, `(?:`, `[` (/v) around `a`, on `a` | A match, every group `0,1` | Depth 512, at the limit; a few invocations per level | Accepted and matched |
@@ -150,8 +174,8 @@ policy, meter, status, validate entry or anchored argument. Paths are under `Bro
 | O02 `^(?!(?:(a+)+b\|a*c))` /u on a¹²`c` | `nomatch` | Fewer than 2¹⁵ | The same answer |
 | O03 `$(?<=(?:b(a+)+\|ca*))` on `c`a¹² | `match 13,13 -` | Fewer than 2¹⁵ | The same answer |
 | O04 `(a+)+b` on a¹²`b` | `match 0,13 0,12` | Fewer than 10² | The same answer |
-| O05 `a*` on a¹⁰⁰⁰⁰⁰⁰¹ | `match 0,10000001` at 2 × 10⁹ steps | About 10⁷ ≤ 2 × 10⁷; frame and trail ceilings above the subject's length | A shorter match (as G01) |
-| O06 `^a*$` /u on a¹⁰⁰⁰⁰⁰⁰¹ | `match 0,10000001` | As O05 | No match (as G03) |
+| O05 `[a]*` on a¹⁰⁰⁰⁰⁰⁰¹ | `match 0,10000001` at 2 × 10⁹ steps | About 10⁷ ≤ 2 × 10⁷; as a run (section 3), one frame and no trail cell per character, against the ordinary ceilings of 4,194,304 frames and 8,388,608 trail cells, which a frame or a cell per character would pass | A shorter match (as G01) |
+| O06 `^[a]*$` /u on a¹⁰⁰⁰⁰⁰⁰¹ | `match 0,10000001` | As O05 | No match (as G03) |
 | O07 `(?<a>x)\|(?<a>y)` on `y` | `match 0,1 - 0,1` | Fewer than 10² | Refused: a name declared twice (`Parsing/RegexParser.cs:140-141`) |
 | O08 `(?:(?<a>x)\|(?<a>y))\k<a>` on `yy` | `match 0,2 - 0,1` | Fewer than 10² | As O07 |
 | O09 `b`, `anchored@0`, on `ab` | `nomatch` | Fewer than 10² | No anchored argument; a search finds `b` at 1 |
@@ -174,8 +198,14 @@ rows already carry to the engine, or which need a per-case meter no engine passe
 - K, A, L and W rows run on the library's subjects with a fuel allowance equal to the library's step ceiling, in
   the same units (decision D8), and are declared `exhausted`: the program's own work only spends the allowance
   sooner. Broiler.VM's matcher charges the same work today, so the outcome is the same at its base.
-- G, F, V and O rows, and N at the limit, complete with ample fuel. The N rows past the limit end with an uncaught
+- F, V and O rows, and N at the limit, complete with ample fuel. The N rows past the limit end with an uncaught
   `SyntaxError`, Broiler.VM's mapping of the nesting status.
+- G rows complete as runs (section 3, the third presumption). Broiler.VM's matcher runs `[a]*` as `Op.Run` at its
+  base, and the backend does so after the cut-over by that presumption: one frame and no trail cell per character,
+  against the 2²⁰ frames and 2²¹ trail cells the engine passes, which the loop form's frame per character would
+  pass after 2²⁰ characters. Their fuel allowance is 10¹⁰. `String.prototype.repeat` charges the subject's
+  construction one unit per character, and the run charges one unit per character it examines (decision D8):
+  about 10⁷ units each, and with what else the call charges, a few times 10⁷, under a hundredth of the allowance.
 - M rows run on subjects four times or more past the ceilings the engine passes (frames 2²⁰, trail 2²¹, decision
   D7): at least one pending alternative and one undoable write per iteration.
 - O07 and O08 complete after the cut-over; Broiler.VM's matcher refuses a name declared twice before it, which its
@@ -186,8 +216,10 @@ Broiler.JS passes no meter (decision D10).
 
 - W and L run at 24 repetitions of `a` rather than 30, so that the specification's answer, a few times 2²⁴
   invocations, completes inside the wall-clock limit; they are declared to complete with that answer.
-- G, F, V, O and N at the limit complete with the specification's answer; N past the limit throws `SyntaxError`
-  (decision D7); M runs on the same engine-scale subjects as Broiler.VM's and throws `RangeError` (decision D10).
+- G, F, V, O and N at the limit complete with the specification's answer, the G rows as runs (section 3) inside
+  the frame and trail ceilings Broiler.JS passes, which are Broiler.VM's (decision D10); N past the limit throws
+  `SyntaxError` (decision D7); M runs on the same engine-scale subjects as Broiler.VM's and throws `RangeError`
+  (decision D10).
 
 ## 6. What this corpus does not decide
 

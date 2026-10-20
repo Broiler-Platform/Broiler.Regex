@@ -19,9 +19,9 @@ L04	L	match@0	"$(?<=(?:b(a+)+|ca*))"	-	"c" + "a" * 30	meter=none steps=1000000 f
 L05	L	match@0	"$(?<!(?:b(a+)+|ca*))"	u	"c" + "a" * 30	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"c" + "a" * 24	completed null
 W01	W	match@0	"(?:(a+)+b|a*c)"	-	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed 0,25 -
 W02	W	match@0	"(?:(a+)+b|a*c)"	u	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed 0,25 -
-G01	G	match@0	"a*"	-	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000000	=	completed 0,10000001	=	completed 0,10000001
-G02	G	match@0	"a*"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000000	=	completed 0,10000001	=	completed 0,10000001
-G03	G	match@0	"^a*$"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000000	=	completed 0,10000001	=	completed 0,10000001
+G01	G	match@0	"[a]*"	-	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
+G02	G	match@0	"[a]*"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
+G03	G	match@0	"^[a]*$"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
 M01	M	match@0	"(?:a|ab)*c"	-	"ab" * 10000 + "c"	meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none	limit:frames	1000000000	"ab" * 4194304 + "c"	exhausted	"ab" * 4194304 + "c"	threw RangeError
 M02	M	match@0	"(?:(a)|b)*c"	-	"a" * 10000 + "c"	meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none	limit:trail	1000000000	"a" * 8388608 + "c"	exhausted	"a" * 8388608 + "c"	threw RangeError
 N01	N	match@0	"(" * 511 + "a" + ")" * 511	-	"a"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1 0,1^511	1000000000	=	completed 0,1 1^511	=	completed 0,1 1^511
@@ -55,8 +55,8 @@ O01	O	match@0	"(?:(a+)+b|a*c)"	-	"a" * 12 + "c"	meter=none steps=100000000 frame
 O02	O	match@0	"^(?!(?:(a+)+b|a*c))"	u	"a" * 12 + "c"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	nomatch	1000000000	=	completed null	=	completed null
 O03	O	match@0	"$(?<=(?:b(a+)+|ca*))"	-	"c" + "a" * 12	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 13,13 -	1000000000	=	completed 13,13 -	=	completed 13,13 -
 O04	O	match@0	"(a+)+b"	-	"a" * 12 + "b"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,13 0,12	1000000000	=	completed 0,13 12	=	completed 0,13 12
-O05	O	match@0	"a*"	-	"a" * 10000001	meter=none steps=2000000000 frames=16777216 trail=16777216 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
-O06	O	match@0	"^a*$"	u	"a" * 10000001	meter=none steps=2000000000 frames=16777216 trail=16777216 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
+O05	O	match@0	"[a]*"	-	"a" * 10000001	meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
+O06	O	match@0	"^[a]*$"	u	"a" * 10000001	meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
 O07	O	match@0	"(?<a>x)|(?<a>y)"	-	"y"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1 - 0,1	1000000000	=	completed 0,1 - 1	=	completed 0,1 - 1
 O08	O	match@0	"(?:(?<a>x)|(?<a>y))\\k<a>"	-	"yy"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,2 - 0,1	1000000000	=	completed 0,2 - 1	=	completed 0,2 - 1
 O09	O	anchored@0	"b"	-	"ab"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	nomatch	1000000000	=	completed null	=	completed null
