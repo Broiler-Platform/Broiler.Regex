@@ -4,12 +4,14 @@
 
 > **Dated note, 2026-10-20, at work package SJL-11.1 of the shared JavaScript libraries programme, by the
 > Broiler.RegEx maintainer.** The record below is kept as written: the review of Maik Ratzmer (`MaiRat`),
-> dated 2026-07-01. The commit it reviewed, `d5b07a00b48a329c75349890214cdb479973352f`, is no longer in this
-> repository's history. The history was rewritten, and its root is now `c1422f4`
-> (`c1422f4d824aa28ff6edd4766d56be25ba7c8a15`, 2026-10-11), the commit `0.1.0-preview.4` was packed from.
-> By the record's own rule, "Any source change after the reviewed commit invalidates this approval until the
-> changed revision is reviewed again", and with the reviewed commit absent, **no review covers the current
-> code**. `CODE-ASSURANCE.md` likewise records no code unit with a human decision.
+> dated 2026-07-01 and committed in `79b7a33` ("HUMAN_REVIEW.md finalized"). The commit it reviewed,
+> `d5b07a00b48a329c75349890214cdb479973352f` (2026-06-27), is an ancestor of `main`; a shallow clone grafted at
+> a later commit does not hold it. 25 commits follow it up to and including `c1422f4`
+> (`c1422f4d824aa28ff6edd4766d56be25ba7c8a15`, 2026-10-11), the commit `0.1.0-preview.4` was packed from, and
+> 10 of them change the source under `Broiler.Regex/` (19 files between the two commits). By the record's own
+> rule, "Any source change after the reviewed commit invalidates this approval until the changed revision is
+> reviewed again", so **no review covers the current code**. `CODE-ASSURANCE.md` likewise records no code unit
+> with a human decision.
 >
 > Under the programme's decision SJL-D-5 (a), as decision D30 of Broiler.VM's JSD-0081 applies it, this package
 > may be admitted for development, and a Broiler.VM release that depends on it waits until the revision it

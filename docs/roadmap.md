@@ -234,7 +234,9 @@ SJL-11.5. `0.2.0-preview.1` is published to nuget.org only with the owner's appr
 
 **Also carried here.**
 - **Review (decision D30).** `HUMAN_REVIEW.md` keeps its record and carries a dated note of this date: the
-  commit it reviewed is no longer in this repository's history, and no review covers the current code.
+  commit it reviewed, `d5b07a00`, is an ancestor of `main`; the source under `Broiler.Regex/` changed after it,
+  before `c1422f4`, the commit `0.1.0-preview.4` was packed from; so, by the record's own rule, no review covers
+  the current code.
   A Broiler.VM release that depends on this package waits until the revision it depends on carries a
   completed review (decision SJL-D-5 (a)); development use does not.
 - **Thread safety (decision D31).** `CodePointSet` is immutable after construction, no static field is
