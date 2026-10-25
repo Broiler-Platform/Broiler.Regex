@@ -78,6 +78,33 @@ jobs:
           path: artifacts/*
           if-no-files-found: error
 
+  # The architecture rules SL1 to SL10 and the contract checks C1, C3 and C5 (R10 of docs/roadmap.md section 6,
+  # docs/conventions.md; bundle sjl-11-001's check E-3), each asserting exactly its rows of the starting violation
+  # list, tests/Regex.Architecture.Tests/starting-violations.tsv, which SJL-11.2 shrinks to none. The build job runs
+  # them with the rest of the solution as well; this job is their gate, on both platforms, because SL10 reads the
+  # bytes each platform checks out.
+  architecture-tests:
+    name: Architecture tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build
+        run: dotnet build tests/Regex.Architecture.Tests -c Release --nologo
+      - name: SL1 to SL10, C1, C3 and C5
+        run: dotnet test tests/Regex.Architecture.Tests -c Release --no-build --nologo
+
   # The shared JavaScript libraries' convention 12 for Broiler.Regex (milestone SJL-11, R10 of
   # docs/roadmap.md section 6; bundle sjl-11-001's check E-2): the probe publishes with Broiler.VM's root
   # settings and no warning, leaves no managed assembly beside the native image, and gives the report the

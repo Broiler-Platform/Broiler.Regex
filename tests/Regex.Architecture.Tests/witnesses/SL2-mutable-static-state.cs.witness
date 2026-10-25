@@ -1,0 +1,58 @@
+// SL2 witness: every kind of state convention 7 refuses, one per member. Rule SL2 must report each, and must pass
+// the immutable one.
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
+namespace Witness;
+
+public static class AmbientState
+{
+    public static int Calls;
+
+    public static readonly int[] Table = [1, 2, 3];
+
+    public static readonly Dictionary<string, int> Cache = new();
+
+    public static string Mode { get; set; } = "strict";
+
+    [ThreadStatic]
+    private static int depth;
+
+    private static readonly ThreadLocal<int> Scratch = new();
+
+    private static readonly AsyncLocal<int> Flow = new();
+
+    // An object of the witness's own type that normalises itself on a read, as a lazily normalised set does,
+    // held directly and through a derived class; and one whose state is fixed at construction.
+    public static readonly LazySet Shared = new();
+
+    public static readonly DerivedSet Derived = new();
+
+    public static readonly FixedSet Fixed = new(3);
+
+    public static int Use() => depth + Scratch.Value + Flow.Value;
+}
+
+public class LazySet
+{
+    private bool normalized;
+
+    public bool IsNormalized
+    {
+        get
+        {
+            normalized = true;
+            return normalized;
+        }
+    }
+}
+
+public sealed class DerivedSet : LazySet
+{
+}
+
+public sealed class FixedSet(int count)
+{
+    public int Count { get; } = count;
+}

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Broiler.RegEx's architecture rules SL1 to SL10, of the shared JavaScript libraries programme's SL shape
+    (milestone SJL-11, the owner condition R10 of docs/roadmap.md section 6; docs/conventions.md), ported from
+    Broiler.Unicode's tests/Unicode.Architecture.Tests, with a register in Broiler.VM's shape:
+    rules.register.json states each rule, the test that asserts it and the witness it is shown refusing. Three
+    checks of the contract conventions that JSD-0081's section X3 names and metadata can decide, C1, C3 and C5,
+    sit beside them in the same register.
+
+    The library does not meet every rule yet. starting-violations.tsv is the exact list of what the rules and
+    checks find in it today, and each test asserts that list for its rule in both directions; SJL-11.2 shrinks it
+    to none (bundle sjl-11-001's check E-3).
+
+    The rules read compiled metadata and project files rather than loading what they judge, as Broiler.VM's
+    group B does. The library is referenced so that its build output is beside this assembly; only SL9, which
+    runs the probe's population through the library, calls it. Witness sources are compiled in memory with
+    Roslyn and read the same way.
+  -->
+  <PropertyGroup>
+    <RootNamespace>Broiler.Regex.Architecture.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Broiler.Regex\Broiler.Regex.csproj" />
+    <!-- Built first, read from its own output: an executable is not referenced as an assembly. -->
+    <ProjectReference Include="..\..\probes\Regex.Probe\Regex.Probe.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The probe's population, which SL9 runs twice and on two threads through the library. -->
+    <Compile Include="..\..\probes\Regex.Probe\ProbePopulation.cs" Link="ProbePopulation.cs" />
+    <None Include="rules.register.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="starting-violations.tsv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+// C3 witness: a library that reports a malformed pattern, a failure its contract admits, by a public exception
+// type of its own; beside it, a broken precondition stated by the base class library's exception, which
+// convention 3 admits. Check C3 must report the first and pass the second.
+using System;
+
+namespace Witness;
+
+public sealed class PatternException(string message) : Exception(message)
+{
+}
+
+public static class Api
+{
+    public static int Compile(string pattern) => pattern.Length == 0 ? throw new PatternException("empty") : pattern.Length;
+
+    public static int At(string text, int index) => index < 0 ? throw new ArgumentOutOfRangeException(nameof(index)) : text[index];
+}

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SL1 witness, read as Broiler.Regex: three references the layering does not give the library. It references
+       Broiler.Unicode.Algorithms alone (R11), so a package outside the allow-list (System.Text.Json), the Unicode
+       owner's tables, which are test-only data (decision D11), and another project of this repository (the probe,
+       which references the library, never the reverse) are all against the layering. -->
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="Broiler.Unicode.Tables" />
+    <ProjectReference Include="..\probes\Regex.Probe\Regex.Probe.csproj" />
+  </ItemGroup>
+</Project>
