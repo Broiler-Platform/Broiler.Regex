@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>Broiler.Regex.Tests</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
@@ -12,8 +11,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Broiler.Regex\Broiler.Regex.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 </Project>
