@@ -26,12 +26,15 @@ internal sealed record StartingViolation(string Rule, string Violation, string T
 /// <remarks>
 /// A violation the rule finds with its places (<see cref="Finding"/>) is asserted place by place as well: each place
 /// is cited by exactly one of the row's sites, a line the place spans, and each site lies in a place the rule finds.
-/// So a second call of a listed member is refused as a new place, and a citation of a place that no longer holds the
-/// violation is refused as stale, although the row's wording is the same. A violation the rule finds without places
-/// (<see cref="Finding.Places"/> null) names its one place itself. One the rule reads places for and finds at none
-/// (an empty list) is not compared by wording alone: each of its citations is refused, because only a signature, a
-/// field or local type or a generic argument still names it, which no instruction does, so no citation can hold it,
-/// and the change that removed its last place removes the rest of it.
+/// So a call of a listed member in a statement of its own is refused as a new place, and a citation of a place that no
+/// longer holds the violation is refused as stale, although the row's wording is the same. A place has the two limits
+/// <see cref="AssemblyFacts"/> states: it is a statement, so a second use inside a statement that already holds one is
+/// not a new place; and it is where an instruction names the member, its type or a type operand, so a use that names a
+/// type or an assembly only in a signature, a field or local type or a generic argument is no place. A violation the
+/// rule finds without places (<see cref="Finding.Places"/> null) names its one place itself. One the rule reads places
+/// for and finds at none (an empty list) is not compared by wording alone: each of its citations is refused, because
+/// only a signature, a field or local type or a generic argument still names it, which no instruction does, so no
+/// citation can hold it, and the change that removed its last place removes the rest of it.
 /// </remarks>
 internal static class StartingViolations
 {

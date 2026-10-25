@@ -175,6 +175,33 @@ public class RuleRegisterTests
             StartingViolations.Compare([new StartingViolation("SL2", "w is mutable", "x", [new ViolationSite(path, 1)])], [new Finding("v is new")]));
     }
 
+    /// <summary>
+    /// The two limits of a place, which docs/conventions.md and the list's preamble state. A place is a statement, the
+    /// lines of one sequence point, so a second call of a listed member inside a statement that already holds one is no
+    /// new place. And a place is where an instruction names the member, its declaring type or a type operand, so a type
+    /// that only a signature names has none there. The SL4 witness calls char.IsDigit twice in one statement, and names
+    /// TimeZoneInfo in a call and, once more, in a parameter alone. A change that reads places more finely fails here,
+    /// and the limits' text changes with it.
+    /// </summary>
+    [Fact]
+    public void A_place_is_a_statement_in_which_an_instruction_names_the_violation()
+    {
+        const string File = "SL4-platform-globalization.cs.witness";
+        var witness = Witness.Compile(File);
+        var path = Witness.RelativePath(File);
+        var lines = Witness.Text(File).Split('\n');
+        int LineOf(string text) => 1 + Array.FindIndex(lines, l => l.Contains(text, StringComparison.Ordinal));
+
+        var twice = LineOf("char.IsDigit(text[0]) && char.IsDigit(text[1])");
+        Assert.Equal(2, lines[twice - 1].Split("char.IsDigit(").Length - 1);
+        Assert.Single(witness.PlacesOf("member:System.Char.IsDigit(System.Char)")!, p => p.Contains(path, twice));
+
+        var call = LineOf("TimeZoneInfo.Local");
+        Assert.True(LineOf("TimeZoneInfo? zone") > call);
+        Assert.Contains("System.TimeZoneInfo", witness.TypeReferences);
+        Assert.Equal([new SourcePlace(path, call, call)], witness.PlacesOf("type:System.TimeZoneInfo")!);
+    }
+
     private const string Unplaced =
         "listed and found, but at no place the rule reads (only a signature, a field or local type or a generic argument still names it), so no citation holds it: the change that removed its last place removes the rest of it:";
 

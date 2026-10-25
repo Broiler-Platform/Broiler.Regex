@@ -47,6 +47,10 @@ internal sealed record SourcePlace(string Path, int StartLine, int EndLine)
 /// source an instruction names a member, a type or an assembly, from the portable PDB's sequence points, so that the
 /// starting violation list is asserted place by place. <see cref="StaticInitializerCreations"/> says what the static
 /// constructor creates for each static field, so that SL2 sees a mutable collection a read-only interface hides.
+/// A place so read has two limits. It is a statement, the lines of one sequence point, so two uses of a member in one
+/// statement (<c>char.IsDigit(a) || char.IsDigit(b)</c>) are one place. And only an instruction's token names a member,
+/// a type or an assembly, so one that a signature, a field or local type or a generic argument alone names (a
+/// parameter of type <c>MemberInfo</c>, a <c>new List&lt;EmojiSequenceProperties&gt;()</c>) has no place.
 /// </remarks>
 internal sealed class AssemblyFacts
 {
