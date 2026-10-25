@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The Native AOT probe of the shared JavaScript libraries' convention 12 for Broiler.Regex (milestone
+    SJL-11, requirement R10 of docs/roadmap.md section 6): an executable published with the settings of
+    Broiler.VM's composition roots - Native AOT, full trimming, invariant globalization, system resource
+    keys, each trim warning reported on its own, and warnings as errors - that compiles and matches a
+    fixed population through the package's public API. It proves that the package compiles into a Native
+    AOT image with no warning and answers there as it answers under the JIT: CI compares the two runs'
+    reports byte for byte. SJL-11.2's later steps give it the vectors and the adversarial corpus to run.
+    IsAotCompatible, IsTrimmable and the analyzers come from Directory.Build.props.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Broiler.Regex.Probe</RootNamespace>
+    <AssemblyName>Broiler.Regex.Probe</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Convention 12 (rule SL5): this resets the packaging props' NoWarn to the SDK's own codes, so nothing is suppressed here. -->
+    <NoWarn>1701;1702</NoWarn>
+    <PublishAot>true</PublishAot>
+    <TrimMode>full</TrimMode>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Broiler.Regex\Broiler.Regex.csproj" />
+  </ItemGroup>
+
+</Project>

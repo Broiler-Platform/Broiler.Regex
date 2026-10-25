@@ -1,4 +1,7 @@
 <Solution>
   <Project Path="Broiler.Regex.Tests/Broiler.Regex.Tests.csproj" />
   <Project Path="Broiler.Regex/Broiler.Regex.csproj" />
+  <Folder Name="/probes/">
+    <Project Path="probes/Regex.Probe/Regex.Probe.csproj" />
+  </Folder>
 </Solution>
