@@ -151,6 +151,8 @@ internal static class SharedRules
     /// <item>A static auto-property's backing field is read as a static field, so a get-only property of a mutable
     /// type is mutable state although no setter exists.</item>
     /// </list>
+    /// The rule reads declared types, and what an initializer creates only as base class library collections; the
+    /// register states that limit, and <see cref="SL2DeclaredTypeGap"/> lists the fields it leaves unread.
     /// </summary>
     internal static IEnumerable<string> SL2(AssemblyFacts assembly)
     {
@@ -245,6 +247,137 @@ internal static class SharedRules
     /// <summary>Whether the static constructor creates a mutable collection or a non-empty array for <paramref name="field"/>.</summary>
     private static bool CreatesMutableState(AssemblyFacts assembly, StaticField field) =>
         assembly.StaticInitializerCreations.TryGetValue(field.Type + "." + field.Name, out var created) && created.Any(IsMutableType);
+
+    /// <summary>Base class library types whose values cannot change: SL2's declared-type reading vouches for them.</summary>
+    private static readonly FrozenSet<string> ImmutableValueTypes = FrozenSet.Create(
+        StringComparer.Ordinal,
+        "System.Boolean", "System.Char", "System.SByte", "System.Byte", "System.Int16", "System.UInt16", "System.Int32", "System.UInt32",
+        "System.Int64", "System.UInt64", "System.Single", "System.Double", "System.Decimal", "System.String");
+
+    /// <summary>Base class library collections that cannot change, by definition: they vouch for themselves, not for their elements.</summary>
+    private static readonly string[] ImmutableCollectionNamespaces = ["System.Collections.Immutable.", "System.Collections.Frozen."];
+
+    /// <summary>
+    /// SL2's second stated limit, as a list: every static readonly field that SL2 passes although its declared type
+    /// cannot vouch for what it holds, and every instance field so typed of a class of the assembly's that such a field
+    /// holds, with the reason. SL2 reads declared types, and what an initializer creates only as base class library
+    /// collections, so it passes a field typed <c>object</c>, a struct, a delegate, a class of the assembly's that
+    /// another of its classes derives from, an interface whose initializer constructs a class of the assembly's or that
+    /// is no collection interface, a collection whose element type is one of these, or a base class library type it
+    /// does not know, whatever object it holds. The SL2 limit test asserts the library's list, so a new such field is
+    /// read by a reviewer before it passes.
+    /// </summary>
+    internal static IReadOnlyList<string> SL2DeclaredTypeGap(AssemblyFacts assembly)
+    {
+        var refused = SL2(assembly).ToList();
+        var gap = new List<string>();
+        foreach (var field in assembly.StaticFields.Where(static f => f.IsReadOnly && !f.IsLiteral))
+        {
+            var name = field.Type + "." + field.Name;
+            if (refused.Any(v => v.StartsWith(assembly.Name + ": " + name + " ", StringComparison.Ordinal)))
+                continue;
+            var constructed = assembly.StaticInitializerClasses.GetValueOrDefault(name, [])
+                .Where(static c => !c.StartsWith("<>z__ReadOnly", StringComparison.Ordinal))
+                .ToList();
+            DeclaredTypeGap(assembly, name, field.FieldType, constructed, gap, new HashSet<string>(StringComparer.Ordinal));
+        }
+
+        return gap;
+    }
+
+    private static void DeclaredTypeGap(AssemblyFacts assembly, string where, string type, IReadOnlyList<string> constructed, List<string> gap, HashSet<string> visiting)
+    {
+        var definition = type.Split('<')[0];
+        string? reason = null;
+        if (ImmutableValueTypes.Contains(type))
+            return;
+
+        // SL2 refuses a static field and an instance field of such a type; one reached here is an element of a
+        // collection or a tuple that SL2 passed.
+        if (IsMutableType(type))
+            reason = "a mutable collection or array inside a value SL2 passes";
+        else if (assembly.OtherKinds.TryGetValue(definition, out var kind))
+        {
+            reason = kind switch
+            {
+                DeclaredKind.Enum => null,
+                DeclaredKind.Struct => "a struct, whose fields SL2 does not read",
+                DeclaredKind.Delegate => "a delegate, whose target SL2 does not read",
+                _ => "an interface outside the base class library's collections, whose object SL2 does not read",
+            };
+        }
+        else if (IsCollectionInterface(type))
+        {
+            // The object behind the interface may be any class the initializer constructs, its containers aside.
+            var behind = constructed.Where(c => !visiting.Contains(c)).ToList();
+            if (behind.Count > 0)
+                reason = "an interface whose initializer constructs " + string.Join(", ", behind) + ", which SL2 does not read";
+        }
+        else if (assembly.Classes.Contains(definition))
+        {
+            if (assembly.BaseTypes.Values.Contains(definition, StringComparer.Ordinal))
+                reason = "a class that " + string.Join(", ", assembly.BaseTypes.Where(b => b.Value == definition).Select(static b => b.Key).Order(StringComparer.Ordinal)) + " derives from, whose fields SL2 does not read";
+            else if (visiting.Add(definition))
+            {
+                for (var current = definition; current is not null; current = assembly.BaseTypes.GetValueOrDefault(current))
+                {
+                    foreach (var field in assembly.InstanceFields.Where(f => f.Type == current))
+                        DeclaredTypeGap(assembly, where + " through " + field.Type + "." + field.Name, field.FieldType, constructed, gap, visiting);
+                }
+            }
+        }
+        else if (!VouchesForItself(type))
+        {
+            reason = type == "System.Object" ? "which can hold any object" : "a type SL2 neither refuses nor knows to be immutable";
+        }
+
+        if (reason is not null)
+        {
+            gap.Add(where + " is typed " + type + ", " + reason);
+            return;
+        }
+
+        // A collection or a tuple SL2 passes vouches for itself, not for its elements.
+        if (IsCollectionInterface(type) || VouchesForItself(type))
+        {
+            foreach (var argument in TypeArguments(type))
+                DeclaredTypeGap(assembly, where + " (an element)", argument, constructed, gap, visiting);
+        }
+    }
+
+    /// <summary>An immutable collection of the base class library, a tuple or a nullable value: immutable itself, whatever its elements are.</summary>
+    private static bool VouchesForItself(string type) =>
+        ImmutableCollectionNamespaces.Any(n => type.StartsWith(n, StringComparison.Ordinal))
+        || type.StartsWith("System.ValueTuple`", StringComparison.Ordinal) || type.StartsWith("System.Nullable`1<", StringComparison.Ordinal);
+
+    /// <summary>A generic instantiation's type arguments, as <see cref="SignatureNames"/> renders them.</summary>
+    private static IEnumerable<string> TypeArguments(string type)
+    {
+        var open = type.IndexOf('<', StringComparison.Ordinal);
+        if (open < 0)
+            yield break;
+        var depth = 0;
+        var start = open + 1;
+        for (var i = start; i < type.Length; i++)
+        {
+            switch (type[i])
+            {
+                case '<':
+                    depth++;
+                    break;
+                case '>' when depth == 0:
+                    yield return type[start..i];
+                    yield break;
+                case '>':
+                    depth--;
+                    break;
+                case ',' when depth == 0:
+                    yield return type[start..i];
+                    start = i + 1;
+                    break;
+            }
+        }
+    }
 
     // ---------------------------------------------------------------------------------------------
     // SL3: no dynamic code, no hidden machinery, no I/O, no environment.

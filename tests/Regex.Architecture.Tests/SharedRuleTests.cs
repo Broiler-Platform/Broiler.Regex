@@ -182,7 +182,9 @@ public class SharedRuleTests
     /// SL2's stated limits (the register's SL2 row), pinned on their witness, so that a change that makes the rule more
     /// precise fails here and changes the limits' text with it. The first: what an initializer creates over-approximates
     /// what the field holds, so an immutable value built from a mutable temporary and held behind a collection interface
-    /// is refused, and the same value in a field declared by its immutable type passes.
+    /// is refused, and the same value in a field declared by its immutable type passes. The second: a field whose
+    /// declared type cannot vouch for what it holds passes whatever it holds, and <see cref="SharedRules.SL2DeclaredTypeGap"/>
+    /// names it.
     /// </summary>
     [Fact]
     public void SL2_The_stated_limits_hold_as_the_register_states_them()
@@ -202,6 +204,36 @@ public class SharedRuleTests
         // The same values declared by their immutable types pass.
         Assert.DoesNotContain(violations, static v => v.Contains("StatedLimits.ListedImmutable", StringComparison.Ordinal));
         Assert.DoesNotContain(violations, static v => v.Contains("StatedLimits.CopiedFrozen", StringComparison.Ordinal));
+
+        // The second: SL2 reads declared types, and what an initializer creates only as base class library collections,
+        // so a field whose type cannot vouch for what it holds passes whatever it holds, and SL2DeclaredTypeGap names it.
+        foreach (var name in (string[])["Boxed", "Base", "Comparer", "Packed", "Counter", "Done"])
+            Assert.DoesNotContain(violations, v => v.Contains("StatedLimits." + name + " ", StringComparison.Ordinal));
+        Assert.Equal(
+            [
+                "Witness.StatedLimits.Base is typed Witness.Node, a class that Witness.CountingNode derives from, whose fields SL2 does not read",
+                "Witness.StatedLimits.Boxed is typed System.Object, which can hold any object",
+                "Witness.StatedLimits.Comparer is typed System.Collections.Generic.IComparer`1<System.Int32>, an interface whose initializer constructs Witness.CountingComparer, which SL2 does not read",
+                "Witness.StatedLimits.Counter is typed Witness.Next, a delegate, whose target SL2 does not read",
+                "Witness.StatedLimits.Packed is typed Witness.Packet, a struct, whose fields SL2 does not read",
+            ],
+            SharedRules.SL2DeclaredTypeGap(witness).Order(StringComparer.Ordinal));
+    }
+
+    /// <summary>
+    /// SL2's second stated limit over the library: every static field it passes whose declared type cannot vouch for
+    /// what it holds is listed here, after a reader has checked it, so a new one fails until it is checked or SL2
+    /// reads it.
+    /// </summary>
+    [Fact]
+    public void SL2_The_library_holds_no_static_field_its_declared_type_cannot_vouch_for_but_those_read()
+    {
+        // Matcher's identity continuation is a static lambda (Matcher.cs, "static s => s"), which can capture nothing,
+        // so the delegate's target holds no state. EmptyNode.Instance and AnyCharNode.Instance are sealed classes with
+        // no field, which the declared type vouches for, and every other static field is a row of the list.
+        Assert.Equal(
+            ["Broiler.Regex.Matching.Matcher.IdentityContinuation is typed Broiler.Regex.Matching.Matcher+Continuation, a delegate, whose target SL2 does not read"],
+            SharedRules.SL2DeclaredTypeGap(Assemblies[Library]));
     }
 
     // ---------------------------------------------------------------------------------------------

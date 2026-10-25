@@ -23,6 +23,15 @@ internal sealed record StaticField(string Type, string Name, string FieldType, b
 /// </summary>
 internal sealed record InstanceField(string Type, string Name, string FieldType, bool IsReadOnly);
 
+/// <summary>The kind of a type the source declares other than a plain class, which SL2's declared-type reading tells apart.</summary>
+internal enum DeclaredKind
+{
+    Enum,
+    Struct,
+    Interface,
+    Delegate,
+}
+
 /// <summary>
 /// A place in a source file: the document of the sequence point the compiler wrote for an IL instruction, relative
 /// to the repository root, and the lines that sequence point spans, which are one statement's. An instruction the
@@ -94,6 +103,17 @@ internal sealed class AssemblyFacts
 
     /// <summary>The base type of every class the source declares, by name, for the classes whose base is not <c>System.Object</c>.</summary>
     internal ImmutableDictionary<string, string> BaseTypes { get; private init; } = ImmutableDictionary<string, string>.Empty;
+
+    /// <summary>Every other type the source declares, by name and kind: enums, structs, interfaces and delegates (which are classes too).</summary>
+    internal ImmutableDictionary<string, DeclaredKind> OtherKinds { get; private init; } = ImmutableDictionary<string, DeclaredKind>.Empty;
+
+    /// <summary>
+    /// For each static field a static constructor stores, the classes of this assembly that the instructions computing
+    /// the stored value construct, in the same span and methods as <see cref="StaticInitializerCreations"/>: the
+    /// objects of its own that an initializer can store, which no declared interface type shows.
+    /// </summary>
+    internal ImmutableDictionary<string, ImmutableArray<string>> StaticInitializerClasses { get; private init; } =
+        ImmutableDictionary<string, ImmutableArray<string>>.Empty;
 
     /// <summary>
     /// For each static field a static constructor stores, as <c>Namespace.Type.Field</c>, the types that the
@@ -168,6 +188,7 @@ internal sealed class AssemblyFacts
         var instanceFields = new List<InstanceField>();
         var classes = ImmutableHashSet.CreateBuilder<string>(StringComparer.Ordinal);
         var baseTypes = ImmutableDictionary.CreateBuilder<string, string>(StringComparer.Ordinal);
+        var otherKinds = ImmutableDictionary.CreateBuilder<string, DeclaredKind>(StringComparer.Ordinal);
         foreach (var handle in metadata.TypeDefinitions)
         {
             var type = metadata.GetTypeDefinition(handle);
@@ -182,6 +203,10 @@ internal sealed class AssemblyFacts
                 classes.Add(typeName);
             if (isClass && baseType is not "System.Object")
                 baseTypes[typeName] = baseType!;
+            if ((type.Attributes & TypeAttributes.Interface) != 0)
+                otherKinds[typeName] = DeclaredKind.Interface;
+            else if (baseType is "System.Enum" or "System.ValueType" or "System.MulticastDelegate")
+                otherKinds[typeName] = baseType switch { "System.Enum" => DeclaredKind.Enum, "System.ValueType" => DeclaredKind.Struct, _ => DeclaredKind.Delegate };
 
             foreach (var fieldHandle in type.GetFields())
             {
@@ -222,6 +247,7 @@ internal sealed class AssemblyFacts
 
         using var pdbProvider = OpenPdb(reader, pdbImage);
         var bodies = new MethodBodies(reader, metadata, provider, pdbProvider?.GetMetadataReader());
+        var (creations, constructed) = bodies.StaticInitializerCreations();
 
         return new AssemblyFacts(name)
         {
@@ -235,7 +261,9 @@ internal sealed class AssemblyFacts
             InstanceFields = [.. instanceFields],
             Classes = classes.ToImmutable(),
             BaseTypes = baseTypes.ToImmutable(),
-            StaticInitializerCreations = bodies.StaticInitializerCreations(),
+            OtherKinds = otherKinds.ToImmutable(),
+            StaticInitializerCreations = creations,
+            StaticInitializerClasses = constructed,
             HasPlaces = pdbProvider is not null,
             Places = pdbProvider is null ? ImmutableDictionary<string, ImmutableArray<SourcePlace>>.Empty : bodies.Places(),
         };
@@ -370,9 +398,17 @@ internal sealed class AssemblyFacts
                 StringComparer.Ordinal);
         }
 
-        internal ImmutableDictionary<string, ImmutableArray<string>> StaticInitializerCreations()
+        /// <summary>A class of this assembly that an initializer constructs, kept apart from the base class library creations by this prefix.</summary>
+        private const string OwnClass = "class ";
+
+        /// <summary>
+        /// <see cref="AssemblyFacts.StaticInitializerCreations"/> and <see cref="AssemblyFacts.StaticInitializerClasses"/>,
+        /// read in one pass.
+        /// </summary>
+        internal (ImmutableDictionary<string, ImmutableArray<string>> Creations, ImmutableDictionary<string, ImmutableArray<string>> Classes) StaticInitializerCreations()
         {
             var result = ImmutableDictionary.CreateBuilder<string, ImmutableArray<string>>(StringComparer.Ordinal);
+            var classes = ImmutableDictionary.CreateBuilder<string, ImmutableArray<string>>(StringComparer.Ordinal);
             foreach (var (handle, body) in instructions)
             {
                 var method = metadata.GetMethodDefinition(handle);
@@ -392,14 +428,15 @@ internal sealed class AssemblyFacts
                         var key = SignatureNames.Qualified(metadata, field.GetDeclaringType()) + "." + BackedProperty(metadata.GetString(field.Name));
                         var created = new HashSet<string>(StringComparer.Ordinal);
                         Creations(body, start, i, created, []);
-                        result[key] = [.. created.Order(StringComparer.Ordinal)];
+                        result[key] = [.. created.Where(static c => !c.StartsWith(OwnClass, StringComparison.Ordinal)).Order(StringComparer.Ordinal)];
+                        classes[key] = [.. created.Where(static c => c.StartsWith(OwnClass, StringComparison.Ordinal)).Select(static c => c[OwnClass.Length..]).Order(StringComparer.Ordinal)];
                     }
 
                     start = i + 1;
                 }
             }
 
-            return result.ToImmutable();
+            return (result.ToImmutable(), classes.ToImmutable());
         }
 
         /// <summary>What instructions <paramref name="from"/> to <paramref name="to"/> of a body create, following this assembly's methods.</summary>
@@ -419,6 +456,8 @@ internal sealed class AssemblyFacts
                             target = metadata.GetMethodSpecification((MethodSpecificationHandle)target).Method;
                         if (target.Kind == HandleKind.MethodDefinition)
                         {
+                            if (instruction.OpCode == ILOpCode.Newobj)
+                                created.Add(OwnClass + SignatureNames.Qualified(metadata, metadata.GetMethodDefinition((MethodDefinitionHandle)target).GetDeclaringType()));
                             created.UnionWith(MethodCreations((MethodDefinitionHandle)target, visiting));
                         }
                         else if (target.Kind == HandleKind.MemberReference)

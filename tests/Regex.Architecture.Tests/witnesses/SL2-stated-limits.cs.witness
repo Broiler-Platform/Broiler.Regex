@@ -1,6 +1,6 @@
 // SL2 witness of the rule's stated limits (rules.register.json): what it refuses although the value cannot change,
-// and how the same values are declared so that it passes them. The test pins each answer, so a change that makes the
-// rule more precise fails there and changes the limits' text with it.
+// and how the same values are declared so that it passes them; and what it passes although the value can change. The
+// test pins each answer, so a change that makes the rule more precise fails there and changes the limits' text with it.
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -22,4 +22,63 @@ public static class StatedLimits
     public static readonly ImmutableArray<string> ListedImmutable = ["a", "b"];
 
     public static readonly FrozenDictionary<string, int> CopiedFrozen = new Dictionary<string, int> { ["a"] = 1 }.ToFrozenDictionary();
+
+    // The second limit, the declared type: SL2 reads a field's declared type, and what its initializer creates only
+    // as base class library collections, so a field whose type cannot vouch for what it holds passes whatever it holds.
+    // Typed object, holding a list; typed a base class of the witness's own, holding a derived object that counts its
+    // visits; typed an interface, holding an object of the witness's own that counts its calls; typed a struct that
+    // wraps a list; and typed a delegate whose target counts. Each passes SL2, and SL2DeclaredTypeGap names each.
+    public static readonly object Boxed = new List<int>();
+
+    public static readonly Node Base = new CountingNode();
+
+    public static readonly IComparer<int> Comparer = new CountingComparer();
+
+    public static readonly Packet Packed = new(new List<int>());
+
+    public static readonly Next Counter = MakeCounter();
+
+    // A field whose type vouches for what it holds, a sealed class whose one field is a readonly integer: it passes,
+    // and SL2DeclaredTypeGap does not name it.
+    public static readonly Settled Done = new(1);
+
+    private static Next MakeCounter()
+    {
+        var count = 0;
+        return () => ++count;
+    }
+}
+
+public delegate int Next();
+
+public abstract class Node
+{
+}
+
+public sealed class CountingNode : Node
+{
+    private int visits;
+
+    public int Visit() => ++visits;
+}
+
+public sealed class CountingComparer : IComparer<int>
+{
+    private int calls;
+
+    public int Compare(int x, int y)
+    {
+        calls++;
+        return x.CompareTo(y);
+    }
+}
+
+public readonly struct Packet(List<int> items)
+{
+    public List<int> Items { get; } = items;
+}
+
+public sealed class Settled(int value)
+{
+    public int Value { get; } = value;
 }
