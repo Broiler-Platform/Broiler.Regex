@@ -9,6 +9,15 @@ using System.Xml.Linq;
 namespace Broiler.Regex.Architecture.Tests;
 
 /// <summary>
+/// A violation a rule finds, with the places in the source where it is when the rule reads them: from the IL and the
+/// PDB for a rule over member and type references (SL1's assembly half, SL3, SL4, C5), from the project files for
+/// SL5's suppression codes. Null places mean the violation names its one place itself: a field, a member, a file,
+/// a package or a setting. <see cref="StartingViolations.AssertExactly(string, IEnumerable{Finding})"/> asserts a
+/// placed violation's rows place by place.
+/// </summary>
+internal sealed record Finding(string Violation, IReadOnlyList<SourcePlace>? Places = null);
+
+/// <summary>
 /// Broiler.RegEx's rules of the programme's group SL (governance section 3.2), and the three contract checks
 /// beside them, each a function from what it reads to the violations it finds. An empty answer is a pass; the
 /// tests also assert that each rule read a real subject, because a rule that passes by finding nothing passes
@@ -82,12 +91,18 @@ internal static class SharedRules
     }
 
     /// <summary>SL1 over a built assembly: every assembly it references is the framework's or a library it may reference.</summary>
-    internal static IEnumerable<string> SL1Assembly(AssemblyFacts assembly)
+    internal static IEnumerable<string> SL1Assembly(AssemblyFacts assembly) => SL1AssemblyFindings(assembly).Select(static f => f.Violation);
+
+    /// <summary>
+    /// <see cref="SL1Assembly"/> with each reference's places: every instruction that names a type of the assembly,
+    /// as the declaring type of the member it calls or as its type operand.
+    /// </summary>
+    internal static IEnumerable<Finding> SL1AssemblyFindings(AssemblyFacts assembly)
     {
         var allowed = Layering.TryGetValue(assembly.Name, out var edges) ? edges : [];
         return assembly.AssemblyReferences
             .Where(reference => !IsFramework(reference) && !IsAllowedPackage(reference, allowed))
-            .Select(reference => assembly.Name + " references the assembly " + reference);
+            .Select(reference => new Finding(assembly.Name + " references the assembly " + reference, assembly.PlacesOf("assembly:" + reference)));
     }
 
     private static bool IsAllowedPackage(string id, string[] allowed) =>
@@ -276,7 +291,10 @@ internal static class SharedRules
     /// SL3 over a built assembly. <paramref name="allowIo"/> is the probe's: an executable writes its report to a
     /// file, and every other clause still holds it.
     /// </summary>
-    internal static IEnumerable<string> SL3(AssemblyFacts assembly, bool allowIo = false)
+    internal static IEnumerable<string> SL3(AssemblyFacts assembly, bool allowIo = false) => SL3Findings(assembly, allowIo).Select(static f => f.Violation);
+
+    /// <summary><see cref="SL3"/> with the places of each member, type and assembly it refuses.</summary>
+    internal static IEnumerable<Finding> SL3Findings(AssemblyFacts assembly, bool allowIo = false)
     {
         foreach (var member in assembly.MemberReferences)
         {
@@ -286,11 +304,11 @@ internal static class SharedRules
                 // Enum.GetValues<T>() and its siblings are the generic, AOT-safe forms; only the Type-taking overloads are refused.
                 if (name.StartsWith("System.Enum.", StringComparison.Ordinal) && !member.Contains("System.Type", StringComparison.Ordinal))
                     continue;
-                yield return assembly.Name + " calls " + member;
+                yield return new Finding(assembly.Name + " calls " + member, assembly.PlacesOf("member:" + member));
             }
             else if (name.StartsWith("System.Environment.", StringComparison.Ordinal) && member != CompilerThreadIdentity && !allowIo)
             {
-                yield return assembly.Name + " calls " + member + ": an environment read";
+                yield return new Finding(assembly.Name + " calls " + member + ": an environment read", assembly.PlacesOf("member:" + member));
             }
         }
 
@@ -299,19 +317,19 @@ internal static class SharedRules
             if (allowIo && IsIoType(type))
                 continue;
             if (HiddenMachineryTypePrefixes.Any(prefix => type == prefix || type.StartsWith(prefix, StringComparison.Ordinal) && !IsException(type)))
-                yield return assembly.Name + " names " + type;
+                yield return new Finding(assembly.Name + " names " + type, assembly.PlacesOf("type:" + type));
             else if (type.StartsWith("System.Reflection.", StringComparison.Ordinal) && !type.EndsWith("Attribute", StringComparison.Ordinal))
-                yield return assembly.Name + " names " + type + ": reflection";
+                yield return new Finding(assembly.Name + " names " + type + ": reflection", assembly.PlacesOf("type:" + type));
         }
 
         if (assembly.AssemblyReferences.Contains("Microsoft.CSharp"))
-            yield return assembly.Name + " references Microsoft.CSharp: dynamic";
+            yield return new Finding(assembly.Name + " references Microsoft.CSharp: dynamic", assembly.PlacesOf("assembly:Microsoft.CSharp"));
 
         if (assembly.CustomAttributeTypes.Contains("System.Runtime.CompilerServices.ModuleInitializerAttribute"))
-            yield return assembly.Name + " applies a module initializer";
+            yield return new Finding(assembly.Name + " applies a module initializer");
 
         foreach (var invoke in assembly.PlatformInvokes)
-            yield return assembly.Name + " declares the platform invoke " + invoke;
+            yield return new Finding(assembly.Name + " declares the platform invoke " + invoke);
     }
 
     private static bool IsException(string type) => type.EndsWith("Exception", StringComparison.Ordinal);
@@ -358,17 +376,26 @@ internal static class SharedRules
         "System.Decimal", "System.Numerics.BigInteger",
     ];
 
-    internal static IEnumerable<string> SL4(AssemblyFacts assembly)
+    internal static IEnumerable<string> SL4(AssemblyFacts assembly) => SL4Findings(assembly).Select(static f => f.Violation);
+
+    /// <summary><see cref="SL4"/> with the places of each member and type it refuses.</summary>
+    internal static IEnumerable<Finding> SL4Findings(AssemblyFacts assembly)
     {
         foreach (var type in assembly.TypeReferences)
         {
             if (PlatformTypePrefixes.Any(prefix => type.StartsWith(prefix, StringComparison.Ordinal)))
-                yield return assembly.Name + " names " + type;
+                yield return new Finding(assembly.Name + " names " + type, assembly.PlacesOf("type:" + type));
             else if (type.StartsWith("System.Globalization.", StringComparison.Ordinal)
                 && type is not "System.Globalization.NumberFormatInfo" and not "System.Globalization.NumberStyles")
-                yield return assembly.Name + " names " + type + ": platform globalization";
+                yield return new Finding(assembly.Name + " names " + type + ": platform globalization", assembly.PlacesOf("type:" + type));
         }
 
+        foreach (var (member, violation) in SL4Members(assembly))
+            yield return new Finding(violation, assembly.PlacesOf("member:" + member));
+    }
+
+    private static IEnumerable<(string Member, string Violation)> SL4Members(AssemblyFacts assembly)
+    {
         foreach (var member in assembly.MemberReferences)
         {
             var name = member.Split('(')[0];
@@ -380,45 +407,45 @@ internal static class SharedRules
                 // The Comparison-taking Compare overloads are as culture-free as the others are not.
                 if (name is "System.String.Compare" && parameters.Contains("System.StringComparison", StringComparison.Ordinal))
                     continue;
-                yield return assembly.Name + " calls " + member;
+                yield return (member, assembly.Name + " calls " + member);
             }
             else if (CultureDefaultStringMembers.Any(prefix => member.StartsWith(prefix, StringComparison.Ordinal))
                 && !parameters.Contains("System.StringComparison", StringComparison.Ordinal))
             {
-                yield return assembly.Name + " calls " + member + ", which compares by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which compares by the current culture");
             }
             else if (name.StartsWith("System.Globalization.NumberFormatInfo.", StringComparison.Ordinal)
                 && name != "System.Globalization.NumberFormatInfo.get_InvariantInfo")
             {
-                yield return assembly.Name + " calls " + member + ": only NumberFormatInfo.InvariantInfo is culture-free";
+                yield return (member, assembly.Name + " calls " + member + ": only NumberFormatInfo.InvariantInfo is culture-free");
             }
             else if (NumericTypes.Any(t => name.StartsWith(t + ".", StringComparison.Ordinal))
                 && name.EndsWith("Parse", StringComparison.Ordinal) && !hasProvider)
             {
-                yield return assembly.Name + " calls " + member + ", which parses by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which parses by the current culture");
             }
             else if (NumericTypes.Any(t => name == t + ".ToString" || name == t + ".TryFormat") && parameters.Length > 0 && !hasProvider)
             {
-                yield return assembly.Name + " calls " + member + ", which formats by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which formats by the current culture");
             }
             else if (name.StartsWith("System.Convert.", StringComparison.Ordinal) && !name.Contains("Base64", StringComparison.Ordinal)
                 && !name.Contains("Hex", StringComparison.Ordinal)
                 && (name == "System.Convert.ToString" || parameters.Contains("System.String", StringComparison.Ordinal)) && !hasProvider)
             {
-                yield return assembly.Name + " calls " + member + ", which converts by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which converts by the current culture");
             }
             else if (name == "System.String.Format" && !parameters.StartsWith("System.IFormatProvider", StringComparison.Ordinal))
             {
-                yield return assembly.Name + " calls " + member + ", which formats by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which formats by the current culture");
             }
             else if (name == "System.Text.StringBuilder.Append" && NumericTypes.Contains(parameters, StringComparer.Ordinal))
             {
-                yield return assembly.Name + " calls " + member + ", which formats by the current culture";
+                yield return (member, assembly.Name + " calls " + member + ", which formats by the current culture");
             }
             else if (member is "System.Runtime.CompilerServices.DefaultInterpolatedStringHandler..ctor(System.Int32,System.Int32)"
                 || member == "System.Text.StringBuilder+AppendInterpolatedStringHandler..ctor(System.Int32,System.Int32,System.Text.StringBuilder)")
             {
-                yield return assembly.Name + " interpolates a string without a format provider, which formats its values by the current culture";
+                yield return (member, assembly.Name + " interpolates a string without a format provider, which formats its values by the current culture");
             }
         }
     }
@@ -450,22 +477,53 @@ internal static class SharedRules
     /// </remarks>
     internal static readonly FrozenSet<string> SdkNoWarn = FrozenSet.Create(StringComparer.Ordinal, "1701", "1702", "IL2121");
 
-    internal static IEnumerable<string> SL5Properties(string project, IReadOnlyDictionary<string, string> evaluated, (string Property, string Value)[] required)
+    internal static IEnumerable<string> SL5Properties(string project, IReadOnlyDictionary<string, string> evaluated, (string Property, string Value)[] required) =>
+        SL5PropertyFindings(project, evaluated, required, []).Select(static f => f.Violation);
+
+    /// <summary>
+    /// <see cref="SL5Properties"/> with the places of each suppressed code: every <c>NoWarn</c> or
+    /// <c>WarningsNotAsErrors</c> element of <paramref name="files"/> (the project file and the build files it
+    /// imports, by path relative to the root, with their text) that names it. A code can be suppressed in several.
+    /// </summary>
+    internal static IEnumerable<Finding> SL5PropertyFindings(string project, IReadOnlyDictionary<string, string> evaluated, (string Property, string Value)[] required, IReadOnlyList<(string Path, string Text)> files)
     {
         foreach (var (property, value) in required)
         {
             evaluated.TryGetValue(property, out var actual);
             if (!string.Equals(actual, value, StringComparison.OrdinalIgnoreCase))
-                yield return project + ": " + property + " is '" + actual + "', not '" + value + "'";
+                yield return new Finding(project + ": " + property + " is '" + actual + "', not '" + value + "'");
         }
 
         foreach (var code in Codes(evaluated, "NoWarn").Where(static c => !SdkNoWarn.Contains(c)))
-            yield return project + ": NoWarn suppresses " + code;
+            yield return new Finding(project + ": NoWarn suppresses " + code, files.Count == 0 ? null : ElementPlaces(files, "NoWarn", code));
         foreach (var code in Codes(evaluated, "WarningsNotAsErrors"))
-            yield return project + ": WarningsNotAsErrors exempts " + code;
+            yield return new Finding(project + ": WarningsNotAsErrors exempts " + code, files.Count == 0 ? null : ElementPlaces(files, "WarningsNotAsErrors", code));
         if (evaluated.TryGetValue("SuppressTrimAnalysisWarnings", out var suppress) && suppress.Equals("true", StringComparison.OrdinalIgnoreCase))
-            yield return project + ": SuppressTrimAnalysisWarnings is true";
+            yield return new Finding(project + ": SuppressTrimAnalysisWarnings is true");
     }
+
+    /// <summary>The line spans of every <c>&lt;element&gt;</c> of the files whose codes include <paramref name="code"/>.</summary>
+    internal static IReadOnlyList<SourcePlace> ElementPlaces(IReadOnlyList<(string Path, string Text)> files, string element, string code)
+    {
+        var places = new List<SourcePlace>();
+        foreach (var (path, text) in files)
+        {
+            for (var at = text.IndexOf("<" + element, StringComparison.Ordinal); at >= 0; at = text.IndexOf("<" + element, at + 1, StringComparison.Ordinal))
+            {
+                var open = text.IndexOf('>', at);
+                var close = open < 0 ? -1 : text.IndexOf("</" + element + ">", open, StringComparison.Ordinal);
+                if (close < 0 || text[open - 1] == '/' || !char.IsWhiteSpace(text[at + element.Length + 1]) && text[at + element.Length + 1] != '>')
+                    continue;
+                var codes = text[(open + 1)..close].Split([';', ','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (codes.Contains(code, StringComparer.Ordinal))
+                    places.Add(new SourcePlace(path, LineOf(text, at), LineOf(text, close)));
+            }
+        }
+
+        return places;
+    }
+
+    private static int LineOf(string text, int index) => 1 + text.AsSpan(0, index).Count('\n');
 
     private static IEnumerable<string> Codes(IReadOnlyDictionary<string, string> evaluated, string property) =>
         evaluated.TryGetValue(property, out var value)
@@ -695,8 +753,11 @@ internal static class SharedRules
     /// probes it has made the stack its limit. ONE STATED LIMIT: recursion itself is not read here; bundle
     /// sjl-11-001's check A-4 decides it over the matcher's IL call graph.
     /// </summary>
-    internal static IEnumerable<string> C5(AssemblyFacts assembly) =>
+    internal static IEnumerable<string> C5(AssemblyFacts assembly) => C5Findings(assembly).Select(static f => f.Violation);
+
+    /// <summary><see cref="C5"/> with the places of each stack probe.</summary>
+    internal static IEnumerable<Finding> C5Findings(AssemblyFacts assembly) =>
         assembly.MemberReferences
             .Where(static member => StackProbes.Contains(member.Split('(')[0], StringComparer.Ordinal))
-            .Select(member => assembly.Name + " calls " + member + ": the stack is a limit");
+            .Select(member => new Finding(assembly.Name + " calls " + member + ": the stack is a limit", assembly.PlacesOf("member:" + member)));
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,14 +24,29 @@ internal sealed record StaticField(string Type, string Name, string FieldType, b
 internal sealed record InstanceField(string Type, string Name, string FieldType, bool IsReadOnly);
 
 /// <summary>
+/// A place in a source file: the document of the sequence point the compiler wrote for an IL instruction, relative
+/// to the repository root, and the lines that sequence point spans, which are one statement's. An instruction the
+/// compiler wrote no line for has the place <c>&lt;no source line: Type::Method&gt;</c>, which no citation matches.
+/// </summary>
+internal sealed record SourcePlace(string Path, int StartLine, int EndLine)
+{
+    internal bool Contains(string path, int line) => Path == path && line >= StartLine && line <= EndLine;
+
+    public override string ToString() =>
+        Path + ":" + StartLine.ToString(CultureInfo.InvariantCulture)
+        + (EndLine == StartLine ? string.Empty : "-" + EndLine.ToString(CultureInfo.InvariantCulture));
+}
+
+/// <summary>
 /// One assembly's metadata tables, read without loading it. Shaped after Broiler.VM's
 /// <c>AssemblyFacts</c>, with member references carrying their parameter types, because SL4
 /// tells a culture-sensitive overload from an ordinal one by its signature.
 /// </summary>
 /// <remarks>
-/// One reading goes beyond the tables and reads the method bodies' IL: <see cref="StaticInitializerCreations"/> says
-/// what the static constructor creates for each static field, so that SL2 sees a mutable collection a read-only
-/// interface hides.
+/// Two readings go beyond the tables, and both read the method bodies' IL. <see cref="PlacesOf"/> says where in the
+/// source an instruction names a member, a type or an assembly, from the portable PDB's sequence points, so that the
+/// starting violation list is asserted place by place. <see cref="StaticInitializerCreations"/> says what the static
+/// constructor creates for each static field, so that SL2 sees a mutable collection a read-only interface hides.
 /// </remarks>
 internal sealed class AssemblyFacts
 {
@@ -86,9 +102,32 @@ internal sealed class AssemblyFacts
     internal ImmutableDictionary<string, ImmutableArray<string>> StaticInitializerCreations { get; private init; } =
         ImmutableDictionary<string, ImmutableArray<string>>.Empty;
 
-    internal static AssemblyFacts Read(string path) => Read(File.ReadAllBytes(path));
+    /// <summary>Whether a portable PDB was read with the assembly, so that <see cref="PlacesOf"/> can answer.</summary>
+    internal bool HasPlaces { get; private init; }
 
-    internal static AssemblyFacts Read(byte[] image)
+    private ImmutableDictionary<string, ImmutableArray<SourcePlace>> Places { get; init; } =
+        ImmutableDictionary<string, ImmutableArray<SourcePlace>>.Empty;
+
+    /// <summary>
+    /// The places in the source where an IL instruction names <paramref name="key"/>: <c>member:</c> and a
+    /// member reference as <see cref="MemberReferences"/> words it; <c>type:</c> and a type as
+    /// <see cref="TypeReferences"/> words it, named by an instruction's type operand or as the declaring type of
+    /// its member operand; <c>assembly:</c> and an assembly, whose type an instruction names so. A type that only a
+    /// signature or a generic argument names has no IL place. Null when no PDB was read, so that a caller tells "no
+    /// place" from "not read".
+    /// </summary>
+    internal IReadOnlyList<SourcePlace>? PlacesOf(string key) =>
+        !HasPlaces ? null : Places.TryGetValue(key, out var places) ? places : [];
+
+    /// <summary>Reads an assembly and, when one is beside it or embedded in it, its portable PDB.</summary>
+    internal static AssemblyFacts Read(string path)
+    {
+        var pdb = Path.ChangeExtension(path, ".pdb");
+        return Read(File.ReadAllBytes(path), File.Exists(pdb) ? File.ReadAllBytes(pdb) : null);
+    }
+
+    /// <summary>Reads an assembly image and the portable PDB given, or else the one embedded in the image, if any.</summary>
+    internal static AssemblyFacts Read(byte[] image, byte[]? pdbImage = null)
     {
         using var reader = new PEReader(ImmutableArray.Create(image));
         var metadata = reader.GetMetadataReader();
@@ -175,7 +214,8 @@ internal sealed class AssemblyFacts
             }
         }
 
-        var bodies = new MethodBodies(reader, metadata, provider);
+        using var pdbProvider = OpenPdb(reader, pdbImage);
+        var bodies = new MethodBodies(reader, metadata, provider, pdbProvider?.GetMetadataReader());
 
         return new AssemblyFacts(name)
         {
@@ -190,7 +230,22 @@ internal sealed class AssemblyFacts
             Classes = classes.ToImmutable(),
             BaseTypes = baseTypes.ToImmutable(),
             StaticInitializerCreations = bodies.StaticInitializerCreations(),
+            HasPlaces = pdbProvider is not null,
+            Places = pdbProvider is null ? ImmutableDictionary<string, ImmutableArray<SourcePlace>>.Empty : bodies.Places(),
         };
+    }
+
+    private static MetadataReaderProvider? OpenPdb(PEReader reader, byte[]? pdbImage)
+    {
+        if (pdbImage is not null)
+            return MetadataReaderProvider.FromPortablePdbImage(ImmutableArray.Create(pdbImage));
+        foreach (var entry in reader.ReadDebugDirectory())
+        {
+            if (entry.Type == DebugDirectoryEntryType.EmbeddedPortablePdb)
+                return reader.ReadEmbeddedPortablePdbDebugDirectoryData(entry);
+        }
+
+        return null;
     }
 
     /// <summary>An auto-property's backing field, <c>&lt;Name&gt;k__BackingField</c>, as its property's name; any other field as itself.</summary>
@@ -259,24 +314,54 @@ internal sealed class AssemblyFacts
     /// <summary>One IL instruction: its offset, its opcode, and its operand when that is a token or an integer constant.</summary>
     private readonly record struct Instruction(int Offset, ILOpCode OpCode, int Operand);
 
-    /// <summary>The method bodies of one assembly, decoded once, and what SL2's IL reading makes of them.</summary>
+    /// <summary>The method bodies of one assembly, decoded once, and what the two IL readings make of them.</summary>
     private sealed class MethodBodies
     {
         private readonly MetadataReader metadata;
         private readonly SignatureNames provider;
+        private readonly MetadataReader? pdb;
         private readonly Dictionary<MethodDefinitionHandle, List<Instruction>> instructions = [];
         private readonly Dictionary<MethodDefinitionHandle, HashSet<string>?> creations = [];
+        private readonly Dictionary<TypeReferenceHandle, string?> assemblies = [];
 
-        internal MethodBodies(PEReader reader, MetadataReader metadata, SignatureNames provider)
+        internal MethodBodies(PEReader reader, MetadataReader metadata, SignatureNames provider, MetadataReader? pdb)
         {
             this.metadata = metadata;
             this.provider = provider;
+            this.pdb = pdb;
             foreach (var handle in metadata.MethodDefinitions)
             {
                 var method = metadata.GetMethodDefinition(handle);
                 if (method.RelativeVirtualAddress != 0)
                     instructions[handle] = Decode(reader.GetMethodBody(method.RelativeVirtualAddress).GetILReader());
             }
+        }
+
+        internal ImmutableDictionary<string, ImmutableArray<SourcePlace>> Places()
+        {
+            var places = new Dictionary<string, HashSet<SourcePlace>>(StringComparer.Ordinal);
+            foreach (var (handle, body) in instructions)
+            {
+                var points = SequencePoints(handle);
+                foreach (var instruction in body.Where(static i => CarriesToken(i.OpCode)))
+                {
+                    var keys = KeysOf(MetadataTokens.EntityHandle(instruction.Operand)).ToList();
+                    if (keys.Count == 0)
+                        continue;
+                    var place = PlaceOf(handle, points, instruction.Offset);
+                    foreach (var key in keys)
+                    {
+                        if (!places.TryGetValue(key, out var set))
+                            places[key] = set = [];
+                        set.Add(place);
+                    }
+                }
+            }
+
+            return places.ToImmutableDictionary(
+                static p => p.Key,
+                static p => p.Value.OrderBy(static s => s.Path, StringComparer.Ordinal).ThenBy(static s => s.StartLine).ThenBy(static s => s.EndLine).ToImmutableArray(),
+                StringComparer.Ordinal);
         }
 
         internal ImmutableDictionary<string, ImmutableArray<string>> StaticInitializerCreations()
@@ -382,6 +467,132 @@ internal sealed class AssemblyFacts
             HandleKind.TypeSpecification => metadata.GetTypeSpecification((TypeSpecificationHandle)handle).DecodeSignature(provider, null),
             _ => "?",
         };
+
+        /// <summary>The keys of <see cref="PlacesOf"/> an operand names: a referenced member, its declaring type and outer types, their assembly.</summary>
+        private IEnumerable<string> KeysOf(EntityHandle operand)
+        {
+            if (operand.Kind == HandleKind.MethodSpecification)
+                operand = metadata.GetMethodSpecification((MethodSpecificationHandle)operand).Method;
+
+            EntityHandle type;
+            switch (operand.Kind)
+            {
+                case HandleKind.MemberReference:
+                    var member = metadata.GetMemberReference((MemberReferenceHandle)operand);
+                    yield return "member:" + DescribeMember(metadata, provider, member);
+                    type = member.Parent;
+                    break;
+                case HandleKind.TypeReference:
+                case HandleKind.TypeSpecification:
+                    type = operand;
+                    break;
+                default:
+                    yield break;
+            }
+
+            if (type.Kind == HandleKind.TypeSpecification)
+            {
+                if (GenericTypeOf((TypeSpecificationHandle)type) is not { } generic)
+                    yield break;
+                type = generic;
+            }
+
+            if (type.Kind != HandleKind.TypeReference)
+                yield break;
+            var reference = (TypeReferenceHandle)type;
+            for (var current = reference; ;)
+            {
+                yield return "type:" + SignatureNames.Qualified(metadata, current);
+                var scope = metadata.GetTypeReference(current).ResolutionScope;
+                if (scope.Kind != HandleKind.TypeReference)
+                    break;
+                current = (TypeReferenceHandle)scope;
+            }
+
+            if (AssemblyOf(reference) is { } assembly)
+                yield return "assembly:" + assembly;
+        }
+
+        /// <summary>The type reference a type specification is built on: a generic instantiation's type, an array's or a pointer's element type.</summary>
+        private EntityHandle? GenericTypeOf(TypeSpecificationHandle handle)
+        {
+            var blob = metadata.GetBlobReader(metadata.GetTypeSpecification(handle).Signature);
+            while (true)
+            {
+                var code = blob.ReadSignatureTypeCode();
+                switch (code)
+                {
+                    case SignatureTypeCode.GenericTypeInstance:
+                        blob.ReadSignatureTypeCode();
+                        return blob.ReadTypeHandle();
+                    case SignatureTypeCode.SZArray or SignatureTypeCode.Pointer or SignatureTypeCode.ByReference or SignatureTypeCode.Pinned:
+                        continue;
+                    case SignatureTypeCode.Array:
+                        continue;
+                    case SignatureTypeCode.TypeHandle:
+                        return blob.ReadTypeHandle();
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        private string? AssemblyOf(TypeReferenceHandle handle)
+        {
+            if (assemblies.TryGetValue(handle, out var known))
+                return known;
+            var scope = metadata.GetTypeReference(handle).ResolutionScope;
+            var assembly = scope.Kind switch
+            {
+                HandleKind.TypeReference => AssemblyOf((TypeReferenceHandle)scope),
+                HandleKind.AssemblyReference => metadata.GetString(metadata.GetAssemblyReference((AssemblyReferenceHandle)scope).Name),
+                _ => null,
+            };
+            assemblies[handle] = assembly;
+            return assembly;
+        }
+
+        /// <summary>A method's visible sequence points, in IL order; the hidden ones mark compiler plumbing.</summary>
+        private List<SequencePoint> SequencePoints(MethodDefinitionHandle handle)
+        {
+            if (pdb is null)
+                return [];
+            var debug = pdb.GetMethodDebugInformation(handle.ToDebugInformationHandle());
+            return debug.SequencePointsBlob.IsNil ? [] : [.. debug.GetSequencePoints().Where(static p => !p.IsHidden)];
+        }
+
+        /// <summary>
+        /// The place of the instruction at <paramref name="offset"/>: the last visible sequence point at or before it,
+        /// so that plumbing behind a hidden one is the statement's before it, else the first visible one after it.
+        /// </summary>
+        private SourcePlace PlaceOf(MethodDefinitionHandle handle, List<SequencePoint> visible, int offset)
+        {
+            var point = visible.LastOrDefault(p => p.Offset <= offset);
+            if (point.Document.IsNil)
+                point = visible.FirstOrDefault(p => p.Offset > offset);
+            if (point.Document.IsNil)
+            {
+                var method = metadata.GetMethodDefinition(handle);
+                return new SourcePlace("<no source line: " + SignatureNames.Qualified(metadata, method.GetDeclaringType()) + "::" + metadata.GetString(method.Name) + ">", 0, 0);
+            }
+
+            var document = pdb!.GetString(pdb.GetDocument(point.Document).Name);
+            return new SourcePlace(RepositoryPath(document), point.StartLine, point.EndLine);
+        }
+
+        /// <summary>
+        /// A PDB document's path relative to the repository root, '/'-separated: a local build writes the full path, a
+        /// CI build (ContinuousIntegrationBuild) maps the root to <c>/_/</c>; a witness is compiled under its
+        /// repository-relative path already.
+        /// </summary>
+        private static string RepositoryPath(string document)
+        {
+            var path = document.Replace('\\', '/');
+            var root = SharedTree.Root.Replace('\\', '/').TrimEnd('/') + "/";
+            if (path.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+                return path[root.Length..];
+            return path.StartsWith("/_/", StringComparison.Ordinal) ? path[3..] : path;
+        }
 
         private static List<Instruction> Decode(BlobReader il)
         {

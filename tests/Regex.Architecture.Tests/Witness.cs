@@ -4,17 +4,22 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace Broiler.Regex.Architecture.Tests;
 
 /// <summary>
 /// The witnesses: inputs each rule must refuse. A source witness is compiled here, in memory,
 /// against the platform's own assemblies, and the rule reads the image the way it reads a library's,
-/// so a rule that stops recognising a violation stops refusing its witness.
+/// so a rule that stops recognising a violation stops refusing its witness. The image embeds its PDB, with the
+/// witness's path relative to the repository root as its document, so a witness's places read as a library's do.
 /// </summary>
 internal static class Witness
 {
     internal static string PathOf(string file) => Path.Combine(SharedTree.Witnesses, file);
+
+    /// <summary>A witness's path relative to the repository root, as its places name it.</summary>
+    internal static string RelativePath(string file) => SharedTree.Relative(PathOf(file));
 
     internal static string Text(string file) => File.ReadAllText(PathOf(file));
 
@@ -29,7 +34,7 @@ internal static class Witness
     {
         var source = Text(file);
         var name = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(file)).Replace('-', '_');
-        var tree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest), path: file);
+        var tree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest), path: RelativePath(file), encoding: System.Text.Encoding.UTF8);
         var references = PlatformReferences()
             .Concat(referencedAssemblies.Select(static a => MetadataReference.CreateFromFile(SharedTree.AssemblyPath(a))));
         var compilation = CSharpCompilation.Create(
@@ -38,7 +43,7 @@ internal static class Witness
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable, allowUnsafe: true));
         using var stream = new MemoryStream();
-        var result = compilation.Emit(stream);
+        var result = compilation.Emit(stream, options: new EmitOptions(debugInformationFormat: DebugInformationFormat.Embedded));
         if (!result.Success)
         {
             var errors = result.Diagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error);

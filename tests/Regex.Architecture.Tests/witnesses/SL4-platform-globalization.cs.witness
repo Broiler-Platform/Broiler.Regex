@@ -19,6 +19,10 @@ public static class PlatformDependent
 
     public static bool Digit(char c) => char.IsDigit(c);
 
+    // A second call of the same member, which the starting violation list must cite as a place of its own; and,
+    // in this comment, the text char.IsDigit( where IL names nothing, which no citation may hold as a place.
+    public static bool Digits(string text) => text.Length > 0 && char.IsDigit(text[0]);
+
     public static char Lower(char c) => char.ToLowerInvariant(c);
 
     public static string Number(double value) => value.ToString(CultureInfo.CurrentCulture);

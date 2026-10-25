@@ -53,6 +53,11 @@ public class SharedRuleTests
             ["Broiler.Regex.Tests", "Regex.Architecture.Tests"],
             SharedTree.Projects.Where(static p => p.Kind == SharedProjectKind.Test).Select(static p => p.Name));
         Assert.All(Assemblies.Values, static a => Assert.NotEmpty(a.TypeReferences));
+
+        // The rules over member and type references read their places from the PDB beside each assembly, so that the
+        // starting violation list is asserted place by place; an assembly read without one would pass on wording alone.
+        Assert.All(Assemblies.Values, static a => Assert.True(a.HasPlaces, a.Name + " was read without its PDB"));
+        Assert.True(ProbeAssembly.HasPlaces, "the probe was read without its PDB");
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -60,19 +65,19 @@ public class SharedRuleTests
     [Fact]
     public void SL1_No_library_references_an_engine_Broiler_VM_or_anything_outside_the_layering()
     {
-        var violations = new List<string>();
+        var violations = new List<Finding>();
         foreach (var library in SharedTree.LibrariesHeldBy("SL1"))
         {
-            violations.AddRange(SharedRules.SL1(library.Name, library.Directory, library.Document));
+            violations.AddRange(SharedRules.SL1(library.Name, library.Directory, library.Document).Select(static v => new Finding(v)));
             using var assets = JsonDocument.Parse(File.ReadAllText(Path.Combine(library.Directory, "obj", "project.assets.json")));
-            violations.AddRange(SharedRules.SL1Restore(library.Name, assets));
+            violations.AddRange(SharedRules.SL1Restore(library.Name, assets).Select(static v => new Finding(v)));
 
             // Not vacuous: the project names packages, and its restore resolves them.
             Assert.NotEmpty(library.Items("PackageReference"));
             Assert.Contains(assets.RootElement.GetProperty("libraries").EnumerateObject(), static l => l.Value.GetProperty("type").GetString() == "package");
         }
 
-        violations.AddRange(AssembliesHeldBy("SL1").SelectMany(SharedRules.SL1Assembly));
+        violations.AddRange(AssembliesHeldBy("SL1").SelectMany(SharedRules.SL1AssemblyFindings));
         Assert.Contains(Assemblies[Library].AssemblyReferences, static r => !r.StartsWith("System", StringComparison.Ordinal));
         StartingViolations.AssertExactly("SL1", violations);
     }
@@ -163,13 +168,13 @@ public class SharedRuleTests
     [Fact]
     public void SL3_No_library_reaches_dynamic_code_hidden_machinery_IO_or_the_environment()
     {
-        var violations = AssembliesHeldBy("SL3").SelectMany(static a => SharedRules.SL3(a)).ToList();
+        var violations = AssembliesHeldBy("SL3").SelectMany(static a => SharedRules.SL3Findings(a)).ToList();
 
         // The probe is an executable that writes its report to a file; SL3 holds it all the same but for I/O,
         // since it is the code that runs under Native AOT (docs/conventions.md, "Scope").
         var probe = ProbeAssembly;
         Assert.Contains("System.IO.File", probe.TypeReferences);
-        violations.AddRange(SharedRules.SL3(probe, allowIo: true));
+        violations.AddRange(SharedRules.SL3Findings(probe, allowIo: true));
         StartingViolations.AssertExactly("SL3", violations);
     }
 
@@ -199,7 +204,7 @@ public class SharedRuleTests
     [Fact]
     public void SL4_No_library_uses_platform_globalization_regular_expressions_or_a_culture()
     {
-        StartingViolations.AssertExactly("SL4", AssembliesHeldBy("SL4").SelectMany(SharedRules.SL4));
+        StartingViolations.AssertExactly("SL4", AssembliesHeldBy("SL4").SelectMany(SharedRules.SL4Findings));
 
         // Not vacuous: the library compares strings ordinally and tests surrogates, and SL4 reads those references
         // with their parameter types and passes them.
@@ -230,18 +235,23 @@ public class SharedRuleTests
     [Fact]
     public void SL5_The_library_and_the_probe_hold_to_AOT_and_trimming_with_nothing_suppressed()
     {
-        var violations = new List<string>();
+        // A suppressed code's places are the NoWarn and WarningsNotAsErrors elements, in the project file and the
+        // build files it imports, that name it.
+        static IReadOnlyList<(string Path, string Text)> FilesOf(SharedProject project) =>
+            BuildFiles.Prepend(SharedTree.Relative(project.Path)).Select(static f => (f, File.ReadAllText(Path.Combine(SharedTree.Root, f)))).ToList();
+
+        var violations = new List<Finding>();
         foreach (var library in SharedTree.LibrariesHeldBy("SL5"))
         {
             var evaluated = Tools.Evaluate(library.Path, SharedRules.LibraryProperties.Select(static p => p.Property).Concat(SuppressionProperties));
-            violations.AddRange(SharedRules.SL5Properties(library.Name, evaluated, SharedRules.LibraryProperties));
+            violations.AddRange(SharedRules.SL5PropertyFindings(library.Name, evaluated, SharedRules.LibraryProperties, FilesOf(library)));
         }
 
         var probeProperties = Tools.Evaluate(Probe.Path, SharedRules.ProbeProperties.Select(static p => p.Property).Concat(SuppressionProperties));
-        violations.AddRange(SharedRules.SL5Properties(Probe.Name, probeProperties, SharedRules.ProbeProperties));
+        violations.AddRange(SharedRules.SL5PropertyFindings(Probe.Name, probeProperties, SharedRules.ProbeProperties, FilesOf(Probe)));
 
-        violations.AddRange(AssembliesHeldBy("SL5").SelectMany(SharedRules.SL5Assembly));
-        violations.AddRange(SharedRules.SL5Assembly(ProbeAssembly));
+        violations.AddRange(AssembliesHeldBy("SL5").SelectMany(SharedRules.SL5Assembly).Select(static v => new Finding(v)));
+        violations.AddRange(SharedRules.SL5Assembly(ProbeAssembly).Select(static v => new Finding(v)));
         StartingViolations.AssertExactly("SL5", violations);
     }
 
@@ -310,6 +320,13 @@ public class SharedRuleTests
         // The reset the probe's project file holds is not a suppression; one code more is.
         Assert.Empty(SharedRules.Suppressions("x.csproj", "<NoWarn>1701;1702</NoWarn>"));
         Assert.NotEmpty(SharedRules.Suppressions("x.csproj", "<NoWarn>1701;1702;IL2026</NoWarn>"));
+
+        // A code's places are every element that suppresses it, in any of the files, so a second one is a new place.
+        var witnessText = Witness.Text("SL5-library-suppresses-a-trim-warning.csproj.witness");
+        var noWarnLine = 1 + witnessText.AsSpan(0, witnessText.IndexOf("<NoWarn>", StringComparison.Ordinal)).Count('\n');
+        Assert.Equal(
+            [new SourcePlace("w.csproj", noWarnLine, noWarnLine), new SourcePlace("d.props", 2, 3)],
+            SharedRules.ElementPlaces([("w.csproj", witnessText), ("d.props", "<Project>\n  <NoWarn Condition=\"true\">$(NoWarn);\n    IL2026</NoWarn>\n  <NoWarnX>IL2026</NoWarnX>\n</Project>\n")], "NoWarn", "IL2026"));
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -567,7 +584,7 @@ public class SharedRuleTests
     [Fact]
     public void C5_No_library_makes_the_stack_a_limit()
     {
-        StartingViolations.AssertExactly("C5", AssembliesHeldBy("C5").SelectMany(SharedRules.C5));
+        StartingViolations.AssertExactly("C5", AssembliesHeldBy("C5").SelectMany(SharedRules.C5Findings));
     }
 
     [Fact]

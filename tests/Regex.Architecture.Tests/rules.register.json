@@ -9,8 +9,10 @@
     "conventions of the programme's architecture.md section 4 that Broiler.VM's JSD-0081 (section X3) finds Broiler.Regex",
     "breaching and that metadata can decide. Every rule and check is Active, and the library does not yet meet every one:",
     "starting-violations.tsv beside this file is the exact list of what they find in it, which each test asserts in both",
-    "directions and SJL-11.2 shrinks to none (bundle sjl-11-001's check E-3). RuleRegisterTests holds this file to the",
-    "tests, the witnesses on disk and the list's citations. No row carries a run figure; the list carries the findings."
+    "directions, place by place where the rule reads places (SL1's assembly half, SL3, SL4 and C5 from the IL and the PDB,",
+    "SL5 from the project files), and SJL-11.2 shrinks to none (bundle sjl-11-001's check E-3). RuleRegisterTests holds",
+    "this file to the tests, the witnesses on disk and the list's citations. No row carries a run figure; the list carries",
+    "the findings."
   ],
   "milestone": "SJL-11",
   "rules": [
@@ -18,7 +20,7 @@
       "id": "SL1",
       "status": "Active",
       "statement": "No library references an engine project or package, anything in Broiler.VM, or any project or package outside the allow-list, and a library references the programme's libraries only in the layering's direction: Broiler.Regex may reference Broiler.Unicode.Algorithms alone, the Unicode owner's provider (requirement R11, decision D11 of Broiler.VM's JSD-0081), and never Broiler.Unicode.Tables, which is test-only data, nor another project of this repository. Every library has a row in the layering table, so a new library cannot pass by being unknown.",
-      "evidence": "The library's project file (ProjectReference, resolved to the referenced project's assembly name, and PackageReference), its restore (obj/project.assets.json, every package resolved directly or transitively, the SDK's own ILLink package aside) and its built assembly's AssemblyRef table",
+      "evidence": "The library's project file (ProjectReference, resolved to the referenced project's assembly name, and PackageReference), its restore (obj/project.assets.json, every package resolved directly or transitively, the SDK's own ILLink package aside) and its built assembly's AssemblyRef table, with the places from its IL and PDB where an instruction names a type of a referenced assembly",
       "nonVacuousWhen": "The library is read in all three places and names packages that its restore resolves and its assembly references; the witnesses reference an engine project, a Broiler.VM package, a package outside the allow-list, the owner's tables and the probe, each reported; and the assembly half is shown refusing this test assembly, which references xunit and the library.",
       "test": "SL1_No_library_references_an_engine_Broiler_VM_or_anything_outside_the_layering",
       "witness": "witnesses/SL1-engine-project-reference.csproj.witness, witnesses/SL1-broiler-vm-package-reference.csproj.witness, witnesses/SL1-against-the-layering.csproj.witness"
@@ -36,8 +38,8 @@
       "id": "SL3",
       "status": "Active",
       "statement": "No library reaches anything on Broiler.VM's B5, B5b and B5c lists (dynamic loading, reflection invocation, Reflection.Emit, LambdaExpression.Compile, native-library and function-pointer marshalling, method preparation, platform invoke, module initializers), generic instantiation over a run-time Type, the Type-taking Enum readers, dynamic, reflection-based serialization, file, network or process I/O, or an environment read (convention 8). The Native AOT probe, an executable that writes its report to a file, is held to every clause except I/O.",
-      "evidence": "The MemberRef, TypeRef, AssemblyRef, CustomAttribute and ImplMap tables of the library's built assembly and of the probe's, built under the JIT beside this test",
-      "nonVacuousWhen": "The library's tables are read, and the probe names System.IO.File and is read with I/O allowed; the witness reaches each refused kind once and every one is reported, and read as the probe it still fails on everything but I/O.",
+      "evidence": "The MemberRef, TypeRef, AssemblyRef, CustomAttribute and ImplMap tables of the library's built assembly and of the probe's, built under the JIT beside this test, with the places from their IL and PDBs where an instruction names a refused member or type",
+      "nonVacuousWhen": "The library's tables are read, with their places from the PDB, and the probe names System.IO.File and is read with I/O allowed; the witness reaches each refused kind once and every one is reported, and read as the probe it still fails on everything but I/O.",
       "test": "SL3_No_library_reaches_dynamic_code_hidden_machinery_IO_or_the_environment",
       "witness": "witnesses/SL3-dynamic-code-and-io.cs.witness"
     },
@@ -45,7 +47,7 @@
       "id": "SL4",
       "status": "Active",
       "statement": "No library uses a platform globalization or regular-expression API (convention 9): System.Text.RegularExpressions, any System.Globalization type but NumberFormatInfo.InvariantInfo and NumberStyles, TimeZoneInfo, the clock, string normalization, platform casing, char and Rune classification beyond ASCII, a string comparison that defaults to the current culture, or a number parsed, formatted, converted or interpolated without a format provider. Every Unicode answer is the provider's (decision D11), so the platform's is never one here.",
-      "evidence": "The TypeRef and MemberRef tables of the library's built assembly, member references read with their parameter types so that an ordinal overload is told from a culture-sensitive one",
+      "evidence": "The TypeRef and MemberRef tables of the library's built assembly, member references read with their parameter types so that an ordinal overload is told from a culture-sensitive one, with the places from its IL and PDB where an instruction names a refused member or type",
       "nonVacuousWhen": "The library compares strings ordinally and tests surrogates, and the rule reads those references with their parameter types and passes them; the witness uses each refused kind once, char.IsDigit and char.ToLowerInvariant among them, and every one is reported. ONE STATED LIMIT: a parameterless ToString() on a number is not refused, because every record's generated ToString reaches it; it is a review obligation of convention 6.",
       "test": "SL4_No_library_uses_platform_globalization_regular_expressions_or_a_culture",
       "witness": "witnesses/SL4-platform-globalization.cs.witness"
@@ -54,8 +56,8 @@
       "id": "SL5",
       "status": "Active",
       "statement": "IsAotCompatible and IsTrimmable hold for the library, with the trim, AOT and single-file analyzers on, and it targets net10.0 with nullable enabled, implicit usings disabled, deterministic builds, no unsafe code and warnings as errors; nothing is suppressed in it: no NoWarn beyond the SDK's own 1701 and 1702, no WarningsNotAsErrors, no SuppressTrimAnalysisWarnings, no UnconditionalSuppressMessage. An inventory in the shape of Broiler.VM's N36, docs/suppressions.md, lists by file every suppression in the sources and project files of the library and the probe and in the build files they import, and says None when there is none. The Native AOT probe is evaluated with Broiler.VM's root settings (PublishAot, full trimming, InvariantGlobalization, UseSystemResourceKeys, TrimmerSingleWarn off, IsAotCompatible, warnings as errors) and is held to the same absence of suppressions (convention 12).",
-      "evidence": "The library's and the probe's properties as MSBuild evaluates them, the built library's and probe's CustomAttribute tables, and the text of every source and project file of the library and the probe and of Directory.Build.props, Directory.Packages.props and eng/Broiler.Packaging.props",
-      "nonVacuousWhen": "The library and the probe are evaluated with every import applied, so a property set in Directory.Build.props or the packaging file and undone in a project file is seen; the inventory scan reads both project files, the sources and the build files; the witness project sets every analyzer on and suppresses one warning, and is refused for that alone, and a NoWarn of the SDK's codes alone is shown to be a reset while one code more is a suppression.",
+      "evidence": "The library's and the probe's properties as MSBuild evaluates them, with each suppressed code's places, the NoWarn and WarningsNotAsErrors elements of the project file and the build files that name it; the built library's and probe's CustomAttribute tables; and the text of every source and project file of the library and the probe and of Directory.Build.props, Directory.Packages.props and eng/Broiler.Packaging.props",
+      "nonVacuousWhen": "The library and the probe are evaluated with every import applied, so a property set in Directory.Build.props or the packaging file and undone in a project file is seen; the inventory scan reads both project files, the sources and the build files; the witness project sets every analyzer on and suppresses one warning, and is refused for that alone, and a NoWarn of the SDK's codes alone is shown to be a reset while one code more is a suppression; a code's places are shown to be every element that names it, across files and lines.",
       "test": "SL5_The_library_and_the_probe_hold_to_AOT_and_trimming_with_nothing_suppressed",
       "witness": "witnesses/SL5-library-suppresses-a-trim-warning.csproj.witness, witnesses/SL5-source-suppresses-a-trim-warning.cs.witness"
     },

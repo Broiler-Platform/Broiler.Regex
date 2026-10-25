@@ -128,6 +128,45 @@ public class RuleRegisterTests
         }
     }
 
+    /// <summary>
+    /// The list is compared place by place for a rule that reads places. The witness calls char.IsDigit twice, on two
+    /// lines, and names it once more in a comment where IL names nothing: a row that cites both calls agrees; one that
+    /// cites one is refused for the other, a new place of a listed violation; one that cites the comment as well is
+    /// refused for a stale citation, although that line holds the token; and one that cites a place twice is refused.
+    /// The row's wording is the same in every case, which is what a comparison of wording alone could not see.
+    /// </summary>
+    [Fact]
+    public void The_list_is_compared_place_by_place_and_a_new_or_a_stale_place_is_refused()
+    {
+        const string File = "SL4-platform-globalization.cs.witness";
+        var witness = Witness.Compile(File);
+        Assert.True(witness.HasPlaces);
+        var path = Witness.RelativePath(File);
+        var lines = Witness.Text(File).Split('\n');
+        var holding = lines.Select((text, index) => (text, line: index + 1)).Where(static l => l.text.Contains("char.IsDigit(", StringComparison.Ordinal)).Select(static l => l.line).ToList();
+        Assert.Equal(3, holding.Count);
+        int comment = holding.Single(l => lines[l - 1].TrimStart().StartsWith("//", StringComparison.Ordinal));
+        int[] calls = [.. holding.Where(l => l != comment)];
+
+        var findings = SharedRules.SL4Findings(witness).Where(static f => f.Violation.EndsWith(" calls System.Char.IsDigit(System.Char)", StringComparison.Ordinal)).ToList();
+        var violation = Assert.Single(findings).Violation;
+        Assert.Equal(calls.Select(l => new SourcePlace(path, l, l)), findings[0].Places!);
+
+        IReadOnlyList<string> Compare(params int[] cited) =>
+            StartingViolations.Compare([new StartingViolation("SL4", violation, "char.IsDigit(", [.. cited.Select(l => new ViolationSite(path, l))])], findings);
+
+        Assert.Empty(Compare(calls));
+        Assert.Equal(["a place of a listed violation that the list does not cite, which no change may add:", "  + " + violation + " @ " + new SourcePlace(path, calls[1], calls[1])], Compare(calls[0]));
+        Assert.Contains("  - " + violation + " @ " + path + ":" + comment + ", where the rule finds no place of it", Compare([.. calls, comment]));
+        Assert.Contains(Compare(calls[0], calls[0], calls[1]), static d => d.Contains(", a second citation of the place ", StringComparison.Ordinal));
+
+        // And a violation the rule finds without places is compared by wording alone, in both directions.
+        Assert.Empty(StartingViolations.Compare([new StartingViolation("SL2", "w is mutable", "x", [new ViolationSite(path, 1)])], [new Finding("w is mutable")]));
+        Assert.Equal(
+            ["new, which no change may add:", "  + v is new", "listed and no longer found, whose rows leave the list in the change that removed them:", "  - w is mutable"],
+            StartingViolations.Compare([new StartingViolation("SL2", "w is mutable", "x", [new ViolationSite(path, 1)])], [new Finding("v is new")]));
+    }
+
     private static string Field(JsonElement row, string name) =>
         row.TryGetProperty(name, out var value) ? value.GetString() ?? string.Empty : string.Empty;
 

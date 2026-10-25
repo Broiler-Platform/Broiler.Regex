@@ -25,9 +25,14 @@ breaches at `c1422f4d`, the code `0.1.0-preview.4` was packed from, and requirem
 of them during SJL-11.2. The architecture tests in [`tests/Regex.Architecture.Tests`](../tests/Regex.Architecture.Tests)
 assert **the exact list of today's violations**,
 [`starting-violations.tsv`](../tests/Regex.Architecture.Tests/starting-violations.tsv), each with the rule
-that finds it and the place in the source where it is. A test fails when that list changes in either
+that finds it and the places in the source where it is. A test fails when that list changes in either
 direction: a new violation is refused, and a violation that a change removes must leave the list in the
-same change. Each step of SJL-11.2 shrinks it, and it is empty when SJL-11.2 ends (bundle `sjl-11-001`'s
+same change. Where a violation can be at more than one place, the list is checked place by place: the rules
+over member and type references (SL1's assembly half, SL3, SL4 and C5) read each place from the IL and the
+PDB's sequence points, and SL5 reads each suppressed code's places from the project and build files, so a new
+place of a listed violation is refused, and so is a citation of a place that no longer holds it. Every other
+row's violation names its one place: a static field, a public member or type, a file, a package or a
+setting. Each step of SJL-11.2 shrinks the list, and it is empty when SJL-11.2 ends (bundle `sjl-11-001`'s
 rule, check E-3).
 
 ## Scope
