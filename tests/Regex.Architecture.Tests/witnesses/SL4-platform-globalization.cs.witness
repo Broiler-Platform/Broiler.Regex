@@ -33,6 +33,19 @@ public static class PlatformDependent
 
     public static string Format(int value) => $"{value}";
 
+    public static string Sign() => NumberFormatInfo.CurrentInfo.NegativeSign;
+
+    public static int Convert(string text) => System.Convert.ToInt32(text);
+
+    public static string Composite(int value) => string.Format("{0}", value);
+
+    public static string Append(StringBuilder builder, double value) => builder.Append(value).ToString();
+
+    public static string Fixed(double value) => value.ToString("N2");
+
+    // A provider passed, NumberFormatInfo.InvariantInfo, is culture-free and passes.
+    public static string Invariant(int value) => value.ToString(NumberFormatInfo.InvariantInfo);
+
     public static DateTime Now() => DateTime.Now;
 
     public static TimeSpan Offset() => TimeZoneInfo.Local.BaseUtcOffset;

@@ -96,6 +96,21 @@ public class SharedRuleTests
     }
 
     [Fact]
+    public void SL1_The_restore_half_refuses_a_package_outside_the_layering_restored_directly_or_transitively()
+    {
+        // A restore that resolves the provider, the owner's tables, a base class library package and the SDK's own
+        // ILLink package, beside a project: the tables and the package outside the allow-list are refused, the
+        // provider, the SDK's package and the project are not.
+        using var assets = JsonDocument.Parse(Witness.Text("SL1-restores-a-package-outside-the-layering.assets.json.witness"));
+        Assert.Equal(
+            [
+                "Broiler.Regex restores the package Broiler.Unicode.Tables/0.1.0-preview.5, outside the allow-list or against the layering",
+                "Broiler.Regex restores the package System.Text.Json/10.0.0, outside the allow-list or against the layering",
+            ],
+            SharedRules.SL1Restore(Library, assets));
+    }
+
+    [Fact]
     public void SL1_The_assembly_half_refuses_a_reference_outside_the_framework_and_the_layering()
     {
         // This test assembly references xunit and the library, neither of which the layering gives a library,
@@ -188,7 +203,7 @@ public class SharedRuleTests
             "calls System.Type.MakeGenericType(System.Type[])", "calls System.Enum.GetValues(System.Type)",
             "calls System.Reflection.MethodBase.Invoke(System.Object,System.Object[])", "names System.IO.File",
             "calls System.Environment.GetEnvironmentVariable(System.String): an environment read", "applies a module initializer",
-            "declares the platform invoke libc!getpid",
+            "declares the platform invoke libc!getpid", "names System.Reflection.MethodInfo: reflection",
         ];
         foreach (var fragment in expected)
             Assert.Contains(violations, v => v.Contains(fragment, StringComparison.Ordinal));
@@ -225,9 +240,18 @@ public class SharedRuleTests
             "names System.Globalization.CultureInfo: platform globalization", "calls System.Double.Parse(System.String), which parses by the current culture",
             "calls System.String.IndexOf(System.String), which compares by the current culture",
             "interpolates a string without a format provider", "calls System.DateTime.get_Now()", "names System.TimeZoneInfo",
+            "calls System.Globalization.NumberFormatInfo.get_CurrentInfo(): only NumberFormatInfo.InvariantInfo is culture-free",
+            "calls System.Convert.ToInt32(System.String), which converts by the current culture",
+            "calls System.String.Format(System.String,System.Object), which formats by the current culture",
+            "calls System.Text.StringBuilder.Append(System.Double), which formats by the current culture",
+            "calls System.Double.ToString(System.String), which formats by the current culture",
         ];
         foreach (var fragment in expected)
             Assert.Contains(violations, v => v.Contains(fragment, StringComparison.Ordinal));
+
+        // A provider passed is not refused, by signature: NumberFormatInfo.InvariantInfo's formatting passes.
+        Assert.DoesNotContain(violations, static v => v.Contains("System.Int32.ToString(System.IFormatProvider)", StringComparison.Ordinal));
+        Assert.DoesNotContain(violations, static v => v.Contains("get_InvariantInfo", StringComparison.Ordinal));
     }
 
     // ---------------------------------------------------------------------------------------------

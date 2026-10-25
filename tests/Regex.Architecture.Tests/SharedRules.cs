@@ -424,7 +424,10 @@ internal static class SharedRules
             {
                 yield return (member, assembly.Name + " calls " + member + ", which parses by the current culture");
             }
-            else if (NumericTypes.Any(t => name == t + ".ToString" || name == t + ".TryFormat") && parameters.Length > 0 && !hasProvider)
+            // TryFormat is not here: every overload of it on net10.0's numeric types declares an IFormatProvider, so
+            // a signature never tells a culture-free call from one that leaves the provider at its default null
+            // (the register's stated limit; Broiler.Unicode's rule names it here and it never fires).
+            else if (NumericTypes.Any(t => name == t + ".ToString") && parameters.Length > 0 && !hasProvider)
             {
                 yield return (member, assembly.Name + " calls " + member + ", which formats by the current culture");
             }
