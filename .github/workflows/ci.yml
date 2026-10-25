@@ -136,3 +136,29 @@ jobs:
             probe-aot.txt
             probe-jit.txt
           if-no-files-found: warn
+
+  # The programme's convention 18 (rule SL8; bundle sjl-11-001's check E-6): every relevant unit of the
+  # library carries its Broiler Code Assurance annotation and the generated artefacts at the repository
+  # root are current. A source change that leaves them behind fails here.
+  assurance:
+    name: Assurance check (SL8)
+    runs-on: ubuntu-latest
+    steps:
+      # The assurance tool lives in Broiler.Code. The two are checked out side by side, the layout
+      # assurance.config.json's regenerateCommand names.
+      - name: Check out Broiler.RegEx
+        uses: actions/checkout@v7
+        with:
+          path: Broiler.RegEx
+      - name: Check out Broiler.Code
+        uses: actions/checkout@v7
+        with:
+          repository: Broiler-Platform/Broiler.Code
+          path: Broiler.Code
+          token: ${{ secrets.BROILER_CODE_TOKEN || github.token }}
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Check the library against its generated artefacts
+        run: dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx
