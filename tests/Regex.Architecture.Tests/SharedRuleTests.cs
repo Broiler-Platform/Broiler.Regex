@@ -114,6 +114,10 @@ public class SharedRuleTests
         Assert.Contains(library.StaticFields, static f => f.Type == "Broiler.Regex.Ast.CodePointSet" && f.Name == "MaxCodePoint" && f.IsLiteral);
         Assert.Contains(library.StaticFields, static f => f.Type == "Broiler.Regex.Ast.EmptyNode" && f.Name == "Instance" && f.IsReadOnly);
         Assert.DoesNotContain(SharedRules.SL2(library), static v => v.Contains("EmptyNode.Instance", StringComparison.Ordinal));
+
+        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result is built from a new
+        // dictionary that its read-only NamedGroups interface hides.
+        Assert.Contains("System.Collections.Generic.Dictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>", library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
     }
 
     [Fact]
@@ -128,11 +132,30 @@ public class SharedRuleTests
         Assert.Contains(violations, static v => v.EndsWith("names System.Threading.ThreadLocal`1", StringComparison.Ordinal));
         Assert.Contains(violations, static v => v.EndsWith("names System.Threading.AsyncLocal`1", StringComparison.Ordinal));
 
+        // A static get-only auto-property of a mutable type: its backing field is a static field like any other.
+        Assert.Contains(violations, static v => v.Contains("AmbientState.Lookup is a static System.Collections.Generic.Dictionary`2", StringComparison.Ordinal));
+
         // This repository's addition: a static field holding an object of the library's own type that changes on
-        // a read, the shape of a lazily normalised set, directly and through a base class; an immutable one passes.
-        Assert.Contains(violations, static v => v.Contains("AmbientState.Shared is a static Witness.LazySet, which can be changed after construction: Witness.LazySet.normalized is not readonly", StringComparison.Ordinal));
-        Assert.Contains(violations, static v => v.Contains("AmbientState.Derived is a static Witness.DerivedSet, which can be changed after construction: Witness.LazySet.normalized is not readonly", StringComparison.Ordinal));
+        // a read, the shape of a lazily normalised set, directly, through a base class and through a readonly field
+        // of another class; an immutable one passes. The row names the static field; the reasons are every field.
+        var witness = Witness.Compile("SL2-mutable-static-state.cs.witness");
+        const string OwnClass = ", an object of the library's own class that can be changed after construction";
+        Assert.Contains("SL2_mutable_static_state: Witness.AmbientState.Shared is a static Witness.LazySet" + OwnClass, violations);
+        Assert.Contains("SL2_mutable_static_state: Witness.AmbientState.Derived is a static Witness.DerivedSet" + OwnClass, violations);
+        Assert.Contains("SL2_mutable_static_state: Witness.AmbientState.Held is a static Witness.Holder" + OwnClass, violations);
+        Assert.Equal(["Witness.LazySet.items is a System.Collections.Generic.List`1<System.Int32>", "Witness.LazySet.normalized is not readonly"], SharedRules.MutableInstanceState(witness, "Witness.LazySet"));
+        Assert.Equal(SharedRules.MutableInstanceState(witness, "Witness.LazySet"), SharedRules.MutableInstanceState(witness, "Witness.DerivedSet"));
+        Assert.Equal(["Witness.Holder.inner holds a Witness.LazySet, which can be changed after construction"], SharedRules.MutableInstanceState(witness, "Witness.Holder"));
         Assert.DoesNotContain(violations, static v => v.Contains("AmbientState.Fixed", StringComparison.Ordinal));
+
+        // A mutable collection the initializer creates behind a read-only interface, held directly and by a class
+        // of the witness's own, the RegexMatch.Empty shape; the same shapes over an empty array or an immutable
+        // dictionary pass.
+        const string Hidden = " whose initializer keeps a mutable collection behind a collection interface, which can be changed after construction";
+        Assert.Contains("SL2_mutable_static_state: Witness.AmbientState.Wrapped is a static System.Collections.Generic.IReadOnlyList`1<System.Int32>" + Hidden, violations);
+        Assert.Contains("SL2_mutable_static_state: Witness.AmbientState.Hidden is a static Witness.Snapshot" + Hidden, violations);
+        Assert.DoesNotContain(violations, static v => v.Contains("AmbientState.Frozen", StringComparison.Ordinal));
+        Assert.DoesNotContain(violations, static v => v.Contains("AmbientState.None", StringComparison.Ordinal));
     }
 
     // ---------------------------------------------------------------------------------------------

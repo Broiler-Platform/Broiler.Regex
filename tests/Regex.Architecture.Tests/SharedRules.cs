@@ -116,12 +116,22 @@ internal static class SharedRules
         fieldType.EndsWith(']') || MutableTypes.Any(t => fieldType == t || fieldType.StartsWith(t + "<", StringComparison.Ordinal));
 
     /// <summary>
-    /// SL2 over a built assembly. What differs from Broiler.Unicode's rule: a static readonly field whose type is
-    /// a class the library itself declares is mutable state too when that class's instances can change after
-    /// construction - an instance field that is not readonly, or one of a mutable collection or array type, in it
-    /// or in a base class the library declares. Convention 7 asks that static data be immutable, and convention 10
-    /// that a shared object be safe to read concurrently; a class that normalises itself in place on a read is
-    /// neither, whether the type is the base class library's or the library's own.
+    /// SL2 over a built assembly. What differs from Broiler.Unicode's rule:
+    /// <list type="bullet">
+    /// <item>A static readonly field whose type is a class the library itself declares is mutable state too when that
+    /// class's instances can change after construction: an instance field that is not readonly, one of a mutable
+    /// collection or array type, or a readonly one holding such a class of the library's, in it or in a base class it
+    /// declares. Convention 7 asks that static data be immutable, and convention 10 that a shared object be safe to
+    /// read concurrently; a class that normalises itself in place on a read is neither, whether the type is the base
+    /// class library's or the library's own. The row names the static field alone, so that a change that fixes one of
+    /// the class's fields and leaves another changes no row; <see cref="MutableInstanceState"/> says which.</item>
+    /// <item>A static readonly field whose type is a collection interface, or a class of the library's that keeps a
+    /// collection interface in an instance field, is mutable state when its initializer creates a mutable collection
+    /// or array (<see cref="AssemblyFacts.StaticInitializerCreations"/>): a read-only interface hides a mutable
+    /// instance from the declared types, as <c>RegexMatch.Empty</c>'s dictionary is hidden.</item>
+    /// <item>A static auto-property's backing field is read as a static field, so a get-only property of a mutable
+    /// type is mutable state although no setter exists.</item>
+    /// </list>
     /// </summary>
     internal static IEnumerable<string> SL2(AssemblyFacts assembly)
     {
@@ -136,8 +146,10 @@ internal static class SharedRules
                 yield return where + " is a static array, whose elements can be changed: use a constant span or an immutable collection";
             else if (MutableTypes.Any(t => field.FieldType == t || field.FieldType.StartsWith(t + "<", StringComparison.Ordinal)))
                 yield return where + " is a static " + field.FieldType + ", which can be changed after construction";
-            else if (InstanceState(assembly, field.FieldType) is { } state)
-                yield return where + " is a static " + field.FieldType + ", which can be changed after construction: " + state;
+            else if (MutableInstanceState(assembly, field.FieldType).Count > 0)
+                yield return where + " is a static " + field.FieldType + ", an object of the library's own class that can be changed after construction";
+            else if (HidesBehindAnInterface(assembly, field.FieldType, []) && CreatesMutableState(assembly, field))
+                yield return where + " is a static " + field.FieldType + " whose initializer keeps a mutable collection behind a collection interface, which can be changed after construction";
         }
 
         foreach (var property in assembly.SettableStaticProperties)
@@ -151,23 +163,69 @@ internal static class SharedRules
     }
 
     /// <summary>
-    /// The first instance field that lets an object of <paramref name="type"/>, a class the assembly declares, change
-    /// after construction, in it or in a base class the assembly declares; null when there is none, or when the type
-    /// is not a class of this assembly.
+    /// Every instance field that lets an object of <paramref name="type"/>, a class the assembly declares, change after
+    /// construction, in it or in a base class the assembly declares: one that is not readonly, one of a mutable
+    /// collection or array type, and a readonly one holding a class of the assembly's that can change. Empty when
+    /// there is none, or when the type is not a class of this assembly.
     /// </summary>
-    private static string? InstanceState(AssemblyFacts assembly, string type)
+    internal static IReadOnlyList<string> MutableInstanceState(AssemblyFacts assembly, string type) =>
+        MutableInstanceState(assembly, type, new HashSet<string>(StringComparer.Ordinal));
+
+    private static List<string> MutableInstanceState(AssemblyFacts assembly, string type, HashSet<string> visiting)
     {
+        var reasons = new List<string>();
+        if (!visiting.Add(type))
+            return reasons;
         for (var current = type; current is not null; current = assembly.BaseTypes.GetValueOrDefault(current))
         {
-            var fields = assembly.InstanceFields.Where(f => f.Type == current).ToList();
-            if (fields.FirstOrDefault(static f => !f.IsReadOnly) is { } writable)
-                return writable.Type + "." + writable.Name + " is not readonly";
-            if (fields.FirstOrDefault(static f => IsMutableType(f.FieldType)) is { } mutable)
-                return mutable.Type + "." + mutable.Name + " is a " + mutable.FieldType;
+            foreach (var field in assembly.InstanceFields.Where(f => f.Type == current))
+            {
+                if (!field.IsReadOnly)
+                    reasons.Add(field.Type + "." + field.Name + " is not readonly");
+                else if (IsMutableType(field.FieldType))
+                    reasons.Add(field.Type + "." + field.Name + " is a " + field.FieldType);
+                else if (assembly.Classes.Contains(field.FieldType) && MutableInstanceState(assembly, field.FieldType, visiting).Count > 0)
+                    reasons.Add(field.Type + "." + field.Name + " holds a " + field.FieldType + ", which can be changed after construction");
+            }
         }
 
-        return null;
+        visiting.Remove(type);
+        return reasons;
     }
+
+    /// <summary>
+    /// Whether a value of <paramref name="type"/> can hold a collection behind an interface: the type is a collection
+    /// interface, or a class of the assembly's with an instance field of one, or a readonly field of such a class, in
+    /// it or in a base class.
+    /// </summary>
+    private static bool HidesBehindAnInterface(AssemblyFacts assembly, string type, HashSet<string> visiting)
+    {
+        if (IsCollectionInterface(type))
+            return true;
+        if (!assembly.Classes.Contains(type) || !visiting.Add(type))
+            return false;
+        for (var current = type; current is not null; current = assembly.BaseTypes.GetValueOrDefault(current))
+        {
+            if (assembly.InstanceFields.Any(f => f.Type == current && (IsCollectionInterface(f.FieldType) || HidesBehindAnInterface(assembly, f.FieldType, visiting))))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>An interface of <c>System.Collections</c> or its namespaces, generic or not: <c>IReadOnlyDictionary`2</c>, <c>IList</c>.</summary>
+    private static bool IsCollectionInterface(string type)
+    {
+        var definition = type.Split('<')[0];
+        if (!definition.StartsWith("System.Collections.", StringComparison.Ordinal))
+            return false;
+        var name = definition[(definition.LastIndexOf('.') + 1)..];
+        return name.Length > 1 && name[0] == 'I' && char.IsAsciiLetterUpper(name[1]);
+    }
+
+    /// <summary>Whether the static constructor creates a mutable collection or a non-empty array for <paramref name="field"/>.</summary>
+    private static bool CreatesMutableState(AssemblyFacts assembly, StaticField field) =>
+        assembly.StaticInitializerCreations.TryGetValue(field.Type + "." + field.Name, out var created) && created.Any(IsMutableType);
 
     // ---------------------------------------------------------------------------------------------
     // SL3: no dynamic code, no hidden machinery, no I/O, no environment.

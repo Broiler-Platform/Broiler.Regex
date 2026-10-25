@@ -1,7 +1,8 @@
 // SL2 witness: every kind of state convention 7 refuses, one per member. Rule SL2 must report each, and must pass
-// the immutable one.
+// the immutable ones.
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 
 namespace Witness;
@@ -16,6 +17,9 @@ public static class AmbientState
 
     public static string Mode { get; set; } = "strict";
 
+    // A get-only auto-property: no setter, and a backing field that holds a mutable collection.
+    public static Dictionary<string, int> Lookup { get; } = new();
+
     [ThreadStatic]
     private static int depth;
 
@@ -24,24 +28,41 @@ public static class AmbientState
     private static readonly AsyncLocal<int> Flow = new();
 
     // An object of the witness's own type that normalises itself on a read, as a lazily normalised set does,
-    // held directly and through a derived class; and one whose state is fixed at construction.
+    // held directly, through a derived class and through another class's readonly field; and one whose state is
+    // fixed at construction.
     public static readonly LazySet Shared = new();
 
     public static readonly DerivedSet Derived = new();
 
+    public static readonly Holder Held = new();
+
     public static readonly FixedSet Fixed = new(3);
+
+    // A mutable collection behind a read-only interface, as RegexMatch.Empty's dictionary is: held directly and by a
+    // class of the witness's own whose fields are readonly and typed by the interface. The same shapes over an empty
+    // array and an immutable dictionary pass.
+    public static readonly IReadOnlyList<int> Wrapped = new List<int> { 1, 2 };
+
+    public static readonly Snapshot Hidden = new(new Dictionary<string, int>());
+
+    public static readonly Snapshot Frozen = new(ReadOnlyDictionary<string, int>.Empty);
+
+    public static readonly IReadOnlyList<int> None = Array.Empty<int>();
 
     public static int Use() => depth + Scratch.Value + Flow.Value;
 }
 
 public class LazySet
 {
+    private readonly List<int> items = [];
+
     private bool normalized;
 
     public bool IsNormalized
     {
         get
         {
+            items.Sort();
             normalized = true;
             return normalized;
         }
@@ -52,7 +73,19 @@ public sealed class DerivedSet : LazySet
 {
 }
 
+public sealed class Holder
+{
+    private readonly LazySet inner = new();
+
+    public bool Ready => inner.IsNormalized;
+}
+
 public sealed class FixedSet(int count)
 {
     public int Count { get; } = count;
+}
+
+public sealed class Snapshot(IReadOnlyDictionary<string, int> names)
+{
+    public IReadOnlyDictionary<string, int> Names { get; } = names;
 }
