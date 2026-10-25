@@ -114,8 +114,16 @@ NOT MET otherwise; and a check not holding at the end of SJL-11.2 refuses the ar
 
 - **Each reading is judged on its own.** Parts A to E are judged at the candidate reading from the logs retained for
   it, and again at the end reading, if there is one, from its own logs; a part MET at one reading says nothing of the
-  other. A part NOT MET at the candidate reading blocks both cut-overs (risk D10's stop), and a check of part E not
-  holding at the end of SJL-11.2 refuses the area.
+  other. A part NOT MET at the candidate reading blocks both cut-overs (risk D10's stop).
+- **What refuses the area.** JSD-0081's refusal path, as this repository's roadmap section 6 states it: if any of R1
+  to R11 is not met by the end of SJL-11.2, the area is refused. Part A judges R1 to R9 and R11, part B the test262
+  readings of R5, R6 and R10, and part E R10's process and the conventions; a check of any of them not holding at the
+  end of SJL-11.2 is such a requirement unmet, and refuses the area by that path. Part E's block says so of its own
+  checks, and is not the only part that can.
+  *(Revised 2026-10-25, before any reading and before this file reached the default branch: the first item ended "A
+  part NOT MET at the candidate reading blocks both cut-overs (risk D10's stop), and a check of part E not holding at
+  the end of SJL-11.2 refuses the area.", which named part E alone and so read narrower than the roadmap's refusal
+  path and JSD-0081.)*
 - **Each check is decided by a retained file, named in the bundle's manifest by its SHA-256**; a file the manifest
   does not name decides nothing, and a step that stopped before the end of its population is void and is not judged.
   `run-library-evidence.sh` writes one log per step, each step's command its first line.
