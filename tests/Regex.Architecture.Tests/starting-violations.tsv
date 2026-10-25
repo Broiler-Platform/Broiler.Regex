@@ -39,9 +39,12 @@ SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.FoldedWordSet is a stat
 SL2	Broiler.Regex: Broiler.Regex.Unicode.CaseFolding.SimpleTable is a static Broiler.Regex.Unicode.CaseFolding+FoldTable, an object of the library's own class that can be changed after construction	FoldTable SimpleTable =	Broiler.Regex/Unicode/CaseFolding.cs:116
 SL2	Broiler.Regex: Broiler.Regex.Unicode.CaseFolding.UpperTable is a static Broiler.Regex.Unicode.CaseFolding+FoldTable, an object of the library's own class that can be changed after construction	FoldTable UpperTable =	Broiler.Regex/Unicode/CaseFolding.cs:120
 # RegexMatch.Empty is every no-match result of the process, and its NamedGroups is a new Dictionary behind
-# IReadOnlyDictionary, which a caller can cast and change for every later no-match. The repair, for the step that
-# makes the static state immutable (task 2.3): an empty read-only dictionary, ReadOnlyDictionary<string,
-# RegexGroup>.Empty or FrozenDictionary<string, RegexGroup>.Empty, so that the initializer creates nothing mutable.
+# IReadOnlyDictionary, which a caller can cast and change for every later no-match. The repair: an empty read-only
+# dictionary, ReadOnlyDictionary<string, RegexGroup>.Empty or FrozenDictionary<string, RegexGroup>.Empty, so that the
+# initializer creates nothing mutable. The plan gives this row to no task. Its row 2.3 asks for no mutable static
+# (convention 7), but 2.3's area is Parsing/, Ast/ and Unicode/, not Matching/; row 2.4c deletes Matching/, while row
+# 2.9 and decision D12 keep the string-bearing RegexMatch, so the class outlives both. The owner is unassigned and is
+# decided at task 2.3; row 2.9's check, an empty list, is the latest change in which the row can leave.
 SL2	Broiler.Regex: Broiler.Regex.Matching.RegexMatch.Empty is a static Broiler.Regex.Matching.RegexMatch whose initializer keeps a mutable collection behind a collection interface, which can be changed after construction	RegexMatch Empty =	Broiler.Regex/Matching/RegexMatch.cs:72
 SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.StringPropertyNames is a static System.Collections.Generic.Dictionary`2<System.String,UnicodeEmoji.StringProperties.EmojiSequenceProperties>, which can be changed after construction	StringPropertyNames = new(	Broiler.Regex/Unicode/UnicodeCharSets.cs:303
 SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.StringPropertyCache is a static System.Collections.Generic.Dictionary`2<UnicodeEmoji.StringProperties.EmojiSequenceProperties,Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch>, which can be changed after construction	StringPropertyCache = [];	Broiler.Regex/Unicode/UnicodeCharSets.cs:317
