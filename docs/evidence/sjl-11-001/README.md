@@ -8,7 +8,7 @@ its component clauses 1 to 3 and the vectors at library level.
 
 **Rules**, written 2026-10-20 at work package SJL-11.1, before any code of SJL-11.2 exists here, and revised on
 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's JSD-0081 as
-filed; each file's header says what changed:
+filed and, the same day, after review; each file's header says what changed:
 - [`decision-rule.md`](decision-rule.md): part A, requirements R1 to R9 and R11 as a contract (clause 1); part B,
   test262 in this repository's CI (clause 2); part C, the adversarial corpus under the JIT and Native AOT
   (clause 3); part D, the vectors at library level (template T3); part E, the process (R10).
@@ -27,6 +27,8 @@ SHA-256: Broiler.VM's, with `--engine broiler-vm`, and Broiler.JS's, with `--eng
 bundle's `inputs/adversarial/`. Two runs of each wrote byte-identical files. This change's later commits leave
 `tests/Adversarial/corpus.tsv` and `eng/adversarial-programs.py` byte-identical, so the generator at its head writes
 the same programs but for the commit their headers name, and that commit stays in the history this change merges.
+**So this change merges by a merge commit, not squashed or rebased**: `c2aa771` must stay reachable from the default
+branch, or both engines' manifests name a commit that history does not hold.
 
 **Records:**
 - This repository's [roadmap](../../roadmap.md), section 6: the record of 2026-10-20 that adopts R1 to R11 as owner

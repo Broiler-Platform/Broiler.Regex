@@ -9,7 +9,10 @@ EX-30).
 *Revised 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's
 JSD-0081 as filed: section 3 states the four presumptions its decision D37 records, where it stated three, and
 section 5 cites decision D10, not D7, for the frame and trail ceilings. No row of [`corpus.tsv`](corpus.tsv) changed,
-and its SHA-256 is the one both engines' manifests name.*
+and its SHA-256 is the one both engines' manifests name. Revised again the same day, after review: the steps of
+SJL-11.2 and SJL-11.3 are named by what they build, where this file named them by the numbers of SJL-11's plan, which
+no repository holds ("SJL-11.3's task 3.1", "tasks 2.3 to 2.4c", "task 2.4c's"); nothing a row or a presumption says
+changed.*
 
 [`corpus.tsv`](corpus.tsv) is two things at once:
 
@@ -84,7 +87,7 @@ The rule's part C asks that "a row declared exhausted needs, by regexpref's coun
 steps, at least a hundred times its budget, and a row declared to match completes within a hundredth of it", so
 that a change of units alone cannot move a declared status. **The count** is the number of invocations of
 ECMA-262 §22.2.2's Matcher closures, as `regexpref` (Broiler.JS's `scripts/conformance/regexpref.py`,
-`ref:regexpref@1`, SJL-11.3's task 3.1) will report it. It does not exist yet. The arguments below are bounds
+`ref:regexpref@1`, SJL-11.3's reference) will report it. It does not exist yet. The arguments below are bounds
 read from the specification's algorithms, chiefly RepeatMatcher (§22.2.2.3.1); when `regexpref` exists, its count
 for each row is recorded in the bundle before the candidate reading, and a count that contradicts a bound here is
 a defect of this corpus, answered by a revision before that reading.
@@ -107,22 +110,22 @@ rows set no step ceiling.
 
 **What the statuses presume.** The declared statuses presume four things of SJL-11.2's backend. Decisions D5 and
 D8 alone do not state them: D8 charges a run per character it examines, but neither says which quantifier is a run
-or what a run holds. JSD-0081's decision D37 records the four, as stated below, as constraints on SJL-11.2's tasks
-2.3 to 2.4c.
+or what a run holds. JSD-0081's decision D37 records the four, as stated below, as constraints on SJL-11.2's backend,
+from the parser's nesting check to its fast paths.
 
 1. **No memoization.** The backend searches in the specification's order and does not remember that an
    instruction failed at a position. Every K, A, L and W row's margin counts the specification's paths, which a
    memoizing backend would not walk.
-2. **No required-literal analysis.** The only prefilter is task 2.4c's literal-prefix one, which charges its
-   skips. Rows that end in an unmatched literal put that literal earlier in the subject where they can (K01,
-   K03, K04, A01, A02), so that a test for its presence in the subject would not shortcut them; a test for it at
+2. **No required-literal analysis.** The only prefilter is the literal-prefix one of SJL-11.2's fast paths, which
+   charges its skips. Rows that end in an unmatched literal put that literal earlier in the subject where they can
+   (K01, K03, K04, A01, A02), so that a test for its presence in the subject would not shortcut them; a test for it at
    or after the start position would. K02 cannot put its `b` earlier, because `(a*)*` matches the empty string
    and a `b` before the run would match at once, so a test for presence alone would answer it. K05 requires no
    literal.
 3. **A greedy run.** A greedy quantifier over one character class runs as one instruction with one backtrack
    point: it adds no frame and writes no trail cell per character, and charges one unit per character it
    examines (decision D8). This is Broiler.VM's `Op.Run` (`JsRegExpMatcher.cs`, `EmitRepeat` and `TakeRun`, at
-   `aaa39fb`), the form this corpus expects task 2.4c's single-code-point quantifier path to take as
+   `aaa39fb`), the form this corpus expects SJL-11.2's single-code-point quantifier fast path to take as
    instructions. Broiler.VM uses it for a class body only: its `a*`, a literal body, is a loop that pushes a frame
    and writes a trail cell per character. The G rows, O05 and O06 therefore write their run as the class `[a]`.
    In the loop form, their 10,000,001 characters would pass the frame ceilings: the G rows' engine cases would
@@ -138,7 +141,7 @@ or what a run holds. JSD-0081's decision D37 records the four, as stated below, 
    limit, keeps its verdicts.
 
 A backend that breaks one of these presumptions can answer as the specification does and still fail part C.
-That is why they are stated here and handed to tasks 2.3 to 2.4c.
+That is why they are stated here and handed to SJL-11.2's backend.
 
 ## 4. The rows
 

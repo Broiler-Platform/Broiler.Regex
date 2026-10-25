@@ -13,7 +13,9 @@ claim that anyone independent has read it.
 
 *Revised 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's
 JSD-0081 as filed: check A-5 adds row S10's escapes, which that record's requirement table places under R5 and its
-decision D36 among SJL-11.2's fixes; nothing else changed.*
+decision D36 among SJL-11.2's fixes; nothing else changed. Revised again the same day, after review and still before
+any run: a section "How it is read" is added, which the programme's validation document asks of every rule (section
+4); no rule block changed.*
 
 **What this file is.** Five predeclared decisions, one per part. Part A is the contract (R1 to R9 and R11), each
 check with a witness. Part B is clause 2. Part C is clause 3, at library level, in both execution modes. Part D is
@@ -107,6 +109,29 @@ checks:
 MET if and only if every check holds at the reading.
 NOT MET otherwise; and a check not holding at the end of SJL-11.2 refuses the area by JSD-0081's refusal path.
 ```
+
+## How it is read
+
+- **Each reading is judged on its own.** Parts A to E are judged at the candidate reading from the logs retained for
+  it, and again at the end reading, if there is one, from its own logs; a part MET at one reading says nothing of the
+  other. A part NOT MET at the candidate reading blocks both cut-overs (risk D10's stop), and a check of part E not
+  holding at the end of SJL-11.2 refuses the area.
+- **Each check is decided by a retained file, named in the bundle's manifest by its SHA-256**; a file the manifest
+  does not name decides nothing, and a step that stopped before the end of its population is void and is not judged.
+  `run-library-evidence.sh` writes one log per step, each step's command its first line.
+  - **Part A**: each check by its test's result in the test log of the reading, and by the retained run of its witness
+    failing once; a check whose witness was not seen failing is not met.
+  - **Part B**: the two CI jobs' runs at the reading's commit, named by their run identifiers, read with
+    `test262/host-expected-failures.txt` and `test262/library-unreadable.txt` as that commit holds them; and the
+    control's scratch commit with the run it turned red.
+  - **Part C**: each child's exit and status line per row, mode and RID; the two modes' reports per RID, compared by
+    their digests; and each control's run with its revert.
+  - **Part D**: the runner's report under each mode, with the pin file's check, which comes before the run.
+  - **Part E**: each check by its own record: the build's analyzer output, the probe's publish log, the architecture
+    tests' result with their register, package validation's output with `docs/suppressions.md`, the fuzz job's run,
+    the assurance job's run and its drift control, and the repository's settings files at the reading's commit.
+- **Counts are results, not rules.** Where a check names a count or a seed, it is a parameter; what a reading finds is
+  written in the bundle's README at that reading, and nowhere in this file.
 
 ## Revisions
 
