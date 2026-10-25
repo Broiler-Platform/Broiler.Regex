@@ -410,8 +410,9 @@ public class SharedRuleTests
             // suppresses has its place there as well as in the project file.
             var targets = Path.Combine(scratch.FullName, "Directory.Build.targets");
             File.WriteAllText(targets, "<Project>\n  <PropertyGroup>\n    <NoWarn>$(NoWarn);IL2026</NoWarn>\n  </PropertyGroup>\n</Project>\n");
-            var imported = Tools.ImportedFiles(project).Where(f => f.StartsWith(scratch.FullName + Path.DirectorySeparatorChar, StringComparison.Ordinal)).ToList();
-            Assert.Equal([targets, project], imported);
+            // Told by the scratch directory's unique name, which a short or differently cased path keeps.
+            var imported = Tools.ImportedFiles(project).Where(f => Path.GetFileName(Path.GetDirectoryName(f)) == scratch.Name).ToList();
+            Assert.Equal(["Directory.Build.targets", "Witness.csproj"], imported.Select(Path.GetFileName));
             var files = imported.Select(static f => (Path.GetFileName(f), File.ReadAllText(f))).ToList();
             var withTargets = Tools.Evaluate(project, SharedRules.LibraryProperties.Select(static p => p.Property).Concat(SuppressionProperties));
             var places = SharedRules.SL5PropertyFindings("Witness", withTargets, SharedRules.LibraryProperties, files).Single(static f => f.Violation == "Witness: NoWarn suppresses IL2026").Places;
