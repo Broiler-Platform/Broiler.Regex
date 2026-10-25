@@ -9,12 +9,15 @@ the programme's conventions 12 and 16 ask for.
 
 Convention 12 suppresses no trim, AOT or single-file warning, and convention 17 makes every warning an error. This
 inventory, in the shape of Broiler.VM's rule N36, lists by file every warning suppression in a source or project
-file of the library (`Broiler.Regex/`) and the Native AOT probe (`probes/Regex.Probe`), and in the repository's
-build files they import (`Directory.Build.props`, `Directory.Packages.props` and `eng/Broiler.Packaging.props`): a
-`#pragma warning disable`, a `SuppressMessage` or `UnconditionalSuppressMessage` attribute, a non-empty `NoWarn`, a
-`WarningsNotAsErrors` or a `SuppressTrimAnalysisWarnings` element. Rule SL5 of
+file of the library (`Broiler.Regex/`) and the Native AOT probe (`probes/Regex.Probe`), and in every build file of
+the repository that MSBuild's evaluation of either imports (today `Directory.Build.props`, `Directory.Packages.props`
+and `eng/Broiler.Packaging.props`): a `#pragma warning disable`, a `SuppressMessage` or
+`UnconditionalSuppressMessage` attribute, a non-empty `NoWarn`, a `WarningsNotAsErrors` or a
+`SuppressTrimAnalysisWarnings` element. Rule SL5 of
 [`tests/Regex.Architecture.Tests`](../tests/Regex.Architecture.Tests) scans those files and holds the section below
-to what it finds: each suppression is listed there, and when the scan finds none the section says None.
+to what it finds: each suppression is listed there, and when the scan finds none the section says None. The build
+files are read from the evaluation's import list, not named in the test, so one a later change adds (a
+`Directory.Build.targets`, another `eng/*.props`) is scanned the day it is imported.
 
 The probe's project file sets `NoWarn` to `1701;1702`, the compiler's informational codes the SDK puts in every
 project. That **replaces** the XML-documentation codes the packaging file appends; it resets the property rather than

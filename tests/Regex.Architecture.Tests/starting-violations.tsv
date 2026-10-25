@@ -8,15 +8,16 @@
 # adds one. SJL-11.2 shrinks the list to none, and bundle sjl-11-001's check E-3 holds it empty at the candidate reading.
 #
 # Where a rule reads where a violation is - SL1's assembly half, SL3, SL4 and C5 from the IL and the PDB's sequence
-# points, SL5 from the NoWarn and WarningsNotAsErrors elements of the project and build files - its test asserts the
-# row place by place as well: every place the rule finds is cited once, and every cited place is one the rule finds,
-# so a row the rule still finds but at no place fails too. A call of a listed member in a statement of its own is a new
-# place and fails the test, and so does a citation left on a line that no longer holds the violation, although the
-# row's wording is the same in both. A place has two limits, which AssemblyFacts states: it is a statement, so a second
-# use inside a statement that already holds one is not a new place; and it is where an instruction names the member,
-# its declaring type or a type operand, so a use that names a type or an assembly only in a signature, a field or local
-# type or a generic argument is no place at all. Review sees those uses. Every other row's violation names its one
-# place: a static field, a public member or type, a file, a package, a setting.
+# points, SL5 from the NoWarn and WarningsNotAsErrors elements of the project file and of every build file of the
+# repository its evaluation imports - its test asserts the row place by place as well: every place the rule finds is
+# cited once, and every cited place is one the rule finds, so a row the rule still finds but at no place fails too. A
+# call of a listed member in a statement of its own is a new place and fails the test, and so does a citation left on a
+# line that no longer holds the violation, although the row's wording is the same in both. A place has two limits, which
+# AssemblyFacts states: it is a statement, so a second use inside a statement that already holds one is not a new place;
+# and it is where an instruction names the member, its declaring type or a type operand, so a use that names a type or
+# an assembly only in a signature, a field or local type or a generic argument is no place at all. Review sees those
+# uses. Every other row's violation names its one place: a static field, a public member or type, a file, a package, a
+# setting.
 #
 # Columns, tab-separated: the rule or check; the violation, exactly as the rule words it; a token the source holds where
 # the violation is; and the places, path:line, space-separated, one line of each (a statement can span several).

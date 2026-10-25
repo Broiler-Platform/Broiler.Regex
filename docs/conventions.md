@@ -29,16 +29,17 @@ that finds it and the places in the source where it is. A test fails when that l
 direction: a new violation is refused, and a violation that a change removes must leave the list in the
 same change. Where a violation can be at more than one place, the list is checked place by place: the rules
 over member and type references (SL1's assembly half, SL3, SL4 and C5) read each place from the IL and the
-PDB's sequence points, and SL5 reads each suppressed code's places from the project and build files. A new
-place of a listed violation is refused, and so is a citation of a place that no longer holds it, or of a
-violation the rule still finds but at no place. A place has two limits, which the tests' `AssemblyFacts`
-states. It is a statement, the lines of one sequence point, so a second use of a listed member inside a
-statement that already holds one (`char.IsDigit(a) || char.IsDigit(b)`) is not a new place. And it is where
-an instruction names the member, its declaring type or a type operand, so a new use that names a type or an
-assembly only in a signature, a field or local type or a generic argument (a parameter of type `MemberInfo`,
-a new `List<EmojiSequenceProperties>`) is no place at all. Review sees those uses. Every other row's
-violation names its one place: a static field, a public member or type, a file, a package or a setting. Each step of SJL-11.2 shrinks the list, and it is empty when SJL-11.2 ends (bundle `sjl-11-001`'s
-rule, check E-3).
+PDB's sequence points, and SL5 reads each suppressed code's places from the project file and every build
+file of the repository that MSBuild's evaluation imports. A new place of a listed violation is refused, and
+so is a citation of a place that no longer holds it, or of a violation the rule still finds but at no
+place. A place has two limits, which the tests' `AssemblyFacts` states. It is a statement, the lines of one
+sequence point, so a second use of a listed member inside a statement that already holds one
+(`char.IsDigit(a) || char.IsDigit(b)`) is not a new place. And it is where an instruction names the member,
+its declaring type or a type operand, so a new use that names a type or an assembly only in a signature, a
+field or local type or a generic argument (a parameter of type `MemberInfo`, a new
+`List<EmojiSequenceProperties>`) is no place at all. Review sees those uses. Every other row's violation
+names its one place: a static field, a public member or type, a file, a package or a setting. Each step of
+SJL-11.2 shrinks the list, and it is empty when SJL-11.2 ends (bundle `sjl-11-001`'s rule, check E-3).
 
 ## Scope
 

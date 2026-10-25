@@ -529,9 +529,10 @@ internal static class SharedRules
 
     private static int LineOf(string text, int index) => 1 + text.AsSpan(0, index).Count('\n');
 
+    /// <summary>A property's codes, each once: a code two build files suppress is one violation with two places.</summary>
     private static IEnumerable<string> Codes(IReadOnlyDictionary<string, string> evaluated, string property) =>
         evaluated.TryGetValue(property, out var value)
-            ? value.Split([';', ','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            ? value.Split([';', ','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct(StringComparer.Ordinal)
             : [];
 
     /// <summary>SL5 over a built assembly: a suppression the compiler keeps in metadata.</summary>

@@ -10,9 +10,9 @@
     "breaching and that metadata can decide. Every rule and check is Active, and the library does not yet meet every one:",
     "starting-violations.tsv beside this file is the exact list of what they find in it, which each test asserts in both",
     "directions, place by place where the rule reads places (SL1's assembly half, SL3, SL4 and C5 from the IL and the PDB,",
-    "SL5 from the project files), and SJL-11.2 shrinks to none (bundle sjl-11-001's check E-3). RuleRegisterTests holds",
-    "this file to the tests, the witnesses on disk and the list's citations. No row carries a run figure; the list carries",
-    "the findings."
+    "SL5 from the project file and the build files its evaluation imports), and SJL-11.2 shrinks to none (bundle",
+    "sjl-11-001's check E-3). RuleRegisterTests holds this file to the tests, the witnesses on disk and the list's",
+    "citations. No row carries a run figure; the list carries the findings."
   ],
   "milestone": "SJL-11",
   "rules": [
@@ -56,8 +56,8 @@
       "id": "SL5",
       "status": "Active",
       "statement": "IsAotCompatible and IsTrimmable hold for the library, with the trim, AOT and single-file analyzers on, and it targets net10.0 with nullable enabled, implicit usings disabled, deterministic builds, no unsafe code and warnings as errors; nothing is suppressed in it: no NoWarn beyond the SDK's own 1701 and 1702, no WarningsNotAsErrors, no SuppressTrimAnalysisWarnings, no UnconditionalSuppressMessage. An inventory in the shape of Broiler.VM's N36, docs/suppressions.md, lists by file every suppression in the sources and project files of the library and the probe and in the build files they import, and says None when there is none. The Native AOT probe is evaluated with Broiler.VM's root settings (PublishAot, full trimming, InvariantGlobalization, UseSystemResourceKeys, TrimmerSingleWarn off, IsAotCompatible, warnings as errors) and is held to the same absence of suppressions (convention 12).",
-      "evidence": "The library's and the probe's properties as MSBuild evaluates them, with each suppressed code's places, the NoWarn and WarningsNotAsErrors elements of the project file and the build files that name it; the built library's and probe's CustomAttribute tables; and the text of every source and project file of the library and the probe and of Directory.Build.props, Directory.Packages.props and eng/Broiler.Packaging.props",
-      "nonVacuousWhen": "The library and the probe are evaluated with every import applied, so a property set in Directory.Build.props or the packaging file and undone in a project file is seen; the inventory scan reads both project files, the sources and the build files; the witness project sets every analyzer on and suppresses one warning, and is refused for that alone, and a NoWarn of the SDK's codes alone is shown to be a reset while one code more is a suppression; a code's places are shown to be every element that names it, across files and lines.",
+      "evidence": "The library's and the probe's properties as MSBuild evaluates them, with each suppressed code's places, the NoWarn and WarningsNotAsErrors elements that name it in the project file and in every file of the repository that the evaluation imports, read from the preprocessed project (build output and the packages' own build files aside); the built library's and probe's CustomAttribute tables; and the text of every source and project file of the library and the probe and of every build file of the repository their evaluations import",
+      "nonVacuousWhen": "The library and the probe are evaluated with every import applied, so a property set in Directory.Build.props or the packaging file and undone in a project file is seen; the inventory scan reads both project files, the sources and the build files the evaluations import, Directory.Build.props, Directory.Packages.props and eng/Broiler.Packaging.props among them; the witness project sets every analyzer on and suppresses one warning, and is refused for that alone, and a NoWarn of the SDK's codes alone is shown to be a reset while one code more is a suppression; a code's places are shown to be every element that names it, across files and lines; and a Directory.Build.targets beside the witness project, which no list names, is shown imported, with the place of the code it suppresses.",
       "test": "SL5_The_library_and_the_probe_hold_to_AOT_and_trimming_with_nothing_suppressed",
       "witness": "witnesses/SL5-library-suppresses-a-trim-warning.csproj.witness, witnesses/SL5-source-suppresses-a-trim-warning.cs.witness"
     },

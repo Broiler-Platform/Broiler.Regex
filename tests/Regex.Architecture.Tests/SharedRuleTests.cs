@@ -259,10 +259,17 @@ public class SharedRuleTests
     [Fact]
     public void SL5_The_library_and_the_probe_hold_to_AOT_and_trimming_with_nothing_suppressed()
     {
-        // A suppressed code's places are the NoWarn and WarningsNotAsErrors elements, in the project file and the
-        // build files it imports, that name it.
-        static IReadOnlyList<(string Path, string Text)> FilesOf(SharedProject project) =>
-            BuildFiles.Prepend(SharedTree.Relative(project.Path)).Select(static f => (f, File.ReadAllText(Path.Combine(SharedTree.Root, f)))).ToList();
+        // A suppressed code's places are the NoWarn and WarningsNotAsErrors elements that name it, in the project file
+        // and every build file of the repository its evaluation imports.
+        static IReadOnlyList<(string Path, string Text)> FilesOf(SharedProject project)
+        {
+            var files = BuildFilesOf(project).Select(static f => (SharedTree.Relative(f), File.ReadAllText(f))).ToList();
+
+            // Not vacuous: the evaluation's imports are read, the project file and the three build files among them.
+            foreach (var file in (string[])[SharedTree.Relative(project.Path), "Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props"])
+                Assert.Contains(files, f => f.Item1 == file);
+            return files;
+        }
 
         var violations = new List<Finding>();
         foreach (var library in SharedTree.LibrariesHeldBy("SL5"))
@@ -293,7 +300,8 @@ public class SharedRuleTests
         var files = SharedTree.SourceFiles("*.cs")
             .Concat(SharedTree.SourceFiles("*.csproj"))
             .Where(path => scanned.Any(directory => path.StartsWith(directory, StringComparison.Ordinal)))
-            .Concat(BuildFiles.Select(static f => Path.Combine(SharedTree.Root, f)))
+            .Concat(SharedTree.Projects.Where(static p => p.Kind != SharedProjectKind.Test).SelectMany(BuildFilesOf))
+            .Distinct(StringComparer.Ordinal)
             .ToList();
         var found = files.SelectMany(static path => SharedRules.Suppressions(SharedTree.Relative(path), File.ReadAllText(path))).ToList();
         // The inventory is the "### Inventory" subsection of docs/suppressions.md, up to the next "## " section;
@@ -312,11 +320,18 @@ public class SharedRuleTests
         foreach (var project in SharedTree.Projects.Where(static p => p.Kind != SharedProjectKind.Test))
             Assert.Contains(project.Path, files);
         Assert.Contains(files, static p => p.EndsWith("RegexParser.cs", StringComparison.Ordinal));
-        Assert.Contains(files, static p => p.EndsWith("Directory.Build.props", StringComparison.Ordinal));
+        foreach (var buildFile in (string[])["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props"])
+            Assert.Contains(files, p => SharedTree.Relative(p) == buildFile);
     }
 
-    /// <summary>The build files every project imports, relative to the root.</summary>
-    private static readonly string[] BuildFiles = ["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props"];
+    /// <summary>
+    /// The files of this repository that MSBuild's evaluation of a project imports, the project file among them, by
+    /// full path: not a list kept here, so a build file a later change adds (a Directory.Build.targets, another
+    /// eng/*.props) is read the day it is imported. Build output, NuGet's generated obj/ files among it, is not the
+    /// repository's, and the packages' own build files lie outside it.
+    /// </summary>
+    private static IReadOnlyList<string> BuildFilesOf(SharedProject project) =>
+        Tools.ImportedFiles(project.Path).Where(SharedTree.IsRepositoryFile).ToList();
 
     [Fact]
     public void SL5_The_witnesses_are_refused_in_the_project_in_metadata_and_in_the_inventory()
@@ -331,6 +346,20 @@ public class SharedRuleTests
             Assert.Contains("Witness: NoWarn suppresses IL2026", violations);
             Assert.Contains("Witness: WarningsNotAsErrors exempts IL3050", violations);
             Assert.DoesNotContain(violations, static v => v.Contains("is '", StringComparison.Ordinal));
+
+            // The build files a code's places are read from are the evaluation's imports, not a list: a
+            // Directory.Build.targets beside the project, which no list names, is imported and read, and a code it
+            // suppresses has its place there as well as in the project file.
+            var targets = Path.Combine(scratch.FullName, "Directory.Build.targets");
+            File.WriteAllText(targets, "<Project>\n  <PropertyGroup>\n    <NoWarn>$(NoWarn);IL2026</NoWarn>\n  </PropertyGroup>\n</Project>\n");
+            var imported = Tools.ImportedFiles(project).Where(f => f.StartsWith(scratch.FullName + Path.DirectorySeparatorChar, StringComparison.Ordinal)).ToList();
+            Assert.Equal([targets, project], imported);
+            var files = imported.Select(static f => (Path.GetFileName(f), File.ReadAllText(f))).ToList();
+            var withTargets = Tools.Evaluate(project, SharedRules.LibraryProperties.Select(static p => p.Property).Concat(SuppressionProperties));
+            var places = SharedRules.SL5PropertyFindings("Witness", withTargets, SharedRules.LibraryProperties, files).Single(static f => f.Violation == "Witness: NoWarn suppresses IL2026").Places;
+            var projectText = File.ReadAllText(project);
+            var projectLine = 1 + projectText.AsSpan(0, projectText.IndexOf("<NoWarn>", StringComparison.Ordinal)).Count('\n');
+            Assert.Equal([new SourcePlace("Directory.Build.targets", 3, 3), new SourcePlace("Witness.csproj", projectLine, projectLine)], places!);
         }
         finally
         {

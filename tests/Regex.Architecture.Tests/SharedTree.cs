@@ -102,6 +102,17 @@ internal static class SharedTree
     internal static string Relative(string path) =>
         Path.GetRelativePath(Root, path).Replace(Path.DirectorySeparatorChar, '/');
 
+    /// <summary>
+    /// Whether a file is one of the repository's own: under the root, and outside version control's directory, build
+    /// output (NuGet's generated <c>obj/</c> files among it), test results, packed artefacts and the witnesses.
+    /// </summary>
+    internal static bool IsRepositoryFile(string path)
+    {
+        var relative = Path.GetRelativePath(Root, path);
+        return !Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)
+            && !IsExcluded(path);
+    }
+
     /// <summary>The built assembly of a library, from this test's output directory.</summary>
     internal static string AssemblyPath(string assemblyName)
     {
