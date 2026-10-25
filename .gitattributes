@@ -1,0 +1,9 @@
+# Line endings of this repository, for the shared JavaScript libraries programme's convention 17 ("Files are
+# stored with LF line endings under a .gitattributes"; docs/conventions.md), added on 2026-10-25 at work package
+# SJL-11.2. Every text file is stored and checked out with LF, on every platform. Git decides what is text; the
+# one binary file, the package icon, is named so that no checkout filter ever rewrites a byte of it.
+* text=auto eol=lf
+*.png binary
+
+# Rule SL10's witness for CRLF line endings must keep its CRs, so it alone is stored as-is.
+tests/Regex.Architecture.Tests/witnesses/SL10-crlf-line-endings.cs.witness -text

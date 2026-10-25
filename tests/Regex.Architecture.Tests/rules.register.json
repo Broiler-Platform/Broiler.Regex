@@ -1,0 +1,142 @@
+{
+  "$comment": [
+    "Broiler.RegEx's rules of the shared JavaScript libraries programme's SL shape (governance section 3.2 of the",
+    "programme in Broiler.VM/docs/javascript-shared-libraries/), adopted under the owner condition R10 of milestone SJL-11",
+    "(docs/roadmap.md section 6, docs/conventions.md) and ported from Broiler.Unicode's tests/Unicode.Architecture.Tests,",
+    "in Broiler.VM's register shape: each row states the rule as it holds this repository's projects - the library",
+    "Broiler.Regex, the Native AOT probe probes/Regex.Probe and the two test projects - names the test that asserts it and",
+    "the witness it is shown refusing, and has a status. Beside the rules, contractChecks holds the three contract",
+    "conventions of the programme's architecture.md section 4 that Broiler.VM's JSD-0081 (section X3) finds Broiler.Regex",
+    "breaching and that metadata can decide. Every rule and check is Active, and the library does not yet meet every one:",
+    "starting-violations.tsv beside this file is the exact list of what they find in it, which each test asserts in both",
+    "directions, place by place where the rule reads places (SL1's assembly half, SL3, SL4 and C5 from the IL and the PDB,",
+    "SL5 from the project file and the build files its evaluation imports), and SJL-11.2 shrinks to none (bundle",
+    "sjl-11-001's check E-3). RuleRegisterTests holds this file to the tests, the witnesses on disk and the list's",
+    "citations. No row carries a run figure; the list carries the findings."
+  ],
+  "milestone": "SJL-11",
+  "rules": [
+    {
+      "id": "SL1",
+      "status": "Active",
+      "statement": "No library references an engine project or package, anything in Broiler.VM, or any project or package outside the allow-list, and a library references the programme's libraries only in the layering's direction: Broiler.Regex may reference Broiler.Unicode.Algorithms alone, the Unicode owner's provider (requirement R11, decision D11 of Broiler.VM's JSD-0081), and never Broiler.Unicode.Tables, which is test-only data, nor another project of this repository. Every library has a row in the layering table, so a new library cannot pass by being unknown.",
+      "evidence": "The library's project file (ProjectReference, resolved to the referenced project's assembly name, and PackageReference), its restore (obj/project.assets.json, every package resolved directly or transitively, the SDK's own ILLink package aside) and its built assembly's AssemblyRef table, with the places from its IL and PDB where an instruction names a type of a referenced assembly",
+      "nonVacuousWhen": "The library is read in all three places and names packages that its restore resolves and its assembly references; the witnesses reference an engine project, a Broiler.VM package, a package outside the allow-list, the owner's tables and the probe, each reported; a witness restore resolves the owner's tables and a package outside the allow-list, each reported, beside the provider, the SDK's ILLink package and a project, which pass; and the assembly half is shown refusing this test assembly, which references xunit and the library.",
+      "test": "SL1_No_library_references_an_engine_Broiler_VM_or_anything_outside_the_layering",
+      "witness": "witnesses/SL1-engine-project-reference.csproj.witness, witnesses/SL1-broiler-vm-package-reference.csproj.witness, witnesses/SL1-against-the-layering.csproj.witness, witnesses/SL1-restores-a-package-outside-the-layering.assets.json.witness"
+    },
+    {
+      "id": "SL2",
+      "status": "Active",
+      "statement": "No library declares a mutable static field, a static array or a static field of a mutable collection type, a settable static property, a [ThreadStatic] field, or names AsyncLocal or ThreadLocal: Broiler.VM's rule N12 (convention 7). A static auto-property's backing field is a static field, so a get-only one of a mutable type is refused. This repository adds two kinds. A static readonly field holding an object of a class the library declares whose instances can change after construction - an instance field that is not readonly, one of a mutable collection or array type, or a readonly one holding such a class of the library's, in the class or a base class the library declares - which is how a shared set that normalises itself in place on a read is static mutable state (conventions 7 and 10, decision D31); the row names the static field alone, so a change that fixes one such field of the class and leaves another changes no row. And a static readonly field of a collection interface type, or of a class of the library's that keeps one in an instance field, whose static initializer creates a mutable collection or a non-empty array: a read-only interface hides a mutable instance that the declared types cannot show, as RegexMatch.Empty's dictionary is hidden. Compiler-generated types are the compiler's, and are left out. THREE STATED LIMITS. First, what the initializer creates is read from the static constructor's IL and the library's methods it calls, and over-approximates what the field holds, as a temporary counts too: an immutable value built from a mutable one and held behind a collection interface is refused - a collection expression in an IReadOnlyList field (its array, which the compiler wraps in a read-only list of its own) and a dictionary copied by ToFrozenDictionary into an IReadOnlyDictionary field - while the same values in fields declared by their immutable types, ImmutableArray and FrozenDictionary, pass, as the interface clause reads no other field's initializer. Second, SL2 reads a field's declared type, and what its initializer creates only as base class library collections: a static readonly field typed object, a struct, a delegate, a class of the library's that another of its classes derives from, or an interface (one outside the collections, or a collection interface whose initializer constructs a class of the library's), and an instance field so typed of a class the rule passes, passes whatever object it holds - static readonly object X = new List<int>(), a RegexNode field holding a derived node that can change - and a collection's element types are not read either; SL2_The_library_holds_no_static_field_its_declared_type_cannot_vouch_for_but_those_read lists every such field of the library, each checked by reading: today Matcher's IdentityContinuation alone, a static lambda, which can capture nothing. Third, an object a compiled pattern holds per instance, such as the CodePointSets that normalise themselves in place on a pattern's first match, is not static state and is not read here: bundle sjl-11-001's check A-11 decides it (concurrent compile and match on shared instances), as it decides C3's stated limit.",
+      "evidence": "The Field, Property and CustomAttribute tables, the TypeRef table, every class's instance fields and base type, and the static constructors' IL with the IL of the library's methods they call, of the library's built assembly",
+      "nonVacuousWhen": "The library declares a constant, which the rule reads as a static field and passes as a literal, and a static field holding an object with no state, which it reads and passes, and the rule reads what RegexMatch.Empty's initializer creates; the witness declares one member of each refused kind, a get-only static auto-property of a mutable type, three objects that change on a read, directly, through a base class and through another class's readonly field, each reported with every field that changes, and a mutable collection behind a read-only interface, directly and inside a class of its own, each reported, beside an immutable object, an empty array and an immutable dictionary behind the same interfaces, which pass; and the stated-limits witness pins the first two limits: the collection expression and the frozen copy behind an interface each refused and both declared by their immutable types passed, and a field typed object, a base class, an interface, a struct and a delegate, each holding something that can change, passed and each named as unread, beside a sealed class with a readonly integer, which is not.",
+      "test": "SL2_No_library_holds_mutable_static_state",
+      "witness": "witnesses/SL2-mutable-static-state.cs.witness, witnesses/SL2-stated-limits.cs.witness"
+    },
+    {
+      "id": "SL3",
+      "status": "Active",
+      "statement": "No library reaches anything on Broiler.VM's B5, B5b and B5c lists (dynamic loading, reflection invocation, Reflection.Emit, LambdaExpression.Compile, native-library and function-pointer marshalling, method preparation, platform invoke, module initializers), generic instantiation over a run-time Type, the Type-taking Enum readers, dynamic, reflection-based serialization, file, network or process I/O, or an environment read (convention 8). The Native AOT probe, an executable that writes its report to a file, is held to every clause except I/O.",
+      "evidence": "The MemberRef, TypeRef, AssemblyRef, CustomAttribute and ImplMap tables of the library's built assembly and of the probe's, built under the JIT beside this test, with the places from their IL and PDBs where an instruction names a refused member or type",
+      "nonVacuousWhen": "The library's tables are read, with their places from the PDB, and the probe names System.IO.File and is read with I/O allowed; the witness reaches each refused kind once and every one is reported, the reflection type it names among them, and read as the probe it still fails on everything but I/O.",
+      "test": "SL3_No_library_reaches_dynamic_code_hidden_machinery_IO_or_the_environment",
+      "witness": "witnesses/SL3-dynamic-code-and-io.cs.witness"
+    },
+    {
+      "id": "SL4",
+      "status": "Active",
+      "statement": "No library uses a platform globalization or regular-expression API (convention 9): System.Text.RegularExpressions, any System.Globalization type but NumberFormatInfo.InvariantInfo and NumberStyles, TimeZoneInfo, the clock, string normalization, platform casing, char and Rune classification beyond ASCII, a string comparison that defaults to the current culture, or a number parsed, formatted, converted or interpolated without a format provider. Every Unicode answer is the provider's (decision D11), so the platform's is never one here.",
+      "evidence": "The TypeRef and MemberRef tables of the library's built assembly, member references read with their parameter types so that an ordinal overload is told from a culture-sensitive one, with the places from its IL and PDB where an instruction names a refused member or type",
+      "nonVacuousWhen": "The library compares strings ordinally and tests surrogates, and the rule reads those references with their parameter types and passes them; the witness uses each refused kind once, char.IsDigit and char.ToLowerInvariant among them, and a NumberFormatInfo member, a Convert call, String.Format, StringBuilder.Append of a number and a number's ToString(format), and every one is reported, beside a number formatted with NumberFormatInfo.InvariantInfo, which passes. TWO STATED LIMITS: a parameterless ToString() on a number is not refused, because every record's generated ToString reaches it; and a provider argument is a value, not a signature, so a call that passes null or leaves a provider at its default null is not refused - every TryFormat overload of net10.0's numeric types declares one, and the rule refuses no TryFormat for that reason. Both are review obligations of convention 6.",
+      "test": "SL4_No_library_uses_platform_globalization_regular_expressions_or_a_culture",
+      "witness": "witnesses/SL4-platform-globalization.cs.witness"
+    },
+    {
+      "id": "SL5",
+      "status": "Active",
+      "statement": "IsAotCompatible and IsTrimmable hold for the library, with the trim, AOT and single-file analyzers on, and it targets net10.0 with nullable enabled, implicit usings disabled, deterministic builds, no unsafe code and warnings as errors; nothing is suppressed in it: no NoWarn beyond the SDK's own 1701 and 1702, no WarningsNotAsErrors, no SuppressTrimAnalysisWarnings, no UnconditionalSuppressMessage. An inventory in the shape of Broiler.VM's N36, docs/suppressions.md, lists by file every suppression in the sources and project files of the library and the probe and in the build files they import, and says None when there is none. The Native AOT probe is evaluated with Broiler.VM's root settings (PublishAot, full trimming, InvariantGlobalization, UseSystemResourceKeys, TrimmerSingleWarn off, IsAotCompatible, warnings as errors) and is held to the same absence of suppressions (convention 12).",
+      "evidence": "The library's and the probe's properties as MSBuild evaluates them, with each suppressed code's places, the NoWarn and WarningsNotAsErrors elements that name it in the project file and in every file of the repository that the evaluation imports, read from the preprocessed project (build output and the packages' own build files aside); the built library's and probe's CustomAttribute tables; and the text of every source and project file of the library and the probe and of every build file of the repository their evaluations import",
+      "nonVacuousWhen": "The library and the probe are evaluated with every import applied, so a property set in Directory.Build.props or the packaging file and undone in a project file is seen; the inventory scan reads both project files, the sources and the build files the evaluations import, Directory.Build.props, Directory.Packages.props and eng/Broiler.Packaging.props among them; the witness project sets every analyzer on and suppresses one warning, and is refused for that alone, and a NoWarn of the SDK's codes alone is shown to be a reset while one code more is a suppression; a code's places are shown to be every element that names it, across files and lines; and a Directory.Build.targets beside the witness project, which no list names, is shown imported, with the place of the code it suppresses.",
+      "test": "SL5_The_library_and_the_probe_hold_to_AOT_and_trimming_with_nothing_suppressed",
+      "witness": "witnesses/SL5-library-suppresses-a-trim-warning.csproj.witness, witnesses/SL5-source-suppresses-a-trim-warning.cs.witness"
+    },
+    {
+      "id": "SL6",
+      "status": "Active",
+      "statement": "The public API of the library matches its committed baseline, Broiler.Regex/PublicAPI.txt, in both directions: nothing public exists that the baseline does not record, and the baseline records nothing that does not exist. Package validation is enabled for the packed library and reads the last version published to nuget.org as its baseline, 0.1.0-preview.4 until a later one is published (convention 16; bundle sjl-11-001's check E-4). The baseline is rewritten only by a test run with BROILER_REGEX_UPDATE_API=1, and the diff is reviewed like any other change.",
+      "evidence": "The public types and members of the library's built assembly, read from metadata, against its PublicAPI.txt; the library's evaluated IsPackable, EnablePackageValidation and PackageValidationBaselineVersion",
+      "nonVacuousWhen": "The library's listing is not empty and it is packed; the witness has drifted from its baseline once in each direction and both are reported, and nothing else is; a packed project without package validation, or validated against another version, is refused.",
+      "test": "SL6_The_public_API_matches_the_baseline_in_both_directions_and_package_validation_reads_the_last_published_version",
+      "witness": "witnesses/SL6-api-drift.cs.witness, witnesses/SL6-api-drift.PublicAPI.txt.witness"
+    },
+    {
+      "id": "SL7",
+      "status": "Active",
+      "statement": "Generated data is byte-identical to what its generator writes from pinned, hashed inputs. This repository pins no data: decision D11 puts every table the library reads in the Unicode owner's provider, and the library declares no data version of its own. So a source in the library that a generator wrote, which nothing here can regenerate from a pin, is a violation, and so is a data generator script in the library. Generated data a later change adds comes with its pin and a regeneration test in this rule.",
+      "evidence": "Every file of the library's directory outside build output: a source is generated when its name ends in .g.cs or its first lines carry the <auto-generated> marker; a script is a .py, .ps1, .sh, .mjs or .js file",
+      "nonVacuousWhen": "The rule reads every file of the library's directory, its project file and its sources among them; the witness, a source carrying the marker under an ordinary name, and a script are each reported, and a hand-written source that names the marker below its head is not.",
+      "test": "SL7_The_library_holds_no_generated_data_it_cannot_regenerate_from_a_pin",
+      "witness": "witnesses/SL7-generated-source.cs.witness"
+    },
+    {
+      "id": "SL8",
+      "status": "Active",
+      "statement": "Every relevant unit of the library carries a Broiler Code Assurance annotation and the generated artefacts are current (decision SJL-D-5 (a)). The configuration, assurance.config.json at the root, covers Broiler.Regex/Broiler.Regex.csproj under the strict exemption predicate with preprocessor directives forbidden; an exclusion gives its reason and hides no source of the library; the artefacts CODE-ASSURANCE.md, HUMAN_REVIEW.units.md and assurance.manifest.json exist and the manifest lists every source of the library; and CI runs the assurance tool's check with --root Broiler.RegEx and fails on drift.",
+      "evidence": "assurance.config.json against the library; the manifest's files array against every source of the library; .github/workflows/ci.yml; and the assurance tool's check, which that workflow runs",
+      "nonVacuousWhen": "The library must be covered and every one of its sources must be in the manifest; the witness configuration leaves the library out, uses the narrower predicate, permits directives and excludes a source of the library without a reason, and each is reported, while a configuration that covers the library strictly and excludes nothing is accepted, and a source the manifest does not list is refused. The unit-level half is the tool's own check.",
+      "test": "SL8_The_assurance_scheme_covers_every_library_it_holds_and_CI_gates_on_it",
+      "witness": "witnesses/SL8-config-omits-a-library.json.witness"
+    },
+    {
+      "id": "SL9",
+      "status": "Active",
+      "statement": "Determinism: two runs, and two concurrent threads, over the probe's population give identical output - every case compiled once, as an engine compiles a pattern once, and matched through the same instances in all four runs, every answer rendered into a report compared as text (conventions 6 and 10). The vectors at library level replace the population when SJL-11.2 adds them (bundle sjl-11-001's part D). ONE STATED LIMIT: the two threads run after the two sequential runs, through the same instances, so every set a pattern normalises in place on its first match is normalised before they start; a race on a pattern's first match, which shows only sometimes and so cannot be a row of the list, is bundle sjl-11-001's check A-11's (concurrent compile and match on shared instances), not this rule's.",
+      "evidence": "Four runs, two sequential and two on concurrent threads, of probes/Regex.Probe/ProbePopulation.cs through one set of compiled instances",
+      "nonVacuousWhen": "Each run answers every case, matches, refusals and the Unicode property escapes among them; the witness answers from a counter and two runs through it differ.",
+      "test": "SL9_Two_runs_and_two_threads_over_the_probe_population_give_identical_output",
+      "witness": "NondeterministicAnswerWitness in Regex.Architecture.Tests.dll"
+    },
+    {
+      "id": "SL10",
+      "status": "Active",
+      "statement": "No C# source of this repository's projects (the library, the probe and the two test projects) holds a preprocessor directive, no file of the repository holds a CR, and .gitattributes gives every text file LF line endings (convention 17).",
+      "evidence": "Every .cs file of the projects parsed with Roslyn, its directive trivia read; the bytes of every file of the repository outside version control's directory, build output, test results, packed artefacts, the witnesses and the package icon; .gitattributes",
+      "nonVacuousWhen": "Every source of every project is parsed, the generated table and the probe included, and every file read, the adversarial corpus, the workflows and the documents among them; the witnesses hold a conditional region and a pragma, each directive reported by line, and a file stored with CRLF, which .gitattributes keeps as-is.",
+      "test": "SL10_No_source_holds_a_preprocessor_directive_and_no_file_a_CR",
+      "witness": "witnesses/SL10-preprocessor-directive.cs.witness, witnesses/SL10-crlf-line-endings.cs.witness"
+    }
+  ],
+  "contractChecks": [
+    {
+      "id": "C1",
+      "convention": "1, neutral types only",
+      "status": "Active",
+      "statement": "No public signature of the library names a collection type of the base class library, a delegate that runs the caller's code (Func, Action, Predicate, Comparison, Converter, Delegate), object or Type. The members a class or record gets from System.Object or the compiler's record machinery (Equals(object), EqualityContract, PrintMembers) are not the library's choice and are left out. JSD-0081's section X3 names the collections and the Func types in Broiler.Regex at c1422f4d.",
+      "evidence": "The public API listing of the library's built assembly, the one rule SL6 compares with its baseline",
+      "nonVacuousWhen": "The listing holds neutral signatures, which the check reads and passes; the witness names a collection, a Func and object in public signatures, each reported, beside a neutral member and a record, which pass.",
+      "test": "C1_No_public_signature_names_a_collection_a_delegate_object_or_Type",
+      "witness": "witnesses/C1-collection-in-a-signature.cs.witness"
+    },
+    {
+      "id": "C3",
+      "convention": "3, failure is data",
+      "status": "Active",
+      "statement": "No public type of the library derives from an exception. An expected failure is a status (decision D9), and a library throws only on a broken precondition, which a base class library exception states; a public exception type of the library's own is how it reports a failure its contract admits, as JSD-0081's section X3 finds. ONE STATED LIMIT: an exception that a base class library call throws for an input the contract admits (the escaped group names of Broiler.VM's correspondence row S2) is invisible in metadata; bundle sjl-11-001's check A-11 decides it.",
+      "evidence": "The type lines of the public API listing of the library's built assembly, with their base types",
+      "nonVacuousWhen": "The listing holds every public type with its base; the witness declares a public exception type for a malformed pattern, which is reported, beside a precondition stated by ArgumentOutOfRangeException, which is not.",
+      "test": "C3_No_public_type_reports_a_failure_the_contract_admits_as_an_exception",
+      "witness": "witnesses/C3-exception-for-an-expected-failure.cs.witness"
+    },
+    {
+      "id": "C5",
+      "convention": "5, limits are explicit and never the stack",
+      "status": "Active",
+      "statement": "No library asks how much stack is left: RuntimeHelpers.EnsureSufficientExecutionStack, RuntimeHelpers.TryEnsureSufficientExecutionStack or Thread.MaxStackSize. How deep the stack lets code recurse differs between the JIT and Native AOT, so a library that probes it has made the stack its limit, as JSD-0081's section X3 finds of the matcher's stack guard. ONE STATED LIMIT: recursion itself is not read here; bundle sjl-11-001's check A-4 decides it over the matcher's IL call graph.",
+      "evidence": "The MemberRef table of the library's built assembly",
+      "nonVacuousWhen": "The library's member references are read; the witness calls both stack probes and each is reported.",
+      "test": "C5_No_library_makes_the_stack_a_limit",
+      "witness": "witnesses/C5-stack-probe.cs.witness"
+    }
+  ]
+}

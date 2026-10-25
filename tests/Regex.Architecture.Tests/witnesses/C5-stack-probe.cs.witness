@@ -1,0 +1,16 @@
+// C5 witness: code that asks how much stack is left, making the stack its limit, which convention 5 forbids
+// because the depth the stack allows differs between the JIT and Native AOT. Check C5 must report both probes.
+using System.Runtime.CompilerServices;
+
+namespace Witness;
+
+public static class Recursion
+{
+    public static int Depth(int n)
+    {
+        RuntimeHelpers.EnsureSufficientExecutionStack();
+        return n == 0 ? 0 : Depth(n - 1) + 1;
+    }
+
+    public static bool CanRecurse() => RuntimeHelpers.TryEnsureSufficientExecutionStack();
+}

@@ -1,0 +1,87 @@
+# The starting violation list of Broiler.RegEx's architecture tests: every violation that a rule SL1 to SL10 or a
+# contract check C1, C3 or C5 of rules.register.json finds in the library on the day the tests were filed, 2026-10-25,
+# at work package SJL-11.2 of the shared JavaScript libraries programme, at the code 0.1.0-preview.4 was packed from.
+# Broiler.VM's JSD-0081 (section X3) lists the conventions these breach, and requirements R1 to R11 close them.
+#
+# Each rule's test asserts its rows in both directions: a violation the rule finds that is not here fails it, and so
+# does a row the rule no longer finds. A change that removes a violation removes its row in the same change; no change
+# adds one. SJL-11.2 shrinks the list to none, and bundle sjl-11-001's check E-3 holds it empty at the candidate reading.
+#
+# Where a rule reads where a violation is - SL1's assembly half, SL3, SL4 and C5 from the IL and the PDB's sequence
+# points, SL5 from the NoWarn and WarningsNotAsErrors elements of the project file and of every build file of the
+# repository its evaluation imports - its test asserts the row place by place as well: every place the rule finds is
+# cited once, and every cited place is one the rule finds, so a row the rule still finds but at no place fails too. A
+# call of a listed member in a statement of its own is a new place and fails the test, and so does a citation left on a
+# line that no longer holds the violation, although the row's wording is the same in both. A place has two limits, which
+# AssemblyFacts states: it is a statement, so a second use inside a statement that already holds one is not a new place;
+# and it is where an instruction names the member, its declaring type or a type operand, so a use that names a type or
+# an assembly only in a signature, a field or local type or a generic argument is no place at all. Review sees those
+# uses. Every other row's violation names its one place: a static field, a public member or type, a file, a package, a
+# setting.
+#
+# Columns, tab-separated: the rule or check; the violation, exactly as the rule words it; a token the source holds where
+# the violation is; and the places, path:line, space-separated, one line of each (a statement can span several).
+# RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
+# decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
+#rule	violation	token	sites
+SL1	Broiler.Regex references the package Broiler.UniCode.Properties, outside the allow-list or against the layering	Include="Broiler.UniCode.Properties"	Broiler.Regex/Broiler.Regex.csproj:33
+SL1	Broiler.Regex references the package Broiler.UniCode.Emoji.StringProperties, outside the allow-list or against the layering	Include="Broiler.UniCode.Emoji.StringProperties"	Broiler.Regex/Broiler.Regex.csproj:34
+SL1	Broiler.Regex restores the package Broiler.Unicode.Properties/0.1.0-preview.3, outside the allow-list or against the layering	Include="Broiler.UniCode.Properties" Version="0.1.0-preview.3"	Directory.Packages.props:6
+SL1	Broiler.Regex restores the package Broiler.Unicode.Emoji.StringProperties/0.1.0-preview.3, outside the allow-list or against the layering	Include="Broiler.UniCode.Emoji.StringProperties" Version="0.1.0-preview.3"	Directory.Packages.props:7
+SL1	Broiler.Regex references the assembly Broiler.Unicode.Properties	UnicodeProperties.	Broiler.Regex/Unicode/UnicodeCharSets.cs:188 Broiler.Regex/Unicode/UnicodeCharSets.cs:189 Broiler.Regex/Unicode/UnicodeCharSets.cs:190 Broiler.Regex/Unicode/UnicodeCharSets.cs:198 Broiler.Regex/Unicode/UnicodeCharSets.cs:202
+SL1	Broiler.Regex references the assembly UnicodeEmoji.StringProperties	EmojiStringProperties.	Broiler.Regex/Unicode/UnicodeCharSets.cs:226
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.FullRange is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet FullRange =	Broiler.Regex/Unicode/UnicodeCharSets.cs:273
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.CanonicalCharacters is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet CanonicalCharacters =	Broiler.Regex/Unicode/UnicodeCharSets.cs:278
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.DigitSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet DigitSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:283
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.SpaceSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet SpaceSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:288
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.BasicWordSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet BasicWordSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:293
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.FoldedWordSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet FoldedWordSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:298
+SL2	Broiler.Regex: Broiler.Regex.Unicode.CaseFolding.SimpleTable is a static Broiler.Regex.Unicode.CaseFolding+FoldTable, an object of the library's own class that can be changed after construction	FoldTable SimpleTable =	Broiler.Regex/Unicode/CaseFolding.cs:116
+SL2	Broiler.Regex: Broiler.Regex.Unicode.CaseFolding.UpperTable is a static Broiler.Regex.Unicode.CaseFolding+FoldTable, an object of the library's own class that can be changed after construction	FoldTable UpperTable =	Broiler.Regex/Unicode/CaseFolding.cs:120
+# RegexMatch.Empty is every no-match result of the process, and its NamedGroups is a new Dictionary behind
+# IReadOnlyDictionary, which a caller can cast and change for every later no-match. The repair: an empty read-only
+# dictionary, ReadOnlyDictionary<string, RegexGroup>.Empty or FrozenDictionary<string, RegexGroup>.Empty, so that the
+# initializer creates nothing mutable. The plan gives this row to no task. Its row 2.3 asks for no mutable static
+# (convention 7), but 2.3's area is Parsing/, Ast/ and Unicode/, not Matching/; row 2.4c deletes Matching/, while row
+# 2.9 and decision D12 keep the string-bearing RegexMatch, so the class outlives both. The owner is unassigned and is
+# decided at task 2.3; row 2.9's check, an empty list, is the latest change in which the row can leave.
+SL2	Broiler.Regex: Broiler.Regex.Matching.RegexMatch.Empty is a static Broiler.Regex.Matching.RegexMatch whose initializer keeps a mutable collection behind a collection interface, which can be changed after construction	RegexMatch Empty =	Broiler.Regex/Matching/RegexMatch.cs:72
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.StringPropertyNames is a static System.Collections.Generic.Dictionary`2<System.String,UnicodeEmoji.StringProperties.EmojiSequenceProperties>, which can be changed after construction	StringPropertyNames = new(	Broiler.Regex/Unicode/UnicodeCharSets.cs:303
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.StringPropertyCache is a static System.Collections.Generic.Dictionary`2<UnicodeEmoji.StringProperties.EmojiSequenceProperties,Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch>, which can be changed after construction	StringPropertyCache = [];	Broiler.Regex/Unicode/UnicodeCharSets.cs:317
+SL3	Broiler.Regex names System.Reflection.MemberInfo: reflection	GetType().Name	Broiler.Regex/Matching/Matcher.cs:210
+SL4	Broiler.Regex calls System.Char.IsDigit(System.Char)	char.IsDigit(	Broiler.Regex/Parsing/RegexParser.cs:1166
+SL4	Broiler.Regex calls System.Char.ToLowerInvariant(System.Char)	char.ToLowerInvariant(	Broiler.Regex/Unicode/UnicodeCharSets.cs:263
+SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:104 Broiler.Regex/Ast/CodePointSet.cs:99 Broiler.Regex/RegexFlags.cs:90 Broiler.Regex/RegexFlags.cs:94 Broiler.Regex/Parsing/RegexParser.cs:101 Broiler.Regex/Parsing/RegexParser.cs:385 Broiler.Regex/Parsing/RegexParser.cs:393 Broiler.Regex/Parsing/RegexParser.cs:520 Broiler.Regex/Parsing/RegexParser.cs:914 Broiler.Regex/Parsing/RegexParser.cs:978 Broiler.Regex/Parsing/RegexParser.cs:980 Broiler.Regex/Parsing/RegexParser.cs:1046 Broiler.Regex/Parsing/RegexParser.cs:1184 Broiler.Regex/Parsing/RegexParser.cs:1430
+SL5	Broiler.Regex: NoWarn suppresses CS1570	CS1570	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1572	CS1572	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1573	CS1573	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1574	CS1574	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1587	CS1587	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1591	CS1591	eng/Broiler.Packaging.props:72
+SL5	Broiler.Regex: NoWarn suppresses CS1734	CS1734	eng/Broiler.Packaging.props:72
+SL7	Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs is generated data, and this repository pins no input it could be regenerated from	<auto-generated>	Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs:1
+SL7	Broiler.Regex/Unicode/tools/generate-case-folding.py is a generator script in a library, which holds no generated data	#!/usr/bin/env python3	Broiler.Regex/Unicode/tools/generate-case-folding.py:1
+SL8	assurance.config.json does not forbid preprocessor directives	"exemptionPredicate"	assurance.config.json:7
+SL8	assurance.config.json does not use the strict exemption predicate	"owning-component"	assurance.config.json:7
+SL8	assurance.config.json excludes 'Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs', which can hide a unit of a library SL8 holds	"glob": "Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs"	assurance.config.json:10
+SL8	assurance.manifest.json does not list Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs, a source of a library SL8 holds	"glob": "Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs"	assurance.config.json:10
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.CharSet.get_Strings() method System.Collections.Generic.IReadOnlyList`1<System.String>	public IReadOnlyList<string> Strings =>	Broiler.Regex/Ast/CharSet.cs:79
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.CodePointSet.Map(System.Func`2<System.Int32,System.Int32>) method Broiler.Regex.Ast.CodePointSet	public CodePointSet Map(Func<int, int> fold)	Broiler.Regex/Ast/CodePointSet.cs:220
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.CodePointSet.get_Ranges() method System.Collections.Generic.IReadOnlyList`1<System.ValueTuple`2<System.Int32,System.Int32>>	public IReadOnlyList<(int Lo, int Hi)> Ranges	Broiler.Regex/Ast/CodePointSet.cs:71
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.DisjunctionNode..ctor(System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>) method System.Void	class DisjunctionNode(IReadOnlyList<RegexNode> alternatives)	Broiler.Regex/Ast/RegexNode.cs:36
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.DisjunctionNode.Alternatives field readonly System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>	public readonly IReadOnlyList<RegexNode> Alternatives	Broiler.Regex/Ast/RegexNode.cs:38
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.SequenceNode..ctor(System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>) method System.Void	class SequenceNode(IReadOnlyList<RegexNode> terms)	Broiler.Regex/Ast/RegexNode.cs:44
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Ast.SequenceNode.Terms field readonly System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>	public readonly IReadOnlyList<RegexNode> Terms	Broiler.Regex/Ast/RegexNode.cs:46
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.Matching.RegexMatch>	public IEnumerable<RegexMatch> Matches(string input)	Broiler.Regex/BroilerRegex.cs:100
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.BroilerRegex.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>	public IReadOnlyDictionary<string, int> GroupNames { get; }	Broiler.Regex/BroilerRegex.cs:47
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Matching.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Matching.RegexGroup>	public IReadOnlyList<RegexGroup> Groups { get; }	Broiler.Regex/Matching/RegexMatch.cs:66
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Matching.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>	public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }	Broiler.Regex/Matching/RegexMatch.cs:67
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, System.Int32&, System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>&) method static Broiler.Regex.Ast.RegexNode	public static RegexNode Parse(	Broiler.Regex/Parsing/RegexParser.cs:78
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Parsing.RegexParser.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>	public IReadOnlyDictionary<string, int> GroupNames =>	Broiler.Regex/Parsing/RegexParser.cs:53
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.CaseFolding.Orbit(System.Int32, System.Boolean) method static System.Collections.Generic.IReadOnlyList`1<System.Int32>	public static IReadOnlyList<int> Orbit(	Broiler.Regex/Unicode/CaseFolding.cs:87
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.CaseFolding.get_SimpleFoldSources() method static System.Collections.Generic.IEnumerable`1<System.ValueTuple`2<System.Int32,System.Int32>>	public static IEnumerable<(int Lo, int Hi)> SimpleFoldSources	Broiler.Regex/Unicode/CaseFolding.cs:98
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void	class PropertyMatch(CodePointSet codePoints, IReadOnlyList<string> strings)	Broiler.Regex/Unicode/UnicodeCharSets.cs:144
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.Strings field readonly System.Collections.Generic.IReadOnlyList`1<System.String>	public readonly IReadOnlyList<string> Strings = strings;	Broiler.Regex/Unicode/UnicodeCharSets.cs:154
+C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexOverflowException sealed class : System.Exception	public sealed class RegexOverflowException : Exception	Broiler.Regex/RegexOverflowException.cs:40
+C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexSyntaxException sealed class : System.Exception	public sealed class RegexSyntaxException(	Broiler.Regex/RegexSyntaxException.cs:28
+C5	Broiler.Regex calls System.Runtime.CompilerServices.RuntimeHelpers.TryEnsureSufficientExecutionStack(): the stack is a limit	TryEnsureSufficientExecutionStack()	Broiler.Regex/Matching/Matcher.cs:420

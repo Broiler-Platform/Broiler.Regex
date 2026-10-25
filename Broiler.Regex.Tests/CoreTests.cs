@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Xunit;
+
 namespace Broiler.Regex.Tests;
 
 /// <summary>Baseline coverage of the common ECMAScript regex grammar.</summary>

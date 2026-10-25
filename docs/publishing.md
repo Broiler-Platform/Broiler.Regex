@@ -6,12 +6,15 @@ The shipping package is `Broiler.Regex`, targeting .NET 10.
 
 ## Prerequisites
 
-- Add a repository Actions secret named `NUGET_API_KEY` with a nuget.org API key
-  authorized to create and push `Broiler.Regex` versions.
+- Add a repository Actions secret named `NUGET_TOKEN` with a nuget.org API key
+  authorized to create and push `Broiler.Regex` versions. The publish workflow reads
+  it as `secrets.NUGET_TOKEN` and hands it to its steps as the environment variable
+  `NUGET_API_KEY`.
 - Dependencies `Broiler.UniCode.Properties` and
-  `Broiler.UniCode.Emoji.StringProperties` at `0.1.0-preview.2` must remain
-  available on nuget.org. They are already published. NuGet package IDs are
-  case-insensitive; the existing assembly namespaces have not changed.
+  `Broiler.UniCode.Emoji.StringProperties` at `0.1.0-preview.3`, the version
+  `Directory.Packages.props` pins, must remain available on nuget.org. They are
+  already published. NuGet package IDs are case-insensitive; the existing assembly
+  namespaces have not changed.
 - Review the current revision and its documented limitations before publishing.
   `HUMAN_REVIEW.md` records an older, revision-scoped human attestation; automated
   checks do not renew that attestation.
@@ -45,7 +48,10 @@ meet the same rule; the workflow publishes exactly that tagged version or fails.
 1. Inspect the `nuget-packages` artifact of a CI run. CI builds and tests on Windows
    and Linux, checks the `.nupkg` and `.snupkg`, and runs a separate consumer using the
    local package plus dependencies from nuget.org with an isolated package cache. This
-   is the no-push rehearsal; **Publish** has no dry-run mode.
+   is the no-push rehearsal; **Publish** has no dry-run mode. Every pack also runs
+   package validation against the last published version, `0.1.0-preview.4`, and fails
+   on a break of its API that `Broiler.Regex/CompatibilitySuppressions.xml` does not
+   accept ([conventions](conventions.md), convention 16).
 2. Run **Publish**, leaving `version-suffix` empty for automatic numbering, or push the
    desired `vX.Y.Z-preview.N` tag. The workflow validates again and pushes the package and symbols to
    nuget.org. Publishing runs are serialized to avoid competing version choices.

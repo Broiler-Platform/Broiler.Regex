@@ -17,6 +17,18 @@
     <AssemblyName>Broiler.Regex</AssemblyName>
   </PropertyGroup>
 
+  <!--
+    Package validation (the programme's convention 16, rule SL6): every pack is compared with the
+    last published package, 0.1.0-preview.4, which NuGet restores from nuget.org as the baseline. A
+    break the SJL-11 work makes on purpose (decision D12 of Broiler.VM's JSD-0081) is suppressed in
+    CompatibilitySuppressions.xml beside this file, listed in docs/suppressions.md and recorded in
+    CHANGELOG.md under Changed with its R item; until then there is none, and a break fails the pack.
+  -->
+  <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>0.1.0-preview.4</PackageValidationBaselineVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Broiler.UniCode.Properties" />
     <PackageReference Include="Broiler.UniCode.Emoji.StringProperties" />

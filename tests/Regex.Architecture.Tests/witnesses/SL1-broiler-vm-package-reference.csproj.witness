@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SL1 witness, read as Broiler.Regex: a library that references a package of Broiler.VM. Nothing in
+       Broiler.VM is referenced by this library; its meter is a delegate of its own (RegexWorkCharge, decision D9)
+       rather than Broiler.VM's IVmMeter. -->
+  <ItemGroup>
+    <PackageReference Include="Broiler.VM.Abstractions" />
+  </ItemGroup>
+</Project>

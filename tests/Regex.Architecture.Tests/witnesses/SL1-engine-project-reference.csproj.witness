@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SL1 witness, read as Broiler.Regex: a library that references an engine project. The programme's
+       libraries reference neither engine (architecture section 1, property 1); the engines reference this one. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\broiler.js\Broiler.JS\Broiler.JavaScript.Runtime\Broiler.JavaScript.Runtime.csproj" />
+  </ItemGroup>
+</Project>

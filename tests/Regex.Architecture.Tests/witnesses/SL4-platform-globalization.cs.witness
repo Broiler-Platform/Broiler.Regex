@@ -1,0 +1,56 @@
+// SL4 witness: answers that come from the platform's culture, time zone, Unicode data, regular expressions or
+// clock (convention 9). Rule SL4 must report each.
+using System;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace Witness;
+
+public static class PlatformDependent
+{
+    public static bool Matches(string text) => Regex.IsMatch(text, "^[0-9]+$");
+
+    public static string Composed(string text) => text.Normalize(NormalizationForm.FormC);
+
+    public static string Upper(string text) => text.ToUpper();
+
+    public static bool Letter(char c) => char.IsLetter(c);
+
+    public static bool Digit(char c) => char.IsDigit(c);
+
+    // A second call of the same member, in a statement of its own, which the starting violation list must cite as a
+    // place of its own, and a third in that same statement, which is no place of its own; and, in this comment, the
+    // text char.IsDigit( where IL names nothing, which no citation may hold as a place.
+    public static bool Digits(string text) => text.Length > 1 && char.IsDigit(text[0]) && char.IsDigit(text[1]);
+
+    public static char Lower(char c) => char.ToLowerInvariant(c);
+
+    public static string Number(double value) => value.ToString(CultureInfo.CurrentCulture);
+
+    public static double Parse(string text) => double.Parse(text);
+
+    public static int Find(string text) => text.IndexOf("x");
+
+    public static string Format(int value) => $"{value}";
+
+    public static string Sign() => NumberFormatInfo.CurrentInfo.NegativeSign;
+
+    public static int Convert(string text) => System.Convert.ToInt32(text);
+
+    public static string Composite(int value) => string.Format("{0}", value);
+
+    public static string Append(StringBuilder builder, double value) => builder.Append(value).ToString();
+
+    public static string Fixed(double value) => value.ToString("N2");
+
+    // A provider passed, NumberFormatInfo.InvariantInfo, is culture-free and passes.
+    public static string Invariant(int value) => value.ToString(NumberFormatInfo.InvariantInfo);
+
+    public static DateTime Now() => DateTime.Now;
+
+    public static TimeSpan Offset() => TimeZoneInfo.Local.BaseUtcOffset;
+
+    // The same type named in a parameter only, which no instruction names: no place.
+    public static bool Unzoned(TimeZoneInfo? zone) => zone is null;
+}

@@ -1,0 +1,13 @@
+// SL8 witness: an assurance configuration that leaves the library out of coverage, uses the owning component's
+// narrower exemption predicate, permits preprocessor directives, and excludes a source of the library without a
+// reason.
+{
+  "schema": 1,
+  "component": "Broiler.RegEx",
+  "projects": [],
+  "exemptionPredicate": "owning-component",
+  "forbidDirectives": false,
+  "exclude": [
+    { "glob": "Broiler.Regex/Parsing/RegexParser.cs" }
+  ]
+}

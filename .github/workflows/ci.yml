@@ -77,3 +77,115 @@ jobs:
           name: nuget-packages
           path: artifacts/*
           if-no-files-found: error
+
+  # The architecture rules SL1 to SL10 and the contract checks C1, C3 and C5 (R10 of docs/roadmap.md section 6,
+  # docs/conventions.md; bundle sjl-11-001's check E-3), each asserting exactly its rows of the starting violation
+  # list, tests/Regex.Architecture.Tests/starting-violations.tsv, which SJL-11.2 shrinks to none. The build job runs
+  # them with the rest of the solution as well; this job is their gate, on both platforms, because SL10 reads the
+  # bytes each platform checks out.
+  architecture-tests:
+    name: Architecture tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build
+        run: dotnet build tests/Regex.Architecture.Tests -c Release --nologo
+      - name: SL1 to SL10, C1, C3 and C5
+        run: dotnet test tests/Regex.Architecture.Tests -c Release --no-build --nologo
+
+  # The shared JavaScript libraries' convention 12 for Broiler.Regex (milestone SJL-11, R10 of
+  # docs/roadmap.md section 6; bundle sjl-11-001's check E-2): the probe publishes with Broiler.VM's root
+  # settings and no warning, leaves no managed assembly beside the native image, and gives the report the
+  # same probe gives under the JIT, byte for byte.
+  native-aot-probe:
+    name: Native AOT probe (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            executable: Broiler.Regex.Probe
+          - os: windows-latest
+            rid: win-x64
+            executable: Broiler.Regex.Probe.exe
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish with Native AOT
+        run: |
+          set -o pipefail
+          dotnet publish probes/Regex.Probe -c Release -r ${{ matrix.rid }} --nologo 2>&1 | tee probe-publish.log
+          # Warnings are errors already; this states the zero convention 12 asks for.
+          if grep -E "warning [A-Z]+[0-9]+" probe-publish.log; then
+            echo "::error::the Native AOT publish reported a warning"
+            exit 1
+          fi
+          publish=probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish
+          if ls "$publish"/*.dll >/dev/null 2>&1; then
+            echo "::error::the publish directory holds a managed assembly"
+            exit 1
+          fi
+      - name: Run the population under Native AOT
+        run: ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --report probe-aot.txt
+      - name: Run it under the JIT, and compare
+        run: |
+          dotnet build probes/Regex.Probe -c Release --nologo
+          dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --report probe-jit.txt
+          cmp probe-aot.txt probe-jit.txt
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-aot-probe-${{ matrix.rid }}
+          path: |
+            probe-publish.log
+            probe-aot.txt
+            probe-jit.txt
+          if-no-files-found: warn
+
+  # The programme's convention 18 (rule SL8; bundle sjl-11-001's check E-6): every relevant unit of the
+  # library carries its Broiler Code Assurance annotation and the generated artefacts at the repository
+  # root are current. A source change that leaves them behind fails here.
+  assurance:
+    name: Assurance check (SL8)
+    runs-on: ubuntu-latest
+    steps:
+      # The assurance tool lives in Broiler.Code. The two are checked out side by side, the layout
+      # assurance.config.json's regenerateCommand names.
+      - name: Check out Broiler.RegEx
+        uses: actions/checkout@v7
+        with:
+          path: Broiler.RegEx
+      - name: Check out Broiler.Code
+        uses: actions/checkout@v7
+        with:
+          repository: Broiler-Platform/Broiler.Code
+          path: Broiler.Code
+          token: ${{ secrets.BROILER_CODE_TOKEN || github.token }}
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Check the library against its generated artefacts
+        run: dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx
