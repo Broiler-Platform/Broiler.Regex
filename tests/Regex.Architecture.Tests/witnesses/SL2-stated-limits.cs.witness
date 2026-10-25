@@ -1,0 +1,25 @@
+// SL2 witness of the rule's stated limits (rules.register.json): what it refuses although the value cannot change,
+// and how the same values are declared so that it passes them. The test pins each answer, so a change that makes the
+// rule more precise fails there and changes the limits' text with it.
+using System.Collections.Frozen;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
+namespace Witness;
+
+public static class StatedLimits
+{
+    // The first limit, the over-approximation: an immutable value that the initializer builds from a mutable
+    // temporary, held behind a collection interface. A collection expression's array, which the compiler wraps in a
+    // read-only list of its own, and a dictionary that ToFrozenDictionary copies are counted as what the field holds,
+    // and both are refused.
+    public static readonly IReadOnlyList<string> Listed = ["a", "b"];
+
+    public static readonly IReadOnlyDictionary<string, int> Copied = new Dictionary<string, int> { ["a"] = 1 }.ToFrozenDictionary();
+
+    // The same values in fields declared by their immutable types, whose initializers the interface clause does not
+    // read: both pass.
+    public static readonly ImmutableArray<string> ListedImmutable = ["a", "b"];
+
+    public static readonly FrozenDictionary<string, int> CopiedFrozen = new Dictionary<string, int> { ["a"] = 1 }.ToFrozenDictionary();
+}

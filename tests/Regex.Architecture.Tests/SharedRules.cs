@@ -144,7 +144,10 @@ internal static class SharedRules
     /// <item>A static readonly field whose type is a collection interface, or a class of the library's that keeps a
     /// collection interface in an instance field, is mutable state when its initializer creates a mutable collection
     /// or array (<see cref="AssemblyFacts.StaticInitializerCreations"/>): a read-only interface hides a mutable
-    /// instance from the declared types, as <c>RegexMatch.Empty</c>'s dictionary is hidden.</item>
+    /// instance from the declared types, as <c>RegexMatch.Empty</c>'s dictionary is hidden. The register states the
+    /// limit: a temporary counts, so a collection expression behind <c>IReadOnlyList</c> and a
+    /// <c>ToFrozenDictionary</c> copy behind <c>IReadOnlyDictionary</c> are refused, and the same values in fields of
+    /// their immutable types, <c>ImmutableArray</c> and <c>FrozenDictionary</c>, pass.</item>
     /// <item>A static auto-property's backing field is read as a static field, so a get-only property of a mutable
     /// type is mutable state although no setter exists.</item>
     /// </list>

@@ -178,6 +178,32 @@ public class SharedRuleTests
         Assert.DoesNotContain(violations, static v => v.Contains("AmbientState.None", StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// SL2's stated limits (the register's SL2 row), pinned on their witness, so that a change that makes the rule more
+    /// precise fails here and changes the limits' text with it. The first: what an initializer creates over-approximates
+    /// what the field holds, so an immutable value built from a mutable temporary and held behind a collection interface
+    /// is refused, and the same value in a field declared by its immutable type passes.
+    /// </summary>
+    [Fact]
+    public void SL2_The_stated_limits_hold_as_the_register_states_them()
+    {
+        var witness = Witness.Compile("SL2-stated-limits.cs.witness");
+        var violations = SharedRules.SL2(witness).ToList();
+        const string Hidden = " whose initializer keeps a mutable collection behind a collection interface, which can be changed after construction";
+
+        // A collection expression behind IReadOnlyList: its array, which the compiler's read-only list wraps, counts.
+        Assert.Contains("SL2_stated_limits: Witness.StatedLimits.Listed is a static System.Collections.Generic.IReadOnlyList`1<System.String>" + Hidden, violations);
+        Assert.Contains("System.String[]", witness.StaticInitializerCreations["Witness.StatedLimits.Listed"]);
+
+        // ToFrozenDictionary behind IReadOnlyDictionary: the dictionary it copies counts.
+        Assert.Contains("SL2_stated_limits: Witness.StatedLimits.Copied is a static System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>" + Hidden, violations);
+        Assert.Contains("System.Collections.Generic.Dictionary`2<System.String,System.Int32>", witness.StaticInitializerCreations["Witness.StatedLimits.Copied"]);
+
+        // The same values declared by their immutable types pass.
+        Assert.DoesNotContain(violations, static v => v.Contains("StatedLimits.ListedImmutable", StringComparison.Ordinal));
+        Assert.DoesNotContain(violations, static v => v.Contains("StatedLimits.CopiedFrozen", StringComparison.Ordinal));
+    }
+
     // ---------------------------------------------------------------------------------------------
 
     [Fact]

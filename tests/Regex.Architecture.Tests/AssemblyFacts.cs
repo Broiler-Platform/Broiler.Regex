@@ -101,7 +101,9 @@ internal sealed class AssemblyFacts
     /// class library call returns, and every array allocated with a length other than a constant zero, in that span
     /// of the static constructor and in every method of this assembly it calls or constructs through, transitively.
     /// <c>Array.Empty</c>'s array is not one: it has no element to change. It over-approximates what the field holds,
-    /// as a temporary is counted too, and it is what SL2 reads where a declared type cannot decide.
+    /// as a temporary is counted too (a collection expression's array, which the compiler wraps in a read-only list of
+    /// its own; the dictionary <c>ToFrozenDictionary</c> copies), and it is what SL2 reads where a declared type
+    /// cannot decide.
     /// </summary>
     internal ImmutableDictionary<string, ImmutableArray<string>> StaticInitializerCreations { get; private init; } =
         ImmutableDictionary<string, ImmutableArray<string>>.Empty;
