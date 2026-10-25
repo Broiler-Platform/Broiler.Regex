@@ -4,7 +4,9 @@ Every release of the `Broiler.Regex` package has an entry here, newest first. Th
 work package SJL-11.2 of the shared JavaScript libraries programme, whose
 [convention 16](docs/conventions.md) asks each governed library for a changelog with "Observable changes" and "Data"
 headings. Releases before it, `0.1.0-preview.1` to `0.1.0-preview.4`, are recorded only by their packages on
-nuget.org and by [`eng/preview-version-history.json`](eng/preview-version-history.json).
+nuget.org. [`eng/preview-version-history.json`](eng/preview-version-history.json) is not a release record: it holds
+only the versions the version resolver has to remember beside nuget.org's, which today is `0.1.0-preview.1`
+([publishing guide](docs/publishing.md), "Choose the version").
 
 The package follows semantic versioning on its preview stream ([publishing guide](docs/publishing.md)):
 
