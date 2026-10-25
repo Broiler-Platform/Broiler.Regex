@@ -39,7 +39,7 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
         run: |
           if [ -z "$NUGET_API_KEY" ]; then
-            echo "::error::Publishing to nuget.org needs the NUGET_API_KEY repository secret."
+            echo "::error::Publishing to nuget.org needs the NUGET_TOKEN repository secret."
             exit 1
           fi
       - name: Resolve version
