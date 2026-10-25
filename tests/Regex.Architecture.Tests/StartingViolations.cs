@@ -28,7 +28,10 @@ internal sealed record StartingViolation(string Rule, string Violation, string T
 /// is cited by exactly one of the row's sites, a line the place spans, and each site lies in a place the rule finds.
 /// So a second call of a listed member is refused as a new place, and a citation of a place that no longer holds the
 /// violation is refused as stale, although the row's wording is the same. A violation the rule finds without places
-/// names its one place itself.
+/// (<see cref="Finding.Places"/> null) names its one place itself. One the rule reads places for and finds at none
+/// (an empty list) is not compared by wording alone: each of its citations is refused, because only a signature, a
+/// field or local type or a generic argument still names it, which no instruction does, so no citation can hold it,
+/// and the change that removed its last place removes the rest of it.
 /// </remarks>
 internal static class StartingViolations
 {
@@ -62,12 +65,17 @@ internal static class StartingViolations
     /// </summary>
     internal static IReadOnlyList<string> Compare(IReadOnlyList<StartingViolation> listed, IEnumerable<Finding> found)
     {
-        var placesOf = new Dictionary<string, HashSet<SourcePlace>>(StringComparer.Ordinal);
+        // Each violation's places, or null when every finding of it names its one place itself. A finding with places,
+        // even none, makes its violation placed, so a rule that reads places and finds none for a violation it still
+        // finds is not compared by wording alone.
+        var placesOf = new Dictionary<string, HashSet<SourcePlace>?>(StringComparer.Ordinal);
         foreach (var finding in found)
         {
-            if (!placesOf.TryGetValue(finding.Violation, out var places))
-                placesOf[finding.Violation] = places = [];
-            places.UnionWith(finding.Places ?? []);
+            placesOf.TryGetValue(finding.Violation, out var places);
+            if (places is null && finding.Places is not null)
+                places = [];
+            places?.UnionWith(finding.Places ?? []);
+            placesOf[finding.Violation] = places;
         }
 
         var rows = listed.ToDictionary(static v => v.Violation, StringComparer.Ordinal);
@@ -75,10 +83,17 @@ internal static class StartingViolations
         var removed = rows.Keys.Where(v => !placesOf.ContainsKey(v)).Order(StringComparer.Ordinal).ToList();
         var uncited = new List<string>();
         var stale = new List<string>();
+        var unplaced = new List<string>();
         foreach (var (violation, places) in placesOf.OrderBy(static p => p.Key, StringComparer.Ordinal))
         {
-            if (places.Count == 0 || !rows.TryGetValue(violation, out var row))
+            if (places is null || !rows.TryGetValue(violation, out var row))
                 continue;
+            if (places.Count == 0)
+            {
+                unplaced.AddRange(row.Sites.Select(site => violation + " @ " + site.Path + ":" + site.Line.ToString(CultureInfo.InvariantCulture)));
+                continue;
+            }
+
             var citations = places.ToDictionary(static p => p, static _ => 0);
             foreach (var site in row.Sites)
             {
@@ -100,6 +115,7 @@ internal static class StartingViolations
         Section(differences, "listed and no longer found, whose rows leave the list in the change that removed them:", "-", removed);
         Section(differences, "a place of a listed violation that the list does not cite, which no change may add:", "+", uncited);
         Section(differences, "a cited place that does not hold its violation, whose citation leaves the list in the change that removed it:", "-", stale);
+        Section(differences, "listed and found, but at no place the rule reads (only a signature, a field or local type or a generic argument still names it), so no citation holds it: the change that removed its last place removes the rest of it:", "-", unplaced);
         return differences;
     }
 

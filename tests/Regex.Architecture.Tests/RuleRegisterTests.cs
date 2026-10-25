@@ -133,7 +133,8 @@ public class RuleRegisterTests
     /// lines, and names it once more in a comment where IL names nothing: a row that cites both calls agrees; one that
     /// cites one is refused for the other, a new place of a listed violation; one that cites the comment as well is
     /// refused for a stale citation, although that line holds the token; and one that cites a place twice is refused.
-    /// The row's wording is the same in every case, which is what a comparison of wording alone could not see.
+    /// The row's wording is the same in every case, which is what a comparison of wording alone could not see. And a
+    /// finding with places, but none, is told from one without places: its row's citations are each refused.
     /// </summary>
     [Fact]
     public void The_list_is_compared_place_by_place_and_a_new_or_a_stale_place_is_refused()
@@ -160,12 +161,22 @@ public class RuleRegisterTests
         Assert.Contains("  - " + violation + " @ " + path + ":" + comment + ", where the rule finds no place of it", Compare([.. calls, comment]));
         Assert.Contains(Compare(calls[0], calls[0], calls[1]), static d => d.Contains(", a second citation of the place ", StringComparison.Ordinal));
 
+        // A rule that reads places and finds the violation at none of them, as when the instructions that named it are
+        // gone and only a signature, a field or local type or a generic argument still names it, is not compared by
+        // wording alone: none of the row's citations holds it, and each is refused.
+        Assert.Equal(
+            [Unplaced, .. calls.Select(l => "  - " + violation + " @ " + path + ":" + l)],
+            StartingViolations.Compare([new StartingViolation("SL4", violation, "char.IsDigit(", [.. calls.Select(l => new ViolationSite(path, l))])], [new Finding(violation, [])]));
+
         // And a violation the rule finds without places is compared by wording alone, in both directions.
         Assert.Empty(StartingViolations.Compare([new StartingViolation("SL2", "w is mutable", "x", [new ViolationSite(path, 1)])], [new Finding("w is mutable")]));
         Assert.Equal(
             ["new, which no change may add:", "  + v is new", "listed and no longer found, whose rows leave the list in the change that removed them:", "  - w is mutable"],
             StartingViolations.Compare([new StartingViolation("SL2", "w is mutable", "x", [new ViolationSite(path, 1)])], [new Finding("v is new")]));
     }
+
+    private const string Unplaced =
+        "listed and found, but at no place the rule reads (only a signature, a field or local type or a generic argument still names it), so no citation holds it: the change that removed its last place removes the rest of it:";
 
     private static string Field(JsonElement row, string name) =>
         row.TryGetProperty(name, out var value) ? value.GetString() ?? string.Empty : string.Empty;

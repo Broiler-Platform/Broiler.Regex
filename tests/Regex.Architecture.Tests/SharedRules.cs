@@ -12,8 +12,9 @@ namespace Broiler.Regex.Architecture.Tests;
 /// A violation a rule finds, with the places in the source where it is when the rule reads them: from the IL and the
 /// PDB for a rule over member and type references (SL1's assembly half, SL3, SL4, C5), from the project files for
 /// SL5's suppression codes. Null places mean the violation names its one place itself: a field, a member, a file,
-/// a package or a setting. <see cref="StartingViolations.AssertExactly(string, IEnumerable{Finding})"/> asserts a
-/// placed violation's rows place by place.
+/// a package or a setting. An empty list means the rule read places and found none, which is not the same:
+/// <see cref="StartingViolations.AssertExactly(string, IEnumerable{Finding})"/> asserts a placed violation's rows
+/// place by place, and refuses every citation of a row the rule finds at no place.
 /// </summary>
 internal sealed record Finding(string Violation, IReadOnlyList<SourcePlace>? Places = null);
 
