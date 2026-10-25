@@ -90,6 +90,13 @@ semantics (differential-verified against V8):
 - a run of ≥2 single-code-point atoms in a forward sequence folds into one loop rather than a
   continuation closure per term.
 
+*(Superseded in part 2026-10-20, at work package SJL-11.1, by R1 as section 6's record of that date
+adopts it. One item above reads "one budget and one initial capture array are reused across a run's
+start positions;". The budget it reuses is reset to a fresh allowance at each start position,
+which is the per-start reset R1 removes: from that date the work of a call, across every start
+position, is charged to the caller's meter. The item is kept as the record of what the first
+allocation pass did; its capture-array half is not affected.)*
+
 That brings simple patterns (`\d+`, `[a-z]+`, `\w+`, class scans) to ~2–3× the compiled .NET
 engine and the mean over the microbenchmark from ~10× to ~6×. The remaining cost is
 structural: a sequence with capturing groups or nested quantifiers still allocates a
@@ -147,3 +154,107 @@ backtracking limits are retained, and those limits become R1's caller-owned budg
 reused across a run's start positions" of section 4 is the per-start reset R1 removes. A fix to this
 engine reaches both JavaScript engines through a release of this package and each engine's own pin
 move; neither engine patches it locally.
+
+### Record of 2026-10-20 (SJL-11.1): R1 to R11 adopted as owner conditions
+
+*Added 2026-10-20, at work package SJL-11.1 of the shared JavaScript libraries programme, by the
+Broiler.RegEx maintainer. Every decision named here is the owner's, taken as recommended on 2026-10-20
+under the owner's direction of 2026-10-18, "Please do all recommended decisions and skip waiting for
+review.", which changes no programme rule. The decisions are numbered as the area verdict numbers them.
+The table above is not edited; this record reads it.*
+
+**The area's record.** The programme's area verdict for regular expressions is Broiler.VM's JSD-0081,
+`src/Broiler.VM.Profile.JavaScript/docs/decisions/0081-regular-expressions-move-to-broiler-regex-under-its-owner-conditions.md`
+in the Broiler.VM repository, filed in the same set of changes as this record. It accepts the area in its
+sub-areas S (syntax and early errors, with the literal validation of Broiler.VM's compiler), M
+(compilation and matching), B (budget and limits), F (flags), T (`RegExp.escape` and `source`) and U
+(data use), and places it here under R1 to R11 as owner conditions (decision D1). Its input is the
+correspondence from code, Broiler.VM's `docs/evidence/sjl-11-001/correspondence.md`, which reads this
+repository's code at the revisions it names.
+
+**R1 to R11 are adopted as owner conditions.** This repository meets them at SJL-11.2. The milestone's
+component clauses judge them by bundle [`sjl-11-001`](evidence/sjl-11-001/README.md)'s rule, at the
+candidate reading (the commit `0.2.0-preview.1` is packed from) and at the end reading.
+
+**The refusal path.** If any of R1 to R11 is not met by the end of SJL-11.2, the area is refused:
+neither engine moves onto this package, and each keeps its own regular-expression engine with a source
+pointer to JSD-0081 (the programme's `risks.md`, rows D8 and D10). A part of the bundle's rule that
+reads NOT MET at the candidate reading blocks both cut-overs, because an engine cut over before every
+requirement holds is risk D10's stop. Nothing here weakens that rule.
+
+**R4, read (decision D6).** "Bounded nesting without CLR recursion" is read as **no CLR recursion in the
+matcher**. The parser and the compiler may recurse, bounded by the caller's nesting limit, which is
+checked before each descent and answered with the nesting status, under a documented library maximum
+shown to complete on the smallest stack the adversarial corpus declares, under the JIT and in the Native
+AOT probe. This is R4's exit criterion ("a nesting limit checked before the stack is, an explicit stack
+where recursion remains") and the reading of the area design's requirement 4 and of the milestone's
+"nesting bounded without CLR recursion". Rewriting a parser that is not the defect into explicit stacks
+is not required.
+
+**R5, R6 and R10's test262, read (decision D14).** A library cannot run test262 alone, so "test262 ...
+in this repository's CI" is read as a host job and a host-free library job. The **host job** checks out Broiler.JS at a retained commit
+named by a dated record in this file, packs this commit's package into a local feed listed first, builds
+Broiler.JS's shell against it and runs test262's `RegExp` paths at the programme's pin with negative
+tests; it holds an expected-failures list in which every entry belongs to the host's object model, and
+every test of duplicate named groups passes. The **host-free library job** runs the literal syntax tests,
+`property-escapes/generated` and `unicodeSets/generated` under the JIT and through the Native AOT probe.
+The retained commit is the branch of SJL-11.5 until it merges, then Broiler.JS's default branch; no
+commit is named yet. R5's, R6's and R10's exit criteria are read as met when these jobs run green at a
+reading's commit.
+
+**The backend (decision D5).** The matcher is replaced by a new backtracking machine written here: a
+compiled instruction program run by a loop with an explicit frame stack and an undo trail
+(defunctionalised continuations). Broiler.VM's matcher is its specification, for its design and for its
+charging units (decision D8), and **no code is ported from it**, as decision SJL-D-14 requires: it took
+(a), under which Broiler.VM's matcher is deleted, and not (b), which would have made that matcher this
+package's implementation. The parser, the public syntax tree, the `CodePointSet` algebra and the flag
+parser stay; the fast paths are re-expressed as instructions that charge the meter. This is the step
+section 4 already names, "the compiled/bytecode path with an explicit backtrack stack".
+
+**The meter and the statuses (decision D9).** The meter is this repository's own nullable delegate,
+`RegexWorkCharge`, which receives units and is charged in blocks before the work they pay for (decision
+D8). A call answers with a status of this repository's own: a match; no match; a limit exceeded, naming
+its dimension (steps, frames, trail, nesting or compile); or a syntax status with a code, a message
+identifier and a position. No expected failure is an exception. A meter that throws propagates its
+exception, and the instance it was charged for then answers a new call as a new instance would.
+
+**R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
+`0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
+`CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
+`Broiler.Unicode.Tables` `0.1.0-preview.5` as test-only data. This package declares no data version of its
+own; the provider's is read. The programme's convention 1 is read as admitting the provider contract
+`IUnicodeTables` in a public signature (decision SJL-D-6 (c)).
+
+**The version and the break (decision D12).** The SJL-11 work breaks the `0.1` surface: R11 removes the
+constructors that take no tables and the public `CaseFolding` and `UnicodeCharSets`; R6 reshapes
+`GroupNames`; and the new backend that meets R1 and R4 (decision D5) removes `RegexOverflowException`, the
+old matcher's stack guard (decision D20). The SJL-11 surface ships as **`0.2.0-preview.1`**, validated against
+`0.1.0-preview.4` with every break suppressed and listed with its R item. The string-bearing `RegexMatch`
+stays, as R8 allows; no shim is kept for a member R11 makes impossible. Decision SJL-D-3's "inside a
+major version" is read, for a `0.x` preview, as inside a `0.y` minor version. **No release of either
+engine depends on `0.2` before both cut-overs have merged**, and Broiler.JS moves its pin only at
+SJL-11.5. `0.2.0-preview.1` is published to nuget.org only with the owner's approval (decision D13).
+
+**Also carried here.**
+- **Review (decision D30).** `HUMAN_REVIEW.md` keeps its record and carries a dated note of this date: the
+  commit it reviewed, `d5b07a00`, is an ancestor of `main`; the source under `Broiler.Regex/` changed after it,
+  before `c1422f4`, the commit `0.1.0-preview.4` was packed from; so, by the record's own rule, no review covers
+  the current code.
+  A Broiler.VM release that depends on this package waits until the revision it depends on carries a
+  completed review (decision SJL-D-5 (a)); development use does not.
+- **Thread safety (decision D31).** `CodePointSet` is immutable after construction, no static field is
+  mutable, and concurrent compile and match on shared instances answer as single-threaded calls do.
+- **The fuzz target (decision D32).** A seeded grammar-based fuzzer runs in CI with every limit and a
+  meter set, and a planted defect in a declared parser path is found by its declared seed.
+
+**Section 4, superseded in part.** Section 4's item "one budget and one initial capture array are reused
+across a run's start positions;" describes the per-start allowance R1 removes. It is superseded by R1
+from this date, as the dated note beside it says, and is kept as written.
+
+**The rules.** Bundle `sjl-11-001`'s rules are committed with this record, before any code of SJL-11.2:
+[`decision-rule.md`](evidence/sjl-11-001/decision-rule.md) (R1 to R11 as a contract, test262 in this
+repository's CI, the adversarial corpus under the JIT and Native AOT, the vectors at library level, and
+the process) and [`reference-arms.md`](evidence/sjl-11-001/reference-arms.md) (the library against both
+engines' implementations before their cut-overs). With them come the adversarial corpus,
+[`tests/Adversarial/corpus.tsv`](../tests/Adversarial/corpus.tsv), and
+[`eng/adversarial-programs.py`](../eng/adversarial-programs.py), which writes both engines' programs from it.

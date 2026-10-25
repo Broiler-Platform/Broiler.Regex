@@ -1,0 +1,72 @@
+# Broiler.RegEx adversarial resource corpus: the population of bundle sjl-11-001's rule, part C, and the source of
+# both engines' adversarial programs (eng/adversarial-programs.py). Written 2026-10-20, at SJL-11.1. The format, the
+# depth convention, the margin of every row and what the code does today: tests/Adversarial/README.md.
+# corpus-format: 1
+# stack-bytes: 1048576
+# js-wall-clock-limit-seconds: 300
+id	class	op	pattern	flags	subject	policy	status	vm_fuel	vm_subject	vm_outcome	js_subject	js_outcome
+K01	K	match@0	"(a+)+b"	-	"b" + "a" * 30	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+K02	K	match@0	"(a*)*b"	-	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+K03	K	match@0	"(a|aa)+b"	-	"b" + "a" * 40	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+K04	K	match@0	"(?:a+)+b"	u	"b" + "a" * 30	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+K05	K	match@0	"^(\\w+\\s?)*$"	-	"a" * 30 + "!"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+A01	A	match@0	"(?:a|aa)" * 30 + "b"	-	"b" + "a" * 60	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+A02	A	match@0	"(?:a|aa)" * 30 + "b"	v	"b" + "a" * 60	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	-	-
+L01	L	match@0	"^(?!(?:(a+)+b|a*c))"	-	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed null
+L02	L	match@0	"^(?!(?:(a+)+b|a*c))"	u	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed null
+L03	L	match@0	"^(?=(?:(a+)+b|a*c))"	-	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed 0,0 -
+L04	L	match@0	"$(?<=(?:b(a+)+|ca*))"	-	"c" + "a" * 30	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"c" + "a" * 24	completed 25,25 -
+L05	L	match@0	"$(?<!(?:b(a+)+|ca*))"	u	"c" + "a" * 30	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"c" + "a" * 24	completed null
+W01	W	match@0	"(?:(a+)+b|a*c)"	-	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed 0,25 -
+W02	W	match@0	"(?:(a+)+b|a*c)"	u	"a" * 30 + "c"	meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	1000000	=	exhausted	"a" * 24 + "c"	completed 0,25 -
+G01	G	match@0	"[a]*"	-	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
+G02	G	match@0	"[a]*"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
+G03	G	match@0	"^[a]*$"	u	"a" * 10000001	meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:steps	10000000000	=	completed 0,10000001	=	completed 0,10000001
+M01	M	match@0	"(?:a|ab)*c"	-	"ab" * 10000 + "c"	meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none	limit:frames	1000000000	"ab" * 4194304 + "c"	exhausted	"ab" * 4194304 + "c"	threw RangeError
+M02	M	match@0	"(?:(a)|b)*c"	-	"a" * 10000 + "c"	meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none	limit:trail	1000000000	"a" * 8388608 + "c"	exhausted	"a" * 8388608 + "c"	threw RangeError
+N01	N	match@0	"(" * 511 + "a" + ")" * 511	-	"a"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1 0,1^511	1000000000	=	completed 0,1 1^511	=	completed 0,1 1^511
+N02	N	compile	"(" * 512 + "a" + ")" * 512	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N03	N	validate	"(" * 512 + "a" + ")" * 512	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+N04	N	compile	"(" * 20000 + "a" + ")" * 20000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N05	N	compile	"(" * 1000000 + "a" + ")" * 1000000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N06	N	validate	"(" * 1000000 + "a" + ")" * 1000000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+N07	N	match@0	"(?:" * 511 + "a" + ")" * 511	-	"a"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1	1000000000	=	completed 0,1	=	completed 0,1
+N08	N	compile	"(?:" * 512 + "a" + ")" * 512	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N09	N	validate	"(?:" * 512 + "a" + ")" * 512	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+N10	N	compile	"(?:" * 20000 + "a" + ")" * 20000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N11	N	compile	"(?:" * 1000000 + "a" + ")" * 1000000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N12	N	validate	"(?:" * 1000000 + "a" + ")" * 1000000	-	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+N13	N	match@0	"[" * 511 + "a" + "]" * 511	v	"a"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1	1000000000	=	completed 0,1	=	completed 0,1
+N14	N	compile	"[" * 512 + "a" + "]" * 512	v	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N15	N	validate	"[" * 512 + "a" + "]" * 512	v	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+N16	N	compile	"[" * 20000 + "a" + "]" * 20000	v	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N17	N	compile	"[" * 1000000 + "a" + "]" * 1000000	v	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+N18	N	validate	"[" * 1000000 + "a" + "]" * 1000000	v	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	limit:nesting	-	-	-	-	-
+F01	F	match@0	"\\B" * 100000	-	""	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,0	1000000000	=	completed 0,0	=	completed 0,0
+F02	F	match@0	"\\B" * 100000	u	""	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,0	1000000000	=	completed 0,0	=	completed 0,0
+F03	F	match@0	"(?:a)" * 100000	-	"a" * 100000	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,100000	1000000000	=	completed 0,100000	=	completed 0,100000
+F04	F	match@0	"(?:a|b)" * 100000	-	"a" * 100000	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,100000	1000000000	=	completed 0,100000	=	completed 0,100000
+V01	V	compile	"[" + "\\p{L}" * 50 + "]"	v	-	meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300	limit:compile	1000000000	=	completed null	=	completed null
+V02	V	compile	"[" + "\\p{L}" * 50 + "]"	iv	-	meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300	limit:compile	1000000000	=	completed null	=	completed null
+V03	V	compile	"[" + "\\p{L}" * 50 + "]"	iu	-	meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300	limit:compile	1000000000	=	completed null	=	completed null
+V04	V	compile	"[" + "\\p{RGI_Emoji}" * 50 + "]"	v	-	meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000	limit:compile	1000000000	=	completed null	=	completed null
+V05	V	compile	"[" + "\\p{RGI_Emoji}" * 50 + "]"	iv	-	meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000	limit:compile	1000000000	=	completed null	=	completed null
+O01	O	match@0	"(?:(a+)+b|a*c)"	-	"a" * 12 + "c"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,13 -	1000000000	=	completed 0,13 -	=	completed 0,13 -
+O02	O	match@0	"^(?!(?:(a+)+b|a*c))"	u	"a" * 12 + "c"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	nomatch	1000000000	=	completed null	=	completed null
+O03	O	match@0	"$(?<=(?:b(a+)+|ca*))"	-	"c" + "a" * 12	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 13,13 -	1000000000	=	completed 13,13 -	=	completed 13,13 -
+O04	O	match@0	"(a+)+b"	-	"a" * 12 + "b"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,13 0,12	1000000000	=	completed 0,13 12	=	completed 0,13 12
+O05	O	match@0	"[a]*"	-	"a" * 10000001	meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
+O06	O	match@0	"^[a]*$"	u	"a" * 10000001	meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,10000001	-	-	-	-	-
+O07	O	match@0	"(?<a>x)|(?<a>y)"	-	"y"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1 - 0,1	1000000000	=	completed 0,1 - 1	=	completed 0,1 - 1
+O08	O	match@0	"(?:(?<a>x)|(?<a>y))\\k<a>"	-	"yy"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,2 - 0,1	1000000000	=	completed 0,2 - 1	=	completed 0,2 - 1
+O09	O	anchored@0	"b"	-	"ab"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	nomatch	1000000000	=	completed null	=	completed null
+O10	O	anchored@1	"b"	-	"ab"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 1,2	1000000000	=	completed 1,2	=	completed 1,2
+O11	O	match@1	"a"	-	"aba"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 2,3	1000000000	=	completed 2,3	=	completed 2,3
+O12	O	match@0	"[0-9]+x"	-	"x" + "1" * 1000000	meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none	meter-exception	-	-	-	-	-
+O13	O	match@0	"[0-9]+x"	-	"1" * 100 + "x"	meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none	match 0,101	1000000000	=	completed 0,101	=	completed 0,101
+O14	O	match@0	"(?:a|ab)*c"	-	"ab" * 100 + "c"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,201	1000000000	=	completed 0,201	=	completed 0,201
+O15	O	match@0	"(?:(a)|b)*c"	-	"a" * 100 + "c"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,101 99,100	1000000000	=	completed 0,101 1	=	completed 0,101 1
+O16	O	match@0	"[" + "\\p{L}" * 50 + "]"	iv	"A"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,1	-	-	-	-	-
+O17	O	match@0	"[" + "\\p{RGI_Emoji}" * 50 + "]"	v	"\ud83d\ude00"	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	match 0,2	-	-	-	-	-
+O18	O	compile	"\\k<b>(?<a>x)"	u	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	syntax	1000000000	=	uncaught SyntaxError	=	threw SyntaxError
+O19	O	validate	"\\k<b>(?<a>x)"	u	-	meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none	syntax	-	-	-	-	-
