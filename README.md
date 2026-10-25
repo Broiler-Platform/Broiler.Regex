@@ -28,9 +28,11 @@ var match = regex.Match("123αβ"); // Success = true, Index = 3, Length = 2
 ```
 
 Unicode data comes from `Broiler.UniCode.Properties` and
-`Broiler.UniCode.Emoji.StringProperties` (minimum version `0.1.0-preview.2`).
-Their assembly namespaces remain `Broiler.Unicode.Properties` and
-`UnicodeEmoji.StringProperties`.
+`Broiler.UniCode.Emoji.StringProperties`, version `0.1.0-preview.3`, the version
+`Directory.Packages.props` pins and the package depends on at least. Their assembly
+namespaces remain `Broiler.Unicode.Properties` and `UnicodeEmoji.StringProperties`.
+Requirement R11 of the [roadmap](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/roadmap.md)
+replaces both with the Unicode owner's provider, `Broiler.Unicode.Algorithms`, during milestone SJL-11.
 
 ## Build and publish
 
@@ -40,6 +42,11 @@ Build and test with:
 dotnet build Broiler.Regex.slnx
 dotnet test Broiler.Regex.slnx
 ```
+
+The solution's tests include `tests/Regex.Architecture.Tests`, the shared JavaScript libraries
+programme's architecture rules, which hold the code to the programme's
+[conventions](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/conventions.md);
+releases are recorded in the [changelog](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/CHANGELOG.md).
 
 See the [preview publishing guide](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/publishing.md)
 for CI validation, cumulative preview numbering, package verification, and nuget.org setup.

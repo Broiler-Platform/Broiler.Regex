@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "$comment": "SL1 witness, the restore half: an assets file that resolves the Unicode owner's provider, its tables, a base class library package and the SDK's own ILLink package, beside a project. SL1Restore must refuse the tables and the package outside the allow-list, and pass the provider, the SDK's package and the project.",
+  "libraries": {
+    "Broiler.Unicode.Algorithms/0.1.0-preview.5": { "type": "package" },
+    "Broiler.Unicode.Tables/0.1.0-preview.5": { "type": "package" },
+    "Microsoft.NET.ILLink.Tasks/10.0.0": { "type": "package" },
+    "System.Text.Json/10.0.0": { "type": "package" },
+    "Broiler.Regex.Probe/1.0.0": { "type": "project" }
+  }
+}

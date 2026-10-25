@@ -1,0 +1,20 @@
+// C1 witness: public signatures that name a collection, a delegate that runs the caller's code, and object, which
+// convention 1 keeps out; a neutral one; and a record, whose compiler-made members name object and Type because
+// the platform does. Check C1 must report the first three and pass the rest.
+using System;
+using System.Collections.Generic;
+
+namespace Witness;
+
+public static class Api
+{
+    public static IReadOnlyList<int> Groups(string pattern) => [pattern.Length];
+
+    public static int Map(Func<int, int> fold) => fold(1);
+
+    public static int Box(object value) => value is int i ? i : 0;
+
+    public static int Length(ReadOnlySpan<char> text) => text.Length;
+}
+
+public readonly record struct Span(int Start, int End);
