@@ -11,6 +11,10 @@ T3). **Owner:** the Broiler.RegEx maintainer. **Reviewer:** none. Every role thi
 included, is held by one person (the programme records this as Broiler.VM's exception EX-30), and this rule does not
 claim that anyone independent has read it.
 
+*Revised 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's
+JSD-0081 as filed: check A-5 adds row S10's escapes, which that record's requirement table places under R5 and its
+decision D36 among SJL-11.2's fixes; nothing else changed.*
+
 **What this file is.** Five predeclared decisions, one per part. Part A is the contract (R1 to R9 and R11), each
 check with a witness. Part B is clause 2. Part C is clause 3, at library level, in both execution modes. Part D is
 template T3 at library level. Part E is R10. The reference-arm comparison (template T4) is
@@ -40,7 +44,7 @@ checks, each a test in Broiler.Regex.Tests or tests/Regex.Architecture.Tests, ea
   A-2 R2, compilation: compile charges the same meter in proportion to the work, at least one unit per range and per string an expansion touches, for a declared set of v-mode and case-insensitive expansions; a compile budget refuses every case of part C's class V
   A-3 R3, memory: the frame and trail ceilings are the caller's; a test reaches each and is answered LimitExceeded naming it
   A-4 R4, nesting: no method of the matcher's namespace reaches itself, directly or through a cycle, in the IL call graph; the parser and the compiler check the caller's nesting limit before each descent and answer the nesting status past it; a limit above the documented maximum is refused; a pattern at the maximum, and a flat sequence of part C's class F, complete on a thread of the smallest declared stack under the JIT and in the Native AOT probe
-  A-5 R5, exact syntax: every property name and value ECMA-262's three tables and PropertyValueAliases.txt admit, Katakana_Or_Hiragana and Hrkt included, accepted under u and v; the refused set - each name with its letter case changed, an underscore removed, a space or hyphen inserted, an Is prefix, or as the value of the wrong property - refused; group names validated by EcmaScriptLexical at UCD 17.0.0, raw, escaped and as surrogate pairs, in every mode; \0's lookahead ASCII; \k<name> to an undeclared name refused by the parser and by the validate entry; Annex B syntax only without u and v
+  A-5 R5, exact syntax: every property name and value ECMA-262's three tables and PropertyValueAliases.txt admit, Katakana_Or_Hiragana and Hrkt included, accepted under u and v; the refused set - each name with its letter case changed, an underscore removed, a space or hyphen inserted, an Is prefix, or as the value of the wrong property - refused; group names validated by EcmaScriptLexical at UCD 17.0.0, raw, escaped and as surrogate pairs, in every mode; a four-digit lead-surrogate escape followed by a braced escape accepted under u and v and read as two characters, a braced escape never joining a pair (row S10 of the correspondence); \0's lookahead ASCII; \k<name> to an undeclared name refused by the parser and by the validate entry; Annex B syntax only without u and v
   A-6 R6, duplicate named groups: a name repeated only in alternatives that cannot both participate accepted, and refused otherwise, after escapes are decoded; \k<name> matches the participating group; a result maps the name to the participating index
   A-7 R7: an anchored argument, independent of the y flag
   A-8 R8: an offset-only interface whose signatures carry no string result (the API baseline), and whose call allocates nothing that grows with the capture count

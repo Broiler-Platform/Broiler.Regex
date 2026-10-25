@@ -6,18 +6,20 @@
 > Broiler.RegEx maintainer.** The record below is kept as written: the review of Maik Ratzmer (`MaiRat`),
 > dated 2026-07-01 and committed in `79b7a33` ("HUMAN_REVIEW.md finalized"). The commit it reviewed,
 > `d5b07a00b48a329c75349890214cdb479973352f` (2026-06-27), is an ancestor of `main`; a shallow clone grafted at
-> a later commit does not hold it. 25 commits follow it up to and including `c1422f4`
-> (`c1422f4d824aa28ff6edd4766d56be25ba7c8a15`, 2026-10-11), the commit `0.1.0-preview.4` was packed from, and
-> 10 of them change the source under `Broiler.Regex/` (19 files between the two commits). By the record's own
-> rule, "Any source change after the reviewed commit invalidates this approval until the changed revision is
-> reviewed again", so **no review covers the current code**. `CODE-ASSURANCE.md` likewise records no code unit
-> with a human decision.
+> a later commit does not hold it. The source under `Broiler.Regex/` changed after it, in commits up to and
+> including `c1422f4` (`c1422f4d824aa28ff6edd4766d56be25ba7c8a15`, 2026-10-11), the commit `0.1.0-preview.4` was
+> packed from. By the record's own rule, "Any source change after the reviewed commit invalidates this approval
+> until the changed revision is reviewed again", so **no review covers the current code**. `CODE-ASSURANCE.md`
+> likewise records no code unit with a human decision.
 >
 > Under the programme's decision SJL-D-5 (a), as decision D30 of Broiler.VM's JSD-0081 applies it, this package
 > may be admitted for development, and a Broiler.VM release that depends on it waits until the revision it
 > depends on carries a completed review. This note was added under the owner's decisions of 2026-10-20, taken
 > under the owner's direction of 2026-10-18, "Please do all recommended decisions and skip waiting for
-> review.", which changes no programme rule. It is not a review and approves nothing.
+> review.", which changes no programme rule. It is not a review and approves nothing. *(Worded on 2026-10-25,
+> before this change reached the default branch, as decision D30 of JSD-0081 words its reason: the note had counted
+> the commits and files between the two commits, which the programme's validation principle 5 keeps out of its
+> records.)*
 
 Broiler.Regex contains substantial AI-assisted implementation. This record documents the
 human review decision for the first preview release. The approval is scoped to the

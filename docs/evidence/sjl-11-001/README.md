@@ -6,7 +6,9 @@
 `docs/javascript-shared-libraries/milestones/sjl-11-regexp.md` in the Broiler.VM repository. This bundle judges
 its component clauses 1 to 3 and the vectors at library level.
 
-**Rules**, written 2026-10-20 at work package SJL-11.1, before any code of SJL-11.2 exists here:
+**Rules**, written 2026-10-20 at work package SJL-11.1, before any code of SJL-11.2 exists here, and revised on
+2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's JSD-0081 as
+filed; each file's header says what changed:
 - [`decision-rule.md`](decision-rule.md): part A, requirements R1 to R9 and R11 as a contract (clause 1); part B,
   test262 in this repository's CI (clause 2); part C, the adversarial corpus under the JIT and Native AOT
   (clause 3); part D, the vectors at library level (template T3); part E, the process (R10).
@@ -17,6 +19,14 @@ its component clauses 1 to 3 and the vectors at library level.
 [README](../../../tests/Adversarial/README.md), part C's population; and
 [`eng/adversarial-programs.py`](../../../eng/adversarial-programs.py), which writes both engines' programs from it.
 The engines commit those programs in their own bundles `sjl-11-001`; they are not copied here.
+
+**The engines' inputs.** Both engines' programs were written by `eng/adversarial-programs.py` at this change's
+`c2aa77167cb3ded40ef50b5c3eeae26f8f7c0b54`, from the corpus whose SHA-256 is
+`1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5`, and both manifests name that commit and that
+SHA-256: Broiler.VM's, with `--engine broiler-vm`, and Broiler.JS's, with `--engine broiler-js`, each under its own
+bundle's `inputs/adversarial/`. Two runs of each wrote byte-identical files. This change's later commits leave
+`tests/Adversarial/corpus.tsv` and `eng/adversarial-programs.py` byte-identical, so the generator at its head writes
+the same programs but for the commit their headers name, and that commit stays in the history this change merges.
 
 **Records:**
 - This repository's [roadmap](../../roadmap.md), section 6: the record of 2026-10-20 that adopts R1 to R11 as owner

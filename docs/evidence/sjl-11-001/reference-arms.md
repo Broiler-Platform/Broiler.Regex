@@ -1,6 +1,9 @@
 # Bundle SJL-11-001's reference-arm rule: Broiler.Regex against both engines' pre-cut-over regular expressions
 
 **Written:** 2026-10-20, at SJL-11.1, before either arm, the population's generator or the new backend exists.
+*Revised 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's
+JSD-0081 as filed: class (b) admits row M4's empty match by that record's decision D41, as its decisions D24 and D41
+say; nothing else changed.*
 **Milestone judged:** SJL-11's evidence layer L2 (validation.md's matrix), for clauses 1 and 3. **Owner:** the
 Broiler.RegEx maintainer. **Reviewer:** none (EX-30). **It holds no figure.** **The members each arm copies** are the
 ones Broiler.VM's `docs/evidence/sjl-11-001/correspondence.md` names, by file and line, at its revisions.
@@ -28,7 +31,7 @@ arbiter: scripts/conformance/regexpref.py (ref:regexpref@1) at the Broiler.JS co
 admitted difference classes:
   (a) correction - an arm is wrong and S is right by the arbiter; listed with the engine it corrects (J, V or both), the input, and its row of the correspondence
   (a') correction by data decision - arm J answers from .NET's or the host's Unicode data and S from UCD 17.0.0 through the provider, under SJL-D-6 (c); listed with its row
-  (b) implementation-defined - an outcome kind that follows from a policy the specification leaves to the implementation (a nesting limit, a frame or trail ceiling, an allowance) where the arm's policy differs from S's declared one; listed, and moved into a vector at a named corpus revision when the specification admits both answers
+  (b) implementation-defined - an outcome kind that follows from a policy the specification leaves to the implementation (a nesting limit, a frame or trail ceiling, an allowance) where the arm's policy differs from S's declared one; listed, and moved into a vector at a named corpus revision when the specification admits both answers; and, by JSD-0081's decision D41 and not by the specification's text, row M4's empty match - the empty match from a lastIndex inside a surrogate pair under u or v, whose Match Record the text leaves ill-formed - until the text is corrected; listed with the decision, and in a vector of the implementation-defined class with each engine's answer
 every other difference is class (c), a defect of S, fixed before the candidate reading, after which the whole comparison is run again and both runs are retained; a difference with arm V on any answer but the rows the correspondence names as Broiler.VM's corrections (duplicate named groups among them) is class (c)
 negative control: a copy of arm V with one result changed for one input of P4, and a copy of arm J with one result changed for one input of P1, each run once; the comparison reports each as a difference and does not classify it; the copies are then removed
 MET if and only if every operation ran over its whole population in S and in every arm that implements it, every difference is in class (a), (a') or (b) and is listed, every class (b) difference the specification admits is in a vector at a named corpus revision, no class (c) difference remains, and both negative controls were reported unclassified.

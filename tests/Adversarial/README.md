@@ -6,6 +6,11 @@ of SJL-11.2 exists here: no meter, no new backend, no provider and no validate e
 maintainer. **Reviewer:** none; every role the programme names is held by the same person (Broiler.VM's exception
 EX-30).
 
+*Revised 2026-10-25, before any run and before this change reached the default branch, to agree with Broiler.VM's
+JSD-0081 as filed: section 3 states the four presumptions its decision D37 records, where it stated three, and
+section 5 cites decision D10, not D7, for the frame and trail ceilings. No row of [`corpus.tsv`](corpus.tsv) changed,
+and its SHA-256 is the one both engines' manifests name.*
+
 [`corpus.tsv`](corpus.tsv) is two things at once:
 
 - **The library's population.** Part C of [the rule](../../docs/evidence/sjl-11-001/decision-rule.md) runs every
@@ -100,10 +105,10 @@ eight times its step ceiling or more. Each frame pushed and each cell written to
 dispatched instruction, which is charged (JSD-0081's decision D8), so the step ceiling is reached first. The M
 rows set no step ceiling.
 
-**What the statuses presume.** Three presumptions about SJL-11.2's backend are this corpus's own. Decisions D5 and
-D8 do not state them: D8 charges a run per character it examines, but neither says which quantifier is a run or
-what a run holds. They are constraints this corpus places on SJL-11.2's tasks 2.4 to 2.4c, and SJL-11.1's report
-names them for that work package.
+**What the statuses presume.** The declared statuses presume four things of SJL-11.2's backend. Decisions D5 and
+D8 alone do not state them: D8 charges a run per character it examines, but neither says which quantifier is a run
+or what a run holds. JSD-0081's decision D37 records the four, as stated below, as constraints on SJL-11.2's tasks
+2.3 to 2.4c.
 
 1. **No memoization.** The backend searches in the specification's order and does not remember that an
    instruction failed at a position. Every K, A, L and W row's margin counts the specification's paths, which a
@@ -123,10 +128,17 @@ names them for that work package.
    In the loop form, their 10,000,001 characters would pass the frame ceilings: the G rows' engine cases would
    end exhausted in Broiler.VM and with a `RangeError` in Broiler.JS, and O05 and O06 with `limit:frames`, rather
    than complete. The library's G rows, declared `limit:steps`, reach their step ceiling first in either form.
-   The M rows' bodies are alternations, which are not runs; their margin is the loop's.
+   The M rows' bodies are alternations, which are not runs; their margin is the loop's. **The presumption holds
+   for a class only.** A backend may also run a greedy quantifier over a single character as one instruction;
+   it then turns Broiler.VM's stop on `a*` past 2²⁰ characters (row B1 of Broiler.VM's correspondence) into an
+   answer, which Broiler.VM's rule reads under its part A's class C2.
+4. **Nesting depth counted as Broiler.VM counts it** (section 2; JSD-0081's decision D7): the pattern's own
+   Disjunction is depth 1, each group adds 1, and under `v` each class adds 1. The N rows at the limit then
+   complete and the rows one past it refuse, in the library and in both engines, and Broiler.VM, passing its own
+   limit, keeps its verdicts.
 
 A backend that breaks one of these presumptions can answer as the specification does and still fail part C.
-That is why they are stated here and handed to task 2.4.
+That is why they are stated here and handed to tasks 2.3 to 2.4c.
 
 ## 4. The rows
 
@@ -207,7 +219,7 @@ rows already carry to the engine, or which need a per-case meter no engine passe
   construction one unit per character, and the run charges one unit per character it examines (decision D8):
   about 10⁷ units each, and with what else the call charges, a few times 10⁷, under a hundredth of the allowance.
 - M rows run on subjects four times or more past the ceilings the engine passes (frames 2²⁰, trail 2²¹, decision
-  D7): at least one pending alternative and one undoable write per iteration.
+  D10): at least one pending alternative and one undoable write per iteration.
 - O07 and O08 complete after the cut-over; Broiler.VM's matcher refuses a name declared twice before it, which its
   rule's part D admits as a listed correction.
 
