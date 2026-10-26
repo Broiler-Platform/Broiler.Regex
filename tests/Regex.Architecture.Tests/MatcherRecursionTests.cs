@@ -51,11 +51,11 @@ public class MatcherRecursionTests
 
         // Not vacuous: the loop is read, its calls into the machine's helpers are resolved, and the program's entry reaches
         // the loop.
-        const string Attempt = "Broiler.Regex.Engine.RegexMachine.Attempt(System.Int32)";
-        Assert.Contains(Attempt, graph.Methods);
-        Assert.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", graph.Callees(Attempt));
-        Assert.Contains("Broiler.Regex.Engine.RegexMachine.PushFrame(System.Int32,System.Int32)", graph.Callees(Attempt));
-        Assert.True(graph.Reaches(graph.Methods.Single(static m => m.StartsWith("Broiler.Regex.Engine.RegexProgram.Match(", StringComparison.Ordinal)), Attempt));
+        const string Loop = "Broiler.Regex.Engine.RegexMachine.MatchFrom(System.Int32)";
+        Assert.Contains(Loop, graph.Methods);
+        Assert.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", graph.Callees(Loop));
+        Assert.Contains("Broiler.Regex.Engine.RegexMachine.PushChoicePoint(System.Int32,System.Int32)", graph.Callees(Loop));
+        Assert.True(graph.Reaches(graph.Methods.Single(static m => m.StartsWith("Broiler.Regex.Engine.RegexProgram.Match(", StringComparison.Ordinal)), Loop));
 
         // The namespace's calls are all resolved statically: nothing in it is virtual or abstract, and no type in it
         // implements an interface.
@@ -87,10 +87,10 @@ public class MatcherRecursionTests
 
         // A recursion planted in the loop itself: the charging the loop calls calling the loop back.
         var loop = sources.Select(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)
-            ? (Path: s.Path, Text: s.Text.Replace("        _threshold = Math.Min(_paid, _stepCeiling);\n        return true;", "        _threshold = Math.Min(_paid, _stepCeiling);\n        return Attempt(0) != Outcome.Exceeded;", StringComparison.Ordinal))
+            ? (Path: s.Path, Text: s.Text.Replace("        _threshold = Math.Min(_paid, _stepCeiling);\n        return true;", "        _threshold = Math.Min(_paid, _stepCeiling);\n        return MatchFrom(0) != Outcome.Exceeded;", StringComparison.Ordinal))
             : s).ToList();
         Assert.NotEqual(sources.Single(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)).Text, loop.Single(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)).Text);
-        Assert.Contains(CallGraph.Read(Compile(loop)).CyclesThrough(MatcherNamespace), static c => c.Contains("Broiler.Regex.Engine.RegexMachine.Attempt(System.Int32)", StringComparison.Ordinal)
+        Assert.Contains(CallGraph.Read(Compile(loop)).CyclesThrough(MatcherNamespace), static c => c.Contains("Broiler.Regex.Engine.RegexMachine.MatchFrom(System.Int32)", StringComparison.Ordinal)
             && c.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", StringComparison.Ordinal));
     }
 

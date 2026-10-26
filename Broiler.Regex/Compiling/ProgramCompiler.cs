@@ -64,18 +64,19 @@ internal enum ProgramCompilation
 /// address after the construct:
 /// </para>
 /// <list type="bullet">
-/// <item>a character: <c>Char c</c>; <c>.</c>: <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class:
+/// <item>a character: <c>Literal c</c>; <c>.</c>: <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class:
 /// <c>Class k</c>, its code points with its negation applied;</item>
-/// <item><c>X₁|X₂|…|Xₙ</c>: <c>Split +1, next</c> before each alternative but the last, and a <c>Jump L</c> after it;</item>
+/// <item><c>X₁|X₂|…|Xₙ</c>: <c>Choice +1, next</c> before each alternative but the last, and a <c>Goto L</c> after it;</item>
 /// <item>group <c>k</c>: <c>SavePosition 2k; X; SavePosition 2k+1</c>; a non-capturing group: <c>X</c>;</item>
-/// <item><c>X?</c>: <c>Split body, L; body: SavePosition m; ClearCaptures; X; EmptyCheck m</c> (the split's targets
-/// swapped when lazy);</item>
-/// <item><c>X*</c>: <c>head: Split body, L; body: SavePosition m; ClearCaptures; X; EmptyCheck m; Jump head</c>;</item>
-/// <item><c>X{min,max}</c>, any other bounds: <c>SetCounter n; loop: JumpIfAtLeast n, max, L; JumpIfBelow n, min, body;
-/// Split body, L; body: SavePosition m; ClearCaptures; X; EmptyCheck m, n, min; IncrementCounter n; Jump loop</c>, the
-/// first jump left out when <c>max</c> is unbounded and the second when <c>min</c> is zero;</item>
+/// <item><c>X?</c>: <c>Choice body, L; body: SavePosition m; ClearCaptures; X; RejectEmptyIteration m</c> (the choice's
+/// ways swapped when lazy);</item>
+/// <item><c>X*</c>: <c>head: Choice body, L; body: SavePosition m; ClearCaptures; X; RejectEmptyIteration m; Goto
+/// head</c>;</item>
+/// <item><c>X{min,max}</c>, any other bounds: <c>SetCounter n; loop: ExitAtMaximum n, max, L; EnterBelowMinimum n, min,
+/// body; Choice body, L; body: SavePosition m; ClearCaptures; X; RejectEmptyIteration m, n, min; IncrementCounter n; Goto
+/// loop</c>, the exit left out when <c>max</c> is unbounded and the entry when <c>min</c> is zero;</item>
 /// <item><c>X{0}</c>: nothing, as RepeatMatcher returns its continuation at once when <c>max</c> is zero; the whole
-/// pattern is followed by <c>Accept</c>.</item>
+/// pattern is followed by <c>Succeed</c>.</item>
 /// </list>
 /// <para>
 /// <c>m</c> and <c>n</c> are registers of the quantifier's own, above the capture registers, and <c>ClearCaptures</c> is
@@ -238,7 +239,7 @@ internal static class ProgramCompiler
         /// <summary>Write a capture group's end.</summary>
         CloseGroup,
 
-        /// <summary>Begin an alternative: the split that leads to the next one, unless it is the last.</summary>
+        /// <summary>Begin an alternative: the choice that leads to the next one, unless it is the last.</summary>
         OpenAlternative,
 
         /// <summary>End an alternative: its jump past the alternation, unless it is the last.</summary>
@@ -259,8 +260,8 @@ internal static class ProgramCompiler
         /// <summary>How many alternatives there are.</summary>
         internal readonly int Count = count;
 
-        /// <summary>The split before the alternative being emitted.</summary>
-        internal int Split;
+        /// <summary>The choice before the alternative being emitted.</summary>
+        internal int Choice;
 
         /// <summary>Every alternative's jump past the alternation.</summary>
         internal readonly List<int> Exits = [];
@@ -280,14 +281,14 @@ internal static class ProgramCompiler
         /// <summary>The iteration count's register, or -1 for <c>?</c> and <c>*</c>, which need none.</summary>
         internal readonly int Counter = counter;
 
-        /// <summary>Where the loop goes back to: the split of <c>*</c>, or the bound checks of a counted form; -1 for <c>?</c>.</summary>
+        /// <summary>Where the loop goes back to: the choice of <c>*</c>, or the bound checks of a counted form; -1 for <c>?</c>.</summary>
         internal int Loop = -1;
 
         /// <summary>The counted form's check of its maximum, whose target is the exit; -1 when there is none.</summary>
-        internal int Ceiling = -1;
+        internal int AtMaximum = -1;
 
         /// <summary>The choice between another iteration and the continuation.</summary>
-        internal int Split;
+        internal int Choice;
     }
 
     /// <summary>One work-list entry: what to do, to which node, with which pending lowering.</summary>
@@ -297,7 +298,7 @@ internal static class ProgramCompiler
 
     /// <summary>The lowering of one tree into one program.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=5D4893
-    // Broiler-Falsified-If: a lazy quantifier's split tries the body before the continuation, or an alternation's split resumes anywhere but at the next alternative
+    // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
     private sealed class Emitter(int captureCount, RegexFlags flags, Dictionary<QuantifierNode, (int First, int Last)> groups)
     {
@@ -308,9 +309,9 @@ internal static class ProgramCompiler
         /// <summary>The next free register: the capture registers come first, two per group, group 0's included.</summary>
         private int _registers = 2 * (captureCount + 1);
 
-        /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Accept"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=7A0941
-        // Broiler-Falsified-If: an alternation's split resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
+        /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Succeed"/>.</summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=2A88DE
+        // Broiler-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
         // Broiler-Human:        PENDING
         internal RegexProgram Emit(RegexNode tree)
         {
@@ -329,13 +330,13 @@ internal static class ProgramCompiler
                         break;
                     case Work.OpenAlternative:
                         if (step.Index < step.Alternation!.Count - 1)
-                            step.Alternation.Split = Add(RegexOp.Split, _code.Count + 1, -1);
+                            step.Alternation.Choice = Add(RegexOp.Choice, _code.Count + 1, -1);
                         break;
                     case Work.CloseAlternative:
                         if (step.Index < step.Alternation!.Count - 1)
                         {
-                            step.Alternation.Exits.Add(Add(RegexOp.Jump, -1));
-                            Patch(step.Alternation.Split, b: _code.Count);
+                            step.Alternation.Exits.Add(Add(RegexOp.Goto, -1));
+                            Patch(step.Alternation.Choice, b: _code.Count);
                         }
 
                         break;
@@ -349,13 +350,13 @@ internal static class ProgramCompiler
                 }
             }
 
-            Add(RegexOp.Accept);
+            Add(RegexOp.Succeed);
 
             return new RegexProgram(_code.ToArray(), _classes.ToArray(), captureCount, _registers, flags.IsUnicodeMode());
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> now, and puts the rest on the work list.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=DB8B01
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=5AD0F1
         // Broiler-Falsified-If: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
         // Broiler-Human:        PENDING
         private void Visit(RegexNode node, Stack<Step> work)
@@ -365,7 +366,7 @@ internal static class ProgramCompiler
                 case EmptyNode:
                     break;
                 case CharNode character:
-                    Add(RegexOp.Char, character.CodePoint);
+                    Add(RegexOp.Literal, character.CodePoint);
                     break;
                 case AnyCharNode:
                     Add(_dotAll ? RegexOp.Any : RegexOp.AnyButLineTerminator);
@@ -410,8 +411,8 @@ internal static class ProgramCompiler
         /// Begins a quantifier's lowering: its registers, the bound checks and the choice, the iteration's start and
         /// capture reset; the body and <see cref="Work.CloseIteration"/> go on the work list.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=C818C3
-        // Broiler-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits a JumpIfBelow, or one with an unbounded maximum a JumpIfAtLeast
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=FF8661
+        // Broiler-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
         // Broiler-Human:        PENDING
         private void OpenIteration(QuantifierNode quantifier, Stack<Step> work)
         {
@@ -434,14 +435,14 @@ internal static class ProgramCompiler
                 Add(RegexOp.SetCounter, iteration.Counter);
                 iteration.Loop = _code.Count;
                 if (max != QuantifierNode.Unbounded)
-                    iteration.Ceiling = Add(RegexOp.JumpIfAtLeast, iteration.Counter, max, -1);
+                    iteration.AtMaximum = Add(RegexOp.ExitAtMaximum, iteration.Counter, max, -1);
                 if (min > 0)
-                    Add(RegexOp.JumpIfBelow, iteration.Counter, min, _code.Count + 2);
+                    Add(RegexOp.EnterBelowMinimum, iteration.Counter, min, _code.Count + 2);
             }
 
             // The choice: greedy takes another iteration first, lazy the continuation first; the exit is patched when
             // the iteration closes.
-            iteration.Split = Add(RegexOp.Split, -1, -1);
+            iteration.Choice = Add(RegexOp.Choice, -1, -1);
             Add(RegexOp.SavePosition, iteration.Mark);
             var (first, last) = groups[quantifier];
             if (last >= first)
@@ -452,26 +453,26 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Ends a quantifier's lowering: the empty check, the count and the jump back, then the exits.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=C8248D
-        // Broiler-Falsified-If: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy split's alternative is the body
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=D63006
+        // Broiler-Falsified-If: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
         // Broiler-Human:        PENDING
         private void CloseIteration(Iteration iteration)
         {
             var quantifier = iteration.Quantifier;
-            Add(RegexOp.EmptyCheck, iteration.Mark, iteration.Counter, quantifier.Min);
+            Add(RegexOp.RejectEmptyIteration, iteration.Mark, iteration.Counter, quantifier.Min);
             if (iteration.Counter >= 0)
                 Add(RegexOp.IncrementCounter, iteration.Counter);
             if (iteration.Loop >= 0)
-                Add(RegexOp.Jump, iteration.Loop);
+                Add(RegexOp.Goto, iteration.Loop);
 
-            var body = iteration.Split + 1;
+            var body = iteration.Choice + 1;
             var exit = _code.Count;
             if (quantifier.Greedy)
-                Patch(iteration.Split, a: body, b: exit);
+                Patch(iteration.Choice, a: body, b: exit);
             else
-                Patch(iteration.Split, a: exit, b: body);
-            if (iteration.Ceiling >= 0)
-                Patch(iteration.Ceiling, c: exit);
+                Patch(iteration.Choice, a: exit, b: body);
+            if (iteration.AtMaximum >= 0)
+                Patch(iteration.AtMaximum, c: exit);
         }
 
         /// <summary>Adds a class test: the class's code points with its negation applied, flattened into pairs.</summary>

@@ -96,12 +96,12 @@ internal ref struct RegexMachine
     /// <summary>The backtrack frames, <see cref="FrameSize"/> integers each, and how many are held.</summary>
     private int[] _frames;
 
-    private int _frameTop;
+    private int _framesHeld;
 
     /// <summary>The undo trail, <see cref="CellSize"/> integers a cell, and how many cells are held.</summary>
     private int[] _trail;
 
-    private int _trailTop;
+    private int _cellsHeld;
 
     /// <summary>The units of work the call has dispatched, the instruction being dispatched included.</summary>
     private ulong _spent;
@@ -168,7 +168,7 @@ internal ref struct RegexMachine
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
     /// pair it stepped over; the position after the last character is tried too.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=ABDC1A
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=71ADFA
     // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, or under u a search starts inside a surrogate pair it stepped over
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
@@ -176,7 +176,7 @@ internal ref struct RegexMachine
         var at = start;
         while (true)
         {
-            switch (Attempt(at))
+            switch (MatchFrom(at))
             {
                 case Outcome.Matched:
                     WriteSlots(at, slots);
@@ -188,7 +188,7 @@ internal ref struct RegexMachine
             if (anchored || at >= _subject.Length)
                 return RegexStatus.NoMatch;
 
-            at = Advance(at);
+            at = NextStart(at);
         }
     }
 
@@ -211,10 +211,10 @@ internal ref struct RegexMachine
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=C12DF4
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=F4AFEF
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
     // Broiler-Human:        PENDING
-    private Outcome Attempt(int origin)
+    private Outcome MatchFrom(int origin)
     {
         var pc = 0;
         var position = origin;
@@ -230,8 +230,8 @@ internal ref struct RegexMachine
 
             switch (instruction.Op)
             {
-                case RegexOp.Char:
-                    if (position < _subject.Length && Read(position, out var width) == instruction.A)
+                case RegexOp.Literal:
+                    if (position < _subject.Length && CharacterAt(position, out var width) == instruction.A)
                     {
                         position += width;
                         pc++;
@@ -240,7 +240,7 @@ internal ref struct RegexMachine
 
                     break;
                 case RegexOp.Class:
-                    if (position < _subject.Length && InClass(instruction.A, Read(position, out width)))
+                    if (position < _subject.Length && InClass(instruction.A, CharacterAt(position, out width)))
                     {
                         position += width;
                         pc++;
@@ -249,7 +249,7 @@ internal ref struct RegexMachine
 
                     break;
                 case RegexOp.AnyButLineTerminator:
-                    if (position < _subject.Length && !IsLineTerminator(Read(position, out width)))
+                    if (position < _subject.Length && !EndsLine(CharacterAt(position, out width)))
                     {
                         position += width;
                         pc++;
@@ -260,74 +260,74 @@ internal ref struct RegexMachine
                 case RegexOp.Any:
                     if (position < _subject.Length)
                     {
-                        Read(position, out width);
+                        CharacterAt(position, out width);
                         position += width;
                         pc++;
                         continue;
                     }
 
                     break;
-                case RegexOp.Split:
-                    if (!PushFrame(instruction.B, position))
+                case RegexOp.Choice:
+                    if (!PushChoicePoint(instruction.B, position))
                         return Outcome.Exceeded;
                     pc = instruction.A;
                     continue;
-                case RegexOp.Jump:
+                case RegexOp.Goto:
                     pc = instruction.A;
                     continue;
                 case RegexOp.SavePosition:
-                    if (!Write(instruction.A, position))
+                    if (!SetRegister(instruction.A, position))
                         return Outcome.Exceeded;
                     pc++;
                     continue;
                 case RegexOp.ClearCaptures:
                     for (var register = instruction.A; register <= instruction.B; register++)
                     {
-                        if (!Write(register, -1))
+                        if (!SetRegister(register, -1))
                             return Outcome.Exceeded;
                     }
 
                     pc++;
                     continue;
                 case RegexOp.SetCounter:
-                    if (!Write(instruction.A, 0))
+                    if (!SetRegister(instruction.A, 0))
                         return Outcome.Exceeded;
                     pc++;
                     continue;
                 case RegexOp.IncrementCounter:
-                    if (_registers[instruction.A] < int.MaxValue && !Write(instruction.A, _registers[instruction.A] + 1))
+                    if (_registers[instruction.A] < int.MaxValue && !SetRegister(instruction.A, _registers[instruction.A] + 1))
                         return Outcome.Exceeded;
                     pc++;
                     continue;
-                case RegexOp.JumpIfAtLeast:
+                case RegexOp.ExitAtMaximum:
                     pc = _registers[instruction.A] >= instruction.B ? instruction.C : pc + 1;
                     continue;
-                case RegexOp.JumpIfBelow:
+                case RegexOp.EnterBelowMinimum:
                     pc = _registers[instruction.A] < instruction.B ? instruction.C : pc + 1;
                     continue;
-                case RegexOp.EmptyCheck:
+                case RegexOp.RejectEmptyIteration:
                     if (position == _registers[instruction.A]
                         && (instruction.B < 0 || _registers[instruction.B] >= instruction.C))
                         break;
                     pc++;
                     continue;
-                case RegexOp.Accept:
+                case RegexOp.Succeed:
                     _end = position;
                     return Outcome.Matched;
             }
 
             // The instruction failed: resume at the newest frame, with every write made since it undone.
-            if (_frameTop == 0)
+            if (_framesHeld == 0)
             {
-                Unwind(0);
+                UndoAbove(0);
                 return Outcome.Failed;
             }
 
-            _frameTop--;
-            var frame = _frameTop * FrameSize;
+            _framesHeld--;
+            var frame = _framesHeld * FrameSize;
             pc = _frames[frame];
             position = _frames[frame + 1];
-            Unwind(_frames[frame + 2]);
+            UndoAbove(_frames[frame + 2]);
         }
     }
 
@@ -355,10 +355,10 @@ internal ref struct RegexMachine
     }
 
     /// <summary>The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as one code point.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=B063C8
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=A19440
     // Broiler-Falsified-If: under u a high surrogate at the subject's last index reads past its end, or without u a surrogate pair is read as one code point
     // Broiler-Human:        PENDING
-    private readonly int Read(int position, out int width)
+    private readonly int CharacterAt(int position, out int width)
     {
         var unit = _subject[position];
         if (_unicode && char.IsHighSurrogate(unit) && position + 1 < _subject.Length && char.IsLowSurrogate(_subject[position + 1]))
@@ -372,13 +372,13 @@ internal ref struct RegexMachine
     }
 
     /// <summary>AdvanceStringIndex (ECMA-262 §22.2.7.3): the next start position, past a whole surrogate pair under <c>u</c> and <c>v</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=C0EF82
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=F83BCE
     // Broiler-Human:        PENDING
-    private readonly int Advance(int position)
+    private readonly int NextStart(int position)
     {
         if (position + 1 >= _subject.Length || !_unicode)
             return position + 1;
-        Read(position, out var width);
+        CharacterAt(position, out var width);
         return position + width;
     }
 
@@ -406,56 +406,56 @@ internal ref struct RegexMachine
     }
 
     /// <summary>ECMA-262's LineTerminator: LF, CR, U+2028 and U+2029.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s12.3; IP=None; Security=Low; Resources=0; Fingerprint=B85D17
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s12.3; IP=None; Security=Low; Resources=0; Fingerprint=D4877B
     // Broiler-Falsified-If: U+0085 NEXT LINE is reported as a line terminator
     // Broiler-Human:        PENDING
-    private static bool IsLineTerminator(int codePoint) => codePoint is 0x0A or 0x0D or 0x2028 or 0x2029;
+    private static bool EndsLine(int codePoint) => codePoint is 0x0A or 0x0D or 0x2028 or 0x2029;
 
     /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>, unless the frame ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=55D737
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=E0F13C
     // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
     // Broiler-Human:        PENDING
-    private bool PushFrame(int resume, int position)
+    private bool PushChoicePoint(int resume, int position)
     {
-        if (_frameTop == _frameCeiling)
+        if (_framesHeld == _frameCeiling)
         {
             Exceeded = RegexLimit.Frames;
             return false;
         }
 
-        var frame = _frameTop * FrameSize;
+        var frame = _framesHeld * FrameSize;
         if (frame + FrameSize > _frames.Length)
             _frames = Grow(_frames, frame, (int)Math.Min((long)_frames.Length * 2, (long)_frameCeiling * FrameSize));
         _frames[frame] = resume;
         _frames[frame + 1] = position;
-        _frames[frame + 2] = _trailTop;
-        _frameTop++;
+        _frames[frame + 2] = _cellsHeld;
+        _framesHeld++;
         return true;
     }
 
     /// <summary>Writes <paramref name="value"/> into register <paramref name="register"/>, keeping what it held on the trail, unless the trail ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the write changes the register and the trail already holds as many cells as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=EF82CB
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=46CC5B
     // Broiler-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
     // Broiler-Human:        PENDING
-    private bool Write(int register, int value)
+    private bool SetRegister(int register, int value)
     {
         var held = _registers[register];
         if (held == value)
             return true;
-        if (_trailTop == _trailCeiling)
+        if (_cellsHeld == _trailCeiling)
         {
             Exceeded = RegexLimit.Trail;
             return false;
         }
 
-        var cell = _trailTop * CellSize;
+        var cell = _cellsHeld * CellSize;
         if (cell + CellSize > _trail.Length)
             _trail = Grow(_trail, cell, (int)Math.Min((long)_trail.Length * 2, (long)_trailCeiling * CellSize));
         _trail[cell] = register;
         _trail[cell + 1] = held;
-        _trailTop++;
+        _cellsHeld++;
         _registers[register] = value;
         return true;
     }
@@ -473,15 +473,13 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Undoes every register write above trail height <paramref name="height"/>, newest first.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=C9B65B
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=688A23
     // Broiler-Human:        PENDING
-    private void Unwind(int height)
+    private void UndoAbove(int height)
     {
-        while (_trailTop > height)
-        {
-            _trailTop--;
-            _registers[_trail[_trailTop * CellSize]] = _trail[(_trailTop * CellSize) + 1];
-        }
+        for (var cell = (_cellsHeld - 1) * CellSize; cell >= height * CellSize; cell -= CellSize)
+            _registers[_trail[cell]] = _trail[cell + 1];
+        _cellsHeld = Math.Min(_cellsHeld, height);
     }
 
     /// <summary>Writes the match's offsets: group 0 from <paramref name="origin"/> to the end, then each group's registers.</summary>

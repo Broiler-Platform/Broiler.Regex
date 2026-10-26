@@ -54,7 +54,7 @@ internal sealed class RegexProgram
     /// A program over <paramref name="code"/> and <paramref name="classes"/>, which the caller hands over and does not
     /// keep.
     /// </summary>
-    /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Accept"/> or a failure.</param>
+    /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Succeed"/> or a failure.</param>
     /// <param name="classes">Each class's ranges as pairs of inclusive bounds, sorted and disjoint.</param>
     /// <param name="captureCount">The pattern's capturing groups, group 0 not counted.</param>
     /// <param name="registerCount">The registers the program uses: the capture registers and the quantifiers' loop registers.</param>

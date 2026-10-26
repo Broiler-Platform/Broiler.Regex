@@ -27,7 +27,7 @@ public class MachineTests
     }
 
     /// <summary>Ceilings no test of the loop's semantics reaches: no step ceiling, and the library's maximum frames and trail.</summary>
-    internal static RegexMatchCeilings Ample => new(null, RegexMatchCeilings.MaximumFrames, RegexMatchCeilings.MaximumTrail);
+    internal static RegexMatchCeilings Ample => new(null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
 
     internal static string Render(RegexStatus status, int[] slots)
     {

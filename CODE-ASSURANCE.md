@@ -94,10 +94,10 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Compiling.ProgramCompiler.Emitter.AddClass(CharSet)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Engine.RegexMachine.Attempt(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Pay()` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Engine.RegexMachine.PushFrame(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Engine.RegexMachine.Write(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.PushChoicePoint(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexProgram` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, human line PENDING

@@ -34,11 +34,11 @@ namespace Broiler.Regex.Engine;
 /// <para>
 /// <b>The argument rules.</b> A ceiling below one is the caller's broken precondition, an
 /// <see cref="ArgumentOutOfRangeException"/> (convention 3), and so is a frame or trail ceiling above the library's maximum,
-/// <see cref="MaximumFrames"/> or <see cref="MaximumTrail"/>. The maxima bound the memory one call can hold, twelve bytes a
-/// frame and eight a trail cell: 192 MiB of frames and 256 MiB of trail. They are sixteen times the ceilings both engines
-/// pass, <see cref="EngineFrames"/> and <see cref="EngineTrail"/> (decision D10, Broiler.VM's <c>MaximumFrames</c> and
-/// <c>MaximumTrail</c>), and four times the adversarial corpus's ordinary ceilings, so no caller the programme has is near
-/// them. The step ceiling has no maximum: a step is time, not memory, and the meter is the caller's other bound on it. A
+/// <see cref="FrameCeilingMaximum"/> or <see cref="TrailCeilingMaximum"/>. The maxima bound the memory one call can hold,
+/// twelve bytes a frame and eight a trail cell: 192 MiB of frames and 256 MiB of trail. They are sixteen times the ceilings
+/// both engines pass, <see cref="EngineFrames"/> and <see cref="EngineTrail"/> (decision D10, Broiler.VM's
+/// <c>MaximumFrames</c> and <c>MaximumTrail</c>, names this library leaves to those values alone), and four times the
+/// adversarial corpus's ordinary ceilings, so no caller the programme has is near them. The step ceiling has no maximum: a step is time, not memory, and the meter is the caller's other bound on it. A
 /// ceiling the call never reaches costs nothing: the frames and the trail grow as a match needs them.
 /// </para>
 /// </remarks>
@@ -48,14 +48,14 @@ namespace Broiler.Regex.Engine;
 internal readonly struct RegexMatchCeilings
 {
     /// <summary>The largest frame ceiling a caller may pass: 16,777,216 frames, 192 MiB.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=6775E2
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=93BE69
     // Broiler-Human:        PENDING
-    internal const int MaximumFrames = 1 << 24;
+    internal const int FrameCeilingMaximum = 1 << 24;
 
     /// <summary>The largest trail ceiling a caller may pass: 33,554,432 cells, 256 MiB.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=586A7F
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BD311A
     // Broiler-Human:        PENDING
-    internal const int MaximumTrail = 1 << 25;
+    internal const int TrailCeilingMaximum = 1 << 25;
 
     /// <summary>The frame ceiling both engines pass (decision D10): Broiler.VM's <c>MaximumFrames</c>, 1,048,576.</summary>
     // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=19A109
@@ -71,17 +71,17 @@ internal readonly struct RegexMatchCeilings
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="steps"/> is zero, or <paramref name="frames"/> or <paramref name="trail"/> is below one or above its maximum.
     /// </exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=5D03D6
-    // Broiler-Falsified-If: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, MaximumTrail + 1) does not throw
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=D25D08
+    // Broiler-Falsified-If: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
     // Broiler-Human:        PENDING
     internal RegexMatchCeilings(ulong? steps, int frames, int trail)
     {
         if (steps == 0)
             throw new ArgumentOutOfRangeException(nameof(steps), "A step ceiling, when there is one, is at least one unit.");
         ArgumentOutOfRangeException.ThrowIfLessThan(frames, 1);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(frames, MaximumFrames);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(frames, FrameCeilingMaximum);
         ArgumentOutOfRangeException.ThrowIfLessThan(trail, 1);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(trail, MaximumTrail);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(trail, TrailCeilingMaximum);
         Steps = steps;
         Frames = frames;
         Trail = trail;

@@ -40,64 +40,82 @@ namespace Broiler.Regex.Engine;
 /// not a contract: a program is built and run by the same version of the library.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=4CC3A6
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=BEC728
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
     /// <summary>
-    /// Consume one character equal to the code point <c>A</c> (§22.2.2.7.1 CharacterSetMatcher over a one-member set,
-    /// without case folding): a code unit outside <c>u</c> and <c>v</c>, and a code point, a surrogate pair read as one,
-    /// under them.
+    /// The matcher of a pattern character (§22.2.2.7, Atom :: PatternCharacter): CharacterSetMatcher over the one-member
+    /// set of code point <c>A</c>, with no case folding. The input's next character must be that code point; under
+    /// <c>u</c> and <c>v</c> a character is a code point, a surrogate pair read as one, and otherwise a code unit.
     /// </summary>
-    Char = 0,
+    Literal = 0,
 
-    /// <summary>Consume one character the class numbered <c>A</c> holds (§22.2.2.7.1 CharacterSetMatcher).</summary>
+    /// <summary>CharacterSetMatcher (§22.2.2.7.1) over class number <c>A</c>: the next character must be one of its code points.</summary>
     Class = 1,
 
-    /// <summary>Consume one character that is not a line terminator: <c>.</c> without <c>s</c> (§22.2.2.7, Atom :: <c>.</c>).</summary>
+    /// <summary>
+    /// The matcher of Atom :: <c>.</c> without <c>s</c> (§22.2.2.7): the next character must be other than a
+    /// LineTerminator.
+    /// </summary>
     AnyButLineTerminator = 2,
 
-    /// <summary>Consume one character, whatever it is: <c>.</c> under <c>s</c>.</summary>
+    /// <summary>The matcher of Atom :: <c>.</c> under <c>s</c>: any next character.</summary>
     Any = 3,
 
     /// <summary>
-    /// Continue at <c>A</c>, and leave a backtrack point that resumes at <c>B</c> from the same position and the same
-    /// registers: the order in which §22.2.2.3 tries an alternation's alternatives and a quantifier's two choices.
+    /// Two ways on, tried in order, as MatchTwoAlternatives tries an alternation's two sides (§22.2.2.3.3) and
+    /// RepeatMatcher its iteration and its continuation (§22.2.2.3.1, steps 9 to 12): matching goes on at <c>A</c>, and only
+    /// if every path from there fails does it go on at <c>B</c>, from the same index with the same captures.
     /// </summary>
-    Split = 4,
+    Choice = 4,
 
-    /// <summary>Continue at <c>A</c>.</summary>
-    Jump = 5,
+    /// <summary>Matching goes on at <c>A</c>: the continuation a construct hands to the one after it.</summary>
+    Goto = 5,
 
-    /// <summary>Write the current position into register <c>A</c>: a capture's start or end, or a quantifier iteration's start.</summary>
+    /// <summary>
+    /// Register <c>A</c> takes the current index: one end of a capture group's range (§22.2.2.7, the continuation of
+    /// Atom :: <c>(</c> GroupSpecifier Disjunction <c>)</c>), or the index an iteration of a quantifier begins at.
+    /// </summary>
     SavePosition = 6,
 
     /// <summary>
-    /// Write "did not participate" (-1) into registers <c>A</c> to <c>B</c>: the captures of a quantified atom, cleared at
-    /// the start of each iteration (§22.2.2.3.1 RepeatMatcher, steps 3 and 4).
+    /// RepeatMatcher's steps 3 and 4 (§22.2.2.3.1): every capture inside the quantified atom, registers <c>A</c> to
+    /// <c>B</c>, is set to undefined (-1) before the atom is matched again.
     /// </summary>
     ClearCaptures = 7,
 
-    /// <summary>Write zero into register <c>A</c>: a counted quantifier's iteration count.</summary>
+    /// <summary>A counted quantifier starts: its iteration count, register <c>A</c>, becomes zero.</summary>
     SetCounter = 8,
 
-    /// <summary>Add one to register <c>A</c>, stopping at <see cref="int.MaxValue"/>.</summary>
+    /// <summary>
+    /// An iteration of a counted quantifier is complete: its count, register <c>A</c>, grows by one, and stays at
+    /// <see cref="int.MaxValue"/> once there.
+    /// </summary>
     IncrementCounter = 9,
 
-    /// <summary>Continue at <c>C</c> when register <c>A</c> is at least <c>B</c>, and at the next instruction otherwise: the quantifier's maximum.</summary>
-    JumpIfAtLeast = 10,
-
-    /// <summary>Continue at <c>C</c> when register <c>A</c> is below <c>B</c>, and at the next instruction otherwise: the quantifier's minimum.</summary>
-    JumpIfBelow = 11,
+    /// <summary>
+    /// RepeatMatcher's step 1 for a quantifier whose remaining maximum has reached zero: once the count in register
+    /// <c>A</c> equals the maximum, <c>B</c>, no iteration is tried and matching goes on at <c>C</c>, the continuation;
+    /// below it, at the next instruction.
+    /// </summary>
+    ExitAtMaximum = 10,
 
     /// <summary>
-    /// Fail when the iteration that is ending consumed nothing and was not a required one (§22.2.2.3.1 RepeatMatcher, the
-    /// continuation's step a): the position equals register <c>A</c>, the iteration's start, and either <c>B</c> is
-    /// negative (every iteration of <c>?</c> and <c>*</c> is optional) or register <c>B</c>, the iterations completed before
-    /// this one, is at least <c>C</c>, the minimum.
+    /// RepeatMatcher's step 8: while the count in register <c>A</c> is below the minimum, <c>B</c>, the next iteration is
+    /// required and is entered at <c>C</c> with no choice left open; from the minimum on, matching goes on at the next
+    /// instruction, the choice.
     /// </summary>
-    EmptyCheck = 12,
+    EnterBelowMinimum = 11,
 
-    /// <summary>The pattern has matched, from the attempt's start to the current position.</summary>
-    Accept = 13,
+    /// <summary>
+    /// The continuation RepeatMatcher builds at step 2, its step b: an iteration that is ending fails when it was optional
+    /// and ended at the index it began at. It began at the index in register <c>A</c>; it was optional when <c>B</c> is
+    /// negative (every iteration of <c>?</c> and <c>*</c>), or when register <c>B</c>, the iterations completed before it,
+    /// is at least <c>C</c>, the minimum.
+    /// </summary>
+    RejectEmptyIteration = 12,
+
+    /// <summary>The pattern's last continuation: the match succeeds, from the attempt's start index to the current one.</summary>
+    Succeed = 13,
 }

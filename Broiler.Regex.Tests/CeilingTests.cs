@@ -14,7 +14,7 @@ namespace Broiler.Regex.Tests;
 public class CeilingTests
 {
     private static (RegexStatus Status, RegexLimit Limit, string Answer) Run(string pattern, string subject, ulong? steps = null,
-        int frames = RegexMatchCeilings.MaximumFrames, int trail = RegexMatchCeilings.MaximumTrail)
+        int frames = RegexMatchCeilings.FrameCeilingMaximum, int trail = RegexMatchCeilings.TrailCeilingMaximum)
     {
         var program = TestProgram.Compile(pattern);
         var slots = new int[program.SlotCount];
@@ -54,7 +54,7 @@ public class CeilingTests
     [Fact]
     public void The_step_ceiling_is_reached_at_the_unit_past_it()
     {
-        // a on "a": Char and Accept, two units.
+        // a on "a": Literal and Succeed, two units.
         Assert.Equal("match 0,1", Run("a", "a", steps: 2).Answer);
         Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Steps), Run("a", "a", steps: 1).Head());
     }
@@ -93,10 +93,10 @@ public class CeilingTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, 0, 1));
         Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, 1, 0));
         Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, -1, 1));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, RegexMatchCeilings.MaximumFrames + 1, 1));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, 1, RegexMatchCeilings.MaximumTrail + 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, RegexMatchCeilings.FrameCeilingMaximum + 1, 1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new RegexMatchCeilings(null, 1, RegexMatchCeilings.TrailCeilingMaximum + 1));
 
-        var largest = new RegexMatchCeilings(ulong.MaxValue, RegexMatchCeilings.MaximumFrames, RegexMatchCeilings.MaximumTrail);
+        var largest = new RegexMatchCeilings(ulong.MaxValue, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
         Assert.Equal((ulong.MaxValue, 1 << 24, 1 << 25), (largest.Steps!.Value, largest.Frames, largest.Trail));
         Assert.False(default(RegexMatchCeilings).IsSet);
     }

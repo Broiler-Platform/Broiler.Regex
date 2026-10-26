@@ -156,33 +156,33 @@ written out, so a unit that becomes `High` joins it at the next generation.
 - `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `9D2059`, PENDING
   - Falsified if: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
 - `Broiler.Regex.Compiling.ProgramCompiler.Emitter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5D4893`, PENDING
-  - Falsified if: a lazy quantifier's split tries the body before the continuation, or an alternation's split resumes anywhere but at the next alternative
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `7A0941`, PENDING
-  - Falsified if: an alternation's split resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `DB8B01`, PENDING
+  - Falsified if: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
+- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `2A88DE`, PENDING
+  - Falsified if: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
+- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5AD0F1`, PENDING
   - Falsified if: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `C818C3`, PENDING
-  - Falsified if: X{0} emits X, a quantifier with a minimum of zero emits a JumpIfBelow, or one with an unbounded maximum a JumpIfAtLeast
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `C8248D`, PENDING
-  - Falsified if: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy split's alternative is the body
+- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `FF8661`, PENDING
+  - Falsified if: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
+- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `D63006`, PENDING
+  - Falsified if: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
 - `Broiler.Regex.Compiling.ProgramCompiler.Emitter.AddClass(CharSet)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `CEBA51`, PENDING
   - Falsified if: the class [^a-c] is given the ranges a to c rather than their complement, or a class's cost is not one plus its weight
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `7D0010`, PENDING
   - Falsified if: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
-- `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `ABDC1A`, PENDING
+- `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `71ADFA`, PENDING
   - Falsified if: an anchored call tries a position after its start, a search skips the position after the last character, or under u a search starts inside a surrogate pair it stepped over
-- `Broiler.Regex.Engine.RegexMachine.Attempt(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `C12DF4`, PENDING
+- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `F4AFEF`, PENDING
   - Falsified if: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
 - `Broiler.Regex.Engine.RegexMachine.Pay()` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=JSD-0081 decision D8, `05547C`, PENDING
   - Falsified if: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused
-- `Broiler.Regex.Engine.RegexMachine.PushFrame(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `55D737`, PENDING
+- `Broiler.Regex.Engine.RegexMachine.PushChoicePoint(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `E0F13C`, PENDING
   - Falsified if: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
-- `Broiler.Regex.Engine.RegexMachine.Write(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `EF82CB`, PENDING
+- `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `46CC5B`, PENDING
   - Falsified if: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
 - `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=JSD-0081 decisions D8 and D10, `25E98E`, PENDING
   - Falsified if: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
-- `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `5D03D6`, PENDING
-  - Falsified if: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, MaximumTrail + 1) does not throw
+- `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `D25D08`, PENDING
+  - Falsified if: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
 - `Broiler.Regex.Engine.RegexProgram` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, Spec=JSD-0081 decisions D5 and D8, `E22681`, PENDING
   - Falsified if: two threads matching one program at the same time answer differently from one thread matching it twice, or a match call writes a field of the program
 - `Broiler.Regex.Engine.RegexProgram.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit, out ulong)` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `775D0C`, PENDING

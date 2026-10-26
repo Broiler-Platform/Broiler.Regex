@@ -36,7 +36,7 @@ public class ChargingTests
         RegexProgram program, string subject, RegexWorkCharge? meter, ulong? steps = null, int start = 0, bool anchored = false)
     {
         var slots = new int[program.SlotCount];
-        var status = program.Match(subject, start, anchored, slots, meter, new RegexMatchCeilings(steps, RegexMatchCeilings.MaximumFrames, RegexMatchCeilings.MaximumTrail), out var limit, out var units);
+        var status = program.Match(subject, start, anchored, slots, meter, new RegexMatchCeilings(steps, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum), out var limit, out var units);
         return (status, limit, units, slots);
     }
 
@@ -52,10 +52,11 @@ public class ChargingTests
     [InlineData("a*", "aa", "", 14)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_and_a_reset_s_groups_on_top(string pattern, string subject, string flags, ulong units)
     {
-        // a on "bbb": a failed Char at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684 ranges,
-        // weight nine, so ten for the test and one for Accept. (?:(a)(b))* on "": Split, the mark, the two groups' reset
-        // (two), group 1's start, the failed Char, then Accept from the frame. a* on "aa": two iterations of Split, mark,
-        // Char, EmptyCheck and Jump, then Split, mark and the failed Char, then Accept from the frame.
+        // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
+        // ranges, weight nine, so ten for the test and one for Succeed. (?:(a)(b))* on "": Choice, the mark, the two groups'
+        // reset (two), group 1's start, the failed Literal, then Succeed from the frame. a* on "aa": two iterations of
+        // Choice, mark, Literal, RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from
+        // the frame.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }

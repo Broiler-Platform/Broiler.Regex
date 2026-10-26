@@ -22,38 +22,39 @@ public class ProgramCompilerTests
     /// <summary>The program's instructions, one per entry, as "Op A,B,C"; the operands an instruction does not read are left out.</summary>
     internal static string[] Listing(RegexProgram program) => program.Code.ToArray().Select(static i => i.Op switch
     {
-        RegexOp.Char or RegexOp.Class or RegexOp.Jump or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
+        RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
             => i.Op + " " + Decimal(i.A),
-        RegexOp.Split or RegexOp.ClearCaptures => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
-        RegexOp.JumpIfAtLeast or RegexOp.JumpIfBelow or RegexOp.EmptyCheck => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
+        RegexOp.Choice or RegexOp.ClearCaptures => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
+        RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
+            => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
     }).ToArray();
 
     private static string Decimal(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     [Theory]
-    [InlineData("a", "", new[] { "Char 97", "Accept" })]
-    [InlineData("ab", "", new[] { "Char 97", "Char 98", "Accept" })]
-    [InlineData("", "", new[] { "Accept" })]
-    [InlineData(".", "", new[] { "AnyButLineTerminator", "Accept" })]
-    [InlineData(".", "s", new[] { "Any", "Accept" })]
-    [InlineData("\\u{1F600}", "u", new[] { "Char 128512", "Accept" })]
-    [InlineData("a|b", "", new[] { "Split 1,3", "Char 97", "Jump 4", "Char 98", "Accept" })]
-    [InlineData("a|b|", "", new[] { "Split 1,3", "Char 97", "Jump 6", "Split 4,6", "Char 98", "Jump 6", "Accept" })]
-    [InlineData("(a)", "", new[] { "SavePosition 2", "Char 97", "SavePosition 3", "Accept" })]
-    [InlineData("(?:a)", "", new[] { "Char 97", "Accept" })]
-    [InlineData("(?<n>a)(b)", "", new[] { "SavePosition 2", "Char 97", "SavePosition 3", "SavePosition 4", "Char 98", "SavePosition 5", "Accept" })]
-    [InlineData("a?", "", new[] { "Split 1,4", "SavePosition 2", "Char 97", "EmptyCheck 2,-1,0", "Accept" })]
-    [InlineData("a??", "", new[] { "Split 4,1", "SavePosition 2", "Char 97", "EmptyCheck 2,-1,0", "Accept" })]
-    [InlineData("a*", "", new[] { "Split 1,5", "SavePosition 2", "Char 97", "EmptyCheck 2,-1,0", "Jump 0", "Accept" })]
-    [InlineData("a*?", "", new[] { "Split 5,1", "SavePosition 2", "Char 97", "EmptyCheck 2,-1,0", "Jump 0", "Accept" })]
-    [InlineData("a+", "", new[] { "SetCounter 3", "JumpIfBelow 3,1,3", "Split 3,8", "SavePosition 2", "Char 97", "EmptyCheck 2,3,1", "IncrementCounter 3", "Jump 1", "Accept" })]
-    [InlineData("a{2,3}", "", new[] { "SetCounter 3", "JumpIfAtLeast 3,3,9", "JumpIfBelow 3,2,4", "Split 4,9", "SavePosition 2", "Char 97", "EmptyCheck 2,3,2", "IncrementCounter 3", "Jump 1", "Accept" })]
-    [InlineData("a{2,3}?", "", new[] { "SetCounter 3", "JumpIfAtLeast 3,3,9", "JumpIfBelow 3,2,4", "Split 9,4", "SavePosition 2", "Char 97", "EmptyCheck 2,3,2", "IncrementCounter 3", "Jump 1", "Accept" })]
-    [InlineData("a{0,2}", "", new[] { "SetCounter 3", "JumpIfAtLeast 3,2,8", "Split 3,8", "SavePosition 2", "Char 97", "EmptyCheck 2,3,0", "IncrementCounter 3", "Jump 1", "Accept" })]
-    [InlineData("a{0}", "", new[] { "Accept" })]
-    [InlineData("(a){0}b", "", new[] { "Char 98", "Accept" })]
-    [InlineData("(a)*", "", new[] { "Split 1,8", "SavePosition 4", "ClearCaptures 2,3", "SavePosition 2", "Char 97", "SavePosition 3", "EmptyCheck 4,-1,0", "Jump 0", "Accept" })]
+    [InlineData("a", "", new[] { "Literal 97", "Succeed" })]
+    [InlineData("ab", "", new[] { "Literal 97", "Literal 98", "Succeed" })]
+    [InlineData("", "", new[] { "Succeed" })]
+    [InlineData(".", "", new[] { "AnyButLineTerminator", "Succeed" })]
+    [InlineData(".", "s", new[] { "Any", "Succeed" })]
+    [InlineData("\\u{1F600}", "u", new[] { "Literal 128512", "Succeed" })]
+    [InlineData("a|b", "", new[] { "Choice 1,3", "Literal 97", "Goto 4", "Literal 98", "Succeed" })]
+    [InlineData("a|b|", "", new[] { "Choice 1,3", "Literal 97", "Goto 6", "Choice 4,6", "Literal 98", "Goto 6", "Succeed" })]
+    [InlineData("(a)", "", new[] { "SavePosition 2", "Literal 97", "SavePosition 3", "Succeed" })]
+    [InlineData("(?:a)", "", new[] { "Literal 97", "Succeed" })]
+    [InlineData("(?<n>a)(b)", "", new[] { "SavePosition 2", "Literal 97", "SavePosition 3", "SavePosition 4", "Literal 98", "SavePosition 5", "Succeed" })]
+    [InlineData("a?", "", new[] { "Choice 1,4", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,-1,0", "Succeed" })]
+    [InlineData("a??", "", new[] { "Choice 4,1", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,-1,0", "Succeed" })]
+    [InlineData("a*", "", new[] { "Choice 1,5", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,-1,0", "Goto 0", "Succeed" })]
+    [InlineData("a*?", "", new[] { "Choice 5,1", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,-1,0", "Goto 0", "Succeed" })]
+    [InlineData("a+", "", new[] { "SetCounter 3", "EnterBelowMinimum 3,1,3", "Choice 3,8", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,3,1", "IncrementCounter 3", "Goto 1", "Succeed" })]
+    [InlineData("a{2,3}", "", new[] { "SetCounter 3", "ExitAtMaximum 3,3,9", "EnterBelowMinimum 3,2,4", "Choice 4,9", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,3,2", "IncrementCounter 3", "Goto 1", "Succeed" })]
+    [InlineData("a{2,3}?", "", new[] { "SetCounter 3", "ExitAtMaximum 3,3,9", "EnterBelowMinimum 3,2,4", "Choice 9,4", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,3,2", "IncrementCounter 3", "Goto 1", "Succeed" })]
+    [InlineData("a{0,2}", "", new[] { "SetCounter 3", "ExitAtMaximum 3,2,8", "Choice 3,8", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,3,0", "IncrementCounter 3", "Goto 1", "Succeed" })]
+    [InlineData("a{0}", "", new[] { "Succeed" })]
+    [InlineData("(a){0}b", "", new[] { "Literal 98", "Succeed" })]
+    [InlineData("(a)*", "", new[] { "Choice 1,8", "SavePosition 4", "ClearCaptures 2,3", "SavePosition 2", "Literal 97", "SavePosition 3", "RejectEmptyIteration 4,-1,0", "Goto 0", "Succeed" })]
     public void Each_construct_lowers_to_the_instructions_of_the_remarks(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
