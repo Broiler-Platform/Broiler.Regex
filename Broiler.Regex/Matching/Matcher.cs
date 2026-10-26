@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   47
 // Annotated:        47/47
-// Exempt:           22
+// Exempt:           23
 // Human-reviewed:   0/47
 // IP risk:          Low
 // Security risk:    High
@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Broiler.Regex.Ast;
+using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 
 namespace Broiler.Regex.Matching;
@@ -65,6 +66,12 @@ internal sealed class Matcher
     private readonly IReadOnlyDictionary<string, int> _groupNames;
     private readonly RegexUnicode _data;
 
+    /// <summary>
+    /// The caller's nesting limit, which the walks of <see cref="Compile"/> and <see cref="CollectCaptureIndices"/>
+    /// check before they enter a body, as the parser did (decision D6).
+    /// </summary>
+    private readonly RegexNesting _nesting;
+
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C93794
     // Broiler-Human:        PENDING
     private const long StepLimit = 10_000_000;
@@ -87,13 +94,15 @@ internal sealed class Matcher
             (DotAll || (add & RegexFlags.DotAll) != 0) && (remove & RegexFlags.DotAll) == 0);
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=C1F96E
+    /// <exception cref="NestingLimitExceeded">The tree nests deeper than <paramref name="nesting"/>.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=B145AA
     // Broiler-Falsified-If: a pattern compiled with only the v flag matches '.' against one UTF-16 unit of a surrogate pair, because the matcher's Unicode mode stays off
     // Broiler-Human:        PENDING
     public Matcher(RegexNode root, int captureCount, RegexFlags flags,
-        IReadOnlyDictionary<string, int> groupNames, RegexUnicode data)
+        IReadOnlyDictionary<string, int> groupNames, RegexUnicode data, RegexNesting nesting)
     {
         _data = data;
+        _nesting = nesting;
         _captureCount = captureCount;
         _unicode = flags.IsUnicodeMode();
         _sticky = (flags & RegexFlags.Sticky) != 0;
@@ -208,19 +217,20 @@ internal sealed class Matcher
         Build,
     }
 
-    /// <summary>A step of the walk: a node at its direction and flags.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=80153A
+    /// <summary>A step of the walk: a node at its direction, flags and nesting depth.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=BA1E08
     // Broiler-Human:        PENDING
-    private readonly record struct Step(StepKind Kind, RegexNode Node, Direction Dir, Flags Flags, int Count = 0, CompiledMatcher? Value = null);
+    private readonly record struct Step(StepKind Kind, RegexNode Node, Direction Dir, Flags Flags, int Depth, int Count = 0, CompiledMatcher? Value = null);
 
-    /// <summary>Compiles the tree <paramref name="root"/> to its matcher.</summary>
+    /// <summary>Compiles the tree <paramref name="root"/>, at nesting depth 1, to its matcher.</summary>
     /// <remarks>
     /// <para>
     /// <b>No recursion.</b> The tree is walked in post-order on a work list of the heap: a node's children are
     /// compiled first and their matchers left on a stack of results, from which the node's own matcher is built. So
-    /// compilation uses the same CLR stack at every depth of nesting: the recursion it replaces cost several frames
-    /// for each level of a pattern's nesting, more than the parser's, and so set how deep a pattern could nest on a
-    /// given stack.
+    /// compilation uses the same CLR stack at every depth of nesting, and the nesting maximum the library documents
+    /// (<see cref="BroilerRegex.MaximumNestingLimit"/>) is the parser's and the matcher's, not this walk's. Before it
+    /// enters a group's, a look-around's or a modifier's body the walk still checks the caller's nesting limit, as
+    /// the parser did (<see cref="RegexNesting"/>), so a tree the parser did not build cannot make it deeper.
     /// </para>
     /// <para>
     /// <b>The quantifier's fast path.</b> A body that consumes exactly one code point, sets no captures and matches at
@@ -229,19 +239,20 @@ internal sealed class Matcher
     /// (<c>.*</c>, <c>\d+</c>, <c>[^"]*</c>), which avoids the general driver's per-match re-execution.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=77E35C
-    // Broiler-Falsified-If: compiling a deeply nested tree uses more CLR stack than a flat one, or /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body took the single-code-point fast path
+    /// <exception cref="NestingLimitExceeded">The tree nests deeper than the caller's limit.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=7AAEA8
+    // Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, or a group's, a look-around's or a modifier's body is entered without checking the caller's nesting limit, or /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body took the single-code-point fast path
     // Broiler-Human:        PENDING
     private CompiledMatcher Compile(RegexNode root, Direction rootDir, Flags rootFlags)
     {
         var steps = new Stack<Step>();
         var results = new Stack<CompiledMatcher>();
-        steps.Push(new Step(StepKind.Visit, root, rootDir, rootFlags));
+        steps.Push(new Step(StepKind.Visit, root, rootDir, rootFlags, Depth: 1));
 
         while (steps.Count > 0)
         {
             var step = steps.Pop();
-            var (node, dir, flags) = (step.Node, step.Dir, step.Flags);
+            var (node, dir, flags, depth) = (step.Node, step.Dir, step.Flags, step.Depth);
             if (step.Kind == StepKind.Value)
             {
                 results.Push(step.Value!);
@@ -283,12 +294,12 @@ internal sealed class Matcher
                     {
                         if (runs[t] is { } run)
                         {
-                            items.Add(new Step(StepKind.Value, seq.Terms[t], dir, flags, Value: CompileAtomRun(run)));
+                            items.Add(new Step(StepKind.Value, seq.Terms[t], dir, flags, depth, Value: CompileAtomRun(run)));
                             t += run.Length - 1;
                         }
                         else
                         {
-                            items.Add(new Step(StepKind.Visit, seq.Terms[t], dir, flags));
+                            items.Add(new Step(StepKind.Visit, seq.Terms[t], dir, flags, depth));
                         }
                     }
 
@@ -300,26 +311,26 @@ internal sealed class Matcher
                 case DisjunctionNode dis:
                     steps.Push(step with { Kind = StepKind.Build, Count = dis.Alternatives.Count });
                     for (var i = dis.Alternatives.Count - 1; i >= 0; i--)
-                        steps.Push(new Step(StepKind.Visit, dis.Alternatives[i], dir, flags));
+                        steps.Push(new Step(StepKind.Visit, dis.Alternatives[i], dir, flags, depth));
                     break;
                 case GroupNode grp:
                     steps.Push(step with { Kind = StepKind.Build, Count = 1 });
-                    steps.Push(new Step(StepKind.Visit, grp.Child, dir, flags));
+                    steps.Push(new Step(StepKind.Visit, grp.Child, dir, flags, _nesting.Descend(depth, -1)));
                     break;
                 case ModifierGroupNode mod:
                     // The body's matcher is the group's: only the flags it compiles under change.
-                    steps.Push(new Step(StepKind.Visit, mod.Child, dir, flags.With(mod.Added, mod.Removed)));
+                    steps.Push(new Step(StepKind.Visit, mod.Child, dir, flags.With(mod.Added, mod.Removed), _nesting.Descend(depth, -1)));
                     break;
                 case QuantifierNode q when TryGetSingleCharPredicate(q.Child, flags, out var predicate):
                     results.Push(CompileSingleCharQuantifier(predicate, q.Min, q.Max, q.Greedy, dir));
                     break;
                 case QuantifierNode q:
                     steps.Push(step with { Kind = StepKind.Build, Count = 1 });
-                    steps.Push(new Step(StepKind.Visit, q.Child, dir, flags));
+                    steps.Push(new Step(StepKind.Visit, q.Child, dir, flags, depth));
                     break;
                 case LookaroundNode la:
                     steps.Push(step with { Kind = StepKind.Build, Count = 1 });
-                    steps.Push(new Step(StepKind.Visit, la.Child, la.Behind ? Direction.Backward : Direction.Forward, flags));
+                    steps.Push(new Step(StepKind.Visit, la.Child, la.Behind ? Direction.Backward : Direction.Forward, flags, _nesting.Descend(depth, -1)));
                     break;
                 default:
                     throw new InvalidOperationException($"Unhandled node {node.GetType().Name}");
@@ -333,7 +344,7 @@ internal sealed class Matcher
     /// The matcher of a sequence, an alternation, a group, a general quantifier or a look-around, from the matchers
     /// of its <see cref="Step.Count"/> children, which the walk left on <paramref name="results"/> in order.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=7150CE
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=E47432
     // Broiler-Falsified-If: a sequence's or an alternation's children are taken in reverse order, so /ab/ matches 'ba' or /a|ab/ on 'ab' matches 'ab'
     // Broiler-Human:        PENDING
     private CompiledMatcher Build(Step step, Stack<CompiledMatcher> results)
@@ -347,7 +358,7 @@ internal sealed class Matcher
             SequenceNode => Chain(children, step.Dir),
             DisjunctionNode => Alternation(children),
             GroupNode grp => CompileGroup(grp, step.Dir, children[0]),
-            QuantifierNode q => CompileGeneralQuantifier(children[0], CollectCaptureIndices(q.Child), q.Min, q.Max, q.Greedy),
+            QuantifierNode q => CompileGeneralQuantifier(children[0], CollectCaptureIndices(q.Child, step.Depth), q.Min, q.Max, q.Greedy),
             LookaroundNode la => CompileLookaround(la, children[0]),
             _ => throw new InvalidOperationException("A node without children was built"),
         };
@@ -1132,32 +1143,36 @@ internal sealed class Matcher
         return (c, 1);
     }
 
-    /// <summary>Collects the 1-based capture indices contained in a subtree.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=5; Fingerprint=958EFD
+    /// <summary>
+    /// Collects the 1-based capture indices contained in a subtree at <paramref name="depth"/>, entering each body under
+    /// the caller's nesting limit as <see cref="Compile"/> does.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=5; Fingerprint=FEE31F
     // Broiler-Falsified-If: /(?:(a)|b)+/ on 'ab' reports group 1 as 'a' instead of unmatched, because the group is missing from the indices the quantifier resets
     // Broiler-Human:        PENDING
-    private static int[] CollectCaptureIndices(RegexNode node)
+    private int[] CollectCaptureIndices(RegexNode node, int depth)
     {
         // A walk in source order on a work list of the heap, not the CLR stack (see Compile).
         var list = new List<int>();
-        var pending = new Stack<RegexNode>();
-        pending.Push(node);
+        var pending = new Stack<(RegexNode Node, int Depth)>();
+        pending.Push((node, depth));
         while (pending.Count > 0)
         {
-            switch (pending.Pop())
+            var (n, d) = pending.Pop();
+            switch (n)
             {
                 case GroupNode g:
                     if (g.IsCapturing) list.Add(g.CaptureIndex);
-                    pending.Push(g.Child);
+                    pending.Push((g.Child, _nesting.Descend(d, -1)));
                     break;
-                case ModifierGroupNode m: pending.Push(m.Child); break;
-                case QuantifierNode q: pending.Push(q.Child); break;
-                case LookaroundNode la: pending.Push(la.Child); break;
+                case ModifierGroupNode m: pending.Push((m.Child, _nesting.Descend(d, -1))); break;
+                case QuantifierNode q: pending.Push((q.Child, d)); break;
+                case LookaroundNode la: pending.Push((la.Child, _nesting.Descend(d, -1))); break;
                 case SequenceNode seq:
-                    for (var i = seq.Terms.Count - 1; i >= 0; i--) pending.Push(seq.Terms[i]);
+                    for (var i = seq.Terms.Count - 1; i >= 0; i--) pending.Push((seq.Terms[i], d));
                     break;
                 case DisjunctionNode dis:
-                    for (var i = dis.Alternatives.Count - 1; i >= 0; i--) pending.Push(dis.Alternatives[i]);
+                    for (var i = dis.Alternatives.Count - 1; i >= 0; i--) pending.Push((dis.Alternatives[i], d));
                     break;
             }
         }

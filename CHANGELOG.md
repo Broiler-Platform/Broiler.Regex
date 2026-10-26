@@ -41,6 +41,17 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - CI jobs for the architecture tests, the probe and the assurance check (Broiler.Code's
     `assurance check --root Broiler.RegEx`).
   - `.gitattributes`, which stores every text file with LF line endings.
+- **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
+  `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
+  compiles a pattern under the caller's limit and answers a `RegexStatus`: `Ok` with the compiled pattern, or
+  `LimitExceeded` with `RegexLimit.Nesting` when the pattern nests deeper, checked before each descent of the parser
+  and of the compiler. Depth is counted as Broiler.VM's matcher counts it: the pattern is depth 1, each group of any
+  kind adds 1, and under `v` each class adds 1. `BroilerRegex.MaximumNestingLimit` (512) is the largest limit a
+  caller may pass, chosen from a measurement of the stack each kind of nesting costs on a 1 MiB thread that its
+  documentation records; a limit below 1 or above it is the caller's broken precondition, an
+  `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what nesting needs; the new
+  matcher (task 2.4a) and the syntax status (task 2.8) add members to them. A syntax error from `Compile` is still a
+  `RegexSyntaxException` until task 2.8.
 
 ### Changed
 
@@ -91,6 +102,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 ### Observable changes
 
+- **A pattern nested deeper than 512 levels is refused (R4; task 2.3, decision D6).** The constructors of
+  `BroilerRegex` and `RegexParser.Parse`, which take no limit, parse under `BroilerRegex.MaximumNestingLimit` and
+  refuse a deeper pattern with a `RegexSyntaxException` at the group or class that opens the level past it.
+  `0.1.0-preview.4` parsed and compiled whatever its stack held and ended the process with a stack overflow past it:
+  on a 1 MiB thread, at a few hundred levels for some shapes, and on any stack for a pattern such as 1,000,000 opening
+  parentheses. A pattern within the maximum compiles and matches as before.
 - **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
   tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
   provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`
