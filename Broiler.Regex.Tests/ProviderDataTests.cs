@@ -64,7 +64,7 @@ public class ProviderDataTests
     public void A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(string pattern, string flags, string subject, int index)
     {
         var recording = new RecordingTables(UnicodeTables.Instance);
-        var match = new BroilerRegex(pattern, flags, recording).Match(subject);
+        var match = TestRegex.New(pattern, flags, recording).Match(subject);
 
         Assert.True(match.Success);
         Assert.Equal(index, match.Index);
@@ -90,17 +90,20 @@ public class ProviderDataTests
     }
 
     /// <summary>
-    /// An answer that changes with the caller's tables: a compiled pattern's case-insensitive match folds by the
-    /// tables it was handed, read when it matches, so withdrawing them after compilation changes the match.
+    /// An answer that changes with the caller's tables: a compiled pattern's case-insensitive match folds the subject's
+    /// characters by the tables it was handed, read when it matches, so withdrawing them after compilation changes the
+    /// match. Each subject's character is one that Canonicalize changes: the new backend canonicalizes a pattern
+    /// character when it compiles, so on it only the subject's are read at match time (task 2.4b moved the first row's
+    /// pattern and subject, k and K, to K and k).
     /// </summary>
     [Theory]
-    [InlineData("k", "i", "K")]      // the upper-casing branch of Canonicalize
+    [InlineData("K", "i", "k")]      // the upper-casing branch of Canonicalize
     [InlineData("ſ", "iu", "S")]     // simple case folding
     [InlineData("[ſ]", "iu", "S")]   // a class's case-closed membership test
     public void A_match_reads_its_case_folding_from_the_callers_tables(string pattern, string flags, string subject)
     {
         var tables = new WithdrawableTables(UnicodeTables.Instance);
-        var regex = new BroilerRegex(pattern, flags, tables);
+        var regex = TestRegex.New(pattern, flags, tables);
         Assert.True(regex.Match(subject).Success);
 
         tables.Withdrawn = true;
@@ -111,9 +114,9 @@ public class ProviderDataTests
     public void A_provider_of_another_Unicode_version_is_refused_when_a_pattern_is_compiled()
     {
         var older = new RecordingTables(UnicodeTables.Instance, "16.0.0");
-        Assert.Throws<ArgumentException>(() => new BroilerRegex("a", "u", older));
+        Assert.Throws<ArgumentException>(() => TestRegex.New("a", "u", older));
         Assert.Throws<ArgumentException>(() => RegexParser.Parse("a", RegexFlags.None, older, out _));
-        Assert.Throws<ArgumentNullException>(() => new BroilerRegex("a", RegexFlags.None, null!));
+        Assert.Throws<ArgumentNullException>(() => TestRegex.New("a", RegexFlags.None, null!));
     }
 
     [Fact]

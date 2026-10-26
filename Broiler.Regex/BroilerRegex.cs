@@ -3,20 +3,22 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   9
-// Annotated:        9/9
-// Exempt:           5
-// Human-reviewed:   0/9
+// Relevant units:   13
+// Annotated:        13/13
+// Exempt:           6
+// Human-reviewed:   0/13
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         9/9
+// Criteria:         13/13
 // Resource impact:  8/10 max
-// Unverified:       9
+// Unverified:       13
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System;
 using System.Collections.Generic;
+using Broiler.Regex.Compiling;
+using Broiler.Regex.Engine;
 using Broiler.Regex.Matching;
 using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
@@ -103,7 +105,14 @@ public sealed class BroilerRegex
     // Broiler-Human:        PENDING
     public const int MaximumNestingLimit = 512;
 
-    private readonly Matcher _matcher;
+    /// <summary>The old backend's matcher, the continuations of <c>Matching/</c>; null on the new backend's route.</summary>
+    private readonly Matcher? _matcher;
+
+    /// <summary>
+    /// The new backend's program, when this instance was built on its internal route (<see cref="OnTheNewBackend"/>);
+    /// null otherwise. Task 2.4c makes that route the only one.
+    /// </summary>
+    private readonly RegexProgram? _program;
 
     public string Pattern { get; }
     public RegexFlags Flags { get; }
@@ -145,23 +154,37 @@ public sealed class BroilerRegex
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=DFF8D4
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=807242
     // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
-        : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true)
+        : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheNewBackend: false)
     {
     }
 
     /// <summary>
-    /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>. A pattern nested
-    /// deeper is refused with a <see cref="RegexSyntaxException"/> when <paramref name="refusesAsSyntax"/> is set, and
-    /// otherwise with the <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status.
+    /// The internal route of task 2.4b through the new backend: an instance that parses as the public constructor does
+    /// and matches through the program of <see cref="ProgramCompiler"/> rather than the old backend's continuations, so
+    /// that the test suite runs every behaviour test on both backends, the same tests unchanged (plan row 2.4b, "the old
+    /// suite's cases pass"). Task 2.4c makes it the public members' only route and deletes the old backend.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=93E41A
+    /// <exception cref="RegexSyntaxException">As the public constructor throws it.</exception>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=7; Fingerprint=27F296
+    // Broiler-Falsified-If: an instance this answers matches through the old backend's continuations, or refuses a pattern the public constructor accepts
+    // Broiler-Human:        PENDING
+    internal static BroilerRegex OnTheNewBackend(string pattern, RegexFlags flags, IUnicodeTables tables) =>
+        new(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheNewBackend: true);
+
+    /// <summary>
+    /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>, for the old backend or,
+    /// <paramref name="onTheNewBackend"/>, for the new one. A pattern nested deeper is refused with a
+    /// <see cref="RegexSyntaxException"/> when <paramref name="refusesAsSyntax"/> is set, and otherwise with the
+    /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=7D227B
     // Broiler-Falsified-If: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
     // Broiler-Human:        PENDING
-    private BroilerRegex(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool refusesAsSyntax)
+    private BroilerRegex(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool refusesAsSyntax, bool onTheNewBackend)
     {
         Pattern = pattern;
         Flags = flags;
@@ -172,7 +195,13 @@ public sealed class BroilerRegex
             var ast = RegexParser.Parse(Pattern, flags, data, nesting, out var captureCount, out var groupNames);
             CaptureCount = captureCount;
             GroupNames = groupNames;
-            _matcher = new Matcher(ast, captureCount, flags, groupNames, data, nesting);
+            if (!onTheNewBackend)
+                _matcher = new Matcher(ast, captureCount, flags, groupNames, data, nesting);
+
+            // The program compiler's walk descends at fewer nodes than the parse did under the same limit, so it is never
+            // refused where the parse was not; were it refused, the refusal is the parse's.
+            else if (ProgramCompiler.Compile(ast, captureCount, groupNames, flags, data, nesting, out _program) != ProgramCompilation.Compiled)
+                throw new NestingLimitExceeded(pattern.Length);
         }
         catch (NestingLimitExceeded refusal) when (refusesAsSyntax)
         {
@@ -218,10 +247,22 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=C53672
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=3A9104
     // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
+        out BroilerRegex? regex, out RegexLimit limit) =>
+        CompileWithBackend(pattern, flags, tables, nestingLimit, onTheNewBackend: false, out regex, out limit);
+
+    /// <summary>
+    /// <see cref="Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex, out RegexLimit)"/>, on the old
+    /// backend or, <paramref name="onTheNewBackend"/>, on the internal route through the new one
+    /// (<see cref="OnTheNewBackend"/>).
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=B25379
+    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups answers Success on either backend, or one of 511 answers LimitExceeded
+    // Broiler-Human:        PENDING
+    internal static RegexStatus CompileWithBackend(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, bool onTheNewBackend,
         out BroilerRegex? regex, out RegexLimit limit)
     {
         ArgumentNullException.ThrowIfNull(pattern);
@@ -231,7 +272,7 @@ public sealed class BroilerRegex
         var data = new RegexUnicode(tables);
         try
         {
-            regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false);
+            regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false, onTheNewBackend);
             limit = RegexLimit.None;
             return RegexStatus.Success;
         }
@@ -248,7 +289,7 @@ public sealed class BroilerRegex
     /// exactly <paramref name="start"/> when the <c>y</c> flag is set). Returns
     /// <see cref="RegexMatch.Empty"/> when there is no match.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=EBD5A7
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=A4E4CD
     // Broiler-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
     // Broiler-Human:        PENDING
     public RegexMatch Match(string input, int start = 0)
@@ -256,7 +297,7 @@ public sealed class BroilerRegex
         if (start < 0) start = 0;
         if (start > input.Length)
             return RegexMatch.Empty;
-        return _matcher.Run(input, start) ?? RegexMatch.Empty;
+        return Run(input, start) ?? RegexMatch.Empty;
     }
 
     /// <summary>True when the pattern matches anywhere at or after <paramref name="start"/>.</summary>
@@ -269,7 +310,7 @@ public sealed class BroilerRegex
     /// Enumerates all non-overlapping matches, advancing past empty matches by one
     /// code point (the <c>g</c>-flag iteration of §22.2.6.9 / §22.2.6.13).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=5971A9
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=9A30B2
     // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
     // Broiler-Human:        PENDING
     public IEnumerable<RegexMatch> Matches(string input)
@@ -277,7 +318,7 @@ public sealed class BroilerRegex
         var pos = 0;
         while (pos <= input.Length)
         {
-            var m = _matcher.Run(input, pos);
+            var m = Run(input, pos);
             if (m == null)
                 yield break;
 
@@ -294,5 +335,59 @@ public sealed class BroilerRegex
             }
             pos = next;
         }
+    }
+    /// <summary>The first match at or after <paramref name="start"/>, through the backend this instance was built for; null for none.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=081BFB
+    // Broiler-Falsified-If: an instance built on the new backend's route matches through the old backend's continuations, or one the public members built through the new backend's program
+    // Broiler-Human:        PENDING
+    private RegexMatch? Run(string input, int start) => _program is null ? _matcher!.Run(input, start) : RunProgram(_program, input, start);
+
+    /// <summary>
+    /// The internal route's match: RegExpBuiltinExec (ECMA-262 §22.2.7.2) over the new backend's entry. Under <c>u</c> and
+    /// <c>v</c> a start inside a surrogate pair steps back to the pair (step 13.b), and a match found there reports the
+    /// start the caller gave as its index (steps 22 and 24), as Broiler.VM's realm does. The program runs under the
+    /// library's frame and trail maxima and a step ceiling of 100,000,000 units; reaching a ceiling throws
+    /// <see cref="RegexOverflowException"/>, the exception the old backend throws when its stack guard refuses a match.
+    /// Task 2.4c sets the public route's ceilings and meter, and the statuses they answer.
+    /// </summary>
+    /// <exception cref="RegexOverflowException">The match reached the step, frame or trail ceiling.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=BD98A3
+    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, or a sticky instance finds a match after its start
+    // Broiler-Human:        PENDING
+    private RegexMatch? RunProgram(RegexProgram program, string input, int start)
+    {
+        var from = start;
+        if (program.Unicode && from > 0 && from < input.Length && char.IsLowSurrogate(input[from]) && char.IsHighSurrogate(input[from - 1]))
+            from--;
+
+        var slots = new int[program.SlotCount];
+        var ceilings = new RegexMatchCeilings(100_000_000, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+        var status = program.Match(input, from, (Flags & RegexFlags.Sticky) != 0, slots, null, ceilings, out _, out _);
+        if (status == RegexStatus.LimitExceeded)
+            throw new RegexOverflowException();
+        if (status != RegexStatus.Match)
+            return null;
+
+        var index = slots[0] == from ? start : slots[0];
+        var end = slots[1];
+        var value = input[index..end];
+        var groups = new RegexGroup[CaptureCount + 1];
+        groups[0] = new RegexGroup(true, index, end - index, value, null);
+        var names = new string?[CaptureCount + 1];
+        foreach (var (name, number) in GroupNames)
+            names[number] = name;
+
+        var named = new Dictionary<string, RegexGroup>(StringComparer.Ordinal);
+        for (var group = 1; group <= CaptureCount; group++)
+        {
+            var (first, last) = (slots[2 * group], slots[(2 * group) + 1]);
+            groups[group] = first >= 0 && last >= first
+                ? new RegexGroup(true, first, last - first, input[first..last], names[group])
+                : RegexGroup.Unmatched(names[group]);
+            if (names[group] is { } name)
+                named[name] = groups[group];
+        }
+
+        return new RegexMatch(true, index, end - index, value, groups, named);
     }
 }
