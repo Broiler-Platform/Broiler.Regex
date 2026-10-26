@@ -134,9 +134,10 @@ internal sealed class RegexProgram
     /// </summary>
     /// <param name="subject">The subject.</param>
     /// <param name="start">
-    /// Where the match starts, or the search begins: a code-unit index from 0 to the subject's length, read forward. Under
-    /// <c>u</c> and <c>v</c> a start inside a surrogate pair reads the pair's low half as a lone unit; nothing before the
-    /// start is read. RegExpBuiltinExec (ECMA-262 §22.2.7.2, step 13.b) starts its matcher from such a
+    /// Where the match starts, or the search begins: a code-unit index from 0 to the subject's length. Under <c>u</c> and
+    /// <c>v</c> a start inside a surrogate pair splits the pair for the whole call: a read forward from the start meets the
+    /// pair's low half as a lone unit, and a read backward from it, a look-behind's, <c>\b</c>'s or <c>^</c>'s under
+    /// <c>m</c>, its high half as another. RegExpBuiltinExec (ECMA-262 §22.2.7.2, step 13.b) starts its matcher from such a
     /// <c>lastIndex</c> at the whole pair, so a caller that answers as RegExpBuiltinExec does steps back to the pair's
     /// first unit before it calls, as Broiler.VM's realm does, and reports the index it decides.
     /// </param>

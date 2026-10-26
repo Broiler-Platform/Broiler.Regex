@@ -71,7 +71,8 @@ public class SurrogateStartTests
     [InlineData(5, "match 1,4 3,4")]
     public void The_entry_reads_a_start_inside_a_pair_forward_from_its_low_half_as_a_lone_unit(int row, string entry)
     {
-        // The entry's contract: nothing before the start is read, so neither the match nor a capture begins before it.
+        // The entry's contract: the pair is split for the call, and none of these patterns reads backward, so neither the
+        // match nor a capture begins before the start (a look-behind's reads are MachineLookaroundTests').
         var (pattern, flags, subject, lastIndex, _) = Rows[row];
         Assert.Equal(entry, MachineTests.Run(pattern, flags, subject, lastIndex));
     }

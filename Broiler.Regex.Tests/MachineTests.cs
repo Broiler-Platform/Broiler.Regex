@@ -282,16 +282,19 @@ public class MachineTests
     }
 
     [Theory]
-    [MemberData(nameof(ProgramCompilerTests.SubsetShapes), MemberType = typeof(ProgramCompilerTests))]
+    [MemberData(nameof(NestingMaximumTests.AllShapes), MemberType = typeof(NestingMaximumTests))]
     public void A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread(string shape)
     {
-        // Every shape of NestingMaximumTests within task 2.4a's subset, the shapes the closure matcher could not match at
-        // the maximum among them ("capturing sequence", "capturing alternation of sequences" and the rest).
+        // Every shape of NestingMaximumTests, the shapes the closure matcher could not match at the maximum among them
+        // ("capturing sequence", the look-behind shapes with back-references and assertions, and the rest).
         var (pattern, flags, subject) = NestingMaximumTests.Shape(shape, BroilerRegex.MaximumNestingLimit - 1);
         var expected = TestRegex.Compile(NestingMaximumTests.Shape(shape, 3).Pattern, flags).Match(NestingMaximumTests.Shape(shape, 3).Subject).Success;
         Assert.True(expected, shape + " matches at three levels");
         ProgramCompilerTests.OnASmallStack(() => Assert.StartsWith("match ", Run(pattern, FlagsText(flags), subject)));
     }
 
-    private static string FlagsText(RegexFlags flags) => (flags & RegexFlags.UnicodeSets) != 0 ? "v" : (flags & RegexFlags.Unicode) != 0 ? "u" : "";
+    private static string FlagsText(RegexFlags flags) =>
+        ((flags & RegexFlags.IgnoreCase) != 0 ? "i" : "") + ((flags & RegexFlags.Multiline) != 0 ? "m" : "")
+        + ((flags & RegexFlags.DotAll) != 0 ? "s" : "")
+        + ((flags & RegexFlags.UnicodeSets) != 0 ? "v" : (flags & RegexFlags.Unicode) != 0 ? "u" : "");
 }

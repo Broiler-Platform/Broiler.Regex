@@ -19,7 +19,10 @@ namespace Broiler.Regex.Tests;
 /// </summary>
 public class ProgramCompilerTests
 {
-    /// <summary>The program's instructions, one per entry, as "Op A,B,C"; the operands an instruction does not read are left out.</summary>
+    /// <summary>
+    /// The program's instructions, one per entry, as "Op A,B,C"; the operands an instruction does not read are left out,
+    /// and an instruction that reads right to left ends in " rtl".
+    /// </summary>
     internal static string[] Listing(RegexProgram program) => program.Code.ToArray().Select(static i => i.Op switch
     {
         RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
@@ -27,11 +30,12 @@ public class ProgramCompilerTests
             or RegexOp.WordBoundary or RegexOp.NonWordBoundary
             => i.Op + " " + Decimal(i.A),
         RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase or RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase
+            or RegexOp.CloseLookaround
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
-        RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
+        RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration or RegexOp.OpenLookaround
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
-    }).ToArray();
+    } + (i.RightToLeft ? " rtl" : "")).ToArray();
 
     private static string Decimal(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
@@ -100,6 +104,25 @@ public class ProgramCompilerTests
     [InlineData("(?i:\\b)\\b", "u", new[] { "WordBoundary 0", "WordBoundary 1", "Succeed" })]
     public void A_modifier_group_lowers_its_body_under_its_flags_and_nothing_after_it(string pattern, string flags, string[] expected)
     {
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("(?=a)", "", new[] { "OpenLookaround 2,0,3", "Literal 97", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?!a)b", "", new[] { "OpenLookaround 2,1,3", "Literal 97", "CloseLookaround 2,1", "Literal 98", "Succeed" })]
+    [InlineData("(?<=ab)c", "", new[] { "OpenLookaround 2,0,4", "Literal 98 rtl", "Literal 97 rtl", "CloseLookaround 2,0", "Literal 99", "Succeed" })]
+    [InlineData("(?<!a|bc)", "", new[] { "OpenLookaround 2,1,7", "Choice 2,4", "Literal 97 rtl", "Goto 6", "Literal 99 rtl", "Literal 98 rtl", "CloseLookaround 2,1", "Succeed" })]
+    [InlineData("(?<=(a)\\1)", "i", new[] { "OpenLookaround 4,0,6", "BackreferenceIgnoringCase 0,1 rtl", "SavePosition 3", "LiteralIgnoringCase 65 rtl", "SavePosition 2", "CloseLookaround 4,0", "Succeed" })]
+    [InlineData("(?<=[a-c].)", "", new[] { "OpenLookaround 2,0,4", "AnyButLineTerminator rtl", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=(?=a).)", "", new[] { "OpenLookaround 2,0,6", "AnyButLineTerminator rtl", "OpenLookaround 3,0,5", "Literal 97", "CloseLookaround 3,0", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?=(?<=a)b)", "", new[] { "OpenLookaround 2,0,6", "OpenLookaround 3,0,4", "Literal 97 rtl", "CloseLookaround 3,0", "Literal 98", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=a*)", "", new[] { "OpenLookaround 2,0,7", "Choice 2,6", "SavePosition 3", "Literal 97 rtl", "RejectEmptyIteration 3,-1,0", "Goto 1", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=^\\b$)", "m", new[] { "OpenLookaround 2,0,5", "LineEnd 1", "WordBoundary 0", "LineStart 1", "CloseLookaround 2,0", "Succeed" })]
+    public void A_look_around_lowers_to_a_barrier_around_its_body_and_a_look_behind_s_body_right_to_left(string pattern, string flags, string[] expected)
+    {
+        // A look-around's register is its own, taken when it is lowered; its start's third operand is the address after
+        // its close. Backward, a sequence's terms are emitted last first and a group's end register is written first;
+        // assertions, choices and loops read no direction.
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
     }
 
@@ -198,8 +221,9 @@ public class ProgramCompilerTests
     [Fact]
     public void Every_cost_is_one_but_a_class_test_s_and_a_capture_reset_of_any_width_costs_one()
     {
-        // Decision D8: one unit per instruction dispatched, and a class test's weight on top; nothing else is weighed.
-        var program = TestProgram.Compile("((a)(b)(c))+[a-cx-z]");
+        // Decision D8: one unit per instruction dispatched, and a class test's weight on top; nothing else is weighed, a
+        // look-around's start and close and a backward read included.
+        var program = TestProgram.Compile("((a)(b)(c))+[a-cx-z](?<=[a-cx-z](?!b))");
         Assert.All(program.Code.ToArray(), static i => Assert.Equal(i.Op == RegexOp.Class ? 2 : 1, i.Cost));
         var clear = program.Code.ToArray().Single(static i => i.Op == RegexOp.ClearCaptures);
         Assert.Equal((2, 9, 1), (clear.A, clear.B, clear.Cost));
@@ -218,11 +242,6 @@ public class ProgramCompilerTests
     }
 
     [Theory]
-    [InlineData("(?=a)", "")]
-    [InlineData("(?!a)", "")]
-    [InlineData("(?<=a)b", "")]
-    [InlineData("(?<!a)b", "")]
-    [InlineData("(?=a){0}b", "")]
     [InlineData("[\\q{ab}]", "v")]
     [InlineData("\\p{RGI_Emoji}", "v")]
     public void A_construct_of_task_2_4b_is_answered_not_yet_supported_with_no_program_and_nothing_thrown(string pattern, string flags)
@@ -264,18 +283,8 @@ public class ProgramCompilerTests
         Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captures, names, RegexFlags.None, data, new RegexNesting(5), out _));
     }
 
-    /// <summary>The subset's shapes of <see cref="NestingMaximumTests"/>: those built of groups, alternations, sequences, quantifiers and v-mode classes alone.</summary>
-    public static TheoryData<string> SubsetShapes => new()
-    {
-        "capturing", "unicode capturing", "non-capturing", "named", "v class", "v complement", "v intersection",
-        "v subtraction", "v union", "repeated capturing group", "repeated non-capturing group", "optional capturing group",
-        "alternation", "sequence", "alternation of sequences", "capturing sequence", "capturing alternation of sequences",
-        "named alternation of sequences", "capturing alternation of optional sequences", "repeated alternation of sequences",
-        "repeated capturing alternation of sequences",
-    };
-
     [Theory]
-    [MemberData(nameof(SubsetShapes))]
+    [MemberData(nameof(NestingMaximumTests.AllShapes), MemberType = typeof(NestingMaximumTests))]
     public void A_pattern_at_the_maximum_compiles_on_a_1_MiB_stack_and_one_level_past_it_is_refused(string shape)
     {
         var max = BroilerRegex.MaximumNestingLimit;

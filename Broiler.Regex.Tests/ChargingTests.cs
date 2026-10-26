@@ -60,6 +60,10 @@ public class ChargingTests
     [InlineData("(a)\\1", "aa", "", 6)]
     [InlineData("(a+)\\1", "aaaa", "", 49)]
     [InlineData("\\1(a)", "a", "", 5)]
+    [InlineData("(?=a)a", "a", "", 5)]
+    [InlineData("(?!a)b", "ab", "", 7)]
+    [InlineData("(?<=a)b", "ab", "", 7)]
+    [InlineData("(?<=\\1(a))b", "aab", "", 18)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
@@ -75,7 +79,14 @@ public class ChargingTests
         // back-reference costs one for its dispatch and the captured length before it compares: (a)\1 on "aa" is the two
         // saves, the Literal, the reference (1 + 1) and Succeed; \1(a) on "a" reads a group with no capture, one unit.
         // (a+)\1 on "aaaa": the loop's 33 units take all four a's, and the reference is then tried with captures of
-        // four, three and two characters, costing 5, 4 and 3, the last matching, with a save before each and Succeed.
+        // four, three and two characters, costing 5, 4 and 3, the last matching, with a save before each and Succeed. A
+        // look-around's start and close cost one each, and popping its barrier nothing: (?=a)a on "a" is the start, the
+        // Literal, the close, the Literal and Succeed. (?!a)b on "ab": at 0 the start, the Literal and the close, which
+        // fails; at 1 the start, the failed Literal, the barrier's resumption (free), the Literal and Succeed. (?<=a)b on
+        // "ab": at 0 the start and the failed backward Literal; at 1 five. (?<=\1(a))b on "aab": at 0 the start, the
+        // group's end and the failed Literal; at 1 the same three with the Literal matching, the group's start and the
+        // reference to one character (1 + 1), which finds no character before index 0; at 2 those six, the close, the
+        // Literal and Succeed.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
@@ -85,8 +96,10 @@ public class ChargingTests
     /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
     /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
     /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
-    /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, and back-references, under i and under
-    /// a step ceiling, whose length is charged after the dispatch and before the comparison.
+    /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, back-references, under i and under
+    /// a step ceiling, whose length is charged after the dispatch and before the comparison, and look-arounds of the four
+    /// kinds, a look-behind's back-reference read right to left, one started inside a surrogate pair, and a negative
+    /// look-behind whose body backtracks to a step ceiling.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -109,6 +122,10 @@ public class ChargingTests
         { "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", "", string.Concat(Enumerable.Repeat("Ab\n\nAB\n\n", 100)), 0, false, null },
         { "(\\w+)\\s\\1(?:\\s\\1)*$", "i", string.Concat(Enumerable.Repeat("Word wORD ", 40)) + "word", 0, false, null },
         { "(?<w>a+)\\k<w>b", "u", new string('a', 200) + "b", 0, false, 2_000UL },
+        { "(?<=\\b(\\w+)\\s\\1)\\b", "i", string.Concat(Enumerable.Repeat("Word wORD ", 40)), 0, false, null },
+        { "(?:(?=(\\w))\\1(?!\\d)|(?<=\\d)\\d)+!", "u", string.Concat(Enumerable.Repeat("ab12", 150)) + "?", 0, false, null },
+        { "(?<=(.)).\\1", "u", string.Concat(Enumerable.Repeat("\U0001F600", 100)), 1, false, null },
+        { "(?<!b(a+)+)c", "", new string('a', 24) + "c", 0, false, 5_000UL },
     };
 
     [Theory]

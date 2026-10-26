@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   26
-// Annotated:        26/26
-// Exempt:           25
-// Human-reviewed:   0/26
+// Relevant units:   29
+// Annotated:        29/29
+// Exempt:           26
+// Human-reviewed:   0/29
 // IP risk:          None
 // Security risk:    High
-// Criteria:         17/7
+// Criteria:         19/7
 // Resource impact:  8/10 max
-// Unverified:       26
+// Unverified:       29
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -41,6 +41,16 @@ namespace Broiler.Regex.Engine;
 /// with no frame pending, where the cell serves only the reset below (so the trail ceiling bounds a loop that holds no
 /// choice too, <see cref="RegexMatchCeilings"/>'s remarks). When an attempt at one start position fails, every write of
 /// the attempt has been undone, so the next position starts from registers that all read -1, with no reset of its own.
+/// </para>
+/// <para>
+/// <b>A look-around</b> runs its body on the same stack, with no second loop and no call: it pushes a <i>barrier</i>, a
+/// frame whose address field is negative, and keeps the barrier's place in a register of its own. When the body matches,
+/// the barrier and every frame above it are dropped at once, so nothing after the look-around backtracks into the body,
+/// and the index goes back to the barrier's; when every way through the body fails, backtracking reaches the barrier,
+/// which fails in its turn for a positive look-around and, for a negative one, resumes after it with the body's captures
+/// undone. A barrier is the only frame popped without resuming, and only once, so backtracking past it costs no
+/// unit of its own: the instruction that pushed it paid for it. A look-around nested in another's body pushes its
+/// barrier above the outer one's and drops or pops it before the outer one is reached.
 /// </para>
 /// <para>
 /// <b>Charging.</b> Before it dispatches an instruction the machine adds the instruction's cost to the units spent.
@@ -137,6 +147,13 @@ internal ref struct RegexMachine
     /// <summary>Where the attempt that matched ended.</summary>
     private int _end;
 
+    /// <summary>
+    /// The call's start when, under <c>u</c> and <c>v</c>, it falls inside a surrogate pair, and -1 otherwise: every read
+    /// of the call then takes the pair's two halves as lone units, so that the characters a read meets are the same
+    /// whichever way it reads and wherever it starts (<see cref="Run"/>'s remarks).
+    /// </summary>
+    private int _splitAt;
+
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=5CA4C9
     // Broiler-Human:        PENDING
@@ -202,16 +219,19 @@ internal ref struct RegexMachine
     /// <remarks>
     /// The search is RegExpBuiltinExec's loop (ECMA-262 §22.2.7.2): an attempt at each position from the start, the next
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
-    /// pair it stepped over; the position after the last character is tried too. The start is the caller's, and its
-    /// first attempt reads forward from it: under <c>u</c> and <c>v</c> a start inside a pair reads the pair's low half
-    /// as a lone unit. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that step back is the
-    /// caller's to take before it calls (<see cref="RegexProgram.Match"/>).
+    /// pair it stepped over; the position after the last character is tried too. The start is the caller's: under
+    /// <c>u</c> and <c>v</c> a start inside a pair splits it for the whole call, so a read forward from the start meets
+    /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c></c>, <c>^</c> under
+    /// <c>m</c>) its high half as another. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that
+    /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=71ADFA
-    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a start inside a pair reads the unit before it
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=016F4F
+    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a read of a call that starts inside a pair takes the pair as one character
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
     {
+        _splitAt = _unicode && start > 0 && start < _subject.Length
+            && char.IsHighSurrogate(_subject[start - 1]) && char.IsLowSurrogate(_subject[start]) ? start : -1;
         var at = start;
         while (true)
         {
@@ -248,10 +268,11 @@ internal ref struct RegexMachine
 
     /// <summary>
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
-    /// accepts, every frame of the attempt is spent, or a ceiling is reached.
+    /// accepts, every frame of the attempt is spent, or a ceiling is reached. A failed instruction resumes at the newest
+    /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=DA92A7
-    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=635660
+    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, or a frame a look-around's body pushed is resumed after the look-around's close
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
     {
@@ -271,64 +292,63 @@ internal ref struct RegexMachine
             switch (instruction.Op)
             {
                 case RegexOp.Literal:
-                    if (position < _subject.Length && CharacterAt(position, out var width) == instruction.A)
+                    if (NextCharacter(position, instruction.RightToLeft, out var character, out var step) && character == instruction.A)
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.Class:
-                    if (position < _subject.Length && InClass(instruction.A, CharacterAt(position, out width)))
+                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClass(instruction.A, character))
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.AnyButLineTerminator:
-                    if (position < _subject.Length && !EndsLine(CharacterAt(position, out width)))
+                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && !EndsLine(character))
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.Any:
-                    if (position < _subject.Length)
+                    if (NextCharacter(position, instruction.RightToLeft, out _, out step))
                     {
-                        CharacterAt(position, out width);
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.LiteralIgnoringCase:
-                    if (position < _subject.Length && Canonical(CharacterAt(position, out width)) == instruction.A)
+                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && Canonical(character) == instruction.A)
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.ClassIgnoringCase:
-                    if (position < _subject.Length && InClassIgnoringCase(instruction.A, CharacterAt(position, out width)) != (instruction.B != 0))
+                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClassIgnoringCase(instruction.A, character) != (instruction.B != 0))
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
 
                     break;
                 case RegexOp.CanonicalClass:
-                    if (position < _subject.Length && InClass(instruction.A, Canonical(CharacterAt(position, out width))))
+                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClass(instruction.A, Canonical(character)))
                     {
-                        position += width;
+                        position += step;
                         pc++;
                         continue;
                     }
@@ -422,25 +442,65 @@ internal ref struct RegexMachine
                         break;
                     pc++;
                     continue;
+                case RegexOp.OpenLookaround:
+                    if (!PushChoicePoint(instruction.B != 0 ? NegativeBarrier(instruction.C) : PositiveBarrier, position)
+                        || !SetRegister(instruction.A, _framesHeld - 1))
+                        return Outcome.Exceeded;
+                    pc++;
+                    continue;
+                case RegexOp.CloseLookaround:
+                    var barrier = _registers[instruction.A];
+                    _framesHeld = barrier;
+                    if (instruction.B != 0)
+                        break;
+                    position = _frames[(barrier * FrameSize) + 1];
+                    pc++;
+                    continue;
                 case RegexOp.Succeed:
                     _end = position;
                     return Outcome.Matched;
             }
 
-            // The instruction failed: resume at the newest frame, with every write made since it undone.
-            if (_framesHeld == 0)
+            // The instruction failed: resume at the newest frame, with every write made since it undone. A positive
+            // look-around's barrier fails in its turn, as its body found no match; a negative one's resumes after the
+            // look-around, which holds.
+            while (true)
             {
-                UndoAbove(0);
-                return Outcome.Failed;
-            }
+                if (_framesHeld == 0)
+                {
+                    UndoAbove(0);
+                    return Outcome.Failed;
+                }
 
-            _framesHeld--;
-            var frame = _framesHeld * FrameSize;
-            pc = _frames[frame];
-            position = _frames[frame + 1];
-            UndoAbove(_frames[frame + 2]);
+                _framesHeld--;
+                var frame = _framesHeld * FrameSize;
+                UndoAbove(_frames[frame + 2]);
+                var resume = _frames[frame];
+                if (resume == PositiveBarrier)
+                    continue;
+                pc = resume >= 0 ? resume : NegativeBarrier(resume);
+                position = _frames[frame + 1];
+                break;
+            }
         }
     }
+
+    /// <summary>
+    /// The resume address of a frame that is a positive look-around's barrier: no address, as a positive look-around
+    /// whose body has no way left to match fails.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=8D01FB
+    // Broiler-Human:        PENDING
+    private const int PositiveBarrier = -1;
+
+    /// <summary>
+    /// The resume field of a negative look-around's barrier that resumes at <paramref name="address"/>, -2 - address,
+    /// below <see cref="PositiveBarrier"/> and every address; the same map takes the field back to the address.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=E4197B
+    // Broiler-Falsified-If: the field of a barrier resuming at address 0 is -1, the positive barrier's, or reads back as another address
+    // Broiler-Human:        PENDING
+    private static int NegativeBarrier(int address) => -2 - address;
 
     /// <summary>
     /// Settles the units spent past <see cref="_threshold"/>: refuses them when they pass the step ceiling, and otherwise
@@ -468,16 +528,18 @@ internal ref struct RegexMachine
     /// <summary>
     /// BackreferenceMatcher (ECMA-262 §22.2.2.7.2) at <paramref name="position"/>: the characters of the first group of
     /// the instruction's list whose capture is defined, compared one by one with the input's, exactly or by Canonicalize;
-    /// the empty string when no group of the list has a capture. Before the characters are compared, the meter is charged
-    /// the capture's length in code units, the most characters the comparison reads (decision D8's "a back-reference's
-    /// length").
+    /// the empty string when no group of the list has a capture. Right to left, the input's characters are those that end
+    /// at the position, compared from the capture's last character to its first, which pairs the same characters as
+    /// the specification's comparison of Input[f] to Input[e - 1] with the capture, f being e - len. Before the characters
+    /// are compared, the meter is charged the capture's length in code units, the most characters the comparison reads
+    /// (decision D8's "a back-reference's length").
     /// </summary>
     /// <returns>
-    /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> past the characters matched;
+    /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> past the characters matched, in the instruction's direction;
     /// <see cref="Outcome.Failed"/>; or <see cref="Outcome.Exceeded"/>, when the length passes the step ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=CBCF46
-    // Broiler-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, or under u a captured lone high surrogate matches the pair it would begin
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=5AB1B1
+    // Broiler-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, under u a captured lone high surrogate matches the pair it would begin, or right to left the reference moves the index other than to where the characters it matched start
     // Broiler-Human:        PENDING
     private Outcome MatchReference(in RegexInstruction instruction, ref int position)
     {
@@ -504,31 +566,65 @@ internal ref struct RegexMachine
 
         DispatchObserver?.Invoke(_spent);
         var ignoreCase = instruction.Op == RegexOp.BackreferenceIgnoringCase;
+        var rightToLeft = instruction.RightToLeft;
         var at = position;
-        for (var read = from; read < to;)
+        for (var read = rightToLeft ? to : from; rightToLeft ? read > from : read < to;)
         {
-            if (at >= _subject.Length)
+            if (!NextCharacter(at, rightToLeft, out var found, out var foundStep))
                 return Outcome.Failed;
-            var wanted = CharacterAt(read, out var wantedWidth);
-            var found = CharacterAt(at, out var foundWidth);
+            NextCharacter(read, rightToLeft, out var wanted, out var wantedStep);
             if (wanted != found && !(ignoreCase && Canonical(wanted) == Canonical(found)))
                 return Outcome.Failed;
-            read += wantedWidth;
-            at += foundWidth;
+            read += wantedStep;
+            at += foundStep;
         }
 
         position = at;
         return Outcome.Matched;
     }
 
-    /// <summary>The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as one code point.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=A19440
-    // Broiler-Falsified-If: under u a high surrogate at the subject's last index reads past its end, or without u a surrogate pair is read as one code point
+    /// <summary>
+    /// Reads the character an instruction meets next from <paramref name="position"/>: the one that starts there, or,
+    /// <paramref name="rightToLeft"/>, the one that ends there; <paramref name="step"/> is what the index moves by to pass
+    /// it, its width, negated right to left.
+    /// </summary>
+    /// <returns>False at the subject's end, or at its start right to left, where there is no character to read.</returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=0; Fingerprint=E19704
+    // Broiler-Falsified-If: a read right to left from index 0, or left to right from the subject's length, answers a character, or under u a read right to left from after a surrogate pair moves the index by one
+    // Broiler-Human:        PENDING
+    private readonly bool NextCharacter(int position, bool rightToLeft, out int character, out int step)
+    {
+        if (rightToLeft ? position == 0 : position == _subject.Length)
+        {
+            character = step = 0;
+            return false;
+        }
+
+        if (rightToLeft)
+        {
+            character = CharacterBefore(position, out var width);
+            step = -width;
+        }
+        else
+        {
+            character = CharacterAt(position, out step);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as
+    /// one code point, unless the call's start splits it (<see cref="_splitAt"/>).
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=D08EE3
+    // Broiler-Falsified-If: under u a high surrogate at the subject's last index reads past its end, without u a surrogate pair is read as one code point, or a pair the start splits is read as one
     // Broiler-Human:        PENDING
     private readonly int CharacterAt(int position, out int width)
     {
         var unit = _subject[position];
-        if (_unicode && char.IsHighSurrogate(unit) && position + 1 < _subject.Length && char.IsLowSurrogate(_subject[position + 1]))
+        if (_unicode && char.IsHighSurrogate(unit) && position + 1 < _subject.Length && char.IsLowSurrogate(_subject[position + 1])
+            && position + 1 != _splitAt)
         {
             width = 2;
             return 0x10000 + ((unit - 0xD800) << 10) + (_subject[position + 1] - 0xDC00);
@@ -540,15 +636,17 @@ internal ref struct RegexMachine
 
     /// <summary>
     /// The character that ends at <paramref name="position"/>, the one a read leftwards from it meets: a code unit, or
-    /// under <c>u</c> and <c>v</c> a surrogate pair read as one code point.
+    /// under <c>u</c> and <c>v</c> a surrogate pair read as one code point, unless the call's start splits it
+    /// (<see cref="_splitAt"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=EFABE2
-    // Broiler-Falsified-If: under u a low surrogate at index 0 reads before the subject, or without u a surrogate pair ending at the position is read as one code point
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=138731
+    // Broiler-Falsified-If: under u a low surrogate at index 0 reads before the subject, without u a surrogate pair ending at the position is read as one code point, or a pair the start splits is read as one
     // Broiler-Human:        PENDING
     private readonly int CharacterBefore(int position, out int width)
     {
         var unit = _subject[position - 1];
-        if (_unicode && char.IsLowSurrogate(unit) && position >= 2 && char.IsHighSurrogate(_subject[position - 2]))
+        if (_unicode && char.IsLowSurrogate(unit) && position >= 2 && char.IsHighSurrogate(_subject[position - 2])
+            && position - 1 != _splitAt)
         {
             width = 2;
             return 0x10000 + ((_subject[position - 2] - 0xD800) << 10) + (unit - 0xDC00);

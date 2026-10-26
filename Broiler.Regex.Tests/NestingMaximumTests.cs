@@ -17,8 +17,8 @@ namespace Broiler.Regex.Tests;
 /// shapes of <see cref="MatchedShapes"/>; the public matcher's continuations recurse per level and per term until task
 /// 2.4c routes matching through task 2.4a's backend, so for the shapes of <see cref="UnprovenShapes"/> matching at the
 /// maximum through <see cref="BroilerRegex"/> is not proven, and some of them exhaust the stack. The new backend matches
-/// those of them within its subset at the maximum on a 1 MiB thread
-/// (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
+/// every shape at the maximum on a 1 MiB thread, since task 2.4b those holding back-references, assertions and
+/// look-behinds too (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
 /// N cases).
 /// </summary>
 /// <remarks>
@@ -134,9 +134,9 @@ public class NestingMaximumTests
     /// <summary>
     /// The shapes whose match at the maximum is not proven: a capture with a sequence, an alternation, a back-reference,
     /// an assertion or a quantifier on each level costs the matcher's continuations more stack per level than a 1 MiB
-    /// thread holds 512 times over with a margin, and some fail at the maximum. Task 2.4a's backend, with no CLR
-    /// recursion (A-4's matcher half), matches each of them that holds no back-reference, assertion or look-behind (task
-    /// 2.4b's instructions); <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
+    /// thread holds 512 times over with a margin, and some fail at the maximum. The new backend, with no CLR recursion
+    /// (A-4's matcher half), matches each of them at the maximum, task 2.4a's for those holding no back-reference,
+    /// assertion or look-behind and task 2.4b's for the rest; <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
     /// linux-x64 are in <see cref="BroilerRegex.MaximumNestingLimit"/>'s remarks.
     /// </summary>
     public static TheoryData<string> UnprovenShapes => new()

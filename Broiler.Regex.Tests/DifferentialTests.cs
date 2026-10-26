@@ -35,7 +35,7 @@ namespace Broiler.Regex.Tests;
 /// </para>
 /// <para>
 /// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
-/// reads a start inside a pair forward from the pair's low half, as a lone unit, and reads nothing before it. That is the
+/// reads a start inside a pair forward from the pair's low half, as a lone unit, and read nothing before it until task 2.4b. That is the
 /// entry's contract, under which RegExpBuiltinExec's step back to the pair (ECMA-262 §22.2.7.2, step 13.b) is the
 /// caller's, as Broiler.VM's realm takes it; it is not the specification's answer from such a <c>lastIndex</c>, which
 /// starts at the whole pair (<see cref="SurrogateStartTests"/> holds both). The old backend is inconsistent there, and
@@ -43,8 +43,13 @@ namespace Broiler.Regex.Tests;
 /// <c>/[\s\S]*\u{1F600}/u</c> from index 1 of <c>"\u{1F600}ba"</c> answers a match at 1 of the character at 0,
 /// RegExpBuiltinExec's answer by accident, while the same pattern as a loop, <c>/(?:[\s\S])*\u{1F600}/u</c>, does not
 /// step back and answers no match. The comparison is of the entry's contract: a case starting inside a pair is compared
-/// with the old backend's answer on a copy of the subject whose unit before the start is no surrogate, so that neither
-/// backend reads before the start. The first run found seven disagreements, all D1.
+/// with the old backend's answer on a copy of the subject whose unit before the start is no surrogate, so that the old
+/// backend does not read the pair's high half before the start either. The first run found seven disagreements, all D1.
+/// Since task 2.4b's look-behinds the new entry does read before the start, and reads the high half there as a lone
+/// unit (the pair is split for the whole call); the copy holds <c>#</c> there instead, so a program with an instruction
+/// that reads right to left runs on the copy too, and the split itself is <see cref="MachineLookaroundTests"/>'s to pin.
+/// Every other read before the start, <c>\b</c>'s and <c>^</c>'s under <c>m</c>, finds a non-word character that is no
+/// line terminator in both, the lone high half and <c>#</c>.
 /// </para>
 /// <para>
 /// The sticky flag <c>y</c> is the new entry's anchored argument; the old backend reads it from its flags.
@@ -149,6 +154,18 @@ public class DifferentialTests(ITestOutputHelper output)
         return text.ToString();
     }
 
+    /// <summary>Whether a program reads right to left anywhere: whether it holds a look-behind whose body reads a character.</summary>
+    private static bool ReadsRightToLeft(RegexProgram program)
+    {
+        foreach (var instruction in program.Code)
+        {
+            if (instruction.RightToLeft)
+                return true;
+        }
+
+        return false;
+    }
+
     private static string Report(Tally tally) =>
         tally.Disagreements.Count + " disagreements:\n" + string.Join('\n', tally.Disagreements.Take(60));
 
@@ -201,11 +218,25 @@ public class DifferentialTests(ITestOutputHelper output)
             var anchored = flags.Contains('y');
             var unicode = flags.Contains('u') || flags.Contains('v');
             var slots = new int[program!.SlotCount];
+            var readsBackward = ReadsRightToLeft(program);
             foreach (var subject in subjects)
             {
                 foreach (var start in starts(subject).Distinct())
                 {
-                    var status = program.Match(subject, start, anchored, slots, null, Ceilings, out var limit, out var units);
+                    // A start inside a surrogate pair is compared under the entry's contract, on a copy whose unit before
+                    // the start is no surrogate, so that the old backend (defect D1) does not read the pair's high half
+                    // either; a look-behind reads the copy on both backends.
+                    var oldSubject = subject;
+                    var newSubject = subject;
+                    if (unicode && start > 0 && start < subject.Length && char.IsLowSurrogate(subject[start]) && char.IsHighSurrogate(subject[start - 1]))
+                    {
+                        oldSubject = string.Concat(subject.AsSpan(0, start - 1), "#", subject.AsSpan(start));
+                        if (readsBackward)
+                            newSubject = oldSubject;
+                        InsidePair++;
+                    }
+
+                    var status = program.Match(newSubject, start, anchored, slots, null, Ceilings, out var limit, out var units);
                     if (status == RegexStatus.LimitExceeded)
                     {
                         if (Stopped.Count < 40)
@@ -218,15 +249,6 @@ public class DifferentialTests(ITestOutputHelper output)
                             _ => throw new InvalidOperationException("a limit exceeded naming " + limit),
                         };
                         continue;
-                    }
-
-                    // A start inside a surrogate pair is compared under the entry's contract, on a copy whose unit before
-                    // the start is no surrogate, so that the old backend (defect D1) does not read before it either.
-                    var oldSubject = subject;
-                    if (unicode && start > 0 && start < subject.Length && char.IsLowSurrogate(subject[start]) && char.IsHighSurrogate(subject[start - 1]))
-                    {
-                        oldSubject = string.Concat(subject.AsSpan(0, start - 1), "#", subject.AsSpan(start));
-                        InsidePair++;
                     }
 
                     string expected;
