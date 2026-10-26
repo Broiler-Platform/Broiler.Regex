@@ -73,22 +73,23 @@ public sealed class BroilerRegex
     /// </para>
     /// <para>
     /// <b>Measured, with the margin stated.</b> At the review of task 2.3 of SJL-11.2, on linux-x64, a scratch tool
-    /// bisected, for each of 40 shapes, the deepest nesting that parses and compiles, and the deepest that matches a
+    /// bisected, for each of 43 shapes, the deepest nesting that parses and compiles, and the deepest that matches a
     /// subject reaching the innermost level, on a thread of a 1 MiB stack in a fresh process. A depth passed only when
     /// every run of it passed: under the JIT in Release three runs with the default tiering, one with optimised code
     /// only and one with none; in Debug two; under Native AOT two. A stack overflow, any exception, a
     /// <see cref="RegexOverflowException"/> included, and a wrong answer each failed it. The shapes were each kind of level
-    /// alone (capturing, non-capturing, named, look-ahead, negative look-ahead, look-behind, modifier and repeated groups,
-    /// and <c>v</c>-mode classes, nested, complemented, intersected, subtracted and joined) and mixtures of a capture, an
-    /// alternation, a sequence, a back-reference, an assertion and a quantified inner group on each level, forward and
-    /// inside a look-behind. Parsing and compiling, the deepest depth that passed for the worst shape was 1,164 under the
-    /// JIT in Release (modifier groups), 738 in Debug (complemented property classes under <c>vi</c>) and 2,830 under
-    /// Native AOT (the same): this maximum is the largest power of two at most half the first, and the limit both
-    /// engines pass (decision D7), a margin of 2.27 in Release, 1.44 in Debug and 5.53 under Native AOT. Matching, the
-    /// worst shape measured, a repeated capture around an alternation of sequences with a back-reference and an
-    /// assertion on each level, first failed at 465 levels in Release, 321 in Debug and 1,463 under Native AOT: below
-    /// this maximum under the JIT. Every shape was then run at this maximum, 24 times in Release, 6 in Debug and twice
-    /// under Native AOT: every one parsed and compiled every time, and every shape of <c>MatchedShapes</c> matched.
+    /// alone (capturing groups with and without <c>u</c>, non-capturing, named, look-ahead, negative look-ahead,
+    /// look-behind, modifier and repeated groups, and <c>v</c>-mode classes, nested, complemented, intersected,
+    /// subtracted and joined) and mixtures of a capture, an alternation, a sequence, a back-reference, an assertion and
+    /// a quantified inner group on each level, forward and inside a look-behind. Parsing and compiling, the deepest
+    /// depth that passed for the worst shape was 1,164 under the JIT in Release (modifier groups), 738 in Debug
+    /// (complemented property classes under <c>vi</c>) and 2,830 under Native AOT (the same): this maximum is the
+    /// largest power of two at most half the first, and the limit both engines pass (decision D7), a margin of 2.27 in
+    /// Release, 1.44 in Debug and 5.53 under Native AOT. Matching, the worst shape measured, a repeated capture around
+    /// an alternation of sequences with a back-reference and an assertion on each level, first failed at 465 levels in
+    /// Release, 321 in Debug and 1,463 under Native AOT: below this maximum under the JIT. Every shape was then run at
+    /// this maximum, 24 times in Release, 6 in Debug and twice under Native AOT: every one parsed and compiled every
+    /// time, and every shape of <c>MatchedShapes</c> matched.
     /// </para>
     /// <para>
     /// <b>A constant, fixed below.</b> A caller compiles the value in. Decision D7 makes 512 the limit both engines pass,
