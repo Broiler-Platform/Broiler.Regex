@@ -335,12 +335,16 @@ always succeeds); a positive look-around goes on from the barrier's position wit
 one fails, and the next frame popped undoes the body's writes. When every way through the body fails, backtracking
 reaches the barrier: a positive one fails in its turn, and a negative one resumes after the look-around, from its
 position, its body's writes undone (step 2.d, "Return c(x)"). No second loop, no call and no second stack: A-4 holds.
-**The backward direction**: a look-behind's body is compiled with `RightToLeft` on each character, class and
-back-reference instruction, which then reads the character that ends at the index (a whole surrogate pair under `u` and
-`v`) and moves the index to its start; a sequence's terms are emitted last first and a group's end register is written
-first, so that its range reads left to right; a back-reference compares the capture from its last character. A
-look-ahead's body is forward wherever it stands. Under `u` and `v` a start inside a surrogate pair now splits the pair
-for every read of the call, so that a look-behind from the start meets the high half alone.
+Under `i` the machine calls the Unicode owner's case folding, which reads the caller's provider during a match, the
+caller's code as the meter is and outside the graph A-4 reads: A-4 now pins the types of other assemblies the machine
+calls, so that a new one is reviewed, and refuses any type of the library that implements the provider's interface, so
+that the provider stays the caller's (its witness plants one that matches again). **The backward direction**: a
+look-behind's body is compiled with `RightToLeft` on each character, class and back-reference instruction, which then
+reads the character that ends at the index (a whole surrogate pair under `u` and `v`) and moves the index to its start;
+a sequence's terms are emitted last first and a group's end register is written first, so that its range reads left to
+right; a back-reference compares the capture from its last character. A look-ahead's body is forward wherever it stands.
+Under `u` and `v` a start inside a surrogate pair now splits the pair for every read of the call, so that a look-behind
+from the start meets the high half alone.
 
 **Charging (D8).** Each new instruction costs one unit; a class under `i` one plus its weight for each code point of an
 orbit (four at most at UCD 17.0.0); `\b` and `\B` one plus the word class's weight twice; a back-reference its capture's

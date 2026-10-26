@@ -104,13 +104,15 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   (a subject span, a start, an anchored argument independent of `y`, offsets written into the
   caller's slots); `RegexMachine` is the one backtracking loop, with an explicit frame stack and an
   undo trail (defunctionalised continuations) rented from the shared array pool, and no CLR
-  recursion, which an architecture test reads from the IL. A look-around is a barrier frame on the
-  same stack, dropped with every frame above it when its body matches; a comparison under `i` reads
-  the provider's case folding at match time, a class by the case orbit of the character; a
-  back-reference reads a list of groups, one long until task 2.6's duplicate names. `RegexMatchCeilings` holds the caller's
-  step, frame and trail ceilings, each answered as `RegexStatus.LimitExceeded` naming it. Every
-  dispatched instruction is charged to the caller's meter, `RegexWorkCharge`, in blocks of 512
-  units paid before the work.
+  recursion, which an architecture test reads from the IL; the calls the loop makes into other
+  assemblies are pinned there, the case folding among them, which reads the caller's provider during
+  a match as the meter is called, so no type of the library may implement the provider's interface.
+  A look-around is a barrier frame on the same stack, dropped with every frame above it when its
+  body matches; a comparison under `i` reads the provider's case folding at match time, a class by
+  the case orbit of the character; a back-reference reads a list of groups, one long until task
+  2.6's duplicate names. `RegexMatchCeilings` holds the caller's step, frame and trail ceilings,
+  each answered as `RegexStatus.LimitExceeded` naming it. Every dispatched instruction is charged to
+  the caller's meter, `RegexWorkCharge`, in blocks of 512 units paid before the work.
 * **`BroilerRegex.cs`** — the public façade (`Match` / `IsMatch`), mirroring the
   shape `JSRegExp` needs (`Success`, `Index`, `Length`, indexed + named groups).
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
