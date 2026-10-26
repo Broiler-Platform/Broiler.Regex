@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 208 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 210 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 13 |
-| Code units | 333 |
-| Relevant | 208 |
-| Exempt | 125 |
-| Assessed | 208 of 208 (100%) |
-| Human reviewed | 0 of 208 (0%) |
-| Unverified | 208 |
+| Code units | 336 |
+| Relevant | 210 |
+| Exempt | 126 |
+| Assessed | 210 of 210 (100%) |
+| Human reviewed | 0 of 210 (0%) |
+| Unverified | 210 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 208 |
+| HUMAN_PENDING | 210 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 125 |
+| EXEMPT | 126 |
 
 ## 5. Aliases In The Tree
 
@@ -96,8 +96,8 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
 | `Broiler.Regex/RegexOverflowException.cs` | 2 | 2 | 0 | 2 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
-| `Broiler.Regex/Unicode/RegexUnicode.cs` | 30 | 20 | 10 | 20 | Low | High | 8/8 |
-| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 6 | 6 | 0 | 6 | Low | Medium | 3/0 |
+| `Broiler.Regex/Unicode/RegexUnicode.cs` | 26 | 19 | 7 | 19 | Low | High | 8/8 |
+| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 13 | 9 | 4 | 9 | Low | Medium | 6/0 |
 
 ## 7. Decisions Recorded
 
@@ -304,9 +304,9 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
 - `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `1593A1`, PENDING
   - Falsified if: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
-- `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `47BDCA`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `76BE3F`, PENDING
   - Falsified if: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
-- `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `1B8CFA`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `34C07C`, PENDING
   - Falsified if: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
 
 ## 10. What This Record Does Not Say
@@ -324,5 +324,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-208 of the 208 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+210 of the 210 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

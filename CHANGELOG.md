@@ -64,8 +64,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     are removed; their replacements take an `IUnicodeTables`, and the new `Parse` answers the capture count only
     (the group-name map stays on `BroilerRegex.GroupNames`, as convention 1 keeps a collection out of a new public
     signature).
-  - The public types `Broiler.Regex.Unicode.CaseFolding` (deleted) and `Broiler.Regex.Unicode.UnicodeCharSets` (now
-    internal) are removed.
+  - The public type `Broiler.Regex.Unicode.CaseFolding` is removed (deleted), and so are the members of
+    `Broiler.Regex.Unicode.UnicodeCharSets` that read Unicode data: `AllCharacters`, `EscapeSet`, `IsSpace`, `IsWord`,
+    `ResolveProperty` and `WordSet`. Its members that read no table, `IsDigit`, `PositiveEscape`,
+    `IsComplementEscape` and the `PropertyMatch` holder, stay public with their `0.1.0-preview.4` answers.
   - `CharSet.AddEscape(ClassEscape, bool, bool)` and `CharSet.Contains(int, bool, bool)` are now internal: each
     needs the compilation's provider answers.
   - A provider of another Unicode version, or one lacking a table the algorithms read, is refused with an

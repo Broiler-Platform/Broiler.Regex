@@ -93,7 +93,8 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   orbits the class-membership test walks, `\s`, the folded `\w` set and `AllCharacters`.
   The package declares no Unicode version of its own.
 * **`Unicode/UnicodeCharSets.cs`** — the parts of the class escapes that are not Unicode
-  data: `\d`, the basic `\w` set and the code space.
+  data: `\d`, the basic `\w` set and the code space, and the public members of `0.1` that
+  read no table (`IsDigit`, `PositiveEscape`, `IsComplementEscape`, `PropertyMatch`).
 
 ## What works today
 

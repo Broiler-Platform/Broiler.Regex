@@ -148,3 +148,12 @@ Broiler.Regex.RegexOverflowException..ctor() method System.Void
 Broiler.Regex.RegexSyntaxException sealed class : System.Exception
 Broiler.Regex.RegexSyntaxException..ctor(System.String, System.Int32) method System.Void
 Broiler.Regex.RegexSyntaxException.get_Position() method System.Int32
+Broiler.Regex.Unicode.UnicodeCharSets static class
+Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch sealed class
+Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void
+Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.CodePoints field readonly Broiler.Regex.Ast.CodePointSet
+Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.Strings field readonly System.Collections.Generic.IReadOnlyList`1<System.String>
+Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.get_IsStringProperty() method System.Boolean
+Broiler.Regex.Unicode.UnicodeCharSets.IsComplementEscape(Broiler.Regex.Ast.ClassEscape) method static System.Boolean
+Broiler.Regex.Unicode.UnicodeCharSets.IsDigit(System.Int32) method static System.Boolean
+Broiler.Regex.Unicode.UnicodeCharSets.PositiveEscape(Broiler.Regex.Ast.ClassEscape) method static Broiler.Regex.Ast.ClassEscape

@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   20
-// Annotated:        20/20
-// Exempt:           10
-// Human-reviewed:   0/20
+// Relevant units:   19
+// Annotated:        19/19
+// Exempt:           7
+// Human-reviewed:   0/19
 // IP risk:          Low
 // Security risk:    High
 // Criteria:         8/8
 // Resource impact:  3/10 max
-// Unverified:       20
+// Unverified:       19
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -275,20 +275,20 @@ internal sealed class RegexUnicode
     /// case folding, no ignoring of <c>_</c>, <c>-</c> or spaces, no <c>Is</c> prefix (§22.2.2.9,
     /// UnicodeMatchProperty and UnicodeMatchPropertyValue).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=47BDCA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=76BE3F
     // Broiler-Falsified-If: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
     // Broiler-Human:        PENDING
-    internal PropertyMatch? ResolveProperty(string name, string? value)
+    internal UnicodeCharSets.PropertyMatch? ResolveProperty(string name, string? value)
     {
         if (value != null)
         {
             return _properties.TryResolve(name, value, out var pair)
-                ? new PropertyMatch(ToCodePointSet(pair), [], isStringProperty: false)
+                ? new UnicodeCharSets.PropertyMatch(ToCodePointSet(pair), [], isStringProperty: false)
                 : null;
         }
 
         if (_properties.TryResolve(name, out var lone))
-            return new PropertyMatch(ToCodePointSet(lone), [], isStringProperty: false);
+            return new UnicodeCharSets.PropertyMatch(ToCodePointSet(lone), [], isStringProperty: false);
 
         if (_stringProperties.TryResolve(name, out var property))
             return ResolveStringProperty(property);
@@ -300,10 +300,10 @@ internal sealed class RegexUnicode
     /// A property of strings: its single code points as a set and its sequences of two or more as strings.
     /// <c>RGI_Emoji</c> is the union of the others, which the provider holds no data for of its own.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=1B8CFA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=34C07C
     // Broiler-Falsified-If: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
     // Broiler-Human:        PENDING
-    private PropertyMatch ResolveStringProperty(StringProperty property)
+    private UnicodeCharSets.PropertyMatch ResolveStringProperty(StringProperty property)
     {
         var ranges = new List<(int Lo, int Hi)>();
         var strings = new List<string>();
@@ -321,7 +321,7 @@ internal sealed class RegexUnicode
             AddStringProperty(property, ranges, strings);
         }
 
-        return new PropertyMatch(CodePointSet.FromRanges(ranges), [.. strings], isStringProperty: true);
+        return new UnicodeCharSets.PropertyMatch(CodePointSet.FromRanges(ranges), [.. strings], isStringProperty: true);
     }
 
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=2; Fingerprint=33F660
@@ -360,25 +360,4 @@ internal sealed class RegexUnicode
         for (var range = 0; range < set.RangeCount; range++)
             ranges.Add((set.First(range), set.Last(range)));
     }
-}
-
-/// <summary>The resolution of one <c>\p{…}</c> escape: its code points, and its strings when it is a property of strings.</summary>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=0; Fingerprint=F5BFAB
-// Broiler-Human:        PENDING
-internal sealed class PropertyMatch(CodePointSet codePoints, string[] strings, bool isStringProperty)
-{
-    /// <summary>The code points the property matches, a set no other resolution shares.</summary>
-    public readonly CodePointSet CodePoints = codePoints;
-
-    /// <summary>
-    /// The sequences of two or more code points a property of strings (UTS #51) matches; empty for an ordinary
-    /// property.
-    /// </summary>
-    public readonly string[] Strings = strings;
-
-    /// <summary>
-    /// Whether the name is one of ECMA-262's binary properties of strings, which may be used only in a
-    /// <c>v</c>-mode class and never negated (§22.2.1, the early errors of UnicodePropertyValueExpression).
-    /// </summary>
-    public readonly bool IsStringProperty = isStringProperty;
 }

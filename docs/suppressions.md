@@ -53,10 +53,21 @@ package validation generated it (`ApiCompatGenerateSuppressionFile`), and nothin
 | Suppression | Target | What replaces it |
 |---|---|---|
 | CP0001 | `T:Broiler.Regex.Unicode.CaseFolding` | Deleted with its generated table and generator. Canonicalize is the provider's `UnicodeCaseFolding`, read through the internal `RegexUnicode`. |
-| CP0001 | `T:Broiler.Regex.Unicode.UnicodeCharSets` | Internal. Its property resolution, white space, folded word set and `AllCharacters` are `RegexUnicode`'s, from the provider; what is not Unicode data (`\d`, the basic word set, the code space) stays in the internal class. |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.AllCharacters(System.Boolean,System.Boolean)` | Removed: under `v` with `i` it is the code points the provider's simple case folding leaves alone, built by the internal `RegexUnicode.BuildCanonicalCharacters` for the compilation that complements a class. |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.EscapeSet(Broiler.Regex.Ast.ClassEscape,System.Boolean,System.Boolean)` | Removed: `\s` is the provider's Space_Separator and `\w` under `iu` its folding; the internal `RegexUnicode.EscapeSet` answers for the compilation. |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.IsSpace(System.Int32)` | Removed: WhiteSpace's Space_Separator part is Unicode data, the provider's (internal `RegexUnicode`). |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.IsWord(System.Int32,System.Boolean,System.Boolean)` | Removed: under `iu` the word set is widened by the provider's folding (internal `RegexUnicode.IsWord`). |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.ResolveProperty(System.String,System.String)` | Removed: property escapes resolve through the provider's `UnicodeProperties` and `UnicodeStringProperties` (internal `RegexUnicode.ResolveProperty`, which answers the `UnicodeCharSets.PropertyMatch` that stays public). |
+| CP0002 | `M:Broiler.Regex.Unicode.UnicodeCharSets.WordSet(System.Boolean,System.Boolean)` | Removed: under `iu` it is built from the provider's folding orbits for the compilation (internal `RegexUnicode`). |
 | CP0002 | `M:Broiler.Regex.BroilerRegex.#ctor(System.String,Broiler.Regex.RegexFlags)` | `BroilerRegex(string, RegexFlags, IUnicodeTables)`. |
 | CP0002 | `M:Broiler.Regex.BroilerRegex.#ctor(System.String,System.String)` | `BroilerRegex(string, string?, IUnicodeTables)`. |
 | CP0002 | `M:Broiler.Regex.Parsing.RegexParser.#ctor(System.String,Broiler.Regex.RegexFlags)` | `RegexParser(string, RegexFlags, IUnicodeTables)`. |
 | CP0002 | `M:Broiler.Regex.Parsing.RegexParser.Parse(System.String,Broiler.Regex.RegexFlags,System.Int32@,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int32}@)` | `RegexParser.Parse(string, RegexFlags, IUnicodeTables, out int)`. The group-name map is not an out parameter of the new member, which convention 1 would refuse in a public signature (check C1); it stays `BroilerRegex.GroupNames` and `RegexParser.GroupNames`. |
 | CP0002 | `M:Broiler.Regex.Ast.CharSet.AddEscape(Broiler.Regex.Ast.ClassEscape,System.Boolean,System.Boolean)` | Internal, taking the compilation's provider answers: `\s` is the provider's Space_Separator and `\w` under `iu` its folding. |
 | CP0002 | `M:Broiler.Regex.Ast.CharSet.Contains(System.Int32,System.Boolean,System.Boolean)` | Internal, taking the compilation's provider answers: a case-insensitive test folds by the provider. |
+
+Of `UnicodeCharSets`, the members that read no table stay public with their `0.1.0-preview.4` answers: `IsDigit`,
+`PositiveEscape`, `IsComplementEscape` and the `PropertyMatch` holder, whose two rows of check C1 stay on the starting
+violation list for task 2.9. Decision D12 keeps the 0.1 surface where R11 allows it and keeps no shim for a member R11
+makes impossible; the plan's section 1 and the dated record of [`roadmap.md`](roadmap.md) section 6 name the public
+`UnicodeCharSets` among R11's removals, which holds for the six members above and not for these four.

@@ -94,6 +94,32 @@ public class ProviderDataTests
     }
 
     /// <summary>
+    /// Decision D12 keeps the 0.1 surface where R11 allows it: the members of <c>0.1.0-preview.4</c>'s
+    /// <c>UnicodeCharSets</c> that read no Unicode table stay public, with their 0.1 answers.
+    /// </summary>
+    [Fact]
+    public void The_members_of_UnicodeCharSets_that_read_no_table_stay_public()
+    {
+        Assert.True(Unicode.UnicodeCharSets.IsDigit('0'));
+        Assert.True(Unicode.UnicodeCharSets.IsDigit('9'));
+        Assert.False(Unicode.UnicodeCharSets.IsDigit(0x0660)); // ARABIC-INDIC DIGIT ZERO
+        Assert.False(Unicode.UnicodeCharSets.IsDigit('/'));
+
+        Assert.Equal(ClassEscape.Digit, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonDigit));
+        Assert.Equal(ClassEscape.Word, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonWord));
+        Assert.Equal(ClassEscape.Space, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonSpace));
+        Assert.Equal(ClassEscape.Word, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.Word));
+        Assert.True(Unicode.UnicodeCharSets.IsComplementEscape(ClassEscape.NonSpace));
+        Assert.False(Unicode.UnicodeCharSets.IsComplementEscape(ClassEscape.Space));
+
+        var withStrings = new Unicode.UnicodeCharSets.PropertyMatch(Ast.CodePointSet.Of('a', 'c'), ["ab"]);
+        Assert.True(withStrings.IsStringProperty);
+        Assert.Equal("ab", Assert.Single(withStrings.Strings));
+        Assert.True(withStrings.CodePoints.Contains('b'));
+        Assert.False(new Unicode.UnicodeCharSets.PropertyMatch(Ast.CodePointSet.Of('a', 'c'), []).IsStringProperty);
+    }
+
+    /// <summary>
     /// The invariant <c>RegexUnicode.BuildCanonicalCharacters</c> rests on: every code point the provider's simple
     /// case folding moves is Cased, at the version the provider pins, so a scan of Cased's members finds them all.
     /// </summary>
