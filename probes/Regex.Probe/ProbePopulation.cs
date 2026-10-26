@@ -145,8 +145,9 @@ internal static class ProbePopulation
         // under a nesting limit and matched, on a thread of StackBytes. Depth counts as Broiler.VM's does: the pattern
         // is depth 1, each group adds 1, and under v each class adds 1; so 511 levels are the maximum, 512. Every
         // subject of a case at the maximum reaches the innermost level, except where a case says it proves the parse
-        // and the compilation alone: the shapes whose match at the maximum the matcher does not yet prove (task 2.4a;
-        // MaximumNestingLimit's remarks) are matched against a subject that fails at the outermost level.
+        // and the compilation alone: the shapes whose match at the maximum the public matcher does not prove until task
+        // 2.4c routes it through task 2.4a's backend (MaximumNestingLimit's remarks; the engine population matches them)
+        // are matched against a subject that fails at the outermost level.
         Nested("N01", "(", "a", ")", 511, "", "a"),
         Nested("N02", "(", "a", ")", 512, "", "a"),
         Nested("N03", "(?:", "a", ")", 511, "", "a"),

@@ -62,9 +62,16 @@ to regex, and are out of scope for this component.)
 
 ## Architecture
 
+Two backends live side by side until SJL-11.2 task 2.4c. The public members match with the
+continuation-passing matcher of `Matching/`; task 2.4a's new backend, internal until then, compiles
+the same tree to an instruction program that one loop runs. Task 2.4c routes `BroilerRegex` through
+the new backend and deletes the old matcher.
+
 ```
-pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (CPS backtracker) ──▶ RegexMatch
-                   (Parsing/)       (Ast/)            (Matching/)                   (Matching/)
+                                   ┌─▶ Matcher (CPS backtracker) ──▶ RegexMatch       public, until 2.4c
+pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)                   (Matching/)
+            (Parsing/)     (Ast/)  └─▶ ProgramCompiler ──▶ RegexProgram + RegexMachine ──▶ caller's slots
+                                       (Compiling/)        (Engine/)                        internal, 2.4a
 ```
 
 * **`Parsing/RegexParser.cs`** — recursive-descent parser for the ECMAScript
@@ -82,6 +89,20 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   * `RepeatMatcher`'s empty-iteration guard (fixes #8).
   * Code-point-aware atom and back-reference matching under `u`/`v`
     (fixes #6, #7).
+* **`Compiling/ProgramCompiler.cs`** (task 2.4a) — lowers the tree to a `RegexProgram` on work
+  lists of the heap, with no recursion, checking the caller's nesting limit before it enters each
+  group. A tree holding what the program cannot hold yet (`^ $ \b \B`, a back-reference, a
+  look-around, a modifier group, the `i` flag, a `v`-mode class of strings) is answered "not yet
+  supported", a transitional answer task 2.4b removes.
+* **`Engine/`** (task 2.4a) — the new backend. `RegexOp` and `RegexInstruction` are its instruction
+  set; `RegexProgram` is the immutable program, shared across threads, with the internal match entry
+  (a subject span, a start, an anchored argument independent of `y`, offsets written into the
+  caller's slots); `RegexMachine` is the one backtracking loop, with an explicit frame stack and an
+  undo trail (defunctionalised continuations) rented from the shared array pool, and no CLR
+  recursion, which an architecture test reads from the IL; `RegexMatchCeilings` holds the caller's
+  step, frame and trail ceilings, each answered as `RegexStatus.LimitExceeded` naming it. Every
+  dispatched instruction is charged to the caller's meter, `RegexWorkCharge`, in blocks of 512
+  units paid before the work.
 * **`BroilerRegex.cs`** — the public façade (`Match` / `IsMatch`), mirroring the
   shape `JSRegExp` needs (`Success`, `Index`, `Length`, indexed + named groups).
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
@@ -139,14 +160,17 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   maximum, parses and compiles on a 1 MiB stack under the JIT and Native AOT (the measurement
   and its margins are in the constant's documentation); win-x64 was not measured, so the
   maximum is proven on linux-x64 only.
-- **Matching at the nesting maximum is proven only for some shapes**, until the new matcher of
-  SJL-11.2 task 2.4a (R4's matcher half). The parser still recurses a few frames per level, and
-  the matcher's continuations recurse per level and per term of a sequence, so a pattern within
+- **Matching at the nesting maximum through the public members is proven only for some shapes**,
+  until task 2.4c routes them through the new backend of SJL-11.2 task 2.4a (R4's matcher half),
+  which matches each shape of the table below that it runs (those without a back-reference, an
+  assertion or a look-behind) at the maximum on a 1 MiB thread. The parser still recurses a few
+  frames per level, and the public matcher's continuations recurse per level and per term of a
+  sequence, so a pattern within
   the maximum can exhaust a small stack when it is matched. `NestingMaximumTests.MatchedShapes`
   lists the shapes that match at the maximum on a 1 MiB thread: each kind of level alone, and an
   alternation, a sequence or an alternation of sequences on each level without a capture. A
   capture with more on each level is not proven, and the review of task 2.3 found these to fail,
-  each an open item for task 2.4a and a skipped test in `NestingMaximumTests` (the levels at which
+  each an open item until task 2.4c and a skipped test in `NestingMaximumTests` (the levels at which
   a match on a 1 MiB thread first failed on linux-x64, in fresh processes; a depth is one more;
   "overflow" is a `RegexOverflowException`, otherwise the process ended with a stack overflow):
 
@@ -177,8 +201,32 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   failing match backtracks through: n copies of `(?:a|a)` followed by `b`, run on n `a`
   characters, explore about 2^n paths, and the time doubles with each copy (on linux-x64 in
   Release, 24 copies take 1.3 s, 26 take 5 s and 28 take 19 s; 40 would take most of a day).
-  The new matcher's meter, which charges every instruction it dispatches (SJL-11.2 task 2.4a,
-  requirement R1), bounds it; `Matcher`'s alternation records it as its falsifier until then.
+  The new backend's meter, which charges every instruction it dispatches, each tried alternative's
+  included (SJL-11.2 task 2.4a, requirement R1), bounds it; the public members reach it at task 2.4c,
+  and `Matcher`'s alternation records the defect as its falsifier until then.
+- **A start inside a surrogate pair, under `u` or `v` (the old backend's defect D1).**
+  RegExpBuiltinExec starts its matcher from a `lastIndex` inside a pair at the whole pair. The
+  public matcher does so only by accident: its greedy run of one character steps back across the
+  start and its general loop does not, so `Match("😀ba", 1)` matches at 1 for `/[\s\S]*\u{1F600}/u`
+  and not for `/(?:[\s\S])*\u{1F600}/u` (`SurrogateStartTests` pins the specification's answers, the
+  rows the public matcher misses skipped until task 2.4c). The new backend's internal entry reads
+  such a start forward from the low half, as a lone unit; the step back to the pair is its caller's,
+  and task 2.4c's route through it takes the step and decides the index the public members report.
+- **The new backend's trail and a loop that holds no choice (task 2.4a).** The trail keeps every
+  register write of an attempt until the attempt ends, as Broiler.VM's does, a counted loop's
+  included when it holds no choice open: two cells an iteration that consumes, its mark and its
+  count. Under decision D10's engine ceilings a counted quantifier therefore runs at most 1,048,575,
+  and `a{1048576}` over as many characters answers `LimitExceeded` naming the trail where the public
+  matcher matches (at the library's maximum trail the bound is 16,777,215); `(?:){2147483647}` on an
+  empty subject answers the same, where the specification answers an empty match and the public
+  matcher no match. When task 2.4c routes the public members through the new backend, it lists the
+  answers that change or makes a write with no choice pending leave no cell (`CeilingTests` pins the
+  bound).
+- **The new backend's subset and its missing fast paths (task 2.4a).** Until task 2.4b, the internal
+  backend answers "not yet supported" for `^ $ \b \B`, back-references, look-around, modifier groups,
+  the `i` flag and `v`-mode classes of strings. Until task 2.4c it has no fast path: a greedy
+  quantifier over one class pushes a frame per character, so `[a]*` over the adversarial corpus's
+  10,000,001 characters (row O05) reaches the corpus's frame ceiling rather than matching.
 - The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path
@@ -209,7 +257,8 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   (`\d+`, `[a-z]+`, `\w+`, character-class scans) within ~2–3× of the compiled .NET engine.
   What remains is the per-invocation continuation-closure chain that a sequence with capturing
   groups or nested quantifiers still allocates, and the per-write capture-array clone — both
-  need the compiled/bytecode path in §4 of the [roadmap](../docs/roadmap.md), so capture-heavy
+  need the compiled/bytecode path in §4 of the [roadmap](../docs/roadmap.md), which task 2.4a builds
+  and task 2.4c makes the public members' path, so capture-heavy
   patterns are still several times slower. A `v`-mode class under `i` also folds its whole
   operand set at compile time — measurable for an operand the size of `\p{L}`.
 

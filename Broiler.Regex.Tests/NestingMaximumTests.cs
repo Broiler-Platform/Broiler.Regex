@@ -14,9 +14,11 @@ namespace Broiler.Regex.Tests;
 /// decision D6 of Broiler.VM's JSD-0081; bundle sjl-11-001's check A-4), on a thread each test starts itself: a
 /// pattern of any shape nested to <see cref="BroilerRegex.MaximumNestingLimit"/> parses and compiles, and one level past
 /// it is refused with the nesting status, never a stack overflow. A pattern at the maximum also matches for the
-/// shapes of <see cref="MatchedShapes"/>; the matcher's continuations recurse per level and per term until task 2.4a
-/// replaces them, so for the shapes of <see cref="UnprovenShapes"/> matching at the maximum is not proven, and some of
-/// them exhaust the stack. The Native AOT probe runs the same proof on a thread of the same stack (its population's
+/// shapes of <see cref="MatchedShapes"/>; the public matcher's continuations recurse per level and per term until task
+/// 2.4c routes matching through task 2.4a's backend, so for the shapes of <see cref="UnprovenShapes"/> matching at the
+/// maximum through <see cref="BroilerRegex"/> is not proven, and some of them exhaust the stack. The new backend matches
+/// those of them within its subset at the maximum on a 1 MiB thread
+/// (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
 /// N cases).
 /// </summary>
 /// <remarks>
@@ -132,9 +134,10 @@ public class NestingMaximumTests
     /// <summary>
     /// The shapes whose match at the maximum is not proven: a capture with a sequence, an alternation, a back-reference,
     /// an assertion or a quantifier on each level costs the matcher's continuations more stack per level than a 1 MiB
-    /// thread holds 512 times over with a margin, and some fail at the maximum. Task 2.4a's matcher, with no CLR
-    /// recursion (A-4's matcher half), is to make each of them match; the depths each first failed at on linux-x64 are in
-    /// <see cref="BroilerRegex.MaximumNestingLimit"/>'s remarks.
+    /// thread holds 512 times over with a margin, and some fail at the maximum. Task 2.4a's backend, with no CLR
+    /// recursion (A-4's matcher half), matches each of them that holds no back-reference, assertion or look-behind (task
+    /// 2.4b's instructions); <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
+    /// linux-x64 are in <see cref="BroilerRegex.MaximumNestingLimit"/>'s remarks.
     /// </summary>
     public static TheoryData<string> UnprovenShapes => new()
     {
@@ -229,9 +232,10 @@ public class NestingMaximumTests
 
     /// <summary>
     /// Tracked, not run: a match of one of these shapes at the maximum can end the test host with a stack overflow,
-    /// which no test catches, so each is a known gap that task 2.4a's matcher closes, and this test runs, unskipped, then.
+    /// which no test catches, so each is a known gap of the public matcher, closed when task 2.4c routes
+    /// <see cref="BroilerRegex"/> through task 2.4a's backend, and this test runs, unskipped, then.
     /// </summary>
-    [Theory(Skip = "Known gap for task 2.4a: matching at the nesting maximum is not proven for these shapes, and some exhaust a 1 MiB stack (BroilerRegex.MaximumNestingLimit's remarks).")]
+    [Theory(Skip = "Known gap of the public matcher until task 2.4c routes it through task 2.4a's backend: matching at the nesting maximum is not proven for these shapes, and some exhaust a 1 MiB stack (BroilerRegex.MaximumNestingLimit's remarks).")]
     [MemberData(nameof(UnprovenShapes))]
     public void A_pattern_at_the_maximum_that_the_matcher_does_not_yet_prove_matches_on_a_1_MiB_stack(string shape)
     {

@@ -64,12 +64,12 @@ public sealed class BroilerRegex
     /// past it is refused with the nesting status, never a stack overflow: decision D6's bound on the parser and the
     /// compiler (<c>NestingMaximumTests</c>; the Native AOT probe's N cases). Matching at this maximum is proven only for
     /// the shapes <c>NestingMaximumTests.MatchedShapes</c> lists: each kind of level alone, and an alternation, a sequence
-    /// or an alternation of sequences on each level without a capture. The matcher's continuations recurse per level and
-    /// per term of a sequence until task 2.4a replaces them (check A-4's matcher half), so a pattern within this maximum
+    /// or an alternation of sequences on each level without a capture. This type's matcher, the continuations of
+    /// <c>Matching/</c>, recurses per level and per term of a sequence until task 2.4c routes matching through the new
+    /// backend of task 2.4a, which has no CLR recursion (check A-4's matcher half), so a pattern within this maximum
     /// whose levels each hold a capture with a sequence, an alternation, a back-reference, an assertion or a quantifier
-    /// can exhaust a 1 MiB stack at match time, ending the process or throwing <see cref="RegexOverflowException"/>.
-    /// Those shapes are task 2.4a's open items: the package README lists each with the depth it first failed at. win-x64,
-    /// whose frames are larger, was not measured; the maximum is proven on linux-x64 only.
+    /// can exhaust a 1 MiB stack here, ending the process or throwing <see cref="RegexOverflowException"/>; the README
+    /// lists them, and the new backend matches each it runs. win-x64 was not measured; the maximum is proven on linux-x64 only.
     /// </para>
     /// <para>
     /// <b>Measured, with the margin stated.</b> At the review of task 2.3 of SJL-11.2, on linux-x64, a scratch tool
