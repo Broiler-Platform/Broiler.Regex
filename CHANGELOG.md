@@ -84,6 +84,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - `CodePointSet.Clone` answers the set itself, which cannot change; `Ranges` is a list that cannot be changed,
     where `0.1.0-preview.4` handed out the set's own list. `Of` with its bounds out of order still throws
     `ArgumentException`.
+- **`RegexMatch.Empty` holds nothing that can change (R10: convention 7; task 2.3).** The no-match result every call
+  without a match answers kept its `NamedGroups` as a new `Dictionary` behind `IReadOnlyDictionary`, which a cast
+  changed for every later no-match of the process. It is now the empty `ReadOnlyDictionary`, so the cast fails and an
+  `IDictionary` write throws `NotSupportedException`; `Groups` stays an empty array. No signature changes.
 
 ### Observable changes
 

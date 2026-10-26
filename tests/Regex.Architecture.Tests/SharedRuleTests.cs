@@ -135,9 +135,13 @@ public class SharedRuleTests
         Assert.Contains(library.StaticFields, static f => f.Type == "Broiler.Regex.Ast.EmptyNode" && f.Name == "Instance" && f.IsReadOnly);
         Assert.DoesNotContain(SharedRules.SL2(library), static v => v.Contains("EmptyNode.Instance", StringComparison.Ordinal));
 
-        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result is built from a new
-        // dictionary that its read-only NamedGroups interface hides.
-        Assert.Contains("System.Collections.Generic.Dictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>", library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
+        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result holds the empty
+        // read-only dictionary that ReadOnlyDictionary.Empty returns behind its NamedGroups interface, which SL2 reads
+        // and passes (the type is the getter's return type as its signature names it, over the class's own type
+        // parameters). Until task 2.3 it held a new Dictionary there, and SL2 refused the field.
+        Assert.Equal(
+            ["System.Collections.ObjectModel.ReadOnlyDictionary`2<!0,!1>"],
+            library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
     }
 
     [Fact]
