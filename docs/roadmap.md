@@ -428,10 +428,20 @@ past the group starts: a search tests each position with it and enters the progr
 Broiler.VM's for the same work, its matcher read as their specification only (decision D5): a run's dispatch one unit
 and each character it examines, the one that ends it included, its atom's cost, charged before the read; an atom run
 its atoms' costs; a class of strings one plus the weight of its first characters and a unit for each character of a
-string tried; a position the scan skips its first test's cost, one plus the class's weight, charged before the scan
-moves past it, the position admitted costing nothing in the scan (the attempt's first dispatch makes the same test) and
-the subject's end no attempt. Check A-1 reads each through the observer at every unit charged, its declared inputs
-reaching every new instruction in both directions and the scan over a character, over a class and into a step ceiling.
+string tried; each position the scan tests its first test's cost, one plus the class's weight, charged before the test
+is made, the attempt at the position admitted taking that test as its own first test, neither made nor charged again
+(so a skip costs its test, and the admitted position what the attempt alone would), and the subject's end no attempt
+and no unit. Check A-1 reads each through the observer at every unit charged, its declared inputs reaching every new
+instruction in both directions and the scan over a character, over a class and into a step ceiling; and it reads the
+order inside each, which a charge made just after its read would leave unchanged at every unit: under `i` each
+character read reads the caller's tables once, and `ChargingTests` takes the units charged at each read of the tables
+for a greedy and a lazy run (both loops and the lazy frame's next character), an atom run, a folded class of strings
+and its single characters, and the scan, over a character, a run's atom, an atom run's first atom and after a group's
+start, and into a step ceiling. *Amended at the review of task 2.4c:* the scan first tested each position and charged
+it after, and charged the admitted position nothing in the scan; it now charges before the test, as the contract's
+"prepaid" reads, with the same units. Each place's mutant that reads before it charges (both loops of a run, the lazy
+frame, the atom run's later atoms, a string's character, a class of strings' single characters, the scan), the run
+charged once per run, and an admitted test made again each fail that check.
 The corpus's rows **O05 and O06** (`[a]*` and `^[a]*$` over 10,000,001 characters) match, in a child process and in the
 probe, where the loop form reached the frame ceiling; presumption 3 holds. `\p{RGI_Emoji}` at a position no emoji
 begins at costs under 60 units, where its strings tried one by one cost over 5,000, and the remedy task 2.4b's record
@@ -510,8 +520,11 @@ stay for task 2.9, re-worded for the namespace.
 *Where the plan, JSD-0081 and this repository differ, read at this record.* Plan row 2.4c reads the differential as
 "against 2.4b's slow path on the reference-arm population P4"; P4 does not exist, and the differential ran over the
 three populations above. D8 lists "prefilter skips" as a unit; the units are Broiler.VM's (a skip one plus the class's
-weight, the admitted position and the end free), with the class's weight this library's, the floor of the base-2
-logarithm of its ranges (task 2.4a's record), not Broiler.VM's per-table weight. D10's policy gives the string-bearing
+weight, the admitted position's test paid once, the end free), with the class's weight this library's, the floor of the
+base-2 logarithm of its ranges (task 2.4a's record), not Broiler.VM's per-table weight. The order is not: Broiler.VM
+tests a position and charges its skip after, and its attempt makes the admitted position's test again and pays for it
+then; this library charges each test before it makes it, and the attempt takes the admitted position's test from the
+scan, as D8's "prepaid ... before the work" reads, the totals the same. D10's policy gives the string-bearing
 members, which no engine calls, no step ceiling, so a catastrophic pattern there is bounded by the caller's patience
 alone, where the old budget answered no match; the offset entry is the bounded form. D12 keeps `RegexMatch`, and plan
 row 2.9 names it kept; it is kept, in another namespace, which is a break package validation needs suppressed. Plan
