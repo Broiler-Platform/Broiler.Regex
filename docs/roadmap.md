@@ -380,9 +380,10 @@ whose alternation costs about two units a string at each position (`\p{RGI_Emoji
 route: `BroilerRegex`'s internal route of task 2.4b, which steps back from a start inside a pair and reports the
 caller's start (an empty match found at the pair, decision D41's case, at the pair's start, where the public members
 report the caller's start), runs under the library's maxima and a step ceiling of 100,000,000 units, and throws
-`RegexOverflowException` at a ceiling, becomes the public members' route with the ceilings, meter and statuses task 2.4c
-decides; `Matching/` and the old backend's defects D1, D2 and M7 go with it, and the trail bound of task 2.4a's record
-is listed or lifted.
+`RegexOverflowException` at any ceiling (where the public members answer no match when the old backend's step budget
+runs out, and throw it only at its stack guard), becomes the public members' route with the ceilings, meter and statuses
+task 2.4c decides; `Matching/` and the old backend's defects D1, D2 and M7 go with it, and the trail bound of task
+2.4a's record is listed or lifted.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

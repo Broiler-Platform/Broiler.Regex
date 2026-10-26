@@ -352,8 +352,11 @@ public sealed class BroilerRegex
     /// realm) and the caller's start (Broiler.JS, and the old backend). The route reports it at the pair's start, where
     /// it was found, the one record whose captures and match agree. Task 2.4c decides what the public members report
     /// from such a start. The program runs under the library's frame and trail maxima and a step ceiling of 100,000,000
-    /// units; reaching a ceiling throws <see cref="RegexOverflowException"/>, the exception the old backend throws when
-    /// its stack guard refuses a match. Task 2.4c sets the public route's ceilings and meter, and the statuses they
+    /// units, and reaching any of them throws <see cref="RegexOverflowException"/>. That is not what the public members
+    /// do at their step budget: the old backend answers no match when its budget runs out, and throws the exception
+    /// only when its stack guard refuses a match, as the exception's remarks say; on this route it stands for every
+    /// ceiling, the step ceiling included, so that no stop is taken for an answer. Task 2.4c sets the public route's
+    /// ceilings and meter, and replaces the exception and the old budget's no match alike with the statuses they
     /// answer.
     /// </summary>
     /// <exception cref="RegexOverflowException">The match reached the step, frame or trail ceiling.</exception>
