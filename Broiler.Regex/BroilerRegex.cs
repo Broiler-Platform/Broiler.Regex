@@ -204,7 +204,16 @@ public sealed class BroilerRegex
     /// the order the parser reads the pattern, so a syntax error the parser meets first is reported first, and a level
     /// past the limit is refused before anything after it is read.
     /// </returns>
-    /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1); task 2.8 makes this a status.</exception>
+    /// <remarks>
+    /// <b>A provisional signature.</b> No published version carries this member, and it is replaced, not overloaded,
+    /// before <c>0.2.0-preview.1</c> ships: task 2.5 adds the caller's compile meter, a nullable <c>RegexWorkCharge</c>,
+    /// as a parameter (convention 4), and decision D9's syntax status carries a code, a message identifier and a
+    /// position, for which two out parameters have no room. The plan gives that syntax status to the validate entry
+    /// (task 2.8) and names no task that moves this member's syntax error onto it; task 2.9, which fixes the public
+    /// surface, holds that open. The shape follows Broiler.Unicode's operations: a status, the result in an out
+    /// parameter, the meter a parameter.
+    /// </remarks>
+    /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1): still an exception here, although convention 3 makes it an expected failure (see the remarks).</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>

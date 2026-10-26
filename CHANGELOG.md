@@ -59,7 +59,11 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
   `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
   and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match will answer
-  `Match` or `NoMatch` instead. A syntax error from `Compile` is still a `RegexSyntaxException`.
+  `Match` or `NoMatch` instead. A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature of
+  `Compile` is provisional**, and no published version carries it: task 2.5 replaces it to take the caller's compile
+  meter, a nullable `RegexWorkCharge` (convention 4), and D9's syntax status needs room for a code, a message identifier
+  and a position. The plan gives that status to the validate entry of task 2.8 and names no task that moves
+  `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for `0.2.0-preview.1`, holds that open.
 
 ### Changed
 

@@ -85,7 +85,7 @@ internal readonly struct RegexNesting
     /// <summary>
     /// The refusal the members that take no limit report for a pattern nested deeper than
     /// <see cref="BroilerRegex.MaximumNestingLimit"/>: they refuse every pattern they do not compile with a
-    /// <see cref="RegexSyntaxException"/>, until task 2.8 gives them statuses.
+    /// <see cref="RegexSyntaxException"/>, as they refuse every pattern they do not compile.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=67B805
     // Broiler-Human:        PENDING

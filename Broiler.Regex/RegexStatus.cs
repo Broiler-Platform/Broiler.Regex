@@ -28,7 +28,9 @@ namespace Broiler.Regex;
 /// nesting limit (<see cref="BroilerRegex.Compile"/>). The later steps add members and keep these: the new matcher's
 /// <c>Match</c> and <c>NoMatch</c> (task 2.4a), and the syntax status with its code, message identifier and position
 /// (the validate entry of task 2.8). A syntax error from <see cref="BroilerRegex.Compile"/> is still a
-/// <see cref="RegexSyntaxException"/>.
+/// <see cref="RegexSyntaxException"/>, and the signature of <see cref="BroilerRegex.Compile"/> is provisional: task 2.5
+/// replaces it to take the caller's meter, and a syntax status needs room for its code, message identifier and position
+/// (its remarks). The members here are kept whatever replaces it.
 /// </para>
 /// <para>
 /// <b>A member D9 does not list.</b> Decision D9's statuses are a match, no match, a limit exceeded naming its
