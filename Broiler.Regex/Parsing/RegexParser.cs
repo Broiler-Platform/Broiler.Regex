@@ -420,8 +420,8 @@ public sealed class RegexParser
 
     // ----- Atom ---------------------------------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=810E98
-    // Broiler-Falsified-If: under u or v an unescaped ']', '{' or '}' is returned as a literal character instead of raising a syntax error
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=42FB2F
+    // Broiler-Falsified-If: under u or v an unescaped ']', '{' or '}' is returned as a literal character instead of raising a syntax error, or without them /{2}/ is read as the text {2}
     // Broiler-Human:        PENDING
     private RegexNode ParseAtom()
     {
@@ -455,6 +455,11 @@ public sealed class RegexParser
                 // valid quantifier) is a syntax error rather than a literal.
                 if (_unicode)
                     throw new RegexSyntaxException($"'{c}' must be escaped in Unicode mode", _pos);
+                // Annex B's ExtendedAtom :: InvalidBracedQuantifier (§B.1.2.1): a well-formed
+                // {n}, {n,} or {n,m} where an atom should be, as in /{2}/ or /a|{2}/, is a
+                // syntax error; only a '{' that opens no quantifier is a character.
+                if (c == '{' && HasQuantifier())
+                    throw new RegexSyntaxException("Nothing to repeat before '{'", _pos);
                 break;
         }
 

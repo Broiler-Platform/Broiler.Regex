@@ -113,6 +113,37 @@ public class AnnexBGrammarTests
         Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
+    [Theory]
+    // Annex B's ExtendedAtom :: InvalidBracedQuantifier (§B.1.2, an early error of §B.1.2.1): a well-formed braced
+    // quantifier where an atom should be is a syntax error outside Unicode mode as in it, not literal text.
+    // test262: language/literals/regexp/invalid-braced-quantifier-exact.js, -lower.js and -range.js.
+    [InlineData("{2}")]
+    [InlineData("{2,}")]
+    [InlineData("{2,3}")]
+    [InlineData("a|{2}")]
+    [InlineData("({2,3})")]
+    [InlineData("(?:{1})")]
+    [InlineData("a{2}{3}")]
+    [InlineData("a*{2}")]
+    [InlineData("a{2}?{3}")]
+    [InlineData("{3,2}")]
+    public void ABracedQuantifierWithNothingToRepeat_IsASyntaxError(string pattern)
+    {
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
+    }
+
+    [Theory]
+    // A brace that opens no well-formed quantifier stays an ExtendedPatternCharacter outside Unicode mode.
+    [InlineData("{a}")]
+    [InlineData("{,5}")]
+    [InlineData("{2")]
+    [InlineData("{2,")]
+    [InlineData("{2,a}")]
+    [InlineData("x{o}x")]
+    public void ABraceThatOpensNoQuantifier_IsLiteralText(string pattern)
+        => Assert.Equal(pattern, Match(pattern, "", pattern));
+
     [Fact(Timeout = 600000)]
     public void ABraceThatIsNotAQuantifierStillFollowsAnAssertion()
     {

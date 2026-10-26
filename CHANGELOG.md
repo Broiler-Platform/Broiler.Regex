@@ -122,6 +122,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `[[^\q{ab}--\q{ab}]]` are now each a `RegexSyntaxException`, which it accepted; `[^\q{\uD83D\u{DE00}}]`, two
   ClassSetCharacters, is one too (`0.1.0-preview.4` refused it as an invalid hexadecimal escape, the S10 entry above).
   `[^\p{RGI_Emoji}&&a]` and `[^a--\q{ab}]` stay accepted.
+- **A braced quantifier with nothing to repeat is a syntax error without `u` too (R5).** Annex B's
+  `ExtendedAtom :: InvalidBracedQuantifier` is an early error (ECMA-262 §B.1.2.1): a well-formed `{n}`, `{n,}` or
+  `{n,m}` where an atom should be, as in `/{2}/`, `/{2,}/`, `/a|{2}/`, `/({2,3})/` and `/x{1}{1,}/`, is a
+  `RegexSyntaxException` in every mode. `0.1.0-preview.4` read it as literal text outside Unicode mode. A `{` that
+  opens no well-formed quantifier, as in `/{a}/`, `/{,5}/` or `/x{o}x/`, is still a character there, and a quantified
+  look-ahead such as `/(?=a){2}/` is still accepted.
 
 ### Data
 
