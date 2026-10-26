@@ -37,7 +37,7 @@ public class CeilingTests
     }
 
     [Fact]
-    public void The_trail_ceiling_is_reached_one_cell_past_what_the_match_holds_ready_to_undo()
+    public void The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone()
     {
         // (a)* over "aa": each iteration writes its mark, clears group 1 (from the second on) and writes group 1's start
         // before its character: the first iteration three cells with its end, the second five, and the third four before
@@ -49,6 +49,27 @@ public class CeilingTests
         var m02 = Run("(?:(a)|b)*c", new string('a', 10_000) + "c", trail: 100);
         Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Trail), m02.Head());
         Assert.Equal("match 0,10001 9999,10000", Run("(?:(a)|b)*c", new string('a', 10_000) + "c").Answer);
+    }
+
+    [Fact]
+    public void A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration()
+    {
+        // The trail keeps every write that changes a register until the attempt ends, whether or not a choice is open:
+        // a{n} pushes no frame, but each iteration writes its mark and its count, and the count's start one more. Under
+        // the engines' ceilings of decision D10 that bounds a counted loop to 1,048,575 iterations; the old backend, the
+        // public members' until task 2.4c, matches past it.
+        const int most = (RegexMatchCeilings.EngineTrail - 1) / 2;
+        Assert.Equal(1_048_575, most);
+        var subject = new string('a', most + 1);
+        var program = TestProgram.Compile("(?:a){" + most + "}");
+        var slots = new int[program.SlotCount];
+        Assert.Equal(RegexStatus.Match, program.Match(subject, 0, true, slots, null, RegexMatchCeilings.Engines, out _, out _));
+        Assert.Equal([0, most], slots);
+
+        var past = TestProgram.Compile("a{" + (most + 1) + "}");
+        Assert.Equal(RegexStatus.LimitExceeded, past.Match(subject, 0, true, new int[past.SlotCount], null, RegexMatchCeilings.Engines, out var limit, out _));
+        Assert.Equal(RegexLimit.Trail, limit);
+        Assert.True(TestRegex.Compile("a{" + (most + 1) + "}").Match(subject).Success);
     }
 
     [Fact]

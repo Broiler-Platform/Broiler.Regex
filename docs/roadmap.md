@@ -272,6 +272,17 @@ atom-run folding; the literal-prefix prefilter), routes `BroilerRegex` through t
 `Matching/`, `Budget`, `StepLimit` and `RegexOverflowException`; the skipped theory of `NestingMaximumTests` runs then,
 and the corpus's rows O05 and O06, whose 10,000,001-character run passes the frame ceiling in the loop form, match then.
 
+**A bound the trail sets, for tasks 2.4b and 2.4c.** The trail keeps every write that changes a register until the
+attempt ends or backtracking undoes it, whether or not a choice is open, as Broiler.VM's does: the cells of a loop that
+holds no choice serve only the registers' reset when the attempt fails. A counted quantifier writes two an iteration
+whose body consumes (its mark and its count), so under D10's engine ceilings it runs at most 1,048,575 of them:
+`a{1048576}`, `(?:ab){1100000}` over as many repetitions and `(?:){2147483647}` on an empty subject answer
+`LimitExceeded` naming the trail where the old backend matches (or, for the last, answers no match where the
+specification answers an empty match). At the library's maximum trail the bound is 16,777,215 iterations. `CeilingTests`
+pins it. Task 2.4c, when it routes `BroilerRegex` through the new backend, either lists these answers as changed or
+makes a write with no frame pending leave no cell, resetting the registers another way at a failed start; task 2.4c's
+run instruction does not lift the bound for a body of more than one character.
+
 **The evidence.** Unit tests per instruction, per quantifier form and per ceiling; a test of the charging property of
 check A-1 with a recording meter over the corpus's declared inputs; a differential test of the two backends over every
 string literal of the test project in the subset (4,320 pattern and flag pairs and 251,884 cases at this record) and a seeded population

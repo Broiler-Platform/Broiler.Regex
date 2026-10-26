@@ -212,6 +212,16 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   rows the public matcher misses skipped until task 2.4c). The new backend's internal entry reads
   such a start forward from the low half, as a lone unit; the step back to the pair is its caller's,
   and task 2.4c's route through it takes the step and decides the index the public members report.
+- **The new backend's trail and a loop that holds no choice (task 2.4a).** The trail keeps every
+  register write of an attempt until the attempt ends, as Broiler.VM's does, a counted loop's
+  included when it holds no choice open: two cells an iteration that consumes, its mark and its
+  count. Under decision D10's engine ceilings a counted quantifier therefore runs at most 1,048,575,
+  and `a{1048576}` over as many characters answers `LimitExceeded` naming the trail where the public
+  matcher matches (at the library's maximum trail the bound is 16,777,215); `(?:){2147483647}` on an
+  empty subject answers the same, where the specification answers an empty match and the public
+  matcher no match. When task 2.4c routes the public members through the new backend, it lists the
+  answers that change or makes a write with no choice pending leave no cell (`CeilingTests` pins the
+  bound).
 - **The new backend's subset and its missing fast paths (task 2.4a).** Until task 2.4b, the internal
   backend answers "not yet supported" for `^ $ \b \B`, back-references, look-around, modifier groups,
   the `i` flag and `v`-mode classes of strings. Until task 2.4c it has no fast path: a greedy

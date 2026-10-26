@@ -36,9 +36,10 @@ namespace Broiler.Regex.Engine;
 /// <b>A frame</b> is three integers: the address to resume at, the position to resume from, and the trail's height when
 /// the frame was pushed. <b>A trail cell</b> is two: the register a write changed and the value it held. Backtracking
 /// pops the newest frame and undoes every write above its trail height, so the registers are what they were when the
-/// choice was made; a write that does not change its register records nothing. When an attempt at one start position
-/// fails, every write of the attempt has been undone, so the next position starts from registers that all read -1, with
-/// no reset of its own.
+/// choice was made; a write that does not change its register records nothing, and one that does records a cell even
+/// with no frame pending, where the cell serves only the reset below (so the trail ceiling bounds a loop that holds no
+/// choice too, <see cref="RegexMatchCeilings"/>'s remarks). When an attempt at one start position fails, every write of
+/// the attempt has been undone, so the next position starts from registers that all read -1, with no reset of its own.
 /// </para>
 /// <para>
 /// <b>Charging.</b> Before it dispatches an instruction the machine adds the instruction's cost to the units spent.

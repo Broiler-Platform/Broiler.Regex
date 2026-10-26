@@ -26,10 +26,16 @@ namespace Broiler.Regex.Engine;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Steps</b> are optional and counted in the units the meter is charged in (<see cref="RegexProgram"/>'s remarks):
-/// a call does at most that many, and an instruction that would take it past them is not dispatched. <b>Frames</b> are
-/// the choices a call holds open at once, <b>trail cells</b> the register writes it holds ready to undo; a call that would
-/// hold one more stops there.
+/// <b>Steps</b> are optional and counted in the units the meter is charged in (<see cref="RegexMachine"/>'s remarks,
+/// "Charging"): a call does at most that many, and an instruction that would take it past them is not dispatched.
+/// <b>Frames</b> are the choices a call holds open at once, <b>trail cells</b> the register writes that change a
+/// register and that backtracking has not undone, whether or not a choice was open when they were made: the cells of an
+/// attempt are kept until it ends, when they reset the registers for the next start. A call that would hold one more
+/// stops there. So a loop that holds no choice still fills the trail: a counted quantifier writes its iteration's mark
+/// and its count, two cells an iteration that consumes, and under the engines' ceilings <c>a{1048575}</c> matches where
+/// <c>a{1048576}</c> answers <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Trail"/>.
+/// Broiler.VM's trail keeps every write as well; the old backend, which the public members use until task 2.4c, matches
+/// past it.
 /// </para>
 /// <para>
 /// <b>The argument rules.</b> A ceiling below one is the caller's broken precondition, an
