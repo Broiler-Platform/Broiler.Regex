@@ -97,6 +97,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   only two four-digit escapes form a pair, so `\uD83D\u{DC38}` is a lone lead surrogate and a lone trail surrogate,
   two characters, and `\uD83D\u{41}` is accepted; `0.1.0-preview.4` refused every four-digit lead escape followed by
   `\u{` ("Invalid hexadecimal escape").
+- **A reference to an undeclared group name is refused by the parser (R5; row S5).** `\k<b>(?<a>x)`, under `u` or
+  without it, is a `RegexSyntaxException` at the reference from `RegexParser.Parse` alone, as ECMA-262 §22.2.1.1
+  requires; `0.1.0-preview.4` accepted it there and refused it only when the matcher was built, with no position. In a
+  pattern that declares a group name, Annex B's identity escapes exclude `k` (§B.1.2), so `[\k<a>](?<a>x)` is refused,
+  which `0.1.0-preview.4` read as a class holding `k`; without a group name and without `u` and `v`, `\k` is still the
+  letter.
 
 ### Data
 

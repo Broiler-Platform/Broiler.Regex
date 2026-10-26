@@ -50,9 +50,9 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 13 |
-| Code units | 333 |
+| Code units | 334 |
 | Relevant | 209 |
-| Exempt | 124 |
+| Exempt | 125 |
 | Assessed | 209 of 209 (100%) |
 | Human reviewed | 0 of 209 (0%) |
 | Unverified | 209 |
@@ -71,7 +71,7 @@ annotations and the current fingerprints; nothing stores them.
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 124 |
+| EXEMPT | 125 |
 
 ## 5. Aliases In The Tree
 
@@ -92,7 +92,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Matching/MatchState.cs` | 15 | 8 | 7 | 8 | Low | Medium | 8/0 |
 | `Broiler.Regex/Matching/Matcher.cs` | 63 | 44 | 19 | 44 | Low | High | 35/29 |
 | `Broiler.Regex/Matching/RegexMatch.cs` | 17 | 4 | 13 | 4 | None | Low | 2/0 |
-| `Broiler.Regex/Parsing/RegexParser.cs` | 78 | 61 | 17 | 61 | Low | High | 58/50 |
+| `Broiler.Regex/Parsing/RegexParser.cs` | 79 | 61 | 18 | 61 | Low | High | 58/50 |
 | `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
 | `Broiler.Regex/RegexOverflowException.cs` | 2 | 2 | 0 | 2 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
@@ -194,7 +194,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2
 - `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, RegexUnicode, out int, out IReadOnlyDictionary<string, int>)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `8FAF39`, PENDING
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
-- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `4FD255`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `A1C02A`, PENDING
   - Falsified if: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
 - `Broiler.Regex.Parsing.RegexParser.PreScan()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `83B68B`, PENDING
   - Falsified if: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
@@ -220,7 +220,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the i flag added by (?i:...) is still in effect after its ')', so a following v-mode class is case-folded
 - `Broiler.Regex.Parsing.RegexParser.ReadModifierFlags()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `54D512`, PENDING
   - Falsified if: a repeated modifier flag such as (?ii:a) is accepted instead of throwing
-- `Broiler.Regex.Parsing.RegexParser.ParseAtomEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `BEC6E7`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseAtomEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `9E5DC0`, PENDING
   - Falsified if: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ParseCharacterClass()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `8CA155`, PENDING
   - Falsified if: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
@@ -254,7 +254,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: it returns true for '-' or '|', or false for one of & ! # $ % * + , . : ; < = > ? @ ^ ` ~
 - `Broiler.Regex.Parsing.RegexParser.TryReadClassEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `4612E7`, PENDING
   - Falsified if: a letter other than d, D, w, W, s or S, such as b, is consumed as a class escape
-- `Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `ED633F`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `3F1AAA`, PENDING
   - Falsified if: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ReadLegacyOctalOrIdentity()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=none cited, `F85821`, PENDING
   - Falsified if: an octal escape above 0377, such as \400, is read as one code point greater than 0xFF instead of \40 followed by '0'

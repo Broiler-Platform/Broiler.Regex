@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   61
 // Annotated:        61/61
-// Exempt:           17
+// Exempt:           18
 // Human-reviewed:   0/61
 // IP risk:          Low
 // Security risk:    High
@@ -71,6 +71,12 @@ public sealed class RegexParser
     /// </summary>
     private bool _hasGroupNames;
 
+    /// <summary>
+    /// Every <c>\k&lt;name&gt;</c> the parse has read, with the position of its backslash: a reference may
+    /// precede its group, so whether the name is declared is decided once the whole pattern is read.
+    /// </summary>
+    private readonly List<(string Name, int Position)> _namedReferences = [];
+
     /// <summary>A parser of <paramref name="pattern"/> under <paramref name="flags"/>, reading its Unicode data from <paramref name="tables"/>.</summary>
     /// <param name="pattern">The pattern's source text.</param>
     /// <param name="flags">The pattern's flags.</param>
@@ -131,7 +137,7 @@ public sealed class RegexParser
         return node;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=4FD255
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=A1C02A
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
@@ -145,6 +151,15 @@ public sealed class RegexParser
         var node = ParseDisjunction();
         if (_pos != _src.Length)
             throw new RegexSyntaxException($"Unexpected '{_src[_pos]}' in pattern", _pos);
+
+        // §22.2.1.1: AtomEscape :: k GroupName is a syntax error when no GroupSpecifier of
+        // the pattern declares that name. The parser decides it, so a parse alone refuses
+        // \k<b>(?<a>x) as a compilation does.
+        foreach (var (name, position) in _namedReferences)
+        {
+            if (!_groupNames.ContainsKey(name))
+                throw new RegexSyntaxException("Reference to the undeclared group name '" + name + "'", position);
+        }
 
         CaptureCount = _captureCount;
         return node;
@@ -554,7 +569,7 @@ public sealed class RegexParser
 
     // ----- AtomEscape (outside a character class) -----------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=BEC6E7
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=9E5DC0
     // Broiler-Falsified-If: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
     // Broiler-Human:        PENDING
     private RegexNode ParseAtomEscape()
@@ -582,11 +597,13 @@ public sealed class RegexParser
         // as the identity escape `k`, so /\k<n>/ is the literal text "k<n>".
         if (c == 'k' && (_unicode || _hasGroupNames))
         {
+            var backslash = _pos - 1;
             _pos++;
             if (Peek() != '<')
                 throw new RegexSyntaxException("Expected '<' after \\k", _pos);
             _pos++;
             var name = ReadGroupName();
+            _namedReferences.Add((name, backslash));
             return new BackreferenceNode(name);
         }
 
@@ -1204,7 +1221,7 @@ public sealed class RegexParser
     }
 
     /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0 identity.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=ED633F
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=3F1AAA
     // Broiler-Falsified-If: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
     // Broiler-Human:        PENDING
     private int ReadCharacterEscape()
@@ -1239,8 +1256,15 @@ public sealed class RegexParser
             return c;
         }
 
+        // Annex B's IdentityEscape[+NamedCaptureGroups] excludes k (§B.1.2): in a pattern
+        // that declares a group name, \k is a GroupName reference, which no class holds,
+        // so [\k<a>](?<a>x) is a syntax error where [\k<a>] alone is a class of four letters.
+        // An atom's \k never reaches here in such a pattern; ParseAtomEscape reads it first.
+        if (!_unicode && c == 'k' && _hasGroupNames)
+            throw new RegexSyntaxException("\\k in a pattern that declares a group name must be a reference", _pos);
+
         // IdentityEscape: in Unicode mode only syntax characters and '/' may be
-        // escaped; outside Unicode mode any non-IdentifierPart char is allowed.
+        // escaped; outside Unicode mode any character but c (and k, above) may be.
         if (_unicode && !IsSyntaxChar(c) && c != '/')
             throw new RegexSyntaxException($"Invalid escape \\{c} in Unicode mode", _pos);
 
