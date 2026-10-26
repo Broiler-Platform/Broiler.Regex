@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   44
-// Annotated:        44/44
-// Exempt:           19
-// Human-reviewed:   0/44
+// Relevant units:   47
+// Annotated:        47/47
+// Exempt:           23
+// Human-reviewed:   0/47
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         35/29
+// Criteria:         36/29
 // Resource impact:  8/10 max
-// Unverified:       44
+// Unverified:       47
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Broiler.Regex.Ast;
+using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 
 namespace Broiler.Regex.Matching;
@@ -64,6 +65,13 @@ internal sealed class Matcher
     private readonly bool _sticky;
     private readonly IReadOnlyDictionary<string, int> _groupNames;
     private readonly RegexUnicode _data;
+
+    /// <summary>
+    /// The caller's nesting limit, which the walks of <see cref="Compile"/> and <see cref="CollectCaptureIndices"/>
+    /// check before they enter a body, as the parser did (decision D6).
+    /// </summary>
+    private readonly RegexNesting _nesting;
+
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C93794
     // Broiler-Human:        PENDING
     private const long StepLimit = 10_000_000;
@@ -86,13 +94,15 @@ internal sealed class Matcher
             (DotAll || (add & RegexFlags.DotAll) != 0) && (remove & RegexFlags.DotAll) == 0);
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=C1F96E
+    /// <exception cref="NestingLimitExceeded">The tree nests deeper than <paramref name="nesting"/>.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=B145AA
     // Broiler-Falsified-If: a pattern compiled with only the v flag matches '.' against one UTF-16 unit of a surrogate pair, because the matcher's Unicode mode stays off
     // Broiler-Human:        PENDING
     public Matcher(RegexNode root, int captureCount, RegexFlags flags,
-        IReadOnlyDictionary<string, int> groupNames, RegexUnicode data)
+        IReadOnlyDictionary<string, int> groupNames, RegexUnicode data, RegexNesting nesting)
     {
         _data = data;
+        _nesting = nesting;
         _captureCount = captureCount;
         _unicode = flags.IsUnicodeMode();
         _sticky = (flags & RegexFlags.Sticky) != 0;
@@ -192,66 +202,208 @@ internal sealed class Matcher
 
     // ----- Compilation --------------------------------------------------------
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=7DD78C
-    // Broiler-Falsified-If: a group nesting depth that the parser accepts overflows the native stack inside Compile, which has no TryEnsureSufficientExecutionStack check, instead of raising RegexOverflowException
+    /// <summary>One step of <see cref="Compile"/>'s walk of the tree.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=FC3678
     // Broiler-Human:        PENDING
-    private CompiledMatcher Compile(RegexNode node, Direction dir, Flags flags) => node switch
+    private enum StepKind
     {
-        EmptyNode => (s, c) => c(s),
-        CharNode ch => CompileChar(ch.CodePoint, dir, flags),
-        AnyCharNode => CompileAnyChar(dir, flags),
-        CharClassNode cls => CompileCharClass(cls.Set, dir, flags),
-        SequenceNode seq => CompileSequence(seq.Terms, dir, flags),
-        DisjunctionNode dis => CompileDisjunction(dis.Alternatives, dir, flags),
-        GroupNode grp => CompileGroup(grp, dir, flags),
-        ModifierGroupNode mod => Compile(mod.Child, dir, flags.With(mod.Added, mod.Removed)),
-        QuantifierNode q => CompileQuantifier(q, dir, flags),
-        BackreferenceNode br => CompileBackreference(br, dir, flags),
-        AnchorNode a => CompileAnchor(a.Kind, flags),
-        LookaroundNode la => CompileLookaround(la, flags),
-        _ => throw new InvalidOperationException($"Unhandled node {node.GetType().Name}"),
-    };
+        /// <summary>Compile a node: a leaf at once, any other after the steps for its children.</summary>
+        Visit,
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=3A255D
-    // Broiler-Falsified-If: a pattern of 100_000 consecutive \b assertions recurses once per term through the continuation chain and ends the process with a stack overflow instead of raising RegexOverflowException
+        /// <summary>A matcher already compiled, such as a run of atoms, handed on in its place among its siblings.</summary>
+        Value,
+
+        /// <summary>Build a node's matcher from its children's, which the steps before it left on the results.</summary>
+        Build,
+    }
+
+    /// <summary>A step of the walk: a node at its direction, flags and nesting depth.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=BA1E08
     // Broiler-Human:        PENDING
-    private CompiledMatcher CompileSequence(IReadOnlyList<RegexNode> terms, Direction dir, Flags flags)
+    private readonly record struct Step(StepKind Kind, RegexNode Node, Direction Dir, Flags Flags, int Depth, int Count = 0, CompiledMatcher? Value = null);
+
+    /// <summary>Compiles the tree <paramref name="root"/>, at nesting depth 1, to its matcher.</summary>
+    /// <remarks>
+    /// <para>
+    /// <b>No recursion.</b> The tree is walked in post-order on a work list of the heap: a node's children are
+    /// compiled first and their matchers left on a stack of results, from which the node's own matcher is built. So
+    /// compilation uses the same CLR stack at every depth of nesting, and the nesting maximum the library documents
+    /// (<see cref="BroilerRegex.MaximumNestingLimit"/>) is the parser's and the matcher's, not this walk's. Before it
+    /// enters a group's, a look-around's or a modifier's body the walk still checks the caller's nesting limit, as
+    /// the parser did (<see cref="RegexNesting"/>), so a tree the parser did not build cannot make it deeper.
+    /// </para>
+    /// <para>
+    /// <b>The quantifier's fast path.</b> A body that consumes exactly one code point, sets no captures and matches at
+    /// most one way at each position (a literal character, <c>.</c> or a class without strings) repeats
+    /// deterministically, so its repetition is a linear scan with an index-based backtrack: the common quantifier
+    /// (<c>.*</c>, <c>\d+</c>, <c>[^"]*</c>), which avoids the general driver's per-match re-execution.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="NestingLimitExceeded">The tree nests deeper than the caller's limit.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=7AAEA8
+    // Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, or a group's, a look-around's or a modifier's body is entered without checking the caller's nesting limit, or /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body took the single-code-point fast path
+    // Broiler-Human:        PENDING
+    private CompiledMatcher Compile(RegexNode root, Direction rootDir, Flags rootFlags)
     {
-        // Fold a maximal run of two or more single-code-point atoms (a literal substring,
-        // an atom run like `\d\d/`) into one deterministic matcher that checks them in a
-        // loop — no per-term continuation closure and no per-character state, where the CPS
-        // chain would allocate one closure per term on every invocation. Forward only:
-        // look-behind reverses term order and is rare, so it keeps the simple chain.
-        var built = new List<CompiledMatcher>(terms.Count);
-        var t = 0;
-        while (t < terms.Count)
+        var steps = new Stack<Step>();
+        var results = new Stack<CompiledMatcher>();
+        steps.Push(new Step(StepKind.Visit, root, rootDir, rootFlags, Depth: 1));
+
+        while (steps.Count > 0)
         {
-            if (dir == Direction.Forward && TryGetSingleCharPredicate(terms[t], flags, out var p0))
+            var step = steps.Pop();
+            var (node, dir, flags, depth) = (step.Node, step.Dir, step.Flags, step.Depth);
+            if (step.Kind == StepKind.Value)
             {
-                var run = new List<CharPredicate> { p0 };
-                var j = t + 1;
-                while (j < terms.Count && TryGetSingleCharPredicate(terms[j], flags, out var pj))
-                {
-                    run.Add(pj);
-                    j++;
-                }
-                if (run.Count == 1)
-                    built.Add(Compile(terms[t], dir, flags));
-                else
-                    built.Add(CompileAtomRun([.. run]));
-                t = j;
+                results.Push(step.Value!);
+                continue;
             }
-            else
+
+            if (step.Kind == StepKind.Build)
             {
-                built.Add(Compile(terms[t], dir, flags));
-                t++;
+                results.Push(Build(step, results));
+                continue;
+            }
+
+            switch (node)
+            {
+                case EmptyNode:
+                    results.Push(static (s, c) => c(s));
+                    break;
+                case CharNode ch:
+                    results.Push(CompileChar(ch.CodePoint, dir, flags));
+                    break;
+                case AnyCharNode:
+                    results.Push(CompileAnyChar(dir, flags));
+                    break;
+                case CharClassNode cls:
+                    results.Push(CompileCharClass(cls.Set, dir, flags));
+                    break;
+                case BackreferenceNode br:
+                    results.Push(CompileBackreference(br, dir, flags));
+                    break;
+                case AnchorNode a:
+                    results.Push(CompileAnchor(a.Kind, flags));
+                    break;
+                case SequenceNode seq:
+                {
+                    // A run of two or more single-code-point atoms is one matcher, handed on in its first term's place.
+                    var runs = AtomRuns(seq.Terms, dir, flags);
+                    var items = new List<Step>(seq.Terms.Count);
+                    for (var t = 0; t < seq.Terms.Count; t++)
+                    {
+                        if (runs[t] is { } run)
+                        {
+                            items.Add(new Step(StepKind.Value, seq.Terms[t], dir, flags, depth, Value: CompileAtomRun(run)));
+                            t += run.Length - 1;
+                        }
+                        else
+                        {
+                            items.Add(new Step(StepKind.Visit, seq.Terms[t], dir, flags, depth));
+                        }
+                    }
+
+                    steps.Push(step with { Kind = StepKind.Build, Count = items.Count });
+                    for (var i = items.Count - 1; i >= 0; i--)
+                        steps.Push(items[i]);
+                    break;
+                }
+                case DisjunctionNode dis:
+                    steps.Push(step with { Kind = StepKind.Build, Count = dis.Alternatives.Count });
+                    for (var i = dis.Alternatives.Count - 1; i >= 0; i--)
+                        steps.Push(new Step(StepKind.Visit, dis.Alternatives[i], dir, flags, depth));
+                    break;
+                case GroupNode grp:
+                    steps.Push(step with { Kind = StepKind.Build, Count = 1 });
+                    steps.Push(new Step(StepKind.Visit, grp.Child, dir, flags, _nesting.Descend(depth, -1)));
+                    break;
+                case ModifierGroupNode mod:
+                    // The body's matcher is the group's: only the flags it compiles under change.
+                    steps.Push(new Step(StepKind.Visit, mod.Child, dir, flags.With(mod.Added, mod.Removed), _nesting.Descend(depth, -1)));
+                    break;
+                case QuantifierNode q when TryGetSingleCharPredicate(q.Child, flags, out var predicate):
+                    results.Push(CompileSingleCharQuantifier(predicate, q.Min, q.Max, q.Greedy, dir));
+                    break;
+                case QuantifierNode q:
+                    steps.Push(step with { Kind = StepKind.Build, Count = 1 });
+                    steps.Push(new Step(StepKind.Visit, q.Child, dir, flags, depth));
+                    break;
+                case LookaroundNode la:
+                    steps.Push(step with { Kind = StepKind.Build, Count = 1 });
+                    steps.Push(new Step(StepKind.Visit, la.Child, la.Behind ? Direction.Backward : Direction.Forward, flags, _nesting.Descend(depth, -1)));
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unhandled node {node.GetType().Name}");
             }
         }
 
-        var matchers = built.ToArray();
+        return results.Pop();
+    }
 
-        // Forward: apply left-to-right. Backward (look-behind): apply right-to-left
-        // — the spec composes Alternative terms in reverse under direction −1.
+    /// <summary>
+    /// The matcher of a sequence, an alternation, a group, a general quantifier or a look-around, from the matchers
+    /// of its <see cref="Step.Count"/> children, which the walk left on <paramref name="results"/> in order.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=E47432
+    // Broiler-Falsified-If: a sequence's or an alternation's children are taken in reverse order, so /ab/ matches 'ba' or /a|ab/ on 'ab' matches 'ab'
+    // Broiler-Human:        PENDING
+    private CompiledMatcher Build(Step step, Stack<CompiledMatcher> results)
+    {
+        var children = new CompiledMatcher[step.Count];
+        for (var i = children.Length - 1; i >= 0; i--)
+            children[i] = results.Pop();
+
+        return step.Node switch
+        {
+            SequenceNode => Chain(children, step.Dir),
+            DisjunctionNode => Alternation(children),
+            GroupNode grp => CompileGroup(grp, step.Dir, children[0]),
+            QuantifierNode q => CompileGeneralQuantifier(children[0], CollectCaptureIndices(q.Child, step.Depth), q.Min, q.Max, q.Greedy),
+            LookaroundNode la => CompileLookaround(la, children[0]),
+            _ => throw new InvalidOperationException("A node without children was built"),
+        };
+    }
+
+    /// <summary>
+    /// For each term that starts a maximal forward run of two or more single-code-point atoms, the run's predicates;
+    /// null for every other term, and for every term of a backward sequence.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=3; Fingerprint=559E91
+    // Broiler-Falsified-If: a lone single-code-point atom between two groups is given a run of its own, or a run is reported for a look-behind's sequence
+    // Broiler-Human:        PENDING
+    private CharPredicate[]?[] AtomRuns(IReadOnlyList<RegexNode> terms, Direction dir, Flags flags)
+    {
+        var runs = new CharPredicate[]?[terms.Count];
+        if (dir != Direction.Forward)
+            return runs;
+
+        var t = 0;
+        while (t < terms.Count)
+        {
+            var run = new List<CharPredicate>();
+            var j = t;
+            while (j < terms.Count && TryGetSingleCharPredicate(terms[j], flags, out var predicate))
+            {
+                run.Add(predicate);
+                j++;
+            }
+            if (run.Count >= 2)
+                runs[t] = [.. run];
+            t = Math.Max(j, t + 1);
+        }
+
+        return runs;
+    }
+
+    /// <summary>
+    /// The matcher of a sequence of compiled terms: forward, applied left to right; backward (inside a look-behind),
+    /// right to left, as the specification composes an Alternative's terms under direction −1.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=AAFADF
+    // Broiler-Falsified-If: a backward sequence applies its terms left to right, so /(?<=(\d+)(\d+))$/ on '1053' reports groups other than '1' and '053'
+    // Broiler-Human:        PENDING
+    private static CompiledMatcher Chain(CompiledMatcher[] matchers, Direction dir)
+    {
         var order = dir == Direction.Forward
             ? matchers
             : Reverse(matchers);
@@ -307,15 +459,19 @@ internal sealed class Matcher
         return copy;
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=3D9C19
-    // Broiler-Falsified-If: a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
+    /// <summary>The matcher that tries each alternative's matcher in order, answering the first that matches.</summary>
+    /// <remarks>
+    /// <b>A defect it has today.</b> Trying an alternative charges no step of the run's <c>Budget</c>, so outside a
+    /// quantifier nothing bounds the alternatives a failing match backtracks through: n copies of <c>(?:a|a)</c>
+    /// followed by <c>b</c>, run on n <c>a</c> characters, explore about 2^n paths, and the time doubles with each copy
+    /// (on linux-x64 in Release, 24 copies take 1.3 s and 28 copies 19 s). The new matcher's meter, which charges every
+    /// instruction it dispatches (task 2.4a, requirement R1), bounds it; the package README records it.
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=73E749
+    // Broiler-Falsified-If: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'; or, as it does today until task 2.4a's meter, a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
     // Broiler-Human:        PENDING
-    private CompiledMatcher CompileDisjunction(IReadOnlyList<RegexNode> alts, Direction dir, Flags flags)
+    private static CompiledMatcher Alternation(CompiledMatcher[] matchers)
     {
-        var matchers = new CompiledMatcher[alts.Count];
-        for (var i = 0; i < alts.Count; i++)
-            matchers[i] = Compile(alts[i], dir, flags);
-
         return (s, c) =>
         {
             foreach (var m in matchers)
@@ -328,12 +484,11 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=C2F071
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=FD28DF
     // Broiler-Falsified-If: /(?<=(ab))c/ on 'abc' reports group 1 with an index other than 0 or a length other than 2
     // Broiler-Human:        PENDING
-    private CompiledMatcher CompileGroup(GroupNode group, Direction dir, Flags flags)
+    private static CompiledMatcher CompileGroup(GroupNode group, Direction dir, CompiledMatcher inner)
     {
-        var inner = Compile(group.Child, dir, flags);
         if (!group.IsCapturing)
             return inner;
 
@@ -351,28 +506,6 @@ internal sealed class Matcher
                 return c(y.WithCapture(index, lo, hi));
             });
         };
-    }
-
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=5A1D52
-    // Broiler-Falsified-If: /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body was routed to the single-code-point fast path
-    // Broiler-Human:        PENDING
-    private CompiledMatcher CompileQuantifier(QuantifierNode q, Direction dir, Flags flags)
-    {
-        var min = q.Min;
-        var max = q.Max;
-        var greedy = q.Greedy;
-
-        // Iterative fast path: a body that consumes exactly one code point, sets no
-        // captures, and matches at most one way at each position — a literal char, `.`,
-        // or a character class — repeats deterministically, so its repetition is a linear
-        // scan with an index-based backtrack. This is the common quantifier (`.*`, `\d+`,
-        // `[^"]*`); it avoids the general driver's per-match re-execution entirely.
-        if (TryGetSingleCharPredicate(q.Child, flags, out var predicate))
-            return CompileSingleCharQuantifier(predicate, min, max, greedy, dir);
-
-        var inner = Compile(q.Child, dir, flags);
-        var capIndices = CollectCaptureIndices(q.Child);
-        return CompileGeneralQuantifier(inner, capIndices, min, max, greedy);
     }
 
     /// <summary>
@@ -773,13 +906,11 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=60FAD8
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=A0AE04
     // Broiler-Falsified-If: a positive look-behind leaves the cursor where its body ended, so /(?<=ab)c/ fails on 'abc' or reports a match index other than 2
     // Broiler-Human:        PENDING
-    private CompiledMatcher CompileLookaround(LookaroundNode la, Flags flags)
+    private static CompiledMatcher CompileLookaround(LookaroundNode la, CompiledMatcher inner)
     {
-        var dir = la.Behind ? Direction.Backward : Direction.Forward;
-        var inner = Compile(la.Child, dir, flags);
         var negative = la.Negative;
 
         return (s, c) =>
@@ -1019,33 +1150,39 @@ internal sealed class Matcher
         return (c, 1);
     }
 
-    /// <summary>Collects the 1-based capture indices contained in a subtree.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=5; Fingerprint=E2E354
+    /// <summary>
+    /// Collects the 1-based capture indices contained in a subtree at <paramref name="depth"/>, entering each body under
+    /// the caller's nesting limit as <see cref="Compile"/> does.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=5; Fingerprint=FEE31F
     // Broiler-Falsified-If: /(?:(a)|b)+/ on 'ab' reports group 1 as 'a' instead of unmatched, because the group is missing from the indices the quantifier resets
     // Broiler-Human:        PENDING
-    private static int[] CollectCaptureIndices(RegexNode node)
+    private int[] CollectCaptureIndices(RegexNode node, int depth)
     {
+        // A walk in source order on a work list of the heap, not the CLR stack (see Compile).
         var list = new List<int>();
-        void Walk(RegexNode n)
+        var pending = new Stack<(RegexNode Node, int Depth)>();
+        pending.Push((node, depth));
+        while (pending.Count > 0)
         {
+            var (n, d) = pending.Pop();
             switch (n)
             {
                 case GroupNode g:
                     if (g.IsCapturing) list.Add(g.CaptureIndex);
-                    Walk(g.Child);
+                    pending.Push((g.Child, _nesting.Descend(d, -1)));
                     break;
-                case ModifierGroupNode m: Walk(m.Child); break;
-                case QuantifierNode q: Walk(q.Child); break;
-                case LookaroundNode la: Walk(la.Child); break;
+                case ModifierGroupNode m: pending.Push((m.Child, _nesting.Descend(d, -1))); break;
+                case QuantifierNode q: pending.Push((q.Child, d)); break;
+                case LookaroundNode la: pending.Push((la.Child, _nesting.Descend(d, -1))); break;
                 case SequenceNode seq:
-                    foreach (var t in seq.Terms) Walk(t);
+                    for (var i = seq.Terms.Count - 1; i >= 0; i--) pending.Push((seq.Terms[i], d));
                     break;
-                case DisjunctionNode d:
-                    foreach (var a in d.Alternatives) Walk(a);
+                case DisjunctionNode dis:
+                    for (var i = dis.Alternatives.Count - 1; i >= 0; i--) pending.Push((dis.Alternatives[i], d));
                     break;
             }
         }
-        Walk(node);
         return [.. list];
     }
 }

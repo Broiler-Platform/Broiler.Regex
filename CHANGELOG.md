@@ -41,6 +41,29 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - CI jobs for the architecture tests, the probe and the assurance check (Broiler.Code's
     `assurance check --root Broiler.RegEx`).
   - `.gitattributes`, which stores every text file with LF line endings.
+- **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
+  `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
+  compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
+  `LimitExceeded` with `RegexLimit.Nesting` when the pattern nests deeper, checked before each descent of the parser
+  and of the compiler. Depth is counted as Broiler.VM's matcher counts it: the pattern is depth 1, each group of any
+  kind adds 1, and under `v` each class adds 1. `BroilerRegex.MaximumNestingLimit` (512) is the largest limit a
+  caller may pass, chosen from a measurement of the stack each shape of nesting costs on a 1 MiB thread that its
+  documentation records, and proven there on linux-x64 for the parser and the compiler: a pattern of every shape
+  measured, at the maximum, parses and compiles on a 1 MiB thread under the JIT (`NestingMaximumTests`) and in the
+  Native AOT probe, which now runs its population on a thread of that stack, and one level past it is refused with the
+  nesting status. Matching at the maximum is proven only for the shapes `NestingMaximumTests.MatchedShapes` lists; the
+  matcher's continuations recurse until task 2.4a, and the shapes found to exhaust the stack at match time are listed,
+  with the depths they fail at, in the package README's known limitations. win-x64 was not measured. The constant is
+  never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
+  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
+  nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
+  `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
+  and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match will answer
+  `Match` or `NoMatch` instead. A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature of
+  `Compile` is provisional**, and no published version carries it: task 2.5 replaces it to take the caller's compile
+  meter, a nullable `RegexWorkCharge` (convention 4), and D9's syntax status needs room for a code, a message identifier
+  and a position. The plan gives that status to the validate entry of task 2.8 and names no task that moves
+  `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for `0.2.0-preview.1`, holds that open.
 
 ### Changed
 
@@ -72,9 +95,38 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     needs the compilation's provider answers.
   - A provider of another Unicode version, or one lacking a table the algorithms read, is refused with an
     `ArgumentException` when a pattern is compiled, and a null provider with an `ArgumentNullException`.
+- **A `CodePointSet` is immutable after construction (R10: conventions 7 and 10; task 2.3, decision D31).** A set's
+  ranges are sorted and merged when it is built, and nothing changes them after; every operation answers a new set,
+  and `Union` is one pass over the two sorted range lists. `0.1.0-preview.4`'s set was a list that its readers sorted
+  and merged in place on their first read, without a lock, so a set shared by concurrent matches, or held in one of
+  the library's static fields (`UnicodeCharSets`' internal `FullRange`, `DigitSet` and `BasicWordSet`), was rewritten
+  by whichever thread read it first. The breaks are suppressed in `Broiler.Regex/CompatibilitySuppressions.xml` and
+  listed in [`docs/suppressions.md`](docs/suppressions.md):
+  - `CodePointSet.AddCodePoint`, `AddRange` and `AddAll` are removed: each could only change a set. `Of` and
+    `Union` build the same sets, and `CharSet`'s adders still add to a class, each now making a new set.
+  - `CodePointSet.Clone` answers the set itself, which cannot change; `Ranges` is a list that cannot be changed,
+    where `0.1.0-preview.4` handed out the set's own list. `Of` with its bounds out of order still throws
+    `ArgumentException`.
+- **`RegexMatch.Empty` holds nothing that can change (R10: convention 7; task 2.3).** The no-match result every call
+  without a match answers kept its `NamedGroups` as a new `Dictionary` behind `IReadOnlyDictionary`, which a cast
+  changed for every later no-match of the process. It is now the empty `ReadOnlyDictionary`, so the cast fails and an
+  `IDictionary` write throws `NotSupportedException`; `Groups` stays an empty array. No signature changes.
+- **A compiled pattern's group names cannot be changed (R10: convention 10; task 2.3).** `BroilerRegex.GroupNames`
+  and `RegexParser.GroupNames` were the parser's own `Dictionary` behind `IReadOnlyDictionary`, and the matcher read the
+  same instance on every match, so a cast changed the names every later match of that pattern reports, on any thread.
+  Both are now a `ReadOnlyDictionary` view of a map nothing else holds: a cast to `IDictionary` reports `IsReadOnly`, and
+  a write throws `NotSupportedException`. No signature changes.
 
 ### Observable changes
 
+- **A pattern nested deeper than depth 512 is refused (R4; task 2.3, decision D6)**: more than 511 nested groups, or
+  under `v` more than 511 nested classes, the pattern itself being depth 1. The constructors of
+  `BroilerRegex` and `RegexParser.Parse`, which take no limit, parse under `BroilerRegex.MaximumNestingLimit` and
+  refuse a deeper pattern with a `RegexSyntaxException` at the group or class that opens the level past it.
+  `0.1.0-preview.4` parsed and compiled whatever its stack held and ended the process with a stack overflow past it:
+  on a 1 MiB thread, at a few hundred levels for some shapes, and on any stack for a pattern such as 1,000,000 opening
+  parentheses. A pattern within the maximum compiles and matches as before, and its match can still exhaust a small
+  stack for the shapes the README lists, until task 2.4a.
 - **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
   tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
   provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`

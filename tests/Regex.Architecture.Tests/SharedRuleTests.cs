@@ -135,9 +135,13 @@ public class SharedRuleTests
         Assert.Contains(library.StaticFields, static f => f.Type == "Broiler.Regex.Ast.EmptyNode" && f.Name == "Instance" && f.IsReadOnly);
         Assert.DoesNotContain(SharedRules.SL2(library), static v => v.Contains("EmptyNode.Instance", StringComparison.Ordinal));
 
-        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result is built from a new
-        // dictionary that its read-only NamedGroups interface hides.
-        Assert.Contains("System.Collections.Generic.Dictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>", library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
+        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result holds the empty
+        // read-only dictionary that ReadOnlyDictionary.Empty returns behind its NamedGroups interface, which SL2 reads
+        // and passes (the type is the getter's return type as its signature names it, over the class's own type
+        // parameters). Until task 2.3 it held a new Dictionary there, and SL2 refused the field.
+        Assert.Equal(
+            ["System.Collections.ObjectModel.ReadOnlyDictionary`2<!0,!1>"],
+            library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
     }
 
     [Fact]
@@ -234,6 +238,26 @@ public class SharedRuleTests
         Assert.Equal(
             ["Broiler.Regex.Matching.Matcher.IdentityContinuation is typed Broiler.Regex.Matching.Matcher+Continuation, a delegate, whose target SL2 does not read"],
             SharedRules.SL2DeclaredTypeGap(Assemblies[Library]));
+    }
+
+    /// <summary>
+    /// Every <c>CodePointSet</c> is immutable after construction (convention 10, decision D31), read as SL2 reads the
+    /// objects its static fields hold: no instance field that is not readonly, none of a mutable collection or array
+    /// type, and none holding a class of the library's that can change, in the class or a base class it declares.
+    /// SL2 reaches a set only through a static field that holds one; this reads the class itself, so the check holds
+    /// for the sets a compiled pattern keeps per instance, which the register's third stated limit leaves to check A-11,
+    /// whatever the library's static fields hold. <c>FirstUseConcurrencyTests</c> reads the static sets' ranges.
+    /// </summary>
+    [Fact]
+    public void SL2_A_code_point_set_has_no_instance_field_that_can_change_after_construction()
+    {
+        const string Set = "Broiler.Regex.Ast.CodePointSet";
+        var library = Assemblies[Library];
+        Assert.Empty(SharedRules.MutableInstanceState(library, Set));
+
+        // Not vacuous: the class is the library's and the reading saw its field, the ranges.
+        Assert.Contains(Set, library.Classes);
+        Assert.Contains(library.InstanceFields, static f => f.Type == Set && f.Name == "_ranges" && f.IsReadOnly);
     }
 
     // ---------------------------------------------------------------------------------------------

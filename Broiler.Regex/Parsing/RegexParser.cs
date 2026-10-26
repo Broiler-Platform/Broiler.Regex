@@ -3,19 +3,20 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   61
-// Annotated:        61/61
-// Exempt:           19
-// Human-reviewed:   0/61
+// Relevant units:   64
+// Annotated:        64/64
+// Exempt:           21
+// Human-reviewed:   0/64
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         58/50
+// Criteria:         60/51
 // Resource impact:  7/10 max
-// Unverified:       61
+// Unverified:       64
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
@@ -41,6 +42,12 @@ public sealed class RegexParser
     private int _pos;
     private int _captureCount;
 
+    /// <summary>The caller's nesting limit, checked before each descent (convention 5, decision D6).</summary>
+    private readonly RegexNesting _nesting;
+
+    /// <summary>The depth of the level the cursor is in: the pattern's own Disjunction is 1 (<see cref="RegexNesting"/>).</summary>
+    private int _depth = 1;
+
     /// <summary>
     /// <c>AllCharacters</c> under <c>v</c> with <c>i</c>, built from the provider the first time a complement
     /// needs it and kept for the rest of this parse.
@@ -59,9 +66,18 @@ public sealed class RegexParser
     public int CaptureCount { get; private set; }
 
     /// <summary>Map of group name → 1-based capture index, available after parsing.</summary>
-    public IReadOnlyDictionary<string, int> GroupNames => _groupNames;
+    /// <remarks>
+    /// A read-only view of the parser's own map, which nothing else holds: a cast to <c>IDictionary</c> admits no
+    /// write, so the compiled pattern that keeps it, and its matcher, which reads it on every match, cannot be changed
+    /// through it (convention 10).
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=3C8667
+    // Broiler-Falsified-If: a cast of GroupNames to IDictionary admits a write, so Clear empties the names a compiled pattern's later matches report
+    // Broiler-Human:        PENDING
+    public IReadOnlyDictionary<string, int> GroupNames => _groupNamesView;
 
     private readonly Dictionary<string, int> _groupNames = [];
+    private readonly ReadOnlyDictionary<string, int> _groupNamesView;
     private int _totalCaptureGroups;
 
     /// <summary>
@@ -83,23 +99,25 @@ public sealed class RegexParser
     /// <param name="tables">The Unicode owner's tables (requirement R11), of the version the provider's algorithms read.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=B06E84
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=0F5AC3
     // Broiler-Human:        PENDING
     public RegexParser(string pattern, RegexFlags flags, IUnicodeTables tables)
-        : this(pattern, flags, new RegexUnicode(tables))
+        : this(pattern, flags, new RegexUnicode(tables), new RegexNesting(BroilerRegex.MaximumNestingLimit))
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=BD04EC
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=BF48C1
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
-    internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data)
+    internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
     {
         _src = pattern ?? "";
         _unicode = flags.IsUnicodeMode();
         _unicodeSets = (flags & RegexFlags.UnicodeSets) != 0;
         _data = data;
+        _nesting = nesting;
         _ignoreCase.Push((flags & RegexFlags.IgnoreCase) != 0);
+        _groupNamesView = new ReadOnlyDictionary<string, int>(_groupNames);
     }
 
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2
@@ -115,22 +133,38 @@ public sealed class RegexParser
     /// <param name="flags">The pattern's flags.</param>
     /// <param name="tables">The Unicode owner's tables (requirement R11), of the version the provider's algorithms read.</param>
     /// <param name="captureCount">The number of capturing groups.</param>
-    /// <exception cref="RegexSyntaxException">The pattern is not a <c>Pattern</c> under the flags, or breaks an early error.</exception>
+    /// <remarks>
+    /// The parse descends under <see cref="BroilerRegex.MaximumNestingLimit"/>, and refuses a pattern nested deeper as
+    /// it refuses every pattern it does not read: with a <see cref="RegexSyntaxException"/> at the group or class that
+    /// opens the level past it. <see cref="BroilerRegex.Compile"/> takes the caller's limit and answers a status.
+    /// </remarks>
+    /// <exception cref="RegexSyntaxException">The pattern is not a <c>Pattern</c> under the flags, breaks an early error, or nests deeper than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=F57D3C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=2D8D8D
     // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2
     // Broiler-Human:        PENDING
     public static RegexNode Parse(string pattern, RegexFlags flags, IUnicodeTables tables, out int captureCount)
-        => Parse(pattern, flags, new RegexUnicode(tables), out captureCount, out _);
+    {
+        var data = new RegexUnicode(tables);
+        try
+        {
+            return Parse(pattern, flags, data, new RegexNesting(BroilerRegex.MaximumNestingLimit), out captureCount, out _);
+        }
+        catch (NestingLimitExceeded refusal)
+        {
+            throw RegexNesting.AsSyntaxError(refusal);
+        }
+    }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=8FAF39
+    /// <exception cref="NestingLimitExceeded">The pattern nests deeper than <paramref name="nesting"/>.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=47A0F9
     // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
     // Broiler-Human:        PENDING
-    internal static RegexNode Parse(string pattern, RegexFlags flags, RegexUnicode data, out int captureCount,
-        out IReadOnlyDictionary<string, int> groupNames)
+    internal static RegexNode Parse(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
+        out int captureCount, out IReadOnlyDictionary<string, int> groupNames)
     {
-        var parser = new RegexParser(pattern, flags, data);
+        var parser = new RegexParser(pattern, flags, data, nesting);
         var node = parser.ParsePattern();
         captureCount = parser.CaptureCount;
         groupNames = parser.GroupNames;
@@ -279,7 +313,7 @@ public sealed class RegexParser
     /// Parses an assertion, reporting through <paramref name="quantifiable"/> whether
     /// Annex B admits a quantifier after it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=20003E
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=51533B
     // Broiler-Falsified-If: 100,000 nested '(?=' look-aheads exhaust the native stack instead of raising a catchable exception
     // Broiler-Human:        PENDING
     private RegexNode? TryParseAssertion(out bool quantifiable)
@@ -305,18 +339,24 @@ public sealed class RegexParser
             var third = PeekAt(2);
             if (third is '=' or '!')
             {
+                var open = _pos;
                 _pos += 3;
+                Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
+                Ascend();
                 quantifiable = true;
                 return new LookaroundNode(body, behind: false, negative: third == '!');
             }
             if (third == '<' && PeekAt(3) is '=' or '!')
             {
                 var negative = PeekAt(3) == '!';
+                var open = _pos;
                 _pos += 4;
+                Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
+                Ascend();
                 return new LookaroundNode(body, behind: true, negative: negative);
             }
         }
@@ -468,7 +508,7 @@ public sealed class RegexParser
         return new CharNode(cp);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=6A0F04
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1B81BA
     // Broiler-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
     // Broiler-Human:        PENDING
     private RegexNode ParseGroup()
@@ -481,9 +521,12 @@ public sealed class RegexParser
             // Non-capturing (?:…)
             if (second == ':')
             {
+                var open = _pos - 1;
                 _pos += 2;
+                Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
+                Ascend();
                 return new GroupNode(body, captureIndex: 0, name: null);
             }
 
@@ -500,8 +543,10 @@ public sealed class RegexParser
                 // cannot both participate is requirement R6's, which this parser does not yet admit.
                 if (!_groupNames.TryAdd(name, index))
                     throw new RegexSyntaxException("Duplicate capture group name '" + name + "'", open);
+                Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
+                Ascend();
                 return new GroupNode(body, index, name);
             }
 
@@ -514,16 +559,19 @@ public sealed class RegexParser
 
         // Plain capturing group
         var captureIndex = ++_captureCount;
+        Descend(_pos - 1);
         var child = ParseDisjunction();
         Expect(')');
+        Ascend();
         return new GroupNode(child, captureIndex, null);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=9481DC
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=FE26C3
     // Broiler-Falsified-If: the i flag added by (?i:...) is still in effect after its ')', so a following v-mode class is case-folded
     // Broiler-Human:        PENDING
     private RegexNode ParseModifierGroup()
     {
+        var open = _pos - 1;
         _pos++; // consume '?'
         var added = ReadModifierFlags();
         var removed = RegexFlags.None;
@@ -539,11 +587,13 @@ public sealed class RegexParser
             throw new RegexSyntaxException("A modifier flag may not be both added and removed", _pos);
 
         Expect(':');
+        Descend(open);
         _ignoreCase.Push(
             (IgnoreCase || (added & RegexFlags.IgnoreCase) != 0) && (removed & RegexFlags.IgnoreCase) == 0);
         var body = ParseDisjunction();
         _ignoreCase.Pop();
         Expect(')');
+        Ascend();
         return new ModifierGroupNode(body, added, removed);
     }
 
@@ -644,7 +694,7 @@ public sealed class RegexParser
 
     // ----- Character class [ ... ] -------------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=8CA155
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=91F138
     // Broiler-Falsified-If: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
     // Broiler-Human:        PENDING
     private CharSet ParseCharacterClass()
@@ -660,6 +710,9 @@ public sealed class RegexParser
             _pos++;
         }
 
+        // The members are gathered and the class's set is built once, at the ']': adding them to the class one
+        // by one would make a new set per member.
+        var members = new CodePointSet.Builder();
         while (true)
         {
             if (AtEnd)
@@ -669,10 +722,11 @@ public sealed class RegexParser
             if (c == ']')
             {
                 _pos++;
+                set.AddSet(members.ToSet());
                 return set;
             }
 
-            var first = ReadClassAtom(set, out var firstIsLiteral);
+            var first = ReadClassAtom(set, members, out var firstIsLiteral);
 
             // A range "a-z": only when '-' is followed by another class atom rather than
             // by the closing ']'.
@@ -680,10 +734,11 @@ public sealed class RegexParser
             {
                 var dash = _pos;
                 _pos++; // consume '-'
-                var second = ReadClassAtom(set, out var secondIsLiteral);
+                var second = ReadClassAtom(set, members, out var secondIsLiteral);
                 if (firstIsLiteral && secondIsLiteral)
                 {
-                    set.AddRange(first, second);
+                    CharSet.CheckRange(first, second);
+                    members.AddRange(first, second);
                 }
                 else if (_unicode)
                 {
@@ -696,27 +751,27 @@ public sealed class RegexParser
                 else
                 {
                     if (firstIsLiteral)
-                        set.AddCodePoint(first);
-                    set.AddCodePoint('-');
+                        members.Add(first);
+                    members.Add('-');
                     if (secondIsLiteral)
-                        set.AddCodePoint(second);
+                        members.Add(second);
                 }
             }
             else if (firstIsLiteral)
             {
-                set.AddCodePoint(first);
+                members.Add(first);
             }
         }
     }
 
     /// <summary>
-    /// Reads one class atom. Adds class escapes (\d…) directly to <paramref name="set"/>
-    /// and returns their sentinel as a non-literal; returns a literal code point otherwise.
+    /// Reads one class atom. Adds a class escape (\d…) to <paramref name="members"/>, and a property escape to
+    /// <paramref name="set"/>, and returns their sentinel as a non-literal; returns a literal code point otherwise.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=996BFA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=A95C6E
     // Broiler-Falsified-If: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
     // Broiler-Human:        PENDING
-    private int ReadClassAtom(CharSet set, out bool isLiteral)
+    private int ReadClassAtom(CharSet set, CodePointSet.Builder members, out bool isLiteral)
     {
         var c = Peek();
         if (c == '\\')
@@ -725,7 +780,7 @@ public sealed class RegexParser
             var classEscape = TryReadClassEscape();
             if (classEscape.HasValue)
             {
-                set.AddEscape(classEscape.Value, IgnoreCase, _unicode, _data);
+                members.AddAll(_data.EscapeSet(classEscape.Value, IgnoreCase, _unicode));
                 isLiteral = false;
                 return -1;
             }
@@ -837,13 +892,12 @@ public sealed class RegexParser
     }
 
     /// <summary>Reads <c>\d \D \w \W \s \S</c> as a class-set operand: fold, then complement.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=E972A1
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=76D3AC
     // Broiler-Falsified-If: under vi the set returned for \W contains a code point that does not fold to itself, such as U+00C9
     // Broiler-Human:        PENDING
     private ClassSetValue ReadClassEscapeOperand(ClassEscape escape)
     {
-        var value = new ClassSetValue();
-        value.Set.AddAll(_data.EscapeSet(UnicodeCharSets.PositiveEscape(escape), IgnoreCase, _unicode));
+        var value = new ClassSetValue { Set = _data.EscapeSet(UnicodeCharSets.PositiveEscape(escape), IgnoreCase, _unicode) };
         Fold(value);
         if (UnicodeCharSets.IsComplementEscape(escape))
             value.Set = ComplementOperand(value.Set);
@@ -871,12 +925,13 @@ public sealed class RegexParser
     }
 
     /// <summary>Parses <c>[ ^? ClassContents ]</c>, the cursor sitting on the <c>'['</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=AAA7F6
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=CB6961
     // Broiler-Falsified-If: a v-mode class nested 100,000 '[' deep exhausts the native stack instead of raising a catchable exception
     // Broiler-Human:        PENDING
     private ClassSetValue ParseNestedClass()
     {
         var start = _pos;
+        Descend(start);
         _pos++; // consume '['
 
         var negated = false;
@@ -891,6 +946,7 @@ public sealed class RegexParser
         if (AtEnd)
             throw new RegexSyntaxException("Unterminated character class", start);
         _pos++; // consume ']'
+        Ascend();
 
         if (!negated)
             return value;
@@ -905,7 +961,7 @@ public sealed class RegexParser
         return new ClassSetValue { Set = ComplementOperand(value.Set) };
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=505314
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=D52747
     // Broiler-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetExpression()
@@ -921,11 +977,14 @@ public sealed class RegexParser
         if (Peek() == '-' && PeekAt(1) == '-')
             return ParseClassSubtraction(accumulated, start);
 
+        // A union's operands are gathered and its set is built once, at the end.
+        var union = new CodePointSet.Builder();
+        union.AddAll(accumulated.Set);
         while (!AtEnd && Peek() != ']')
         {
             RejectMixedOperator(start);
             var operand = ParseClassSetRangeOrOperand();
-            accumulated.Set.AddAll(operand.Set);
+            union.AddAll(operand.Set);
             accumulated.MayContainStrings |= operand.MayContainStrings;
             foreach (var member in operand.Strings)
             {
@@ -934,6 +993,7 @@ public sealed class RegexParser
             }
         }
 
+        accumulated.Set = union.ToSet();
         return accumulated;
     }
 
@@ -1096,7 +1156,7 @@ public sealed class RegexParser
     }
 
     /// <summary>Parses <c>\q{ ClassString (| ClassString)* }</c>, the cursor on the <c>'q'</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=28B816
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=DCF3FD
     // Broiler-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassStringDisjunction()
@@ -1109,6 +1169,7 @@ public sealed class RegexParser
         _pos++;
 
         var value = new ClassSetValue();
+        var singles = new CodePointSet.Builder();
         var current = new StringBuilder();
         var characters = 0;
 
@@ -1125,7 +1186,7 @@ public sealed class RegexParser
             // A one-character alternative is an ordinary member of the code-point set;
             // only longer (and empty) alternatives need string matching.
             if (text.Length == 1 || (text.Length == 2 && char.IsSurrogatePair(text, 0)))
-                value.Set.AddCodePoint(char.ConvertToUtf32(text, 0));
+                singles.Add(char.ConvertToUtf32(text, 0));
             else if (!value.Strings.Contains(text))
                 value.Strings.Add(text);
         }
@@ -1168,17 +1229,14 @@ public sealed class RegexParser
             current.Append(FromCodePoint(ReadSourceCodePoint()));
         }
 
+        value.Set = singles.ToSet();
         return Fold(value);
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=C651FC
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=AF2C84
     // Broiler-Human:        PENDING
     private static ClassSetValue SingleCodePoint(int codePoint)
-    {
-        var value = new ClassSetValue();
-        value.Set.AddCodePoint(codePoint);
-        return value;
-    }
+        => new() { Set = CodePointSet.Of(codePoint, codePoint) };
 
     /// <summary>§22.2.2.9.5 MaybeSimpleCaseFolding — a no-op unless <c>i</c> is in effect.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=6; Fingerprint=3A2E48
@@ -1580,6 +1638,23 @@ public sealed class RegexParser
         _pos++; // consume '>'
         return name.ToString();
     }
+
+    // ----- Nesting (convention 5, decision D6) ---------------------------------
+
+    /// <summary>
+    /// Enters the level a group or a <c>v</c>-mode class opens at <paramref name="open"/>, checking the caller's limit
+    /// before the parser descends into it.
+    /// </summary>
+    /// <exception cref="NestingLimitExceeded">The level would be deeper than the caller's limit.</exception>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=266817
+    // Broiler-Falsified-If: a group opened at the limit's depth is entered instead of refused, so the parser's recursion outgrows the limit
+    // Broiler-Human:        PENDING
+    private void Descend(int open) => _depth = _nesting.Descend(_depth, open);
+
+    /// <summary>Leaves the level <see cref="Descend"/> entered, once its closing character is read.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=23E5D5
+    // Broiler-Human:        PENDING
+    private void Ascend() => _depth--;
 
     // ----- Low-level cursor helpers ------------------------------------------
 

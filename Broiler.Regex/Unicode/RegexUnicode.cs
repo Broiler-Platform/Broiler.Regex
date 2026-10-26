@@ -158,22 +158,22 @@ internal sealed class RegexUnicode
 
     // ----- Class escapes (§22.2.2.9) ---------------------------------------------
 
-    /// <summary>The set matched by one built-in class escape, a new set the caller may change.</summary>
+    /// <summary>The set matched by one built-in class escape; a set is immutable, so one may be shared.</summary>
     /// <remarks>
     /// <paramref name="ignoreCase"/> and <paramref name="unicode"/> only matter for <c>\w</c> and <c>\W</c>:
     /// §22.2.2.9.3 WordCharacters widens the basic word set with every code point that case-folds into it when
     /// both flags are on, which is why <c>/\W/iu</c> must not match <c>ſ</c>.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=C95A93
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=B86BFA
     // Broiler-Falsified-If: EscapeSet(NonWord, ignoreCase: true, unicode: true) contains U+017F, so /\W/iu matches LATIN SMALL LETTER LONG S
     // Broiler-Human:        PENDING
     internal CodePointSet EscapeSet(ClassEscape escape, bool ignoreCase, bool unicode) => escape switch
     {
-        ClassEscape.Digit => UnicodeCharSets.DigitSet.Clone(),
+        ClassEscape.Digit => UnicodeCharSets.DigitSet,
         ClassEscape.NonDigit => UnicodeCharSets.DigitSet.Complement(),
-        ClassEscape.Word => WordSet(ignoreCase, unicode).Clone(),
+        ClassEscape.Word => WordSet(ignoreCase, unicode),
         ClassEscape.NonWord => WordSet(ignoreCase, unicode).Complement(),
-        ClassEscape.Space => _spaceSet.Clone(),
+        ClassEscape.Space => _spaceSet,
         ClassEscape.NonSpace => _spaceSet.Complement(),
         _ => CodePointSet.Empty(),
     };
