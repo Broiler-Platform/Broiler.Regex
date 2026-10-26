@@ -29,7 +29,9 @@ namespace Broiler.Regex.Tests;
 /// empty alternative, <c>((?&lt;n0&gt;[^]?|){2,}){2,}</c>, on subjects of five to nine characters, where the old backend
 /// answered no match after five to eleven seconds although a prefix of the subject matched), and each took the new backend
 /// about 241,000 units. Under the ceiling of 100,000, 22 generated cases reach it and every case compared agrees; the
-/// largest takes 95,844 units.
+/// largest takes 95,843 units. The cases left out are pinned: the 22 for this seed, none of the suite's, at least
+/// 170,000 generated cases compared, and no case of either population stopped at a frame or trail ceiling, which on
+/// subjects of at most nine units would be the new backend giving up rather than answering.
 /// </para>
 /// <para>
 /// <b>The old backend's defect D1.</b> Under <c>u</c> and <c>v</c>, a start inside a surrogate pair is a position the
@@ -57,6 +59,9 @@ public class DifferentialTests(ITestOutputHelper output)
 
     /// <summary>The generated population's size, in patterns, each against up to eight subjects from two starts.</summary>
     private const int Generated = 20_000;
+
+    /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
+    private const int OverStepsPinned = 22;
 
     /// <summary>The flag strings every suite pattern runs under, besides those written near it.</summary>
     private static readonly string[] BaseFlags = ["", "s", "u", "v", "y"];
@@ -89,6 +94,10 @@ public class DifferentialTests(ITestOutputHelper output)
         output.WriteLine($"suite population: {sources.Length} source files; {tally}");
         Assert.True(tally.Compared > 10_000, "the suite population compared only " + tally.Compared + " cases");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
+
+        // No case of the suite comes near the step ceiling, and none may stop at a frame or trail ceiling: the subjects
+        // are a few characters long, so a stop there is the new backend giving up, not an answer.
+        Assert.Equal((0, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
     }
 
     [Fact]
@@ -111,6 +120,13 @@ public class DifferentialTests(ITestOutputHelper output)
 
         output.WriteLine($"generated population: seed 0x24A20261026, {Generated} patterns; {tally}");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
+
+        // The cases left out of the comparison are pinned, so that a new backend giving up cannot take the place of one
+        // answering: on subjects of at most nine units no case may stop at a frame or trail ceiling, the 22 cases the step
+        // ceiling stops are this seed's (the most units a compared case takes is under 100,000), and the cases compared
+        // keep their floor.
+        Assert.Equal((OverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
+        Assert.True(tally.Compared >= 170_000, "the generated population compared only " + tally.Compared + " cases");
     }
 
     /// <summary>The old backend's answer in the form <see cref="MachineTests.Render"/> gives the new one's.</summary>
@@ -140,7 +156,9 @@ public class DifferentialTests(ITestOutputHelper output)
         internal int OutsideSubset;
         internal int NotPatterns;
         internal int Compared;
-        internal int OverCeiling;
+        internal int OverSteps;
+        internal int OverFrames;
+        internal int OverTrail;
         internal int OldOverflow;
         internal int InsidePair;
         internal ulong MostUnits;
@@ -177,10 +195,16 @@ public class DifferentialTests(ITestOutputHelper output)
             {
                 foreach (var start in starts(subject).Distinct())
                 {
-                    var status = program.Match(subject, start, anchored, slots, null, Ceilings, out _, out var units);
+                    var status = program.Match(subject, start, anchored, slots, null, Ceilings, out var limit, out var units);
                     if (status == RegexStatus.LimitExceeded)
                     {
-                        OverCeiling++;
+                        _ = limit switch
+                        {
+                            RegexLimit.Steps => OverSteps++,
+                            RegexLimit.Frames => OverFrames++,
+                            RegexLimit.Trail => OverTrail++,
+                            _ => throw new InvalidOperationException("a limit exceeded naming " + limit),
+                        };
                         continue;
                     }
 
@@ -216,7 +240,8 @@ public class DifferentialTests(ITestOutputHelper output)
         public override string ToString() =>
             $"{Patterns} pattern-flag pairs in the subset, {OutsideSubset} outside it, {NotPatterns} not patterns under their flags; " +
             $"{Compared} cases compared ({InsidePair} starting inside a surrogate pair), the most units {MostUnits}; " +
-            $"{OverCeiling} at the new backend's step ceiling, {OldOverflow} the old backend's stack guard refused; " +
+            $"{OverSteps} stopped at the new backend's step ceiling, {OverFrames} at its frame ceiling, {OverTrail} at its trail ceiling, " +
+            $"{OldOverflow} the old backend's stack guard refused; " +
             $"{Disagreements.Count} disagreements";
     }
 
