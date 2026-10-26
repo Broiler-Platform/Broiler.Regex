@@ -55,6 +55,8 @@ public class ChargingTests
     [InlineData("[a-cx-z]", "Y", "i", 6)]
     [InlineData("\\p{L}", "a", "iu", 38)]
     [InlineData("[^a-cx-z]", "Y", "i", 10)]
+    [InlineData("^a", "ba", "", 4)]
+    [InlineData("\\bb", "ab b", "", 24)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
@@ -64,7 +66,9 @@ public class ChargingTests
         // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame. Under i
         // (task 2.4b) a character costs one as before, and a class one plus its weight for each code point of a
         // character's case orbit, four at most: [a-cx-z] under i costs 1 + 4 x 1, and \p{L} under iu 1 + 4 x 9. The
-        // inverted [^a-cx-z] fails at Y and at the end of the subject, five units each.
+        // inverted [^a-cx-z] fails at Y and at the end of the subject, five units each. ^a on "ba": the assertion and the
+        // failed Literal at 0, the assertion alone at 1 and 2. \bb on "ab b": a boundary costs 1 + 2 x 2, the word
+        // characters' weight for each side; it holds at 0, 2 and 3 and fails at 1, and the Literal fails twice first.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
@@ -73,7 +77,8 @@ public class ChargingTests
     /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
     /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
     /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
-    /// 2.4b's instructions: characters and classes under i, with and without u, and a v-mode class folded when parsed.
+    /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
+    /// assertions ^ $ \b \B, with m and under iu.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -91,6 +96,8 @@ public class ChargingTests
         { "(?:[\\p{L}\\p{Nd}]|K)+\\u212A", "iu", string.Concat(Enumerable.Repeat("aB1\u017Fk", 120)) + "!", 0, false, null },
         { "[^\\W\\d]+[^k]x", "i", string.Concat(Enumerable.Repeat("Kk", 300)) + "K", 0, false, null },
         { "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", "iv", string.Concat(Enumerable.Repeat("gH7", 200)) + "a", 0, false, null },
+        { "^(?:\\b\\w+\\B\\w\\b\\W?)+$", "m", string.Concat(Enumerable.Repeat("ab cd\nef gh ", 80)) + "!", 0, false, null },
+        { "\\b\\w+\\b", "iu", string.Concat(Enumerable.Repeat("\u017F\u212A- ", 150)), 2, false, null },
     };
 
     [Theory]

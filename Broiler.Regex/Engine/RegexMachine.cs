@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   23
-// Annotated:        23/23
+// Relevant units:   25
+// Annotated:        25/25
 // Exempt:           25
-// Human-reviewed:   0/23
+// Human-reviewed:   0/25
 // IP risk:          None
 // Security risk:    High
-// Criteria:         14/6
+// Criteria:         16/6
 // Resource impact:  8/10 max
-// Unverified:       23
+// Unverified:       25
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -250,7 +250,7 @@ internal ref struct RegexMachine
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=F06560
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=6127FC
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -329,6 +329,38 @@ internal ref struct RegexMachine
                     if (position < _subject.Length && InClass(instruction.A, Canonical(CharacterAt(position, out width))))
                     {
                         position += width;
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.LineStart:
+                    if (position == 0 || (instruction.A != 0 && EndsLine(_subject[position - 1])))
+                    {
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.LineEnd:
+                    if (position == _subject.Length || (instruction.A != 0 && EndsLine(_subject[position])))
+                    {
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.WordBoundary:
+                    if (AtWordEdge(instruction.A, position))
+                    {
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.NonWordBoundary:
+                    if (!AtWordEdge(instruction.A, position))
+                    {
                         pc++;
                         continue;
                     }
@@ -436,6 +468,41 @@ internal ref struct RegexMachine
 
         width = 1;
         return unit;
+    }
+
+    /// <summary>
+    /// The character that ends at <paramref name="position"/>, the one a read leftwards from it meets: a code unit, or
+    /// under <c>u</c> and <c>v</c> a surrogate pair read as one code point.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=EFABE2
+    // Broiler-Falsified-If: under u a low surrogate at index 0 reads before the subject, or without u a surrogate pair ending at the position is read as one code point
+    // Broiler-Human:        PENDING
+    private readonly int CharacterBefore(int position, out int width)
+    {
+        var unit = _subject[position - 1];
+        if (_unicode && char.IsLowSurrogate(unit) && position >= 2 && char.IsHighSurrogate(_subject[position - 2]))
+        {
+            width = 2;
+            return 0x10000 + ((_subject[position - 2] - 0xD800) << 10) + (unit - 0xDC00);
+        }
+
+        width = 1;
+        return unit;
+    }
+
+    /// <summary>
+    /// Whether <paramref name="position"/> is a word boundary (ECMA-262 §22.2.2.6, Assertion :: <c>\b</c>): IsWordChar of
+    /// the character before it and of the character at it differ (§22.2.2.6.1), the word characters being class
+    /// <paramref name="words"/>.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=1; Fingerprint=8F2123
+    // Broiler-Falsified-If: the empty subject's index 0 is reported a boundary, or the index between a and _ is
+    // Broiler-Human:        PENDING
+    private readonly bool AtWordEdge(int words, int position)
+    {
+        var before = position > 0 && InClass(words, CharacterBefore(position, out _));
+        var after = position < _subject.Length && InClass(words, CharacterAt(position, out _));
+        return before != after;
     }
 
     /// <summary>AdvanceStringIndex (ECMA-262 §22.2.7.3): the next start position, past a whole surrogate pair under <c>u</c> and <c>v</c>.</summary>

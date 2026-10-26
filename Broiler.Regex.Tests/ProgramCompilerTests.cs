@@ -23,7 +23,8 @@ public class ProgramCompilerTests
     internal static string[] Listing(RegexProgram program) => program.Code.ToArray().Select(static i => i.Op switch
     {
         RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
-            or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass
+            or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass or RegexOp.LineStart or RegexOp.LineEnd
+            or RegexOp.WordBoundary or RegexOp.NonWordBoundary
             => i.Op + " " + Decimal(i.A),
         RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
         RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
@@ -78,6 +79,29 @@ public class ProgramCompilerTests
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(expected, Listing(program));
         Assert.NotNull(program.Folding);
+    }
+
+    [Theory]
+    [InlineData("^a$", "", new[] { "LineStart 0", "Literal 97", "LineEnd 0", "Succeed" })]
+    [InlineData("^a$", "m", new[] { "LineStart 1", "Literal 97", "LineEnd 1", "Succeed" })]
+    [InlineData("\\ba\\B", "", new[] { "WordBoundary 0", "Literal 97", "NonWordBoundary 0", "Succeed" })]
+    [InlineData("\\b[a]\\b", "iu", new[] { "WordBoundary 0", "ClassIgnoringCase 1,0", "WordBoundary 0", "Succeed" })]
+    public void An_assertion_lowers_to_one_instruction_reading_the_flags_in_force(string pattern, string flags, string[] expected)
+    {
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Fact]
+    public void A_word_boundary_reads_the_word_characters_of_its_flags_and_costs_one_plus_their_weight_twice()
+    {
+        // WordCharacters (§22.2.2.9.3): the basic set's four ranges, and under u or v with i two more, U+017F and the
+        // Kelvin sign; a boundary tests the characters on both sides, so it costs 1 + 2 x 2.
+        var basic = TestProgram.Compile("\\b", "i");
+        Assert.Equal([48, 57, 65, 90, 95, 95, 97, 122], basic.ClassRanges(0).ToArray());
+        var folded = TestProgram.Compile("\\b", "iu");
+        Assert.Equal([48, 57, 65, 90, 95, 95, 97, 122, 0x17F, 0x17F, 0x212A, 0x212A], folded.ClassRanges(0).ToArray());
+        Assert.Equal((5, 5), (basic.Code[0].Cost, folded.Code[0].Cost));
+        Assert.Equal(1, TestProgram.Compile("^$", "m").Code[0].Cost);
     }
 
     [Fact]
@@ -168,10 +192,6 @@ public class ProgramCompilerTests
     }
 
     [Theory]
-    [InlineData("^a", "")]
-    [InlineData("a$", "")]
-    [InlineData("\\ba", "")]
-    [InlineData("\\Ba", "")]
     [InlineData("(a)\\1", "")]
     [InlineData("(?<n>a)\\k<n>", "")]
     [InlineData("(?=a)", "")]
@@ -183,7 +203,6 @@ public class ProgramCompilerTests
     [InlineData("(?-m:a)", "")]
     [InlineData("[\\q{ab}]", "v")]
     [InlineData("\\p{RGI_Emoji}", "v")]
-    [InlineData("x(?:y|(z\\b))*", "")]
     public void A_construct_of_task_2_4b_is_answered_not_yet_supported_with_no_program_and_nothing_thrown(string pattern, string flags)
     {
         Assert.Equal(ProgramCompilation.NotYetSupported, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));

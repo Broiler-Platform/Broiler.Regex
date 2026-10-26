@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   1
 // Annotated:        1/1
-// Exempt:           17
+// Exempt:           21
 // Human-reviewed:   0/1
 // IP risk:          None
 // Security risk:    Medium
@@ -34,12 +34,12 @@ namespace Broiler.Regex.Engine;
 /// <b>What tasks 2.4a and 2.4b hold, and what is still to come.</b> Task 2.4a's: literal characters, <c>.</c> with and
 /// without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted bounds and the
 /// specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's captures cleared
-/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>. The greedy run of a single code point,
-/// atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below are not a contract: a
-/// program is built and run by the same version of the library.
+/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>, and the assertions <c>^ $ \b \B</c>.
+/// The greedy run of a single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths.
+/// The numbers below are not a contract: a program is built and run by the same version of the library.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=903B5F
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=0D190C
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -139,4 +139,25 @@ internal enum RegexOp : byte
     /// AllCharacters, so the next character matches when its Canonicalize is a member.
     /// </summary>
     CanonicalClass = 16,
+
+    /// <summary>
+    /// Assertion :: <c>^</c> (§22.2.2.6): the index is the input's first, or, when <c>A</c> is one (rer.[[Multiline]], the
+    /// <c>m</c> flag in force), the character before it is a LineTerminator.
+    /// </summary>
+    LineStart = 17,
+
+    /// <summary>
+    /// Assertion :: <c>$</c> (§22.2.2.6): the index is the input's end, or, when <c>A</c> is one, the character at it is a
+    /// LineTerminator.
+    /// </summary>
+    LineEnd = 18,
+
+    /// <summary>
+    /// Assertion :: <c>\b</c> (§22.2.2.6): IsWordChar of the character before the index and of the character at it
+    /// differ, the word characters being class number <c>A</c>, the WordCharacters (§22.2.2.9.3) of the flags in force.
+    /// </summary>
+    WordBoundary = 19,
+
+    /// <summary>Assertion :: <c>\B</c>: IsWordChar of the two characters around the index, read from class <c>A</c>, agree.</summary>
+    NonWordBoundary = 20,
 }
