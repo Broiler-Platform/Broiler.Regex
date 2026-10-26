@@ -93,6 +93,23 @@ public class StackDepthGuardTests
     }
 
     [Fact(Timeout = 600000)]
+    public void A_flat_sequence_of_capturing_groups_matches_on_a_1_MiB_thread()
+    {
+        // The old matcher's continuations recursed once per term: 5,000 capturing groups in a row ended the process on a
+        // 1 MiB thread, where 2,000 matched. The new backend's loop recurses for none, at 5,000 or at 50,000.
+        foreach (var count in new[] { 5_000, 50_000 })
+        {
+            var re = TestRegex.Compile(string.Concat(Enumerable.Repeat("(a)", count)));
+            var subject = new string('a', count);
+            RegexMatch? m = null;
+            ProgramCompilerTests.OnASmallStack(() => m = re.Match(subject));
+            Assert.Equal(subject, m!.Value);
+            Assert.Equal(count + 1, m.Groups.Count);
+            Assert.Equal(count - 1, m.Groups[count].Index);
+        }
+    }
+
+    [Fact(Timeout = 600000)]
     public void ShortSubjects_StillMatch()
     {
         var re = TestRegex.Compile("a*b");

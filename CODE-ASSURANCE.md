@@ -108,7 +108,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Afford(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.AtomHolds(in RegexInstruction, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Engine.RegexMachine.Repeat(in RegexInstruction, int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.EnterRun(in RegexInstruction, int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Atoms(in RegexInstruction, int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.NextWayOfStrings(int, int, int, out int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.StringHolds(RegexStrings, ReadOnlySpan<int>, int, out int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING

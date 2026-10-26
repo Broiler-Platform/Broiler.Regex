@@ -82,6 +82,12 @@ public class CeilingTests
         var pair = TestProgram.Compile("(?:ab){" + (most + 1) + "}");
         Assert.Equal(RegexStatus.LimitExceeded, pair.Match(string.Concat(Enumerable.Repeat("ab", most + 1)), 0, true, new int[pair.SlotCount], null, RegexMatchCeilings.Engines, out limit, out _));
         Assert.Equal(RegexLimit.Trail, limit);
+
+        // The string-bearing members, which pass the engines' ceilings since task 2.4c, answer the same as the ceiling:
+        // (?:ab){1048576} over as many repetitions, and (?:){2147483647} on the empty subject, where the specification
+        // answers an empty match and the old backend answered no match.
+        Assert.Equal(RegexLimit.Trail, TestRegex.Compile("(?:ab){" + (most + 1) + "}").Match(string.Concat(Enumerable.Repeat("ab", most + 1))).Limit);
+        Assert.Equal(RegexLimit.Trail, TestRegex.Compile("(?:){" + int.MaxValue + "}").Match("").Limit);
     }
 
     [Fact]

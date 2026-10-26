@@ -351,7 +351,7 @@ internal ref struct RegexMachine
     /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed; a marked
     /// frame takes its fast path's next way, or, with none left, fails in its turn too.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=824625
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=09E9F3
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, a frame a look-around's body pushed is resumed after the look-around's close, or a marked frame resumes at its own instruction rather than after the instructions it owns
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -426,7 +426,7 @@ internal ref struct RegexMachine
                     break;
                 case RegexOp.GreedyRun:
                 case RegexOp.LazyRun:
-                    switch (Repeat(instruction, pc, ref position))
+                    switch (EnterRun(instruction, pc, ref position))
                     {
                         case Outcome.Matched:
                             pc += 2;
@@ -629,10 +629,10 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> after the characters taken; <see cref="Outcome.Failed"/>
     /// when a required character is missing; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=455879
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=654F0D
     // Broiler-Falsified-If: a greedy run that reaches the step ceiling while it takes its extra characters answers a match of fewer, a run examines a character it has not charged, a greedy run's frame gives a character back below its required ones, or a lazy run takes a character before it tries its continuation
     // Broiler-Human:        PENDING
-    private Outcome Repeat(in RegexInstruction run, int address, ref int position)
+    private Outcome EnterRun(in RegexInstruction run, int address, ref int position)
     {
         var atom = _code[address + 1];
         var count = 0;

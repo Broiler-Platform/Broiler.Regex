@@ -413,6 +413,111 @@ occurrence emits, and not only what the parser expands; or the compiler lowers e
 its occurrences share. Until then only the internal route and the tests compile such a program; task 2.4c puts it on the
 public constructor's path, so task 2.5's charge, or the shared table, comes with it or before.
 
+*Dated record, 2026-10-26 (task 2.4c of SJL-11.2; R1, R3, R4, R7 and R8; decisions D5, D8, D9, D10, D12, D20, D23
+and D41).*
+
+**The fast paths, under the meter (D8).** Four instructions, each owning the instructions after it, which it reads as
+data: `GreedyRun` and `LazyRun` (a quantifier over one character or a class without strings: the required characters,
+then greedy as many more as hold and lazy none, one frame for the whole run that gives back or takes one character at a
+time, no trail cell), `AtomRun` (two or more one-character atoms in a row, read by one dispatch in the order they are
+matched) and `StringClass` (a `v`-mode class of strings looked up in a table of its strings keyed by the character a
+string begins with, its last right to left, shared by every occurrence of the same strings in one direction and
+folding). A frame gains a fourth integer, a mark, so a run's or a class of strings' frame stays and moves on. The
+literal-prefix prefilter is the program's first test, the one-character test every attempt makes before any choice,
+past the group starts: a search tests each position with it and enters the program only where it holds. The units are
+Broiler.VM's for the same work, its matcher read as their specification only (decision D5): a run's dispatch one unit
+and each character it examines, the one that ends it included, its atom's cost, charged before the read; an atom run
+its atoms' costs; a class of strings one plus the weight of its first characters and a unit for each character of a
+string tried; a position the scan skips its first test's cost, one plus the class's weight, charged before the scan
+moves past it, the position admitted costing nothing in the scan (the attempt's first dispatch makes the same test) and
+the subject's end no attempt. Check A-1 reads each through the observer at every unit charged, its declared inputs
+reaching every new instruction in both directions and the scan over a character, over a class and into a step ceiling.
+The corpus's rows **O05 and O06** (`[a]*` and `^[a]*$` over 10,000,001 characters) match, in a child process and in the
+probe, where the loop form reached the frame ceiling; presumption 3 holds. `\p{RGI_Emoji}` at a position no emoji
+begins at costs under 60 units, where its strings tried one by one cost over 5,000, and the remedy task 2.4b's record
+handed task 2.4c for its compilation is the shared table: an occurrence is three instructions, and its construction
+allocates about 1.3 MiB, of which the parse is about 0.95 MiB; 100 occurrences about 100 MiB, of which the parse about
+94 MiB, which is task 2.5's to charge (2.4b's record: 2,920 KiB and 231 MiB).
+
+**The differential of the fast paths.** The program compiler's internal `fastPaths` option turns them off, the general
+lowering; `FastPathDifferentialTests` runs every case with both programs under the same ceilings (100,000 units and the
+engines' frames and trail) and compares the status, the ceiling named, the index, the length and every capture; a case
+either program stops at the step ceiling runs again in both under 10,000,000 units and is compared there. Over the test
+suite's string literals (1,379,695 cases at this record), task 2.4b's seeded population (242,609 cases, every construct drawn) and a
+population drawn from a seed of its own and weighted to quantified single characters, rows of atoms, literal prefixes,
+classes of strings and look-behinds holding them (166,529 cases), no case disagrees; the 51 cases the first ceiling
+stopped (26 of `(a+)+b` in both programs, 19 in the general lowering alone, 6 of the weighted population in both) all
+agree under the second, and no case reaches a frame or trail ceiling. The counts are pinned. **The plan names the
+reference arms' population P4 for this check, and P4 does not exist yet**: task 2.13 builds it, and the check runs over
+P4 when it lands, before the candidate reading.
+
+**The public entry (R7, R8; checks A-7 and A-8).** `BroilerRegex.Match(ReadOnlySpan<char> subject, int start, bool
+anchored, Span<int> slots, RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit)` answers
+`RegexStatus`, the slots two per group, group 0 first, -1 for a group that did not participate; `SlotCount` says how
+many; `RegexWorkCharge` and `RegexMatchCeilings` are public for it (the latter in `Broiler.Regex.Engine`, where it
+was). It takes the start as given: under `u` and `v` a start inside a pair splits it, and an engine answering as
+RegExpBuiltinExec steps back to the pair before it calls, then reports from the offsets and its own `lastIndex`, which
+is what row M4 and decision D41 need of it. `PublicEntryTests` holds A-7 (`/b/` and `/b/y` alike for each value of the
+argument) and A-8 (no string in the signature; a call through 1 to 1,000 groups allocating nothing, with no meter and
+with one). All of it is provisional, in the CHANGELOG and the remarks: task 2.5 adds the compile meter, task 2.9 fixes
+the surface. Check C1 now leaves a library delegate's runtime-made members out, as convention 1 admits the meter.
+
+**The string-bearing members (D10, D12; R1, R3; row M4, D23, D41).** `Match(string, int)`, `IsMatch` and `Matches` run
+the same program as RegExpBuiltinExec under decision D10's policy for an engine that passes no meter: no meter, no step
+ceiling, and the engines' frame and trail ceilings. A ceiling reached is answered as that ceiling, never as no match:
+`Match` with a failed `RegexMatch` whose new, provisional `Limit` names it; `IsMatch` and `Matches`, whose results have
+no room for a third answer, with an `InvalidOperationException` naming it, documented. From a start inside a pair the
+matcher runs from the pair; a non-empty match found there reports the caller's start as its index and its substring
+from there (row M4, D23); an empty one, D41's implementation-defined case, is reported at the pair's start, where it
+was found, Broiler.VM's realm's answer (Broiler.JS answers `lastIndex`). Defect D1's skips are gone:
+`SurrogateStartTests` pins every row on the public members, and `NestingMaximumTests` runs the shapes the old matcher
+did not prove at the maximum, each matching on a 1 MiB thread. **Task 2.4a's trail bound is listed, not lifted**: a run
+writes no cell, so `a{1048576}` matches, but a loop over a body of more than one character keeps the bound, so
+`(?:ab){1048576}` and `(a)*` over 500,000 characters answer the trail ceiling, and `(?:){2147483647}` on the empty
+subject too, where the specification answers an empty match (CHANGELOG, Observable changes; `CeilingTests`).
+
+**The deletion (D20).** `Matching/` (the closure compiler, `Matcher`, `MatchState`, the `RepeatMatcher`, `Budget`,
+`StepLimit`, the per-start `Budget.Reset` and the greedy fast path's early exit), `RegexOverflowException` and the
+internal route to the old backend are deleted; D20's other items for this library (`CaseFolding` and its data, the
+generator, the loose lookup, the static cache) went at tasks 2.2 and 2.3. `RegexMatch` and `RegexGroup` stay (R8,
+D12), moved to the `Broiler.Regex` namespace. The breaks, each suppressed and listed in
+[`suppressions.md`](suppressions.md) with its R item: `RegexOverflowException` removed (CP0001; R1, R4), the two types
+moved (CP0001) and `Match(string, int)` and `Matches(string)`, which answer them (CP0002). Check A-1's metadata half,
+`MeterMetadataTests`, finds no type named `Budget`, `StepLimit` or `RegexOverflowException` and no method, field or
+property named `Budget`, `StepLimit` or `Reset` in the built assembly, and refuses each planted in a copy. The tests
+collapse into the one backend: `TestRegex`'s switch and `NewBackendSuiteTests` go, the old-versus-new differential is
+retired (its last run: no disagreement unexplained, 207 suite and 57 generated cases of D2's shape, 8 of M7's, 26
+stopped), its populations kept in `TestPopulations`, and D1, D2 and M7 stay pinned to the specification's answers on
+the new backend. The starting violation list loses the three rows this deletion closes, SL3's reflection in
+`Matching/Matcher.cs:336`, C3's `RegexOverflowException` and C5's `TryEnsureSufficientExecutionStack` in
+`Matching/Matcher.cs:555`; the C1 rows of `RegexMatch.Groups`, `RegexMatch.NamedGroups` and `BroilerRegex.Matches`
+stay for task 2.9, re-worded for the namespace.
+
+**What the later tasks still owe.**
+- **Task 2.5 (R2).** The compile meter through the parser and the set algebra, and `Compile`'s signature replaced to
+  take it; the corpus's V rows. The parse of a class of strings is most of a compilation's allocation now (above).
+- **Task 2.6 (R6).** Duplicate named groups: the parser still refuses them; a back-reference already reads a run of the
+  program's list of referenced groups, one long, which the shared name lengthens; `RegexMatch.NamedGroups` and
+  `GroupNames` must answer the participating group; the corpus's O07 and O08.
+- **Task 2.8.** The validate entry and decision D9's syntax status (a code, a message identifier and a position);
+  `Compile` and the constructors still throw `RegexSyntaxException`.
+- **Task 2.9.** The surface of `0.2.0-preview.1`: the provisional members of this record (the offset entry, `SlotCount`,
+  `RegexWorkCharge`, `RegexMatchCeilings` and its namespace, `RegexMatch.Limit`), `IsMatch`'s and `Matches`'
+  exception at a ceiling against convention 3, the remaining starting violations (the C1 rows, SL5's `NoWarn` rows
+  among them), the version and `eng/preview-version-history.json`.
+- **Task 2.13.** Population P4, over which the fast-path differential runs before the candidate reading.
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.* Plan row 2.4c reads the differential as
+"against 2.4b's slow path on the reference-arm population P4"; P4 does not exist, and the differential ran over the
+three populations above. D8 lists "prefilter skips" as a unit; the units are Broiler.VM's (a skip one plus the class's
+weight, the admitted position and the end free), with the class's weight this library's, the floor of the base-2
+logarithm of its ranges (task 2.4a's record), not Broiler.VM's per-table weight. D10's policy gives the string-bearing
+members, which no engine calls, no step ceiling, so a catastrophic pattern there is bounded by the caller's patience
+alone, where the old budget answered no match; the offset entry is the bounded form. D12 keeps `RegexMatch`, and plan
+row 2.9 names it kept; it is kept, in another namespace, which is a break package validation needs suppressed. Plan
+section 4.3's A-1 names "the per-start reset" as a metadata fact; it is read as no member named `Reset`, the reset
+having been `Budget.Reset`, and an iterator's compiler-made `IEnumerator.Reset` is not it.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
