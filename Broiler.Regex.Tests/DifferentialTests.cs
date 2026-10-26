@@ -6,7 +6,9 @@ using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
+using Broiler.Regex.Matching;
 using Broiler.Regex.Parsing;
+using Broiler.Regex.Unicode;
 using Broiler.Unicode.Tables;
 using Xunit;
 using Xunit.Abstractions;
@@ -42,12 +44,16 @@ namespace Broiler.Regex.Tests;
 /// <b>The old backend's defects.</b> Task 2.4b's comparison over the whole grammar found two defects of the old
 /// backend's besides D1 (<see cref="OldBackendDefectTests"/> pins each). D2: a <c>v</c>-mode class holding the empty
 /// string tries it before its single characters, where the specification tries it last; a disagreement is attributed to
-/// it when the pattern holds such a class with a single character in it. M7, JSD-0081's row: under <c>u</c> and
-/// <c>v</c> a back-reference in a look-behind compares the code units that end at the index rather than the code points,
-/// so it can begin inside a surrogate pair; a disagreement is attributed to it when the pattern holds a back-reference in
-/// a look-behind, the flags are <c>u</c> or <c>v</c> and the subject holds a surrogate. M7 was found once a pattern that
-/// the sources repeat met every subject its occurrences bring, not only those beside its first. Every other disagreement
-/// fails the comparison, and there is none.
+/// it when the pattern holds such a class with a single character in it and the old backend, given the pattern with
+/// each such class written <c>(?:C)?</c>, C the class without the empty string, answers as the new backend does, so
+/// that the disagreement is the class's order and nothing else. M7, JSD-0081's row: under <c>u</c> and <c>v</c> a
+/// back-reference in a look-behind compares the code units that end at the index rather than the code points, so it can
+/// begin inside a surrogate pair; a disagreement is attributed to it when the pattern holds a back-reference in a
+/// look-behind, the flags are <c>u</c> or <c>v</c> and the subject holds a surrogate, a shape no rewriting of the
+/// pattern takes out. M7 was found once a pattern that the sources repeat met every subject its occurrences bring, not
+/// only those beside its first. The count each defect explains is pinned for each population, as the stops are, so that
+/// a disagreement of the new backend's own on either shape moves a count; every other disagreement fails the
+/// comparison, and there is none.
 /// </para>
 /// <para>
 /// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
@@ -93,6 +99,15 @@ public class DifferentialTests(ITestOutputHelper output)
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
     private const int OverStepsPinned = 2;
 
+    /// <summary>
+    /// The suite's disagreements attributed to each defect of the old backend's, pinned as the stops are: a count that
+    /// moves is a disagreement that came or went, and is read before the pin is moved.
+    /// </summary>
+    private static readonly SortedDictionary<string, int> SuiteExplainedPinned = new(StringComparer.Ordinal) { ["D2"] = 203, ["M7"] = 8 };
+
+    /// <summary>The generated population's disagreements attributed to each defect of the old backend's, pinned.</summary>
+    private static readonly SortedDictionary<string, int> GeneratedExplainedPinned = new(StringComparer.Ordinal) { ["D2"] = 57 };
+
     /// <summary>The generated population's seed: task 2.4b's, the date it was drawn on.</summary>
     private const ulong Seed = 0x2_4B_2026_1026;
 
@@ -136,6 +151,7 @@ public class DifferentialTests(ITestOutputHelper output)
         // \p{RGI_Emoji} on the two longest subjects beside it; none may stop at a frame or trail ceiling: the subjects are
         // a few characters long, so a stop there is the new backend giving up, not an answer.
         Assert.Equal((SuiteOverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
+        Assert.Equal(SuiteExplainedPinned, tally.Explained);
         Assert.All(tally.Stopped, static stopped => Assert.Matches(
             @"^(MachineConstructTests\.cs:\d+: /\\p\{RGI_Emoji\}/i?v on |ChargingTests\.cs:\d+: /\(a\+\)\+b/[imsuvy]* on ""a{12,15}c?"" from )", stopped));
     }
@@ -172,14 +188,17 @@ public class DifferentialTests(ITestOutputHelper output)
         // ceiling stops are this seed's (the most units a compared case takes is under 100,000), and the cases compared
         // keep their floor.
         Assert.Equal((OverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
+        Assert.Equal(GeneratedExplainedPinned, tally.Explained);
         Assert.True(tally.Compared >= 170_000, "the generated population compared only " + tally.Compared + " cases");
     }
 
     /// <summary>The old backend's answer in the form <see cref="MachineTests.Render"/> gives the new one's.</summary>
-    internal static string Old(BroilerRegex regex, string subject, int start)
+    internal static string Old(BroilerRegex regex, string subject, int start) => Render(regex.Match(subject, start));
+
+    /// <summary>A public match in the form <see cref="MachineTests.Render"/> gives the new backend's answer.</summary>
+    private static string Render(RegexMatch? match)
     {
-        var match = regex.Match(subject, start);
-        if (!match.Success)
+        if (match is not { Success: true })
             return "nomatch";
 
         var text = new StringBuilder("match ").Append(match.Index).Append(',').Append(match.Index + match.Length);
@@ -204,18 +223,68 @@ public class DifferentialTests(ITestOutputHelper output)
         tally.Disagreements.Count + " disagreements:\n" + string.Join('\n', tally.Disagreements.Take(60));
 
     /// <summary>
-    /// An old-backend defect a disagreement is attributed to: its name, as the roadmap's record of task 2.4b gives it, the
-    /// test that pins the specification's answer, and the case without which it cannot arise, read from the parsed
-    /// pattern, the flags and the subject. A disagreement is attributed to the first defect whose case it is; one that
-    /// none explains fails the comparison.
+    /// An old-backend defect a disagreement is attributed to: its name, as the roadmap's record of task 2.4b gives it,
+    /// the test that pins the specification's answer, the case without which it cannot arise, read from the parsed
+    /// pattern, the flags and the subject, and, where the defect's shape can be written out of the pattern, the old
+    /// backend's answer to the case so written. A disagreement is attributed to the first defect whose case it is and,
+    /// when the defect has such a form, whose form the old backend answers as the new backend does: the disagreement is
+    /// then the defect's and nothing else's. One that no defect explains fails the comparison, and the count each
+    /// defect explains is pinned.
     /// </summary>
-    internal sealed record Defect(string Name, string Pin, Func<RegexNode, string, string, bool> Holds);
+    internal sealed record Defect(string Name, string Pin, Func<RegexNode, string, string, bool> Holds, Func<Case, string>? WithoutIt = null);
+
+    /// <summary>A disagreement's case: the parsed pattern, its groups, the flags, the subject the old backend read, and the start.</summary>
+    internal sealed record Case(RegexNode Tree, int CaptureCount, IReadOnlyDictionary<string, int> GroupNames, RegexFlags Flags, string Subject, int Start);
+
+    /// <summary>
+    /// The old backend's answer to <paramref name="case"/> with defect D2's shape written out: each <c>v</c>-mode class
+    /// that holds the empty string and single characters becomes <c>(?:C)?</c>, C the class without the empty string,
+    /// which the old backend tries as the specification orders the class: the strings longest first, the single
+    /// characters, then the empty string.
+    /// </summary>
+    private static string OldWithoutD2(Case @case)
+    {
+        var data = new RegexUnicode(UnicodeTables.Instance);
+        var matcher = new Matcher(WithoutD2(@case.Tree), @case.CaptureCount, @case.Flags, @case.GroupNames, data, new RegexNesting(BroilerRegex.MaximumNestingLimit));
+        return Render(matcher.Run(@case.Subject, @case.Start));
+    }
+
+    /// <summary>A copy of <paramref name="node"/> whose classes of defect D2's shape are each <c>(?:C)?</c>, C the class without the empty string.</summary>
+    private static RegexNode WithoutD2(RegexNode node) => node switch
+    {
+        CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } set } => new QuantifierNode(new CharClassNode(WithoutTheEmptyString(set)), 0, 1, greedy: true),
+        SequenceNode sequence => new SequenceNode(sequence.Terms.Select(WithoutD2).ToList()),
+        DisjunctionNode disjunction => new DisjunctionNode(disjunction.Alternatives.Select(WithoutD2).ToList()),
+        GroupNode group => new GroupNode(WithoutD2(group.Child), group.CaptureIndex, group.Name),
+        ModifierGroupNode modifier => new ModifierGroupNode(WithoutD2(modifier.Child), modifier.Added, modifier.Removed),
+        LookaroundNode look => new LookaroundNode(WithoutD2(look.Child), look.Behind, look.Negative),
+        QuantifierNode quantifier => new QuantifierNode(WithoutD2(quantifier.Child), quantifier.Min, quantifier.Max, quantifier.Greedy),
+        _ => node,
+    };
+
+    /// <summary>The class <paramref name="set"/> without the empty string: its code points and its other strings, longest first, as parsed.</summary>
+    private static CharSet WithoutTheEmptyString(CharSet set)
+    {
+        var copy = new CharSet
+        {
+            Negated = set.Negated,
+            UsesSetOperations = set.UsesSetOperations,
+            UsesPropertyEscape = set.UsesPropertyEscape,
+            CaseFolded = set.CaseFolded,
+        };
+        copy.AddSet(set.CodePoints);
+        foreach (var text in set.Strings.Where(static text => text.Length > 0))
+            copy.AddString(text);
+        copy.SortStrings();
+        return copy;
+    }
 
     /// <summary>The old backend's defects the comparison found, each pinned to the specification's answer.</summary>
     internal static readonly Defect[] Defects =
     [
         new("D2", nameof(OldBackendDefectTests.D2_a_class_s_empty_string_is_tried_after_its_single_characters),
-            static (tree, _, _) => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } })),
+            static (tree, _, _) => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } }),
+            OldWithoutD2),
         new("M7", nameof(OldBackendDefectTests.M7_a_backward_back_reference_reads_whole_code_points_under_u),
             static (tree, flags, subject) => (flags.Contains('u') || flags.Contains('v')) && subject.Any(char.IsSurrogate)
                 && Any(tree, static node => node is LookaroundNode { Behind: true } look && Any(look.Child, static inner => inner is BackreferenceNode))),
@@ -353,10 +422,10 @@ public class DifferentialTests(ITestOutputHelper output)
         private readonly HashSet<(string, string, string, int)> _seen = [];
 
         /// <summary>Each pattern-flag pair met, with its two compilations and its tree, or null when it is no pattern.</summary>
-        private readonly Dictionary<(string, string), (BroilerRegex Old, RegexProgram Program, RegexNode Tree)?> _compiled = [];
+        private readonly Dictionary<(string, string), (BroilerRegex Old, RegexProgram Program, RegexNode Tree, int CaptureCount, IReadOnlyDictionary<string, int> GroupNames)?> _compiled = [];
 
         /// <summary>Compiles a pattern-flag pair met for the first time on both backends, and counts it.</summary>
-        private (BroilerRegex Old, RegexProgram Program, RegexNode Tree)? Compile(string pattern, string flags)
+        private (BroilerRegex Old, RegexProgram Program, RegexNode Tree, int CaptureCount, IReadOnlyDictionary<string, int> GroupNames)? Compile(string pattern, string flags)
         {
             BroilerRegex old;
             RegexProgram? program;
@@ -376,10 +445,10 @@ public class DifferentialTests(ITestOutputHelper output)
             }
 
             Patterns++;
-            var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _);
+            var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), new RegexUnicode(UnicodeTables.Instance), new RegexNesting(BroilerRegex.MaximumNestingLimit), out var captureCount, out var groupNames);
             foreach (var construct in ConstructsOf(tree, flags))
                 Constructs[construct] = Constructs.GetValueOrDefault(construct) + 1;
-            return (old, program!, tree);
+            return (old, program!, tree, captureCount, groupNames);
         }
 
         /// <summary>
@@ -398,7 +467,7 @@ public class DifferentialTests(ITestOutputHelper output)
             if (compiled is not { } pair)
                 return;
 
-            var (old, program, tree) = pair;
+            var (old, program, tree, captureCount, groupNames) = pair;
 
             var anchored = flags.Contains('y');
             var unicode = flags.Contains('u') || flags.Contains('v');
@@ -456,7 +525,8 @@ public class DifferentialTests(ITestOutputHelper output)
                     if (expected == actual)
                         continue;
 
-                    var defect = Defects.FirstOrDefault(d => d.Holds(tree, flags, subject));
+                    var @case = new Case(tree, captureCount, groupNames, RegexFlagsParser.Parse(flags), oldSubject, start);
+                    var defect = Defects.FirstOrDefault(d => d.Holds(tree, flags, subject) && (d.WithoutIt is null || d.WithoutIt(@case) == actual));
                     if (defect is null)
                         Disagreements.Add($"{origin}: /{Escape(pattern)}/{flags} on \"{Escape(subject)}\" from {start}: old {expected}, new {actual}");
                     else
