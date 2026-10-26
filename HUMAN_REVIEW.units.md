@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 281 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 283 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 22 |
-| Code units | 501 |
-| Relevant | 281 |
+| Code units | 503 |
+| Relevant | 283 |
 | Exempt | 220 |
-| Assessed | 281 of 281 (100%) |
-| Human reviewed | 0 of 281 (0%) |
-| Unverified | 281 |
+| Assessed | 283 of 283 (100%) |
+| Human reviewed | 0 of 283 (0%) |
+| Unverified | 283 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,7 +67,7 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 281 |
+| HUMAN_PENDING | 283 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -91,7 +91,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/BroilerRegex.cs` | 14 | 9 | 5 | 9 | Low | High | 9/9 |
 | `Broiler.Regex/Compiling/ProgramCompiler.cs` | 40 | 18 | 22 | 18 | None | High | 10/10 |
 | `Broiler.Regex/Engine/RegexInstruction.cs` | 7 | 1 | 6 | 1 | None | Medium | 1/0 |
-| `Broiler.Regex/Engine/RegexMachine.cs` | 42 | 19 | 23 | 19 | None | High | 11/6 |
+| `Broiler.Regex/Engine/RegexMachine.cs` | 44 | 21 | 23 | 21 | None | High | 12/6 |
 | `Broiler.Regex/Engine/RegexMatchCeilings.cs` | 11 | 8 | 3 | 8 | None | High | 2/2 |
 | `Broiler.Regex/Engine/RegexOp.cs` | 15 | 1 | 14 | 1 | None | Medium | 0/0 |
 | `Broiler.Regex/Engine/RegexProgram.cs` | 12 | 5 | 7 | 5 | None | High | 3/2 |
@@ -387,5 +387,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-281 of the 281 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+283 of the 283 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

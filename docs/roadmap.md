@@ -259,7 +259,8 @@ trail ceiling above the library's maxima of 2^24 frames and 2^25 cells, is a bro
 (`ArgumentOutOfRangeException`), and both engines pass D10's 2^20 and 2^21. The entry takes a subject span, a start, an
 anchored argument independent of `y` and the caller's slots, and answers `Match`, `NoMatch` or `LimitExceeded`; its
 registers, frames and trail are rented from the shared array pool and returned, so a call allocates nothing that grows
-with the capture count, and the program is immutable and shared across threads. The entry, the program and the meter
+with the capture count (frames and trail past 65,536 integers are the call's own and go to the collector, so a call's
+peak does not stay pooled), and the program is immutable and shared across threads. The entry, the program and the meter
 are internal until task 2.4c; `RegexStatus.Match` and `NoMatch` and `RegexLimit.Steps`, `Frames` and `Trail` are public,
 as an enum's members are, and recorded as provisional in the CHANGELOG.
 

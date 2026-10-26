@@ -33,13 +33,16 @@ namespace Broiler.Regex.Engine;
 /// </para>
 /// <para>
 /// <b>The argument rules.</b> A ceiling below one is the caller's broken precondition, an
-/// <see cref="ArgumentOutOfRangeException"/> (convention 3), and so is a frame or trail ceiling above the library's maximum,
-/// <see cref="FrameCeilingMaximum"/> or <see cref="TrailCeilingMaximum"/>. The maxima bound the memory one call can hold,
-/// twelve bytes a frame and eight a trail cell: 192 MiB of frames and 256 MiB of trail. They are sixteen times the ceilings
-/// both engines pass, <see cref="EngineFrames"/> and <see cref="EngineTrail"/> (decision D10, Broiler.VM's
-/// <c>MaximumFrames</c> and <c>MaximumTrail</c>, names this library leaves to those values alone), and four times the
-/// adversarial corpus's ordinary ceilings, so no caller the programme has is near them. The step ceiling has no maximum: a step is time, not memory, and the meter is the caller's other bound on it. A
-/// ceiling the call never reaches costs nothing: the frames and the trail grow as a match needs them.
+/// <see cref="ArgumentOutOfRangeException"/> (convention 3), and so is a frame or trail ceiling above the library's
+/// maximum, <see cref="FrameCeilingMaximum"/> or <see cref="TrailCeilingMaximum"/>. The maxima bound the memory one
+/// call can hold, twelve bytes a frame and eight a trail cell: 192 MiB of frames and 256 MiB of trail, and, while the
+/// array that reaches either doubles into it, the 128 MiB array it replaces too; at the engines' ceilings, 12 MiB and
+/// 16 MiB, with 8 MiB more during the last doubling. They are sixteen times the ceilings both engines pass,
+/// <see cref="EngineFrames"/> and <see cref="EngineTrail"/> (decision D10, Broiler.VM's <c>MaximumFrames</c> and
+/// <c>MaximumTrail</c>, names this library leaves to those values alone), and four times the adversarial corpus's
+/// ordinary ceilings, so no caller the programme has is near them. The step ceiling has no maximum: a step is time, not
+/// memory, and the meter is the caller's other bound on it. A ceiling the call never reaches costs nothing: the frames
+/// and the trail grow as a match needs them.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D10; IP=None; Security=High; Resources=2; Fingerprint=25E98E
@@ -47,12 +50,12 @@ namespace Broiler.Regex.Engine;
 // Broiler-Human:        PENDING
 internal readonly struct RegexMatchCeilings
 {
-    /// <summary>The largest frame ceiling a caller may pass: 16,777,216 frames, 192 MiB.</summary>
+    /// <summary>The largest frame ceiling a caller may pass: 16,777,216 frames, 192 MiB, and 128 MiB more while they grow to it.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=93BE69
     // Broiler-Human:        PENDING
     internal const int FrameCeilingMaximum = 1 << 24;
 
-    /// <summary>The largest trail ceiling a caller may pass: 33,554,432 cells, 256 MiB.</summary>
+    /// <summary>The largest trail ceiling a caller may pass: 33,554,432 cells, 256 MiB, and 128 MiB more while they grow to it.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BD311A
     // Broiler-Human:        PENDING
     internal const int TrailCeilingMaximum = 1 << 25;

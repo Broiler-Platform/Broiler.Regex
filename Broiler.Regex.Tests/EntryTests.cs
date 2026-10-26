@@ -112,6 +112,30 @@ public class EntryTests
     }
 
     [Fact]
+    public void A_call_s_frames_and_trail_past_the_pooled_length_go_to_the_collector_not_the_shared_pool()
+    {
+        // a* over 100,000 characters holds 100,001 frames (300,003 integers) and 100,000 trail cells (200,000 integers)
+        // at its deepest. Arrays that long are the call's alone: once it ends, renting their lengths from the shared
+        // pool on the same thread finds nothing the call left there and allocates them anew.
+        var program = TestProgram.Compile("a*");
+        var subject = new string('a', 100_000);
+        long frames = 0, trail = 0;
+        ProgramCompilerTests.OnASmallStack(() =>
+        {
+            var slots = new int[program.SlotCount];
+            Assert.Equal(RegexStatus.Match, program.Match(subject, 0, false, slots, null, MachineTests.Ample, out _, out _));
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            GC.KeepAlive(System.Buffers.ArrayPool<int>.Shared.Rent(300_003));
+            frames = GC.GetAllocatedBytesForCurrentThread() - before;
+            before = GC.GetAllocatedBytesForCurrentThread();
+            GC.KeepAlive(System.Buffers.ArrayPool<int>.Shared.Rent(200_000));
+            trail = GC.GetAllocatedBytesForCurrentThread() - before;
+        });
+        Assert.True(frames >= 4L * 300_003, frames + " bytes allocated to rent the frames' length");
+        Assert.True(trail >= 4L * 200_000, trail + " bytes allocated to rent the trail's length");
+    }
+
+    [Fact]
     public void One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone()
     {
         // Bundle sjl-11-001's check A-11 for the new backend: the program is immutable and every call's state is its own.

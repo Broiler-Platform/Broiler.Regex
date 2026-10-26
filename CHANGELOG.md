@@ -76,8 +76,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its
   own exception. The step ceiling is optional;
   the frame and trail ceilings are at least 1 and at most 16,777,216 frames and 33,554,432 trail cells, and both engines
-  pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and trail come from the shared array pool, so a call
-  allocates nothing that grows with the capture count once the pool holds them. The program runs literals, `.`,
+  pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and trail come from the shared array pool, so a
+  call allocates nothing that grows with the capture count once the pool holds them; frames and trail past 65,536
+  integers are allocated for the call and left to the collector, so a call's peak does not stay pooled. The program runs literals, `.`,
   classes (`v`-mode classes of code points included), sequence, alternation, every quantifier form with the
   specification's empty-iteration rule, and the three kinds of group, clearing a quantified atom's captures at each
   iteration; for the constructs of task 2.4b (`^ $ \b \B`, back-references, look-around, modifier groups, the `i` flag,

@@ -118,7 +118,8 @@ internal sealed class RegexProgram
     /// changed by a call, so concurrent calls on one program, and a call the meter makes while it is charged, each answer
     /// as alone; the call's registers, frames and trail are arrays rented from the shared array pool and given back
     /// before it returns, so after the pool holds arrays of the sizes the program needs, a call allocates nothing,
-    /// whatever its capture count.
+    /// whatever its capture count. Frames and trail past <see cref="RegexMachine.PooledLength"/> integers are the call's
+    /// own and go to the collector, so a call that needed many leaves none of them pooled.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>

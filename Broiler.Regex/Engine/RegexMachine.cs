@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   19
-// Annotated:        19/19
+// Relevant units:   21
+// Annotated:        21/21
 // Exempt:           23
-// Human-reviewed:   0/19
+// Human-reviewed:   0/21
 // IP risk:          None
 // Security risk:    High
-// Criteria:         11/6
+// Criteria:         12/6
 // Resource impact:  8/10 max
-// Unverified:       19
+// Unverified:       21
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -41,22 +41,26 @@ namespace Broiler.Regex.Engine;
 /// no reset of its own.
 /// </para>
 /// <para>
-/// <b>Charging.</b> Before it dispatches an instruction the machine adds the instruction's cost to the units spent. When
-/// that passes the step ceiling, the instruction is not dispatched and the call answers
-/// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has been
-/// charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
+/// <b>Charging.</b> Before it dispatches an instruction the machine adds the instruction's cost to the units spent.
+/// When that passes the step ceiling, the instruction is not dispatched and the call answers
+/// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has
+/// been charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
 /// instruction dispatched. So before the k-th unit of work, at least k units have been charged, and the meter is never
-/// more than <see cref="Block"/> - 1 units ahead of the work; the tests of check A-1 read both at every dispatch through
-/// <see cref="DispatchObserver"/>, which the library never sets. The units of one call run on across all its start
-/// positions, with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it.
+/// more than <see cref="Block"/> - 1 units ahead of the work; the tests of check A-1 read both at every dispatch
+/// through <see cref="DispatchObserver"/>, which the library never sets. The units of one call run on across all its
+/// start positions, with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid
+/// for it.
 /// </para>
 /// <para>
-/// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned when
-/// the call ends (<see cref="Release"/>), its exceptions included, so after the pool holds arrays of the sizes a pattern
-/// needs, a call allocates nothing at all, whatever its capture count (requirement R8, bundle <c>sjl-11-001</c>'s check
-/// A-8). The frames and the trail start small and double as a match needs them, never past their ceilings. A rented
-/// array holds whatever its last user left in it; the machine reads only the registers it fills when it starts and the
-/// frames and cells it has written.
+/// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned
+/// when the call ends (<see cref="Release"/>), its exceptions included, so after the pool holds arrays of the sizes a
+/// pattern needs, a call allocates nothing at all, whatever its capture count (requirement R8, bundle
+/// <c>sjl-11-001</c>'s check A-8). The frames and the trail start small and double as a match needs them, never past
+/// their ceilings; past <see cref="PooledLength"/> integers they are allocated for the call alone and left to the
+/// collector, so a call that held many frames or cells leaves none of them pooled (a pooled array stays with the thread
+/// that returned it, or in the pool's per-processor stores, until the pool trims it). While an array doubles, the one
+/// it replaces is held too. An array holds whatever its last user left in it; the machine reads only the registers it
+/// fills when it starts and the frames and cells it has written.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
@@ -78,6 +82,15 @@ internal ref struct RegexMachine
     // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=5491AD
     // Broiler-Human:        PENDING
     internal const ulong Block = 512;
+
+    /// <summary>
+    /// The longest frame or trail array a call takes from the shared array pool and gives back to it: 65,536 integers,
+    /// 256 KiB. A longer one, which only a call holding more than 21,845 frames or 32,768 trail cells needs, is allocated
+    /// for the call alone and left to the collector when it ends, so that one call's peak does not stay pooled after it.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=357418
+    // Broiler-Human:        PENDING
+    internal const int PooledLength = 1 << 16;
 
     private readonly RegexProgram _program;
     private readonly ReadOnlySpan<RegexInstruction> _code;
@@ -138,14 +151,14 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=EA53EB
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=4E288F
     // Broiler-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
     // Broiler-Human:        PENDING
     internal void Release()
     {
         ArrayPool<int>.Shared.Return(_registers);
-        ArrayPool<int>.Shared.Return(_frames);
-        ArrayPool<int>.Shared.Return(_trail);
+        GiveBack(_frames);
+        GiveBack(_trail);
         _registers = _frames = _trail = [];
     }
 
@@ -472,16 +485,26 @@ internal ref struct RegexMachine
         return true;
     }
 
-    /// <summary>A rented array of at least <paramref name="length"/> holding the first <paramref name="used"/> integers of <paramref name="array"/>, which goes back to the pool.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=0392F1
+    /// <summary>An array of at least <paramref name="length"/> holding the first <paramref name="used"/> integers of <paramref name="array"/>, which is given back.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=0810E8
     // Broiler-Falsified-If: a frame or a trail cell held before the growth reads back differently after it
     // Broiler-Human:        PENDING
     private static int[] Grow(int[] array, int used, int length)
     {
-        var grown = ArrayPool<int>.Shared.Rent(length);
+        var grown = length <= PooledLength ? ArrayPool<int>.Shared.Rent(length) : GC.AllocateUninitializedArray<int>(length);
         array.AsSpan(0, used).CopyTo(grown);
-        ArrayPool<int>.Shared.Return(array);
+        GiveBack(array);
         return grown;
+    }
+
+    /// <summary>Gives a frame or trail array back to the shared pool, unless it is longer than <see cref="PooledLength"/>.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=50B28D
+    // Broiler-Falsified-If: an array longer than PooledLength is returned to the shared pool, or one of the pool's own is not
+    // Broiler-Human:        PENDING
+    private static void GiveBack(int[] array)
+    {
+        if (array.Length <= PooledLength)
+            ArrayPool<int>.Shared.Return(array);
     }
 
     /// <summary>Undoes every register write above trail height <paramref name="height"/>, newest first.</summary>
