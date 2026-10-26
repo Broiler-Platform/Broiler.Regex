@@ -190,10 +190,13 @@ internal ref struct RegexMachine
     /// <remarks>
     /// The search is RegExpBuiltinExec's loop (ECMA-262 §22.2.7.2): an attempt at each position from the start, the next
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
-    /// pair it stepped over; the position after the last character is tried too.
+    /// pair it stepped over; the position after the last character is tried too. The start is the caller's, and its
+    /// first attempt reads forward from it: under <c>u</c> and <c>v</c> a start inside a pair reads the pair's low half
+    /// as a lone unit. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that step back is the
+    /// caller's to take before it calls (<see cref="RegexProgram.Match"/>).
     /// </remarks>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=71ADFA
-    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, or under u a search starts inside a surrogate pair it stepped over
+    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a start inside a pair reads the unit before it
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
     {

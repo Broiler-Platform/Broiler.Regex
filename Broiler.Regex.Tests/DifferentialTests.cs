@@ -34,17 +34,17 @@ namespace Broiler.Regex.Tests;
 /// subjects of at most nine units would be the new backend giving up rather than answering.
 /// </para>
 /// <para>
-/// <b>The old backend's defect D1.</b> Under <c>u</c> and <c>v</c>, a start inside a surrogate pair is a position the
-/// new entry reads forward from, so the pair's low half is a character of its own and nothing before the start is read
-/// (Broiler.VM's matcher reads it so; RegExpBuiltinExec's step back to the pair's first unit is the caller's, and
-/// Broiler.VM's realm takes it before calling). The old backend's greedy run of one character gives back across the
-/// start, pairing that low half with the high half before it, so <c>/[\s\S]*\u{1F600}/u</c> from index 1 of
-/// <c>"\u{1F600}ba"</c> answers a match at 1 of the character at 0 (and a group can be captured before the match), while
-/// <c>/(?:[\s\S])*\u{1F600}/u</c>, which takes no run, answers no match. No forward matcher of ECMA-262 §22.2.2 moves
-/// before the index it is called at, so the specification's answer is the new backend's; a test of
-/// <see cref="MachineTests"/> pins it. A case starting inside a pair is therefore compared with the old backend's answer on
-/// a copy of the subject whose unit before the start is no surrogate: what lies before the start cannot change a forward
-/// match, and the copy keeps the old backend from reading it. The first run found seven such disagreements, all D1.
+/// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
+/// reads a start inside a pair forward from the pair's low half, as a lone unit, and reads nothing before it. That is the
+/// entry's contract, under which RegExpBuiltinExec's step back to the pair (ECMA-262 §22.2.7.2, step 13.b) is the
+/// caller's, as Broiler.VM's realm takes it; it is not the specification's answer from such a <c>lastIndex</c>, which
+/// starts at the whole pair (<see cref="SurrogateStartTests"/> holds both). The old backend is inconsistent there, and
+/// that is defect D1: its greedy run of one character gives back across the start and reads the high half before it, so
+/// <c>/[\s\S]*\u{1F600}/u</c> from index 1 of <c>"\u{1F600}ba"</c> answers a match at 1 of the character at 0,
+/// RegExpBuiltinExec's answer by accident, while the same pattern as a loop, <c>/(?:[\s\S])*\u{1F600}/u</c>, does not
+/// step back and answers no match. The comparison is of the entry's contract: a case starting inside a pair is compared
+/// with the old backend's answer on a copy of the subject whose unit before the start is no surrogate, so that neither
+/// backend reads before the start. The first run found seven disagreements, all D1.
 /// </para>
 /// <para>
 /// The sticky flag <c>y</c> is the new entry's anchored argument; the old backend reads it from its flags.
@@ -208,8 +208,8 @@ public class DifferentialTests(ITestOutputHelper output)
                         continue;
                     }
 
-                    // The old backend's defect D1: a start inside a surrogate pair is compared on a copy whose unit before
-                    // the start is no surrogate.
+                    // A start inside a surrogate pair is compared under the entry's contract, on a copy whose unit before
+                    // the start is no surrogate, so that the old backend (defect D1) does not read before it either.
                     var oldSubject = subject;
                     if (unicode && start > 0 && start < subject.Length && char.IsLowSurrogate(subject[start]) && char.IsHighSurrogate(subject[start - 1]))
                     {

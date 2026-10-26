@@ -10,7 +10,9 @@ namespace Broiler.Regex.Tests;
 /// (§22.2.2): each instruction, each quantifier form, the empty-iteration rule, a quantified atom's captures cleared at
 /// each iteration, the order of alternatives and of greedy and lazy choices, counted bounds at their edges, the search and
 /// the anchored match, and a match at the nesting maximum and over a flat sequence of 100,000 terms on a 1 MiB thread. The
-/// answers are the specification's; the examples marked "§22.2.2.3.1" are its notes' own.
+/// answers are the specification's, but for a start inside a surrogate pair, which the specification gives no index of a
+/// matcher's input and the entry reads by its own contract (<see cref="SurrogateStartTests"/>); the examples marked
+/// "§22.2.2.3.1" are its notes' own.
 /// </summary>
 public class MachineTests
 {
@@ -246,22 +248,9 @@ public class MachineTests
     [InlineData("\\uDE00", "", "a\U0001F600", 0, "match 2,3")]
     public void Under_u_a_search_steps_over_a_whole_surrogate_pair_and_a_start_inside_one_reads_a_lone_unit(string pattern, string flags, string subject, int start, string expected)
     {
+        // A start inside a pair is read forward from its low half; the step back to the pair that RegExpBuiltinExec
+        // takes is the caller's (SurrogateStartTests).
         Assert.Equal(expected, Run(pattern, flags, subject, start));
-    }
-
-    [Fact]
-    public void A_quantifier_that_gives_back_never_gives_back_past_the_start_inside_a_surrogate_pair()
-    {
-        // The old backend's defect D1 (DifferentialTests' remarks): its greedy run of one character gave back across a start
-        // inside a pair, joining the low half to the high half before it. No forward matcher of ECMA-262 §22.2.2 moves before
-        // the index it is called at, so the match and every capture begin at or after the start.
-        var smile = "😀";
-        Assert.Equal("nomatch", Run("[\\s\\S]*\\u{1F600}", "u", smile + "ba", 1));      // the old backend: match 1,2
-        Assert.Equal("nomatch", Run("[\\s\\S]?\\u{1F600}", "v", smile + "ba", 1));      // the old backend: match 1,2
-        Assert.Equal("nomatch", Run("(?:[\\s\\S])*\\u{1F600}", "u", smile + "ba", 1));  // the old backend agrees
-        Assert.Equal("match 2,3", Run("[\\s\\S]?[^\\u{1F600}]", "u", "\uD83D" + smile, 2)); // the old backend: nomatch
-        Assert.Equal("match 1,1 - 1,1", Run("(.{2})?\\u{1F600}|()", "u", smile + "bcx", 1));
-        Assert.Equal("match 1,4 3,4", Run("(.)*", "u", smile + "bc", 1));
     }
 
     [Fact]

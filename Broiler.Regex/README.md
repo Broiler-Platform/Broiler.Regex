@@ -204,14 +204,14 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   The new backend's meter, which charges every instruction it dispatches, each tried alternative's
   included (SJL-11.2 task 2.4a, requirement R1), bounds it; the public members reach it at task 2.4c,
   and `Matcher`'s alternation records the defect as its falsifier until then.
-- **A start inside a surrogate pair, under `u` or `v` (the old backend's defect D1).** Task 2.4a's
-  differential test found that the public matcher's greedy run of one character gives back across the
-  start it was called at, joining the pair's low half to the high half before the start:
-  `Match("😀ba", 1)` of `/[\s\S]*\u{1F600}/u` answers a match at 1 of the character at 0, and
-  a group can be captured before the match. The new backend reads the low half as a character of its
-  own and never reads before the start (`MachineTests` pins it); the public members reach it at task
-  2.4c. RegExpBuiltinExec's step back from a `lastIndex` inside a pair is the caller's, as Broiler.VM's
-  realm takes it.
+- **A start inside a surrogate pair, under `u` or `v` (the old backend's defect D1).**
+  RegExpBuiltinExec starts its matcher from a `lastIndex` inside a pair at the whole pair. The
+  public matcher does so only by accident: its greedy run of one character steps back across the
+  start and its general loop does not, so `Match("😀ba", 1)` matches at 1 for `/[\s\S]*\u{1F600}/u`
+  and not for `/(?:[\s\S])*\u{1F600}/u` (`SurrogateStartTests` pins the specification's answers, the
+  rows the public matcher misses skipped until task 2.4c). The new backend's internal entry reads
+  such a start forward from the low half, as a lone unit; the step back to the pair is its caller's,
+  and task 2.4c's route through it takes the step and decides the index the public members report.
 - **The new backend's subset and its missing fast paths (task 2.4a).** Until task 2.4b, the internal
   backend answers "not yet supported" for `^ $ \b \B`, back-references, look-around, modifier groups,
   the `i` flag and `v`-mode classes of strings. Until task 2.4c it has no fast path: a greedy

@@ -280,11 +280,21 @@ child process through the probe's hidden argument `--engine-row` on the declared
 declared status. The probe's report carries the new backend's cases, the flat sequences of 100,000 terms and the
 nesting maximum among them, under Native AOT as under the JIT.
 
-**Found on the way: the old backend's defect D1.** Under `u` or `v`, the old matcher's greedy run of one character
-gives back across a start inside a surrogate pair, joining the low half to the high half before the start, so
-`Match` from such a start can answer a match of a character before it, and a group captured before the match. The new
-backend reads the low half as a character of its own and never reads before the start, the answer of ECMA-262
-§22.2.2's forward matchers; a test pins it. The public members keep the defect until task 2.4c.
+**Found on the way: a start inside a surrogate pair, and the old backend's defect D1.** Under `u` or `v`, ECMA-262's
+matchers read code points, so a code-unit start inside a pair is no index of their input; the only meaning the
+specification gives one is RegExpBuiltinExec's `lastIndex` (§22.2.7.2), whose step 13.b starts the matcher at the whole
+pair and whose `"index"` is `lastIndex` itself. The new backend's entry reads such a start forward from the low half, as
+a lone unit, and reads nothing before it: that is its contract, and the step back to the pair is its caller's, as
+Broiler.VM's realm takes it (JSD-0081's X6 keeps the step in `RegExpMatchOne`). With the step the entry answers as
+RegExpBuiltinExec does (`SurrogateStartTests`); without it, it does not, and this record's first reading, that its
+answer was §22.2.2's, was wrong. The old backend is inconsistent, and that is defect D1: its greedy run of one character
+steps back across the start and its general loop does not, so `/[\s\S]*\u{1F600}/u` from 1 of `"😀ba"` matches at 1 and
+`/(?:[\s\S])*\u{1F600}/u` does not. **Task 2.4c's obligation:** the route of `BroilerRegex.Match(input, start)` to the
+entry steps back to the pair before it calls, and decides the index the public members report from such a start:
+`lastIndex`, as the specification's text and JSD-0081's row M4 have it for a non-empty match, or the pair's start, as
+Broiler.VM's realm and V8 report today (row M4 lists Broiler.VM's as that family's defect), with decision D41's empty
+match apart. Its CHANGELOG lists the answers that change from such a start (rows 2 and 4 of `SurrogateStartTests`,
+skipped until then). SJL-11.4's and SJL-11.5's adapters take the step for their engines.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
