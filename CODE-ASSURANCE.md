@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 23 |
 | Files not covered | 0 |
 | Files carrying an annotation | 23 |
-| Code units | 592 |
-| Relevant | 333 |
-| Exempt by predicate | 259 |
-| Annotated | 333 of 333 (100%) |
-| Human reviewed | 0 of 333 (0%) |
-| Unverified | 333 |
+| Code units | 594 |
+| Relevant | 334 |
+| Exempt by predicate | 260 |
+| Annotated | 334 of 334 (100%) |
+| Human reviewed | 0 of 334 (0%) |
+| Unverified | 334 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 333 |
+| HUMAN_PENDING | 334 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 259 |
+| EXEMPT | 260 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 193 |
+| None | 195 |
 | Low | 151 |
 | Medium | 0 |
 | High | 0 |
@@ -54,9 +54,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 19 |
-| Low | 93 |
+| Low | 94 |
 | Medium | 85 |
-| High | 147 |
+| High | 148 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -65,8 +65,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Metric | Value |
 |---|---:|
 | Maximum | 8 / 10 |
-| Average over annotated units | 2.0 / 10 |
-| Units scored | 333 |
+| Average over annotated units | 2.1 / 10 |
+| Units scored | 334 |
 
 ## High-security review areas
 
@@ -81,6 +81,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.CompileWithBackend(string, RegexFlags, IUnicodeTables, int, bool, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
+- `Broiler.Regex.BroilerRegex.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
@@ -222,8 +223,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 213 |
-| Units required to carry one | 147 |
+| Units carrying a criterion | 214 |
+| Units required to carry one | 148 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -243,7 +244,7 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 42 |
+| TrivialPropertyOrAccessor | 43 |
 | ParameterAssigningConstructor | 8 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
@@ -274,7 +275,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-592 of them, exempt and relevant alike - with the fingerprint of its declaration.
+594 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

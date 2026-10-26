@@ -179,10 +179,11 @@ public class EntryTests
     [Fact]
     public void A_call_s_frames_and_trail_past_the_pooled_length_go_to_the_collector_not_the_shared_pool()
     {
-        // a* over 100,000 characters holds 100,001 frames (300,003 integers) and 100,000 trail cells (200,000 integers)
-        // at its deepest. Arrays that long are the call's alone: once it ends, renting their lengths from the shared
-        // pool on the same thread finds nothing the call left there and allocates them anew.
-        var program = TestProgram.Compile("a*");
+        // a* over 100,000 characters, as the general lowering's loop (task 2.4c's run holds one frame and no cell), holds
+        // 100,001 frames and 100,000 trail cells at its deepest. Arrays that long are the call's alone: once it ends,
+        // renting their lengths from the shared pool on the same thread finds nothing the call left there and allocates
+        // them anew.
+        var program = TestProgram.General("a*");
         var subject = new string('a', 100_000);
         long frames = 0, trail = 0;
         ProgramCompilerTests.OnASmallStack(() =>

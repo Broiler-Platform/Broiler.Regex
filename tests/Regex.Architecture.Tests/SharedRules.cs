@@ -856,15 +856,28 @@ internal static class SharedRules
     private static readonly string[] ObjectMachinery = [".Equals(System.Object) method ", ".get_EqualityContract() method ", ".PrintMembers(System.Text.StringBuilder) method "];
 
     /// <summary>
+    /// The members the runtime gives every delegate type, which a library's own delegate (convention 1 admits the
+    /// <c>RegexWorkCharge</c> meter of decision D9) cannot leave out: its constructor names <c>object</c>, and the
+    /// asynchronous pair <c>IAsyncResult</c>, <c>AsyncCallback</c> and <c>object</c>, because the platform does.
+    /// </summary>
+    private static readonly string[] DelegateMachinery = ["..ctor(System.Object, System.IntPtr) method ", ".BeginInvoke(", ".EndInvoke(System.IAsyncResult) method "];
+
+    /// <summary>
     /// C1 over a public API listing: every line that names a type convention 1 keeps out. A listing line names the
     /// library's own type or member first, under the library's namespace, so the base class library types it
-    /// names are its signature's.
+    /// names are its signature's. The machinery of the library's own delegate types is left out, as the record
+    /// machinery is; a signature that takes or answers such a delegate names the library's type, which C1 passes.
     /// </summary>
-    internal static IEnumerable<string> C1(string assembly, IReadOnlyList<string> listing) =>
-        listing
+    internal static IEnumerable<string> C1(string assembly, IReadOnlyList<string> listing)
+    {
+        var delegates = listing.Where(static line => line.EndsWith(" delegate", StringComparison.Ordinal))
+            .Select(static line => line[..^" delegate".Length]).ToHashSet(StringComparer.Ordinal);
+        return listing
             .Where(static line => !ObjectMachinery.Any(m => line.Contains(m, StringComparison.Ordinal)))
+            .Where(line => !delegates.Any(type => DelegateMachinery.Any(m => line.StartsWith(type + m, StringComparison.Ordinal))))
             .Where(static line => NonNeutralType.IsMatch(line))
             .Select(line => assembly + " names a base class library collection, delegate, object or Type in a public signature: " + line);
+    }
 
     /// <summary>
     /// C3 over a public API listing: every public type that derives from an exception. Convention 3 makes an

@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 333 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 334 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 23 |
-| Code units | 592 |
-| Relevant | 333 |
-| Exempt | 259 |
-| Assessed | 333 of 333 (100%) |
-| Human reviewed | 0 of 333 (0%) |
-| Unverified | 333 |
+| Code units | 594 |
+| Relevant | 334 |
+| Exempt | 260 |
+| Assessed | 334 of 334 (100%) |
+| Human reviewed | 0 of 334 (0%) |
+| Unverified | 334 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 333 |
+| HUMAN_PENDING | 334 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 259 |
+| EXEMPT | 260 |
 
 ## 5. Aliases In The Tree
 
@@ -88,7 +88,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Ast/CharSet.cs` | 28 | 15 | 13 | 15 | Low | High | 7/3 |
 | `Broiler.Regex/Ast/CodePointSet.cs` | 24 | 20 | 4 | 20 | Low | Medium | 9/0 |
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
-| `Broiler.Regex/BroilerRegex.cs` | 19 | 13 | 6 | 13 | Low | High | 13/13 |
+| `Broiler.Regex/BroilerRegex.cs` | 21 | 14 | 7 | 14 | Low | High | 14/14 |
 | `Broiler.Regex/Compiling/ProgramCompiler.cs` | 60 | 33 | 27 | 33 | None | High | 20/18 |
 | `Broiler.Regex/Engine/RegexInstruction.cs` | 8 | 1 | 7 | 1 | None | Medium | 1/0 |
 | `Broiler.Regex/Engine/RegexMachine.cs` | 67 | 41 | 26 | 41 | None | High | 29/16 |
@@ -140,19 +140,21 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
 - `Broiler.Regex.BroilerRegex.OnTheNewBackend(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `27F296`, PENDING
   - Falsified if: an instance this answers matches through the old backend's continuations, or refuses a pattern the public constructor accepts
-- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `7D227B`, PENDING
+- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `5C956B`, PENDING
   - Falsified if: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
 - `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `3A9104`, PENDING
   - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
 - `Broiler.Regex.BroilerRegex.CompileWithBackend(string, RegexFlags, IUnicodeTables, int, bool, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `B25379`, PENDING
   - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups answers Success on either backend, or one of 511 answers LimitExceeded
+- `Broiler.Regex.BroilerRegex.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `DF6AB2`, PENDING
+  - Falsified if: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 groups allocates once the pool is warm
 - `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `A4E4CD`, PENDING
   - Falsified if: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `FC8D95`, PENDING
   - Falsified if: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start
 - `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `9A30B2`, PENDING
   - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
-- `Broiler.Regex.BroilerRegex.Run(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `081BFB`, PENDING
+- `Broiler.Regex.BroilerRegex.Run(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `55E18E`, PENDING
   - Falsified if: an instance built on the new backend's route matches through the old backend's continuations, or one the public members built through the new backend's program
 - `Broiler.Regex.BroilerRegex.RunProgram(RegexProgram, string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41, `43A7CE`, PENDING
   - Falsified if: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0 or throws, or a sticky instance finds a match after its start
@@ -224,9 +226,9 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a call holds one frame more than its frame ceiling, answers LimitExceeded holding fewer, or a choice's frame is pushed with a mark
 - `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `46CC5B`, PENDING
   - Falsified if: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
-- `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=JSD-0081 decisions D8 and D10, `25E98E`, PENDING
+- `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=JSD-0081 decisions D8 and D10, `0B6794`, PENDING
   - Falsified if: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
-- `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `D25D08`, PENDING
+- `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `1B8BFB`, PENDING
   - Falsified if: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
 - `Broiler.Regex.Engine.RegexProgram` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, Spec=JSD-0081 decisions D5 and D8, `E22681`, PENDING
   - Falsified if: two threads matching one program at the same time answer differently from one thread matching it twice, or a match call writes a field of the program
@@ -434,5 +436,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-333 of the 333 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+334 of the 334 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

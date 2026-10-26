@@ -699,9 +699,11 @@ public class SharedRuleTests
         Assert.Contains(violations, static v => v.EndsWith("Witness.Api.Box(System.Object) method static System.Int32", StringComparison.Ordinal));
 
         // The neutral member and the record's own machinery, which names object and Type because the platform
-        // does, are not refused.
+        // does, are not refused; nor is the library's own delegate, its runtime-made members or a member taking it.
         Assert.DoesNotContain(violations, static v => v.Contains("Witness.Api.Length(", StringComparison.Ordinal));
         Assert.DoesNotContain(violations, static v => v.Contains("Witness.Span.", StringComparison.Ordinal));
+        Assert.DoesNotContain(violations, static v => v.Contains("Witness.Meter", StringComparison.Ordinal));
+        Assert.Equal(3, violations.Count);
     }
 
     [Fact]

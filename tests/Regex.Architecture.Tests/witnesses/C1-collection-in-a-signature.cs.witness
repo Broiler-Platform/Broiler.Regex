@@ -1,6 +1,8 @@
 // C1 witness: public signatures that name a collection, a delegate that runs the caller's code, and object, which
-// convention 1 keeps out; a neutral one; and a record, whose compiler-made members name object and Type because
-// the platform does. Check C1 must report the first three and pass the rest.
+// convention 1 keeps out; a neutral one; a record, whose compiler-made members name object and Type because the
+// platform does; and the library's own delegate, a meter, whose runtime-made members name object, IAsyncResult and
+// AsyncCallback for the same reason, with a member that takes it. Check C1 must report the first three and pass the
+// rest.
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +17,14 @@ public static class Api
     public static int Box(object value) => value is int i ? i : 0;
 
     public static int Length(ReadOnlySpan<char> text) => text.Length;
+
+    public static int Metered(ReadOnlySpan<char> text, Meter? meter)
+    {
+        meter?.Invoke((ulong)text.Length);
+        return text.Length;
+    }
 }
+
+public delegate void Meter(ulong units);
 
 public readonly record struct Span(int Start, int End);

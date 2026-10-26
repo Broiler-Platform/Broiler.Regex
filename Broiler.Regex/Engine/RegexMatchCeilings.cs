@@ -40,6 +40,12 @@ namespace Broiler.Regex.Engine;
 /// <c>(?:ab){1048576}</c>.
 /// </para>
 /// <para>
+/// <b>Public since task 2.4c, provisional</b>, with the offset entry that takes it,
+/// <see cref="BroilerRegex.Match(ReadOnlySpan{char}, int, bool, Span{int}, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)"/>;
+/// task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>, its namespace included. The default value is no set of
+/// ceilings: the entry refuses it as a broken precondition, so a caller always states its frame and trail ceilings.
+/// </para>
+/// <para>
 /// <b>The argument rules.</b> A ceiling below one is the caller's broken precondition, an
 /// <see cref="ArgumentOutOfRangeException"/> (convention 3), and so is a frame or trail ceiling above the library's
 /// maximum, <see cref="FrameCeilingMaximum"/> or <see cref="TrailCeilingMaximum"/>. The maxima bound the memory one
@@ -54,39 +60,39 @@ namespace Broiler.Regex.Engine;
 /// and the trail grow as a match needs them.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D10; IP=None; Security=High; Resources=2; Fingerprint=25E98E
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D10; IP=None; Security=High; Resources=2; Fingerprint=0B6794
 // Broiler-Falsified-If: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
 // Broiler-Human:        PENDING
-internal readonly struct RegexMatchCeilings
+public readonly struct RegexMatchCeilings
 {
     /// <summary>The largest frame ceiling a caller may pass: 16,777,216 frames, 256 MiB, and 128 MiB more while they grow to it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=93BE69
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BF24C1
     // Broiler-Human:        PENDING
-    internal const int FrameCeilingMaximum = 1 << 24;
+    public const int FrameCeilingMaximum = 1 << 24;
 
     /// <summary>The largest trail ceiling a caller may pass: 33,554,432 cells, 256 MiB, and 128 MiB more while they grow to it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BD311A
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=47EA6F
     // Broiler-Human:        PENDING
-    internal const int TrailCeilingMaximum = 1 << 25;
+    public const int TrailCeilingMaximum = 1 << 25;
 
     /// <summary>The frame ceiling both engines pass (decision D10): Broiler.VM's <c>MaximumFrames</c>, 1,048,576.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=19A109
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=F36971
     // Broiler-Human:        PENDING
-    internal const int EngineFrames = 1 << 20;
+    public const int EngineFrames = 1 << 20;
 
     /// <summary>The trail ceiling both engines pass (decision D10): Broiler.VM's <c>MaximumTrail</c>, 2,097,152.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=139B81
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=9B2F10
     // Broiler-Human:        PENDING
-    internal const int EngineTrail = 1 << 21;
+    public const int EngineTrail = 1 << 21;
 
     /// <summary>Ceilings of <paramref name="steps"/> units, or none, <paramref name="frames"/> frames and <paramref name="trail"/> trail cells.</summary>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="steps"/> is zero, or <paramref name="frames"/> or <paramref name="trail"/> is below one or above its maximum.
     /// </exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=D25D08
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=1B8BFB
     // Broiler-Falsified-If: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
     // Broiler-Human:        PENDING
-    internal RegexMatchCeilings(ulong? steps, int frames, int trail)
+    public RegexMatchCeilings(ulong? steps, int frames, int trail)
     {
         if (steps == 0)
             throw new ArgumentOutOfRangeException(nameof(steps), "A step ceiling, when there is one, is at least one unit.");
@@ -100,18 +106,18 @@ internal readonly struct RegexMatchCeilings
     }
 
     /// <summary>The ceilings both engines pass (decision D10): no step ceiling, <see cref="EngineFrames"/> and <see cref="EngineTrail"/>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=7F531A
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=6DC9DE
     // Broiler-Human:        PENDING
-    internal static RegexMatchCeilings Engines => new(null, EngineFrames, EngineTrail);
+    public static RegexMatchCeilings Engines => new(null, EngineFrames, EngineTrail);
 
     /// <summary>The units a call may do, or null for no step ceiling.</summary>
-    internal ulong? Steps { get; }
+    public ulong? Steps { get; }
 
     /// <summary>The backtrack frames a call may hold at once.</summary>
-    internal int Frames { get; }
+    public int Frames { get; }
 
     /// <summary>The trail cells a call may hold at once.</summary>
-    internal int Trail { get; }
+    public int Trail { get; }
 
     /// <summary>Whether the ceilings were made by the constructor: the default value, whose frame ceiling is zero, was not.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=530DC2
