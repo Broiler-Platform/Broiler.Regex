@@ -185,7 +185,8 @@ internal sealed class RegexProgram
     /// <param name="units">The units of work the call did, which the meter was charged for before they were done.</param>
     /// <returns><see cref="RegexStatus.Match"/>, <see cref="RegexStatus.NoMatch"/> or <see cref="RegexStatus.LimitExceeded"/>.</returns>
     /// <remarks>
-    /// <b>The entry of R7 and R8, internal until task 2.4c</b> routes <see cref="BroilerRegex"/> through it. A broken
+    /// <b>The entry of R7 and R8</b>, which <see cref="BroilerRegex"/>'s public offset entry and its string-bearing
+    /// members call since task 2.4c; this one also reports the units a call did, which tests and the probe read. A broken
     /// precondition, the caller's (convention 3), is an exception; every other answer is a status. The program is not
     /// changed by a call, so concurrent calls on one program, and a call the meter makes while it is charged, each answer
     /// as alone; the call's registers, frames and trail are arrays rented from the shared array pool and given back

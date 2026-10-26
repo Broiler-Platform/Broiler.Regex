@@ -34,8 +34,9 @@ namespace Broiler.Regex.Engine;
 /// stops there. So a loop that holds no choice still fills the trail: a counted quantifier writes its iteration's mark
 /// and its count, two cells an iteration that consumes, and under the engines' ceilings <c>a{1048575}</c> matches where
 /// <c>a{1048576}</c> answers <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Trail"/> in the general
-/// lowering. Broiler.VM's trail keeps every write as well; the old backend, which the public members use until task
-/// 2.4c, matches past it. Since task 2.4c a quantifier over one character is a run, one instruction holding one frame
+/// lowering. Broiler.VM's trail keeps every write as well; the old backend, which the public members used before task
+/// 2.4c, matched past it, and the string-bearing members, which pass the engines' ceilings since, answer the ceiling
+/// there. Since task 2.4c a quantifier over one character is a run, one instruction holding one frame
 /// and writing no cell, so the bound is a loop's over a body of more than one character, such as
 /// <c>(?:ab){1048576}</c>.
 /// </para>

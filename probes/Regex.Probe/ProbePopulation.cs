@@ -312,6 +312,8 @@ internal static class ProbePopulation
 
     private static string Render(BroilerRegex regex, RegexMatch match)
     {
+        if (match.Limit != RegexLimit.None)
+            return "limit:" + (match.Limit == RegexLimit.Frames ? "frames" : match.Limit == RegexLimit.Trail ? "trail" : "steps");
         if (!match.Success)
             return "nomatch";
 

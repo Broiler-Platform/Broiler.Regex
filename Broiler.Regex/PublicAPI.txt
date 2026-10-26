@@ -132,6 +132,7 @@ Broiler.Regex.Matching.RegexMatch.Empty field static readonly Broiler.Regex.Matc
 Broiler.Regex.Matching.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Matching.RegexGroup>
 Broiler.Regex.Matching.RegexMatch.get_Index() method System.Int32
 Broiler.Regex.Matching.RegexMatch.get_Length() method System.Int32
+Broiler.Regex.Matching.RegexMatch.get_Limit() method Broiler.Regex.RegexLimit
 Broiler.Regex.Matching.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>
 Broiler.Regex.Matching.RegexMatch.get_Success() method System.Boolean
 Broiler.Regex.Matching.RegexMatch.get_Value() method System.String

@@ -219,8 +219,16 @@ public class DifferentialTests(ITestOutputHelper output)
         Assert.True(tally.Compared >= 170_000, "the generated population compared only " + tally.Compared + " cases");
     }
 
-    /// <summary>The old backend's answer in the form <see cref="MachineTests.Render"/> gives the new one's.</summary>
+    /// <summary>
+    /// The old backend's answer in the form <see cref="MachineTests.Render"/> gives the new one's, from an instance of the
+    /// internal route that keeps it (<c>BroilerRegex.OnTheOldBackend</c>); the public members use the new backend since
+    /// task 2.4c.
+    /// </summary>
     internal static string Old(BroilerRegex regex, string subject, int start) => Render(regex.Match(subject, start));
+
+    /// <summary>An instance of the internal route that keeps the old backend until task 2.4c deletes it.</summary>
+    internal static BroilerRegex OldBackend(string pattern, string flags) =>
+        BroilerRegex.OnTheOldBackend(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance);
 
     /// <summary>A public match in the form <see cref="MachineTests.Render"/> gives the new backend's answer.</summary>
     private static string Render(RegexMatch? match)
@@ -458,7 +466,7 @@ public class DifferentialTests(ITestOutputHelper output)
             RegexProgram? program;
             try
             {
-                old = TestRegex.Compile(pattern, flags);
+                old = BroilerRegex.OnTheOldBackend(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance);
                 if (ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out program) != ProgramCompilation.Compiled)
                 {
                     NoProgram++;

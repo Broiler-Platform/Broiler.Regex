@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   4
-// Annotated:        4/4
-// Exempt:           13
-// Human-reviewed:   0/4
+// Relevant units:   9
+// Annotated:        9/9
+// Exempt:           14
+// Human-reviewed:   0/9
 // IP risk:          None
 // Security risk:    Low
-// Criteria:         2/0
+// Criteria:         3/0
 // Resource impact:  1/10 max
-// Unverified:       4
+// Unverified:       9
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -52,8 +52,8 @@ public sealed class RegexGroup
 }
 
 /// <summary>
-/// The result of a match attempt. <see cref="Success"/> is false for no match.
-/// <c>Groups[0]</c> is the whole match; <c>Groups[1..]</c> are the capturing
+/// The result of a match attempt. <see cref="Success"/> is false for no match, and for a match that reached a ceiling,
+/// which <see cref="Limit"/> then names. <c>Groups[0]</c> is the whole match; <c>Groups[1..]</c> are the capturing
 /// groups in ECMAScript (source) order.
 /// </summary>
 // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=DA2CD8
@@ -68,6 +68,17 @@ public sealed class RegexMatch
     public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }
 
     /// <summary>
+    /// The ceiling the match reached, <see cref="RegexLimit.Frames"/> or <see cref="RegexLimit.Trail"/>, when it
+    /// stopped there with no answer; <see cref="RegexLimit.None"/> for a match and for no match (requirement R1:
+    /// exhaustion is its own answer, never no match).
+    /// </summary>
+    /// <remarks>
+    /// <b>Provisional</b>, new in task 2.4c of SJL-11.2 with the string-bearing members' move to the new backend; task
+    /// 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.
+    /// </remarks>
+    public RegexLimit Limit { get; }
+
+    /// <summary>
     /// The no-match result, which every call that finds no match answers. Nothing reachable from it can change: its
     /// groups are an empty array and its named groups an empty read-only dictionary (convention 7).
     /// </summary>
@@ -76,6 +87,39 @@ public sealed class RegexMatch
     // Broiler-Human:        PENDING
     public static readonly RegexMatch Empty =
         new(false, -1, 0, "", Array.Empty<RegexGroup>(), ReadOnlyDictionary<string, RegexGroup>.Empty);
+
+    /// <summary>The failed match of a call that reached <paramref name="limit"/>, one shared instance for each ceiling.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=771ACF
+    // Broiler-Falsified-If: the match answered for a ceiling reports Success as true, a Limit of None or another ceiling's, or a non-empty Groups list
+    // Broiler-Human:        PENDING
+    internal static RegexMatch Exceeded(RegexLimit limit) => limit switch
+    {
+        RegexLimit.Frames => FramesExceeded,
+        RegexLimit.Trail => TrailExceeded,
+        RegexLimit.Steps => StepsExceeded,
+        _ => throw new ArgumentOutOfRangeException(nameof(limit), limit, "A match stops only at a step, frame or trail ceiling."),
+    };
+
+    /// <summary>The failed match of a call that reached the frame ceiling.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A6FDF3
+    // Broiler-Human:        PENDING
+    private static readonly RegexMatch FramesExceeded = new(RegexLimit.Frames);
+
+    /// <summary>The failed match of a call that reached the trail ceiling.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B18928
+    // Broiler-Human:        PENDING
+    private static readonly RegexMatch TrailExceeded = new(RegexLimit.Trail);
+
+    /// <summary>The failed match of a call that reached a step ceiling, which the string-bearing members do not set.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=83D4EE
+    // Broiler-Human:        PENDING
+    private static readonly RegexMatch StepsExceeded = new(RegexLimit.Steps);
+
+    /// <summary>A failed match naming <paramref name="limit"/>, with no groups, as <see cref="Empty"/> has none.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=881BBA
+    // Broiler-Human:        PENDING
+    private RegexMatch(RegexLimit limit)
+        : this(false, -1, 0, "", Array.Empty<RegexGroup>(), ReadOnlyDictionary<string, RegexGroup>.Empty) => Limit = limit;
 
     internal RegexMatch(bool success, int index, int length, string value,
         IReadOnlyList<RegexGroup> groups, IReadOnlyDictionary<string, RegexGroup> namedGroups)

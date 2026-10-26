@@ -4,9 +4,10 @@ namespace Broiler.Regex.Tests;
 
 /// <summary>
 /// The old backend's defects the differential comparison of task 2.4b found (<see cref="DifferentialTests.Defects"/>), D2
-/// and JSD-0081's row M7, each pinned to the specification's answer: the new backend gives it, and the public members,
-/// which run the old backend until task 2.4c routes them through the new one, are shown to give another. The roadmap's record of task 2.4b names each. Expected answers agree with V8's
-/// (Node 22).
+/// and JSD-0081's row M7, each pinned to the specification's answer: the new backend gives it, through the offset entry
+/// and, since task 2.4c, through the public string-bearing members, and the old backend, kept on an internal route until
+/// task 2.4c deletes it, is shown to give another. The roadmap's record of task 2.4b names each. Expected answers agree
+/// with V8's (Node 22). Defect D1's rows are <see cref="SurrogateStartTests"/>'.
 /// </summary>
 public class OldBackendDefectTests
 {
@@ -30,6 +31,7 @@ public class OldBackendDefectTests
         // its single characters, so the empty string wins where a character would.
         _ = old;
         Assert.Equal(specification, MachineTests.Run(pattern, flags, subject, start));
+        Assert.Equal(specification, TestRegex.Answer(TestRegex.Compile(pattern, flags), subject, start));
     }
 
     [Fact]
@@ -43,14 +45,17 @@ public class OldBackendDefectTests
         Assert.Equal("nomatch", MachineTests.Run("(?<=\\1(.))x", "u", "\uD83D\uDE00\uDE00x"));
         Assert.Equal("nomatch", MachineTests.Run("(?<=\\1bar(.+))foo", "u", "\uD834\uDC00bar\uDC00foo"));
         Assert.Equal("match 3,4 2,3", MachineTests.Run("(?<=\\1(.))x", "", "\uD83D\uDE00\uDE00x"));
+        Assert.Equal("nomatch", TestRegex.Answer(TestRegex.Compile("(?<=\\1(.))x", "u"), "\uD83D\uDE00\uDE00x", 0));
+        Assert.Equal("nomatch", TestRegex.Answer(TestRegex.Compile("(?<=\\1bar(.+))foo", "u"), "\uD834\uDC00bar\uDC00foo", 0));
+        Assert.Equal("match 3,4 2,3", TestRegex.Answer(TestRegex.Compile("(?<=\\1(.))x"), "\uD83D\uDE00\uDE00x", 0));
     }
 
     [Fact]
     public void M7_the_old_backend_compares_the_code_units_that_end_at_the_index()
     {
         // The defect as it stands, so that the record is of an answer the old backend gives; task 2.4c deletes it.
-        Assert.Equal("match 3,4 2,3", DifferentialTests.Old(TestRegex.Compile("(?<=\\1(.))x", "u"), "\uD83D\uDE00\uDE00x", 0));
-        Assert.Equal("match 6,9 5,6", DifferentialTests.Old(TestRegex.Compile("(?<=\\1bar(.+))foo", "u"), "\uD834\uDC00bar\uDC00foo", 0));
+        Assert.Equal("match 3,4 2,3", DifferentialTests.Old(DifferentialTests.OldBackend("(?<=\\1(.))x", "u"), "\uD83D\uDE00\uDE00x", 0));
+        Assert.Equal("match 6,9 5,6", DifferentialTests.Old(DifferentialTests.OldBackend("(?<=\\1bar(.+))foo", "u"), "\uD834\uDC00bar\uDC00foo", 0));
     }
 
     [Theory]
@@ -59,6 +64,6 @@ public class OldBackendDefectTests
     {
         // The defect as it stands, so that the record is of an answer the old backend gives; task 2.4c deletes it.
         Assert.NotEqual(specification, old);
-        Assert.Equal(old, DifferentialTests.Old(TestRegex.Compile(pattern, flags), subject, start));
+        Assert.Equal(old, DifferentialTests.Old(DifferentialTests.OldBackend(pattern, flags), subject, start));
     }
 }

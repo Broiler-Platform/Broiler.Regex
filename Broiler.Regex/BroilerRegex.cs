@@ -9,7 +9,7 @@
 // Human-reviewed:   0/14
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         14/14
+// Criteria:         13/13
 // Resource impact:  8/10 max
 // Unverified:       14
 //
@@ -33,8 +33,17 @@ namespace Broiler.Regex;
 /// <remarks>
 /// <para>
 /// Compilation is reusable and the compiled form is immutable, so a single
-/// instance may be matched concurrently from multiple threads (each match
-/// attempt allocates its own state and step budget).
+/// instance may be matched concurrently from multiple threads (each call
+/// rents its own registers, frames and trail).
+/// </para>
+/// <para>
+/// <b>One backend.</b> Since task 2.4c every member matches through the program of the new backend: the offset entry,
+/// <see cref="Match(ReadOnlySpan{char}, int, bool, Span{int}, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)"/>,
+/// with the caller's meter and ceilings, and the string-bearing members, <see cref="Match(string, int)"/>,
+/// <see cref="IsMatch"/> and <see cref="Matches"/>, which decision D12 keeps for their existing consumers, under the
+/// policy decision D10 sets for an engine that passes no meter: no meter, no step ceiling, and the engines' frame and
+/// trail ceilings (<see cref="RegexMatchCeilings.Engines"/>). A pattern that backtracks catastrophically runs to its
+/// answer there; a caller that needs a bound on the work passes a meter or a step ceiling to the offset entry.
 /// </para>
 /// <para>
 /// <b>Unicode data is the caller's</b> (requirement R11, decision D11 of Broiler.VM's JSD-0081): compilation
@@ -64,14 +73,12 @@ public sealed class BroilerRegex
     /// <b>What is proven at this maximum, on linux-x64.</b> A pattern of every shape measured, nested to this maximum,
     /// parses and compiles on a 1 MiB thread under the JIT, in Release and in Debug, and under Native AOT, and one level
     /// past it is refused with the nesting status, never a stack overflow: decision D6's bound on the parser and the
-    /// compiler (<c>NestingMaximumTests</c>; the Native AOT probe's N cases). Matching at this maximum is proven only for
-    /// the shapes <c>NestingMaximumTests.MatchedShapes</c> lists: each kind of level alone, and an alternation, a sequence
-    /// or an alternation of sequences on each level without a capture. This type's matcher, the continuations of
-    /// <c>Matching/</c>, recurses per level and per term of a sequence until task 2.4c routes matching through the new
-    /// backend of task 2.4a, which has no CLR recursion (check A-4's matcher half), so a pattern within this maximum
-    /// whose levels each hold a capture with a sequence, an alternation, a back-reference, an assertion or a quantifier
-    /// can exhaust a 1 MiB stack here, ending the process or throwing <see cref="RegexOverflowException"/>; the README
-    /// lists them, and the new backend matches each it runs. win-x64 was not measured; the maximum is proven on linux-x64 only.
+    /// compiler (<c>NestingMaximumTests</c>; the Native AOT probe's N cases). Matching at this maximum is the new
+    /// backend's since task 2.4c, which has no CLR recursion (check A-4's matcher half): every shape measured, those of
+    /// <c>NestingMaximumTests.MatchedShapes</c> and of <c>UnprovenShapes</c> alike, matches at this maximum on a 1 MiB
+    /// thread, whatever its levels hold. Before task 2.4c the old backend's continuations recursed per level and per
+    /// term of a sequence, and the second list's shapes could exhaust a 1 MiB stack. win-x64 was not measured; the
+    /// maximum is proven on linux-x64 only.
     /// </para>
     /// <para>
     /// <b>Measured, with the margin stated.</b> At the review of task 2.3 of SJL-11.2, on linux-x64, a scratch tool
@@ -87,7 +94,7 @@ public sealed class BroilerRegex
     /// depth that passed for the worst shape was 1,164 under the JIT in Release (modifier groups), 738 in Debug
     /// (complemented property classes under <c>vi</c>) and 2,830 under Native AOT (the same): this maximum is the
     /// largest power of two at most half the first, and the limit both engines pass (decision D7), a margin of 2.27 in
-    /// Release, 1.44 in Debug and 5.53 under Native AOT. Matching, the worst shape measured, a repeated capture around
+    /// Release, 1.44 in Debug and 5.53 under Native AOT. Matching on the old backend, the worst shape measured, a repeated capture around
     /// an alternation of sequences with a back-reference and an assertion on each level, first failed at 465 levels in
     /// Release, 321 in Debug and 1,463 under Native AOT: below this maximum under the JIT. Every shape was then run at
     /// this maximum, 24 times in Release, 6 in Debug and twice under Native AOT: every one parsed and compiled every
@@ -106,15 +113,12 @@ public sealed class BroilerRegex
     public const int MaximumNestingLimit = 512;
 
     /// <summary>
-    /// The old backend's matcher, the continuations of <c>Matching/</c>, which the string-bearing members of an instance
-    /// the public constructors and <see cref="Compile"/> build still use; null on the new backend's internal route.
+    /// The old backend's matcher, the continuations of <c>Matching/</c>, on the internal route that keeps it until task
+    /// 2.4c deletes it (<see cref="OnTheOldBackend"/>); null on every instance the public members build.
     /// </summary>
     private readonly Matcher? _matcher;
 
-    /// <summary>
-    /// The new backend's program, which every instance holds since task 2.4c: the offset entry runs it, and the
-    /// string-bearing members of an instance built on the internal route (<see cref="OnTheNewBackend"/>).
-    /// </summary>
+    /// <summary>The new backend's program, which every member runs since task 2.4c.</summary>
     private readonly RegexProgram _program;
 
     public string Pattern { get; }
@@ -165,37 +169,36 @@ public sealed class BroilerRegex
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=807242
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=B3D876
     // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
-        : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheNewBackend: false)
+        : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheOldBackend: false)
     {
     }
 
     /// <summary>
-    /// The internal route of task 2.4b through the new backend: an instance that parses as the public constructor does
-    /// and matches through the program of <see cref="ProgramCompiler"/> rather than the old backend's continuations, so
-    /// that the test suite runs every behaviour test on both backends, the same tests unchanged (plan row 2.4b, "the old
-    /// suite's cases pass"). Task 2.4c makes it the public members' only route and deletes the old backend.
+    /// The internal route that keeps the old backend for the comparison with it, until task 2.4c's deletion: an instance
+    /// that parses and compiles as the public constructor does, and whose string-bearing members match through the old
+    /// backend's continuations rather than the program, as the public members did before task 2.4c.
     /// </summary>
     /// <exception cref="RegexSyntaxException">As the public constructor throws it.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=7; Fingerprint=27F296
-    // Broiler-Falsified-If: an instance this answers matches through the old backend's continuations, or refuses a pattern the public constructor accepts
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=7; Fingerprint=34C1CF
+    // Broiler-Falsified-If: an instance this answers matches its string-bearing members through the new backend's program, or refuses a pattern the public constructor accepts
     // Broiler-Human:        PENDING
-    internal static BroilerRegex OnTheNewBackend(string pattern, RegexFlags flags, IUnicodeTables tables) =>
-        new(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheNewBackend: true);
+    internal static BroilerRegex OnTheOldBackend(string pattern, RegexFlags flags, IUnicodeTables tables) =>
+        new(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true, onTheOldBackend: true);
 
     /// <summary>
-    /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>, for the old backend or,
-    /// <paramref name="onTheNewBackend"/>, for the new one. A pattern nested deeper is refused with a
+    /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>, to the new backend's
+    /// program and, <paramref name="onTheOldBackend"/>, to the old backend's matcher too. A pattern nested deeper is refused with a
     /// <see cref="RegexSyntaxException"/> when <paramref name="refusesAsSyntax"/> is set, and otherwise with the
     /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=5C956B
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=184167
     // Broiler-Falsified-If: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
     // Broiler-Human:        PENDING
-    private BroilerRegex(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool refusesAsSyntax, bool onTheNewBackend)
+    private BroilerRegex(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool refusesAsSyntax, bool onTheOldBackend)
     {
         Pattern = pattern;
         Flags = flags;
@@ -213,7 +216,7 @@ public sealed class BroilerRegex
             if (ProgramCompiler.Compile(ast, captureCount, groupNames, flags, data, nesting, out var program) != ProgramCompilation.Compiled)
                 throw new NestingLimitExceeded(pattern.Length);
             _program = program!;
-            if (!onTheNewBackend)
+            if (onTheOldBackend)
                 _matcher = new Matcher(ast, captureCount, flags, groupNames, data, nesting);
         }
         catch (NestingLimitExceeded refusal) when (refusesAsSyntax)
@@ -260,22 +263,10 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=3A9104
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=D1324C
     // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
-        out BroilerRegex? regex, out RegexLimit limit) =>
-        CompileWithBackend(pattern, flags, tables, nestingLimit, onTheNewBackend: false, out regex, out limit);
-
-    /// <summary>
-    /// <see cref="Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex, out RegexLimit)"/>, on the old
-    /// backend or, <paramref name="onTheNewBackend"/>, on the internal route through the new one
-    /// (<see cref="OnTheNewBackend"/>).
-    /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=B25379
-    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups answers Success on either backend, or one of 511 answers LimitExceeded
-    // Broiler-Human:        PENDING
-    internal static RegexStatus CompileWithBackend(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, bool onTheNewBackend,
         out BroilerRegex? regex, out RegexLimit limit)
     {
         ArgumentNullException.ThrowIfNull(pattern);
@@ -285,7 +276,7 @@ public sealed class BroilerRegex
         var data = new RegexUnicode(tables);
         try
         {
-            regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false, onTheNewBackend);
+            regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false, onTheOldBackend: false);
             limit = RegexLimit.None;
             return RegexStatus.Success;
         }
@@ -357,42 +348,84 @@ public sealed class BroilerRegex
         _program.Match(subject, start, anchored, slots, meter, ceilings, out limit, out _);
 
     /// <summary>
-    /// Finds the first match at or after <paramref name="start"/> (anchored at
-    /// exactly <paramref name="start"/> when the <c>y</c> flag is set). Returns
-    /// <see cref="RegexMatch.Empty"/> when there is no match.
+    /// Finds the first match at or after <paramref name="start"/>, or at <paramref name="start"/> alone when the
+    /// <c>y</c> flag is set: RegExpBuiltinExec (ECMA-262 §22.2.7.2) from a <c>lastIndex</c> of
+    /// <paramref name="start"/>, with the substrings made. Returns <see cref="RegexMatch.Empty"/> when there is no
+    /// match, and a failed match whose <see cref="RegexMatch.Limit"/> names the ceiling when the match reached one.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=A4E4CD
-    // Broiler-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
+    /// <param name="input">The subject.</param>
+    /// <param name="start">The <c>lastIndex</c>: a negative one is read as 0, and one past the end answers no match.</param>
+    /// <remarks>
+    /// <para>
+    /// <b>The work.</b> No meter and no step ceiling, and the engines' frame and trail ceilings: decision D10's policy
+    /// for an engine that passes no meter (the type's remarks). A match that reaches a frame or trail ceiling answers
+    /// a <see cref="RegexMatch"/> whose <see cref="RegexMatch.Success"/> is false and whose
+    /// <see cref="RegexMatch.Limit"/> names the ceiling, never no match: exhaustion is its own answer (requirement R1).
+    /// </para>
+    /// <para>
+    /// <b>A start inside a surrogate pair</b> under <c>u</c> and <c>v</c> (JSD-0081's row M4): the matcher runs from the
+    /// pair, as step 13.b says, and a match found there that is not empty reports <paramref name="start"/> as its
+    /// <see cref="RegexMatch.Index"/> and its substring from there (steps 22 and 24), as decision D23 requires of an
+    /// engine's adapter; its captures keep the offsets the matcher wrote. An empty match found at the pair ends before
+    /// <paramref name="start"/>, where the text's record of it is ill-formed: decision D41 classes the case
+    /// implementation-defined, and this library reports it at the pair's first unit, where it was found, an empty
+    /// match whose captures agree with it (Broiler.VM's realm's answer; Broiler.JS answers <paramref name="start"/>).
+    /// The offset entry takes the start as given and leaves that step to its caller.
+    /// </para>
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=Low; Security=High; Resources=8; Fingerprint=4E0984
+    // Broiler-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, under u /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, or a match that reaches a ceiling answers RegexMatch.Empty or throws
     // Broiler-Human:        PENDING
     public RegexMatch Match(string input, int start = 0)
     {
         if (start < 0) start = 0;
         if (start > input.Length)
             return RegexMatch.Empty;
-        return Run(input, start) ?? RegexMatch.Empty;
+        return Run(input, start, out var limit) ?? (limit == RegexLimit.None ? RegexMatch.Empty : RegexMatch.Exceeded(limit));
     }
 
-    /// <summary>True when the pattern matches anywhere at or after <paramref name="start"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=FC8D95
-    // Broiler-Falsified-If: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start
+    /// <summary>True when the pattern matches at or after <paramref name="start"/>, as <see cref="Match(string, int)"/> finds it.</summary>
+    /// <remarks>
+    /// A <see langword="bool"/> has no room for a third answer, so a match that reaches a frame or trail ceiling, which
+    /// <see cref="Match(string, int)"/> answers with <see cref="RegexMatch.Limit"/>, is an
+    /// <see cref="InvalidOperationException"/> here rather than a false that would read as no match (requirement R1).
+    /// A caller that expects to meet a ceiling calls <see cref="Match(string, int)"/> or the offset entry instead.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">The match reached the engines' frame or trail ceiling.</exception>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=494A37
+    // Broiler-Falsified-If: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start, or returns false for a match that reached a ceiling
     // Broiler-Human:        PENDING
-    public bool IsMatch(string input, int start = 0) => Match(input, start).Success;
+    public bool IsMatch(string input, int start = 0)
+    {
+        var match = Match(input, start);
+        return match.Limit == RegexLimit.None ? match.Success : throw Exhausted(match.Limit);
+    }
 
     /// <summary>
     /// Enumerates all non-overlapping matches, advancing past empty matches by one
     /// code point (the <c>g</c>-flag iteration of §22.2.6.9 / §22.2.6.13).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=9A30B2
-    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
+    /// <remarks>
+    /// Each match is <see cref="Match(string, int)"/>'s from where the last ended. A match that reaches a frame or trail
+    /// ceiling ends the enumeration with an <see cref="InvalidOperationException"/>, after the matches before it, rather
+    /// than with a failed match a caller would read as the end (requirement R1).
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">A match reached the engines' frame or trail ceiling.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=A35D23
+    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, or the enumeration ends quietly at a match that reached a ceiling
     // Broiler-Human:        PENDING
     public IEnumerable<RegexMatch> Matches(string input)
     {
         var pos = 0;
         while (pos <= input.Length)
         {
-            var m = Run(input, pos);
+            var m = Run(input, pos, out var limit);
             if (m == null)
+            {
+                if (limit != RegexLimit.None)
+                    throw Exhausted(limit);
                 yield break;
+            }
 
             yield return m;
 
@@ -408,44 +441,45 @@ public sealed class BroilerRegex
             pos = next;
         }
     }
-    /// <summary>The first match at or after <paramref name="start"/>, through the backend this instance was built for; null for none.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=55E18E
-    // Broiler-Falsified-If: an instance built on the new backend's route matches through the old backend's continuations, or one the public members built through the new backend's program
+
+    /// <summary>The exception <see cref="IsMatch"/> and <see cref="Matches"/> throw for a match that reached <paramref name="limit"/>.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=AF14E6
     // Broiler-Human:        PENDING
-    private RegexMatch? Run(string input, int start) => _matcher is not null ? _matcher.Run(input, start) : RunProgram(_program, input, start);
+    private static InvalidOperationException Exhausted(RegexLimit limit) =>
+        new("The match reached the engines' " + (limit == RegexLimit.Frames ? "frame" : "trail") + " ceiling (RegexLimit." + limit
+            + "); Match(string, int) answers it as RegexMatch.Limit, and the offset entry as a status.");
 
     /// <summary>
-    /// The internal route's match: RegExpBuiltinExec (ECMA-262 §22.2.7.2) over the new backend's entry. Under <c>u</c>
-    /// and <c>v</c> a start inside a surrogate pair steps back to the pair (step 13.b). A match found there that ends
-    /// at or after the start the caller gave reports that start as its index (steps 22 and 24, the text's answer, which
-    /// JSD-0081's row M4 makes Broiler.VM's correction: its realm reports the pair's first unit for every match there).
-    /// An empty match found there ends before the caller's start, and the text's record of it is ill-formed; decision
-    /// D41 of JSD-0081 classes that case implementation-defined and records two answers, the pair's start (Broiler.VM's
-    /// realm) and the caller's start (Broiler.JS, and the old backend). The route reports it at the pair's start, where
-    /// it was found, the one record whose captures and match agree. Task 2.4c decides what the public members report
-    /// from such a start. The program runs under the library's frame and trail maxima and a step ceiling of 100,000,000
-    /// units, and reaching any of them throws <see cref="RegexOverflowException"/>. That is not what the public members
-    /// do at their step budget: the old backend answers no match when its budget runs out, and throws the exception
-    /// only when its stack guard refuses a match, as the exception's remarks say; on this route it stands for every
-    /// ceiling, the step ceiling included, so that no stop is taken for an answer. Task 2.4c sets the public route's
-    /// ceilings and meter, and replaces the exception and the old budget's no match alike with the statuses they
-    /// answer.
+    /// The first match at or after <paramref name="start"/>, through the old backend's continuations on the internal
+    /// route that keeps them (<see cref="OnTheOldBackend"/>) and through the program otherwise; null for none, with the
+    /// ceiling reached in <paramref name="limit"/>.
     /// </summary>
-    /// <exception cref="RegexOverflowException">The match reached the step, frame or trail ceiling.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=43A7CE
-    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0 or throws, or a sticky instance finds a match after its start
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=8A8F1C
+    // Broiler-Falsified-If: an instance the public members built matches through the old backend's continuations
     // Broiler-Human:        PENDING
-    private RegexMatch? RunProgram(RegexProgram program, string input, int start)
+    private RegexMatch? Run(string input, int start, out RegexLimit limit)
+    {
+        limit = RegexLimit.None;
+        return _matcher is not null ? _matcher.Run(input, start) : RunProgram(_program, input, start, out limit);
+    }
+
+    /// <summary>
+    /// RegExpBuiltinExec (ECMA-262 §22.2.7.2) over the program, with no meter and the engines' ceilings: under <c>u</c>
+    /// and <c>v</c> a start inside a surrogate pair steps back to the pair (step 13.b), a non-empty match found there
+    /// reports <paramref name="start"/> as its index (row M4), and an empty one the pair's start (decision D41,
+    /// <see cref="Match(string, int)"/>'s remarks); null for no match or a ceiling, which <paramref name="limit"/> names.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=153A1C
+    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
+    // Broiler-Human:        PENDING
+    private RegexMatch? RunProgram(RegexProgram program, string input, int start, out RegexLimit limit)
     {
         var from = start;
         if (program.Unicode && from > 0 && from < input.Length && char.IsLowSurrogate(input[from]) && char.IsHighSurrogate(input[from - 1]))
             from--;
 
         var slots = new int[program.SlotCount];
-        var ceilings = new RegexMatchCeilings(100_000_000, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
-        var status = program.Match(input, from, (Flags & RegexFlags.Sticky) != 0, slots, null, ceilings, out _, out _);
-        if (status == RegexStatus.LimitExceeded)
-            throw new RegexOverflowException();
+        var status = program.Match(input, from, (Flags & RegexFlags.Sticky) != 0, slots, null, RegexMatchCeilings.Engines, out limit, out _);
         if (status != RegexStatus.Match)
             return null;
 

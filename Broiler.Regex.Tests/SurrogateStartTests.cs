@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Broiler.Regex.Engine;
 using Xunit;
 
@@ -5,7 +7,8 @@ namespace Broiler.Regex.Tests;
 
 /// <summary>
 /// A start inside a surrogate pair under <c>u</c> and <c>v</c>: the rows on which task 2.4a's differential test found
-/// the two backends disagreeing (defect D1), read against what the specification says of such a start.
+/// the two backends disagreeing (the old backend's defect D1), read against what the specification says of such a
+/// start, and the answers of the offset entry and of the string-bearing members, which give the specification's.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,17 +21,18 @@ namespace Broiler.Regex.Tests;
 /// <c>lastIndex</c> the start and the <c>g</c> flag set.
 /// </para>
 /// <para>
-/// <b>The new backend's entry and its caller.</b> <see cref="RegexProgram.Match"/> takes a code-unit start and reads
-/// forward from it: from inside a pair it reads the low half as a lone unit and never reads before the start. That is
-/// the entry's contract, not RegExpBuiltinExec's answer; the step back to the pair is the caller's, as Broiler.VM's realm
-/// takes it before calling its own matcher, and with it the entry answers every row as RegExpBuiltinExec does. Task 2.4c,
-/// which routes <see cref="BroilerRegex"/> through the entry, takes that step and decides the index the public members
-/// report; SJL-11.4's and SJL-11.5's adapters take it for their engines.
+/// <b>The entry and its caller.</b> <see cref="RegexProgram.Match"/>, and the public offset entry over it, take a
+/// code-unit start and read forward from it: from inside a pair they read the low half as a lone unit. That is the
+/// entry's contract, not RegExpBuiltinExec's answer; the step back to the pair is the caller's, as Broiler.VM's realm
+/// takes it before calling its own matcher, and with it the entry answers every row as RegExpBuiltinExec does.
+/// SJL-11.4's and SJL-11.5's adapters take it for their engines.
 /// </para>
 /// <para>
-/// <b>The old backend, which the public members still use.</b> Its greedy run of one character gives back across the
-/// start, reading the high half before it, and its general loop does not: rows 0 and 1 meet RegExpBuiltinExec's answer
-/// by the run, while row 2, the same pattern written as a loop, and row 4 do not. That inconsistency is defect D1.
+/// <b>The string-bearing members</b> take the step themselves since task 2.4c and report a non-empty match found at the
+/// pair at the caller's start (row M4, decision D23): every row of <see cref="Rows"/> is pinned on them. The old backend
+/// they used before was inconsistent here, its defect D1: its greedy run of one character gave back across the start,
+/// reading the high half before it, and its general loop did not, so rows 0 and 1 met RegExpBuiltinExec's answer by the
+/// run, while row 2, the same pattern written as a loop, and row 4 did not.
 /// </para>
 /// </remarks>
 public class SurrogateStartTests
@@ -94,14 +98,21 @@ public class SurrogateStartTests
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
-    [InlineData(2, Skip = "The old backend's defect D1: its loop does not step back across a start inside a pair, and answers no match. Task 2.4c's route through the new backend takes the step back.")]
+    [InlineData(2)]
     [InlineData(3)]
-    [InlineData(4, Skip = "The old backend's defect D1: it reads the low half as a lone unit and answers match 1,1 - 1,1. Task 2.4c's route through the new backend takes the step back.")]
+    [InlineData(4)]
     [InlineData(5)]
     public void The_public_members_answer_as_RegExpBuiltinExec_does_from_a_start_inside_a_pair(int row)
     {
+        // Defect D1's rows pinned to the specification's answer on the new backend: Match steps back to the pair, and a
+        // match found there reports the caller's start as its index and its substring from there; IsMatch agrees.
         var (pattern, flags, subject, lastIndex, exec) = Rows[row];
-        Assert.Equal(exec, DifferentialTests.Old(TestRegex.Compile(pattern, flags), subject, lastIndex));
+        var regex = TestRegex.Compile(pattern, flags);
+        Assert.Equal(exec, TestRegex.Answer(regex, subject, lastIndex));
+        Assert.Equal(exec != "nomatch", regex.IsMatch(subject, lastIndex));
+        var match = regex.Match(subject, lastIndex);
+        if (match.Success)
+            Assert.Equal(subject[match.Index..(match.Index + match.Length)], match.Value);
     }
 
     /// <summary>
@@ -131,15 +142,17 @@ public class SurrogateStartTests
     [InlineData(3)]
     [InlineData(4)]
     [InlineData(5)]
-    public void The_route_through_the_new_backend_reports_an_empty_match_at_the_pair_s_start(int row)
+    public void The_public_members_report_an_empty_match_from_a_start_inside_a_pair_at_the_pair_s_start(int row)
     {
-        // The internal route, which task 2.4c makes the public members': it steps back to the pair, as
-        // RegExpBuiltinExec's step 13.b does, and reports the empty match it finds there where it found it, one of
-        // decision D41's answers, through Match and IsMatch alike.
-        var (pattern, flags, subject, lastIndex, pairStart, _) = EmptyRows[row];
-        var regex = BroilerRegex.OnTheNewBackend(pattern, RegexFlagsParser.Parse(flags), Broiler.Unicode.Tables.UnicodeTables.Instance);
-        Assert.Equal(pairStart, DifferentialTests.Old(regex, subject, lastIndex));
+        // Decision D41's case: the library's answer is the pair's start, where the match was found, Broiler.VM's realm's
+        // answer; Match and IsMatch agree, and the record is well-formed, an empty match that neither ends before it
+        // starts nor throws.
+        var (pattern, flags, subject, lastIndex, pairStart, lastIndexAnswer) = EmptyRows[row];
+        var regex = TestRegex.Compile(pattern, flags);
+        Assert.Equal(pairStart, TestRegex.Answer(regex, subject, lastIndex));
+        Assert.NotEqual(lastIndexAnswer, pairStart);
         Assert.True(regex.IsMatch(subject, lastIndex));
+        Assert.Equal("", regex.Match(subject, lastIndex).Value);
     }
 
     [Theory]
@@ -147,14 +160,18 @@ public class SurrogateStartTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    [InlineData(4, Skip = "The old backend's defect D1: it does not step back across a start inside a pair, so ^ fails at the low half and it answers no match. Task 2.4c's route through the new backend takes the step back.")]
+    [InlineData(4)]
     [InlineData(5)]
-    public void The_public_members_answer_an_empty_match_from_a_start_inside_a_pair_as_decision_D41_admits(int row)
+    public void The_offset_entry_gives_an_engine_what_its_own_answer_to_decision_D41_needs(int row)
     {
-        // The old backend answers lastIndex, Broiler.JS's answer; the route through the new backend the pair's start,
-        // Broiler.VM's realm's. Task 2.4c decides which the public members keep; each is well-formed, an empty match
-        // that neither ends before it starts nor throws.
+        // An engine that steps back itself gets the matcher's raw offsets from the pair and keeps its own lastIndex, so it
+        // can give either answer decision D41 admits: the pair's start as the offsets say, or lastIndex.
         var (pattern, flags, subject, lastIndex, pairStart, lastIndexAnswer) = EmptyRows[row];
-        Assert.Contains(DifferentialTests.Old(TestRegex.Compile(pattern, flags), subject, lastIndex), (string[])[pairStart, lastIndexAnswer]);
+        var regex = TestRegex.Compile(pattern, flags);
+        var slots = new int[regex.SlotCount];
+        var anchored = flags.Contains('y');
+        Assert.Equal(RegexStatus.Match, regex.Match(subject.AsSpan(), lastIndex - 1, anchored, slots, null, RegexMatchCeilings.Engines, out _));
+        Assert.Equal(pairStart, MachineTests.Render(RegexStatus.Match, slots));
+        Assert.Equal(lastIndexAnswer, MachineTests.Render(RegexStatus.Match, slots.Select(offset => offset == lastIndex - 1 ? lastIndex : offset).ToArray()));
     }
 }

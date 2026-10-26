@@ -231,11 +231,11 @@ public class NestingMaximumTests
     }
 
     /// <summary>
-    /// Tracked, not run: a match of one of these shapes at the maximum can end the test host with a stack overflow,
-    /// which no test catches, so each is a known gap of the public matcher, closed when task 2.4c routes
-    /// <see cref="BroilerRegex"/> through task 2.4a's backend, and this test runs, unskipped, then.
+    /// The shapes the old backend's matcher did not prove at the maximum, which could end the test host with a stack
+    /// overflow and were tracked, not run, until task 2.4c routed <see cref="BroilerRegex"/> through task 2.4a's backend,
+    /// which has no CLR recursion (check A-4): each now matches on a 1 MiB stack, as every other shape does.
     /// </summary>
-    [Theory(Skip = "Known gap of the public matcher until task 2.4c routes it through task 2.4a's backend: matching at the nesting maximum is not proven for these shapes, and some exhaust a 1 MiB stack (BroilerRegex.MaximumNestingLimit's remarks).")]
+    [Theory]
     [MemberData(nameof(UnprovenShapes))]
     public void A_pattern_at_the_maximum_that_the_matcher_does_not_yet_prove_matches_on_a_1_MiB_stack(string shape)
     {
