@@ -54,8 +54,8 @@ internal readonly struct RegexInstruction
     /// <summary>
     /// The units the machine charges before it dispatches the instruction: one for the dispatch, as decision D8 counts
     /// it, plus, for a class test, the class's weight (<see cref="RegexProgram.ClassWeight"/>) for each code point the
-    /// test searches it for (<see cref="RegexProgram.ClassCost"/>), and for <see cref="RegexOp.WordBoundary"/> and
-    /// <see cref="RegexOp.NonWordBoundary"/> the word class's weight for each of the two characters they test. Every
+    /// test searches it for (<see cref="RegexProgram.ClassCost"/>), and for <see cref="RegexOp.WordEdge"/> and
+    /// <see cref="RegexOp.NotWordEdge"/> the word class's weight for each of the two characters they test. Every
     /// other instruction, a <see cref="RegexOp.ClearCaptures"/> of any width and a look-around's two included, costs one;
     /// a back-reference charges its capture's length in code units on top when it runs, as that length is not known
     /// before. How the units are charged is <see cref="RegexMachine"/>'s remarks, "Charging".

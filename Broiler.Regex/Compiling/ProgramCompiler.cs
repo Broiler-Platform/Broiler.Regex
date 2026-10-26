@@ -69,7 +69,7 @@ internal enum ProgramCompilation
 /// string a sequence of its characters, <c>C</c> the class of its single characters, followed by an empty last
 /// alternative when the class holds the empty string (§22.2.2.7, Atom :: CharacterClass, steps 3 to 8);</item>
 /// <item><c>^</c> and <c>$</c>: <c>LineStart m</c> and <c>LineEnd m</c>, <c>m</c> one when the flag is in force; <c>\b</c>
-/// and <c>\B</c>: <c>WordBoundary w</c> and <c>NonWordBoundary w</c>, <c>w</c> the class of the word characters the
+/// and <c>\B</c>: <c>WordEdge w</c> and <c>NotWordEdge w</c>, <c>w</c> the class of the word characters the
 /// flags give; a back-reference: <c>Backreference r, 1</c>, or <c>BackreferenceIgnoringCase r, 1</c> under <c>i</c>,
 /// <c>r</c> the entry of the program's list of referenced groups that holds its group;</item>
 /// <item><c>X₁|X₂|…|Xₙ</c>: <c>Choice +1, next</c> before each alternative but the last, and a <c>Goto L</c> after it;</item>
@@ -674,7 +674,7 @@ internal static class ProgramCompiler
         /// <c>\b</c> and <c>\B</c> with the class of the word characters the flags give (WordCharacters, §22.2.2.9.3),
         /// which costs one unit and the class's weight for each of the two characters tested.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=High; Resources=1; Fingerprint=036906
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=High; Resources=1; Fingerprint=7D25B8
         // Broiler-Falsified-If: under u with i a word boundary reads a word class without U+017F, or without i or without u one with it
         // Broiler-Human:        PENDING
         private void AddAnchor(AnchorKind kind, Scope scope)
@@ -698,7 +698,7 @@ internal static class ProgramCompiler
 
             var words = _wordClasses[folded];
             var cost = 1 + (2 * RegexProgram.ClassWeight(_classes[words].Length / 2));
-            Add(kind == AnchorKind.WordBoundary ? RegexOp.WordBoundary : RegexOp.NonWordBoundary, words, 0, 0, cost);
+            Add(kind == AnchorKind.WordBoundary ? RegexOp.WordEdge : RegexOp.NotWordEdge, words, 0, 0, cost);
         }
 
         /// <summary>

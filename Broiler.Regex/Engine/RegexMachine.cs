@@ -271,7 +271,7 @@ internal ref struct RegexMachine
     /// accepts, every frame of the attempt is spent, or a ceiling is reached. A failed instruction resumes at the newest
     /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=635660
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=5A0B3A
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, or a frame a look-around's body pushed is resumed after the look-around's close
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -370,7 +370,7 @@ internal ref struct RegexMachine
                     }
 
                     break;
-                case RegexOp.WordBoundary:
+                case RegexOp.WordEdge:
                     if (AtWordEdge(instruction.A, position))
                     {
                         pc++;
@@ -378,7 +378,7 @@ internal ref struct RegexMachine
                     }
 
                     break;
-                case RegexOp.NonWordBoundary:
+                case RegexOp.NotWordEdge:
                     if (!AtWordEdge(instruction.A, position))
                     {
                         pc++;

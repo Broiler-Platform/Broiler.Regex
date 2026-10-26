@@ -16,14 +16,19 @@ namespace Broiler.Regex.Tests;
 public class EngineNamingTests
 {
     /// <summary>
-    /// The private names of Broiler.VM's <c>JsRegExpMatcher</c> the review found declared in the new backend, and the two its
-    /// verification found after the fixes (<c>GiveBack</c>, <c>Emitter</c>).
+    /// The private names of Broiler.VM's <c>JsRegExpMatcher</c> the review found declared in the new backend, the two its
+    /// verification found after the fixes (<c>GiveBack</c>, <c>Emitter</c>), the one task 2.4b's own check found on an
+    /// instruction it added (<c>WordBoundary</c>, a node kind of the VM's parser, now <c>RegexOp.WordEdge</c>; the
+    /// library's own syntax tree keeps the public <c>AnchorKind.WordBoundary</c> it has had since before SJL-11), and the
+    /// names of the VM's look-around machinery that task 2.4b's barrier frames could have taken.
     /// </summary>
     private static readonly string[] Copied =
     [
         "Char", "Split", "Jump", "JumpIfAtLeast", "JumpIfBelow", "EmptyCheck", "Accept",
         "PushFrame", "Unwind", "Attempt", "Read", "Write", "Advance", "IsLineTerminator",
         "frameTop", "trailTop", "MaximumFrames", "MaximumTrail", "GiveBack", "Emitter",
+        "WordBoundary", "AssertBegin", "AssertEnd", "AssertKind", "CloseAssertion", "PushAssertion", "assertions",
+        "assertionTop", "Backward", "Fold", "Lines", "BackRef", "Bol", "Eol", "EmitLook", "EmitCapture",
     ];
 
     /// <summary>Every member the new backend's namespace and its program compiler declare, by name, compiler-generated ones left out.</summary>

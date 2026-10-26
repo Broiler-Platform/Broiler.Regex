@@ -33,7 +33,7 @@ public class ProgramCompilerTests
     {
         RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
             or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass or RegexOp.LineStart or RegexOp.LineEnd
-            or RegexOp.WordBoundary or RegexOp.NonWordBoundary
+            or RegexOp.WordEdge or RegexOp.NotWordEdge
             => i.Op + " " + Decimal(i.A),
         RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase or RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase
             or RegexOp.CloseLookaround
@@ -95,8 +95,8 @@ public class ProgramCompilerTests
     [Theory]
     [InlineData("^a$", "", new[] { "LineStart 0", "Literal 97", "LineEnd 0", "Succeed" })]
     [InlineData("^a$", "m", new[] { "LineStart 1", "Literal 97", "LineEnd 1", "Succeed" })]
-    [InlineData("\\ba\\B", "", new[] { "WordBoundary 0", "Literal 97", "NonWordBoundary 0", "Succeed" })]
-    [InlineData("\\b[a]\\b", "iu", new[] { "WordBoundary 0", "ClassIgnoringCase 1,0", "WordBoundary 0", "Succeed" })]
+    [InlineData("\\ba\\B", "", new[] { "WordEdge 0", "Literal 97", "NotWordEdge 0", "Succeed" })]
+    [InlineData("\\b[a]\\b", "iu", new[] { "WordEdge 0", "ClassIgnoringCase 1,0", "WordEdge 0", "Succeed" })]
     public void An_assertion_lowers_to_one_instruction_reading_the_flags_in_force(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
@@ -107,7 +107,7 @@ public class ProgramCompilerTests
     [InlineData("(?-i:a)a", "i", new[] { "Literal 97", "LiteralIgnoringCase 65", "Succeed" })]
     [InlineData("(?m:^)^", "", new[] { "LineStart 1", "LineStart 0", "Succeed" })]
     [InlineData("(?s-m:.$).$", "m", new[] { "Any", "LineEnd 0", "AnyButLineTerminator", "LineEnd 1", "Succeed" })]
-    [InlineData("(?i:\\b)\\b", "u", new[] { "WordBoundary 0", "WordBoundary 1", "Succeed" })]
+    [InlineData("(?i:\\b)\\b", "u", new[] { "WordEdge 0", "WordEdge 1", "Succeed" })]
     public void A_modifier_group_lowers_its_body_under_its_flags_and_nothing_after_it(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
@@ -123,7 +123,7 @@ public class ProgramCompilerTests
     [InlineData("(?<=(?=a).)", "", new[] { "OpenLookaround 2,0,6", "AnyButLineTerminator rtl", "OpenLookaround 3,0,5", "Literal 97", "CloseLookaround 3,0", "CloseLookaround 2,0", "Succeed" })]
     [InlineData("(?=(?<=a)b)", "", new[] { "OpenLookaround 2,0,6", "OpenLookaround 3,0,4", "Literal 97 rtl", "CloseLookaround 3,0", "Literal 98", "CloseLookaround 2,0", "Succeed" })]
     [InlineData("(?<=a*)", "", new[] { "OpenLookaround 2,0,7", "Choice 2,6", "SavePosition 3", "Literal 97 rtl", "RejectEmptyIteration 3,-1,0", "Goto 1", "CloseLookaround 2,0", "Succeed" })]
-    [InlineData("(?<=^\\b$)", "m", new[] { "OpenLookaround 2,0,5", "LineEnd 1", "WordBoundary 0", "LineStart 1", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=^\\b$)", "m", new[] { "OpenLookaround 2,0,5", "LineEnd 1", "WordEdge 0", "LineStart 1", "CloseLookaround 2,0", "Succeed" })]
     public void A_look_around_lowers_to_a_barrier_around_its_body_and_a_look_behind_s_body_right_to_left(string pattern, string flags, string[] expected)
     {
         // A look-around's register is its own, taken when it is lowered; its start's third operand is the address after

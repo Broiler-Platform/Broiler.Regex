@@ -48,7 +48,7 @@ namespace Broiler.Regex.Engine;
 /// the group's CaptureRange(ye, xe)), so no other instruction reads the direction.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=6EFAD5
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=45FE7B
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -165,10 +165,10 @@ internal enum RegexOp : byte
     /// Assertion :: <c>\b</c> (§22.2.2.6): IsWordChar of the character before the index and of the character at it
     /// differ, the word characters being class number <c>A</c>, the WordCharacters (§22.2.2.9.3) of the flags in force.
     /// </summary>
-    WordBoundary = 19,
+    WordEdge = 19,
 
     /// <summary>Assertion :: <c>\B</c>: IsWordChar of the two characters around the index, read from class <c>A</c>, agree.</summary>
-    NonWordBoundary = 20,
+    NotWordEdge = 20,
 
     /// <summary>
     /// BackreferenceMatcher (§22.2.2.7.2): the characters the group captured must come next, compared exactly. The group is
