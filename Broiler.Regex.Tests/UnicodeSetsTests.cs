@@ -191,6 +191,36 @@ public class UnicodeSetsTests
         => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
 
     [Theory]
+    // §22.2.1.1: CharacterClass :: [^ ClassContents ] and NestedClass :: [^ ClassContents ] are early errors when
+    // MayContainStrings of the contents is true (§22.2.1.8). It is read from the syntax, not from the strings
+    // left after the set operations: a subtraction may contain strings when its first operand may, and an
+    // intersection when every operand may, whatever the operations leave.
+    [InlineData(@"[^\p{RGI_Emoji}--\p{RGI_Emoji}]")]
+    [InlineData(@"[^\p{RGI_Emoji}&&\q{ab}]")]
+    [InlineData(@"[^\q{a|bc}--\q{bc}]")]
+    [InlineData(@"[^[\q{a|bc}--\q{bc}]]")]
+    [InlineData(@"[^\q{ab}--\q{ab}]")]
+    [InlineData(@"[^\q{ab}&&\q{cd}]")]
+    [InlineData(@"[^[\p{Basic_Emoji}--\q{x}]]")]
+    [InlineData(@"[[^\q{ab}--\q{ab}]]")]                  // a negated nested class
+    [InlineData(@"[^a\q{}]")]                            // an empty ClassString may contain strings
+    [InlineData(@"[^\q{\uD83D\u{DE00}}]")]                // two ClassSetCharacters: a lone lead, then a trail
+    public void A_negated_class_that_may_contain_strings_is_a_syntax_error(string pattern)
+        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
+
+    [Theory]
+    // The same rule's other side: contents whose MayContainStrings is false may be negated.
+    [InlineData(@"[^\p{RGI_Emoji}&&a]")]                  // an intersection with an operand that holds no string
+    [InlineData(@"[^a--\q{ab}]")]                         // a subtraction whose first operand holds no string
+    [InlineData(@"[^[\p{RGI_Emoji}&&\q{a}]]")]
+    [InlineData(@"[^\q{a|b}]")]                           // one ClassSetCharacter in each ClassString
+    [InlineData(@"[^\q{\u{1F600}}]")]
+    [InlineData(@"[^\q{\uD83D\uDE00}]")]                 // one escape: a lead and a trail four-digit escape
+    [InlineData(@"[^[^\q{ab}&&a]]")]                      // a negated nested class is not a string operand
+    public void A_negated_class_that_cannot_contain_strings_is_accepted(string pattern)
+        => Assert.NotNull(TestRegex.Compile(pattern, "v"));
+
+    [Theory]
     // An escaped syntax character or reserved punctuator is itself.
     [InlineData(@"[\(]", "(")]
     [InlineData(@"[\-]", "-")]

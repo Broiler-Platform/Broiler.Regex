@@ -113,6 +113,15 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `[\1]` U+0001 and `[\101]` `A`. `0.1.0-preview.4` read each as the identity escape of its first digit, so `\01`
   matched `01` and `[\1]` the digit `1`. Under `u` and `v` each stays a syntax error, and an atom's `\1` to `\9` is a
   back-reference first, as it was.
+- **A negated `v`-mode class is held to MayContainStrings of its syntax (R5).** ECMA-262 §22.2.1.1 refuses
+  `[^ … ]` and a negated nested class when MayContainStrings of the contents is true (§22.2.1.8): a union when any
+  operand may contain strings, an intersection when every operand may, a subtraction when its first operand may, a
+  `\q{…}` when one of its alternatives is empty or longer than one ClassSetCharacter as written, and a property of
+  strings. `0.1.0-preview.4` asked instead whether strings were left after the set operations, so
+  `[^\q{ab}--\q{ab}]`, `[^\p{RGI_Emoji}--\p{RGI_Emoji}]`, `[^\p{RGI_Emoji}&&\q{ab}]`, `[^\q{ab}&&\q{cd}]` and
+  `[[^\q{ab}--\q{ab}]]` are now each a `RegexSyntaxException`, which it accepted; `[^\q{\uD83D\u{DE00}}]`, two
+  ClassSetCharacters, is one too (`0.1.0-preview.4` refused it as an invalid hexadecimal escape, the S10 entry above).
+  `[^\p{RGI_Emoji}&&a]` and `[^a--\q{ab}]` stay accepted.
 
 ### Data
 

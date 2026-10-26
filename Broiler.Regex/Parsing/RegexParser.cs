@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   61
 // Annotated:        61/61
-// Exempt:           18
+// Exempt:           19
 // Human-reviewed:   0/61
 // IP risk:          Low
 // Security risk:    High
@@ -569,7 +569,7 @@ public sealed class RegexParser
 
     // ----- AtomEscape (outside a character class) -----------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=9E5DC0
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3F4356
     // Broiler-Falsified-If: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
     // Broiler-Human:        PENDING
     private RegexNode ParseAtomEscape()
@@ -629,7 +629,7 @@ public sealed class RegexParser
                 return new CharClassNode(ToCharSet(ReadPropertyOperand(allowStrings: true)));
 
             var set = new CharSet();
-            AddPropertyEscape(set, allowStrings: false);
+            AddPropertyEscape(set, allowStrings: false, out _);
             return new CharClassNode(set);
         }
 
@@ -708,7 +708,7 @@ public sealed class RegexParser
     /// Reads one class atom. Adds class escapes (\d…) directly to <paramref name="set"/>
     /// and returns their sentinel as a non-literal; returns a literal code point otherwise.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=A72DAD
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=D04562
     // Broiler-Falsified-If: inside a class \b yields anything but U+0008, or \- throws under u instead of yielding a hyphen
     // Broiler-Human:        PENDING
     private int ReadClassAtom(CharSet set, out bool isLiteral)
@@ -726,7 +726,7 @@ public sealed class RegexParser
             }
             if (Peek() is 'p' or 'P' && _unicode)
             {
-                AddPropertyEscape(set, allowStrings: false);
+                AddPropertyEscape(set, allowStrings: false, out _);
                 set.UsesPropertyEscape = true;
                 isLiteral = false;
                 return -1;
@@ -755,13 +755,18 @@ public sealed class RegexParser
     // complement is taken. That ordering is the whole observable difference between
     // `[^\p{Lu}]` under `vi` (matches neither `A` nor `a`) and under `ui` (matches `a`).
 
-    /// <summary>One evaluated class-set operand: code points plus string members.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=096551
+    /// <summary>
+    /// One evaluated class-set operand: code points plus string members, and §22.2.1.8 MayContainStrings of the
+    /// syntax it was read from, which the early errors of a negated class read (§22.2.1.1). That is not whether
+    /// strings are left: <c>\q{ab}--\q{ab}</c> leaves none and may contain strings.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.8; IP=None; Security=Low; Resources=1; Fingerprint=096551
     // Broiler-Human:        PENDING
     private sealed class ClassSetValue
     {
         public CodePointSet Set = new();
         public List<string> Strings = [];
+        public bool MayContainStrings;
     }
 
     private bool _usedSetOperations;
@@ -828,14 +833,19 @@ public sealed class RegexParser
     }
 
     /// <summary>Reads <c>\p{…}</c> / <c>\P{…}</c> as a class-set operand: fold, then complement.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=6; Fingerprint=D189F6
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=6; Fingerprint=602075
     // Broiler-Falsified-If: under vi \P{Ll} is complemented before its members are folded, so /\P{Ll}/vi matches 'a'
     // Broiler-Human:        PENDING
     private ClassSetValue ReadPropertyOperand(bool allowStrings)
     {
         var property = new CharSet();
-        var negated = AddPropertyEscape(property, allowStrings, complement: false);
-        var value = new ClassSetValue { Set = property.CodePoints, Strings = [.. property.Strings] };
+        var negated = AddPropertyEscape(property, allowStrings, out var isStringProperty, complement: false);
+        var value = new ClassSetValue
+        {
+            Set = property.CodePoints,
+            Strings = [.. property.Strings],
+            MayContainStrings = isStringProperty,
+        };
         Fold(value);
         if (negated)
             value.Set = ComplementOperand(value.Set);
@@ -843,7 +853,7 @@ public sealed class RegexParser
     }
 
     /// <summary>Parses <c>[ ^? ClassContents ]</c>, the cursor sitting on the <c>'['</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=45D9C5
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=AAA7F6
     // Broiler-Falsified-If: a v-mode class nested 100,000 '[' deep exhausts the native stack instead of raising a catchable exception
     // Broiler-Human:        PENDING
     private ClassSetValue ParseNestedClass()
@@ -867,15 +877,17 @@ public sealed class RegexParser
         if (!negated)
             return value;
 
-        // §22.2.1 early error: a complemented class may not contain strings, because the
-        // complement of a set of strings is not a set this grammar can describe.
-        if (value.Strings.Count > 0)
+        // §22.2.1.1 early error: a complemented class may not contain strings, because the
+        // complement of a set of strings is not a set this grammar can describe. It reads
+        // MayContainStrings of the contents' syntax (§22.2.1.8), not the strings the set
+        // operations leave, so [^\q{ab}--\q{ab}] is refused though no string is left.
+        if (value.MayContainStrings)
             throw new RegexSyntaxException("A negated 'v'-mode class may not contain strings", start);
 
         return new ClassSetValue { Set = ComplementOperand(value.Set) };
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=1E86C7
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=505314
     // Broiler-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetExpression()
@@ -896,6 +908,7 @@ public sealed class RegexParser
             RejectMixedOperator(start);
             var operand = ParseClassSetRangeOrOperand();
             accumulated.Set.AddAll(operand.Set);
+            accumulated.MayContainStrings |= operand.MayContainStrings;
             foreach (var member in operand.Strings)
             {
                 if (!accumulated.Strings.Contains(member))
@@ -906,7 +919,7 @@ public sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=2FC989
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=EA87D2
     // Broiler-Falsified-If: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassIntersection(ClassSetValue first, int start)
@@ -923,6 +936,8 @@ public sealed class RegexParser
             {
                 Set = accumulated.Set.Intersect(operand.Set),
                 Strings = [.. accumulated.Strings.FindAll(operand.Strings.Contains)],
+                // §22.2.1.8: an intersection may contain strings only when every operand may.
+                MayContainStrings = accumulated.MayContainStrings && operand.MayContainStrings,
             };
         }
 
@@ -930,7 +945,7 @@ public sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=A3FDF3
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=806DAC
     // Broiler-Falsified-If: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSubtraction(ClassSetValue first, int start)
@@ -945,6 +960,8 @@ public sealed class RegexParser
             {
                 Set = accumulated.Set.Subtract(operand.Set),
                 Strings = [.. accumulated.Strings.FindAll(member => !operand.Strings.Contains(member))],
+                // §22.2.1.8: a subtraction may contain strings exactly when its first operand may.
+                MayContainStrings = accumulated.MayContainStrings,
             };
         }
 
@@ -1061,7 +1078,7 @@ public sealed class RegexParser
     }
 
     /// <summary>Parses <c>\q{ ClassString (| ClassString)* }</c>, the cursor on the <c>'q'</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1ACD24
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=28B816
     // Broiler-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassStringDisjunction()
@@ -1075,9 +1092,16 @@ public sealed class RegexParser
 
         var value = new ClassSetValue();
         var current = new StringBuilder();
+        var characters = 0;
 
         void Flush()
         {
+            // §22.2.1.8: a ClassString may contain strings unless it is exactly one ClassSetCharacter,
+            // counted as written, so an empty one or \uD83D\u{DE00} (a lead escape, then a trail) may.
+            if (characters != 1)
+                value.MayContainStrings = true;
+            characters = 0;
+
             var text = current.ToString();
             current.Clear();
             // A one-character alternative is an ordinary member of the code-point set;
@@ -1107,6 +1131,7 @@ public sealed class RegexParser
                 continue;
             }
 
+            characters++;
             if (c == '\\')
             {
                 _pos++;
@@ -1418,11 +1443,13 @@ public sealed class RegexParser
     /// the complement of <c>X</c>, and the ordinary case closure then runs over that
     /// complement. Adding the complement as a positive member keeps
     /// <c>[\P{L}\p{Nd}]</c> — where only one member is complemented — expressible.
+    /// <paramref name="isStringProperty"/> answers whether the escape names a property of strings, which is
+    /// §22.2.1.8 MayContainStrings of the escape.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=6CB072
-    // Broiler-Falsified-If: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=769AC3
+    // Broiler-Falsified-If: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing, or \p{RGI_Emoji} reports isStringProperty false
     // Broiler-Human:        PENDING
-    private bool AddPropertyEscape(CharSet set, bool allowStrings, bool complement = true)
+    private bool AddPropertyEscape(CharSet set, bool allowStrings, out bool isStringProperty, bool complement = true)
     {
         var start = _pos;
         var negated = Peek() == 'P';
@@ -1453,6 +1480,7 @@ public sealed class RegexParser
 
         var resolved = _data.ResolveProperty(name, value)
             ?? throw new RegexSyntaxException($"Unknown Unicode property escape \\p{{{spec}}}", start);
+        isStringProperty = resolved.IsStringProperty;
 
         if (resolved.IsStringProperty)
         {
