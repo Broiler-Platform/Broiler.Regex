@@ -11,8 +11,9 @@ namespace Broiler.Regex.Tests;
 /// character is a run, one frame however long; any other body holds a frame per iteration and writes its group starts
 /// and captures to the trail, so a long enough subject reaches a ceiling, and the members answer it as a ceiling,
 /// never as no match: <see cref="BroilerRegex.Match(string, int)"/> with <see cref="RegexMatch.Limit"/>,
-/// <see cref="BroilerRegex.IsMatch"/> and <see cref="BroilerRegex.Matches"/> with an
-/// <see cref="InvalidOperationException"/> (requirement R1).
+/// <see cref="BroilerRegex.Matches"/> with that failed match as its last element, and <see cref="BroilerRegex.IsMatch"/>,
+/// whose <see langword="bool"/> cannot carry it, with an <see cref="InvalidOperationException"/> (requirement R1; a
+/// breach of convention 3 that docs/conventions.md tracks for task 2.9).
 /// </summary>
 public class StackDepthGuardTests
 {
@@ -48,7 +49,8 @@ public class StackDepthGuardTests
     public void A_match_past_the_engines_trail_ceiling_answers_the_ceiling_not_no_match()
     {
         // 500,000 iterations write 2,500,000 cells: Match answers a failed match naming the trail ceiling, which no match
-        // never does, and IsMatch and Matches, which cannot carry it, throw rather than answer false or end quietly.
+        // never does, and Matches ends with that failed match as data (convention 3), rather than ending quietly. IsMatch,
+        // whose bool cannot carry it, throws rather than answer false.
         var re = TestRegex.Compile("(a)*");
         var subject = new string('a', 500_000);
         var m = re.Match(subject);
@@ -56,22 +58,26 @@ public class StackDepthGuardTests
         Assert.Equal(RegexLimit.Trail, m.Limit);
         Assert.Equal(RegexLimit.None, re.Match("b").Limit);
         Assert.Contains("trail", Assert.Throws<InvalidOperationException>(() => re.IsMatch(subject)).Message, StringComparison.Ordinal);
-        Assert.Throws<InvalidOperationException>(() => re.Matches(subject).ToList());
+        var all = re.Matches(subject).ToList();
+        Assert.Equal((false, RegexLimit.Trail), (Assert.Single(all).Success, all[0].Limit));
     }
 
     [Fact(Timeout = 600000)]
     public void A_match_past_the_engines_frame_ceiling_answers_the_ceiling_after_the_matches_before_it()
     {
         // An alternation's iteration holds two frames, its loop's and its own: 600,000 iterations pass the engines'
-        // 1,048,576 frames. Matches yields the match before the long run, then throws at it.
+        // 1,048,576 frames. Matches yields the match before the long run, then a failed match naming the frame ceiling,
+        // and ends.
         var re = TestRegex.Compile("(?:a|b)*c");
         var subject = "abc-" + new string('a', 600_000);
         Assert.Equal(RegexLimit.Frames, re.Match(subject, 4).Limit);
         Assert.Equal("abc", re.Match(subject).Value);
         using var matches = re.Matches(subject).GetEnumerator();
         Assert.True(matches.MoveNext());
-        Assert.Equal("abc", matches.Current.Value);
-        Assert.Throws<InvalidOperationException>(() => matches.MoveNext());
+        Assert.Equal(("abc", RegexLimit.None), (matches.Current.Value, matches.Current.Limit));
+        Assert.True(matches.MoveNext());
+        Assert.Equal((false, RegexLimit.Frames, -1), (matches.Current.Success, matches.Current.Limit, matches.Current.Index));
+        Assert.False(matches.MoveNext());
     }
 
     [Fact(Timeout = 600000)]

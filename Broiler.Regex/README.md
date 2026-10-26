@@ -173,8 +173,10 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   exponential in the subject's length; the old matcher's per-start step budget answered no match
   instead, which requirement R1 forbids. A caller that matches untrusted patterns uses the offset
   entry with a meter or a step ceiling. A match that reaches a frame or trail ceiling is answered as
-  that ceiling, never as no match: `Match` with a failed `RegexMatch` whose `Limit` names it, and
-  `IsMatch` and `Matches`, whose results have no room for it, with an `InvalidOperationException`.
+  that ceiling, never as no match: `Match` with a failed `RegexMatch` whose `Limit` names it,
+  `Matches` with that failed match as its last element, and `IsMatch`, whose `bool` has no room for
+  it, with an `InvalidOperationException`, which departs from convention 3 until task 2.9 decides
+  the member's form.
 - **A loop over a body of more than one character fills the trail** (task 2.4a's bound). The trail
   keeps every register write of an attempt until it ends, as Broiler.VM's does, a loop's included
   when it holds no choice: a counted loop writes two cells an iteration, a capturing group's

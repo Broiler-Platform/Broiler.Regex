@@ -113,7 +113,7 @@ deleted backend's namespace: they move from `Broiler.Regex.Matching` to `Broiler
 
 | Suppression | Target | What replaces it |
 |---|---|---|
-| CP0001 | `T:Broiler.Regex.RegexOverflowException` | Deleted (R1, R4). A match that reaches a ceiling answers `RegexStatus.LimitExceeded` naming it through the offset entry, a failed `RegexMatch` whose `Limit` names it through `Match(string, int)`, and an `InvalidOperationException` through `IsMatch` and `Matches`, whose results have no room for it; no match recurses on the CLR stack, so none is refused for its depth. |
+| CP0001 | `T:Broiler.Regex.RegexOverflowException` | Deleted (R1, R4). A match that reaches a ceiling answers `RegexStatus.LimitExceeded` naming it through the offset entry, a failed `RegexMatch` whose `Limit` names it through `Match(string, int)` and as the last element of `Matches`, and an `InvalidOperationException` through `IsMatch`, whose `bool` has no room for it (a departure from convention 3 that `conventions.md` tracks for task 2.9); no match recurses on the CLR stack, so none is refused for its depth. |
 | CP0001 | `T:Broiler.Regex.Matching.RegexMatch` | `Broiler.Regex.RegexMatch`, the same members and `Limit` (R8 keeps it; R1 and R4 delete its namespace). |
 | CP0001 | `T:Broiler.Regex.Matching.RegexGroup` | `Broiler.Regex.RegexGroup`, the same members. |
 | CP0002 | `M:Broiler.Regex.BroilerRegex.Match(System.String,System.Int32)` | The same member answering `Broiler.Regex.RegexMatch`. |

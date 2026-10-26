@@ -199,9 +199,13 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 - **The string-bearing members run the new backend under decision D10's policy (task 2.4c; R1, R3, D12).**
   `Match(string, int)`, `IsMatch` and `Matches` pass no meter and no step ceiling, as an engine that passes no meter
   does, and the engines' frame and trail ceilings. A match that reaches one is answered as that ceiling, never as no
-  match: `Match` answers a failed `RegexMatch` whose new `Limit` names it, and `IsMatch` and `Matches`, whose results
-  have no room for a third answer, throw an `InvalidOperationException` naming it (after the matches before it, for
-  `Matches`). The offset entry is the status-returning form for a caller that expects to meet a ceiling.
+  match: `Match` answers a failed `RegexMatch` whose new `Limit` names it, and `Matches` yields that failed match after
+  the matches before it, as its last element (a consumer that reads every element as a match checks `Success`). `IsMatch`,
+  whose `bool` has no room for a third answer, throws an `InvalidOperationException` naming it: **this departs from
+  convention 3**, which admits an exception only for a broken precondition, and is tracked in `docs/conventions.md`
+  ("Where Broiler.Regex stands") for task 2.9, which decides between the owner's admission of the exception for a
+  member decision D12 keeps and a status-returning form. The offset entry is the status-returning form for a caller
+  that expects to meet a ceiling.
 
 ### Observable changes
 

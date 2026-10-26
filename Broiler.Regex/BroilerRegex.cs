@@ -372,6 +372,10 @@ public sealed class BroilerRegex
     /// <see cref="Match(string, int)"/> answers with <see cref="RegexMatch.Limit"/>, is an
     /// <see cref="InvalidOperationException"/> here rather than a false that would read as no match (requirement R1).
     /// A caller that expects to meet a ceiling calls <see cref="Match(string, int)"/> or the offset entry instead.
+    /// <b>This departs from convention 3</b>, which makes an expected failure a status and admits an exception only for
+    /// a broken precondition: decision D12 keeps this member for its consumers, and task 2.9, which fixes the public
+    /// surface, decides between an owner's admission of the exception and a status-returning form
+    /// (<c>docs/conventions.md</c>, "Where Broiler.Regex stands").
     /// </remarks>
     /// <exception cref="InvalidOperationException">The match reached the engines' frame or trail ceiling.</exception>
     // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=494A37
@@ -388,13 +392,14 @@ public sealed class BroilerRegex
     /// code point (the <c>g</c>-flag iteration of §22.2.6.9 / §22.2.6.13).
     /// </summary>
     /// <remarks>
-    /// Each match is <see cref="Match(string, int)"/>'s from where the last ended. A match that reaches a frame or trail
-    /// ceiling ends the enumeration with an <see cref="InvalidOperationException"/>, after the matches before it, rather
-    /// than with a failed match a caller would read as the end (requirement R1).
+    /// Each match is <see cref="Match(string, int)"/>'s from where the last ended, and every element but the last is a
+    /// match. A match that reaches a frame or trail ceiling is answered as data, as <see cref="Match(string, int)"/>
+    /// answers it (convention 3; requirement R1): after the matches before it, the enumeration yields a failed
+    /// <see cref="RegexMatch"/> whose <see cref="RegexMatch.Limit"/> names the ceiling, and ends. An enumeration that
+    /// ends with no such element found every match there is.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">A match reached the engines' frame or trail ceiling.</exception>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=705430
-    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, or the enumeration ends quietly at a match that reached a ceiling
+    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling ends the enumeration with no element naming it, or the enumeration goes on after it
     // Broiler-Human:        PENDING
     public IEnumerable<RegexMatch> Matches(string input)
     {
@@ -405,7 +410,7 @@ public sealed class BroilerRegex
             if (m == null)
             {
                 if (limit != RegexLimit.None)
-                    throw Exhausted(limit);
+                    yield return RegexMatch.Exceeded(limit);
                 yield break;
             }
 
@@ -424,7 +429,7 @@ public sealed class BroilerRegex
         }
     }
 
-    /// <summary>The exception <see cref="IsMatch"/> and <see cref="Matches"/> throw for a match that reached <paramref name="limit"/>.</summary>
+    /// <summary>The exception <see cref="IsMatch"/> throws for a match that reached <paramref name="limit"/>.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=AF14E6
     // Broiler-Human:        PENDING
     private static InvalidOperationException Exhausted(RegexLimit limit) =>

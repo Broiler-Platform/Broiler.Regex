@@ -482,8 +482,12 @@ the surface. Check C1 now leaves a library delegate's runtime-made members out, 
 **The string-bearing members (D10, D12; R1, R3; row M4, D23, D41).** `Match(string, int)`, `IsMatch` and `Matches` run
 the same program as RegExpBuiltinExec under decision D10's policy for an engine that passes no meter: no meter, no step
 ceiling, and the engines' frame and trail ceilings. A ceiling reached is answered as that ceiling, never as no match:
-`Match` with a failed `RegexMatch` whose new, provisional `Limit` names it; `IsMatch` and `Matches`, whose results have
-no room for a third answer, with an `InvalidOperationException` naming it, documented. From a start inside a pair the
+`Match` with a failed `RegexMatch` whose new, provisional `Limit` names it; `Matches` with that failed match as its last
+element; `IsMatch`, whose `bool` has no room for a third answer, with an `InvalidOperationException` naming it,
+documented. *Amended at the review of task 2.4c:* `Matches` threw too, and an exception for a ceiling, which decision
+D9 makes an expected failure, breaches convention 3; no rule finds a base class library exception, so the starting
+violation list could not show it. `Matches` now answers it as data; `IsMatch`'s exception is the one breach left,
+tracked in `conventions.md` ("Where Broiler.Regex stands") and below for task 2.9. From a start inside a pair the
 matcher runs from the pair; a non-empty match found there reports the caller's start as its index and its substring
 from there (row M4, D23); an empty one, D41's implementation-defined case, is reported at the pair's start, where it
 was found, Broiler.VM's realm's answer (Broiler.JS answers `lastIndex`). Defect D1's skips are gone:
@@ -519,8 +523,10 @@ stay for task 2.9, re-worded for the namespace.
 - **Task 2.8.** The validate entry and decision D9's syntax status (a code, a message identifier and a position);
   `Compile` and the constructors still throw `RegexSyntaxException`.
 - **Task 2.9.** The surface of `0.2.0-preview.1`: the provisional members of this record (the offset entry, `SlotCount`,
-  `RegexWorkCharge`, `RegexMatchCeilings` and its namespace, `RegexMatch.Limit`), `IsMatch`'s and `Matches`'
-  exception at a ceiling against convention 3, the remaining starting violations (the C1 rows, SL5's `NoWarn` rows
+  `RegexWorkCharge`, `RegexMatchCeilings` and its namespace, `RegexMatch.Limit`), `IsMatch`'s exception at a ceiling,
+  which departs from convention 3 (an owner's admission of it for a member D12 keeps, recorded in JSD-0081 or the
+  conventions, or a status-returning form with the `bool` member deprecated; the note in `conventions.md` goes when it
+  is decided, and task 2.9's empty violation list does not close it alone), the remaining starting violations (the C1 rows, SL5's `NoWarn` rows
   among them), the version and `eng/preview-version-history.json`.
 - **Task 2.13.** Population P4, over which the fast-path differential runs before the candidate reading.
 
