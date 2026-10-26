@@ -253,6 +253,14 @@ major version" is read, for a `0.x` preview, as inside a `0.y` minor version. **
 engine depends on `0.2` before both cut-overs have merged**, and Broiler.JS moves its pin only at
 SJL-11.5. `0.2.0-preview.1` is published to nuget.org only with the owner's approval (decision D13).
 
+*Dated note, 2026-10-26 (task 2.3 of SJL-11.2, R10: conventions 7 and 10): the starting violation list left
+the owner of `RegexMatch.Empty`'s SL2 row unassigned, to be decided at task 2.3. Task 2.3 took it, as its row
+asks for no mutable static anywhere in the library: `RegexMatch` sits in `Matching/`, outside the folders that
+row names, but the string-bearing `RegexMatch` outlives task 2.4c's replacement of the matcher (row 2.9,
+decision D12), and leaving a one-line repair to task 2.9 would have carried a known breach of convention 7
+through four more steps. `RegexMatch.Empty` now holds an empty read-only dictionary and an empty array, and
+the row has left the list.*
+
 **Also carried here.**
 - **Review (decision D30).** `HUMAN_REVIEW.md` keeps its record and carries a dated note of this date: the
   commit it reviewed, `d5b07a00`, is an ancestor of `main`; the source under `Broiler.Regex/` changed after it,
