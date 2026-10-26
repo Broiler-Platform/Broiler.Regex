@@ -10,7 +10,7 @@ namespace Broiler.Regex.Probe;
 /// of <see cref="ProbePopulation.StackBytes"/>, so that the Native AOT run proves under its own stack what the JIT run
 /// proves: the flat sequences of 100,000 terms (the adversarial corpus's F03 and F04) and the nesting cases at the maximum
 /// (N01, N07, N13) complete through the new entry, and the new backend answers its ceilings, its meter, its anchored
-/// argument and its transitional refusal as the JIT does. Each case is written in the corpus's terms
+/// argument and task 2.4b's constructs as the JIT does. Each case is written in the corpus's terms
 /// (<see cref="EngineRun"/>), and the report gives each its answer and the units the match did.
 /// </summary>
 internal static class EnginePopulation
@@ -53,8 +53,9 @@ internal static class EnginePopulation
         ("E20", "-", "match@1", "\"[^a]\\\\u{1F600}.\"", "u", "\"a\\ud83d\\ude00\\ud83d\\ude00b\"", Ordinary),
         ("E21", "-", "match@0", "\"(?<x>a{2,3}?)(?<y>[\\\\s\\\\S]{1,2})\"", "s", "\"aaaa\\n\"", Ordinary),
 
-        // The transitional refusal of task 2.4a, and a syntax error.
-        ("E22", "-", "match@0", "\"^a\"", "-", "\"a\"", Ordinary),
+        // A look-behind's back-reference to a group it captures later in source order (issue #923's row 4, which was
+        // the transitional refusal "^a" until task 2.4b), and a syntax error.
+        ("E22", "-", "match@0", "\"(?<=\\\\1(\\\\w+))c\"", "-", "\"ababc\"", Ordinary),
         ("E23", "-", "compile", "\"a{2,1}\"", "-", "-", Ordinary),
     ];
 

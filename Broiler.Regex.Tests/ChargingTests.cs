@@ -64,6 +64,7 @@ public class ChargingTests
     [InlineData("(?!a)b", "ab", "", 7)]
     [InlineData("(?<=a)b", "ab", "", 7)]
     [InlineData("(?<=\\1(a))b", "aab", "", 18)]
+    [InlineData("[\\q{ab}c]", "c", "v", 4)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
@@ -86,7 +87,7 @@ public class ChargingTests
         // "ab": at 0 the start and the failed backward Literal; at 1 five. (?<=\1(a))b on "aab": at 0 the start, the
         // group's end and the failed Literal; at 1 the same three with the Literal matching, the group's start and the
         // reference to one character (1 + 1), which finds no character before index 0; at 2 those six, the close, the
-        // Literal and Succeed.
+        // Literal and Succeed. [\q{ab}c] on "c": the choice, the string's failed first Literal, the class and Succeed.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
@@ -98,8 +99,8 @@ public class ChargingTests
     /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
     /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, back-references, under i and under
     /// a step ceiling, whose length is charged after the dispatch and before the comparison, and look-arounds of the four
-    /// kinds, a look-behind's back-reference read right to left, one started inside a surrogate pair, and a negative
-    /// look-behind whose body backtracks to a step ceiling.
+    /// kinds, a look-behind's back-reference read right to left, one started inside a surrogate pair, a negative
+    /// look-behind whose body backtracks to a step ceiling, and v-mode classes holding strings, the empty one among them.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -126,6 +127,8 @@ public class ChargingTests
         { "(?:(?=(\\w))\\1(?!\\d)|(?<=\\d)\\d)+!", "u", string.Concat(Enumerable.Repeat("ab12", 150)) + "?", 0, false, null },
         { "(?<=(.)).\\1", "u", string.Concat(Enumerable.Repeat("\U0001F600", 100)), 1, false, null },
         { "(?<!b(a+)+)c", "", new string('a', 24) + "c", 0, false, 5_000UL },
+        { "[\\q{abc|ab|}x]+y", "vi", string.Concat(Enumerable.Repeat("ABcXab", 100)) + "z", 0, false, null },
+        { "(?<=[\\q{ab|b}])\\p{RGI_Emoji_Flag_Sequence}", "v", string.Concat(Enumerable.Repeat("ab\U0001F1EF", 60)), 0, false, null },
     };
 
     [Theory]

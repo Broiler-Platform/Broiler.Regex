@@ -5,8 +5,8 @@ namespace Broiler.Regex.Tests;
 /// <summary>
 /// The new backend's constructs of task 2.4b against ECMA-262's Pattern semantics (§22.2.2): characters and classes
 /// compared under <c>i</c> by both branches of Canonicalize (§22.2.2.7.3), the assertions <c>^ $ \b \B</c>
-/// (§22.2.2.6), the modifier groups <c>(?ims-ims:…)</c>, whose flags are in force for their body alone, and numbered and
-/// named back-references (§22.2.2.7.2). Every expected answer is the specification's, read from the section each theory names, in the form
+/// (§22.2.2.6), the modifier groups <c>(?ims-ims:…)</c>, whose flags are in force for their body alone, numbered and
+/// named back-references (§22.2.2.7.2), and the <c>v</c>-mode classes that hold strings (§22.2.2.7). Every expected answer is the specification's, read from the section each theory names, in the form
 /// <see cref="MachineTests.Render"/> writes.
 /// </summary>
 public class MachineConstructTests
@@ -224,6 +224,65 @@ public class MachineConstructTests
     {
         // §22.2.2.7.2, step c: "If there exists an integer i ... such that Canonicalize(rer, s[i]) is not
         // Canonicalize(rer, Input[g + i]), return failure", with rer's IgnoreCase where the reference stands.
+        Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Theory]
+    [InlineData("[\\q{abc|ab}]", "v", "abc", "match 0,3")]
+    [InlineData("[\\q{ab|abc}]", "v", "abc", "match 0,3")]
+    [InlineData("[\\q{abc|ab}]c", "v", "abc", "match 0,3")]
+    [InlineData("[\\q{abc|ab}]c", "v", "abcc", "match 0,4")]
+    [InlineData("[a\\q{abc}]", "v", "abc", "match 0,3")]
+    [InlineData("[a\\q{abc}]", "v", "abd", "match 0,1")]
+    [InlineData("[a\\q{abc}]d", "v", "abcd", "match 0,4")]
+    [InlineData("[\\q{}a]", "v", "a", "match 0,1")]
+    [InlineData("[\\q{}a]", "v", "b", "match 0,0")]
+    [InlineData("[\\q{}]", "v", "x", "match 0,0")]
+    [InlineData("[\\q{}]+", "v", "x", "match 0,0")]
+    [InlineData("[\\q{}a]*b", "v", "aab", "match 0,3")]
+    [InlineData("^[\\q{a|}]$", "v", "", "match 0,0")]
+    [InlineData("[\\q{ab}\\q{a}]b", "v", "ab", "match 0,2")]
+    [InlineData("([\\q{ab|a}])+c", "v", "abac", "match 0,4 2,3")]
+    [InlineData("([\\q{ab|a}])+?b", "v", "abab", "match 0,4 2,3")]
+    [InlineData("[\\q{abc}--\\q{abc}]", "v", "abc", "nomatch")]
+    [InlineData("[[a-z]--\\q{b}]", "v", "b", "nomatch")]
+    [InlineData("[\\q{abc}&&\\q{abc|x}]", "v", "abc", "match 0,3")]
+    [InlineData("[\\q{\\u{1F600}a|b}]", "v", "\U0001F600a", "match 0,3")]
+    [InlineData("[\\q{a\\u{1F600}}]", "v", "a\U0001F600", "match 0,3")]
+    [InlineData("\\p{RGI_Emoji}", "v", "\U0001F468\u200D\U0001F469\u200D\U0001F467", "match 0,8")]
+    [InlineData("\\p{RGI_Emoji}", "v", "\U0001F1EF\U0001F1F5x", "match 0,4")]
+    [InlineData("^\\p{RGI_Emoji_Flag_Sequence}$", "v", "\U0001F1EF\U0001F1F5", "match 0,4")]
+    [InlineData("[\\p{RGI_Emoji_Flag_Sequence}x]+", "v", "\U0001F1EF\U0001F1F5x\U0001F1FA\U0001F1F8", "match 0,9")]
+    [InlineData("\\p{Emoji_Keycap_Sequence}", "v", "1\uFE0F\u20E3", "match 0,3")]
+    public void A_v_mode_class_with_strings_tries_them_longest_first_then_its_characters_then_the_empty_string(string pattern, string flags, string subject, string expected)
+    {
+        // CompileAtom for a v-mode CharacterClass whose set holds strings (§22.2.2.7, Atom :: CharacterClass, steps 3 to
+        // 8): an alternation of each string of more than one character, in descending order of length, then a
+        // CharacterSetMatcher of the single characters, then, when the set holds the empty string, the EmptyMatcher. Each
+        // alternative is a backtracking point, so [\q{abc|ab}]c falls back to ab when abc leaves no c. Expected answers
+        // agree with V8's (Node 22).
+        Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Theory]
+    [InlineData("[\\q{ABC}]", "vi", "abc", "match 0,3")]
+    [InlineData("[\\q{abc}]", "vi", "ABC", "match 0,3")]
+    [InlineData("[\\q{\u017Fk}]", "vi", "S\u212A", "match 0,2")]
+    [InlineData("(?i:[\\q{abc}])", "v", "ABC", "match 0,3")]
+    [InlineData("(?-i:[\\q{abc}])", "vi", "ABC", "nomatch")]
+    [InlineData("(?<=[\\q{abc|b}])d", "v", "abcd", "match 3,4")]
+    [InlineData("(?<=[\\q{abc|b}])d", "v", "xbd", "match 2,3")]
+    [InlineData("(?<=([\\q{bc|abc}]))d", "v", "abcd", "match 3,4 0,3")]
+    [InlineData("(?<=^[\\q{ab|a}]+)$", "v", "aab", "match 3,3")]
+    [InlineData("(?<=[\\q{}a])b", "v", "b", "match 0,1")]
+    [InlineData("(?<=([\\q{ab|b}]))c", "vi", "ABc", "match 2,3 0,2")]
+    [InlineData("(?<=[\\q{\\u{1F600}a}])x", "v", "\U0001F600ax", "match 3,4")]
+    public void A_class_s_strings_compare_under_the_i_in_force_and_read_backward_in_a_look_behind(string pattern, string flags, string subject, string expected)
+    {
+        // Under v with i the parser folded each string by MaybeSimpleCaseFolding (§22.2.2.9.5), and each character of it
+        // is matched by CharacterSetMatcher with rer's IgnoreCase; in a look-behind each string is MatchSequence with
+        // direction backward (§22.2.2.7, step 5.c), its last character read first, and the order of the alternatives does
+        // not change.
         Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
     }
 

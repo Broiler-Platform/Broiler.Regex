@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   24
-// Annotated:        24/24
-// Exempt:           26
-// Human-reviewed:   0/24
+// Relevant units:   25
+// Annotated:        25/25
+// Exempt:           25
+// Human-reviewed:   0/25
 // IP risk:          None
 // Security risk:    High
-// Criteria:         14/12
+// Criteria:         15/13
 // Resource impact:  5/10 max
-// Unverified:       24
+// Unverified:       25
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -27,7 +27,7 @@ using CodePointSet = Broiler.Regex.Ast.CodePointSet;
 namespace Broiler.Regex.Compiling;
 
 /// <summary>How a compilation to the new backend's program ended.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C24ED5
+// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=ED53A7
 // Broiler-Human:        PENDING
 internal enum ProgramCompilation
 {
@@ -36,29 +36,24 @@ internal enum ProgramCompilation
 
     /// <summary>The pattern nests deeper than the caller's nesting limit (requirement R4, decisions D6 and D7).</summary>
     NestingLimitExceeded = 1,
-
-    /// <summary>
-    /// The pattern holds a construct whose instructions task 2.4b has still to add: a <c>v</c>-mode class holding
-    /// strings. A transitional answer of task 2.4a, which task 2.4b removes; no program is built, nothing is thrown.
-    /// </summary>
-    NotYetSupported = 2,
 }
 
 /// <summary>
 /// The compiler from the parser's tree to the new backend's <see cref="RegexProgram"/> (decision D5 of Broiler.VM's
 /// JSD-0081): task 2.4a's lowering of literal characters, <c>.</c>, classes, sequence, alternation, groups and
 /// quantifiers, and task 2.4b's of comparison under <c>i</c>, of the assertions <c>^ $ \b \B</c>, of modifier groups,
-/// of back-references and of the four look-arounds, with a look-behind's body lowered right to left. It lives outside
-/// the machine's namespace, <c>Broiler.Regex.Engine</c>, whose methods the architecture tests hold to having no recursion
-/// (bundle <c>sjl-11-001</c>'s check A-4).
+/// of back-references, of the four look-arounds, with a look-behind's body lowered right to left, and of the
+/// <c>v</c>-mode classes that hold strings. Every tree the parser builds compiles to a program, unless it nests past the
+/// caller's limit. It lives outside the machine's namespace, <c>Broiler.Regex.Engine</c>, whose methods the
+/// architecture tests hold to having no recursion (bundle <c>sjl-11-001</c>'s check A-4).
 /// </summary>
 /// <remarks>
 /// <para>
 /// <b>No recursion, and the nesting limit still checked.</b> The tree is walked twice on work lists of the heap, as the
 /// closure compiler of <c>Matching/</c> walks it, so compiling uses the same CLR stack at every depth; decision D6 would
-/// admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which refuses what
-/// the program cannot hold yet and finds each quantifier's groups, calls <see cref="RegexNesting.Descend"/> before it
-/// enters a group's body, as the parser did, so a tree the parser did not build cannot be deeper than the limit either;
+/// admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which finds each
+/// quantifier's groups, calls <see cref="RegexNesting.Descend"/> before it enters a group's, a modifier's or a
+/// look-around's body, as the parser did, so a tree the parser did not build cannot be deeper than the limit either;
 /// the second, which emits the instructions, walks the same tree after it.
 /// </para>
 /// <para>
@@ -70,6 +65,9 @@ internal enum ProgramCompilation
 /// <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class: <c>Class k</c>, its code points with its negation
 /// applied, or under <c>i</c> <c>ClassIgnoringCase k, inverted</c>, its members as written, or <c>CanonicalClass k</c> for a
 /// <c>v</c>-mode class the parser folded;</item>
+/// <item>a <c>v</c>-mode class holding strings <c>s₁ … sₙ</c>, longest first: the alternation <c>s₁|…|sₙ|C</c>, each
+/// string a sequence of its characters, <c>C</c> the class of its single characters, followed by an empty last
+/// alternative when the class holds the empty string (§22.2.2.7, Atom :: CharacterClass, steps 3 to 8);</item>
 /// <item><c>^</c> and <c>$</c>: <c>LineStart m</c> and <c>LineEnd m</c>, <c>m</c> one when the flag is in force; <c>\b</c>
 /// and <c>\B</c>: <c>WordBoundary w</c> and <c>NonWordBoundary w</c>, <c>w</c> the class of the word characters the
 /// flags give; a back-reference: <c>Backreference r, 1</c>, or <c>BackreferenceIgnoringCase r, 1</c> under <c>i</c>,
@@ -101,7 +99,7 @@ internal enum ProgramCompilation
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
-// Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a pattern holding a string class is given a program
+// Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
 // Broiler-Human:        PENDING
 internal static class ProgramCompiler
 {
@@ -113,7 +111,7 @@ internal static class ProgramCompiler
     /// <param name="flags">The flags; <c>d</c>, <c>g</c>, <c>m</c> and <c>y</c> change nothing a program does.</param>
     /// <param name="tables">The Unicode owner's tables, which the parser reads.</param>
     /// <param name="nestingLimit">The deepest nesting admitted, from 1 to <see cref="BroilerRegex.MaximumNestingLimit"/>, counted as <see cref="BroilerRegex.Compile"/> counts.</param>
-    /// <param name="program">The program, or null when the answer is not <see cref="ProgramCompilation.Compiled"/>.</param>
+    /// <param name="program">The program, or null when the nesting limit refused the pattern.</param>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
@@ -151,9 +149,10 @@ internal static class ProgramCompiler
     /// <param name="flags">The flags the tree was parsed under.</param>
     /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
-    /// <param name="program">The program, or null when the answer is not <see cref="ProgramCompilation.Compiled"/>.</param>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=A7EA7F
-    // Broiler-Falsified-If: a tree holding a class with strings is answered with a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
+    /// <param name="program">The program, or null when the nesting limit refused the tree.</param>
+    /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=6E37E6
+    // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(RegexNode tree, int captureCount, IReadOnlyDictionary<string, int> groupNames,
         RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program)
@@ -162,9 +161,6 @@ internal static class ProgramCompiler
         try
         {
             var groups = Survey(tree, nesting);
-            if (groups is null)
-                return ProgramCompilation.NotYetSupported;
-
             program = new ProgramWriter(captureCount, groupNames, flags, data, groups).Emit(tree);
             return ProgramCompilation.Compiled;
         }
@@ -176,14 +172,15 @@ internal static class ProgramCompiler
     }
 
     /// <summary>
-    /// Walks the tree once before anything is emitted: refuses a construct the program cannot hold yet, by answering
-    /// null, and finds the capture groups of each quantifier's body, the registers its iterations reset.
+    /// Walks the tree once before anything is emitted, and finds the capture groups of each quantifier's body, the
+    /// registers its iterations reset.
     /// </summary>
     /// <exception cref="NestingLimitExceeded">The tree nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=7F9C56
+    /// <exception cref="ArgumentException">The tree holds a node of a type the parser does not build.</exception>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=DDC27C
     // Broiler-Falsified-If: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
     // Broiler-Human:        PENDING
-    private static Dictionary<QuantifierNode, (int First, int Last)>? Survey(RegexNode tree, RegexNesting nesting)
+    private static Dictionary<QuantifierNode, (int First, int Last)> Survey(RegexNode tree, RegexNesting nesting)
     {
         var groups = new Dictionary<QuantifierNode, (int First, int Last)>();
 
@@ -207,9 +204,7 @@ internal static class ProgramCompiler
 
             switch (node)
             {
-                case EmptyNode or CharNode or AnyCharNode or AnchorNode or BackreferenceNode:
-                    break;
-                case CharClassNode cls when !cls.Set.HasStrings:
+                case EmptyNode or CharNode or AnyCharNode or AnchorNode or BackreferenceNode or CharClassNode:
                     break;
                 case SequenceNode sequence:
                     for (var i = sequence.Terms.Count - 1; i >= 0; i--)
@@ -236,8 +231,7 @@ internal static class ProgramCompiler
                     pending.Push((quantifier.Child, depth, false));
                     break;
                 default:
-                    // A class holding strings: the instructions task 2.4b has still to add.
-                    return null;
+                    throw new ArgumentException("The tree holds a node of a type the parser does not build.", nameof(tree));
             }
         }
 
@@ -424,7 +418,7 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> under <paramref name="scope"/> now, and puts the rest on the work list.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=B9958F
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=4115CF
         // Broiler-Falsified-If: an alternation's alternatives are emitted in an order other than the pattern's, or a sequence's terms in an order other than the pattern's outside a look-behind's body and other than its reverse inside one
         // Broiler-Human:        PENDING
         private void Visit(RegexNode node, Scope scope, Stack<Step> work)
@@ -442,6 +436,9 @@ internal static class ProgramCompiler
                     break;
                 case AnyCharNode:
                     Add(scope.DotAll ? RegexOp.Any : RegexOp.AnyButLineTerminator, rightToLeft: scope.RightToLeft);
+                    break;
+                case CharClassNode cls when cls.Set.HasStrings:
+                    AddStrings(cls.Set, scope);
                     break;
                 case CharClassNode cls:
                     AddClass(cls.Set, scope);
@@ -600,6 +597,76 @@ internal static class ProgramCompiler
                 var ranges = AddRanges(set.Negated ? set.CodePoints.Complement() : set.CodePoints);
                 Add(RegexOp.Class, _classes.Count - 1, 0, 0, RegexProgram.ClassCost(ranges, 1), scope.RightToLeft);
             }
+        }
+
+        /// <summary>
+        /// Adds a <c>v</c>-mode class holding strings (§22.2.2.7, Atom :: CharacterClass, steps 3 to 8): an alternation of
+        /// each string of more than one character, longest first as the parser sorted them, each a sequence of its
+        /// characters compared as a one-member class is, then the class of the single characters, then, when the class
+        /// holds the empty string, an empty alternative. In a look-behind's body each string's characters are emitted
+        /// last first, as MatchSequence with direction backward matches them.
+        /// </summary>
+        /// <remarks>
+        /// The parser sorts the strings by their length in code units; the specification orders them by their length in
+        /// characters, and leaves strings of one length in any order. The two orders differ only between strings neither
+        /// of which begins the other, and of two such strings at most one can match at an index, so the alternation answers
+        /// the same. Under <c>i</c> the strings were folded when parsed, so each character's Canonicalize is itself.
+        /// </remarks>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=71C696
+        // Broiler-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
+        // Broiler-Human:        PENDING
+        private void AddStrings(CharSet set, Scope scope)
+        {
+            var exits = new List<int>();
+            var characters = new List<int>();
+            foreach (var text in set.Strings)
+            {
+                if (text.Length == 0)
+                    continue;
+
+                var choice = Add(RegexOp.Choice, _code.Count + 1, -1);
+                characters.Clear();
+                for (var at = 0; at < text.Length; at++)
+                {
+                    if (char.IsSurrogatePair(text, at))
+                        characters.Add(char.ConvertToUtf32(text[at], text[++at]));
+                    else
+                        characters.Add(text[at]);
+                }
+
+                if (scope.RightToLeft)
+                    characters.Reverse();
+                foreach (var character in characters)
+                {
+                    if (set.CaseFolded)
+                    {
+                        _folds = true;
+                        Add(RegexOp.LiteralIgnoringCase, data.Canonicalize(character, _unicode), rightToLeft: scope.RightToLeft);
+                    }
+                    else
+                    {
+                        Add(RegexOp.Literal, character, rightToLeft: scope.RightToLeft);
+                    }
+                }
+
+                exits.Add(Add(RegexOp.Goto, -1));
+                Patch(choice, b: _code.Count);
+            }
+
+            if (set.MatchesEmptyString)
+            {
+                var choice = Add(RegexOp.Choice, _code.Count + 1, -1);
+                AddClass(set, scope);
+                exits.Add(Add(RegexOp.Goto, -1));
+                Patch(choice, b: _code.Count);
+            }
+            else
+            {
+                AddClass(set, scope);
+            }
+
+            foreach (var exit in exits)
+                Patch(exit, a: _code.Count);
         }
 
         /// <summary>

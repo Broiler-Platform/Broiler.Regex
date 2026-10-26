@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Broiler.Regex.Ast;
 using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
+using Broiler.Regex.Parsing;
 using Broiler.Unicode.Tables;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,8 +18,7 @@ namespace Broiler.Regex.Tests;
 /// capture, on two populations. The <b>suite population</b> is every string literal of this test project's sources taken
 /// as a pattern, under each flag string near it and under five base flag strings, against the literals near it and a
 /// fixed set of subjects, from three start indices; the <b>generated population</b> is drawn by a seeded SplitMix64 from
-/// the 2.4a subset's grammar. A case the new compiler answers <see cref="ProgramCompilation.NotYetSupported"/> for is
-/// outside the subset and counted, not run.
+/// the 2.4a subset's grammar. A pattern the new compiler gives no program is counted, not run.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -65,8 +66,12 @@ public class DifferentialTests(ITestOutputHelper output)
     /// <summary>The generated population's size, in patterns, each against up to eight subjects from two starts.</summary>
     private const int Generated = 20_000;
 
-    /// <summary>How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> under <c>i</c> and <c>iu</c>.</summary>
-    private const int SuiteOverStepsPinned = 6;
+    /// <summary>
+    /// How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> under <c>i</c> and <c>iu</c>,
+    /// and <c>\p{RGI_Emoji}</c> on two subjects of 29 and 31 units, as its strings, tried one by one in the order the
+    /// specification gives them, cost about two units each at each start position (task 2.4c's fast paths).
+    /// </summary>
+    private const int SuiteOverStepsPinned = 10;
 
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
     private const int OverStepsPinned = 22;
@@ -105,11 +110,13 @@ public class DifferentialTests(ITestOutputHelper output)
         Assert.True(tally.Compared > 10_000, "the suite population compared only " + tally.Compared + " cases");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
 
-        // The suite's cases the step ceiling stops are pinned, each the catastrophic (a+)+b of ChargingTests' declared
-        // inputs on a subject of twelve or fourteen a's, under the i flags written beside it; none may stop at a frame or
-        // trail ceiling: the subjects are a few characters long, so a stop there is the new backend giving up, not an answer.
+        // The suite's cases the step ceiling stops are pinned: the catastrophic (a+)+b of ChargingTests' declared inputs on
+        // a subject of twelve or fourteen a's, under the i flags written beside it, and \p{RGI_Emoji} on the two longest
+        // subjects beside it; none may stop at a frame or trail ceiling: the subjects are a few characters long, so a stop
+        // there is the new backend giving up, not an answer.
         Assert.Equal((SuiteOverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
-        Assert.All(tally.Stopped, static stopped => Assert.Contains("/(a+)+b/i", stopped, StringComparison.Ordinal));
+        Assert.All(tally.Stopped, static stopped => Assert.True(
+            stopped.Contains("/(a+)+b/i", StringComparison.Ordinal) || stopped.Contains("/\\p{RGI_Emoji}/v on", StringComparison.Ordinal), stopped));
     }
 
     [Fact]
@@ -169,6 +176,59 @@ public class DifferentialTests(ITestOutputHelper output)
     private static string Report(Tally tally) =>
         tally.Disagreements.Count + " disagreements:\n" + string.Join('\n', tally.Disagreements.Take(60));
 
+    /// <summary>
+    /// An old-backend defect a disagreement is attributed to: its name, as the roadmap's record of task 2.4b gives it, the
+    /// test that pins the specification's answer, and the construct of the parsed pattern without which it cannot arise.
+    /// A disagreement is attributed to the first defect whose construct the pattern holds; one that none explains fails
+    /// the comparison.
+    /// </summary>
+    internal sealed record Defect(string Name, string Pin, Func<RegexNode, bool> Holds);
+
+    /// <summary>The old backend's defects the comparison found, each pinned to the specification's answer.</summary>
+    internal static readonly Defect[] Defects =
+    [
+        new("D2", nameof(OldBackendDefectTests.D2_a_class_s_empty_string_is_tried_after_its_single_characters),
+            static tree => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } })),
+    ];
+
+    /// <summary>Whether some node of <paramref name="tree"/> satisfies <paramref name="test"/>, read on a work list.</summary>
+    private static bool Any(RegexNode tree, Func<RegexNode, bool> test)
+    {
+        var pending = new Stack<RegexNode>();
+        pending.Push(tree);
+        while (pending.Count > 0)
+        {
+            var node = pending.Pop();
+            if (test(node))
+                return true;
+            switch (node)
+            {
+                case SequenceNode sequence:
+                    foreach (var term in sequence.Terms)
+                        pending.Push(term);
+                    break;
+                case DisjunctionNode disjunction:
+                    foreach (var alternative in disjunction.Alternatives)
+                        pending.Push(alternative);
+                    break;
+                case GroupNode group:
+                    pending.Push(group.Child);
+                    break;
+                case ModifierGroupNode modifier:
+                    pending.Push(modifier.Child);
+                    break;
+                case LookaroundNode look:
+                    pending.Push(look.Child);
+                    break;
+                case QuantifierNode quantifier:
+                    pending.Push(quantifier.Child);
+                    break;
+            }
+        }
+
+        return false;
+    }
+
     private static bool LooksLikeFlags(string text) =>
         text.Length <= 8 && text.All(static c => "dgimsuvy".Contains(c)) && text.Distinct().Count() == text.Length
         && !(text.Contains('u') && text.Contains('v'));
@@ -187,6 +247,9 @@ public class DifferentialTests(ITestOutputHelper output)
         internal int InsidePair;
         internal ulong MostUnits;
         internal readonly List<string> Disagreements = [];
+
+        /// <summary>The disagreements attributed to each recorded defect of the old backend, by its name.</summary>
+        internal readonly SortedDictionary<string, int> Explained = new(StringComparer.Ordinal);
 
         /// <summary>The first cases a ceiling stopped, for the report.</summary>
         internal readonly List<string> Stopped = [];
@@ -265,8 +328,15 @@ public class DifferentialTests(ITestOutputHelper output)
                     var actual = MachineTests.Render(status, slots);
                     Compared++;
                     MostUnits = Math.Max(MostUnits, units);
-                    if (expected != actual)
+                    if (expected == actual)
+                        continue;
+
+                    var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _);
+                    var defect = Defects.FirstOrDefault(d => d.Holds(tree));
+                    if (defect is null)
                         Disagreements.Add($"{origin}: /{Escape(pattern)}/{flags} on \"{Escape(subject)}\" from {start}: old {expected}, new {actual}");
+                    else
+                        Explained[defect.Name] = Explained.GetValueOrDefault(defect.Name) + 1;
                 }
             }
         }
@@ -276,7 +346,8 @@ public class DifferentialTests(ITestOutputHelper output)
             $"{Compared} cases compared ({InsidePair} starting inside a surrogate pair), the most units {MostUnits}; " +
             $"{OverSteps} stopped at the new backend's step ceiling, {OverFrames} at its frame ceiling, {OverTrail} at its trail ceiling, " +
             $"{OldOverflow} the old backend's stack guard refused; " +
-            $"{Disagreements.Count} disagreements";
+            $"{Disagreements.Count} disagreements unexplained" +
+            (Explained.Count == 0 ? "" : ", " + string.Join(", ", Explained.Select(static e => e.Value + " the old backend's defect " + e.Key)));
     }
 
     internal static string Escape(string text)

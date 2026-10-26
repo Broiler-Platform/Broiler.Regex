@@ -1,5 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using Broiler.Regex.Ast;
@@ -13,9 +19,9 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// The program compiler of task 2.4a (decision D5 of Broiler.VM's JSD-0081): the lowering of each construct of the subset
-/// to instructions, the transitional "not yet supported" answer for task 2.4b's constructs, the caller's nesting limit,
-/// and compilation at the nesting maximum and of a flat sequence of 100,000 terms on a 1 MiB thread.
+/// The program compiler of tasks 2.4a and 2.4b (decision D5 of Broiler.VM's JSD-0081): the lowering of each construct of
+/// the grammar to instructions, the absence of task 2.4a's transitional answer, the caller's nesting limit, and
+/// compilation at the nesting maximum and of a flat sequence of 100,000 terms on a 1 MiB thread.
 /// </summary>
 public class ProgramCompilerTests
 {
@@ -242,12 +248,51 @@ public class ProgramCompilerTests
     }
 
     [Theory]
-    [InlineData("[\\q{ab}]", "v")]
-    [InlineData("\\p{RGI_Emoji}", "v")]
-    public void A_construct_of_task_2_4b_is_answered_not_yet_supported_with_no_program_and_nothing_thrown(string pattern, string flags)
+    [InlineData("[\\q{abc|ab}]", "v", new[] { "Choice 1,5", "Literal 97", "Literal 98", "Literal 99", "Goto 10", "Choice 6,9", "Literal 97", "Literal 98", "Goto 10", "Class 0", "Succeed" })]
+    [InlineData("[\\q{ab}c-e]", "v", new[] { "Choice 1,4", "Literal 97", "Literal 98", "Goto 5", "Class 0", "Succeed" })]
+    [InlineData("[\\q{ab|}c]", "v", new[] { "Choice 1,4", "Literal 97", "Literal 98", "Goto 7", "Choice 5,7", "Class 0", "Goto 7", "Succeed" })]
+    [InlineData("[\\q{}]", "v", new[] { "Choice 1,3", "Class 0", "Goto 3", "Succeed" })]
+    [InlineData("[\\q{AB}]", "vi", new[] { "Choice 1,4", "LiteralIgnoringCase 97", "LiteralIgnoringCase 98", "Goto 5", "CanonicalClass 0", "Succeed" })]
+    [InlineData("[\\q{\\u{1F600}a}]", "v", new[] { "Choice 1,4", "Literal 128512", "Literal 97", "Goto 5", "Class 0", "Succeed" })]
+    [InlineData("(?<=[\\q{ab}])", "v", new[] { "OpenLookaround 2,0,7", "Choice 2,5", "Literal 98 rtl", "Literal 97 rtl", "Goto 6", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    public void A_class_with_strings_lowers_to_an_alternation_of_its_strings_longest_first_then_its_characters_then_the_empty_string(string pattern, string flags, string[] expected)
     {
-        Assert.Equal(ProgramCompilation.NotYetSupported, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));
-        Assert.Null(program);
+        // §22.2.2.7, Atom :: CharacterClass, steps 3 to 8. The class of single characters is always an alternative, even
+        // empty, as the specification appends its CharacterSetMatcher; the empty string, when held, is an empty last one.
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Fact]
+    public void The_transitional_not_yet_supported_answer_is_gone_from_the_library_s_metadata()
+    {
+        // Task 2.4a's seam: the compiler's third answer, for a construct whose instructions task 2.4b had still to add.
+        // It is not an answer of the enumeration any more, and no member, type or string of the assembly names it.
+        Assert.Equal(["Compiled", "NestingLimitExceeded"], Enum.GetNames<ProgramCompilation>());
+        var assembly = typeof(ProgramCompilation).Assembly;
+        const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+        var names = assembly.GetTypes().SelectMany(static t => t.GetMembers(all).Select(static m => m.Name).Append(t.Name));
+        Assert.DoesNotContain(names, static n => n.Contains("NotYetSupported", StringComparison.OrdinalIgnoreCase));
+
+        using var stream = File.OpenRead(assembly.Location);
+        using var portable = new PEReader(stream);
+        var metadata = portable.GetMetadataReader();
+        var strings = new List<string>();
+        for (var handle = MetadataTokens.UserStringHandle(1); !handle.IsNil; handle = metadata.GetNextHandle(handle))
+            strings.Add(metadata.GetUserString(handle));
+        Assert.NotEmpty(strings);
+        Assert.DoesNotContain(strings, static text => text.Contains("not yet supported", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("NotYetSupported", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("(?=a)(?<!b)[\\q{xy}]\\1(a)", "v")]
+    [InlineData("^\\b\\B$(?i:a)(?<n>b)\\k<n>", "iu")]
+    [InlineData("\\p{RGI_Emoji}", "v")]
+    [InlineData("(?=a){0}b", "")]
+    public void Every_construct_task_2_4a_refused_now_compiles(string pattern, string flags)
+    {
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));
+        Assert.NotNull(program);
     }
 
     [Fact]

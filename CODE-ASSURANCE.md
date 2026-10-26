@@ -20,11 +20,11 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files not covered | 0 |
 | Files carrying an annotation | 22 |
 | Code units | 542 |
-| Relevant | 300 |
-| Exempt by predicate | 242 |
-| Annotated | 300 of 300 (100%) |
-| Human reviewed | 0 of 300 (0%) |
-| Unverified | 300 |
+| Relevant | 301 |
+| Exempt by predicate | 241 |
+| Annotated | 301 of 301 (100%) |
+| Human reviewed | 0 of 301 (0%) |
+| Unverified | 301 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 300 |
+| HUMAN_PENDING | 301 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 242 |
+| EXEMPT | 241 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 160 |
+| None | 161 |
 | Low | 150 |
 | Medium | 0 |
 | High | 0 |
@@ -56,7 +56,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | None | 19 |
 | Low | 83 |
 | Medium | 81 |
-| High | 127 |
+| High | 128 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 2.1 / 10 |
-| Units scored | 300 |
+| Units scored | 301 |
 
 ## High-security review areas
 
@@ -92,6 +92,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.OpenIteration(QuantifierNode, Scope, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddStrings(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAnchor(AnchorKind, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddReference(BackreferenceNode, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
@@ -202,8 +203,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 191 |
-| Units required to carry one | 127 |
+| Units carrying a criterion | 192 |
+| Units required to carry one | 128 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -230,7 +231,7 @@ that the rule is reviewable in one place rather than in several hundred.
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
 | FieldDeclaringStorage | 125 |
-| EnumMemberOfADeclaredVocabulary | 71 |
+| EnumMemberOfADeclaredVocabulary | 70 |
 | DeclaredInSource | 0 |
 
 ## Per-unit exemptions
