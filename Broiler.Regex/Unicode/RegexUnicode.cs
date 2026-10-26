@@ -203,6 +203,15 @@ internal sealed class RegexUnicode
     /// space's 1,114,112. Were a future version to break that, a code point that does not fold to itself would
     /// stay in the universe; under <c>vi</c> every lookup canonicalizes the subject first, so no match would
     /// change, and the test would report it.
+    /// <para>
+    /// <b>Cost.</b> <c>0.1.0-preview.4</c> built this set once per process, from its own table, in a static. It is
+    /// now built for each compilation that complements a class under <c>vi</c>, about 0.85 ms at 17.0.0 against
+    /// about 0.05 ms for a compilation that does not (measured locally at task 2.2's review), as are the folded
+    /// word set and <c>\s</c>'s set for every compilation in the constructor. Nothing is kept across compilations:
+    /// a cache shared by them would be the mutable static that convention 10 and decision D31 refuse. The work is
+    /// compile-time work of the kind requirement R2 charges, and task 2.5, which threads the meter through the set
+    /// algebra, charges it.
+    /// </para>
     /// </remarks>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=Low; Security=High; Resources=2; Fingerprint=1593A1
     // Broiler-Falsified-If: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves

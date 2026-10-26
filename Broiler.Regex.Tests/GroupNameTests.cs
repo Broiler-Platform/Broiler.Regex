@@ -139,8 +139,13 @@ public class GroupNameTests
     /// The duplicate in two alternatives that cannot both participate: ES2025 admits it, and requirement R6 (task
     /// 2.6) brings it. Until then it is refused as every duplicate is, and an escape no longer hides it: it was
     /// accepted in 0.1.0-preview.4 only when spelled with one (the survey's
-    /// <c>(?&lt;\u0061&gt;x)|(?&lt;a&gt;y)</c>).
+    /// <c>(?&lt;\u0061&gt;x)|(?&lt;a&gt;y)</c>; the unescaped <c>(?&lt;a&gt;x)|(?&lt;a&gt;y)</c> it refused).
     /// </summary>
+    /// <remarks>
+    /// These answers are not ECMA-262 2025's, which admits every row (§22.2.1.1, MightBothParticipate,
+    /// §22.2.1.4). Task 2.6 turns each row into an accepted pattern, with its name resolving to the participating
+    /// group, and deletes this test; it is not to stay as a guard against the specification.
+    /// </remarks>
     [Theory]
     [InlineData("(?<a>x)|(?<a>y)", "")]
     [InlineData("(?<a>x)|(?<a>y)", "u")]

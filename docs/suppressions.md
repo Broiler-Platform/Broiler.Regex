@@ -71,3 +71,11 @@ Of `UnicodeCharSets`, the members that read no table stay public with their `0.1
 violation list for task 2.9. Decision D12 keeps the 0.1 surface where R11 allows it and keeps no shim for a member R11
 makes impossible; the plan's section 1 and the dated record of [`roadmap.md`](roadmap.md) section 6 name the public
 `UnicodeCharSets` among R11's removals, which holds for the six members above and not for these four.
+
+A pack ends with two messages from package validation: "Could not resolve reference 'UnicodeEmoji.StringProperties.dll'"
+and the same for `Broiler.Unicode.Properties.dll`, "referenced by 'lib/net10.0/Broiler.Regex.dll'" of
+`broiler.regex.0.1.0-preview.4`. They are expected after R11: the baseline's own dependencies, the two
+`Broiler.UniCode.*` `0.1.0-preview.3` packages, are no longer restored, as this package no longer references them. They
+do not weaken the comparison, which reads the public surface of the two `Broiler.Regex.dll` files: no public signature
+of `0.1.0-preview.4` names a type of either assembly (its API listing, `PublicAPI.txt` at the start of task 2.2, names
+none), so each of its members is still compared, and the pack succeeds only with the suppressions above.
