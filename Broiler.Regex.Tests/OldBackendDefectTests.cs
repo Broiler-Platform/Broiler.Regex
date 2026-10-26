@@ -3,10 +3,9 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// The old backend's defects the differential comparison of task 2.4b found (<see cref="DifferentialTests.Defects"/>),
-/// and JSD-0081's row M7, which the comparison's population did not reach, each pinned to the specification's answer:
-/// the new backend gives it, and the public members, which run the old backend until task 2.4c routes them through the
-/// new one, are shown to give another. The roadmap's record of task 2.4b names each. Expected answers agree with V8's
+/// The old backend's defects the differential comparison of task 2.4b found (<see cref="DifferentialTests.Defects"/>), D2
+/// and JSD-0081's row M7, each pinned to the specification's answer: the new backend gives it, and the public members,
+/// which run the old backend until task 2.4c routes them through the new one, are shown to give another. The roadmap's record of task 2.4b names each. Expected answers agree with V8's
 /// (Node 22).
 /// </summary>
 public class OldBackendDefectTests
