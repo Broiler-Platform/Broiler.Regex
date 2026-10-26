@@ -25,7 +25,7 @@ public class AstralCaseFoldingTests
     [InlineData(WarangCitiCapitalNgaa, WarangCitiSmallNgaa)]
     [InlineData(WarangCitiSmallNgaa, WarangCitiCapitalNgaa)]
     // Garay was added in Unicode 16.0 and carries no simple case mapping in .NET's tables
-    // yet, so CaseFolding seeds its pairs itself.
+    // yet; its pairs come from the provider's case folding, at the UCD the provider reads.
     [InlineData(GarayCapitalCa, GaraySmallCa)]
     [InlineData(GaraySmallCa, GarayCapitalCa)]
     public void AstralAtom_MatchesItsFoldEquivalent(string pattern, string equivalent)

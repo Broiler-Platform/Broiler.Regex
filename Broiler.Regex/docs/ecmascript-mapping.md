@@ -24,7 +24,10 @@ code in this project. Section numbers refer to ECMA-262 (2024+).
 | `ClassSetExpression` (`v` mode) | `ParseClassSetExpression` | `CharClassNode` / `CharSet` |
 | `ClassSetOperand`, `NestedClass` | `ParseClassSetOperand`, `ParseNestedClass` | `CodePointSet` |
 | `ClassStringDisjunction` `\q{…}` | `ParseClassStringDisjunction` | `CharSet.Strings` |
-| `CharacterEscape` `\n \xHH \uHHHH \u{…} \cX` | `ReadCharacterEscape` | `CharNode` |
+| `CharacterEscape` `\n \xHH \uHHHH \u{…} \cX \0` | `ReadCharacterEscape` | `CharNode` |
+| Annex B `LegacyOctalEscapeSequence` (without `u` and `v`) | `ReadLegacyOctalOrIdentity` | `CharNode` |
+| `GroupName` / `RegExpIdentifierName` | `ReadGroupName`, over the provider's `EcmaScriptLexical` (`RegexUnicode.IsIdentifierStart` / `IsIdentifierPart`) | `GroupNode` |
+| `AtomEscape` `\k GroupName` | `ParseAtomEscape`, checked against the declared names once the pattern is read | `BackreferenceNode` |
 
 ## §22.2.2 Pattern semantics (the matcher) → `Matching/Matcher.cs`
 
