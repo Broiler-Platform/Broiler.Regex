@@ -3,19 +3,20 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   17
-// Annotated:        17/17
+// Relevant units:   19
+// Annotated:        19/19
 // Exempt:           22
-// Human-reviewed:   0/17
+// Human-reviewed:   0/19
 // IP risk:          None
 // Security risk:    High
-// Criteria:         9/6
+// Criteria:         11/6
 // Resource impact:  8/10 max
-// Unverified:       17
+// Unverified:       19
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System;
+using System.Buffers;
 
 namespace Broiler.Regex.Engine;
 
@@ -47,6 +48,14 @@ namespace Broiler.Regex.Engine;
 /// instruction dispatched. So before the k-th unit of work, at least k units have been charged, and the meter is never
 /// more than <see cref="Block"/> - 1 units ahead of the work. The units of one call run on across all its start positions,
 /// with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it.
+/// </para>
+/// <para>
+/// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned when
+/// the call ends (<see cref="Release"/>), its exceptions included, so after the pool holds arrays of the sizes a pattern
+/// needs, a call allocates nothing at all, whatever its capture count (requirement R8, bundle <c>sjl-11-001</c>'s check
+/// A-8). The frames and the trail start small and double as a match needs them, never past their ceilings. A rented
+/// array holds whatever its last user left in it; the machine reads only the registers it fills when it starts and the
+/// frames and cells it has written.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
@@ -81,8 +90,8 @@ internal ref struct RegexMachine
     private readonly int _frameCeiling;
     private readonly int _trailCeiling;
 
-    /// <summary>The registers: the capture registers, then the quantifiers' loop registers.</summary>
-    private readonly int[] _registers;
+    /// <summary>The registers: the capture registers, then the quantifiers' loop registers, in a rented array.</summary>
+    private int[] _registers;
 
     /// <summary>The backtrack frames, <see cref="FrameSize"/> integers each, and how many are held.</summary>
     private int[] _frames;
@@ -107,7 +116,7 @@ internal ref struct RegexMachine
     private int _end;
 
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=6C6E04
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=CF7012
     // Broiler-Human:        PENDING
     internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
@@ -121,10 +130,22 @@ internal ref struct RegexMachine
         _trailCeiling = ceilings.Trail;
         _paid = meter is null ? ulong.MaxValue : 0;
         _threshold = Math.Min(_paid, _stepCeiling);
-        _registers = new int[program.RegisterCount];
-        _registers.AsSpan().Fill(-1);
-        _frames = new int[16 * FrameSize];
-        _trail = new int[16 * CellSize];
+        _registers = ArrayPool<int>.Shared.Rent(program.RegisterCount);
+        _registers.AsSpan(0, program.RegisterCount).Fill(-1);
+        _frames = ArrayPool<int>.Shared.Rent(16 * FrameSize);
+        _trail = ArrayPool<int>.Shared.Rent(16 * CellSize);
+    }
+
+    /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=EA53EB
+    // Broiler-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
+    // Broiler-Human:        PENDING
+    internal void Release()
+    {
+        ArrayPool<int>.Shared.Return(_registers);
+        ArrayPool<int>.Shared.Return(_frames);
+        ArrayPool<int>.Shared.Return(_trail);
+        _registers = _frames = _trail = [];
     }
 
     /// <summary>The ceiling the call reached, when it answered <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</summary>
@@ -392,7 +413,7 @@ internal ref struct RegexMachine
 
     /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>, unless the frame ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=87F2FC
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=55D737
     // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
     // Broiler-Human:        PENDING
     private bool PushFrame(int resume, int position)
@@ -405,7 +426,7 @@ internal ref struct RegexMachine
 
         var frame = _frameTop * FrameSize;
         if (frame + FrameSize > _frames.Length)
-            Array.Resize(ref _frames, (int)Math.Min((long)_frames.Length * 2, (long)_frameCeiling * FrameSize));
+            _frames = Grow(_frames, frame, (int)Math.Min((long)_frames.Length * 2, (long)_frameCeiling * FrameSize));
         _frames[frame] = resume;
         _frames[frame + 1] = position;
         _frames[frame + 2] = _trailTop;
@@ -415,7 +436,7 @@ internal ref struct RegexMachine
 
     /// <summary>Writes <paramref name="value"/> into register <paramref name="register"/>, keeping what it held on the trail, unless the trail ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the write changes the register and the trail already holds as many cells as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=F2896E
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=EF82CB
     // Broiler-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
     // Broiler-Human:        PENDING
     private bool Write(int register, int value)
@@ -431,12 +452,24 @@ internal ref struct RegexMachine
 
         var cell = _trailTop * CellSize;
         if (cell + CellSize > _trail.Length)
-            Array.Resize(ref _trail, (int)Math.Min((long)_trail.Length * 2, (long)_trailCeiling * CellSize));
+            _trail = Grow(_trail, cell, (int)Math.Min((long)_trail.Length * 2, (long)_trailCeiling * CellSize));
         _trail[cell] = register;
         _trail[cell + 1] = held;
         _trailTop++;
         _registers[register] = value;
         return true;
+    }
+
+    /// <summary>A rented array of at least <paramref name="length"/> holding the first <paramref name="used"/> integers of <paramref name="array"/>, which goes back to the pool.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=0392F1
+    // Broiler-Falsified-If: a frame or a trail cell held before the growth reads back differently after it
+    // Broiler-Human:        PENDING
+    private static int[] Grow(int[] array, int used, int length)
+    {
+        var grown = ArrayPool<int>.Shared.Rent(length);
+        array.AsSpan(0, used).CopyTo(grown);
+        ArrayPool<int>.Shared.Return(array);
+        return grown;
     }
 
     /// <summary>Undoes every register write above trail height <paramref name="height"/>, newest first.</summary>

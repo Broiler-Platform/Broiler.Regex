@@ -101,25 +101,56 @@ internal sealed class RegexProgram
     /// <paramref name="meter"/> before it is done, in blocks, and bounded by <paramref name="ceilings"/> (R1 and R3).
     /// </summary>
     /// <param name="subject">The subject.</param>
-    /// <param name="start">Where the match starts, or the search begins.</param>
+    /// <param name="start">Where the match starts, or the search begins: from 0 to the subject's length.</param>
     /// <param name="anchored">Whether to try <paramref name="start"/> alone, whatever the pattern's <c>y</c> flag.</param>
-    /// <param name="slots">The caller's slots for the offsets.</param>
+    /// <param name="slots">
+    /// The caller's slots, at least <see cref="SlotCount"/> of them. A match writes the first <see cref="SlotCount"/>; any
+    /// other answer, and a meter's exception, leaves each of them -1. The slots past them are not touched.
+    /// </param>
     /// <param name="meter">The caller's meter, or null for none.</param>
-    /// <param name="ceilings">The caller's step, frame and trail ceilings.</param>
+    /// <param name="ceilings">The caller's step, frame and trail ceilings, made by their constructor.</param>
     /// <param name="limit">The ceiling reached when the answer is <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</param>
     /// <param name="units">The units of work the call did, which the meter was charged for before they were done.</param>
     /// <returns><see cref="RegexStatus.Match"/>, <see cref="RegexStatus.NoMatch"/> or <see cref="RegexStatus.LimitExceeded"/>.</returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=58BECD
-    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, /a(b)?/ on "a" writes a slot other than -1 for group 1, or a call that reaches a ceiling answers Match or NoMatch
+    /// <remarks>
+    /// <b>The entry of R7 and R8, internal until task 2.4c</b> routes <see cref="BroilerRegex"/> through it. A broken
+    /// precondition, the caller's (convention 3), is an exception; every other answer is a status. The program is not
+    /// changed by a call, so concurrent calls on one program, and a call the meter makes while it is charged, each answer
+    /// as alone; the call's registers, frames and trail are arrays rented from the shared array pool and given back
+    /// before it returns, so after the pool holds arrays of the sizes the program needs, a call allocates nothing,
+    /// whatever its capture count.
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
+    /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=775D0C
+    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, /a(b)?/ on "a" writes a slot other than -1 for group 1, a call that reaches a ceiling answers Match or NoMatch, or a call that does not match leaves a slot other than -1
     // Broiler-Human:        PENDING
     internal RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots,
         RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit, out ulong units)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(start);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(start, subject.Length);
+        if (slots.Length < SlotCount)
+            throw new ArgumentException("The slots hold fewer than two per capture group, group 0 included.", nameof(slots));
+        if (!ceilings.IsSet)
+            throw new ArgumentException("The ceilings are the default value; make them with their constructor.", nameof(ceilings));
+
+        var mine = slots[..SlotCount];
+        var status = RegexStatus.NoMatch;
         var machine = new RegexMachine(this, subject, meter, ceilings);
-        var status = machine.Run(start, anchored, slots);
-        limit = machine.Exceeded;
-        units = machine.Spent;
-        return status;
+        try
+        {
+            status = machine.Run(start, anchored, mine);
+            limit = machine.Exceeded;
+            units = machine.Spent;
+            return status;
+        }
+        finally
+        {
+            machine.Release();
+            if (status != RegexStatus.Match)
+                mine.Fill(-1);
+        }
     }
 
     /// <summary>
