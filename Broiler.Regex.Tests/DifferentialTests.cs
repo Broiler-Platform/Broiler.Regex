@@ -35,8 +35,9 @@ namespace Broiler.Regex.Tests;
 /// characters, where the old backend answered no match after five to eleven seconds although a prefix of the subject
 /// matched), and each took the new backend about 241,000 units. Under the ceiling of 100,000, task 2.4a's seed stopped
 /// 22 generated cases, the largest compared taking 95,843 units. Task 2.4b's population, drawn from the whole grammar
-/// with a seed of its own, stops 2 and its largest compared case takes 25,619 units; the suite's stops are
-/// <c>(a+)+b</c>'s on twelve to fifteen <c>a</c>s and <c>\p{RGI_Emoji}</c>'s (<see cref="SuiteOverStepsPinned"/>). The
+/// with a seed of its own, stopped 2, and the suite's stops were <c>(a+)+b</c>'s on twelve to fifteen <c>a</c>s and
+/// <c>\p{RGI_Emoji}</c>'s. Since task 2.4c's fast paths, which do less work for the same answers, the new backend stops
+/// none of the seed's cases and only <c>(a+)+b</c>'s of the suite's (<see cref="SuiteOverStepsPinned"/>). The
 /// cases left out are pinned: the stops of each population, at least 170,000 generated cases compared, and no case of
 /// either population stopped at a frame or trail ceiling, which on subjects of at most nine pieces would be the new
 /// backend giving up rather than answering.
@@ -90,21 +91,21 @@ public class DifferentialTests(ITestOutputHelper output)
 
     /// <summary>
     /// How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> of ChargingTests' declared
-    /// inputs under each flag string on the subjects of twelve to fifteen <c>a</c>s its occurrences bring, and
-    /// <c>\p{RGI_Emoji}</c> under <c>v</c> and <c>iv</c> on the subjects of 29 and 31 units beside it, as its strings, tried
-    /// one by one in the order the specification gives them, cost about two units each at each start position (task 2.4c's
-    /// fast paths).
+    /// inputs under each flag string on the subjects of twelve to fifteen <c>a</c>s its occurrences bring. Before task
+    /// 2.4c's fast paths <c>\p{RGI_Emoji}</c> under <c>v</c> and <c>iv</c> stopped too, on the subjects of 29 and 31 units
+    /// beside it, its strings tried one by one at about two units each; its table now tries only those under the character
+    /// at the index.
     /// </summary>
-    private const int SuiteOverStepsPinned = 38;
+    private const int SuiteOverStepsPinned = 26;
 
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
-    private const int OverStepsPinned = 2;
+    private const int OverStepsPinned = 0;
 
     /// <summary>
     /// The suite's disagreements attributed to each defect of the old backend's, pinned as the stops are: a count that
     /// moves is a disagreement that came or went, and is read before the pin is moved.
     /// </summary>
-    private static readonly SortedDictionary<string, int> SuiteExplainedPinned = new(StringComparer.Ordinal) { ["D2"] = 203, ["M7"] = 8 };
+    private static readonly SortedDictionary<string, int> SuiteExplainedPinned = new(StringComparer.Ordinal) { ["D2"] = 207, ["M7"] = 8 };
 
     /// <summary>The generated population's disagreements attributed to each defect of the old backend's, pinned.</summary>
     private static readonly SortedDictionary<string, int> GeneratedExplainedPinned = new(StringComparer.Ordinal) { ["D2"] = 57 };

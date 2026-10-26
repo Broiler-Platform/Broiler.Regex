@@ -16,15 +16,15 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Files scanned | 22 |
+| Files scanned | 23 |
 | Files not covered | 0 |
-| Files carrying an annotation | 22 |
-| Code units | 547 |
-| Relevant | 305 |
-| Exempt by predicate | 242 |
-| Annotated | 305 of 305 (100%) |
-| Human reviewed | 0 of 305 (0%) |
-| Unverified | 305 |
+| Files carrying an annotation | 23 |
+| Code units | 589 |
+| Relevant | 331 |
+| Exempt by predicate | 258 |
+| Annotated | 331 of 331 (100%) |
+| Human reviewed | 0 of 331 (0%) |
+| Unverified | 331 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 305 |
+| HUMAN_PENDING | 331 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 242 |
+| EXEMPT | 258 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 164 |
+| None | 191 |
 | Low | 151 |
 | Medium | 0 |
 | High | 0 |
@@ -54,9 +54,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 19 |
-| Low | 83 |
-| Medium | 81 |
-| High | 132 |
+| Low | 93 |
+| Medium | 85 |
+| High | 145 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -65,8 +65,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Metric | Value |
 |---|---:|
 | Maximum | 8 / 10 |
-| Average over annotated units | 2.1 / 10 |
-| Units scored | 305 |
+| Average over annotated units | 2.0 / 10 |
+| Units scored | 331 |
 
 ## High-security review areas
 
@@ -87,14 +87,18 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.BroilerRegex.Run(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.BroilerRegex.RunProgram(RegexProgram, string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, IReadOnlyDictionary<string, int>, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?, bool)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, IReadOnlyDictionary<string, int>, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?, bool)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Visit(RegexNode, Scope, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.OpenIteration(QuantifierNode, Scope, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.IsAtom(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAtom(RegexNode, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAtomRun(SequenceNode, int, int, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.StringTableOf(CharSet, bool)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddStrings(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAnchor(AnchorKind, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
@@ -102,14 +106,23 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.Afford(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.AtomHolds(in RegexInstruction, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.Repeat(in RegexInstruction, int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.Atoms(in RegexInstruction, int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.NextWayOfStrings(int, int, int, out int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.StringHolds(RegexStrings, ReadOnlySpan<int>, int, out int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.NextWay(int, out int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Pay()` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.MatchReference(in RegexInstruction, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.PushChoicePoint(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.PushMarkedFrame(int, int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexProgram` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexProgram.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit, out ulong)` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexStrings` in `Broiler.Regex/Engine/RegexStrings.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Matching.Matcher` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Matching.Matcher.Matcher(RegexNode, int, RegexFlags, IReadOnlyDictionary<string, int>, RegexUnicode, RegexNesting)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Matching.Matcher.Run(string, int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, human line PENDING
@@ -207,8 +220,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 196 |
-| Units required to carry one | 132 |
+| Units carrying a criterion | 211 |
+| Units required to carry one | 145 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -228,14 +241,14 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 39 |
-| ParameterAssigningConstructor | 7 |
+| TrivialPropertyOrAccessor | 41 |
+| ParameterAssigningConstructor | 8 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 126 |
-| EnumMemberOfADeclaredVocabulary | 70 |
+| FieldDeclaringStorage | 134 |
+| EnumMemberOfADeclaredVocabulary | 75 |
 | DeclaredInSource | 0 |
 
 ## Per-unit exemptions
@@ -259,14 +272,14 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-547 of them, exempt and relevant alike - with the fingerprint of its declaration.
+589 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as
 trivial is no longer invisible: a semantic change to one moves a value in a generated file
 the check compares byte for byte. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx` holds the manifest to the tree.
 
-Beside the units it lists **every covered file** - 22 of them - with a
+Beside the units it lists **every covered file** - 23 of them - with a
 fingerprint over the complete token stream of its compilation unit. A unit entry exists only
 for a declaration kind the scanner enumerates, and an enumeration is a whitelist: an
 `[assembly: ...]` attribute is a member of nothing and can be in no unit at all.

@@ -10,7 +10,7 @@ namespace Broiler.Regex.Probe;
 /// of <see cref="ProbePopulation.StackBytes"/>, so that the Native AOT run proves under its own stack what the JIT run
 /// proves: the flat sequences of 100,000 terms (the adversarial corpus's F03 and F04) and the nesting cases at the maximum
 /// (N01, N07, N13) complete through the new entry, and the new backend answers its ceilings, its meter, its anchored
-/// argument and task 2.4b's constructs as the JIT does. Each case is written in the corpus's terms
+/// argument, task 2.4b's constructs and task 2.4c's fast paths as the JIT does. Each case is written in the corpus's terms
 /// (<see cref="EngineRun"/>), and the report gives each its answer and the units the match did.
 /// </summary>
 internal static class EnginePopulation
@@ -77,6 +77,16 @@ internal static class EnginePopulation
         // NestingMaximumTests' look-behind shape at the maximum, matched right to left with no CLR recursion: a capture
         // around an alternation of sequences on each of 510 levels inside a look-behind.
         ("E37", "-", "match@0", "\"[\\\\s\\\\S]*(?<=\" + \"(b|x\" * 510 + \"a\" + \"x)\" * 510 + \")\"", "-", "\"x\" * 510 + \"a\" + \"x\" * 510", Ordinary),
+
+        // The corpus's rows task 2.4c brings to the new backend: the greedy run of [a] over 10,000,001 characters, which
+        // the run instruction matches with one frame; and its fast paths in both directions and under a fold: a lazy
+        // run, a run and an atom run read right to left, classes of strings under i forward and in a look-behind, and
+        // \p{RGI_Emoji}'s table.
+        ("E38", "O05", "match@0", "\"[a]*\"", "-", "\"a\" * 10000001", "meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E39", "O06", "match@0", "\"^[a]*$\"", "u", "\"a\" * 10000001", "meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E40", "-", "match@0", "\"(?<=[\\\\d]{2,}?x|ab)\\\\w*?cd\"", "-", "\"12xyzcdabq\" * 40 + \"12xcd\"", Ordinary),
+        ("E41", "-", "match@0", "\"(?:[\\\\q{abc|ab|}x]|(?<=[\\\\q{\\\\u{1F600}a|b}]))+y\"", "vi", "\"ABcXab\" * 50 + \"\\ud83d\\ude00Ay\"", Ordinary),
+        ("E42", "-", "match@3", "\"\\\\p{RGI_Emoji}+\"", "v", "\"abc\\ud83d\\udc4d\\ud83c\\udffd\\ud83d\\ude00!\"", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>

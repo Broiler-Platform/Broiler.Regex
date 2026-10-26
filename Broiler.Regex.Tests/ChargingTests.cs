@@ -91,8 +91,66 @@ public class ChargingTests
         // group's end and the failed Literal; at 1 the same three with the Literal matching, the group's start and the
         // reference to one character (1 + 1), which finds no character before index 0; at 2 those six, the close, the
         // Literal and Succeed. [\q{ab}c] on "c": the choice, the string's failed first Literal, the class and Succeed.
-        var program = TestProgram.Compile(pattern, flags);
+        // The general lowering, whose loops these units count; the fast paths' are the theory after this one.
+        var program = TestProgram.General(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
+    }
+
+    [Theory]
+    [InlineData("a*", "aa", "", 5)]
+    [InlineData("a*", "", "", 3)]
+    [InlineData("[a-cx-z]*", "ay", "", 8)]
+    [InlineData("a*?b", "aab", "", 7)]
+    [InlineData("a{2}b", "aab", "", 5)]
+    [InlineData("abc", "abc", "", 4)]
+    [InlineData("abc", "abd", "", 6)]
+    [InlineData("[\\q{ab}c]", "c", "v", 3)]
+    [InlineData("[\\q{ab}c]", "ab", "v", 4)]
+    [InlineData("[\\q{abc|ab}]x", "abx", "v", 8)]
+    [InlineData("(?<=a+)b", "aab", "", 17)]
+    public void A_fast_path_charges_its_dispatch_and_each_character_it_examines(string pattern, string subject, string flags, ulong units)
+    {
+        // Task 2.4c. a* on "aa": the run's dispatch, the two a's and the read that finds the end, each the Literal's one
+        // unit, then Succeed: five, where the loop of the theory above costs fourteen. [a-cx-z]* reads three times at the
+        // class's cost, two. a*?b on "aab": the lazy run takes nothing, b fails at 0, the run's frame takes an a, b fails at
+        // 1, the frame takes the second a, b matches, Succeed. a{2}b: two required a's, no frame. An atom run costs what
+        // its atoms dispatched one by one cost: abc on "abc" four and on "abd" six, as in the general lowering. [\q{ab}c]
+        // on "c": the table's dispatch, one unit (one key, weight none), finds no string under c and the class test, one,
+        // matches; on "ab" the string's two characters, a unit each. [\q{abc|ab}]x on "abx": abc fails at its third
+        // character, ab matches, then x and Succeed. (?<=a+)b on "aab": at 0 the look-behind's start, the run's dispatch
+        // and its first read, which finds nothing before index 0; at 1 those with one a read, the read that finds the start,
+        // the close and the failed b; at 2 two a's and the start, the close, b and Succeed.
+        Assert.Equal(units, Run(TestProgram.Compile(pattern, flags), subject, null).Units);
+    }
+
+    [Fact]
+    public void An_atom_run_moves_no_unit()
+    {
+        // Folding replaces dispatches with reads of the same cost: over every subject and start, a pattern whose only fast
+        // path is an atom run charges what its general lowering does.
+        foreach (var (pattern, flags) in (ValueTuple<string, string>[])[("abc", ""), ("a\\p{L}.", "u"), ("(?<=ab)c", ""), ("x[a-c]y|z", "i")])
+        {
+            var folded = TestProgram.Compile(pattern, flags);
+            var general = TestProgram.General(pattern, flags);
+            Assert.Contains(folded.Code.ToArray(), static i => i.Op == RegexOp.AtomRun);
+            foreach (var subject in (string[])["", "abc", "xabcx", "zzab", "aBcXbY", "\U0001F600abc"])
+            {
+                for (var start = 0; start <= subject.Length; start++)
+                    Assert.Equal(Run(general, subject, null, start: start).Units, Run(folded, subject, null, start: start).Units);
+            }
+        }
+    }
+
+    [Fact]
+    public void A_class_of_strings_costs_its_lookup_and_the_strings_under_the_character_at_the_index()
+    {
+        // \p{RGI_Emoji} at a position no emoji begins at: the general lowering tries each of its 2,760 strings, about two
+        // units each, where the table's dispatch looks the character up and tries none.
+        const string Emoji = "\\p{RGI_Emoji}";
+        var general = Run(TestProgram.General(Emoji, "v"), "x", null).Units;
+        var fast = Run(TestProgram.Compile(Emoji, "v"), "x", null).Units;
+        Assert.True(general > 5_000, general + " units in the general lowering");
+        Assert.True(fast < 60, fast + " units with the table");
     }
 
     /// <summary>
@@ -139,6 +197,9 @@ public class ChargingTests
         { "(?:(a)|b){2,4}c", "", string.Concat(Enumerable.Repeat("abab", 150)) + "x", 0, false, null },
         { "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", "", string.Concat(Enumerable.Repeat("\naBKazx1", 80)), 0, false, null },
         { "(?<=[\\p{Ll}--[q]]{2})\\d", "iv", string.Concat(Enumerable.Repeat("aB1Q2", 120)) + "!", 0, false, null },
+        { "[a-z]+?\\d", "", string.Concat(Enumerable.Repeat("abcdefghij", 60)) + "!", 0, false, null },
+        { "(?<=[\\d]{2,}?x|ab)\\w*cd", "", string.Concat(Enumerable.Repeat("12xyzcdabq", 60)), 0, false, null },
+        { "\\w*?[\\q{xyz|xy|x}]{2}", "v", string.Concat(Enumerable.Repeat("axbxyc", 90)), 0, false, 3_000UL },
     };
 
     [Theory]
@@ -256,6 +317,7 @@ public class ChargingTests
         [
             RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass,
             RegexOp.Any, RegexOp.AnyButLineTerminator, RegexOp.Backreference, RegexOp.BackreferenceIgnoringCase,
+            RegexOp.GreedyRun, RegexOp.LazyRun, RegexOp.AtomRun, RegexOp.StringClass,
         ];
         Assert.Empty(read.Where(op => !backward.Contains(op)));
         Assert.Empty(backward.Where(op => !read.Contains(op)));

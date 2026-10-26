@@ -14,9 +14,9 @@ namespace Broiler.Regex.Tests;
 public class CeilingTests
 {
     private static (RegexStatus Status, RegexLimit Limit, string Answer) Run(string pattern, string subject, ulong? steps = null,
-        int frames = RegexMatchCeilings.FrameCeilingMaximum, int trail = RegexMatchCeilings.TrailCeilingMaximum)
+        int frames = RegexMatchCeilings.FrameCeilingMaximum, int trail = RegexMatchCeilings.TrailCeilingMaximum, bool fastPaths = true)
     {
-        var program = TestProgram.Compile(pattern);
+        var program = fastPaths ? TestProgram.Compile(pattern) : TestProgram.General(pattern);
         var slots = new int[program.SlotCount];
         var status = program.Match(subject, 0, false, slots, null, new RegexMatchCeilings(steps, frames, trail), out var limit, out _);
         return (status, limit, MachineTests.Render(status, slots));
@@ -25,10 +25,17 @@ public class CeilingTests
     [Fact]
     public void The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once()
     {
-        // a* over "aaaa" holds five frames at its deepest: one per iteration, and the fifth iteration's, whose body fails.
-        Assert.Equal("match 0,4", Run("a*", "aaaa", frames: 5).Answer);
-        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Run("a*", "aaaa", frames: 4).Head());
-        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Run("a*", "aaaa", frames: 1).Head());
+        // a* over "aaaa" as a loop (the general lowering) holds five frames at its deepest: one per iteration, and the
+        // fifth iteration's, whose body fails.
+        Assert.Equal("match 0,4", Run("a*", "aaaa", frames: 5, fastPaths: false).Answer);
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Run("a*", "aaaa", frames: 4, fastPaths: false).Head());
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Run("a*", "aaaa", frames: 1, fastPaths: false).Head());
+
+        // As a run it holds one frame, whatever its length. In a loop each iteration holds the loop's choice and, when it
+        // took a character, its run's frame: (?:a*b)* over "aabaabb" holds four choices and two runs' frames at the end.
+        Assert.Equal("match 0,4", Run("a*", "aaaa", frames: 1).Answer);
+        Assert.Equal("match 0,7", Run("(?:a*b)*", "aabaabb", frames: 6).Answer);
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Run("(?:a*b)*", "aabaabb", frames: 5).Head());
 
         // The adversarial corpus's M01: each iteration leaves the star's "stop here" pending until the match ends.
         var m01 = Run("(?:a|ab)*c", string.Concat(Enumerable.Repeat("ab", 10_000)) + "c", frames: 100);
@@ -54,22 +61,45 @@ public class CeilingTests
     [Fact]
     public void A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration()
     {
-        // The trail keeps every write that changes a register until the attempt ends, whether or not a choice is open:
-        // a{n} pushes no frame, but each iteration writes its mark and its count, and the count's start one more. Under
-        // the engines' ceilings of decision D10 that bounds a counted loop to 1,048,575 iterations; the old backend, the
-        // public members' until task 2.4c, matches past it.
+        // The trail keeps every write that changes a register until the attempt ends, whether or not a choice is open: a
+        // loop of a{n} (the general lowering) pushes no frame, but each iteration writes its mark and its count, and the
+        // count's start one more. Under the engines' ceilings of decision D10 that bounds a counted loop to 1,048,575
+        // iterations; the old backend, the public members' until task 2.4c, matches past it.
         const int most = (RegexMatchCeilings.EngineTrail - 1) / 2;
         Assert.Equal(1_048_575, most);
         var subject = new string('a', most + 1);
-        var program = TestProgram.Compile("(?:a){" + most + "}");
+        var program = TestProgram.General("(?:a){" + most + "}");
         var slots = new int[program.SlotCount];
         Assert.Equal(RegexStatus.Match, program.Match(subject, 0, true, slots, null, RegexMatchCeilings.Engines, out _, out _));
         Assert.Equal([0, most], slots);
 
-        var past = TestProgram.Compile("a{" + (most + 1) + "}");
+        var past = TestProgram.General("a{" + (most + 1) + "}");
         Assert.Equal(RegexStatus.LimitExceeded, past.Match(subject, 0, true, new int[past.SlotCount], null, RegexMatchCeilings.Engines, out var limit, out _));
         Assert.Equal(RegexLimit.Trail, limit);
         Assert.True(TestRegex.Compile("a{" + (most + 1) + "}").Match(subject).Success);
+
+        // A body of more than one character is still a loop with the fast paths, and keeps the bound.
+        var pair = TestProgram.Compile("(?:ab){" + (most + 1) + "}");
+        Assert.Equal(RegexStatus.LimitExceeded, pair.Match(string.Concat(Enumerable.Repeat("ab", most + 1)), 0, true, new int[pair.SlotCount], null, RegexMatchCeilings.Engines, out limit, out _));
+        Assert.Equal(RegexLimit.Trail, limit);
+    }
+
+    [Fact]
+    public void A_run_holds_one_frame_and_writes_no_trail_cell_whatever_its_length()
+    {
+        // Task 2.4c's run of one character (the adversarial corpus's presumption 3): a{n}, [a]*, [a]*? and a run read
+        // right to left, past the loop's bound, match under the engines' ceilings, and under a trail ceiling of one and a
+        // frame ceiling of one, two for the run and the look-behind's barrier both held.
+        const int length = (RegexMatchCeilings.EngineTrail / 2) + 1;
+        var subject = new string('a', length);
+        foreach (var (pattern, frames) in (ValueTuple<string, int>[])[("a{" + length + "}", 1), ("[a]*", 1), ("[a]*?$", 1), ("a+(?<=a{" + length + "})", 2)])
+        {
+            var program = TestProgram.Compile(pattern);
+            var slots = new int[program.SlotCount];
+            Assert.Equal(RegexStatus.Match, program.Match(subject, 0, true, slots, null, RegexMatchCeilings.Engines, out _, out _));
+            Assert.Equal([0, length], slots);
+            Assert.Equal(RegexStatus.Match, program.Match(subject, 0, true, slots, null, new RegexMatchCeilings(null, frames, 1), out _, out _));
+        }
     }
 
     [Fact]
@@ -127,7 +157,9 @@ public class CeilingTests
         // ceiling below the writes it keeps answers LimitExceeded naming that ceiling; at and above, the full answer. A
         // negative look-around whose body stopped at a ceiling would otherwise read the stop as the body's failure, and
         // hold.
-        var program = TestProgram.Compile(pattern, flags);
+        // The general lowering reaches each ceiling through the look-around or the reference; the fast paths' program, whose
+        // runs hold fewer frames and cells, answers each ceiling it reaches the same way (the theory after this one).
+        var program = TestProgram.General(pattern, flags);
         var full = Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
         Assert.NotEqual(RegexStatus.LimitExceeded, full.Status);
         for (ulong k = 1; k <= full.Units; k++)
@@ -141,6 +173,29 @@ public class CeilingTests
 
         Assert.True(Needed(program, subject, RegexLimit.Frames, full) > 1, "no frame ceiling was reached");
         Assert.True(Needed(program, subject, RegexLimit.Trail, full) > 1, "no trail ceiling was reached");
+    }
+
+    [Theory]
+    [MemberData(nameof(ThroughLookaroundsAndReferences))]
+    public void With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(string pattern, string flags, string subject)
+    {
+        // The same patterns with their runs, atom runs and classes of strings: every step ceiling below the call's cost
+        // answers steps, and every frame and trail ceiling below what it holds answers that ceiling, a run's or a class
+        // of strings' marked frame among those held; at and above, the general lowering's answer.
+        var program = TestProgram.Compile(pattern, flags);
+        var full = Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+        Assert.Equal(Run(TestProgram.General(pattern, flags), subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum).Answer, full.Answer);
+        for (ulong k = 1; k <= full.Units; k++)
+        {
+            var run = Run(program, subject, k, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+            if (k < full.Units)
+                Assert.True((run.Status, run.Limit) == (RegexStatus.LimitExceeded, RegexLimit.Steps) && run.Units <= k, "steps " + k + ": " + run.Answer + " " + run.Limit);
+            else
+                Assert.Equal((full.Answer, full.Units), (run.Answer, run.Units));
+        }
+
+        Needed(program, subject, RegexLimit.Frames, full);
+        Needed(program, subject, RegexLimit.Trail, full);
     }
 
     /// <summary>

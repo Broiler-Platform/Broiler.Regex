@@ -102,7 +102,8 @@ public class MatcherRecursionTests
         // the loop.
         const string Loop = "Broiler.Regex.Engine.RegexMachine.MatchFrom(System.Int32)";
         Assert.Contains(Loop, graph.Methods);
-        Assert.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", graph.Callees(Loop));
+        Assert.Contains("Broiler.Regex.Engine.RegexMachine.Afford(System.Int32)", graph.Callees(Loop));
+        Assert.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", graph.Callees("Broiler.Regex.Engine.RegexMachine.Afford(System.Int32)"));
         Assert.Contains("Broiler.Regex.Engine.RegexMachine.PushChoicePoint(System.Int32,System.Int32)", graph.Callees(Loop));
         Assert.True(graph.Reaches(graph.Methods.Single(static m => m.StartsWith("Broiler.Regex.Engine.RegexProgram.Match(", StringComparison.Ordinal)), Loop));
 

@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   1
 // Annotated:        1/1
-// Exempt:           25
+// Exempt:           29
 // Human-reviewed:   0/1
 // IP risk:          None
 // Security risk:    Medium
@@ -31,13 +31,25 @@ namespace Broiler.Regex.Engine;
 /// the registers as the specification's continuation would have seen them.
 /// </para>
 /// <para>
-/// <b>What tasks 2.4a and 2.4b hold, and what is still to come.</b> Task 2.4a's: literal characters, <c>.</c> with and
-/// without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted bounds and the
-/// specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's captures cleared
-/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>, the assertions <c>^ $ \b \B</c>,
-/// back-references and the four look-arounds, with the backward direction a look-behind's body reads in. The greedy run of
-/// a single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below
-/// are not a contract: a program is built and run by the same version of the library.
+/// <b>What each task added.</b> Task 2.4a's: literal characters, <c>.</c> with and without <c>s</c>, character classes,
+/// sequence, alternation, greedy and lazy quantifiers with counted bounds and the specification's empty-iteration rule,
+/// and capturing and non-capturing groups with a quantified atom's captures cleared at each iteration. Task 2.4b's:
+/// characters and classes compared under <c>i</c>, the assertions <c>^ $ \b \B</c>, back-references and the four
+/// look-arounds, with the backward direction a look-behind's body reads in. Task 2.4c's are the fast paths, each an
+/// instruction that charges the meter for every character it examines (decision D8 of Broiler.VM's JSD-0081): the greedy
+/// and the lazy run of one character or class (<see cref="GreedyRun"/>, <see cref="LazyRun"/>), atom-run folding
+/// (<see cref="AtomRun"/>) and a class of strings read through a table its occurrences share (<see cref="StringClass"/>).
+/// The program compiler emits each only when its fast paths are on, as they are for every program the library builds; a
+/// program compiled with them off holds none, and answers every match the same (the fast paths' differential). The
+/// numbers below are not a contract: a program is built and run by the same version of the library.
+/// </para>
+/// <para>
+/// <b>An instruction that owns the ones after it.</b> A run is followed by its atom, the one-character instruction
+/// (<see cref="Literal"/>, <see cref="Class"/>, <see cref="AnyButLineTerminator"/>, <see cref="Any"/>,
+/// <see cref="LiteralIgnoringCase"/>, <see cref="ClassIgnoringCase"/> or <see cref="CanonicalClass"/>) it repeats; an
+/// atom run by the atoms it folds; a class of strings by the class test of its single characters. The owner reads them
+/// as data, with their operands, their direction and their cost, and goes on after them: no path dispatches an owned
+/// instruction, and no jump lands on one.
 /// </para>
 /// <para>
 /// <b>Direction.</b> An instruction with <see cref="RegexInstruction.RightToLeft"/> set stands in a look-behind's body,
@@ -48,7 +60,7 @@ namespace Broiler.Regex.Engine;
 /// the group's CaptureRange(ye, xe)), so no other instruction reads the direction.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=45FE7B
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=ECD892
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -203,4 +215,47 @@ internal enum RegexOp : byte
     /// fails (step 2.c).
     /// </summary>
     CloseLookaround = 24,
+
+    /// <summary>
+    /// RepeatMatcher (§22.2.2.3.1) over one character, greedy: the quantifier <c>{A,B}</c> of the atom at the next
+    /// address, <c>B</c> <see cref="int.MaxValue"/> when unbounded; matching goes on after the atom. The run takes the
+    /// <c>A</c> required characters, failing when one is missing, then as many more as the atom admits, up to <c>B</c>, and
+    /// leaves one backtrack frame that gives the extra characters back one at a time, the last taken first, down to where
+    /// the required ones end: the order in which the loop it replaces would have tried its continuation, with no frame and no
+    /// trail cell per character. A one-character atom consumes a character whenever it matches, so the empty-iteration rule
+    /// never applies, and it holds no group, so no capture is reset. The dispatch costs one unit, and every character the run
+    /// examines, the one that ends it included, costs the atom's cost, charged before it is read; a character given back
+    /// costs nothing of its own, as the instructions that run after it pay.
+    /// </summary>
+    GreedyRun = 25,
+
+    /// <summary>
+    /// RepeatMatcher over one character, lazy: as <see cref="GreedyRun"/>, the continuation tried first after the
+    /// <c>A</c> required characters, and one more character taken each time every path from there fails, up to <c>B</c>,
+    /// with one backtrack frame for the whole run. Each character the run examines costs the atom's cost, the one a
+    /// resumption reads included.
+    /// </summary>
+    LazyRun = 26,
+
+    /// <summary>
+    /// Atom-run folding: the <c>A</c> one-character atoms at the next addresses, two or more terms of one sequence in the
+    /// order the sequence is matched (its last term first in a look-behind's body), each read in its own direction; the
+    /// first that fails fails the instruction, and matching goes on after the last. Folding moves no unit: the dispatch
+    /// costs the first atom's cost and each later atom its own, charged before it is read, as the atoms dispatched one by
+    /// one would cost.
+    /// </summary>
+    AtomRun = 27,
+
+    /// <summary>
+    /// A <c>v</c>-mode class holding strings (§22.2.2.7, Atom :: CharacterClass, steps 3 to 8), read from the program's
+    /// table of strings <c>A</c>, which every occurrence of the same strings shares: its strings of more than one
+    /// character longest first, then the class test of its single characters at the next address, then, when <c>B</c> is
+    /// one, the empty string; matching goes on after the class test, and a backtrack frame keeps the next way while one is
+    /// left. Two strings can both match at an index only if they begin with the same character, or end with it right to
+    /// left, so the table keeps the strings by that character, and the instruction tries only those whose character is the
+    /// one at the index, in their order, which is the order of the alternation it replaces with the strings that cannot
+    /// match left out. The dispatch costs one unit and the table's weight, the search for the character; each character a
+    /// string's comparison reads costs one, and the class test its cost.
+    /// </summary>
+    StringClass = 28,
 }

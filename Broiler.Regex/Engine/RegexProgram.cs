@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   8
-// Annotated:        8/8
-// Exempt:           9
-// Human-reviewed:   0/8
+// Relevant units:   10
+// Annotated:        10/10
+// Exempt:           10
+// Human-reviewed:   0/10
 // IP risk:          None
 // Security risk:    High
 // Criteria:         4/2
 // Resource impact:  8/10 max
-// Unverified:       8
+// Unverified:       10
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -54,6 +54,9 @@ internal sealed class RegexProgram
     /// <summary>The groups the back-references read, each reference's list one run of entries (<see cref="RegexOp.Backreference"/>).</summary>
     private readonly int[] _referenced;
 
+    /// <summary>The tables of strings the classes of strings read (<see cref="RegexOp.StringClass"/>), each shared by every occurrence of its strings.</summary>
+    private readonly RegexStrings[] _strings;
+
     /// <summary>
     /// A program over <paramref name="code"/> and <paramref name="classes"/>, which the caller hands over and does not
     /// keep.
@@ -61,6 +64,7 @@ internal sealed class RegexProgram
     /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Succeed"/> or a failure.</param>
     /// <param name="classes">Each class's ranges as pairs of inclusive bounds, sorted and disjoint.</param>
     /// <param name="referenced">The group numbers the back-references read, each reference's list one run of entries.</param>
+    /// <param name="strings">The tables of strings the classes of strings read.</param>
     /// <param name="captureCount">The pattern's capturing groups, group 0 not counted.</param>
     /// <param name="registerCount">The registers the program uses: the capture registers and the quantifiers' loop registers.</param>
     /// <param name="unicode">Whether the pattern has <c>u</c> or <c>v</c>, so that a surrogate pair is read as one character.</param>
@@ -68,13 +72,14 @@ internal sealed class RegexProgram
     /// The Unicode owner's case folding, which an instruction comparing under <c>i</c> reads for Canonicalize and for a
     /// character's case orbit; null for a program with no such instruction.
     /// </param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=891770
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=710A60
     // Broiler-Human:        PENDING
-    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
+    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, RegexStrings[] strings, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
     {
         _code = code;
         _classes = classes;
         _referenced = referenced;
+        _strings = strings;
         CaptureCount = captureCount;
         RegisterCount = registerCount;
         Unicode = unicode;
@@ -125,6 +130,16 @@ internal sealed class RegexProgram
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121
     // Broiler-Human:        PENDING
     internal ReadOnlySpan<int> ClassRanges(int index) => _classes[index];
+
+    /// <summary>The table of strings <paramref name="index"/>, which a <see cref="RegexOp.StringClass"/> names.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=516A25
+    // Broiler-Human:        PENDING
+    internal RegexStrings Strings(int index) => _strings[index];
+
+    /// <summary>How many tables of strings the program holds: one for each distinct class of strings, however often it occurs.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1962ED
+    // Broiler-Human:        PENDING
+    internal int StringTableCount => _strings.Length;
 
     /// <summary>
     /// Matches <paramref name="subject"/> from <paramref name="start"/>, or at <paramref name="start"/> alone when
