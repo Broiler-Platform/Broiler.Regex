@@ -24,7 +24,7 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL3	Broiler.Regex names System.Reflection.MemberInfo: reflection	GetType().Name	Broiler.Regex/Matching/Matcher.cs:212
+SL3	Broiler.Regex names System.Reflection.MemberInfo: reflection	GetType().Name	Broiler.Regex/Matching/Matcher.cs:325
 SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:118 Broiler.Regex/RegexFlags.cs:90 Broiler.Regex/RegexFlags.cs:94 Broiler.Regex/Parsing/RegexParser.cs:153 Broiler.Regex/Parsing/RegexParser.cs:449 Broiler.Regex/Parsing/RegexParser.cs:457 Broiler.Regex/Parsing/RegexParser.cs:595 Broiler.Regex/Parsing/RegexParser.cs:1034 Broiler.Regex/Parsing/RegexParser.cs:1098 Broiler.Regex/Parsing/RegexParser.cs:1100 Broiler.Regex/Parsing/RegexParser.cs:1175 Broiler.Regex/Parsing/RegexParser.cs:1326 Broiler.Regex/Parsing/RegexParser.cs:1624
 SL5	Broiler.Regex: NoWarn suppresses CS1570	CS1570	eng/Broiler.Packaging.props:72
 SL5	Broiler.Regex: NoWarn suppresses CS1572	CS1572	eng/Broiler.Packaging.props:72
@@ -51,4 +51,4 @@ C1	Broiler.Regex names a base class library collection, delegate, object or Type
 C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.Strings field readonly System.Collections.Generic.IReadOnlyList`1<System.String>	public readonly IReadOnlyList<string> Strings = strings;	Broiler.Regex/Unicode/UnicodeCharSets.cs:108
 C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexOverflowException sealed class : System.Exception	public sealed class RegexOverflowException : Exception	Broiler.Regex/RegexOverflowException.cs:40
 C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexSyntaxException sealed class : System.Exception	public sealed class RegexSyntaxException(	Broiler.Regex/RegexSyntaxException.cs:28
-C5	Broiler.Regex calls System.Runtime.CompilerServices.RuntimeHelpers.TryEnsureSufficientExecutionStack(): the stack is a limit	TryEnsureSufficientExecutionStack()	Broiler.Regex/Matching/Matcher.cs:422
+C5	Broiler.Regex calls System.Runtime.CompilerServices.RuntimeHelpers.TryEnsureSufficientExecutionStack(): the stack is a limit	TryEnsureSufficientExecutionStack()	Broiler.Regex/Matching/Matcher.cs:537

@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 213 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 216 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 13 |
-| Code units | 340 |
-| Relevant | 213 |
-| Exempt | 127 |
-| Assessed | 213 of 213 (100%) |
-| Human reviewed | 0 of 213 (0%) |
-| Unverified | 213 |
+| Code units | 346 |
+| Relevant | 216 |
+| Exempt | 130 |
+| Assessed | 216 of 216 (100%) |
+| Human reviewed | 0 of 216 (0%) |
+| Unverified | 216 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 213 |
+| HUMAN_PENDING | 216 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 127 |
+| EXEMPT | 130 |
 
 ## 5. Aliases In The Tree
 
@@ -90,7 +90,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
 | `Broiler.Regex/BroilerRegex.cs` | 11 | 6 | 5 | 6 | Low | High | 6/6 |
 | `Broiler.Regex/Matching/MatchState.cs` | 15 | 8 | 7 | 8 | Low | Medium | 8/0 |
-| `Broiler.Regex/Matching/Matcher.cs` | 63 | 44 | 19 | 44 | Low | High | 35/29 |
+| `Broiler.Regex/Matching/Matcher.cs` | 69 | 47 | 22 | 47 | Low | High | 36/29 |
 | `Broiler.Regex/Matching/RegexMatch.cs` | 17 | 4 | 13 | 4 | None | Low | 2/0 |
 | `Broiler.Regex/Parsing/RegexParser.cs` | 80 | 61 | 19 | 61 | Low | High | 58/50 |
 | `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
@@ -138,18 +138,18 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a pattern compiled with only the v flag matches '.' against one UTF-16 unit of a surrogate pair, because the matcher's Unicode mode stays off
 - `Broiler.Regex.Matching.Matcher.Run(string, int)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `68BAA0`, PENDING
   - Falsified if: a match found at a later start position reports a group captured during an earlier, failed start position, because the shared initial captures array was written in place
-- `Broiler.Regex.Matching.Matcher.Compile(RegexNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `7DD78C`, PENDING
-  - Falsified if: a group nesting depth that the parser accepts overflows the native stack inside Compile, which has no TryEnsureSufficientExecutionStack check, instead of raising RegexOverflowException
-- `Broiler.Regex.Matching.Matcher.CompileSequence(IReadOnlyList<RegexNode>, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3A255D`, PENDING
-  - Falsified if: a pattern of 100_000 consecutive \b assertions recurses once per term through the continuation chain and ends the process with a stack overflow instead of raising RegexOverflowException
+- `Broiler.Regex.Matching.Matcher.Compile(RegexNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `77E35C`, PENDING
+  - Falsified if: compiling a deeply nested tree uses more CLR stack than a flat one, or /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body took the single-code-point fast path
+- `Broiler.Regex.Matching.Matcher.Build(Step, Stack<CompiledMatcher>)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `7150CE`, PENDING
+  - Falsified if: a sequence's or an alternation's children are taken in reverse order, so /ab/ matches 'ba' or /a|ab/ on 'ab' matches 'ab'
+- `Broiler.Regex.Matching.Matcher.Chain(CompiledMatcher[], Direction)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `AAFADF`, PENDING
+  - Falsified if: a backward sequence applies its terms left to right, so /(?<=(\d+)(\d+))$/ on '1053' reports groups other than '1' and '053'
 - `Broiler.Regex.Matching.Matcher.CompileAtomRun(CharPredicate[])` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `6E2087`, PENDING
   - Falsified if: /abc/ on 'ab' throws IndexOutOfRangeException instead of failing when the subject ends partway through the run
-- `Broiler.Regex.Matching.Matcher.CompileDisjunction(IReadOnlyList<RegexNode>, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `3D9C19`, PENDING
-  - Falsified if: a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
-- `Broiler.Regex.Matching.Matcher.CompileGroup(GroupNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `C2F071`, PENDING
+- `Broiler.Regex.Matching.Matcher.Alternation(CompiledMatcher[])` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `73E749`, PENDING
+  - Falsified if: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'
+- `Broiler.Regex.Matching.Matcher.CompileGroup(GroupNode, Direction, CompiledMatcher)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `FD28DF`, PENDING
   - Falsified if: /(?<=(ab))c/ on 'abc' reports group 1 with an index other than 0 or a length other than 2
-- `Broiler.Regex.Matching.Matcher.CompileQuantifier(QuantifierNode, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `5A1D52`, PENDING
-  - Falsified if: /(a)*/ on 'aa' reports group 1 as unmatched because a capturing body was routed to the single-code-point fast path
 - `Broiler.Regex.Matching.Matcher.CompileGeneralQuantifier(CompiledMatcher, int[], int, int, bool)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `81AB79`, PENDING
   - Falsified if: the empty alternative of /(?:a|)*b/ on 'c' is accepted as an iteration, so the attempt runs until the 10_000_000-step budget ends it instead of failing after a few steps
 - `Broiler.Regex.Matching.Matcher.TryMatchBodyNth(CompiledMatcher, MatchState, int, out MatchState)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `C40A56`, PENDING
@@ -166,7 +166,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: /\1(a)/ on 'a' fails, although a back-reference to a group that has not captured yet matches the empty string
 - `Broiler.Regex.Matching.Matcher.CompileAnchor(AnchorKind, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `2187F5`, PENDING
   - Falsified if: without the m flag, /^b/ matches 'a\nb' at index 2
-- `Broiler.Regex.Matching.Matcher.CompileLookaround(LookaroundNode, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `60FAD8`, PENDING
+- `Broiler.Regex.Matching.Matcher.CompileLookaround(LookaroundNode, CompiledMatcher)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `A0AE04`, PENDING
   - Falsified if: a positive look-behind leaves the cursor where its body ended, so /(?<=ab)c/ fails on 'abc' or reports a match index other than 2
 - `Broiler.Regex.Matching.Matcher.CompileChar(int, Direction, Flags)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `C1F548`, PENDING
   - Falsified if: under the u flag, /\u{1F600}$/u fails on the surrogate pair 😀 because the character matcher advances by one UTF-16 unit instead of two
@@ -326,5 +326,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-213 of the 213 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+216 of the 216 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.
