@@ -234,9 +234,9 @@ public sealed class CodePointSet
     /// <summary>
     /// Maps every member through <paramref name="fold"/>, used for the <c>v</c>-mode
     /// <c>MaybeSimpleCaseFolding</c> of a class-set operand (ECMA-262 §22.2.2.9.5). Folding
-    /// a set before complementing it is what makes <c>[^\P{Lowercase_Letter}]</c> under
-    /// <c>vi</c> match what <c>\p{Lowercase_Letter}</c> matches, where under <c>ui</c>, whose
-    /// case closure runs after the complement, it matches nothing.
+    /// a set before complementing it makes <c>[^\P{Lowercase_Letter}]</c> under <c>vi</c> match
+    /// what <c>\p{Lowercase_Letter}</c> matches; under <c>ui</c>, whose case closure runs after the
+    /// complement, it matches only the lowercase letters with no case partner, such as U+0138.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=5A1017
     // Broiler-Falsified-If: mapping Of(0x41, 0x5A) through simple case folding returns anything other than the single range 0x61..0x7A

@@ -77,7 +77,7 @@ public class UnicodeSetsTests
         => Assert.Equal(input, Match(pattern, "v", input));
 
     [Theory]
-    // §22.2.1 MaybeSimpleCaseFolding folds each operand BEFORE the complement is taken,
+    // §22.2.2.9.5 MaybeSimpleCaseFolding folds each operand BEFORE the complement is taken,
     // and §22.2.2.9 AllCharacters restricts that complement to the code points which fold
     // to themselves. /[^\p{Lu}]/vi matches neither `A` nor `a`, as /[^\p{Lu}]/ui does: there
     // CharacterSetMatcher's invert refuses every code point that folds like an uppercase
@@ -124,8 +124,8 @@ public class UnicodeSetsTests
     // The comments above, pinned in both modes. \P{Lu} is where `u` and `v` disagree: under `ui` the case
     // closure runs over the complement, which holds `a`, so both cases match; under `vi` the complement is taken
     // after folding, within the code points that fold to themselves, so neither does. [^\p{Lu}] matches neither
-    // case in both modes (§22.2.2.7.1, CharacterSetMatcher's invert), and [^\P{Ll}] matches nothing under `ui`
-    // and what \p{Ll} matches under `vi`.
+    // case in both modes (§22.2.2.7.1, CharacterSetMatcher's invert), and [^\P{Ll}] matches under `ui` only the
+    // lowercase letters with no case partner (U+0138, for one) and under `vi` what \p{Ll} matches.
     [InlineData(@"\P{Lu}", "ui", "A", "A")]
     [InlineData(@"\P{Lu}", "ui", "a", "a")]
     [InlineData(@"\P{Lu}", "vi", "A", null)]

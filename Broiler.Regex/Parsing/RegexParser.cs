@@ -49,7 +49,7 @@ public sealed class RegexParser
 
     /// <summary>
     /// The effective <c>i</c> flag at the cursor. A <c>v</c>-mode class folds its operands
-    /// while it is being built (§22.2.1 MaybeSimpleCaseFolding), and <c>\w</c>'s set widens
+    /// while it is being built (§22.2.2.9.5 MaybeSimpleCaseFolding), and <c>\w</c>'s set widens
     /// under <c>iu</c> (§22.2.2.9.3), so both need the flag as an inline modifier group
     /// leaves it — not only as the pattern's own flags set it.
     /// </summary>
@@ -1180,7 +1180,7 @@ public sealed class RegexParser
         return value;
     }
 
-    /// <summary>§22.2.1 MaybeSimpleCaseFolding — a no-op unless <c>i</c> is in effect.</summary>
+    /// <summary>§22.2.2.9.5 MaybeSimpleCaseFolding — a no-op unless <c>i</c> is in effect.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=6; Fingerprint=3A2E48
     // Broiler-Falsified-If: under vi each \p{L} operand is folded one code point at a time, so a class repeating it 10,000 times makes over a billion fold calls during parse
     // Broiler-Human:        PENDING

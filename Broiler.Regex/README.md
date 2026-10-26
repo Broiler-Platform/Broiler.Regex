@@ -142,6 +142,13 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
     `/[\q{A}]/vi` matches `A`. V8 folds the member but not the subject at that length —
     it matches `a` and not `A` — while canonicalizing both for a longer alternative —
     `UnicodeSetsTests.SingleCharacterStringAlternative_FoldsUnlikeV8`.
+- Two defects found during SJL-11.2 task 2.2's review, older than the task and left for the
+  class-set work of a later SJL-11.2 task (each fails against ES2025's §22.2.1 grammar):
+  - `\b` inside `\q{…}` is refused: `/[\q{\b}]/v`, `/[^\q{\b}]/v` and `/[\q{a\bc}]/v` throw
+    `RegexSyntaxException`, where `ClassSetCharacter` admits `\b` (U+0008).
+  - An escaped lead surrogate followed by an escaped trail surrogate in `\q{…}` is read as
+    one code point: `/^[\q{\uD83D\u{DE00}}]$/v` matches "😀", where the two escapes are
+    two code points and the alternative is a two-code-point string.
 - Performance: the matcher is an interpreter, not a compiled/DFA engine, so it stays slower
   than `System.Text.RegularExpressions`. A first allocation pass has closed much of the gap —
   `MatchState` is a `readonly struct` (deriving a state per code point no longer allocates),
