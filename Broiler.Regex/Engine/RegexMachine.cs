@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   19
 // Annotated:        19/19
-// Exempt:           22
+// Exempt:           23
 // Human-reviewed:   0/19
 // IP risk:          None
 // Security risk:    High
@@ -46,8 +46,9 @@ namespace Broiler.Regex.Engine;
 /// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has been
 /// charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
 /// instruction dispatched. So before the k-th unit of work, at least k units have been charged, and the meter is never
-/// more than <see cref="Block"/> - 1 units ahead of the work. The units of one call run on across all its start positions,
-/// with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it.
+/// more than <see cref="Block"/> - 1 units ahead of the work; the tests of check A-1 read both at every dispatch through
+/// <see cref="DispatchObserver"/>, which the library never sets. The units of one call run on across all its start
+/// positions, with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it.
 /// </para>
 /// <para>
 /// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned when
@@ -152,6 +153,16 @@ internal ref struct RegexMachine
     internal RegexLimit Exceeded { get; private set; }
 
     /// <summary>
+    /// A test's observer of the loop, or null, as the library always leaves it: called before each instruction is
+    /// dispatched and after its units are charged, with the units of the call through that instruction, so that a test
+    /// reads what its own meter holds at that moment (bundle <c>sjl-11-001</c>'s check A-1). It is a
+    /// <see cref="RegexWorkCharge"/> only so that the loop invokes no delegate type but the meter's.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=62AB7A
+    // Broiler-Human:        PENDING
+    internal RegexWorkCharge? DispatchObserver { private get; init; }
+
+    /// <summary>
     /// The units of work the call did: every instruction it dispatched, the one that reached a frame or trail ceiling
     /// included, and not the one the step ceiling refused.
     /// </summary>
@@ -211,7 +222,7 @@ internal ref struct RegexMachine
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=F4AFEF
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=A00DEB
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -228,6 +239,7 @@ internal ref struct RegexMachine
                 return Outcome.Exceeded;
             }
 
+            DispatchObserver?.Invoke(_spent);
             switch (instruction.Op)
             {
                 case RegexOp.Literal:

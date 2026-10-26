@@ -63,10 +63,71 @@ public class ChargingTests
     }
 
     /// <summary>
-    /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, a class of weight nine,
-    /// captures reset at each iteration, and a search that fails at every position.
+    /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
+    /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
+    /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position.
     /// </summary>
-    public static TheoryData<string, string> DeclaredInputs => new()
+    public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
+    {
+        { "(a+)+b", "", "aaaaaaaaac", 0, false, null },
+        { "\\p{L}+\\d", "u", "abcdefghijklmnopqrstuvwxyz!", 0, false, null },
+        { "[\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{Mn}\\p{Mc}\\p{Nd}]+!", "u", new string('a', 300) + "?", 0, false, null },
+        { "(?:(a)|b)*c", "", "abababababababababababababababx", 0, false, null },
+        { "(?:(a)|b)*c", "", "ababababababababababababababx", 3, true, null },
+        { "(?:" + string.Concat(Enumerable.Repeat("(a)", 1000)) + ")*b", "", new string('a', 3000) + "c", 0, false, 20_000UL },
+        { "x", "", new string('y', 600), 0, false, null },
+        { "(?:x|y)z", "u", new string('a', 5000), 17, false, null },
+        { "[\\s\\S]*\\u{1F600}", "u", "\U0001F600ba" + new string('x', 200), 1, false, null },
+        { "(a+)+b", "", "aaaaaaaaaaaaaac", 0, false, 7_777UL },
+        { "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", "", "aaaaaaaaaaaa", 0, false, null },
+    };
+
+    [Theory]
+    [MemberData(nameof(DeclaredInputs))]
+    public void Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(
+        string pattern, string flags, string subject, int start, bool anchored, ulong? steps)
+    {
+        // Check A-1, read at every dispatch: the loop's observer is called after an instruction's units are charged and
+        // before it runs, with the units through it, k; the recording meter's total at that moment is what was charged
+        // before the k-th unit of work. It is at least k, and less than a block more.
+        var program = TestProgram.Compile(pattern, flags);
+        var meter = new RecordingMeter();
+        var through = new List<ulong>();
+        var faults = new List<string>();
+        void Observe(ulong k)
+        {
+            if (faults.Count < 5 && (through.Count > 0 && k <= through[^1] || meter.Charged < k || meter.Charged - k >= RegexMachine.Block))
+                faults.Add("dispatch " + (through.Count + 1) + ": " + meter.Charged + " charged before unit " + k);
+            through.Add(k);
+        }
+
+        var slots = new int[program.SlotCount];
+        var machine = new RegexMachine(program, subject, meter.Charge, new RegexMatchCeilings(steps, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum))
+        {
+            DispatchObserver = Observe,
+        };
+        RegexStatus status;
+        ulong units;
+        try
+        {
+            status = machine.Run(start, anchored, slots);
+            units = machine.Spent;
+        }
+        finally
+        {
+            machine.Release();
+        }
+
+        Assert.Empty(faults);
+        Assert.Equal(steps is null, status != RegexStatus.LimitExceeded);
+        Assert.Equal(units, through[^1]);
+        Assert.True(meter.Charged >= units && meter.Charged - units < RegexMachine.Block, meter.Charged + " charged for " + units + " units");
+        Assert.All(meter.Charges, static c => Assert.True(c > 0 && c % RegexMachine.Block == 0, "a charge of " + c));
+        Assert.True(units <= RegexMachine.Block || meter.Charges.Count > 1, units + " units were charged in one block");
+    }
+
+    /// <summary>Inputs whose every step ceiling, from one unit to their whole cost, is tried.</summary>
+    public static TheoryData<string, string> StepCeilingInputs => new()
     {
         { "(a+)+b", "aaaaaaaaac" },
         { "\\p{L}+\\d", "abcdefghijklmnopqrstuvwxyz!" },
@@ -76,8 +137,8 @@ public class ChargingTests
     };
 
     [Theory]
-    [MemberData(nameof(DeclaredInputs))]
-    public void Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(string pattern, string subject)
+    [MemberData(nameof(StepCeilingInputs))]
+    public void A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(string pattern, string subject)
     {
         var program = TestProgram.Compile(pattern, "u");
         var full = Run(program, subject, null);
@@ -85,9 +146,9 @@ public class ChargingTests
         Assert.InRange(total, 200UL, 30_000UL);
         var dearest = (ulong)program.Code.ToArray().Max(static i => i.Cost);
 
-        // A step ceiling of k stops the call before the instruction that would take it past k units, so the meter's total
-        // at that stop is what was charged before every instruction the call dispatched ran. Over every k, that covers each
-        // instruction: charged before it ran, at least the units up to and including its own.
+        // Every ceiling below the call's whole cost answers LimitExceeded naming steps, within the dearest instruction's
+        // cost of the ceiling; the whole cost and more answer as the call without a ceiling does. The meter is never
+        // charged less than the work, nor a block more.
         for (ulong k = 1; k <= total + 1; k++)
         {
             var meter = new RecordingMeter();
@@ -106,7 +167,6 @@ public class ChargingTests
 
             Assert.True(meter.Charged >= run.Units, "k = " + k + ": " + meter.Charged + " charged for " + run.Units + " units");
             Assert.True(meter.Charged - run.Units < RegexMachine.Block, "k = " + k + ": over-charged by a block or more");
-            Assert.All(meter.Charges, static c => Assert.True(c > 0 && c % RegexMachine.Block == 0));
         }
     }
 

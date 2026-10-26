@@ -50,9 +50,9 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 22 |
-| Code units | 500 |
+| Code units | 501 |
 | Relevant | 281 |
-| Exempt | 219 |
+| Exempt | 220 |
 | Assessed | 281 of 281 (100%) |
 | Human reviewed | 0 of 281 (0%) |
 | Unverified | 281 |
@@ -71,7 +71,7 @@ annotations and the current fingerprints; nothing stores them.
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 219 |
+| EXEMPT | 220 |
 
 ## 5. Aliases In The Tree
 
@@ -91,7 +91,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/BroilerRegex.cs` | 14 | 9 | 5 | 9 | Low | High | 9/9 |
 | `Broiler.Regex/Compiling/ProgramCompiler.cs` | 40 | 18 | 22 | 18 | None | High | 10/10 |
 | `Broiler.Regex/Engine/RegexInstruction.cs` | 7 | 1 | 6 | 1 | None | Medium | 1/0 |
-| `Broiler.Regex/Engine/RegexMachine.cs` | 41 | 19 | 22 | 19 | None | High | 11/6 |
+| `Broiler.Regex/Engine/RegexMachine.cs` | 42 | 19 | 23 | 19 | None | High | 11/6 |
 | `Broiler.Regex/Engine/RegexMatchCeilings.cs` | 11 | 8 | 3 | 8 | None | High | 2/2 |
 | `Broiler.Regex/Engine/RegexOp.cs` | 15 | 1 | 14 | 1 | None | Medium | 0/0 |
 | `Broiler.Regex/Engine/RegexProgram.cs` | 12 | 5 | 7 | 5 | None | High | 3/2 |
@@ -171,7 +171,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
 - `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `71ADFA`, PENDING
   - Falsified if: an anchored call tries a position after its start, a search skips the position after the last character, or under u a search starts inside a surrogate pair it stepped over
-- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `F4AFEF`, PENDING
+- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `A00DEB`, PENDING
   - Falsified if: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
 - `Broiler.Regex.Engine.RegexMachine.Pay()` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=JSD-0081 decision D8, `05547C`, PENDING
   - Falsified if: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused

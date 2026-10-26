@@ -19,9 +19,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 22 |
 | Files not covered | 0 |
 | Files carrying an annotation | 22 |
-| Code units | 500 |
+| Code units | 501 |
 | Relevant | 281 |
-| Exempt by predicate | 219 |
+| Exempt by predicate | 220 |
 | Annotated | 281 of 281 (100%) |
 | Human reviewed | 0 of 281 (0%) |
 | Unverified | 281 |
@@ -36,13 +36,13 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 219 |
+| EXEMPT | 220 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 140 |
+| None | 141 |
 | Low | 150 |
 | Medium | 0 |
 | High | 0 |
@@ -54,7 +54,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 19 |
-| Low | 79 |
+| Low | 80 |
 | Medium | 68 |
 | High | 124 |
 | Critical | 0 |
@@ -220,7 +220,7 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 35 |
+| TrivialPropertyOrAccessor | 36 |
 | ParameterAssigningConstructor | 8 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
@@ -251,7 +251,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-500 of them, exempt and relevant alike - with the fingerprint of its declaration.
+501 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as
