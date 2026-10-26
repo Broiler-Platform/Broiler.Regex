@@ -394,6 +394,18 @@ runs out, and throw it only at its stack guard), becomes the public members' rou
 task 2.4c decides; `Matching/` and the old backend's defects D1, D2 and M7 go with it, and the trail bound of task
 2.4a's record is listed or lifted.
 
+**What task 2.5 adds**, besides its V rows: a compile charge for the program's lowering of classes of strings. The
+compiler lowers each occurrence of a class of strings in full and shares nothing between occurrences: a `Choice` and a
+`Goto` for each string, a `Literal` for each of its characters and the class of its single characters
+(`ProgramCompilerTests` pins it). `\p{RGI_Emoji}`, 13 characters of pattern, is 2,760 strings and 16,717 instructions at
+each occurrence; its parse and compilation for the new backend allocate about 2,920 KiB, where the parse alone allocates
+about 960 KiB and the old backend's constructor about 980 KiB; 100 occurrences, 1,300 characters, are 1,671,701
+instructions and about 231 MiB (the parse about 93 MiB, the old constructor about 96 MiB). Task 2.5's compile meter
+(decision D8's "in proportion to the expansion") must charge the lowered strings, the characters and strings each
+occurrence emits, and not only what the parser expands; or the compiler lowers each class of strings once, into a table
+its occurrences share. Until then only the internal route and the tests compile such a program; task 2.4c puts it on the
+public constructor's path, so task 2.5's charge, or the shared table, comes with it or before.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

@@ -315,6 +315,22 @@ public class ProgramCompilerTests
     }
 
     [Fact]
+    public void A_class_of_strings_is_lowered_in_full_at_each_of_its_occurrences()
+    {
+        // The compile-time expansion that task 2.5's compile meter must charge (the roadmap's record of task 2.4b):
+        // each occurrence of a class of strings becomes a Choice and a Goto for each string, a Literal for each of its
+        // characters, the class of its single characters and nothing shared, so \p{RGI_Emoji}'s 2,760 strings are
+        // 16,717 instructions, and a second occurrence as many again.
+        const string Emoji = "\\p{RGI_Emoji}";
+        var strings = ((CharClassNode)RegexParser.Parse(Emoji, RegexFlags.UnicodeSets, UnicodeTables.Instance, out _)).Set.Strings;
+        var characters = strings.Sum(static text => text.EnumerateRunes().Count());
+        var once = TestProgram.Compile(Emoji, "v").Code.Length - 1;
+        Assert.Equal((2_760, 16_717), (strings.Count, once));
+        Assert.Equal((2 * strings.Count) + characters + 1, once);
+        Assert.Equal((2 * once) + 1, TestProgram.Compile(Emoji + Emoji, "v").Code.Length);
+    }
+
+    [Fact]
     public void The_flags_that_change_no_instruction_are_accepted()
     {
         foreach (var flags in (string[])["d", "g", "m", "y", "dgmsy"])

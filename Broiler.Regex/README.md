@@ -246,6 +246,13 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   position: about two units a string that does not match, so `\p{RGI_Emoji}` costs about 5,500 units a
   position (row O17) and passes 100,000 units on a subject of 30. Task 2.4c's run instruction and
   prefilter are the remedies.
+- **A class of strings is lowered in full at each occurrence, and compilation is not charged yet
+  (task 2.5).** The new backend's program holds a `Choice` and a `Goto` for each string of a
+  `v`-mode class of strings and a `Literal` for each character, at every occurrence: `\p{RGI_Emoji}`
+  is 16,717 instructions and about 2.9 MB of parse and compilation, three times what the parse alone
+  allocates, and 100 occurrences about 231 MiB. Task 2.5's compile meter is to charge that lowering,
+  or the compiler to share one lowering between occurrences; until task 2.4c only the internal route
+  compiles such programs.
 - **Two defects of the old backend, which the public members show until task 2.4c (task 2.4b's
   differential comparison; `OldBackendDefectTests` pins the specification's answers).** D2: a
   `v`-mode class holding the empty string tries it before its single characters, so `/[\q{}a]/v` on
