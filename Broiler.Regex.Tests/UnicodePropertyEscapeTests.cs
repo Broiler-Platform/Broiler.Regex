@@ -12,7 +12,7 @@ public class UnicodePropertyEscapeTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -54,7 +54,7 @@ public class UnicodePropertyEscapeTests
     [InlineData(@"\p{Script=Adlam}", "\U0001E900")]
     public void PropertyEscape_MatchesAstralMembersAsOneCodePoint(string pattern, string input)
     {
-        var m = new BroilerRegex(pattern, "u").Match(input);
+        var m = TestRegex.Compile(pattern, "u").Match(input);
         Assert.True(m.Success);
         Assert.Equal(input, m.Value);
     }
@@ -80,14 +80,14 @@ public class UnicodePropertyEscapeTests
     [InlineData(@"\p{L")]
     [InlineData(@"\pL")]
     public void UnknownOrMalformedProperty_IsASyntaxError(string pattern)
-        => Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
 
     [Fact(Timeout = 600000)]
     public void PropertyOfStrings_NeedsTheVFlag()
     {
         // \p{RGI_Emoji} matches multi-code-point sequences, which only a `v`-mode class
         // can hold — under `u` it is a SyntaxError rather than a silent mis-match.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"\p{RGI_Emoji}", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"\p{RGI_Emoji}", "u"));
         Assert.NotNull(Match(@"\p{RGI_Emoji}", "v", "\U0001F600"));
     }
 

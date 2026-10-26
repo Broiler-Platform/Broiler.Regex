@@ -24,9 +24,10 @@ are correct *by construction* rather than by patch.
 
 > **Status: working core, wired into `JSRegExp`.** The parser and the backtracking
 > matcher implement the common grammar and the gap cases below. Unicode property
-> escapes (`\p{…}`), `v`-mode class-set expressions and the `Canonicalize` case-fold
-> tables are implemented and resolve against the pinned
-> [Broiler.UniCode](https://github.com/Broiler-Platform/Broiler.UniCode) data. As of issue #923 the engine is **wired
+> escapes (`\p{…}`), `v`-mode class-set expressions and both branches of `Canonicalize`
+> are implemented and read the Unicode owner's provider,
+> [`Broiler.Unicode.Algorithms`](https://github.com/Broiler-Platform/Broiler.Unicode), over
+> the tables the caller hands in (requirement R11). As of issue #923 the engine is **wired
 > into `JSRegExp`** behind a conservative gap-feature router
 > (`JSRegExp.TryBuildBroilerForGaps`): only patterns that hit a documented JS/.NET
 > gap are matched here; everything else still uses the .NET translator unchanged —
@@ -85,14 +86,15 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
   difference and complement. Every class member kind reduces to one of these, so
   `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand.
-* **`Unicode/UnicodeCharSets.cs`** — the `\d \D \w \W \s \S` sets, `AllCharacters`,
-  and `\p{…}` resolution against the generated `Broiler.UniCode` property tables
-  (General_Category, binary properties, `Script`, `Script_Extensions`, and the UTS #51
-  properties of strings).
-* **`Unicode/CaseFolding.cs`** + **`Unicode/Generated/CaseFoldingData.g.cs`** — both
-  branches of `Canonicalize`, table-driven from the Unicode Character Database, plus the
-  inverse fold orbits the class-membership test walks. Regenerate with
-  [`Unicode/tools/generate-case-folding.py`](Unicode/tools/generate-case-folding.py).
+* **`Unicode/RegexUnicode.cs`** — every Unicode answer a compilation reads, through the
+  provider over the caller's `IUnicodeTables`: `\p{…}` resolution by the exact names
+  ECMA-262 admits (General_Category, binary properties, `Script`, `Script_Extensions`,
+  and the UTS #51 properties of strings), both branches of `Canonicalize` and the fold
+  orbits the class-membership test walks, `\s`, the folded `\w` set and `AllCharacters`.
+  The package declares no Unicode version of its own.
+* **`Unicode/UnicodeCharSets.cs`** — the parts of the class escapes that are not Unicode
+  data: `\d`, the basic `\w` set and the code space, and the public members of `0.1` that
+  read no table (`IsDigit`, `PositiveEscape`, `IsComplementEscape`, `PropertyMatch`).
 
 ## What works today
 
@@ -110,7 +112,7 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 - `\p{…}` / `\P{…}` property escapes: General_Category, binary properties, `Script`,
   `Script_Extensions`, and the UTS #51 properties of strings under `v`
 - `v`-mode class-set expressions: nesting, `&&`, `--`, `\q{…}` string alternatives,
-  and the fold-then-complement ordering that makes `[^\p{Lu}]` mean something
+  and the fold-then-complement ordering that makes `\P{Lu}` mean something
   different under `vi` than under `ui`
 - The Annex B / Unicode-mode grammar split: `\u{…}`, a bare `]`/`{`/`}`, a class escape
   as a range endpoint, a quantified look-ahead, and `\k<n>` in a pattern that declares no
@@ -140,6 +142,13 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
     `/[\q{A}]/vi` matches `A`. V8 folds the member but not the subject at that length —
     it matches `a` and not `A` — while canonicalizing both for a longer alternative —
     `UnicodeSetsTests.SingleCharacterStringAlternative_FoldsUnlikeV8`.
+- Two defects found during SJL-11.2 task 2.2's review, older than the task and left for the
+  class-set work of a later SJL-11.2 task (each fails against ES2025's §22.2.1 grammar):
+  - `\b` inside `\q{…}` is refused: `/[\q{\b}]/v`, `/[^\q{\b}]/v` and `/[\q{a\bc}]/v` throw
+    `RegexSyntaxException`, where `ClassSetCharacter` admits `\b` (U+0008).
+  - An escaped lead surrogate followed by an escaped trail surrogate in `\q{…}` is read as
+    one code point: `/^[\q{\uD83D\u{DE00}}]$/v` matches "😀", where the two escapes are
+    two code points and the alternative is a two-code-point string.
 - Performance: the matcher is an interpreter, not a compiled/DFA engine, so it stays slower
   than `System.Text.RegularExpressions`. A first allocation pass has closed much of the gap —
   `MatchState` is a `readonly struct` (deriving a state per code point no longer allocates),

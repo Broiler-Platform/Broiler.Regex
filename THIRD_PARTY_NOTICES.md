@@ -1,14 +1,19 @@
 # Third-party notices
 
-`Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs` is a generated table derived from
-the Unicode Character Database (`CaseFolding.txt`, `UnicodeData.txt` and
-`SpecialCasing.txt`); the generator is
-[`Broiler.Regex/Unicode/tools/generate-case-folding.py`](Broiler.Regex/Unicode/tools/generate-case-folding.py).
-The property and emoji tables this engine resolves `\p{…}` and the properties of strings
-against are not in this repository: they come from the packages `Broiler.UniCode.Properties`
-and `Broiler.UniCode.Emoji.StringProperties`, built from the
-[Broiler.Unicode](https://github.com/Broiler-Platform/Broiler.Unicode) repository, and each
-package carries that repository's `THIRD_PARTY_NOTICES.md` for the data it generates.
+The `Broiler.Regex` package carries no Unicode data. Since requirement R11 (task 2.2 of milestone SJL-11.2,
+2026-10-26), every Unicode answer it gives - the property escapes `\p{…}`, the properties of strings, case
+folding and white space among them - is computed by the Unicode owner's algorithms,
+the package `Broiler.Unicode.Algorithms` from the
+[Broiler.Unicode](https://github.com/Broiler-Platform/Broiler.Unicode) repository, over tables the caller hands
+in through its `IUnicodeTables` interface. `Broiler.Unicode.Algorithms` carries no tables either. The tables are
+derived from the Unicode Character Database and the Unicode emoji data files; whoever embeds them (a JavaScript
+engine, or `Broiler.Unicode.Tables`, which this repository's tests and Native AOT probe use) carries them with
+Broiler.Unicode's `THIRD_PARTY_NOTICES.md` for the data it generates.
+
+Until then this repository held a generated case-folding table derived from the Unicode Character Database
+(`CaseFolding.txt`, `UnicodeData.txt` and `SpecialCasing.txt`) and its generator, both deleted by that change, and
+the package depended on `Broiler.UniCode.Properties` and `Broiler.UniCode.Emoji.StringProperties` for its
+property and emoji tables.
 
 Those data files and the tables derived from them remain subject to the
 [Unicode Terms of Use](https://www.unicode.org/terms_of_use.html).

@@ -25,6 +25,13 @@ foreach ($archive in $archives) {
         $mappings += "      <package pattern=`"$id`" />"
     } finally { $zip.Dispose() }
 }
+# The library reads Unicode data only through the IUnicodeTables a caller hands in (R11), so the consumer brings the
+# Unicode owner's tables, at the version this repository's tests and probe pin.
+[xml] $pins = Get-Content (Join-Path $PSScriptRoot '..' 'Directory.Packages.props') -Raw
+$tablesPin = @($pins.Project.ItemGroup.PackageVersion | Where-Object { $_.Include -eq 'Broiler.Unicode.Tables' })[0]
+if (!$tablesPin) { throw 'Directory.Packages.props pins no Broiler.Unicode.Tables version.' }
+$tablesVersion = [Security.SecurityElement]::Escape($tablesPin.Version)
+$references += "    <PackageReference Include=`"Broiler.Unicode.Tables`" Version=`"[$tablesVersion]`" />"
 $escapedPath = [Security.SecurityElement]::Escape($packagePath)
 @"
 <configuration>
@@ -58,11 +65,12 @@ $($references -join "`n")
 @'
 using System;
 using Broiler.Regex;
+using Broiler.Unicode.Tables;
 
-var letters = new BroilerRegex(@"\p{Script=Greek}+", "u").Match("123αβ");
+var letters = new BroilerRegex(@"\p{Script=Greek}+", "u", UnicodeTables.Instance).Match("123αβ");
 if (!letters.Success || letters.Index != 3 || letters.Length != 2)
     throw new Exception("Unicode property dependency failed.");
-if (!new BroilerRegex(@"^\p{RGI_Emoji}$", "v").IsMatch("👨‍👩‍👧‍👦"))
+if (!new BroilerRegex(@"^\p{RGI_Emoji}$", "v", UnicodeTables.Instance).IsMatch("👨‍👩‍👧‍👦"))
     throw new Exception("Emoji string property dependency failed.");
 Console.WriteLine("Package consumer smoke test passed.");
 '@ | Set-Content (Join-Path $scratch 'Program.cs') -Encoding utf8

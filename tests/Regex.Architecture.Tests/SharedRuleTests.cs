@@ -626,7 +626,7 @@ public class SharedRuleTests
     public void SL10_No_source_holds_a_preprocessor_directive_and_no_file_a_CR()
     {
         var sources = SharedTree.SourceFiles("*.cs").ToList();
-        Assert.Contains(sources, static s => s.EndsWith("CaseFoldingData.g.cs", StringComparison.Ordinal));
+        Assert.Contains(sources, static s => s.EndsWith("RegexParser.cs", StringComparison.Ordinal));
         Assert.Contains(sources, static s => s.EndsWith("Program.cs", StringComparison.Ordinal));
         var violations = sources.SelectMany(static p => SharedRules.SL10Directives(SharedTree.Relative(p), File.ReadAllText(p))).ToList();
 

@@ -17,7 +17,7 @@ public class StackDepthGuardTests
     [Fact(Timeout = 600000)]
     public void GreedyStarOverALongSubject_MatchesViaTheFastPath()
     {
-        var re = new BroilerRegex("a*");
+        var re = TestRegex.Compile("a*");
         var subject = new string('a', 500_000);
         Assert.Equal(subject, re.Match(subject).Value);
     }
@@ -25,7 +25,7 @@ public class StackDepthGuardTests
     [Fact(Timeout = 600000)]
     public void PlusClassOverALongSubject_MatchesViaTheFastPath()
     {
-        var re = new BroilerRegex("[ab]+", "u");
+        var re = TestRegex.Compile("[ab]+", "u");
         var subject = new string('b', 500_000);
         Assert.Equal(subject, re.Match(subject).Value);
     }
@@ -35,7 +35,7 @@ public class StackDepthGuardTests
     {
         // A capturing-group body is not eligible for the fast path, so it exercises the
         // explicit-stack RepeatMatcher. It used to overflow; now it matches natively.
-        var re = new BroilerRegex("(a)*");
+        var re = TestRegex.Compile("(a)*");
         var subject = new string('a', 500_000);
         var m = re.Match(subject);
         Assert.Equal(subject, m.Value);
@@ -46,7 +46,7 @@ public class StackDepthGuardTests
     public void AlternationBodyOverALongSubject_MatchesViaTheIterativeDriver()
     {
         // A (non-capturing) alternation of sequences is also a general body.
-        var re = new BroilerRegex("(?:ab|a)+");
+        var re = TestRegex.Compile("(?:ab|a)+");
         var subject = string.Concat(System.Linq.Enumerable.Repeat("ab", 250_000));
         Assert.Equal(subject, re.Match(subject).Value);
     }
@@ -55,7 +55,7 @@ public class StackDepthGuardTests
     public void LazyCapturingGroupOverALongSubject_MatchesToTheAnchor()
     {
         // Lazy repetition of a general body over a long subject, forced to consume it all.
-        var re = new BroilerRegex("(a)*?b");
+        var re = TestRegex.Compile("(a)*?b");
         var subject = new string('a', 300_000) + "b";
         Assert.Equal(subject, re.Match(subject).Value);
     }
@@ -63,11 +63,11 @@ public class StackDepthGuardTests
     [Fact(Timeout = 600000)]
     public void ShortSubjects_StillMatch()
     {
-        var re = new BroilerRegex("a*b");
+        var re = TestRegex.Compile("a*b");
         Assert.Equal("aaab", re.Match("aaab").Value);
         Assert.Equal("b", re.Match("b").Value);
 
-        var captured = new BroilerRegex("(ab)*");
+        var captured = TestRegex.Compile("(ab)*");
         var abs = string.Concat(System.Linq.Enumerable.Repeat("ab", 2_000));
         Assert.Equal(abs, captured.Match(abs).Value);
     }

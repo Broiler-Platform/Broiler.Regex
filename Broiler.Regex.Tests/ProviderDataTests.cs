@@ -1,0 +1,201 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Broiler.Regex.Ast;
+using Broiler.Regex.Parsing;
+using Broiler.Unicode.Algorithms;
+using Broiler.Unicode.Tables;
+using Xunit;
+
+namespace Broiler.Regex.Tests;
+
+/// <summary>
+/// Requirement R11 (decision D11 of Broiler.VM's JSD-0081; bundle sjl-11-001's check A-10): the library reads its
+/// Unicode data through the Unicode owner's provider, <c>Broiler.Unicode.Algorithms</c>, over the tables the caller
+/// hands in, and carries none of its own.
+/// </summary>
+public class ProviderDataTests
+{
+    private static readonly Assembly Library = typeof(BroilerRegex).Assembly;
+
+    /// <summary>A provider that answers the owner's tables and records every table it is asked for.</summary>
+    private sealed class RecordingTables(IUnicodeTables inner, string? version = null) : IUnicodeTables
+    {
+        public HashSet<UnicodeTable> Read { get; } = [];
+
+        public string UnicodeVersion => version ?? inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table)
+        {
+            lock (Read)
+                Read.Add(table);
+            return inner.Table(table);
+        }
+    }
+
+    /// <summary>Patterns that reach every kind of Unicode answer the library reads, with a subject and the expected first match.</summary>
+    public static readonly TheoryData<string, string, string, int> Reaches = new()
+    {
+        { @"\p{Script=Greek}+", "u", "123αβ", 3 },                // a name=value property
+        { @"\p{Lu}", "u", "aB", 1 },                              // a lone General_Category value
+        { @"\p{ASCII_Hex_Digit}+", "u", "xyzF0", 3 },             // a binary property
+        { @"\p{RGI_Emoji}", "v", "a👍🏽b", 1 },                     // a property of strings
+        { "ſ", "iu", "S", 0 },                                    // simple case folding
+        { "k", "i", "K", 0 },                                     // the upper-casing branch
+        { @"\w", "iu", "\u212A", 0 },                        // the folded word set
+        { @"\s", "", "a\u3000", 1 },                         // Space_Separator
+        { @"[^a]", "vi", "Aab", 2 },                              // AllCharacters under v with i
+    };
+
+    /// <summary>
+    /// Check A-10's recording provider: a pattern of each kind compiles and matches through the caller's
+    /// provider, and the provider is asked for each group of tables the algorithms read.
+    /// </summary>
+    /// <remarks>
+    /// The rows do not tell the kinds of answer apart: the library builds the provider's objects, and the sets it
+    /// keeps for a compilation, when a compilation starts, so every group is read for any pattern, <c>a</c>
+    /// included. That an answer comes from the caller's tables, rather than only that the tables are read, is
+    /// what <see cref="A_match_reads_its_case_folding_from_the_callers_tables"/> shows for the foldings; that no
+    /// other data is reachable is the assembly-reference test's.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(Reaches))]
+    public void A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(string pattern, string flags, string subject, int index)
+    {
+        var recording = new RecordingTables(UnicodeTables.Instance);
+        var match = new BroilerRegex(pattern, flags, recording).Match(subject);
+
+        Assert.True(match.Success);
+        Assert.Equal(index, match.Index);
+        Assert.Equal(TestRegex.Compile(pattern, flags).Match(subject).Index, match.Index);
+
+        // The four groups of tables the provider's algorithms read: properties, case folding, the properties of
+        // strings and the lexical classes. Each is read through the caller's provider, whatever the pattern.
+        Assert.Contains(UnicodeTable.PropertyRanges, recording.Read);
+        Assert.Contains(UnicodeTable.FoldData, recording.Read);
+        Assert.Contains(UnicodeTable.UpperData, recording.Read);
+        Assert.Contains(UnicodeTable.StringPropertyData, recording.Read);
+        Assert.Contains(UnicodeTable.LexicalTrie, recording.Read);
+    }
+
+    /// <summary>A provider whose tables read as empty once <see cref="Withdrawn"/> is set.</summary>
+    private sealed class WithdrawableTables(IUnicodeTables inner) : IUnicodeTables
+    {
+        public volatile bool Withdrawn;
+
+        public string UnicodeVersion => inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table) => Withdrawn ? default : inner.Table(table);
+    }
+
+    /// <summary>
+    /// An answer that changes with the caller's tables: a compiled pattern's case-insensitive match folds by the
+    /// tables it was handed, read when it matches, so withdrawing them after compilation changes the match.
+    /// </summary>
+    [Theory]
+    [InlineData("k", "i", "K")]      // the upper-casing branch of Canonicalize
+    [InlineData("ſ", "iu", "S")]     // simple case folding
+    [InlineData("[ſ]", "iu", "S")]   // a class's case-closed membership test
+    public void A_match_reads_its_case_folding_from_the_callers_tables(string pattern, string flags, string subject)
+    {
+        var tables = new WithdrawableTables(UnicodeTables.Instance);
+        var regex = new BroilerRegex(pattern, flags, tables);
+        Assert.True(regex.Match(subject).Success);
+
+        tables.Withdrawn = true;
+        Assert.False(regex.Match(subject).Success);
+    }
+
+    [Fact]
+    public void A_provider_of_another_Unicode_version_is_refused_when_a_pattern_is_compiled()
+    {
+        var older = new RecordingTables(UnicodeTables.Instance, "16.0.0");
+        Assert.Throws<ArgumentException>(() => new BroilerRegex("a", "u", older));
+        Assert.Throws<ArgumentException>(() => RegexParser.Parse("a", RegexFlags.None, older, out _));
+        Assert.Throws<ArgumentNullException>(() => new BroilerRegex("a", RegexFlags.None, null!));
+    }
+
+    [Fact]
+    public void The_library_references_the_provider_alone_and_carries_no_table_or_data_version()
+    {
+        var references = Library.GetReferencedAssemblies().Select(static a => a.Name!).ToList();
+        Assert.Contains("Broiler.Unicode.Algorithms", references);
+        Assert.All(
+            references.Where(static name => name != "Broiler.Unicode.Algorithms"),
+            static name => Assert.True(name is "netstandard" || name.StartsWith("System", StringComparison.Ordinal), name));
+
+        var types = Library.GetTypes();
+        Assert.DoesNotContain(types, static t => t.Name is "CaseFolding" or "CaseFoldingData");
+        Assert.DoesNotContain(
+            types.SelectMany(static t => t.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)),
+            static m => m.Name.Contains("UnicodeVersion", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Decision D12 keeps the 0.1 surface where R11 allows it: the members of <c>0.1.0-preview.4</c>'s
+    /// <c>UnicodeCharSets</c> that read no Unicode table stay public, with their 0.1 answers.
+    /// </summary>
+    [Fact]
+    public void The_members_of_UnicodeCharSets_that_read_no_table_stay_public()
+    {
+        Assert.True(Unicode.UnicodeCharSets.IsDigit('0'));
+        Assert.True(Unicode.UnicodeCharSets.IsDigit('9'));
+        Assert.False(Unicode.UnicodeCharSets.IsDigit(0x0660)); // ARABIC-INDIC DIGIT ZERO
+        Assert.False(Unicode.UnicodeCharSets.IsDigit('/'));
+
+        Assert.Equal(ClassEscape.Digit, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonDigit));
+        Assert.Equal(ClassEscape.Word, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonWord));
+        Assert.Equal(ClassEscape.Space, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.NonSpace));
+        Assert.Equal(ClassEscape.Word, Unicode.UnicodeCharSets.PositiveEscape(ClassEscape.Word));
+        Assert.True(Unicode.UnicodeCharSets.IsComplementEscape(ClassEscape.NonSpace));
+        Assert.False(Unicode.UnicodeCharSets.IsComplementEscape(ClassEscape.Space));
+
+        var withStrings = new Unicode.UnicodeCharSets.PropertyMatch(Ast.CodePointSet.Of('a', 'c'), ["ab"]);
+        Assert.True(withStrings.IsStringProperty);
+        Assert.Equal("ab", Assert.Single(withStrings.Strings));
+        Assert.True(withStrings.CodePoints.Contains('b'));
+        Assert.False(new Unicode.UnicodeCharSets.PropertyMatch(Ast.CodePointSet.Of('a', 'c'), []).IsStringProperty);
+    }
+
+    /// <summary>
+    /// The invariant <c>RegexUnicode.BuildCanonicalCharacters</c> rests on: every code point the provider's simple
+    /// case folding moves is Cased, at the version the provider pins, so a scan of Cased's members finds them all.
+    /// </summary>
+    [Fact]
+    public void Every_code_point_simple_folding_moves_is_Cased()
+    {
+        var folding = new UnicodeCaseFolding(UnicodeTables.Instance);
+        var properties = new UnicodeProperties(UnicodeTables.Instance);
+        Assert.True(properties.TryResolve("Cased", out var cased));
+
+        var moved = 0;
+        for (var codePoint = 0; codePoint <= UnicodeAlgorithms.MaxCodePoint; codePoint++)
+        {
+            if (folding.SimpleFold(codePoint) == codePoint)
+                continue;
+            moved++;
+            Assert.True(cased.Contains(codePoint), $"U+{codePoint:X4} folds and is not Cased");
+        }
+
+        Assert.True(moved > 1000);
+    }
+
+    /// <summary>
+    /// §22.2.2.9 CharacterComplement under <c>v</c> with <c>i</c>: the universe is the code points that fold to
+    /// themselves, so the class's set holds none that does not.
+    /// </summary>
+    [Fact]
+    public void A_complement_under_vi_holds_only_code_points_that_fold_to_themselves()
+    {
+        var node = (CharClassNode)RegexParser.Parse("[^a]", RegexFlags.UnicodeSets | RegexFlags.IgnoreCase, UnicodeTables.Instance, out _);
+        var set = node.Set.CodePoints;
+        Assert.False(set.Contains('a'));
+        Assert.False(set.Contains('A'));
+        Assert.False(set.Contains(0x212A)); // KELVIN SIGN, which folds to k
+        Assert.False(set.Contains(0x017F)); // LATIN SMALL LETTER LONG S, which folds to s
+        Assert.True(set.Contains('k'));
+        Assert.True(set.Contains('s'));
+        Assert.True(set.Contains(0x10FFFF));
+    }
+}

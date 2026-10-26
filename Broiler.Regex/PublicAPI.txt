@@ -26,11 +26,9 @@ Broiler.Regex.Ast.CharNode.CodePoint field readonly System.Int32
 Broiler.Regex.Ast.CharSet sealed class
 Broiler.Regex.Ast.CharSet..ctor() method System.Void
 Broiler.Regex.Ast.CharSet.AddCodePoint(System.Int32) method System.Void
-Broiler.Regex.Ast.CharSet.AddEscape(Broiler.Regex.Ast.ClassEscape, System.Boolean, System.Boolean) method System.Void
 Broiler.Regex.Ast.CharSet.AddRange(System.Int32, System.Int32) method System.Void
 Broiler.Regex.Ast.CharSet.AddSet(Broiler.Regex.Ast.CodePointSet) method System.Void
 Broiler.Regex.Ast.CharSet.AddString(System.String) method System.Void
-Broiler.Regex.Ast.CharSet.Contains(System.Int32, System.Boolean, System.Boolean) method System.Boolean
 Broiler.Regex.Ast.CharSet.SortStrings() method System.Void
 Broiler.Regex.Ast.CharSet.get_CaseFolded() method System.Boolean
 Broiler.Regex.Ast.CharSet.get_CodePoints() method Broiler.Regex.Ast.CodePointSet
@@ -103,8 +101,8 @@ Broiler.Regex.Ast.SequenceNode sealed class : Broiler.Regex.Ast.RegexNode
 Broiler.Regex.Ast.SequenceNode..ctor(System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>) method System.Void
 Broiler.Regex.Ast.SequenceNode.Terms field readonly System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Ast.RegexNode>
 Broiler.Regex.BroilerRegex sealed class
-Broiler.Regex.BroilerRegex..ctor(System.String, Broiler.Regex.RegexFlags) method System.Void
-Broiler.Regex.BroilerRegex..ctor(System.String, System.String) method System.Void
+Broiler.Regex.BroilerRegex..ctor(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
+Broiler.Regex.BroilerRegex..ctor(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
 Broiler.Regex.BroilerRegex.IsMatch(System.String, System.Int32) method System.Boolean
 Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.Matching.RegexMatch
 Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.Matching.RegexMatch>
@@ -127,8 +125,8 @@ Broiler.Regex.Matching.RegexMatch.get_NamedGroups() method System.Collections.Ge
 Broiler.Regex.Matching.RegexMatch.get_Success() method System.Boolean
 Broiler.Regex.Matching.RegexMatch.get_Value() method System.String
 Broiler.Regex.Parsing.RegexParser sealed class
-Broiler.Regex.Parsing.RegexParser..ctor(System.String, Broiler.Regex.RegexFlags) method System.Void
-Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, System.Int32&, System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>&) method static Broiler.Regex.Ast.RegexNode
+Broiler.Regex.Parsing.RegexParser..ctor(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
+Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32&) method static Broiler.Regex.Ast.RegexNode
 Broiler.Regex.Parsing.RegexParser.get_CaptureCount() method System.Int32
 Broiler.Regex.Parsing.RegexParser.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>
 Broiler.Regex.RegexFlags enum
@@ -150,23 +148,12 @@ Broiler.Regex.RegexOverflowException..ctor() method System.Void
 Broiler.Regex.RegexSyntaxException sealed class : System.Exception
 Broiler.Regex.RegexSyntaxException..ctor(System.String, System.Int32) method System.Void
 Broiler.Regex.RegexSyntaxException.get_Position() method System.Int32
-Broiler.Regex.Unicode.CaseFolding static class
-Broiler.Regex.Unicode.CaseFolding.Canonicalize(System.Int32, System.Boolean) method static System.Int32
-Broiler.Regex.Unicode.CaseFolding.Equal(System.Int32, System.Int32, System.Boolean, System.Boolean) method static System.Boolean
-Broiler.Regex.Unicode.CaseFolding.Orbit(System.Int32, System.Boolean) method static System.Collections.Generic.IReadOnlyList`1<System.Int32>
-Broiler.Regex.Unicode.CaseFolding.get_SimpleFoldSources() method static System.Collections.Generic.IEnumerable`1<System.ValueTuple`2<System.Int32,System.Int32>>
 Broiler.Regex.Unicode.UnicodeCharSets static class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch sealed class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.CodePoints field readonly Broiler.Regex.Ast.CodePointSet
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.Strings field readonly System.Collections.Generic.IReadOnlyList`1<System.String>
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.get_IsStringProperty() method System.Boolean
-Broiler.Regex.Unicode.UnicodeCharSets.AllCharacters(System.Boolean, System.Boolean) method static Broiler.Regex.Ast.CodePointSet
-Broiler.Regex.Unicode.UnicodeCharSets.EscapeSet(Broiler.Regex.Ast.ClassEscape, System.Boolean, System.Boolean) method static Broiler.Regex.Ast.CodePointSet
 Broiler.Regex.Unicode.UnicodeCharSets.IsComplementEscape(Broiler.Regex.Ast.ClassEscape) method static System.Boolean
 Broiler.Regex.Unicode.UnicodeCharSets.IsDigit(System.Int32) method static System.Boolean
-Broiler.Regex.Unicode.UnicodeCharSets.IsSpace(System.Int32) method static System.Boolean
-Broiler.Regex.Unicode.UnicodeCharSets.IsWord(System.Int32, System.Boolean, System.Boolean) method static System.Boolean
 Broiler.Regex.Unicode.UnicodeCharSets.PositiveEscape(Broiler.Regex.Ast.ClassEscape) method static Broiler.Regex.Ast.ClassEscape
-Broiler.Regex.Unicode.UnicodeCharSets.ResolveProperty(System.String, System.String) method static Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch
-Broiler.Regex.Unicode.UnicodeCharSets.WordSet(System.Boolean, System.Boolean) method static Broiler.Regex.Ast.CodePointSet

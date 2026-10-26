@@ -13,7 +13,7 @@ public class UnicodeSetsTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -77,11 +77,11 @@ public class UnicodeSetsTests
         => Assert.Equal(input, Match(pattern, "v", input));
 
     [Theory]
-    // §22.2.1 MaybeSimpleCaseFolding folds each operand BEFORE the complement is taken,
+    // §22.2.2.9.5 MaybeSimpleCaseFolding folds each operand BEFORE the complement is taken,
     // and §22.2.2.9 AllCharacters restricts that complement to the code points which fold
-    // to themselves. Together they are why `v` and `u` disagree here: /[^\p{Lu}]/ui
-    // matches nothing an uppercase letter folds from, while /[^\p{Lu}]/vi additionally
-    // rejects the uppercase letters themselves.
+    // to themselves. /[^\p{Lu}]/vi matches neither `A` nor `a`, as /[^\p{Lu}]/ui does: there
+    // CharacterSetMatcher's invert refuses every code point that folds like an uppercase
+    // letter. Where `v` and `u` disagree is \P{Lu}, below.
     [InlineData(@"[^\p{Lu}]", "A", null)]
     [InlineData(@"[^\p{Lu}]", "a", null)]
     [InlineData(@"[^\p{Lu}]", "1", "1")]
@@ -108,7 +108,7 @@ public class UnicodeSetsTests
 
     [Theory]
     // The same rule reaches a standalone escape, which under `v` is a class-set operand
-    // of its own: /\P{Lu}/vi rejects both cases where /\P{Lu}/ui accepts the lowercase.
+    // of its own: /\P{Lu}/vi rejects both cases where /\P{Lu}/ui accepts both.
     [InlineData(@"\P{Lu}", "a", null)]
     [InlineData(@"\P{Lu}", "A", null)]
     [InlineData(@"\P{Lu}", "1", "1")]
@@ -119,6 +119,29 @@ public class UnicodeSetsTests
     [InlineData(@"\S", "a", "a")]
     public void IgnoreCase_ReachesStandaloneEscapes(string pattern, string input, string? expected)
         => Assert.Equal(expected, Match(pattern, "vi", input));
+
+    [Theory]
+    // The comments above, pinned in both modes. \P{Lu} is where `u` and `v` disagree: under `ui` the case
+    // closure runs over the complement, which holds `a`, so both cases match; under `vi` the complement is taken
+    // after folding, within the code points that fold to themselves, so neither does. [^\p{Lu}] matches neither
+    // case in both modes (§22.2.2.7.1, CharacterSetMatcher's invert), and [^\P{Ll}] matches under `ui` only the
+    // lowercase letters with no case partner (U+0138, for one) and under `vi` what \p{Ll} matches.
+    [InlineData(@"\P{Lu}", "ui", "A", "A")]
+    [InlineData(@"\P{Lu}", "ui", "a", "a")]
+    [InlineData(@"\P{Lu}", "vi", "A", null)]
+    [InlineData(@"\P{Lu}", "vi", "a", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "A", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "a", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "1", "1")]
+    [InlineData(@"[^\p{Lu}]", "vi", "A", null)]
+    [InlineData(@"[^\p{Lu}]", "vi", "a", null)]
+    [InlineData(@"[^\P{Ll}]", "ui", "a", null)]
+    [InlineData(@"[^\P{Ll}]", "ui", "A", null)]
+    [InlineData(@"[^\P{Ll}]", "vi", "a", "a")]
+    [InlineData(@"[^\P{Ll}]", "vi", "A", "A")]
+    [InlineData(@"[^\P{Ll}]", "vi", "1", null)]
+    public void TheFoldOrder_SeparatesUAndVOnAComplementedProperty(string pattern, string flags, string input, string? expected)
+        => Assert.Equal(expected, Match(pattern, flags, input));
 
     [Fact(Timeout = 600000)]
     public void KelvinSign_FoldsWithTheAsciiLetter()
@@ -188,7 +211,37 @@ public class UnicodeSetsTests
     [InlineData(@"[\q{ab}")]         // unterminated
     [InlineData(@"[[a]")]
     public void InvalidClassSet_IsASyntaxError(string pattern)
-        => Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "v"));
+        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
+
+    [Theory]
+    // §22.2.1.1: CharacterClass :: [^ ClassContents ] and NestedClass :: [^ ClassContents ] are early errors when
+    // MayContainStrings of the contents is true (§22.2.1.8). It is read from the syntax, not from the strings
+    // left after the set operations: a subtraction may contain strings when its first operand may, and an
+    // intersection when every operand may, whatever the operations leave.
+    [InlineData(@"[^\p{RGI_Emoji}--\p{RGI_Emoji}]")]
+    [InlineData(@"[^\p{RGI_Emoji}&&\q{ab}]")]
+    [InlineData(@"[^\q{a|bc}--\q{bc}]")]
+    [InlineData(@"[^[\q{a|bc}--\q{bc}]]")]
+    [InlineData(@"[^\q{ab}--\q{ab}]")]
+    [InlineData(@"[^\q{ab}&&\q{cd}]")]
+    [InlineData(@"[^[\p{Basic_Emoji}--\q{x}]]")]
+    [InlineData(@"[[^\q{ab}--\q{ab}]]")]                  // a negated nested class
+    [InlineData(@"[^a\q{}]")]                            // an empty ClassString may contain strings
+    [InlineData(@"[^\q{\uD83D\u{DE00}}]")]                // two ClassSetCharacters: a lone lead, then a trail
+    public void A_negated_class_that_may_contain_strings_is_a_syntax_error(string pattern)
+        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
+
+    [Theory]
+    // The same rule's other side: contents whose MayContainStrings is false may be negated.
+    [InlineData(@"[^\p{RGI_Emoji}&&a]")]                  // an intersection with an operand that holds no string
+    [InlineData(@"[^a--\q{ab}]")]                         // a subtraction whose first operand holds no string
+    [InlineData(@"[^[\p{RGI_Emoji}&&\q{a}]]")]
+    [InlineData(@"[^\q{a|b}]")]                           // one ClassSetCharacter in each ClassString
+    [InlineData(@"[^\q{\u{1F600}}]")]
+    [InlineData(@"[^\q{\uD83D\uDE00}]")]                 // one escape: a lead and a trail four-digit escape
+    [InlineData(@"[^[^\q{ab}&&a]]")]                      // a negated nested class is not a string operand
+    public void A_negated_class_that_cannot_contain_strings_is_accepted(string pattern)
+        => Assert.NotNull(TestRegex.Compile(pattern, "v"));
 
     [Theory]
     // An escaped syntax character or reserved punctuator is itself.
@@ -205,7 +258,7 @@ public class UnicodeSetsTests
     {
         // The pre-scan counts capturing groups before parsing; a `v`-mode class nests, so
         // the ']' of an inner class must not put the scan back outside the class.
-        var re = new BroilerRegex(@"([[a-c][x-z]])", "v");
+        var re = TestRegex.Compile(@"([[a-c][x-z]])", "v");
         Assert.Equal(1, re.CaptureCount);
         Assert.Equal("y", re.Match("y").Groups[1].Value);
     }

@@ -5,12 +5,6 @@
     "Broiler.Regex/Broiler.Regex.csproj"
   ],
   "exemptionPredicate": "owning-component",
-  "exclude": [
-    {
-      "glob": "Broiler.Regex/Unicode/Generated/CaseFoldingData.g.cs",
-      "reason": "generated from the Unicode Character Database by Broiler.Regex/Unicode/tools/generate-case-folding.py, which rewrites the whole file"
-    }
-  ],
   "spdx": {
     "copyright": [
       "2026 Broiler Platform contributors"

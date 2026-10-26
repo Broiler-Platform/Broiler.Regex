@@ -3,7 +3,7 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// ECMA-262 §22.2.2.9.4 Canonicalize, now table-driven from the pinned Unicode Character
+/// ECMA-262 §22.2.2.7.3 Canonicalize, now table-driven from the pinned Unicode Character
 /// Database rather than from <c>char</c>/<c>Rune</c> casing plus five hand-written special
 /// cases (Broiler.JS gaps roadmap, track 2 action 3).
 /// </summary>
@@ -11,7 +11,7 @@ public class CanonicalizeTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -52,7 +52,7 @@ public class CanonicalizeTests
         => Assert.Equal(input, Match(pattern, flags, input));
 
     [Theory]
-    // §22.2.2.9.2 WordCharacters widens \w with every code point that folds into the basic
+    // §22.2.2.9.3 WordCharacters widens \w with every code point that folds into the basic
     // set when both `i` and `u` are on — so ſ is a word character there, and \W, which is
     // the complement of that widened set, must reject it.
     [InlineData(@"\w", "iu", "ſ", "ſ")]

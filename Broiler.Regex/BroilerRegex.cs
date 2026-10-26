@@ -18,6 +18,8 @@
 using System.Collections.Generic;
 using Broiler.Regex.Matching;
 using Broiler.Regex.Parsing;
+using Broiler.Regex.Unicode;
+using Broiler.Unicode.Algorithms;
 
 namespace Broiler.Regex;
 
@@ -26,9 +28,18 @@ namespace Broiler.Regex;
 /// Broiler.Regex: parse a pattern + flags once, then match many inputs.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Compilation is reusable and the compiled form is immutable, so a single
 /// instance may be matched concurrently from multiple threads (each match
 /// attempt allocates its own state and step budget).
+/// </para>
+/// <para>
+/// <b>Unicode data is the caller's</b> (requirement R11, decision D11 of Broiler.VM's JSD-0081): compilation
+/// takes the Unicode owner's tables as an <see cref="IUnicodeTables"/> and reads property escapes, case folding,
+/// the properties of strings, white space and the identifier classes of group names through the provider's
+/// algorithms, <c>Broiler.Unicode.Algorithms</c>. The package carries no table of its own; an engine hands in the
+/// tables it embeds, and a test the owner's <c>Broiler.Unicode.Tables</c>.
+/// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=1B83F8
 // Broiler-Falsified-If: two threads making their first Match calls at the same time on one instance built from [zab] both normalize the class's out-of-order range list in place, and one throws or misses a match that a single thread finds
@@ -46,26 +57,42 @@ public sealed class BroilerRegex
     /// <summary>Group name → 1-based capture index.</summary>
     public IReadOnlyDictionary<string, int> GroupNames { get; }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=BD448B
+    /// <summary>Compiles <paramref name="pattern"/> under the flags string <paramref name="flags"/>.</summary>
+    /// <param name="pattern">The pattern's source text.</param>
+    /// <param name="flags">The flags, as a <c>RegExp</c> receives them: a string of <c>d g i m s u v y</c>, or null for none.</param>
+    /// <param name="tables">The Unicode owner's tables, of the version <c>Broiler.Unicode.Algorithms</c> reads.</param>
+    /// <exception cref="RegexSyntaxException">The flags or the pattern are not valid (ECMA-262 §22.2.3.1).</exception>
+    /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
+    /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=14510D
     // Broiler-Falsified-If: a flags string with a repeated letter such as "gg" produces an instance instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
-    public BroilerRegex(string pattern, string? flags = null)
-        : this(pattern, RegexFlagsParser.Parse(flags))
+    public BroilerRegex(string pattern, string? flags, IUnicodeTables tables)
+        : this(pattern, RegexFlagsParser.Parse(flags), tables)
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=7C6C9D
+    /// <summary>Compiles <paramref name="pattern"/> under <paramref name="flags"/>.</summary>
+    /// <param name="pattern">The pattern's source text.</param>
+    /// <param name="flags">The flags.</param>
+    /// <param name="tables">The Unicode owner's tables, of the version <c>Broiler.Unicode.Algorithms</c> reads.</param>
+    /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1).</exception>
+    /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
+    /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=BCCE16
     // Broiler-Falsified-If: a pattern of 50,000 nested opening parentheses ends the process with a stack overflow inside RegexParser.Parse instead of raising a catchable exception
     // Broiler-Human:        PENDING
-    public BroilerRegex(string pattern, RegexFlags flags)
+    public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
     {
         Pattern = pattern ?? "";
         Flags = flags;
 
-        var ast = RegexParser.Parse(Pattern, flags, out var captureCount, out var groupNames);
+        // One view of the provider serves the parse and every later match of this instance.
+        var data = new RegexUnicode(tables);
+        var ast = RegexParser.Parse(Pattern, flags, data, out var captureCount, out var groupNames);
         CaptureCount = captureCount;
         GroupNames = groupNames;
-        _matcher = new Matcher(ast, captureCount, flags, groupNames);
+        _matcher = new Matcher(ast, captureCount, flags, groupNames, data);
     }
 
     /// <summary>

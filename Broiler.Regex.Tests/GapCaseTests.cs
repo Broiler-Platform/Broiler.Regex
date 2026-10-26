@@ -15,7 +15,7 @@ public class GapCaseTests
     public void NullableQuantifier_Terminates_AndMatchesGreedily()
     {
         // Without the empty-match guard this either loops forever or matches short.
-        var re = new BroilerRegex("(a*)*");
+        var re = TestRegex.Compile("(a*)*");
         var m = re.Match("aaa");
         Assert.True(m.Success);
         Assert.Equal("aaa", m.Value);
@@ -24,7 +24,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void NullableQuantifier_EmptyAlternative_Terminates()
     {
-        var re = new BroilerRegex("(a|)*");
+        var re = TestRegex.Compile("(a|)*");
         var m = re.Match("aa");
         Assert.True(m.Success);
         Assert.Equal("aa", m.Value);
@@ -33,7 +33,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void NullableQuantifier_OptionalGroup_DoesNotInfiniteLoop()
     {
-        var re = new BroilerRegex("(?:a?)*b");
+        var re = TestRegex.Compile("(?:a?)*b");
         var m = re.Match("aaab");
         Assert.True(m.Success);
         Assert.Equal("aaab", m.Value);
@@ -45,7 +45,7 @@ public class GapCaseTests
     public void Lookbehind_PreservesSourceCaptureOrder()
     {
         // Matched right-to-left, but group 1 = "a", group 2 = "b" (source order).
-        var re = new BroilerRegex("(?<=(a)(b))");
+        var re = TestRegex.Compile("(?<=(a)(b))");
         var m = re.Match("ab");
         Assert.True(m.Success);
         Assert.Equal(2, m.Index);
@@ -58,7 +58,7 @@ public class GapCaseTests
     {
         // Inside a look-behind terms run right-to-left, so \1 (still unset) matches
         // empty and (ab) captures "ab" — the JS result, not .NET's reversed one.
-        var re = new BroilerRegex("(?<=(ab)\\1)c");
+        var re = TestRegex.Compile("(?<=(ab)\\1)c");
         var m = re.Match("ababc");
         Assert.True(m.Success);
         Assert.Equal(4, m.Index);
@@ -69,7 +69,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void Lookbehind_Negative()
     {
-        var re = new BroilerRegex("(?<!a)b");
+        var re = TestRegex.Compile("(?<!a)b");
         Assert.False(re.Match("ab").Success);
         Assert.True(re.Match("cb").Success);
     }
@@ -79,7 +79,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void Backreference_AstralCodePoint()
     {
-        var re = new BroilerRegex("(\\u{1F438})\\1", "u");
+        var re = TestRegex.Compile("(\\u{1F438})\\1", "u");
         var m = re.Match("\U0001F438\U0001F438");
         Assert.True(m.Success);
         Assert.Equal("\U0001F438", m.Groups[1].Value);
@@ -88,7 +88,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void Backreference_CaseFolded()
     {
-        var re = new BroilerRegex("(?<x>a)\\k<x>", "i");
+        var re = TestRegex.Compile("(?<x>a)\\k<x>", "i");
         var m = re.Match("aA");
         Assert.True(m.Success);
         Assert.Equal("aA", m.Value);
@@ -99,7 +99,7 @@ public class GapCaseTests
     [Fact(Timeout = 600000)]
     public void BracedUnicodeEscape_MatchesAstralCharacter()
     {
-        var re = new BroilerRegex("^\\u{1F438}$", "u");
+        var re = TestRegex.Compile("^\\u{1F438}$", "u");
         var m = re.Match("\U0001F438");
         Assert.True(m.Success);
         Assert.Equal("\U0001F438", m.Value);
@@ -109,7 +109,7 @@ public class GapCaseTests
     public void AstralAtom_WithQuantifier_IsOneCodePoint()
     {
         // The pair is a single atom, so {2} requires two frogs, not four units.
-        var re = new BroilerRegex("^\\u{1F438}{2}$", "u");
+        var re = TestRegex.Compile("^\\u{1F438}{2}$", "u");
         Assert.True(re.Match("\U0001F438\U0001F438").Success);
         Assert.False(re.Match("\U0001F438").Success);
     }

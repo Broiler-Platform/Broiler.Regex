@@ -12,7 +12,7 @@ public class AnnexBGrammarTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -35,7 +35,7 @@ public class AnnexBGrammarTests
         Assert.Null(Match(@"\u{1F600}", "", "\U0001F600"));
         // …which is what makes this class a range from '}' to 'u' — out of order, and so a
         // syntax error rather than an emoji range.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\u{1F600}-\u{1F64F}]", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\u{1F600}-\u{1F64F}]", ""));
     }
 
     [Theory]
@@ -49,7 +49,7 @@ public class AnnexBGrammarTests
     public void UnescapedBraceOrBracket_IsLiteralOnlyOutsideUnicodeMode(string pattern)
     {
         Assert.NotNull(Match(pattern, "", pattern));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Theory]
@@ -61,7 +61,7 @@ public class AnnexBGrammarTests
     public void ClassEscapeAsRangeEndpoint_IsAnErrorOnlyInUnicodeMode(string pattern)
     {
         Assert.Equal("-", Match(pattern, "", "-"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Fact(Timeout = 600000)]
@@ -70,8 +70,8 @@ public class AnnexBGrammarTests
         // Unicode mode: `\p{L}` is a class, so it cannot end a range. Without the flag it
         // is the six characters `p{L}` — and the class then asks for the range `}` to `a`,
         // which is out of order.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\p{L}-a]", "u"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\p{L}-a]", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\p{L}-a]", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\p{L}-a]", ""));
     }
 
     [Fact(Timeout = 600000)]
@@ -93,7 +93,7 @@ public class AnnexBGrammarTests
     public void QuantifiedLookahead_IsAllowedOutsideUnicodeMode(string pattern, string input)
     {
         Assert.Equal("", Match(pattern, "", input));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Theory]
@@ -109,8 +109,84 @@ public class AnnexBGrammarTests
     [InlineData("$?")]
     public void QuantifiedNonLookahead_IsASyntaxError(string pattern)
     {
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, ""));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
+    }
+
+    [Theory]
+    // Annex B's ExtendedAtom :: InvalidBracedQuantifier (§B.1.2, an early error of §B.1.2.1): a well-formed braced
+    // quantifier where an atom should be is a syntax error outside Unicode mode as in it, not literal text.
+    // test262: language/literals/regexp/invalid-braced-quantifier-exact.js, -lower.js and -range.js.
+    [InlineData("{2}")]
+    [InlineData("{2,}")]
+    [InlineData("{2,3}")]
+    [InlineData("a|{2}")]
+    [InlineData("({2,3})")]
+    [InlineData("(?:{1})")]
+    [InlineData("a{2}{3}")]
+    [InlineData("a*{2}")]
+    [InlineData("a{2}?{3}")]
+    [InlineData("{3,2}")]
+    public void ABracedQuantifierWithNothingToRepeat_IsASyntaxError(string pattern)
+    {
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
+    }
+
+    [Theory]
+    // A brace that opens no well-formed quantifier stays an ExtendedPatternCharacter outside Unicode mode.
+    [InlineData("{a}")]
+    [InlineData("{,5}")]
+    [InlineData("{2")]
+    [InlineData("{2,")]
+    [InlineData("{2,a}")]
+    [InlineData("x{o}x")]
+    public void ABraceThatOpensNoQuantifier_IsLiteralText(string pattern)
+        => Assert.Equal(pattern, Match(pattern, "", pattern));
+
+    /// <summary>
+    /// Annex B's control escapes (§B.1.2). Outside a class a <c>\c</c> not followed by an ASCII letter is
+    /// <c>ExtendedAtom :: \ [lookahead = c]</c>: the backslash alone, and the <c>c</c> is read next as a character
+    /// of its own. Inside a class <c>ClassEscape :: c ClassControlLetter</c> also takes a decimal digit or the low
+    /// line, and any other <c>\c</c> is <c>ClassAtomNoDash :: \ [lookahead = c]</c>. test262:
+    /// annexB/built-ins/RegExp/RegExp-control-escape-russian-letter.js and
+    /// RegExp-invalid-control-escape-character-class.js, annexB/language/literals/regexp/class-escape.js.
+    /// </summary>
+    /// <remarks>A table in the method: control characters do not survive xunit's serialization of theory data.</remarks>
+    [Fact(Timeout = 600000)]
+    public void AControlEscapeReadsAsAnnexBWritesIt()
+    {
+        foreach (var (pattern, subject, expected) in ((string, string, string?)[])[
+            (@"\cA", "\u0001", "\u0001"),
+            (@"\cz", "\u001A", "\u001A"),
+            (@"\c1", "\\c1", "\\c1"),
+            (@"\c1", "\\1", null),
+            (@"\c1", "\u0011", null),
+            (@"\c0", "\\c0", "\\c0"),
+            (@"\c0", "\u000F\u0010\u0011", null),
+            (@"\c_", "\\c_", "\\c_"),
+            (@"\c_", "\u001E\u001F\u0020", null),
+            (@"a\c", "a\\c", "a\\c"),
+            (@"\c", "\\c", "\\c"),
+            (@"\c*", "\\ccc", "\\ccc"),
+            ("\\c\u0416", "\\c\u0416", "\\c\u0416"),      // CYRILLIC CAPITAL LETTER ZHE is no ControlLetter
+            (@"[\cA]", "\u0001", "\u0001"),
+            (@"[\c1]", "\u0010\u0011\u0012", "\u0011"),
+            (@"[\c_]", "\u001E\u001F\u0020", "\u001F"),
+            (@"[\c00]+", "\u000F0\u0010\u0011", "0\u0010"),
+            (@"[\c*]", "\\", "\\"),
+            (@"[\c*]", "c", "c"),
+            (@"[\c*]", "*", "*"),
+            (@"[\c*]", "\n", null),                    // '*' % 32 is U+000A, which the class does not hold
+            (@"[\c]", "c", "c"),
+        ])
+        {
+            var match = TestRegex.Compile(pattern, "").Match(subject);
+            Assert.True(expected == (match.Success ? match.Value : null), pattern + " on " + subject);
+        }
+
+        foreach (var pattern in new[] { @"\c1", @"\c", @"[\c1]", @"[\c_]", @"[\c*]" })
+            Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Fact(Timeout = 600000)]
@@ -130,13 +206,13 @@ public class AnnexBGrammarTests
         // the pattern is the literal text "k<n>" rather than a reference to nothing.
         Assert.Equal("k<n>", Match(@"\k<n>", "", "k<n>"));
         Assert.Equal("k", Match(@"\k", "", "k"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"\k<n>", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"\k<n>", "u"));
 
         // Once the pattern declares one, `\k` is a reference again — including a forward
         // one — and naming a group that does not exist is an error.
         Assert.Equal("aa", Match(@"(?<n>a)\k<n>", "", "aa"));
         Assert.Equal("a", Match(@"\k<n>(?<n>a)", "", "a"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"(?<n>a)\k<m>", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"(?<n>a)\k<m>", ""));
     }
 
     [Fact(Timeout = 600000)]
@@ -148,6 +224,6 @@ public class AnnexBGrammarTests
         Assert.Equal("-", Match(@"[a\-z]", "u", "-"));
         Assert.Equal("-", Match(@"[\-]", "v", "-"));
         Assert.Equal("-", Match(@"\-", "", "-"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"\-", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"\-", "u"));
     }
 }

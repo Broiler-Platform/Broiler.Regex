@@ -47,7 +47,7 @@ public class NulCharacterTests
     [Fact(Timeout = 600000)]
     public void GoogleNoLetterClass_Compiles_AndMatchesOnlyNonLetters()
     {
-        var re = new BroilerRegex(GoogleNoLetterClass);
+        var re = TestRegex.Compile(GoogleNoLetterClass);
 
         Assert.True(re.IsMatch(" ,.!"));
         Assert.True(re.IsMatch("\u0000"));
@@ -65,7 +65,7 @@ public class NulCharacterTests
     [InlineData("[\\0- ]")]
     public void NulStartedRange_MatchesControlsAndSpace(string pattern)
     {
-        var re = new BroilerRegex(pattern);
+        var re = TestRegex.Compile(pattern);
         Assert.True(re.IsMatch("\u0000"));
         Assert.True(re.IsMatch(" "));
         Assert.True(re.IsMatch("\n"));
@@ -75,7 +75,7 @@ public class NulCharacterTests
     [Fact(Timeout = 600000)]
     public void NulInsideClass_IsAMember_NotTheEndOfTheClass()
     {
-        var re = new BroilerRegex("[a\u0000b]");
+        var re = TestRegex.Compile("[a\u0000b]");
         Assert.True(re.IsMatch("\u0000"));
         Assert.True(re.IsMatch("a"));
         Assert.True(re.IsMatch("b"));
@@ -87,19 +87,19 @@ public class NulCharacterTests
     {
         // '-' before a NUL is a range operator like any other: [\0-\0] is the
         // one-member class, and the range is still validated for order.
-        Assert.True(new BroilerRegex("[\u0000-\u0000]").IsMatch("\u0000"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a-\u0000]"));
+        Assert.True(TestRegex.Compile("[\u0000-\u0000]").IsMatch("\u0000"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("[a-\u0000]"));
     }
 
     [Fact(Timeout = 600000)]
     public void NulAsAtom_IsMatchedLiterally_AndDoesNotTruncateThePattern()
     {
-        var re = new BroilerRegex("a\u0000b");
+        var re = TestRegex.Compile("a\u0000b");
         Assert.True(re.IsMatch("a\u0000b"));
         Assert.False(re.IsMatch("ab"));
 
         // Everything after the NUL is still parsed: the quantifier binds to 'b'.
-        var quantified = new BroilerRegex("^a\u0000b+$");
+        var quantified = TestRegex.Compile("^a\u0000b+$");
         Assert.True(quantified.IsMatch("a\u0000bbb"));
         Assert.False(quantified.IsMatch("a\u0000"));
     }
@@ -107,19 +107,24 @@ public class NulCharacterTests
     [Fact(Timeout = 600000)]
     public void NulSurvivesAlternationAndQuantifiers()
     {
-        var re = new BroilerRegex("^(x\u0000|y)*$");
+        var re = TestRegex.Compile("^(x\u0000|y)*$");
         Assert.True(re.IsMatch("x\u0000y"));
         Assert.False(re.IsMatch("x"));
 
-        Assert.True(new BroilerRegex("^\u0000*$").IsMatch("\u0000\u0000"));
+        Assert.True(TestRegex.Compile("^\u0000*$").IsMatch("\u0000\u0000"));
     }
 
+    /// <summary>
+    /// A NUL inside a group name is a character of the name, not its end: the parse reaches it and refuses it
+    /// there. It is refused because a GroupName is a RegExpIdentifierName (ECMA-262 §22.2.1) and U+0000 is no
+    /// IdentifierPartChar (§22.2.1.1), which this test accepted until task 2.2 held names to the identifier
+    /// classes; what it was written for, that the NUL does not end the pattern, is unchanged.
+    /// </summary>
     [Fact(Timeout = 600000)]
-    public void NulInAGroupName_IsPartOfTheName()
+    public void NulInAGroupName_IsReadAsACharacterOfTheName()
     {
-        var re = new BroilerRegex("(?<a\u0000b>x)");
-        Assert.Equal(1, re.GroupNames["a\u0000b"]);
-        Assert.Equal("x", re.Match("x").Groups[1].Value);
+        var refusal = Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("(?<a\u0000b>x)"));
+        Assert.Equal(4, refusal.Position);
     }
 
     /// <summary>
@@ -134,8 +139,8 @@ public class NulCharacterTests
     [InlineData("u")]
     public void TrailingBackslash_IsASyntaxError(string? flags)
     {
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("a\\", flags));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a\\", flags));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("a\\", flags));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("[a\\", flags));
     }
 
     [Fact(Timeout = 600000)]
@@ -143,9 +148,9 @@ public class NulCharacterTests
     {
         // The end-of-pattern rewrite must not soften these: each really does end
         // before its closer.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[a-"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("(a"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("(?<name"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("[a"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("[a-"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("(a"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("(?<name"));
     }
 }

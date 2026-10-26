@@ -48,12 +48,102 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's
   IL changes.
-- No public API changes; package validation against `0.1.0-preview.4` passes with no suppression.
+- **Unicode data through the Unicode owner's provider (R11; task 2.2, decision D11).** The package depends on
+  `Broiler.Unicode.Algorithms` `0.1.0-preview.5` alone, in place of `Broiler.UniCode.Properties` and
+  `Broiler.UniCode.Emoji.StringProperties` `0.1.0-preview.3`, and compilation takes the caller's tables as an
+  `IUnicodeTables`: property escapes, the properties of strings, both branches of Canonicalize and `\s`'s
+  Space_Separator are the provider's answers over them. An engine hands
+  in the tables it embeds; the tests and the probe hand in `Broiler.Unicode.Tables` `0.1.0-preview.5`, which the
+  package does not reference. `CaseFolding`, its generated table `CaseFoldingData` and the generator under
+  `Broiler.Regex/Unicode/tools/` are deleted. The breaks below are each suppressed in
+  `Broiler.Regex/CompatibilitySuppressions.xml` and listed in [`docs/suppressions.md`](docs/suppressions.md); every
+  one is R11's, since none of these members can work without tables it is not handed (decision D12):
+  - `BroilerRegex(string, RegexFlags)` and `BroilerRegex(string, string?)` are removed; their replacements take an
+    `IUnicodeTables` as a third argument.
+  - `RegexParser(string, RegexFlags)` and `RegexParser.Parse(string, RegexFlags, out int, out IReadOnlyDictionary<string, int>)`
+    are removed; their replacements take an `IUnicodeTables`, and the new `Parse` answers the capture count only
+    (the group-name map stays on `BroilerRegex.GroupNames`, as convention 1 keeps a collection out of a new public
+    signature).
+  - The public type `Broiler.Regex.Unicode.CaseFolding` is removed (deleted), and so are the members of
+    `Broiler.Regex.Unicode.UnicodeCharSets` that read Unicode data: `AllCharacters`, `EscapeSet`, `IsSpace`, `IsWord`,
+    `ResolveProperty` and `WordSet`. Its members that read no table, `IsDigit`, `PositiveEscape`,
+    `IsComplementEscape` and the `PropertyMatch` holder, stay public with their `0.1.0-preview.4` answers.
+  - `CharSet.AddEscape(ClassEscape, bool, bool)` and `CharSet.Contains(int, bool, bool)` are now internal: each
+    needs the compilation's provider answers.
+  - A provider of another Unicode version, or one lacking a table the algorithms read, is refused with an
+    `ArgumentException` when a pattern is compiled, and a null provider with an `ArgumentNullException`.
 
 ### Observable changes
 
-None. No matching, parsing or flag answer of the package changes.
+- **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
+  tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
+  provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`
+  matched names loosely, ignoring letter case, `_`, `-` and spaces, so it accepted `\p{letter}`, `\p{ascii}`,
+  `\p{Script=greek}`, `\p{GC=Lu}`, `\p{ScriptExtensions=Greek}`, `\p{Script = Greek}` and, under `v`,
+  `\p{rgiemoji}`; each is now a `RegexSyntaxException`, the specification's early error.
+- **`Katakana_Or_Hiragana` is a Script value (R5).** `\p{Script=Katakana_Or_Hiragana}`, `\p{sc=Hrkt}` and the
+  same under `Script_Extensions` are accepted, matching nothing, as no code point has that value; `0.1.0-preview.4`
+  refused them.
+- **Group names are RegExpIdentifierNames, read the same way in every mode (R5).** A GroupName's code points are
+  held to IdentifierStartChar and IdentifierPartChar by the provider's `EcmaScriptLexical` (ECMA-262 §22.2.1.1), so
+  `(?<1>x)`, `(?<a-b>x)`, `(?<a b>x)`, `(?<a.b>x)`, `(?<\u0031>x)` and a name holding U+0000 are refused, which
+  `0.1.0-preview.4` accepted. `\u`, `\u{…}` and escaped or raw surrogate pairs are read in a name with and without
+  `u` and `v` alike, so `(?<\u{1D400}>x)` and `(?<\uD835\uDC00>x)` are accepted without `u`, where
+  `0.1.0-preview.4` refused the first and threw `ArgumentOutOfRangeException` for the second; a lone surrogate, as
+  `(?<\uD800>x)` under `u`, is a `RegexSyntaxException` rather than that exception.
+- **A duplicate group name is found as decoded (R5).** `(?<\u0061>x)(?<a>y)` repeats the name `a` and is refused,
+  as `(?<a>x)(?<a>y)` always was; `0.1.0-preview.4` compared names as written and accepted it. A name repeated only
+  across alternatives stays refused until requirement R6.
+- **A braced escape never joins a surrogate pair (R5; row S10 of Broiler.VM's correspondence).** Under `u` and `v`
+  only two four-digit escapes form a pair, so `\uD83D\u{DC38}` is a lone lead surrogate and a lone trail surrogate,
+  two characters, and `\uD83D\u{41}` is accepted; `0.1.0-preview.4` refused every four-digit lead escape followed by
+  `\u{` ("Invalid hexadecimal escape").
+- **A reference to an undeclared group name is refused by the parser (R5; row S5).** `\k<b>(?<a>x)`, under `u` or
+  without it, is a `RegexSyntaxException` at the reference from `RegexParser.Parse` alone, as ECMA-262 §22.2.1.1
+  requires; `0.1.0-preview.4` accepted it there and refused it only when the matcher was built, with no position. In a
+  pattern that declares a group name, Annex B's identity escapes exclude `k` (§B.1.2), so `[\k<a>](?<a>x)` is refused,
+  which `0.1.0-preview.4` read as a class holding `k`; without a group name and without `u` and `v`, `\k` is still the
+  letter.
+- **`\0` looks ahead at the ASCII digits alone (R5).** `CharacterEscape :: 0 [lookahead ∉ DecimalDigit]`
+  (ECMA-262 §22.2.1) makes `\0` NUL before any digit but `0` to `9`, so `\0` followed by U+0661 ARABIC-INDIC DIGIT
+  ONE or U+FF11 FULLWIDTH DIGIT ONE matches NUL and then that digit in every mode; `0.1.0-preview.4` looked ahead with
+  `char.IsDigit`, read `\0` there as the character `0` without `u` and `v` and refused the pattern under them.
+- **Annex B's legacy octal escapes outside Unicode mode (§B.1.2).** Without `u` and `v`, `\0` before an ASCII digit
+  and a class's `\1` to `\7` are LegacyOctalEscapeSequences: `\01` is U+0001, `\012` U+000A, `\08` NUL and then `8`,
+  `[\1]` U+0001 and `[\101]` `A`. `0.1.0-preview.4` read each as the identity escape of its first digit, so `\01`
+  matched `01` and `[\1]` the digit `1`. Under `u` and `v` each stays a syntax error, and an atom's `\1` to `\9` is a
+  back-reference first, as it was.
+- **A negated `v`-mode class is held to MayContainStrings of its syntax (R5).** ECMA-262 §22.2.1.1 refuses
+  `[^ … ]` and a negated nested class when MayContainStrings of the contents is true (§22.2.1.8): a union when any
+  operand may contain strings, an intersection when every operand may, a subtraction when its first operand may, a
+  `\q{…}` when one of its alternatives is empty or longer than one ClassSetCharacter as written, and a property of
+  strings. `0.1.0-preview.4` asked instead whether strings were left after the set operations, so
+  `[^\q{ab}--\q{ab}]`, `[^\p{RGI_Emoji}--\p{RGI_Emoji}]`, `[^\p{RGI_Emoji}&&\q{ab}]`, `[^\q{ab}&&\q{cd}]` and
+  `[[^\q{ab}--\q{ab}]]` are now each a `RegexSyntaxException`, which it accepted; `[^\q{\uD83D\u{DE00}}]`, two
+  ClassSetCharacters, is one too (`0.1.0-preview.4` refused it as an invalid hexadecimal escape, the S10 entry above).
+  `[^\p{RGI_Emoji}&&a]` and `[^a--\q{ab}]` stay accepted.
+- **A braced quantifier with nothing to repeat is a syntax error without `u` too (R5).** Annex B's
+  `ExtendedAtom :: InvalidBracedQuantifier` is an early error (ECMA-262 §B.1.2.1): a well-formed `{n}`, `{n,}` or
+  `{n,m}` where an atom should be, as in `/{2}/`, `/{2,}/`, `/a|{2}/`, `/({2,3})/` and `/x{1}{1,}/`, is a
+  `RegexSyntaxException` in every mode. `0.1.0-preview.4` read it as literal text outside Unicode mode. A `{` that
+  opens no well-formed quantifier, as in `/{a}/`, `/{,5}/` or `/x{o}x/`, is still a character there, and a quantified
+  look-ahead such as `/(?=a){2}/` is still accepted.
+- **Annex B's control escapes (§B.1.2).** Without `u` and `v`, a `\c` not followed by an ASCII letter is
+  `ExtendedAtom :: \ [lookahead = c]`: the backslash alone, with the `c` read next as a character of its own, so
+  `/\c1/` matches the text `\c1` and `/a\c/` the text `a\c`; `0.1.0-preview.4` consumed the `c`, so `/\c1/` matched
+  `\1`. Inside a class, `ClassEscape :: c ClassControlLetter` also takes a decimal digit or `_`, so `[\c1]` is U+0011
+  and `[\c_]` U+001F, and any other `\c` is the backslash followed by `c`, so `[\c*]` holds `\`, `c` and `*`;
+  `0.1.0-preview.4` read `[\c1]` as `\` and `1`. Under `u` and `v` each stays a syntax error.
 
 ### Data
 
-None. The package reads the same Unicode data, from the same packages, as `0.1.0-preview.4`.
+- **The Unicode data is the caller's, and the package declares no version of its own (R11).** It reads the tables
+  of the Unicode version `Broiler.Unicode.Algorithms` `0.1.0-preview.5` reads, 17.0.0, and refuses any other.
+  `0.1.0-preview.4` carried its case-folding table (UCD 17.0.0, `CaseFoldingData.UnicodeVersion`) and took its
+  property and emoji data from `Broiler.UniCode.Properties` and `Broiler.UniCode.Emoji.StringProperties`
+  `0.1.0-preview.3`.
+- **No answer moves with the data.** For every name and value the provider admits, the property's code points, a
+  property of strings' code points and sequences, both Canonicalize mappings over the whole code space, and `\s`'s
+  Space_Separator part are the same from the provider over `Broiler.Unicode.Tables` `0.1.0-preview.5` as from
+  `0.1.0-preview.4`'s own data, compared member by member at task 2.2; the only difference is the
+  `Katakana_Or_Hiragana` value above, which `0.1.0-preview.4` did not resolve.

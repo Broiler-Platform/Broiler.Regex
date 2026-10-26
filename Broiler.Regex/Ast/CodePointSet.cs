@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   17
-// Annotated:        17/17
+// Relevant units:   18
+// Annotated:        18/18
 // Exempt:           4
-// Human-reviewed:   0/17
+// Human-reviewed:   0/18
 // IP risk:          Low
 // Security risk:    Medium
 // Criteria:         12/0
 // Resource impact:  6/10 max
-// Unverified:       17
+// Unverified:       18
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -61,6 +61,29 @@ public sealed class CodePointSet
     {
         var set = new CodePointSet();
         set.AddRange(lo, hi);
+        return set;
+    }
+
+    /// <summary>
+    /// A set of the given inclusive ranges, in any order, normalized before it is returned: the conversion of a
+    /// set the Unicode owner's provider answers, whose ranges arrive one by one, into this library's own type.
+    /// </summary>
+    /// <remarks>
+    /// The set is normalized here rather than on its first read, so a set built from the provider is never
+    /// changed after construction and can be shared by a compiled pattern's concurrent matches.
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=E3C16D
+    // Broiler-Human:        PENDING
+    internal static CodePointSet FromRanges(List<(int Lo, int Hi)> ranges)
+    {
+        foreach (var (lo, hi) in ranges)
+        {
+            if (lo > hi)
+                throw new ArgumentException("A range is out of order.", nameof(ranges));
+        }
+
+        var set = new CodePointSet(ranges, normalized: false);
+        set.Normalize();
         return set;
     }
 
@@ -210,9 +233,10 @@ public sealed class CodePointSet
 
     /// <summary>
     /// Maps every member through <paramref name="fold"/>, used for the <c>v</c>-mode
-    /// <c>MaybeSimpleCaseFolding</c> of a class-set operand (ECMA-262 §22.2.1). Folding
-    /// a set before complementing it is what makes <c>[^\P{Lowercase_Letter}]</c> under
-    /// <c>vi</c> mean something other than <c>\p{Lowercase_Letter}</c>.
+    /// <c>MaybeSimpleCaseFolding</c> of a class-set operand (ECMA-262 §22.2.2.9.5). Folding
+    /// a set before complementing it makes <c>[^\P{Lowercase_Letter}]</c> under <c>vi</c> match
+    /// what <c>\p{Lowercase_Letter}</c> matches; under <c>ui</c>, whose case closure runs after the
+    /// complement, it matches only the lowercase letters with no case partner, such as U+0138.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=5A1017
     // Broiler-Falsified-If: mapping Of(0x41, 0x5A) through simple case folding returns anything other than the single range 0x61..0x7A

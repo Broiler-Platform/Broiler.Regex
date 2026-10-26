@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using Broiler.Regex.Matching;
+using Broiler.Unicode.Tables;
 
 namespace Broiler.Regex.Probe;
 
@@ -26,13 +27,15 @@ internal sealed record CompiledCase(ProbeCase Case, BroilerRegex? Regex, string?
 /// The population is a smoke population of the public API as it stands at SJL-11.2's first step: the common
 /// grammar, Annex B, flags, look-around in both directions, back-references, named groups, modifiers, case
 /// folding in both modes, astral code points, Unicode property escapes and <c>v</c>-mode set operations over
-/// the Unicode data the package carries, the global iteration, and refusals. It holds no declared answer: the
+/// the Unicode owner's tables (<c>Broiler.Unicode.Tables</c>, which the probe hands to every compilation as the
+/// library's provider), the global iteration, and refusals. It holds no declared answer: the
 /// report is what the package answers, and the Native AOT run is held to the JIT run, byte for byte. The vectors
 /// and the adversarial corpus, which do declare answers, are added to the probe by SJL-11.2's later steps.
 /// </para>
 /// <para>
-/// The report names each case with its pattern, flags, start and subject, escaped to ASCII, and the answer; it
-/// records no time, machine, path or message text, so two runs on one platform compare byte for byte.
+/// The report names each case with its pattern, flags, start and subject, escaped to ASCII, and the answer, whose
+/// group names are escaped the same way; it records no time, machine, path or message text, so two runs on one
+/// platform compare byte for byte.
 /// </para>
 /// </remarks>
 internal static class ProbePopulation
@@ -133,7 +136,7 @@ internal static class ProbePopulation
             var probeCase = cases[i];
             try
             {
-                compiled[i] = new CompiledCase(probeCase, new BroilerRegex(probeCase.Pattern, probeCase.Flags), null);
+                compiled[i] = new CompiledCase(probeCase, new BroilerRegex(probeCase.Pattern, probeCase.Flags, UnicodeTables.Instance), null);
             }
             catch (Exception exception)
             {
@@ -208,7 +211,7 @@ internal static class ProbePopulation
 
         var names = new List<string>();
         foreach (var (name, index) in regex.GroupNames)
-            names.Add(name + "=" + Decimal(index));
+            names.Add(Escape(name) + "=" + Decimal(index));
         names.Sort(StringComparer.Ordinal);
         if (names.Count > 0)
             text.Append(" names ").Append(string.Join(",", names));

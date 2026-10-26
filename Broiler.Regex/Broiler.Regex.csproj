@@ -7,8 +7,11 @@
     It references no JS engine, runtime, or System.Text.RegularExpressions type.
     That keeps it independently testable and lets the JavaScript layer adopt it
     incrementally — see README.md for the motivation, the JS/.NET gap analysis,
-    and the integration plan. Its only dependency is the generated Unicode data
-    below, which `\p{…}` and the `v`-mode class sets resolve against.
+    and the integration plan. Its only dependency is the Unicode owner's provider
+    below (requirement R11, decision D11 of Broiler.VM's JSD-0081): the caller hands
+    its tables in as an IUnicodeTables, and `\p{…}`, the `v`-mode class sets, case
+    folding and group names are answered from them. Broiler.Unicode.Tables, the
+    owner's tables, is referenced by the tests and the probe only.
   -->
   <PropertyGroup>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -30,8 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Broiler.UniCode.Properties" />
-    <PackageReference Include="Broiler.UniCode.Emoji.StringProperties" />
+    <PackageReference Include="Broiler.Unicode.Algorithms" />
   </ItemGroup>
 
 </Project>

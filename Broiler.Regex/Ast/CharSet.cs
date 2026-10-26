@@ -9,7 +9,7 @@
 // Human-reviewed:   0/14
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         8/2
+// Criteria:         7/2
 // Resource impact:  4/10 max
 // Unverified:       14
 //
@@ -105,11 +105,15 @@ public sealed class CharSet
         _set.AddRange(lo, hi);
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=BAD743
-    // Broiler-Falsified-If: two threads first parsing \w under the i and u flags at the same moment both sort the shared static folded word set in place inside Clone, and one receives a copy with a lost or duplicated range
+    /// <summary>
+    /// Adds the set of one built-in class escape, from the Unicode answers of the compilation that builds this
+    /// class: <c>\s</c> reads the provider's Space_Separator, and <c>\w</c> under <c>i</c> with <c>u</c> or
+    /// <c>v</c> its case folding.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=39FD92
     // Broiler-Human:        PENDING
-    public void AddEscape(ClassEscape escape, bool ignoreCase, bool unicode)
-        => _set.AddAll(UnicodeCharSets.EscapeSet(escape, ignoreCase, unicode));
+    internal void AddEscape(ClassEscape escape, bool ignoreCase, bool unicode, RegexUnicode data)
+        => _set.AddAll(data.EscapeSet(escape, ignoreCase, unicode));
 
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=597BF4
     // Broiler-Falsified-If: two threads first compiling [\p{RGI_Emoji}] under v at the same moment both normalize the cached property's code-point set in place through AddSet, and one throws or builds a class missing a code point
@@ -151,36 +155,23 @@ public sealed class CharSet
 
     /// <summary>
     /// Tests whether <paramref name="codePoint"/> is a member of this class
-    /// (§22.2.2.10 CharacterSetMatcher).
+    /// (§22.2.2.7.1 CharacterSetMatcher), folding by the Unicode answers of the compilation that built it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=091D6A
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=62C600
     // Broiler-Falsified-If: a CharSet with both CaseFolded and Negated set answers as if it were not negated, because the CaseFolded branch returns before Negated is applied
     // Broiler-Human:        PENDING
-    public bool Contains(int codePoint, bool ignoreCase, bool unicode)
+    internal bool Contains(int codePoint, bool ignoreCase, bool unicode, RegexUnicode data)
     {
         // A `v`-mode class folded its operands during construction and complemented the
         // folded set, so the subject only has to be folded the same way.
         if (CaseFolded)
-            return _set.Contains(CaseFolding.Canonicalize(codePoint, unicode));
-
-        var member = _set.Contains(codePoint);
+            return _set.Contains(data.Canonicalize(codePoint, unicode));
 
         // Otherwise the spec asks whether the class holds ANY member that canonicalizes
         // to the subject's canonical form. Testing every member is impossible for a set
-        // the size of `\p{L}`, so the orbit of the subject's canonical form — never more
-        // than a handful of code points — is tested against the class instead.
-        if (!member && ignoreCase)
-        {
-            var canonical = CaseFolding.Canonicalize(codePoint, unicode);
-            foreach (var sibling in CaseFolding.Orbit(canonical, unicode))
-            {
-                if (_set.Contains(sibling))
-                {
-                    member = true;
-                    break;
-                }
-            }
-        }
+        // the size of `\p{L}`, so the subject's orbit — every code point sharing its
+        // canonical form, never more than a handful — is tested against the class instead.
+        var member = _set.Contains(codePoint) || (ignoreCase && data.OrbitIntersects(_set, codePoint, unicode));
 
         return Negated ? !member : member;
     }
