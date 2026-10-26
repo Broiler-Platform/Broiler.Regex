@@ -368,10 +368,10 @@ four kinds and through back-references answers that ceiling or the full answer, 
 reaches one answering the ceiling and not a match (`CeilingTests`), and check A-8 holds for back-references, named ones
 under `u`, references under `i`, look-arounds and classes under `iu` with word boundaries, at 1 to 1,000 groups
 (`EntryTests`). **The old suite on the new backend**: `TestRegex` is the switch, and `NewBackendSuiteTests` runs every
-case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (257 methods, 1,424 cases
-at this record, 716 of them building an instance on the route), the 17 cases xunit skips until task 2.4c among them;
-every case passes. **The differential over the whole grammar**: the suite population (13,806 pattern and flag pairs,
-1,257,491 cases) and a seeded population drawing every construct under thirteen flag strings (14,028 pairs, 242,607
+case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (265 methods, 1,475 cases
+at this record, 722 of them building an instance on the route), the 18 cases xunit skips until task 2.4c among them;
+every case passes. **The differential over the whole grammar**: the suite population (14,164 pattern and flag pairs,
+1,286,531 cases) and a seeded population drawing every construct under thirteen flag strings (14,028 pairs, 242,607
 cases); no disagreement is unexplained: 203 suite cases and 57 generated ones are defect D2's, each confirmed by the old
 backend's answer to the pattern with every class of D2's shape written `(?:C)?`, C the class without the empty string,
 which equals the new backend's, and 8 suite cases M7's, by its shape; the counts are pinned for each population, as the
