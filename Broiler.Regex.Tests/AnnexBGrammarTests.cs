@@ -144,6 +144,51 @@ public class AnnexBGrammarTests
     public void ABraceThatOpensNoQuantifier_IsLiteralText(string pattern)
         => Assert.Equal(pattern, Match(pattern, "", pattern));
 
+    /// <summary>
+    /// Annex B's control escapes (§B.1.2). Outside a class a <c>\c</c> not followed by an ASCII letter is
+    /// <c>ExtendedAtom :: \ [lookahead = c]</c>: the backslash alone, and the <c>c</c> is read next as a character
+    /// of its own. Inside a class <c>ClassEscape :: c ClassControlLetter</c> also takes a decimal digit or the low
+    /// line, and any other <c>\c</c> is <c>ClassAtomNoDash :: \ [lookahead = c]</c>. test262:
+    /// annexB/built-ins/RegExp/RegExp-control-escape-russian-letter.js and
+    /// RegExp-invalid-control-escape-character-class.js, annexB/language/literals/regexp/class-escape.js.
+    /// </summary>
+    /// <remarks>A table in the method: control characters do not survive xunit's serialization of theory data.</remarks>
+    [Fact(Timeout = 600000)]
+    public void AControlEscapeReadsAsAnnexBWritesIt()
+    {
+        foreach (var (pattern, subject, expected) in ((string, string, string?)[])[
+            (@"\cA", "\u0001", "\u0001"),
+            (@"\cz", "\u001A", "\u001A"),
+            (@"\c1", "\\c1", "\\c1"),
+            (@"\c1", "\\1", null),
+            (@"\c1", "\u0011", null),
+            (@"\c0", "\\c0", "\\c0"),
+            (@"\c0", "\u000F\u0010\u0011", null),
+            (@"\c_", "\\c_", "\\c_"),
+            (@"\c_", "\u001E\u001F\u0020", null),
+            (@"a\c", "a\\c", "a\\c"),
+            (@"\c", "\\c", "\\c"),
+            (@"\c*", "\\ccc", "\\ccc"),
+            ("\\c\u0416", "\\c\u0416", "\\c\u0416"),      // CYRILLIC CAPITAL LETTER ZHE is no ControlLetter
+            (@"[\cA]", "\u0001", "\u0001"),
+            (@"[\c1]", "\u0010\u0011\u0012", "\u0011"),
+            (@"[\c_]", "\u001E\u001F\u0020", "\u001F"),
+            (@"[\c00]+", "\u000F0\u0010\u0011", "0\u0010"),
+            (@"[\c*]", "\\", "\\"),
+            (@"[\c*]", "c", "c"),
+            (@"[\c*]", "*", "*"),
+            (@"[\c*]", "\n", null),                    // '*' % 32 is U+000A, which the class does not hold
+            (@"[\c]", "c", "c"),
+        ])
+        {
+            var match = TestRegex.Compile(pattern, "").Match(subject);
+            Assert.True(expected == (match.Success ? match.Value : null), pattern + " on " + subject);
+        }
+
+        foreach (var pattern in new[] { @"\c1", @"\c", @"[\c1]", @"[\c_]", @"[\c*]" })
+            Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
+    }
+
     [Fact(Timeout = 600000)]
     public void ABraceThatIsNotAQuantifierStillFollowsAnAssertion()
     {

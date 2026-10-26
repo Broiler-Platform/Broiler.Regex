@@ -128,6 +128,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `RegexSyntaxException` in every mode. `0.1.0-preview.4` read it as literal text outside Unicode mode. A `{` that
   opens no well-formed quantifier, as in `/{a}/`, `/{,5}/` or `/x{o}x/`, is still a character there, and a quantified
   look-ahead such as `/(?=a){2}/` is still accepted.
+- **Annex B's control escapes (§B.1.2).** Without `u` and `v`, a `\c` not followed by an ASCII letter is
+  `ExtendedAtom :: \ [lookahead = c]`: the backslash alone, with the `c` read next as a character of its own, so
+  `/\c1/` matches the text `\c1` and `/a\c/` the text `a\c`; `0.1.0-preview.4` consumed the `c`, so `/\c1/` matched
+  `\1`. Inside a class, `ClassEscape :: c ClassControlLetter` also takes a decimal digit or `_`, so `[\c1]` is U+0011
+  and `[\c_]` U+001F, and any other `\c` is the backslash followed by `c`, so `[\c*]` holds `\`, `c` and `*`;
+  `0.1.0-preview.4` read `[\c1]` as `\` and `1`. Under `u` and `v` each stays a syntax error.
 
 ### Data
 

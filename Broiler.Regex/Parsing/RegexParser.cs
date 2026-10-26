@@ -713,8 +713,8 @@ public sealed class RegexParser
     /// Reads one class atom. Adds class escapes (\d…) directly to <paramref name="set"/>
     /// and returns their sentinel as a non-literal; returns a literal code point otherwise.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=D04562
-    // Broiler-Falsified-If: inside a class \b yields anything but U+0008, or \- throws under u instead of yielding a hyphen
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=996BFA
+    // Broiler-Falsified-If: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
     // Broiler-Human:        PENDING
     private int ReadClassAtom(CharSet set, out bool isLiteral)
     {
@@ -740,6 +740,16 @@ public sealed class RegexParser
             // `ClassEscape :: -` — inside a class `\-` is a literal hyphen even in Unicode
             // mode, where the standalone IdentityEscape would reject it.
             if (Peek() == '-') { _pos++; isLiteral = true; return '-'; }
+            // Annex B's ClassEscape[~UnicodeMode] :: c ClassControlLetter (§B.1.2): inside a class
+            // a control escape also takes a decimal digit or the low line, so [\c1] is U+0011
+            // and [\c_] U+001F.
+            if (!_unicode && Peek() == 'c' && PeekAt(1) is (>= '0' and <= '9') or '_')
+            {
+                var letter = PeekAt(1);
+                _pos += 2;
+                isLiteral = true;
+                return letter % 32;
+            }
             isLiteral = true;
             return ReadCharacterEscape();
         }
@@ -1333,21 +1343,25 @@ public sealed class RegexParser
         return ReadSourceCodePoint();
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=FC80D8
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=3A9EEB
     // Broiler-Falsified-If: outside u, /\c1/ does not match the text backslash-c-1 because the c is consumed along with the backslash
     // Broiler-Human:        PENDING
     private int ReadControlEscape()
     {
-        _pos++; // consume 'c'
-        var c = Peek();
+        // The cursor is on the 'c'. CharacterEscape :: c AsciiLetter (§22.2.1).
+        var c = PeekAt(1);
         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
         {
-            _pos++;
+            _pos += 2;
             return c % 32;
         }
-        // Not a valid control letter: treat '\c' as a literal backslash-c in legacy mode.
+
         if (_unicode)
-            throw new RegexSyntaxException("Invalid \\c escape", _pos);
+            throw new RegexSyntaxException("Invalid \\c escape", _pos + 1);
+
+        // Annex B's ExtendedAtom :: \ [lookahead = c] and ClassAtomNoDash :: \ [lookahead = c]
+        // (§B.1.2): the backslash alone. The 'c' is not consumed, so it is read next as a
+        // character of its own and /\c1/ is the text backslash, c, 1.
         return '\\';
     }
 

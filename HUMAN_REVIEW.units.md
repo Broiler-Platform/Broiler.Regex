@@ -224,8 +224,8 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ParseCharacterClass()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `8CA155`, PENDING
   - Falsified if: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
-- `Broiler.Regex.Parsing.RegexParser.ReadClassAtom(CharSet, out bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `D04562`, PENDING
-  - Falsified if: inside a class \b yields anything but U+0008, or \- throws under u instead of yielding a hyphen
+- `Broiler.Regex.Parsing.RegexParser.ReadClassAtom(CharSet, out bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `996BFA`, PENDING
+  - Falsified if: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
 - `Broiler.Regex.Parsing.RegexParser.ParseClassSet()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `8B4152`, PENDING
   - Falsified if: UsesPropertyEscape stays set from an earlier class, so the second class of /[\p{L}][a]/v is flagged as using a property escape
 - `Broiler.Regex.Parsing.RegexParser.ReadPropertyOperand(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `602075`, PENDING
@@ -258,7 +258,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ReadLegacyOctalOrIdentity()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=none cited, `F85821`, PENDING
   - Falsified if: an octal escape above 0377, such as \400, is read as one code point greater than 0xFF instead of \40 followed by '0'
-- `Broiler.Regex.Parsing.RegexParser.ReadControlEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `FC80D8`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadControlEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `3A9EEB`, PENDING
   - Falsified if: outside u, /\c1/ does not match the text backslash-c-1 because the c is consumed along with the backslash
 - `Broiler.Regex.Parsing.RegexParser.ReadHexEscape(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `690F4D`, PENDING
   - Falsified if: a non-hex character inside the fixed-width run, as in \x4g under u, is accepted instead of throwing
