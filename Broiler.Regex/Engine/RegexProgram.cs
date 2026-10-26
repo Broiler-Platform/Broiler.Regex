@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   4
-// Annotated:        4/4
+// Relevant units:   5
+// Annotated:        5/5
 // Exempt:           7
-// Human-reviewed:   0/4
+// Human-reviewed:   0/5
 // IP risk:          None
 // Security risk:    High
-// Criteria:         2/1
-// Resource impact:  6/10 max
-// Unverified:       4
+// Criteria:         3/2
+// Resource impact:  8/10 max
+// Unverified:       5
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -93,6 +93,21 @@ internal sealed class RegexProgram
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121
     // Broiler-Human:        PENDING
     internal ReadOnlySpan<int> ClassRanges(int index) => _classes[index];
+
+    /// <summary>
+    /// Matches <paramref name="subject"/> from <paramref name="start"/>, or at <paramref name="start"/> alone when
+    /// <paramref name="anchored"/> is set, and writes the match's offsets into <paramref name="slots"/>: two per group,
+    /// group 0 first, -1 for a group that did not participate (requirements R7 and R8).
+    /// </summary>
+    /// <returns><see cref="RegexStatus.Match"/> or <see cref="RegexStatus.NoMatch"/>.</returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=212A41
+    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, or /a(b)?/ on "a" writes a slot other than -1 for group 1
+    // Broiler-Human:        PENDING
+    internal RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots)
+    {
+        var machine = new RegexMachine(this, subject);
+        return machine.Run(start, anchored, slots);
+    }
 
     /// <summary>
     /// The weight of a class test over <paramref name="rangeCount"/> ranges: the comparisons its binary search can make
