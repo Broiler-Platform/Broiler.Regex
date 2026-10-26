@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   40
-// Annotated:        40/40
+// Relevant units:   41
+// Annotated:        41/41
 // Exempt:           26
-// Human-reviewed:   0/40
+// Human-reviewed:   0/41
 // IP risk:          None
 // Security risk:    High
-// Criteria:         28/15
+// Criteria:         29/16
 // Resource impact:  8/10 max
-// Unverified:       40
+// Unverified:       41
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -67,8 +67,8 @@ namespace Broiler.Regex.Engine;
 /// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has
 /// been charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
 /// instruction dispatched. A fast path charges each character it examines the same way, before it reads it: a run's
-/// character and a folded atom cost what the atom's dispatch would, and a string's character one unit (task 2.4c). So
-/// before the k-th unit of work, at least k units have been charged, and the meter is never more than
+/// character and a folded atom cost what the atom's dispatch would, and a string's character one unit (task 2.4c); the
+/// start-position scan charges each position it skips before it moves past it. So before the k-th unit of work, at least k units have been charged, and the meter is never more than
 /// <see cref="Block"/> - 1 units ahead of the work; the tests of check A-1 read both at every unit charged through
 /// <see cref="DispatchObserver"/>, which the library never sets. The units of one call run on across all its start
 /// positions, with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it;
@@ -90,6 +90,16 @@ namespace Broiler.Regex.Engine;
 /// strings' single characters are tested by <see cref="AtomHolds"/>, the test a dispatched character or class instruction
 /// makes, and a string's characters through <see cref="NextCharacter"/> as a <see cref="RegexOp.Literal"/> reads them, so a
 /// surrogate pair, the split pair of a start inside one and the direction are read alike.
+/// </para>
+/// <para>
+/// <b>The start-position scan</b> is the literal-prefix prefilter of task 2.4c. When every attempt of a program reads one
+/// character first, before any choice (<see cref="RegexProgram.FirstTest"/>), a search that is not anchored tests each
+/// position with that instruction's test alone and starts an attempt only where it holds, the next position by
+/// AdvanceStringIndex as the search's own. A position skipped costs the test's dispatch, one unit and the class's weight,
+/// through the same charging as a dispatch; the position admitted costs nothing in the scan, as the attempt's first
+/// dispatch makes the same test and pays for it; the subject's end, which holds no character to admit, ends the search
+/// with no attempt and no unit. The answer is the search's without the scan, since an attempt at a position the test
+/// refuses fails at its first test with nothing to undo but the group starts before it.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
@@ -218,8 +228,9 @@ internal ref struct RegexMachine
 
     /// <summary>
     /// A test's observer of the loop, or null, as the library always leaves it: called before each instruction is
-    /// dispatched and after its units are charged, and likewise before each character a fast path examines and each
-    /// back-reference's comparison, with the units of the call through that work, so that a test reads what its own
+    /// dispatched and after its units are charged, and likewise before each character a fast path examines, each
+    /// back-reference's comparison and each position the start-position scan skips, with the units of the call through
+    /// that work, so that a test reads what its own
     /// meter holds at that moment (bundle <c>sjl-11-001</c>'s check A-1). It
     /// is a <see cref="RegexWorkCharge"/> only so that the loop invokes no delegate type but the meter's.
     /// </summary>
@@ -246,18 +257,31 @@ internal ref struct RegexMachine
     /// <c>u</c> and <c>v</c> a start inside a pair splits it for the whole call, so a read forward from the start meets
     /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c></c>, <c>^</c> under
     /// <c>m</c>) its high half as another. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that
-    /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>).
+    /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>). A program with a first test
+    /// skips, before each attempt, the positions that test refuses (the remarks' start-position scan).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=016F4F
-    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a read of a call that starts inside a pair takes the pair as one character
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=0C72DD
+    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character when the program has no first test, under u a search starts inside a surrogate pair it stepped over, a read of a call that starts inside a pair takes the pair as one character, or an anchored call scans
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
     {
         _splitAt = _unicode && start > 0 && start < _subject.Length
             && char.IsHighSurrogate(_subject[start - 1]) && char.IsLowSurrogate(_subject[start]) ? start : -1;
         var at = start;
+        var first = anchored ? -1 : _program.FirstTest;
         while (true)
         {
+            if (first >= 0)
+            {
+                switch (Scan(first, ref at))
+                {
+                    case Outcome.Failed:
+                        return RegexStatus.NoMatch;
+                    case Outcome.Exceeded:
+                        return RegexStatus.LimitExceeded;
+                }
+            }
+
             switch (MatchFrom(at))
             {
                 case Outcome.Matched:
@@ -272,6 +296,38 @@ internal ref struct RegexMachine
 
             at = NextStart(at);
         }
+    }
+
+    /// <summary>
+    /// The start-position scan of the literal-prefix prefilter: from <paramref name="at"/>, the first position whose
+    /// character the program's first test, the instruction at <paramref name="test"/>, admits. A position the test
+    /// refuses is skipped at that instruction's cost, one unit and the class's weight, charged before the scan moves past
+    /// it; a position it admits costs nothing here, as the attempt's first dispatch makes the same test and pays for it;
+    /// and the position after the last character, which holds no character to admit, ends the scan with no attempt and
+    /// no unit. An attempt anywhere the test refuses would fail at its first test, so the positions skipped are those
+    /// RegExpBuiltinExec's loop would try and fail at, and the answer is the loop's.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/> with <paramref name="at"/> the position admitted; <see cref="Outcome.Failed"/> when
+    /// no position before the subject's end is; <see cref="Outcome.Exceeded"/> at the step ceiling.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=0D35D4
+    // Broiler-Falsified-If: a position is skipped without its units charged, a position whose character the first test admits is skipped, the scan passes the step ceiling, or under u it starts a test inside a surrogate pair it stepped over
+    // Broiler-Human:        PENDING
+    private Outcome Scan(int test, ref int at)
+    {
+        var instruction = _code[test];
+        while (at < _subject.Length)
+        {
+            var probe = at;
+            if (AtomHolds(instruction, ref probe))
+                return Outcome.Matched;
+            if (!Afford(instruction.Cost))
+                return Outcome.Exceeded;
+            at = NextStart(at);
+        }
+
+        return Outcome.Failed;
     }
 
     /// <summary>How one attempt ended.</summary>

@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   32
-// Annotated:        32/32
+// Relevant units:   33
+// Annotated:        33/33
 // Exempt:           27
-// Human-reviewed:   0/32
+// Human-reviewed:   0/33
 // IP risk:          None
 // Security risk:    High
-// Criteria:         19/17
+// Criteria:         20/18
 // Resource impact:  5/10 max
-// Unverified:       32
+// Unverified:       33
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -397,7 +397,7 @@ internal static class ProgramCompiler
         private int _registers = 2 * (captureCount + 1);
 
         /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Succeed"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=083FDD
+        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=06C840
         // Broiler-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
         // Broiler-Human:        PENDING
         internal RegexProgram Emit(RegexNode tree)
@@ -451,7 +451,35 @@ internal static class ProgramCompiler
             var strings = new RegexStrings[_strings.Count];
             for (var i = 0; i < strings.Length; i++)
                 strings[i] = _strings[i].Table;
-            return new RegexProgram(_code.ToArray(), _classes.ToArray(), _referenced.ToArray(), strings, captureCount, _registers, _unicode, _folds ? data.Folding : null);
+            return new RegexProgram(_code.ToArray(), _classes.ToArray(), _referenced.ToArray(), strings, captureCount, _registers, _unicode, _folds ? data.Folding : null,
+                fastPaths ? FirstTest() : -1);
+        }
+
+        /// <summary>
+        /// The literal-prefix prefilter (<see cref="RegexProgram.FirstTest"/>): past the instructions at the start that only
+        /// write a register, the one-character test every attempt makes first, read left to right: a character or class
+        /// instruction, an atom run's first atom, or the atom of a run that requires a character; -1 for anything else.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=F1B6B9
+        // Broiler-Falsified-If: a pattern that can match without reading a character, such as a*b, a|b, ^a or (?=a)a, is given a first test, or one that reads past a choice is
+        // Broiler-Human:        PENDING
+        private int FirstTest()
+        {
+            var at = 0;
+            while (_code[at].Op is RegexOp.SavePosition or RegexOp.ClearCaptures or RegexOp.SetCounter)
+                at++;
+
+            var first = _code[at];
+            if (first.RightToLeft)
+                return -1;
+            return first.Op switch
+            {
+                RegexOp.Literal or RegexOp.Class or RegexOp.AnyButLineTerminator or RegexOp.Any or RegexOp.LiteralIgnoringCase
+                    or RegexOp.ClassIgnoringCase or RegexOp.CanonicalClass => at,
+                RegexOp.AtomRun => at + 1,
+                RegexOp.GreedyRun or RegexOp.LazyRun when first.A >= 1 => at + 1,
+                _ => -1,
+            };
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> under <paramref name="scope"/> now, and puts the rest on the work list.</summary>

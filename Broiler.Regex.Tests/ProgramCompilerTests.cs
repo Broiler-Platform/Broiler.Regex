@@ -106,6 +106,43 @@ public class ProgramCompilerTests
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
     }
 
+    [Theory]
+    [InlineData("a", "", 0)]
+    [InlineData("(a)b", "", 1)]
+    [InlineData("((a))", "", 2)]
+    [InlineData("abc", "", 1)]
+    [InlineData("[a-c]+x", "", 1)]
+    [InlineData("a{2}b", "", 1)]
+    [InlineData("a+?b", "", 1)]
+    [InlineData(".x", "", 1)]
+    [InlineData("\\p{L}", "u", 0)]
+    [InlineData("k", "iu", 0)]
+    [InlineData("(?:(a)b)*?", "", -1)]
+    [InlineData("a*b", "", -1)]
+    [InlineData("a?b", "", -1)]
+    [InlineData("a|b", "", -1)]
+    [InlineData("(?:a|b)c", "", -1)]
+    [InlineData("^a", "", -1)]
+    [InlineData("\\ba", "", -1)]
+    [InlineData("(?=a)a", "", -1)]
+    [InlineData("(?<=a)b", "", -1)]
+    [InlineData("\\1(a)", "", -1)]
+    [InlineData("(?:ab){2}", "", -1)]
+    [InlineData("[\\q{ab}c]", "v", -1)]
+    [InlineData("", "", -1)]
+    public void The_first_test_is_the_one_character_test_every_attempt_makes_before_any_choice(string pattern, string flags, int address)
+    {
+        // Task 2.4c's literal-prefix prefilter: past the group starts at the front, a character or class instruction, the
+        // first atom of an atom run, or the atom of a run that requires a character. A choice, an assertion, a look-around,
+        // a reference, a counted loop's bound, a class of strings, a run that may take nothing or nothing at all leaves it
+        // -1, and so does every program of the general lowering.
+        var program = TestProgram.Compile(pattern, flags);
+        Assert.Equal(address, program.FirstTest);
+        if (address >= 0)
+            Assert.Contains(program.Code[address].Op, (RegexOp[])[RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass, RegexOp.Any, RegexOp.AnyButLineTerminator]);
+        Assert.Equal(-1, TestProgram.General(pattern, flags).FirstTest);
+    }
+
     [Fact]
     public void A_run_and_an_atom_run_cost_their_dispatch_and_the_atom_its_own()
     {

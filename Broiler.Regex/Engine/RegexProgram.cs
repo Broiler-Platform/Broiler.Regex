@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   10
 // Annotated:        10/10
-// Exempt:           10
+// Exempt:           11
 // Human-reviewed:   0/10
 // IP risk:          None
 // Security risk:    High
@@ -72,14 +72,17 @@ internal sealed class RegexProgram
     /// The Unicode owner's case folding, which an instruction comparing under <c>i</c> reads for Canonicalize and for a
     /// character's case orbit; null for a program with no such instruction.
     /// </param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=710A60
+    /// <param name="firstTest">The address of the instruction the start-position scan tests positions with, or -1 for none (<see cref="FirstTest"/>).</param>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=B3022A
     // Broiler-Human:        PENDING
-    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, RegexStrings[] strings, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
+    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, RegexStrings[] strings, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding,
+        int firstTest = -1)
     {
         _code = code;
         _classes = classes;
         _referenced = referenced;
         _strings = strings;
+        FirstTest = firstTest;
         CaptureCount = captureCount;
         RegisterCount = registerCount;
         Unicode = unicode;
@@ -104,6 +107,21 @@ internal sealed class RegexProgram
 
     /// <summary>The pattern's capturing groups, group 0 (the whole match) not counted.</summary>
     internal int CaptureCount { get; }
+
+    /// <summary>
+    /// The literal-prefix prefilter of task 2.4c (plan row 2.4c): the address of the one-character instruction every
+    /// attempt reads first, before any choice, or -1 when attempts read nothing that certain. An attempt at a position
+    /// whose character that test refuses fails there, so a search tests each position with it alone and enters the
+    /// program only where it holds (<see cref="RegexMachine"/>'s remarks, "The start-position scan").
+    /// </summary>
+    /// <remarks>
+    /// It is the test of the first instruction an attempt dispatches past those that only write a register (a group's
+    /// start, a capture reset, a count's start): a character or class instruction that reads left to right, the first atom
+    /// of an atom run, or the atom of a run that requires at least one character. Anything else first, a choice, an
+    /// assertion, a look-around, a class of strings, a run that may take nothing, a loop's bound check, leaves it -1. The
+    /// program compiler sets it only with its fast paths on.
+    /// </remarks>
+    internal int FirstTest { get; }
 
     /// <summary>How many slots a match writes: two per group, group 0 included.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=577663
