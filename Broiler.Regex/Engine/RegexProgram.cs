@@ -3,20 +3,21 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   5
-// Annotated:        5/5
-// Exempt:           7
-// Human-reviewed:   0/5
+// Relevant units:   8
+// Annotated:        8/8
+// Exempt:           9
+// Human-reviewed:   0/8
 // IP risk:          None
 // Security risk:    High
-// Criteria:         3/2
+// Criteria:         4/2
 // Resource impact:  8/10 max
-// Unverified:       5
+// Unverified:       8
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System;
 using System.Numerics;
+using Broiler.Unicode.Algorithms;
 
 namespace Broiler.Regex.Engine;
 
@@ -50,25 +51,51 @@ internal sealed class RegexProgram
     /// <summary>Each class's ranges, flattened into pairs of inclusive bounds.</summary>
     private readonly int[][] _classes;
 
+    /// <summary>The groups the back-references read, each reference's list one run of entries (<see cref="RegexOp.Backreference"/>).</summary>
+    private readonly int[] _referenced;
+
     /// <summary>
     /// A program over <paramref name="code"/> and <paramref name="classes"/>, which the caller hands over and does not
     /// keep.
     /// </summary>
     /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Succeed"/> or a failure.</param>
     /// <param name="classes">Each class's ranges as pairs of inclusive bounds, sorted and disjoint.</param>
+    /// <param name="referenced">The group numbers the back-references read, each reference's list one run of entries.</param>
     /// <param name="captureCount">The pattern's capturing groups, group 0 not counted.</param>
     /// <param name="registerCount">The registers the program uses: the capture registers and the quantifiers' loop registers.</param>
     /// <param name="unicode">Whether the pattern has <c>u</c> or <c>v</c>, so that a surrogate pair is read as one character.</param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=911D08
+    /// <param name="folding">
+    /// The Unicode owner's case folding, which an instruction comparing under <c>i</c> reads for Canonicalize and for a
+    /// character's case orbit; null for a program with no such instruction.
+    /// </param>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=891770
     // Broiler-Human:        PENDING
-    internal RegexProgram(RegexInstruction[] code, int[][] classes, int captureCount, int registerCount, bool unicode)
+    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
     {
         _code = code;
         _classes = classes;
+        _referenced = referenced;
         CaptureCount = captureCount;
         RegisterCount = registerCount;
         Unicode = unicode;
+        Folding = folding;
+        OrbitLength = folding is null ? 0 : unicode ? folding.MaxOrbit : folding.MaxUpperOrbit;
     }
+
+    /// <summary>
+    /// The Unicode owner's case folding, for the instructions that compare under <c>i</c>: simple case folding under
+    /// <c>u</c> and <c>v</c>, the upper case of one code unit without them (ECMA-262 §22.2.2.7.3, both branches of
+    /// Canonicalize), and each one's orbit. Null when no instruction compares under <c>i</c>. The provider's objects are
+    /// immutable, so one serves every match of every thread.
+    /// </summary>
+    internal UnicodeCaseFolding? Folding { get; }
+
+    /// <summary>
+    /// The most code points a character's case orbit holds in this program's mode, itself included: the searches a
+    /// <see cref="RegexOp.ClassIgnoringCase"/> test makes at most, and the room the machine keeps for an orbit. Zero when
+    /// <see cref="Folding"/> is null.
+    /// </summary>
+    internal int OrbitLength { get; }
 
     /// <summary>The pattern's capturing groups, group 0 (the whole match) not counted.</summary>
     internal int CaptureCount { get; }
@@ -89,6 +116,11 @@ internal sealed class RegexProgram
     // Broiler-Human:        PENDING
     internal ReadOnlySpan<RegexInstruction> Code => _code;
 
+    /// <summary>The <paramref name="count"/> group numbers a back-reference reads, from entry <paramref name="first"/> of the program's list.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E32DD4
+    // Broiler-Human:        PENDING
+    internal ReadOnlySpan<int> ReferencedGroups(int first, int count) => _referenced.AsSpan(first, count);
+
     /// <summary>The ranges of class <paramref name="index"/>, as pairs of inclusive bounds.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121
     // Broiler-Human:        PENDING
@@ -102,9 +134,10 @@ internal sealed class RegexProgram
     /// </summary>
     /// <param name="subject">The subject.</param>
     /// <param name="start">
-    /// Where the match starts, or the search begins: a code-unit index from 0 to the subject's length, read forward. Under
-    /// <c>u</c> and <c>v</c> a start inside a surrogate pair reads the pair's low half as a lone unit; nothing before the
-    /// start is read. RegExpBuiltinExec (ECMA-262 §22.2.7.2, step 13.b) starts its matcher from such a
+    /// Where the match starts, or the search begins: a code-unit index from 0 to the subject's length. Under <c>u</c> and
+    /// <c>v</c> a start inside a surrogate pair splits the pair for the whole call: a read forward from the start meets the
+    /// pair's low half as a lone unit, and a read backward from it, a look-behind's, <c>\b</c>'s or <c>^</c>'s under
+    /// <c>m</c>, its high half as another. RegExpBuiltinExec (ECMA-262 §22.2.7.2, step 13.b) starts its matcher from such a
     /// <c>lastIndex</c> at the whole pair, so a caller that answers as RegExpBuiltinExec does steps back to the pair's
     /// first unit before it calls, as Broiler.VM's realm does, and reports the index it decides.
     /// </param>
@@ -176,4 +209,25 @@ internal sealed class RegexProgram
     // Broiler-Falsified-If: the weight of a class of one range is not zero, of two or three ranges not one, or of 684 ranges not nine
     // Broiler-Human:        PENDING
     internal static int ClassWeight(int rangeCount) => rangeCount <= 1 ? 0 : BitOperations.Log2((uint)rangeCount);
+
+    /// <summary>
+    /// The units a class test costs: one for the dispatch, and the class's weight (<see cref="ClassWeight"/>) for each
+    /// code point the test searches the class for, as decision D8 charges a class "its weight per character tested".
+    /// </summary>
+    /// <param name="rangeCount">The class's ranges.</param>
+    /// <param name="searches">
+    /// The code points one test searches for at most: one compared exactly or by Canonicalize; under <c>i</c>, the most a
+    /// character's case orbit holds (<see cref="OrbitLength"/>), each of which <see cref="RegexOp.ClassIgnoringCase"/>
+    /// may search for.
+    /// </param>
+    /// <remarks>
+    /// A class of one range costs one unit however it is tested, as a test of it is one comparison per code point;
+    /// <c>\p{L}</c>, 684 ranges, costs ten exactly and thirty-seven under <c>i</c> with <c>u</c>, whose orbits hold at most
+    /// four code points at UCD 17.0.0. The lookups into the Unicode owner's folding tables that find a Canonicalize or an
+    /// orbit are not weighed: they are bounded, whatever the pattern and the subject, as the dispatch is.
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=DF8A5C
+    // Broiler-Falsified-If: a class of 684 ranges costs other than ten units searched once or thirty-seven searched four times, or a class of one range costs other than one unit
+    // Broiler-Human:        PENDING
+    internal static int ClassCost(int rangeCount, int searches) => 1 + (searches * ClassWeight(rangeCount));
 }

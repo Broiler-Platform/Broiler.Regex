@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
+using Broiler.Unicode.Algorithms;
+using Broiler.Unicode.Tables;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
@@ -51,21 +54,60 @@ public class ChargingTests
     [InlineData("(?:(a)(b))*", "", "", 6)]
     [InlineData("(?:(a)(b)(c)(d))*", "", "", 6)]
     [InlineData("a*", "aa", "", 14)]
+    [InlineData("a", "A", "i", 2)]
+    [InlineData("[a-cx-z]", "Y", "i", 6)]
+    [InlineData("\\p{L}", "a", "iu", 38)]
+    [InlineData("[^a-cx-z]", "Y", "i", 10)]
+    [InlineData("^a", "ba", "", 4)]
+    [InlineData("\\bb", "ab b", "", 24)]
+    [InlineData("(a)\\1", "aa", "", 6)]
+    [InlineData("(a+)\\1", "aaaa", "", 49)]
+    [InlineData("\\1(a)", "a", "", 5)]
+    [InlineData("(?=a)a", "a", "", 5)]
+    [InlineData("(?!a)b", "ab", "", 7)]
+    [InlineData("(?<=a)b", "ab", "", 7)]
+    [InlineData("(?<=\\1(a))b", "aab", "", 18)]
+    [InlineData("[\\q{ab}c]", "c", "v", 4)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
         // ranges, weight nine, so ten for the test and one for Succeed. (?:(a)(b))* on "": Choice, the mark, the reset of
         // both groups (one dispatch, one unit, as decision D8 counts it), group 1's start, the failed Literal, then Succeed
         // from the frame; four groups cost the same. a* on "aa": two iterations of Choice, mark, Literal,
-        // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame.
+        // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame. Under i
+        // (task 2.4b) a character costs one as before, and a class one plus its weight for each code point of a
+        // character's case orbit, four at most: [a-cx-z] under i costs 1 + 4 x 1, and \p{L} under iu 1 + 4 x 9. The
+        // inverted [^a-cx-z] fails at Y and at the end of the subject, five units each. ^a on "ba": the assertion and the
+        // failed Literal at 0, the assertion alone at 1 and 2. \bb on "ab b": a boundary costs 1 + 2 x 2, the word
+        // characters' weight for each side; it holds at 0, 2 and 3 and fails at 1, and the Literal fails twice first. A
+        // back-reference costs one for its dispatch and the captured length before it compares: (a)\1 on "aa" is the two
+        // saves, the Literal, the reference (1 + 1) and Succeed; \1(a) on "a" reads a group with no capture, one unit.
+        // (a+)\1 on "aaaa": the loop's 33 units take all four a's, and the reference is then tried with captures of
+        // four, three and two characters, costing 5, 4 and 3, the last matching, with a save before each and Succeed. A
+        // look-around's start and close cost one each, and popping its barrier nothing: (?=a)a on "a" is the start, the
+        // Literal, the close, the Literal and Succeed. (?!a)b on "ab": at 0 the start, the Literal and the close, which
+        // fails; at 1 the start, the failed Literal, the barrier's resumption (free), the Literal and Succeed. (?<=a)b on
+        // "ab": at 0 the start and the failed backward Literal; at 1 five. (?<=\1(a))b on "aab": at 0 the start, the
+        // group's end and the failed Literal; at 1 the same three with the Literal matching, the group's start and the
+        // reference to one character (1 + 1), which finds no character before index 0; at 2 those six, the close, the
+        // Literal and Succeed. [\q{ab}c] on "c": the choice, the string's failed first Literal, the class and Succeed.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
 
     /// <summary>
     /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
-    /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
-    /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position.
+    /// nine and ten, captures reset at each iteration, a quantifier bounded above, a reset of a thousand groups, starts
+    /// after the first position and inside a surrogate pair, an anchored start, two step ceilings, and searches that
+    /// fail at every position; and task 2.4b's instructions: characters and classes under i, with and without u, a
+    /// v-mode class folded when parsed, and the assertions ^ $ \b \B, with m and under iu, modifier groups nested and
+    /// undone, back-references, under i and under a step ceiling, whose length is charged after the dispatch and before
+    /// the comparison (an order the read at each dispatch cannot see, which
+    /// <see cref="A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared"/> reads), and
+    /// look-arounds of the four kinds, a look-behind's back-reference read right to left, one started inside a
+    /// surrogate pair, a negative look-behind whose body backtracks to a step ceiling, look-behinds whose bodies read
+    /// every kind of character, class and back-reference right to left, and v-mode classes holding strings, the empty
+    /// one among them.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -80,6 +122,23 @@ public class ChargingTests
         { "[\\s\\S]*\\u{1F600}", "u", "\U0001F600ba" + new string('x', 200), 1, false, null },
         { "(a+)+b", "", "aaaaaaaaaaaaaac", 0, false, 7_777UL },
         { "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", "", "aaaaaaaaaaaa", 0, false, null },
+        { "(?:[\\p{L}\\p{Nd}]|K)+\\u212A", "iu", string.Concat(Enumerable.Repeat("aB1\u017Fk", 120)) + "!", 0, false, null },
+        { "[^\\W\\d]+[^k]x", "i", string.Concat(Enumerable.Repeat("Kk", 300)) + "K", 0, false, null },
+        { "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", "iv", string.Concat(Enumerable.Repeat("gH7", 200)) + "a", 0, false, null },
+        { "^(?:\\b\\w+\\B\\w\\b\\W?)+$", "m", string.Concat(Enumerable.Repeat("ab cd\nef gh ", 80)) + "!", 0, false, null },
+        { "\\b\\w+\\b", "iu", string.Concat(Enumerable.Repeat("\u017F\u212A- ", 150)), 2, false, null },
+        { "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", "", string.Concat(Enumerable.Repeat("Ab\n\nAB\n\n", 100)), 0, false, null },
+        { "(\\w+)\\s\\1(?:\\s\\1)*$", "i", string.Concat(Enumerable.Repeat("Word wORD ", 40)) + "word", 0, false, null },
+        { "(?<w>a+)\\k<w>b", "u", new string('a', 200) + "b", 0, false, 2_000UL },
+        { "(?<=\\b(\\w+)\\s\\1)\\b", "i", string.Concat(Enumerable.Repeat("Word wORD ", 40)), 0, false, null },
+        { "(?:(?=(\\w))\\1(?!\\d)|(?<=\\d)\\d)+!", "u", string.Concat(Enumerable.Repeat("ab12", 150)) + "?", 0, false, null },
+        { "(?<=(.)).\\1", "u", string.Concat(Enumerable.Repeat("\U0001F600", 100)), 1, false, null },
+        { "(?<!b(a+)+)c", "", new string('a', 24) + "c", 0, false, 5_000UL },
+        { "[\\q{abc|ab|}x]+y", "vi", string.Concat(Enumerable.Repeat("ABcXab", 100)) + "z", 0, false, null },
+        { "(?<=[\\q{ab|b}])\\p{RGI_Emoji_Flag_Sequence}", "v", string.Concat(Enumerable.Repeat("ab\U0001F1EF", 60)), 0, false, null },
+        { "(?:(a)|b){2,4}c", "", string.Concat(Enumerable.Repeat("abab", 150)) + "x", 0, false, null },
+        { "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", "", string.Concat(Enumerable.Repeat("\naBKazx1", 80)), 0, false, null },
+        { "(?<=[\\p{Ll}--[q]]{2})\\d", "iv", string.Concat(Enumerable.Repeat("aB1Q2", 120)) + "!", 0, false, null },
     };
 
     [Theory]
@@ -124,6 +183,82 @@ public class ChargingTests
         Assert.True(meter.Charged >= units && meter.Charged - units < RegexMachine.Block, meter.Charged + " charged for " + units + " units");
         Assert.All(meter.Charges, static c => Assert.True(c > 0 && c % RegexMachine.Block == 0, "a charge of " + c));
         Assert.True(units <= RegexMachine.Block || meter.Charges.Count > 1, units + " units were charged in one block");
+    }
+
+    /// <summary>The caller's tables, reporting each read to <see cref="Read"/> while it is set.</summary>
+    private sealed class WatchedTables(IUnicodeTables inner) : IUnicodeTables
+    {
+        internal Action? Read { get; set; }
+
+        public string UnicodeVersion => inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table)
+        {
+            Read?.Invoke();
+            return inner.Table(table);
+        }
+    }
+
+    [Theory]
+    [InlineData("^(.{600})\\1$", "is", false)]
+    [InlineData("^(.{600})\\1$", "ius", false)]
+    [InlineData("(?<=^\\1(.{600}))", "is", true)]
+    public void A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(string pattern, string flags, bool fromTheEnd)
+    {
+        // Decision D8 inside one dispatch: a back-reference charges its capture's length, then compares. Check A-1's
+        // read at each dispatch cannot see that order, as the units, the charges and the answer are the same either way;
+        // the caller's tables can, since a comparison under i reads them through the case folding. Only the reference
+        // folds here (the dot under s reads no table, nor do the assertions and the group), so the first read of the
+        // tables during the call is the reference's first comparison. By then the observer has seen the length charged,
+        // one step of 600 units, more than a block, and the meter holds every unit through it.
+        const int length = 600;
+        var tables = new WatchedTables(UnicodeTables.Instance);
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), tables, BroilerRegex.MaximumNestingLimit, out var program));
+        var subject = new string('a', length) + new string('A', length);
+        var meter = new RecordingMeter();
+        var through = new List<ulong>();
+        (ulong Charged, int Observed)? firstRead = null;
+        tables.Read = () => firstRead ??= (meter.Charged, through.Count);
+
+        var slots = new int[program!.SlotCount];
+        var machine = new RegexMachine(program, subject, meter.Charge, MachineTests.Ample) { DispatchObserver = through.Add };
+        RegexStatus status;
+        try
+        {
+            status = machine.Run(fromTheEnd ? subject.Length : 0, anchored: true, slots);
+        }
+        finally
+        {
+            machine.Release();
+            tables.Read = null;
+        }
+
+        Assert.Equal(RegexStatus.Match, status);
+        Assert.NotNull(firstRead);
+        var (charged, observed) = firstRead.Value;
+        Assert.True(observed >= 2, "the tables were read before the reference was dispatched");
+        Assert.Equal((ulong)length, through[observed - 1] - through[observed - 2]);
+        Assert.True(charged >= through[observed - 1], charged + " charged when the reference's first character was compared, through unit " + through[observed - 1]);
+    }
+
+    [Fact]
+    public void The_declared_inputs_reach_every_instruction_in_both_directions()
+    {
+        // Check A-1 covers each instruction the compiler emits: every operation of RegexOp appears in the program of at
+        // least one declared input, and every operation that reads the subject, each character, class and back-reference
+        // test, appears read right to left in a look-behind's body; no other operation is given a direction.
+        var code = DeclaredInputs.Select(static row => TestProgram.Compile((string)row[0], (string)row[1]))
+            .SelectMany(static program => program.Code.ToArray()).ToList();
+        var forward = code.Select(static i => i.Op).ToHashSet();
+        Assert.Empty(Enum.GetValues<RegexOp>().Where(op => !forward.Contains(op)));
+        var backward = code.Where(static i => i.RightToLeft).Select(static i => i.Op).ToHashSet();
+        RegexOp[] read =
+        [
+            RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass,
+            RegexOp.Any, RegexOp.AnyButLineTerminator, RegexOp.Backreference, RegexOp.BackreferenceIgnoringCase,
+        ];
+        Assert.Empty(read.Where(op => !backward.Contains(op)));
+        Assert.Empty(backward.Where(op => !read.Contains(op)));
     }
 
     /// <summary>Inputs whose every step ceiling, from one unit to their whole cost, is tried.</summary>

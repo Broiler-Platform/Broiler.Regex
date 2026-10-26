@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 283 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 305 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 22 |
-| Code units | 503 |
-| Relevant | 283 |
-| Exempt | 220 |
-| Assessed | 283 of 283 (100%) |
-| Human reviewed | 0 of 283 (0%) |
-| Unverified | 283 |
+| Code units | 547 |
+| Relevant | 305 |
+| Exempt | 242 |
+| Assessed | 305 of 305 (100%) |
+| Human reviewed | 0 of 305 (0%) |
+| Unverified | 305 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 283 |
+| HUMAN_PENDING | 305 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 220 |
+| EXEMPT | 242 |
 
 ## 5. Aliases In The Tree
 
@@ -88,13 +88,13 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Ast/CharSet.cs` | 28 | 15 | 13 | 15 | Low | High | 7/3 |
 | `Broiler.Regex/Ast/CodePointSet.cs` | 24 | 20 | 4 | 20 | Low | Medium | 9/0 |
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
-| `Broiler.Regex/BroilerRegex.cs` | 14 | 9 | 5 | 9 | Low | High | 9/9 |
-| `Broiler.Regex/Compiling/ProgramCompiler.cs` | 40 | 18 | 22 | 18 | None | High | 10/10 |
-| `Broiler.Regex/Engine/RegexInstruction.cs` | 7 | 1 | 6 | 1 | None | Medium | 1/0 |
-| `Broiler.Regex/Engine/RegexMachine.cs` | 44 | 21 | 23 | 21 | None | High | 12/6 |
+| `Broiler.Regex/BroilerRegex.cs` | 19 | 13 | 6 | 13 | Low | High | 13/13 |
+| `Broiler.Regex/Compiling/ProgramCompiler.cs` | 50 | 25 | 25 | 25 | None | High | 15/13 |
+| `Broiler.Regex/Engine/RegexInstruction.cs` | 8 | 1 | 7 | 1 | None | Medium | 1/0 |
+| `Broiler.Regex/Engine/RegexMachine.cs` | 55 | 29 | 26 | 29 | None | High | 19/7 |
 | `Broiler.Regex/Engine/RegexMatchCeilings.cs` | 11 | 8 | 3 | 8 | None | High | 2/2 |
-| `Broiler.Regex/Engine/RegexOp.cs` | 15 | 1 | 14 | 1 | None | Medium | 0/0 |
-| `Broiler.Regex/Engine/RegexProgram.cs` | 12 | 5 | 7 | 5 | None | High | 3/2 |
+| `Broiler.Regex/Engine/RegexOp.cs` | 26 | 1 | 25 | 1 | None | Medium | 0/0 |
+| `Broiler.Regex/Engine/RegexProgram.cs` | 17 | 8 | 9 | 8 | None | High | 4/2 |
 | `Broiler.Regex/Matching/MatchState.cs` | 15 | 8 | 7 | 8 | Low | Medium | 8/0 |
 | `Broiler.Regex/Matching/Matcher.cs` | 70 | 47 | 23 | 47 | Low | High | 36/29 |
 | `Broiler.Regex/Matching/RegexMatch.cs` | 17 | 4 | 13 | 4 | None | Low | 2/0 |
@@ -105,7 +105,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/RegexStatus.cs` | 11 | 2 | 9 | 2 | None | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexWorkCharge.cs` | 1 | 1 | 0 | 1 | None | Medium | 0/0 |
-| `Broiler.Regex/Unicode/RegexUnicode.cs` | 26 | 19 | 7 | 19 | Low | High | 8/8 |
+| `Broiler.Regex/Unicode/RegexUnicode.cs` | 27 | 19 | 8 | 19 | Low | High | 8/8 |
 | `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 13 | 9 | 4 | 9 | Low | Medium | 6/0 |
 
 ## 7. Decisions Recorded
@@ -135,46 +135,62 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, string?, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `14510D`, PENDING
   - Falsified if: a flags string with a repeated letter such as "gg" produces an instance instead of throwing RegexSyntaxException
-- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `DFF8D4`, PENDING
+- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `807242`, PENDING
   - Falsified if: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
-- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `93E41A`, PENDING
+- `Broiler.Regex.BroilerRegex.OnTheNewBackend(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `27F296`, PENDING
+  - Falsified if: an instance this answers matches through the old backend's continuations, or refuses a pattern the public constructor accepts
+- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `7D227B`, PENDING
   - Falsified if: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
-- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `C53672`, PENDING
+- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `3A9104`, PENDING
   - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
-- `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `EBD5A7`, PENDING
+- `Broiler.Regex.BroilerRegex.CompileWithBackend(string, RegexFlags, IUnicodeTables, int, bool, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `B25379`, PENDING
+  - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups answers Success on either backend, or one of 511 answers LimitExceeded
+- `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `A4E4CD`, PENDING
   - Falsified if: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `FC8D95`, PENDING
   - Falsified if: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start
-- `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `5971A9`, PENDING
+- `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `9A30B2`, PENDING
   - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
+- `Broiler.Regex.BroilerRegex.Run(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `081BFB`, PENDING
+  - Falsified if: an instance built on the new backend's route matches through the old backend's continuations, or one the public members built through the new backend's program
+- `Broiler.Regex.BroilerRegex.RunProgram(RegexProgram, string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41, `43A7CE`, PENDING
+  - Falsified if: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0 or throws, or a sticky instance finds a match after its start
 - `Broiler.Regex.Compiling.ProgramCompiler` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `393186`, PENDING
-  - Falsified if: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's body is entered without checking the caller's nesting limit, or a pattern holding an assertion, a back-reference, a look-around, a modifier, a string class or the i flag is given a program
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `90F711`, PENDING
+  - Falsified if: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `79AA61`, PENDING
   - Falsified if: a pattern of 512 nested groups under a limit of 512 answers Compiled, or one of 511 answers NestingLimitExceeded
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, RegexFlags, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5DAD10`, PENDING
-  - Falsified if: a tree holding an AnchorNode, a BackreferenceNode, a LookaroundNode, a ModifierGroupNode or a class with strings, or one parsed under i, is answered with a program
-- `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `9D2059`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, IReadOnlyDictionary<string, int>, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `6E37E6`, PENDING
+  - Falsified if: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
+- `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `DDC27C`, PENDING
   - Falsified if: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `57A50A`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `6B9AED`, PENDING
   - Falsified if: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `2A88DE`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `7AC8C2`, PENDING
   - Falsified if: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5AD0F1`, PENDING
-  - Falsified if: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `624325`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Visit(RegexNode, Scope, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `4115CF`, PENDING
+  - Falsified if: an alternation's alternatives are emitted in an order other than the pattern's, or a sequence's terms in an order other than the pattern's outside a look-behind's body and other than its reverse inside one
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.OpenIteration(QuantifierNode, Scope, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `52344A`, PENDING
   - Falsified if: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `D63006`, PENDING
   - Falsified if: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `CEBA51`, PENDING
-  - Falsified if: the class [^a-c] is given the ranges a to c rather than their complement, or a class's cost is not one plus its weight
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `5A9104`, PENDING
+  - Falsified if: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddStrings(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7, `71C696`, PENDING
+  - Falsified if: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAnchor(AnchorKind, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.6, `7D25B8`, PENDING
+  - Falsified if: under u with i a word boundary reads a word class without U+017F, or without i or without u one with it
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddReference(BackreferenceNode, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.2, `D6ABF6`, PENDING
+  - Falsified if: \k<n> is given another group than the one the parser named n, or a reference under the i flag in force compares exactly
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `7D0010`, PENDING
   - Falsified if: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
-- `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `71ADFA`, PENDING
-  - Falsified if: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a start inside a pair reads the unit before it
-- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `A00DEB`, PENDING
-  - Falsified if: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
+- `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `016F4F`, PENDING
+  - Falsified if: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a read of a call that starts inside a pair takes the pair as one character
+- `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5A0B3A`, PENDING
+  - Falsified if: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, or a frame a look-around's body pushed is resumed after the look-around's close
 - `Broiler.Regex.Engine.RegexMachine.Pay()` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=JSD-0081 decision D8, `05547C`, PENDING
   - Falsified if: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused
+- `Broiler.Regex.Engine.RegexMachine.MatchReference(in RegexInstruction, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.2, `5AB1B1`, PENDING
+  - Falsified if: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, under u a captured lone high surrogate matches the pair it would begin, or right to left the reference moves the index other than to where the characters it matched start
 - `Broiler.Regex.Engine.RegexMachine.PushChoicePoint(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `E0F13C`, PENDING
   - Falsified if: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
 - `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `46CC5B`, PENDING
@@ -387,5 +403,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-283 of the 283 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+305 of the 305 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

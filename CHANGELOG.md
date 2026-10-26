@@ -80,15 +80,34 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   holds them; frames and trail past 65,536 integers are allocated for the call and left to the collector, so a call's
   peak does not stay pooled. The program runs literals, `.`, classes (`v`-mode classes of code points included),
   sequence, alternation, every quantifier form with the specification's empty-iteration rule, and the three kinds of
-  group, clearing a quantified atom's captures at each iteration; for the constructs of task 2.4b (`^ $ \b \B`,
-  back-references, look-around, modifier groups, the `i` flag, `v`-mode classes of strings) the compiler answers "not
-  yet supported", a transitional answer task 2.4b removes. The entry, the program, the compiler, the ceilings and the
-  meter `RegexWorkCharge` are **internal** (visible to the tests and the probe) until task 2.4c routes `BroilerRegex`
-  through them; the public members still match with `Matching/`. **Public, and provisional like `Compile`:**
-  `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and
+  group, clearing a quantified atom's captures at each iteration; task 2.4b adds the rest of the grammar (below), and
+  the "not yet supported" answer task 2.4a gave it in the meantime is gone. The entry, the program, the compiler, the
+  ceilings and the meter `RegexWorkCharge` are **internal** (visible to the tests and the probe) until task 2.4c routes
+  `BroilerRegex` through them; the public members still match with `Matching/`. **Public, and provisional like
+  `Compile`:** `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and
   `RegexLimit.Trail` (4), extending task 2.3's enums. They could not wait: an enum's members take the enum's
   accessibility, and the new entry answers these two public enums, so its answers are public members whatever the
   entry's own accessibility. `PublicAPI.txt` lists them; package validation accepts them as additions.
+- **The new backend runs every pattern the parser accepts (task 2.4b; R4's matcher half, R7; decisions D5 and D8),
+  still internal.** Characters and classes compare under `i` by both branches of Canonicalize, read at match time from
+  the provider's case folding (a class by the case orbit of the character, inverted after); `^ $` with and without `m`
+  and `\b \B` with the word characters the flags give; numbered and named back-references, forward and backward, by
+  Canonicalize under `i`, by code point under `u` and `v`, a group that did not participate matching the empty string,
+  each reading a list of groups that task 2.6's duplicate names will lengthen; the four look-arounds, each a barrier
+  frame on the machine's one stack, cut back to when its body matches, with a look-behind's body compiled right to
+  left and its captures in source order; modifier groups, their flags in force for their body alone; and `v`-mode
+  classes of strings, longest first, then the single characters, then the empty string. No method of the machine
+  reaches itself (check A-4). Each new instruction costs one unit, a class under `i` one plus its weight for each code
+  point of an orbit, a word boundary one plus the word class's weight twice, and a back-reference its capture's length
+  on top when it runs. Under `u` and `v` a start inside a surrogate pair now splits the pair for every read of the
+  call, a look-behind's included. The compiler's "not yet supported" answer is deleted, and `NotYetSupported` appears
+  nowhere in the assembly. `BroilerRegex` gains an internal route through the new backend, which the test suite uses to
+  run every behaviour test on both backends; the public members still match with `Matching/` until task 2.4c. The
+  differential comparison over the whole grammar found two defects of the old backend's, which the public members show
+  until task 2.4c's route corrects them and the roadmap's record of task 2.4b lists: D2, a `v`-mode class holding the
+  empty string tries it before its single characters (`/[\q{}a]/v` on `a` answers the empty match), and JSD-0081's row
+  M7, a back-reference in a look-behind under `u` or `v` compared by code units, which can begin inside a surrogate
+  pair.
 
 ### Changed
 

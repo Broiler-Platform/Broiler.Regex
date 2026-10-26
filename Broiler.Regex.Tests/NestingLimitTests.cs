@@ -16,7 +16,7 @@ namespace Broiler.Regex.Tests;
 public class NestingLimitTests
 {
     private static RegexStatus Compile(string pattern, RegexFlags flags, int limit, out BroilerRegex? regex, out RegexLimit exceeded)
-        => BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, limit, out regex, out exceeded);
+        => TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, limit, out regex, out exceeded);
 
     /// <summary>
     /// A pattern of <paramref name="levels"/> nested levels of one kind around <c>a</c>, at depth
@@ -122,8 +122,8 @@ public class NestingLimitTests
         Assert.Throws<ArgumentOutOfRangeException>(() => Compile("a", RegexFlags.None, int.MaxValue, out _, out _));
         Assert.Equal(RegexStatus.Success, Compile("a", RegexFlags.None, BroilerRegex.MaximumNestingLimit, out _, out _));
         Assert.Equal(RegexStatus.Success, Compile("a", RegexFlags.None, 1, out _, out _));
-        Assert.Throws<ArgumentNullException>(() => BroilerRegex.Compile(null!, RegexFlags.None, UnicodeTables.Instance, 1, out _, out _));
-        Assert.Throws<ArgumentNullException>(() => BroilerRegex.Compile("a", RegexFlags.None, null!, 1, out _, out _));
+        Assert.Throws<ArgumentNullException>(() => TestRegex.TryCompile(null!, RegexFlags.None, UnicodeTables.Instance, 1, out _, out _));
+        Assert.Throws<ArgumentNullException>(() => TestRegex.TryCompile("a", RegexFlags.None, null!, 1, out _, out _));
     }
 
     [Fact]

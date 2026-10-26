@@ -21,11 +21,11 @@ public class StatusContractTests
     [Fact]
     public void A_compiled_pattern_answers_success_and_a_refused_one_names_its_limit()
     {
-        Assert.Equal("Success", Enum.GetName(BroilerRegex.Compile("a", RegexFlags.None, Broiler.Unicode.Tables.UnicodeTables.Instance, 1, out var regex, out var limit)));
+        Assert.Equal("Success", Enum.GetName(TestRegex.TryCompile("a", RegexFlags.None, Broiler.Unicode.Tables.UnicodeTables.Instance, 1, out var regex, out var limit)));
         Assert.NotNull(regex);
         Assert.Equal(RegexLimit.None, limit);
 
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile("(a)", RegexFlags.None, Broiler.Unicode.Tables.UnicodeTables.Instance, 1, out regex, out limit));
+        Assert.Equal(RegexStatus.LimitExceeded, TestRegex.TryCompile("(a)", RegexFlags.None, Broiler.Unicode.Tables.UnicodeTables.Instance, 1, out regex, out limit));
         Assert.Null(regex);
         Assert.Equal(RegexLimit.Nesting, limit);
     }
