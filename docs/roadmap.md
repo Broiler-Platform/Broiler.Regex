@@ -239,23 +239,22 @@ exception, and the instance it was charged for then answers a new call as a new 
 *Dated record, 2026-10-26 (task 2.4a of SJL-11.2; R1, R3, R4's matcher half, R7 and R8; decisions D5, D8, D9 and
 D10).*
 
-**What the new backend runs.** `Compiling/ProgramCompiler.cs` lowers the syntax tree to a `RegexProgram` on work
-lists of the heap, entering each group through the caller's nesting limit (`RegexNesting.Descend`), and
+**What the new backend runs.** `Compiling/ProgramCompiler.cs` lowers the syntax tree to a `RegexProgram` on work lists
+of the heap, entering each group through the caller's nesting limit (`RegexNesting.Descend`), and
 `Engine/RegexMachine.cs` runs it in one loop with an explicit frame stack and an undo trail: a frame is three integers
-(the address to resume, the position, the trail's height), a trail cell two (the register and the value it held).
-No method of `Broiler.Regex.Engine` reaches itself in the IL call graph (`MatcherRecursionTests`, check A-4's matcher
-half, with a planted recursion watched failing). The program holds literals without case folding, `.` with and
-without `s`, classes as code-point ranges (under `u`, without it, and `v`-mode classes of code points), sequence,
-alternation, `* + ? {n} {n,} {n,m}` greedy and lazy with the specification's empty-iteration rule, and capturing,
-named and non-capturing groups, a quantified atom's captures cleared at each iteration. The unit is one instruction
-dispatched; a class test costs one plus the floor of the base-2 logarithm of its range count, the steps of the binary
-search it does, which is how this library reads D8's "a property class's weight per character tested" for classes
-flattened to ranges; every other instruction costs one, a capture reset of any width included, as Broiler.VM charges
-its own. The meter, `RegexWorkCharge`, is charged in whole blocks of 512 units before the work, so before the k-th unit
-at least k have been charged and the over-charge is below one block; a call charges across all its start positions
-with no reset. The caller's ceilings are steps
-(optional), frames and trail, each reached answered as `LimitExceeded` naming it; a ceiling below 1, and a frame or
-trail ceiling above the library's maxima of 2^24 frames and 2^25 cells, is a broken precondition
+(the address to resume, the position, the trail's height), a trail cell two (the register and the value it held). No
+method of `Broiler.Regex.Engine` reaches itself in the IL call graph (`MatcherRecursionTests`, check A-4's matcher half,
+with a planted recursion watched failing). The program holds literals without case folding, `.` with and without `s`,
+classes as code-point ranges (under `u`, without it, and `v`-mode classes of code points), sequence, alternation,
+`* + ? {n} {n,} {n,m}` greedy and lazy with the specification's empty-iteration rule, and capturing, named and
+non-capturing groups, a quantified atom's captures cleared at each iteration. The unit is one instruction dispatched; a
+class test costs one plus the floor of the base-2 logarithm of its range count, the steps of the binary search it does,
+which is how this library reads D8's "a property class's weight per character tested" for classes flattened to ranges;
+every other instruction costs one, a capture reset of any width included, as Broiler.VM charges its own. The meter,
+`RegexWorkCharge`, is charged in whole blocks of 512 units before the work, so before the k-th unit at least k have been
+charged and the over-charge is below one block; a call charges across all its start positions with no reset. The
+caller's ceilings are steps (optional), frames and trail, each reached answered as `LimitExceeded` naming it; a ceiling
+below 1, and a frame or trail ceiling above the library's maxima of 2^24 frames and 2^25 cells, is a broken precondition
 (`ArgumentOutOfRangeException`), and both engines pass D10's 2^20 and 2^21. The entry takes a subject span, a start, an
 anchored argument independent of `y` and the caller's slots, and answers `Match`, `NoMatch` or `LimitExceeded`; its
 registers, frames and trail are rented from the shared array pool and returned, so a call allocates nothing that grows
@@ -283,13 +282,19 @@ pins it. Task 2.4c, when it routes `BroilerRegex` through the new backend, eithe
 makes a write with no frame pending leave no cell, resetting the registers another way at a failed start; task 2.4c's
 run instruction does not lift the bound for a body of more than one character.
 
-**The evidence.** Unit tests per instruction, per quantifier form and per ceiling; a test of the charging property of
-check A-1 with a recording meter over the corpus's declared inputs; a differential test of the two backends over every
-string literal of the test project in the subset (4,320 pattern and flag pairs and 251,884 cases at this record) and a seeded population
-of 20,000 generated patterns (173,428 cases), all agreeing; and the corpus's 36 rows within the subset, each run in a
-child process through the probe's hidden argument `--engine-row` on the declared 1 MiB stack, each answering its
-declared status. The probe's report carries the new backend's cases, the flat sequences of 100,000 terms and the
-nesting maximum among them, under Native AOT as under the JIT.
+**The evidence.** Unit tests per instruction, per quantifier form and per ceiling; a test of check A-1 that reads a
+recording meter at every dispatch, through an observer the library never sets, over a declared set of eleven inputs
+(watched failing on a meter paid one unit late); a differential test of the two backends over every string literal of
+the test project in the subset (4,523 pattern and flag pairs and 264,486 cases at this record) and a seeded population
+of 20,000 generated patterns (173,428 cases), all agreeing, with the cases a ceiling stops pinned (none of the suite's,
+the seed's 22 at the step ceiling and none of either at a frame or trail ceiling) and a floor on the cases compared; and
+the corpus's 36 rows within the subset, each run in a child process through the probe's hidden argument `--engine-row`
+on the declared 1 MiB stack, each answering its declared status. The probe's report carries the new backend's cases, the
+flat sequences of 100,000 terms and the nesting maximum among them, under Native AOT as under the JIT. Check A-4's IL
+test refuses, over every method the namespace reaches, each dispatch its call graph cannot follow (a function pointer, a
+delegate other than the meter, a virtual call into the assembly, `calli`), with five planted shapes watched refused; and
+the namespace declares none of the names of Broiler.VM's matcher's private members that this record's review found
+copied (decision D5).
 
 **Found on the way: a start inside a surrogate pair, and the old backend's defect D1.** Under `u` or `v`, ECMA-262's
 matchers read code points, so a code-unit start inside a pair is no index of their input; the only meaning the
