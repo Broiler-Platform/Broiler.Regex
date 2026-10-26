@@ -78,7 +78,7 @@ public class ChargingTests
     /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
     /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
     /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
-    /// assertions ^ $ \b \B, with m and under iu.
+    /// assertions ^ $ \b \B, with m and under iu, and modifier groups nested and undone.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -98,6 +98,7 @@ public class ChargingTests
         { "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", "iv", string.Concat(Enumerable.Repeat("gH7", 200)) + "a", 0, false, null },
         { "^(?:\\b\\w+\\B\\w\\b\\W?)+$", "m", string.Concat(Enumerable.Repeat("ab cd\nef gh ", 80)) + "!", 0, false, null },
         { "\\b\\w+\\b", "iu", string.Concat(Enumerable.Repeat("\u017F\u212A- ", 150)), 2, false, null },
+        { "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", "", string.Concat(Enumerable.Repeat("Ab\n\nAB\n\n", 100)), 0, false, null },
     };
 
     [Theory]

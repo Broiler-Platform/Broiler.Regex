@@ -91,6 +91,17 @@ public class ProgramCompilerTests
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
     }
 
+    [Theory]
+    [InlineData("(?i:a)a", "", new[] { "LiteralIgnoringCase 65", "Literal 97", "Succeed" })]
+    [InlineData("(?-i:a)a", "i", new[] { "Literal 97", "LiteralIgnoringCase 65", "Succeed" })]
+    [InlineData("(?m:^)^", "", new[] { "LineStart 1", "LineStart 0", "Succeed" })]
+    [InlineData("(?s-m:.$).$", "m", new[] { "Any", "LineEnd 0", "AnyButLineTerminator", "LineEnd 1", "Succeed" })]
+    [InlineData("(?i:\\b)\\b", "u", new[] { "WordBoundary 0", "WordBoundary 1", "Succeed" })]
+    public void A_modifier_group_lowers_its_body_under_its_flags_and_nothing_after_it(string pattern, string flags, string[] expected)
+    {
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
     [Fact]
     public void A_word_boundary_reads_the_word_characters_of_its_flags_and_costs_one_plus_their_weight_twice()
     {
@@ -199,8 +210,6 @@ public class ProgramCompilerTests
     [InlineData("(?<=a)b", "")]
     [InlineData("(?<!a)b", "")]
     [InlineData("(?=a){0}b", "")]
-    [InlineData("(?i:a)", "")]
-    [InlineData("(?-m:a)", "")]
     [InlineData("[\\q{ab}]", "v")]
     [InlineData("\\p{RGI_Emoji}", "v")]
     public void A_construct_of_task_2_4b_is_answered_not_yet_supported_with_no_program_and_nothing_thrown(string pattern, string flags)

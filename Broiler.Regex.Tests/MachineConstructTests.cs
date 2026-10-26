@@ -4,8 +4,9 @@ namespace Broiler.Regex.Tests;
 
 /// <summary>
 /// The new backend's constructs of task 2.4b against ECMA-262's Pattern semantics (§22.2.2): characters and classes
-/// compared under <c>i</c> by both branches of Canonicalize (§22.2.2.7.3), and the assertions <c>^ $ \b \B</c>
-/// (§22.2.2.6). Every expected answer is the specification's, read from the section each theory names, in the form
+/// compared under <c>i</c> by both branches of Canonicalize (§22.2.2.7.3), the assertions <c>^ $ \b \B</c>
+/// (§22.2.2.6), and the modifier groups <c>(?ims-ims:…)</c>, whose flags are in force for their body alone. Every expected
+/// answer is the specification's, read from the section each theory names, in the form
 /// <see cref="MachineTests.Render"/> writes.
 /// </summary>
 public class MachineConstructTests
@@ -146,6 +147,40 @@ public class MachineConstructTests
         // \b and \B (§22.2.2.6) read IsWordChar on each side (§22.2.2.6.1), which reads WordCharacters (§22.2.2.9.3):
         // the basic word characters, and under u or v with i every code point whose simple case folding is one, U+017F
         // and the Kelvin sign U+212A. Without i, or without u and v, neither is a word character.
+        Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Theory]
+    [InlineData("(?i:a)b", "", "AB", "nomatch")]
+    [InlineData("(?i:a)b", "", "Ab", "match 0,2")]
+    [InlineData("a(?i:b)c", "", "aBc", "match 0,3")]
+    [InlineData("a(?i:b)c", "", "aBC", "nomatch")]
+    [InlineData("(?i:a)a", "", "aA", "nomatch")]
+    [InlineData("(?-i:a)b", "i", "aB", "match 0,2")]
+    [InlineData("(?-i:a)b", "i", "AB", "nomatch")]
+    [InlineData("(?i:a(?-i:b)c)", "", "AbC", "match 0,3")]
+    [InlineData("(?i:a(?-i:b)c)", "", "ABC", "nomatch")]
+    [InlineData("(?i:(?-i:(?i:a)))", "", "A", "match 0,1")]
+    [InlineData("(?i:a)+", "", "aAaB", "match 0,3")]
+    [InlineData("(?i:[^k])", "", "K", "nomatch")]
+    [InlineData("(?i:[a-z])", "v", "\u212A", "match 0,1")]
+    [InlineData("(?-i:[a-z])", "iv", "\u212A", "nomatch")]
+    [InlineData("(?i:\\u017F)", "u", "S", "match 0,1")]
+    [InlineData("(?i:\\b)", "u", "\u017F", "match 0,0")]
+    [InlineData("(?-i:\\b)", "iu", "\u017F", "nomatch")]
+    [InlineData("(?m:^b)", "", "a\nb", "match 2,3")]
+    [InlineData("^b(?-m:$)", "m", "b\nb", "match 2,3")]
+    [InlineData("(?-m:^)b", "m", "a\nb", "nomatch")]
+    [InlineData("(?s:.).", "", "\n\n", "nomatch")]
+    [InlineData("(?s:.).", "", "\na", "match 0,2")]
+    [InlineData("(?-s:.)", "s", "\n", "nomatch")]
+    [InlineData("(?ims:^.a$)", "", "x\n\nA\n", "match 2,4")]
+    [InlineData("(?i-ms:^.a$)", "ms", "\n\nA", "nomatch")]
+    public void A_modifier_group_s_flags_are_in_force_for_its_body_alone(string pattern, string flags, string subject, string expected)
+    {
+        // ES2025's modifiers (§22.2.2.7, Atom :: ( ? RegularExpressionModifiers : Disjunction )): the body is compiled
+        // with rer's IgnoreCase, Multiline and DotAll updated by the added and removed flags, and what follows the group
+        // with rer as it was; a v-mode class folds by the flag in force where it stands.
         Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
     }
 }
