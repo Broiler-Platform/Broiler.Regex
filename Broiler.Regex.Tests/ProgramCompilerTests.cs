@@ -285,12 +285,31 @@ public class ProgramCompilerTests
     }
 
     [Theory]
+    [InlineData("^a", "")]
+    [InlineData("a$", "")]
+    [InlineData("\\ba", "")]
+    [InlineData("\\Ba", "")]
+    [InlineData("(a)\\1", "")]
+    [InlineData("(?<n>a)\\k<n>", "")]
+    [InlineData("(?=a)", "")]
+    [InlineData("(?!a)", "")]
+    [InlineData("(?<=a)b", "")]
+    [InlineData("(?<!a)b", "")]
+    [InlineData("(?=a){0}b", "")]
+    [InlineData("(?i:a)", "")]
+    [InlineData("(?-m:a)", "")]
+    [InlineData("a", "i")]
+    [InlineData("[a]", "iv")]
+    [InlineData("[\\q{ab}]", "v")]
+    [InlineData("x(?:y|(z\\b))*", "")]
     [InlineData("(?=a)(?<!b)[\\q{xy}]\\1(a)", "v")]
     [InlineData("^\\b\\B$(?i:a)(?<n>b)\\k<n>", "iu")]
     [InlineData("\\p{RGI_Emoji}", "v")]
-    [InlineData("(?=a){0}b", "")]
     public void Every_construct_task_2_4a_refused_now_compiles(string pattern, string flags)
     {
+        // Task 2.4a's eighteen rows, each construct it answered "not yet supported" alone, and two that combine them.
+        // \p{RGI_Emoji} comes last, so that the differential's suite population, which runs a pattern against the
+        // literals below it, does not run it against the long patterns as subjects (task 2.4c's fast paths).
         Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));
         Assert.NotNull(program);
     }
