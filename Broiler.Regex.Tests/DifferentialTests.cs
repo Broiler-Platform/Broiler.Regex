@@ -14,11 +14,13 @@ using Xunit.Abstractions;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// The differential test of task 2.4a: the new backend and the old one answer the same, index, length and every
-/// capture, on two populations. The <b>suite population</b> is every string literal of this test project's sources taken
-/// as a pattern, under each flag string near it and under five base flag strings, against the literals near it and a
-/// fixed set of subjects, from three start indices; the <b>generated population</b> is drawn by a seeded SplitMix64 from
-/// the 2.4a subset's grammar. A pattern the new compiler gives no program is counted, not run.
+/// The differential test of tasks 2.4a and 2.4b: the new backend and the old one answer the same, index, length and every
+/// capture, on two populations over the whole grammar. The <b>suite population</b> is every string literal of this test
+/// project's sources taken as a pattern, under each flag string near it and under nine base flag strings, against the
+/// literals near it and a fixed set of subjects, from three start indices; the <b>generated population</b> is drawn by a
+/// seeded SplitMix64 from every construct the parser accepts, under thirteen flag strings. Since task 2.4b every pattern
+/// compiles to a program, and a pattern that does not is a failure; a disagreement is either one of the old backend's
+/// recorded defects (<see cref="Defects"/>), each pinned to the specification's answer, or a failure.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -29,10 +31,18 @@ namespace Broiler.Regex.Tests;
 /// disagreements, under a ceiling of two million units: three were the old budget's (nested counted quantifiers over an
 /// empty alternative, <c>((?&lt;n0&gt;[^]?|){2,}){2,}</c>, on subjects of five to nine characters, where the old backend
 /// answered no match after five to eleven seconds although a prefix of the subject matched), and each took the new backend
-/// about 241,000 units. Under the ceiling of 100,000, 22 generated cases reach it and every case compared agrees; the
-/// largest takes 95,843 units. The cases left out are pinned: the 22 for this seed, none of the suite's, at least
-/// 170,000 generated cases compared, and no case of either population stopped at a frame or trail ceiling, which on
-/// subjects of at most nine units would be the new backend giving up rather than answering.
+/// about 241,000 units. Under the ceiling of 100,000, task 2.4a's seed stopped 22 generated cases, the largest compared
+/// taking 95,843 units. Task 2.4b's population, drawn from the whole grammar with a seed of its own, stops 2 and its
+/// largest compared case takes 25,619 units; the suite's stops are \p{RGI_Emoji}'s (<see cref="SuiteOverStepsPinned"/>).
+/// The cases left out are pinned: the stops of each population, at least 170,000 generated cases compared, and no case of
+/// either population stopped at a frame or trail ceiling, which on subjects of at most nine pieces would be the new
+/// backend giving up rather than answering.
+/// </para>
+/// <para>
+/// <b>The old backend's defects.</b> Task 2.4b's comparison over the whole grammar found one defect of the old backend's
+/// besides D1, D2: a <c>v</c>-mode class holding the empty string tries it before its single characters, where the
+/// specification tries it last (<see cref="OldBackendDefectTests"/>). A disagreement is attributed to it when the pattern
+/// holds such a class with a single character in it; every other disagreement fails the comparison, and there is none.
 /// </para>
 /// <para>
 /// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
@@ -67,27 +77,31 @@ public class DifferentialTests(ITestOutputHelper output)
     private const int Generated = 20_000;
 
     /// <summary>
-    /// How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> under <c>i</c> and <c>iu</c>,
-    /// and <c>\p{RGI_Emoji}</c> on two subjects of 29 and 31 units, as its strings, tried one by one in the order the
-    /// specification gives them, cost about two units each at each start position (task 2.4c's fast paths).
+    /// How many of the suite's cases the step ceiling stops: <c>\p{RGI_Emoji}</c> under <c>v</c> and <c>iv</c> on two
+    /// subjects of 29 and 31 units from two starts, as its strings, tried one by one in the order the specification gives
+    /// them, cost about two units each at each start position (task 2.4c's fast paths).
     /// </summary>
-    private const int SuiteOverStepsPinned = 10;
+    private const int SuiteOverStepsPinned = 8;
 
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
-    private const int OverStepsPinned = 22;
+    private const int OverStepsPinned = 2;
+
+    /// <summary>The generated population's seed: task 2.4b's, the date it was drawn on.</summary>
+    private const ulong Seed = 0x2_4B_2026_1026;
 
     /// <summary>The flag strings every suite pattern runs under, besides those written near it.</summary>
-    private static readonly string[] BaseFlags = ["", "s", "u", "v", "y"];
+    private static readonly string[] BaseFlags = ["", "i", "m", "s", "u", "iu", "v", "iv", "y"];
 
     /// <summary>The subjects every suite pattern runs against, besides the literals near it.</summary>
     private static readonly string[] BaseSubjects =
     [
         "", "a", "ab", "aaa", "abcabc", "aab-bba", "a\nb\rc\u2028d\u2029e", "\uD83D\uDE00", "x\uD83Dy\uDE00z",
         "\uD83D\uDE00\uD83D\uDE00a", "123 abc_DEF", "\u0000\u0001", "colour color", "xyzzy",
+        "AaBb", "K\u212Ak", "\u017FsS", "a\nA\n",
     ];
 
     [Fact]
-    public void The_suite_s_patterns_in_the_subset_answer_the_same_on_both_backends()
+    public void The_suite_s_patterns_answer_the_same_on_both_backends()
     {
         var tally = new Tally();
         var sources = TestSources();
@@ -108,40 +122,45 @@ public class DifferentialTests(ITestOutputHelper output)
         foreach (var stopped in tally.Stopped)
             output.WriteLine("  stopped: " + stopped);
         Assert.True(tally.Compared > 10_000, "the suite population compared only " + tally.Compared + " cases");
+        Assert.True(tally.NoProgram == 0, tally.NoProgram + " patterns the parser accepts were given no program");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
 
-        // The suite's cases the step ceiling stops are pinned: the catastrophic (a+)+b of ChargingTests' declared inputs on
-        // a subject of twelve or fourteen a's, under the i flags written beside it, and \p{RGI_Emoji} on the two longest
-        // subjects beside it; none may stop at a frame or trail ceiling: the subjects are a few characters long, so a stop
-        // there is the new backend giving up, not an answer.
+        // The suite's cases the step ceiling stops are pinned: \p{RGI_Emoji} on the two longest subjects beside it; none
+        // may stop at a frame or trail ceiling: the subjects are a few characters long, so a stop there is the new backend
+        // giving up, not an answer.
         Assert.Equal((SuiteOverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
-        Assert.All(tally.Stopped, static stopped => Assert.True(
-            stopped.Contains("/(a+)+b/i", StringComparison.Ordinal) || stopped.Contains("/\\p{RGI_Emoji}/v on", StringComparison.Ordinal), stopped));
+        Assert.All(tally.Stopped, static stopped => Assert.Matches(@"^MachineConstructTests\.cs:\d+: /\\p\{RGI_Emoji\}/i?v on ", stopped));
     }
 
     [Fact]
-    public void A_seeded_population_over_the_subset_answers_the_same_on_both_backends()
+    public void A_seeded_population_over_the_whole_grammar_answers_the_same_on_both_backends()
     {
         var tally = new Tally();
-        var random = new SplitMix64(0x2_4A_2026_1026);
-        string[] flagChoices = ["", "s", "u", "us", "v", "vs", "y", "uy"];
+        var random = new SplitMix64(Seed);
+        string[] flagChoices = ["", "i", "m", "s", "u", "iu", "us", "v", "iv", "vs", "y", "iy", "imsu"];
         for (var i = 0; i < Generated; i++)
         {
             var flags = flagChoices[random.Below(flagChoices.Length)];
-            var generator = new PatternGenerator(random);
+            var generator = new PatternGenerator(random, flags);
             var pattern = generator.Disjunction(0);
             var subjects = Enumerable.Range(0, 8).Select(_ => Subject(random)).Distinct(StringComparer.Ordinal).ToArray();
             var starts = subjects.ToDictionary(static subject => subject, subject => random.Below(subject.Length + 1), StringComparer.Ordinal);
-            var outside = tally.OutsideSubset;
             tally.Pattern(pattern, flags, subjects, subject => [0, starts[subject]], "generated #" + i);
-            Assert.True(tally.OutsideSubset == outside, "the generator left the subset: /" + pattern + "/" + flags);
+            Assert.True(tally.NoProgram == 0, "a pattern the parser accepts was given no program: /" + pattern + "/" + flags);
         }
 
-        output.WriteLine($"generated population: seed 0x24A20261026, {Generated} patterns; {tally}");
+        output.WriteLine($"generated population: seed 0x{Seed:X}, {Generated} patterns; {tally}");
+        foreach (var stopped in tally.Stopped)
+            output.WriteLine("  stopped: " + stopped);
+        foreach (var construct in tally.Constructs)
+            output.WriteLine($"  {construct.Key}: {construct.Value} pattern-flag pairs");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
 
+        // Every construct of the grammar is drawn: each kind of node, and each kind of class and look-around.
+        Assert.All(ConstructNames, name => Assert.True(tally.Constructs.GetValueOrDefault(name) >= 100, name + " was drawn " + tally.Constructs.GetValueOrDefault(name) + " times"));
+
         // The cases left out of the comparison are pinned, so that a new backend giving up cannot take the place of one
-        // answering: on subjects of at most nine units no case may stop at a frame or trail ceiling, the 22 cases the step
+        // answering: on subjects of at most nine pieces no case may stop at a frame or trail ceiling, the cases the step
         // ceiling stops are this seed's (the most units a compared case takes is under 100,000), and the cases compared
         // keep their floor.
         Assert.Equal((OverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
@@ -191,16 +210,81 @@ public class DifferentialTests(ITestOutputHelper output)
             static tree => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } })),
     ];
 
-    /// <summary>Whether some node of <paramref name="tree"/> satisfies <paramref name="test"/>, read on a work list.</summary>
-    private static bool Any(RegexNode tree, Func<RegexNode, bool> test)
+    /// <summary>Whether some node of <paramref name="tree"/> satisfies <paramref name="test"/>.</summary>
+    private static bool Any(RegexNode tree, Func<RegexNode, bool> test) => Nodes(tree).Any(test);
+
+    /// <summary>The constructs of the grammar the generated population must each draw, as <see cref="ConstructsOf"/> names them.</summary>
+    private static readonly string[] ConstructNames =
+    [
+        "alternation", "quantifier", "capture group", "named group", "class", "class under i", "class with strings",
+        "class with the empty string", "character under i", "^ or $", "^ or $ under m", "\\b or \\B", "back-reference",
+        "named back-reference", "look-ahead", "negative look-ahead", "look-behind", "negative look-behind", "modifier group",
+        "back-reference in a look-behind", "property escape",
+    ];
+
+    /// <summary>The constructs of <see cref="ConstructNames"/> that <paramref name="tree"/>, parsed under <paramref name="flags"/>, holds.</summary>
+    internal static IEnumerable<string> ConstructsOf(RegexNode tree, string flags)
+    {
+        var found = new SortedSet<string>(StringComparer.Ordinal);
+        var ignoreCase = flags.Contains('i');
+        var multiline = flags.Contains('m');
+        foreach (var node in Nodes(tree))
+        {
+            switch (node)
+            {
+                case DisjunctionNode:
+                    found.Add("alternation");
+                    break;
+                case QuantifierNode:
+                    found.Add("quantifier");
+                    break;
+                case GroupNode { IsCapturing: true } group:
+                    found.Add(group.Name is null ? "capture group" : "named group");
+                    break;
+                case CharClassNode cls:
+                    found.Add(cls.Set.HasStrings ? "class with strings" : "class");
+                    if (cls.Set.MatchesEmptyString)
+                        found.Add("class with the empty string");
+                    if (ignoreCase)
+                        found.Add("class under i");
+                    if (cls.Set.UsesPropertyEscape)
+                        found.Add("property escape");
+                    break;
+                case CharNode when ignoreCase:
+                    found.Add("character under i");
+                    break;
+                case AnchorNode { Kind: AnchorKind.StartOfInput or AnchorKind.EndOfInput }:
+                    found.Add(multiline ? "^ or $ under m" : "^ or $");
+                    break;
+                case AnchorNode:
+                    found.Add("\\b or \\B");
+                    break;
+                case BackreferenceNode reference:
+                    found.Add(reference.Name is null ? "back-reference" : "named back-reference");
+                    break;
+                case LookaroundNode look:
+                    found.Add((look.Negative ? "negative " : "") + (look.Behind ? "look-behind" : "look-ahead"));
+                    if (look.Behind && Any(look.Child, static inner => inner is BackreferenceNode))
+                        found.Add("back-reference in a look-behind");
+                    break;
+                case ModifierGroupNode:
+                    found.Add("modifier group");
+                    break;
+            }
+        }
+
+        return found;
+    }
+
+    /// <summary>Every node of <paramref name="tree"/>, read on a work list.</summary>
+    private static IEnumerable<RegexNode> Nodes(RegexNode tree)
     {
         var pending = new Stack<RegexNode>();
         pending.Push(tree);
         while (pending.Count > 0)
         {
             var node = pending.Pop();
-            if (test(node))
-                return true;
+            yield return node;
             switch (node)
             {
                 case SequenceNode sequence:
@@ -225,8 +309,6 @@ public class DifferentialTests(ITestOutputHelper output)
                     break;
             }
         }
-
-        return false;
     }
 
     private static bool LooksLikeFlags(string text) =>
@@ -237,7 +319,11 @@ public class DifferentialTests(ITestOutputHelper output)
     private sealed class Tally
     {
         internal int Patterns;
-        internal int OutsideSubset;
+        /// <summary>Patterns the parser accepts that the new compiler gave no program: none since task 2.4b.</summary>
+        internal int NoProgram;
+
+        /// <summary>How many pattern-flag pairs hold each construct of <see cref="ConstructNames"/>.</summary>
+        internal readonly SortedDictionary<string, int> Constructs = new(StringComparer.Ordinal);
         internal int NotPatterns;
         internal int Compared;
         internal int OverSteps;
@@ -267,7 +353,7 @@ public class DifferentialTests(ITestOutputHelper output)
                 old = TestRegex.Compile(pattern, flags);
                 if (ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out program) != ProgramCompilation.Compiled)
                 {
-                    OutsideSubset++;
+                    NoProgram++;
                     return;
                 }
             }
@@ -278,6 +364,8 @@ public class DifferentialTests(ITestOutputHelper output)
             }
 
             Patterns++;
+            foreach (var construct in ConstructsOf(RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _), flags))
+                Constructs[construct] = Constructs.GetValueOrDefault(construct) + 1;
             var anchored = flags.Contains('y');
             var unicode = flags.Contains('u') || flags.Contains('v');
             var slots = new int[program!.SlotCount];
@@ -342,7 +430,7 @@ public class DifferentialTests(ITestOutputHelper output)
         }
 
         public override string ToString() =>
-            $"{Patterns} pattern-flag pairs in the subset, {OutsideSubset} outside it, {NotPatterns} not patterns under their flags; " +
+            $"{Patterns} pattern-flag pairs compiled, {NoProgram} given no program, {NotPatterns} not patterns under their flags; " +
             $"{Compared} cases compared ({InsidePair} starting inside a surrogate pair), the most units {MostUnits}; " +
             $"{OverSteps} stopped at the new backend's step ceiling, {OverFrames} at its frame ceiling, {OverTrail} at its trail ceiling, " +
             $"{OldOverflow} the old backend's stack guard refused; " +
@@ -360,7 +448,7 @@ public class DifferentialTests(ITestOutputHelper output)
 
     private static string Subject(SplitMix64 random)
     {
-        string[] pieces = ["a", "a", "b", "b", "c", "x", "\n", "\uD83D\uDE00", "\uD83D", "\uDE00", "1", " "];
+        string[] pieces = ["a", "a", "b", "b", "c", "x", "\n", "\uD83D\uDE00", "\uD83D", "\uDE00", "1", " ", "A", "B", "K", "\u212A", "\u017F", "s", "S", "ab"];
         var subject = new StringBuilder();
         var length = random.Below(9);
         for (var i = 0; i < length; i++)
@@ -368,18 +456,42 @@ public class DifferentialTests(ITestOutputHelper output)
         return subject.ToString();
     }
 
-    /// <summary>A pattern of the 2.4a subset: literals, the dot, classes, groups of the three kinds, alternation and every quantifier form.</summary>
-    private sealed class PatternGenerator(SplitMix64 random)
+    /// <summary>
+    /// A pattern of the whole grammar under <paramref name="flags"/>: literals with and without a case, the dot, classes of
+    /// every kind the flags admit (properties under <c>u</c> and <c>v</c>, set operations and strings under <c>v</c>), the
+    /// assertions <c>^ $ \b \B</c>, numbered and named back-references, groups of every kind (capturing, non-capturing,
+    /// named, the four look-arounds and modifier groups), alternation and every quantifier form. A draw the parser refuses
+    /// under the flags, such as a reference to a group the pattern does not hold under <c>u</c>, is counted as no pattern.
+    /// </summary>
+    private sealed class PatternGenerator(SplitMix64 random, string flags)
     {
+        private readonly bool _unicode = flags.Contains('u') || flags.Contains('v');
+        private readonly bool _sets = flags.Contains('v');
         private int _names;
+        private int _groups;
 
         private static readonly string[] Atoms =
         [
-            "a", "a", "b", "b", "c", "x", ".", "\\d", "\\w", "\\W", "\\s", "\\n", "[ab]", "[^a]", "[a-c]", "[\\d\\n]", "[^\\n]",
-            "[\\s\\S]", "[]", "[^]", "\uD83D\uDE00", "\\uD83D\\uDE00", "\\uD83D", "[\uD83D\uDE00a]", "[^\uD83D\uDE00]", "\\-",
+            "a", "a", "b", "b", "c", "x", "A", "K", "s", ".", "\\d", "\\w", "\\W", "\\s", "\\n", "[ab]", "[^a]", "[a-c]",
+            "[\\d\\n]", "[^\\n]", "[\\s\\S]", "[]", "[^]", "\uD83D\uDE00", "\\uD83D\\uDE00", "\\uD83D", "[\uD83D\uDE00a]",
+            "[^\uD83D\uDE00]", "\\-", "\u017F", "\u212A", "[a-z]", "[^k]", "[A-Z]", "[\\w-]",
         ];
 
+        /// <summary>Atoms valid under <c>u</c> and <c>v</c> alone.</summary>
+        private static readonly string[] UnicodeAtoms = ["\\p{L}", "\\P{Ll}", "[\\p{Lu}a]", "\\u{1F600}", "[^\\p{L}]", "\\p{ASCII}"];
+
+        /// <summary>Atoms valid under <c>v</c> alone: set operations, nested classes and strings, the empty one among them.</summary>
+        private static readonly string[] SetAtoms =
+        [
+            "[\\q{ab|a}]", "[\\q{}a]", "[\\q{abc|b|}]", "[[a-z]--[b]]", "[\\p{L}&&\\p{Ll}]", "[\\q{\\uD83D\\uDE00x|k}]",
+            "[\\q{AB}b]", "[[ab][\\q{ba}]]", "[\\q{a|ab|abc}x]",
+        ];
+
+        private static readonly string[] Assertions = ["^", "$", "\\b", "\\B"];
+
         private static readonly string[] Quantifiers = ["*", "+", "?", "{0}", "{1}", "{2}", "{0,1}", "{1,2}", "{2,3}", "{0,}", "{2,}", "{0,2}"];
+
+        private static readonly string[] Modifiers = ["(?i:", "(?-i:", "(?m:", "(?s:", "(?i-s:", "(?-m:", "(?is:"];
 
         internal string Disjunction(int depth)
         {
@@ -393,8 +505,9 @@ public class DifferentialTests(ITestOutputHelper output)
             var count = random.Below(4);
             for (var i = 0; i < count; i++)
             {
-                terms.Append(Atom(depth));
-                if (random.Below(2) == 0)
+                var (atom, quantifiable) = Term(depth);
+                terms.Append(atom);
+                if (quantifiable && random.Below(2) == 0)
                 {
                     terms.Append(Quantifiers[random.Below(Quantifiers.Length)]);
                     if (random.Below(3) == 0)
@@ -404,19 +517,46 @@ public class DifferentialTests(ITestOutputHelper output)
             return terms.ToString();
         }
 
-        private string Atom(int depth)
+        /// <summary>One term, and whether a quantifier may follow it (a look-behind or an assertion may not).</summary>
+        private (string Atom, bool Quantifiable) Term(int depth)
         {
             if (depth < 3 && random.Below(3) == 0)
             {
-                var inner = Disjunction(depth + 1);
-                return random.Below(3) switch
+                var kind = random.Below(12);
+                var open = kind switch
                 {
-                    0 => "(" + inner + ")",
-                    1 => "(?:" + inner + ")",
-                    _ => "(?<n" + _names++ + ">" + inner + ")",
+                    0 or 1 => "(",
+                    2 => "(?:",
+                    3 => "(?<n" + _names++ + ">",
+                    4 => "(?=",
+                    5 => "(?!",
+                    6 or 7 => "(?<=",
+                    8 => "(?<!",
+                    _ => Modifiers[random.Below(Modifiers.Length)],
                 };
+                if (kind is 0 or 1 or 3)
+                    _groups++;
+                var inner = Disjunction(depth + 1);
+
+                // A look-ahead is quantifiable outside u and v alone (Annex B), a look-behind never.
+                return (open + inner + ")", kind is not (6 or 7 or 8) && (!_unicode || kind is not (4 or 5)));
             }
-            return Atoms[random.Below(Atoms.Length)];
+
+            switch (random.Below(10))
+            {
+                case 0:
+                    return (Assertions[random.Below(Assertions.Length)], false);
+                case 1 when _groups > 0:
+                    return ("\\" + (1 + random.Below(_groups)), true);
+                case 2 when _names > 0:
+                    return ("\\k<n" + random.Below(_names) + ">", true);
+                case 3 when _sets:
+                    return (SetAtoms[random.Below(SetAtoms.Length)], true);
+                case 4 when _unicode:
+                    return (UnicodeAtoms[random.Below(UnicodeAtoms.Length)], true);
+                default:
+                    return (Atoms[random.Below(Atoms.Length)], true);
+            }
         }
     }
 
