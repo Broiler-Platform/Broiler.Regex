@@ -114,12 +114,17 @@ public class NulCharacterTests
         Assert.True(TestRegex.Compile("^\u0000*$").IsMatch("\u0000\u0000"));
     }
 
+    /// <summary>
+    /// A NUL inside a group name is a character of the name, not its end: the parse reaches it and refuses it
+    /// there. It is refused because a GroupName is a RegExpIdentifierName (ECMA-262 §22.2.1) and U+0000 is no
+    /// IdentifierPartChar (§22.2.1.1), which this test accepted until task 2.2 held names to the identifier
+    /// classes; what it was written for, that the NUL does not end the pattern, is unchanged.
+    /// </summary>
     [Fact(Timeout = 600000)]
-    public void NulInAGroupName_IsPartOfTheName()
+    public void NulInAGroupName_IsReadAsACharacterOfTheName()
     {
-        var re = TestRegex.Compile("(?<a\u0000b>x)");
-        Assert.Equal(1, re.GroupNames["a\u0000b"]);
-        Assert.Equal("x", re.Match("x").Groups[1].Value);
+        var refusal = Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile("(?<a\u0000b>x)"));
+        Assert.Equal(4, refusal.Position);
     }
 
     /// <summary>

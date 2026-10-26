@@ -83,6 +83,21 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   same under `Script_Extensions` are accepted, matching nothing, as no code point has that value; `0.1.0-preview.4`
   refused them.
 
+- **Group names are RegExpIdentifierNames, read the same way in every mode (R5).** A GroupName's code points are
+  held to IdentifierStartChar and IdentifierPartChar by the provider's `EcmaScriptLexical` (ECMA-262 §22.2.1.1), so
+  `(?<1>x)`, `(?<a-b>x)`, `(?<a b>x)`, `(?<a.b>x)`, `(?<\u0031>x)` and a name holding U+0000 are refused, which
+  `0.1.0-preview.4` accepted. `\u`, `\u{…}` and escaped or raw surrogate pairs are read in a name with and without
+  `u` and `v` alike, so `(?<\u{1D400}>x)` and `(?<\uD835\uDC00>x)` are accepted without `u`, where
+  `0.1.0-preview.4` refused the first and threw `ArgumentOutOfRangeException` for the second; a lone surrogate, as
+  `(?<\uD800>x)` under `u`, is a `RegexSyntaxException` rather than that exception.
+- **A duplicate group name is found as decoded (R5).** `(?<\u0061>x)(?<a>y)` repeats the name `a` and is refused,
+  as `(?<a>x)(?<a>y)` always was; `0.1.0-preview.4` compared names as written and accepted it. A name repeated only
+  across alternatives stays refused until requirement R6.
+- **A braced escape never joins a surrogate pair (R5; row S10 of Broiler.VM's correspondence).** Under `u` and `v`
+  only two four-digit escapes form a pair, so `\uD83D\u{DC38}` is a lone lead surrogate and a lone trail surrogate,
+  two characters, and `\uD83D\u{41}` is accepted; `0.1.0-preview.4` refused every four-digit lead escape followed by
+  `\u{` ("Invalid hexadecimal escape").
+
 ### Data
 
 - **The Unicode data is the caller's, and the package declares no version of its own (R11).** It reads the tables

@@ -33,8 +33,9 @@ internal sealed record CompiledCase(ProbeCase Case, BroilerRegex? Regex, string?
 /// and the adversarial corpus, which do declare answers, are added to the probe by SJL-11.2's later steps.
 /// </para>
 /// <para>
-/// The report names each case with its pattern, flags, start and subject, escaped to ASCII, and the answer; it
-/// records no time, machine, path or message text, so two runs on one platform compare byte for byte.
+/// The report names each case with its pattern, flags, start and subject, escaped to ASCII, and the answer, whose
+/// group names are escaped the same way; it records no time, machine, path or message text, so two runs on one
+/// platform compare byte for byte.
 /// </para>
 /// </remarks>
 internal static class ProbePopulation
@@ -210,7 +211,7 @@ internal static class ProbePopulation
 
         var names = new List<string>();
         foreach (var (name, index) in regex.GroupNames)
-            names.Add(name + "=" + Decimal(index));
+            names.Add(Escape(name) + "=" + Decimal(index));
         names.Sort(StringComparer.Ordinal);
         if (names.Count > 0)
             text.Append(" names ").Append(string.Join(",", names));

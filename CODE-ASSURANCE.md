@@ -145,7 +145,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Parsing.RegexParser.ReadControlEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ReadHexEscape(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.HasHexDigits(int, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Parsing.RegexParser.ReadUnicodeEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadUnicodeEscape(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.AddPropertyEscape(CharSet, bool, bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ReadGroupName()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.AtEnd` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
