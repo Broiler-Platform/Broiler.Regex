@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   7
-// Annotated:        7/7
+// Relevant units:   6
+// Annotated:        6/6
 // Exempt:           0
-// Human-reviewed:   0/7
+// Human-reviewed:   0/6
 // IP risk:          Low
 // Security risk:    Medium
 // Criteria:         3/0
 // Resource impact:  1/10 max
-// Unverified:       7
+// Unverified:       6
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -49,33 +49,26 @@ internal static class UnicodeCharSets
 
     // ----- Built-in sets ------------------------------------------------------
 
+    // Each set below is built by CodePointSet.FromRanges, which normalizes it before it returns, so the type's
+    // initialization publishes it already sorted and merged. Every compilation reads these sets: one left
+    // un-normalized would be sorted and compacted in place, without a lock, by the first reads of a process's
+    // first compilations on several threads at once (check A-11; FirstUseConcurrencyTests).
+
     /// <summary>Every code point, U+0000 to U+10FFFF: AllCharacters outside <c>v</c> with <c>i</c>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=B39463
-    // Broiler-Falsified-If: FullRange omits a code point between 0 and 0x10FFFF, such as the lone surrogate 0xD800
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=BD7EDC
+    // Broiler-Falsified-If: FullRange omits a code point between 0 and 0x10FFFF, such as the lone surrogate 0xD800, or is still un-normalized after type initialization, so the first concurrent class complements under v rewrite its shared range list without a lock
     // Broiler-Human:        PENDING
-    internal static readonly CodePointSet FullRange = CodePointSet.Of(0, CodePointSet.MaxCodePoint);
+    internal static readonly CodePointSet FullRange = CodePointSet.FromRanges([(0, CodePointSet.MaxCodePoint)]);
 
     /// <summary><c>\d</c>, exactly ASCII <c>0-9</c> (§22.2.2.9).</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=66FCA5
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=E59EC0
     // Broiler-Falsified-If: DigitSet is still un-normalized after type initialization, so the first concurrent EscapeSet(Digit) or EscapeSet(NonDigit) calls rewrite its shared range list without a lock
     // Broiler-Human:        PENDING
-    internal static readonly CodePointSet DigitSet = CodePointSet.Of('0', '9');
+    internal static readonly CodePointSet DigitSet = CodePointSet.FromRanges([('0', '9')]);
 
     /// <summary><c>\w</c> without <c>i</c> or without <c>u</c> and <c>v</c>: ASCII letters, digits and the low line.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=09B039
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=699099
+    // Broiler-Falsified-If: BasicWordSet holds a code point outside A-Z, a-z, 0-9 and the low line, or is still un-normalized after type initialization, so two threads first compiling at once both sort and compact it while the folded word set is built from it, and \w loses digits or letters for the rest of the process
     // Broiler-Human:        PENDING
-    internal static readonly CodePointSet BasicWordSet = BuildBasicWordSet();
-
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=1DC1FD
-    // Broiler-Falsified-If: the set it builds contains a code point outside A-Z, a-z, 0-9 and the low line
-    // Broiler-Human:        PENDING
-    private static CodePointSet BuildBasicWordSet()
-    {
-        var set = new CodePointSet();
-        set.AddRange('a', 'z');
-        set.AddRange('A', 'Z');
-        set.AddRange('0', '9');
-        set.AddCodePoint('_');
-        return set;
-    }
+    internal static readonly CodePointSet BasicWordSet = CodePointSet.FromRanges([('0', '9'), ('A', 'Z'), ('_', '_'), ('a', 'z')]);
 }

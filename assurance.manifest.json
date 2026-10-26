@@ -34,7 +34,7 @@
     { "file": "Broiler.Regex/RegexOverflowException.cs", "fingerprint": "B47E53" },
     { "file": "Broiler.Regex/RegexSyntaxException.cs", "fingerprint": "F700F3" },
     { "file": "Broiler.Regex/Unicode/RegexUnicode.cs", "fingerprint": "00E5B5" },
-    { "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "fingerprint": "E86A17" }
+    { "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "fingerprint": "992C24" }
   ],
   "units": [
     { "name": "Broiler.Regex.Ast.CharSet", "file": "Broiler.Regex/Ast/CharSet.cs", "exempt": false, "exemption": "None", "fingerprint": "BD9DC9" },
@@ -365,10 +365,9 @@
     { "name": "Broiler.Regex.Unicode.RegexUnicode._spaceSet", "file": "Broiler.Regex/Unicode/RegexUnicode.cs", "exempt": true, "exemption": "FieldDeclaringStorage", "fingerprint": "D0782F" },
     { "name": "Broiler.Regex.Unicode.RegexUnicode._stringProperties", "file": "Broiler.Regex/Unicode/RegexUnicode.cs", "exempt": true, "exemption": "FieldDeclaringStorage", "fingerprint": "A4A396" },
     { "name": "Broiler.Regex.Unicode.UnicodeCharSets", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "9B8753" },
-    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.BasicWordSet", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "09B039" },
-    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.BuildBasicWordSet()", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "1DC1FD" },
-    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.DigitSet", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "66FCA5" },
-    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.FullRange", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "B39463" },
+    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.BasicWordSet", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "699099" },
+    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.DigitSet", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "E59EC0" },
+    { "name": "Broiler.Regex.Unicode.UnicodeCharSets.FullRange", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "BD7EDC" },
     { "name": "Broiler.Regex.Unicode.UnicodeCharSets.IsComplementEscape(ClassEscape)", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "3FAC0B" },
     { "name": "Broiler.Regex.Unicode.UnicodeCharSets.PositiveEscape(ClassEscape)", "file": "Broiler.Regex/Unicode/UnicodeCharSets.cs", "exempt": false, "exemption": "None", "fingerprint": "F98DB8" }
   ]

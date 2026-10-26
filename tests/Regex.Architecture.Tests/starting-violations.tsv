@@ -24,9 +24,9 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.FullRange is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet FullRange =	Broiler.Regex/Unicode/UnicodeCharSets.cs:56
-SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.DigitSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet DigitSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:62
-SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.BasicWordSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet BasicWordSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:67
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.FullRange is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet FullRange =	Broiler.Regex/Unicode/UnicodeCharSets.cs:61
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.DigitSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet DigitSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:67
+SL2	Broiler.Regex: Broiler.Regex.Unicode.UnicodeCharSets.BasicWordSet is a static Broiler.Regex.Ast.CodePointSet, an object of the library's own class that can be changed after construction	CodePointSet BasicWordSet =	Broiler.Regex/Unicode/UnicodeCharSets.cs:73
 # RegexMatch.Empty is every no-match result of the process, and its NamedGroups is a new Dictionary behind
 # IReadOnlyDictionary, which a caller can cast and change for every later no-match. The repair: an empty read-only
 # dictionary, ReadOnlyDictionary<string, RegexGroup>.Empty or FrozenDictionary<string, RegexGroup>.Empty, so that the

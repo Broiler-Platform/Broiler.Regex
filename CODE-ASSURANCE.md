@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 13 |
 | Files not covered | 0 |
 | Files carrying an annotation | 13 |
-| Code units | 334 |
-| Relevant | 209 |
+| Code units | 333 |
+| Relevant | 208 |
 | Exempt by predicate | 125 |
-| Annotated | 209 of 209 (100%) |
-| Human reviewed | 0 of 209 (0%) |
-| Unverified | 209 |
+| Annotated | 208 of 208 (100%) |
+| Human reviewed | 0 of 208 (0%) |
+| Unverified | 208 |
 
 ## Review states
 
@@ -32,7 +32,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 209 |
+| HUMAN_PENDING | 208 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -43,7 +43,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 60 |
-| Low | 149 |
+| Low | 148 |
 | Medium | 0 |
 | High | 0 |
 | Unknown | 0 |
@@ -54,8 +54,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 17 |
-| Low | 47 |
-| Medium | 48 |
+| Low | 44 |
+| Medium | 50 |
 | High | 97 |
 | Critical | 0 |
 | *not annotated* | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 2.4 / 10 |
-| Units scored | 209 |
+| Units scored | 208 |
 
 ## High-security review areas
 
@@ -224,7 +224,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-334 of them, exempt and relevant alike - with the fingerprint of its declaration.
+333 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 209 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 208 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 13 |
-| Code units | 334 |
-| Relevant | 209 |
+| Code units | 333 |
+| Relevant | 208 |
 | Exempt | 125 |
-| Assessed | 209 of 209 (100%) |
-| Human reviewed | 0 of 209 (0%) |
-| Unverified | 209 |
+| Assessed | 208 of 208 (100%) |
+| Human reviewed | 0 of 208 (0%) |
+| Unverified | 208 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,7 +67,7 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 209 |
+| HUMAN_PENDING | 208 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -97,7 +97,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/RegexOverflowException.cs` | 2 | 2 | 0 | 2 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
 | `Broiler.Regex/Unicode/RegexUnicode.cs` | 30 | 20 | 10 | 20 | Low | High | 8/8 |
-| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 7 | 7 | 0 | 7 | Low | Medium | 3/0 |
+| `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 6 | 6 | 0 | 6 | Low | Medium | 3/0 |
 
 ## 7. Decisions Recorded
 
@@ -324,5 +324,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-209 of the 209 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+208 of the 208 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.
