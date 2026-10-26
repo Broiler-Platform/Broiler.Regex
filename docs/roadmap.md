@@ -346,7 +346,10 @@ for every read of the call, so that a look-behind from the start meets the high 
 orbit (four at most at UCD 17.0.0); `\b` and `\B` one plus the word class's weight twice; a back-reference its capture's
 length in code units on top, charged after its dispatch and before it compares; popping a barrier nothing (the
 instruction that pushed it paid). Check A-1's per-dispatch test gains inputs reaching every new instruction, and a
-test that its declared inputs reach every operation, each that reads the subject in both directions.
+test that its declared inputs reach every operation, each that reads the subject in both directions. The order inside a
+back-reference's dispatch, its length charged before its first character is compared, gives the same units, charges and
+answer either way, so the per-dispatch read cannot see it; a test reads it through the caller's tables, which a
+comparison under `i` reads through the case folding, forward and in a look-behind.
 
 **Duplicate named groups stay task 2.6's.** The parser still refuses them. A back-reference's operands name a run of the
 program's list of referenced groups (`A` its first entry, `B` its length), one group long today; task 2.6 makes the run

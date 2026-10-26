@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
+using Broiler.Unicode.Algorithms;
+using Broiler.Unicode.Tables;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
@@ -94,14 +97,17 @@ public class ChargingTests
 
     /// <summary>
     /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
-    /// nine and ten, captures reset at each iteration, a quantifier bounded above, a reset of a thousand groups, starts after the first position and
-    /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
-    /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
-    /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, back-references, under i and under
-    /// a step ceiling, whose length is charged after the dispatch and before the comparison, and look-arounds of the four
-    /// kinds, a look-behind's back-reference read right to left, one started inside a surrogate pair, a negative
-    /// look-behind whose body backtracks to a step ceiling, look-behinds whose bodies read every kind of character, class
-    /// and back-reference right to left, and v-mode classes holding strings, the empty one among them.
+    /// nine and ten, captures reset at each iteration, a quantifier bounded above, a reset of a thousand groups, starts
+    /// after the first position and inside a surrogate pair, an anchored start, two step ceilings, and searches that
+    /// fail at every position; and task 2.4b's instructions: characters and classes under i, with and without u, a
+    /// v-mode class folded when parsed, and the assertions ^ $ \b \B, with m and under iu, modifier groups nested and
+    /// undone, back-references, under i and under a step ceiling, whose length is charged after the dispatch and before
+    /// the comparison (an order the read at each dispatch cannot see, which
+    /// <see cref="A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared"/> reads), and
+    /// look-arounds of the four kinds, a look-behind's back-reference read right to left, one started inside a
+    /// surrogate pair, a negative look-behind whose body backtracks to a step ceiling, look-behinds whose bodies read
+    /// every kind of character, class and back-reference right to left, and v-mode classes holding strings, the empty
+    /// one among them.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -177,6 +183,62 @@ public class ChargingTests
         Assert.True(meter.Charged >= units && meter.Charged - units < RegexMachine.Block, meter.Charged + " charged for " + units + " units");
         Assert.All(meter.Charges, static c => Assert.True(c > 0 && c % RegexMachine.Block == 0, "a charge of " + c));
         Assert.True(units <= RegexMachine.Block || meter.Charges.Count > 1, units + " units were charged in one block");
+    }
+
+    /// <summary>The caller's tables, reporting each read to <see cref="Read"/> while it is set.</summary>
+    private sealed class WatchedTables(IUnicodeTables inner) : IUnicodeTables
+    {
+        internal Action? Read { get; set; }
+
+        public string UnicodeVersion => inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table)
+        {
+            Read?.Invoke();
+            return inner.Table(table);
+        }
+    }
+
+    [Theory]
+    [InlineData("^(.{600})\\1$", "is", false)]
+    [InlineData("^(.{600})\\1$", "ius", false)]
+    [InlineData("(?<=^\\1(.{600}))", "is", true)]
+    public void A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(string pattern, string flags, bool fromTheEnd)
+    {
+        // Decision D8 inside one dispatch: a back-reference charges its capture's length, then compares. Check A-1's
+        // read at each dispatch cannot see that order, as the units, the charges and the answer are the same either way;
+        // the caller's tables can, since a comparison under i reads them through the case folding. Only the reference
+        // folds here (the dot under s reads no table, nor do the assertions and the group), so the first read of the
+        // tables during the call is the reference's first comparison. By then the observer has seen the length charged,
+        // one step of 600 units, more than a block, and the meter holds every unit through it.
+        const int length = 600;
+        var tables = new WatchedTables(UnicodeTables.Instance);
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), tables, BroilerRegex.MaximumNestingLimit, out var program));
+        var subject = new string('a', length) + new string('A', length);
+        var meter = new RecordingMeter();
+        var through = new List<ulong>();
+        (ulong Charged, int Observed)? firstRead = null;
+        tables.Read = () => firstRead ??= (meter.Charged, through.Count);
+
+        var slots = new int[program!.SlotCount];
+        var machine = new RegexMachine(program, subject, meter.Charge, MachineTests.Ample) { DispatchObserver = through.Add };
+        RegexStatus status;
+        try
+        {
+            status = machine.Run(fromTheEnd ? subject.Length : 0, anchored: true, slots);
+        }
+        finally
+        {
+            machine.Release();
+            tables.Read = null;
+        }
+
+        Assert.Equal(RegexStatus.Match, status);
+        Assert.NotNull(firstRead);
+        var (charged, observed) = firstRead.Value;
+        Assert.True(observed >= 2, "the tables were read before the reference was dispatched");
+        Assert.Equal((ulong)length, through[observed - 1] - through[observed - 2]);
+        Assert.True(charged >= through[observed - 1], charged + " charged when the reference's first character was compared, through unit " + through[observed - 1]);
     }
 
     [Fact]
