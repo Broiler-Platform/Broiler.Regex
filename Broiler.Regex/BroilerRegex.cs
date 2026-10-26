@@ -69,8 +69,13 @@ public sealed class BroilerRegex
     /// matcher's continuations), 740 under the JIT in Debug (a <c>v</c>-mode class, in the parser) and 2,833 under
     /// Native AOT (a <c>v</c>-mode class). This maximum is the largest power of two at most half the first, and the
     /// limit both engines pass (decision D7): a margin of 2.0 under the JIT in Release, 1.4 in Debug and 5.5 under
-    /// Native AOT. Compilation walks the tree on the heap, so no shape is deeper there. Frames are larger on win-x64,
-    /// which was not measured here.
+    /// Native AOT. Compilation walks the tree on the heap and limits no shape. Frames are larger on win-x64, which was
+    /// not measured here.
+    /// </para>
+    /// <para>
+    /// <b>Proven where it is used.</b> A pattern at this maximum compiles and matches on a 1 MiB thread under the JIT
+    /// (the test <c>NestingMaximumTests</c> starts its own thread) and in the Native AOT probe, whose nesting cases run
+    /// on a thread of that stack; one level past it is refused with the nesting status, never a stack overflow.
     /// </para>
     /// </remarks>
     // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=953223

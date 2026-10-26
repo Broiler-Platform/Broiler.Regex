@@ -71,7 +71,8 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   `Pattern` grammar (§22.2.1): disjunction, quantifiers, character classes,
   groups (capturing / non-capturing / named / inline-modifier), assertions
   (anchors, word boundaries, look-around), and escapes (including `\u{…}` and
-  back-references). Produces a `RegexNode` tree.
+  back-references). Produces a `RegexNode` tree, descending only under the
+  caller's nesting limit (`Parsing/RegexNesting.cs`).
 * **`Ast/RegexNode.cs`** — the node hierarchy + `CharSet` (character-class model).
 * **`Matching/Matcher.cs`** — compiles the AST to the spec's `Matcher`
   abstraction (`MatchState × Continuation → MatchState?`) and runs it. This is
@@ -84,7 +85,7 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 * **`BroilerRegex.cs`** — the public façade (`Match` / `IsMatch`), mirroring the
   shape `JSRegExp` needs (`Success`, `Index`, `Length`, indexed + named groups).
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
-  difference and complement. Every class member kind reduces to one of these, so
+  difference and complement, immutable once built, so a set is shared between threads. Every class member kind reduces to one of these, so
   `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand.
 * **`Unicode/RegexUnicode.cs`** — every Unicode answer a compilation reads, through the
   provider over the caller's `IUnicodeTables`: `\p{…}` resolution by the exact names
@@ -125,11 +126,26 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   never overflows: a single-code-point body — a literal, `.`, or a character class — takes a
   linear fast path, and any other body (a capturing group, an alternation of sequences) runs
   through an explicit-stack `RepeatMatcher` that keeps the iteration dimension off the native
-  call stack. The remaining native recursion is bounded by the pattern's nesting depth — the
-  same bound the recursive-descent parser already imposed to accept the pattern — never by
-  the subject length. A `RegexOverflowException` backstop remains for a pathologically nested
-  pattern (the JavaScript layer catches it and falls back to .NET), but the subject length no
-  longer reaches it. The general driver enumerates each level's body matches by re-running
+  call stack. The remaining native recursion is bounded by the pattern's shape, its nesting
+  depth and the length of its sequences, never by the subject length.
+- Nesting is bounded by the caller's limit, not by the stack (requirement R4). The parser
+  checks the limit before it enters each group and, under `v`, each class, and the closure
+  compiler, which walks the tree on the heap, checks it again; a pattern nested deeper is
+  refused before the level past the limit is read. `BroilerRegex.Compile` takes the caller's
+  limit, up to `BroilerRegex.MaximumNestingLimit` (512, the limit both engines pass), and
+  answers `RegexStatus.LimitExceeded` with `RegexLimit.Nesting`; the constructors and
+  `RegexParser.Parse` parse under the maximum and refuse a deeper pattern with a
+  `RegexSyntaxException`. The maximum was measured on a 1 MiB stack on linux-x64, where a
+  pattern at it compiles and matches under the JIT and Native AOT (the measurement and its
+  margins are in the constant's documentation); win-x64 was not measured. The parser still
+  recurses a few frames per level, and the matcher's continuations recurse per level and per
+  term of a sequence until the new matcher of SJL-11.2 task 2.4a. So a long flat sequence of
+  terms that are not single code points still exhausts a small stack and ends the process, as
+  it did in `0.1.0-preview.4`: 5,000 capturing groups in a row do on a 1 MiB thread, where
+  2,000 match. The `RegexOverflowException` backstop, which the JavaScript layer catches to
+  fall back to .NET, is checked only where a general quantifier's driver starts, so it does
+  not reach that case.
+- The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path
   avoids it for the common case.

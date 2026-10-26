@@ -48,10 +48,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   and of the compiler. Depth is counted as Broiler.VM's matcher counts it: the pattern is depth 1, each group of any
   kind adds 1, and under `v` each class adds 1. `BroilerRegex.MaximumNestingLimit` (512) is the largest limit a
   caller may pass, chosen from a measurement of the stack each kind of nesting costs on a 1 MiB thread that its
-  documentation records; a limit below 1 or above it is the caller's broken precondition, an
-  `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what nesting needs; the new
-  matcher (task 2.4a) and the syntax status (task 2.8) add members to them. A syntax error from `Compile` is still a
-  `RegexSyntaxException` until task 2.8.
+  documentation records, and proven there: a pattern at it compiles and matches on a 1 MiB thread under the JIT
+  (`NestingMaximumTests`) and in the Native AOT probe, which now runs its population on a thread of that stack, and
+  one level past it is refused with the nesting status. A limit below 1 or above it is the caller's broken
+  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
+  nesting needs; the new matcher (task 2.4a) and the syntax status (task 2.8) add members to them. A syntax error from
+  `Compile` is still a `RegexSyntaxException` until task 2.8.
 
 ### Changed
 
