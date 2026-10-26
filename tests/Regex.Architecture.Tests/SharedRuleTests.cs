@@ -240,6 +240,26 @@ public class SharedRuleTests
             SharedRules.SL2DeclaredTypeGap(Assemblies[Library]));
     }
 
+    /// <summary>
+    /// Every <c>CodePointSet</c> is immutable after construction (convention 10, decision D31), read as SL2 reads the
+    /// objects its static fields hold: no instance field that is not readonly, none of a mutable collection or array
+    /// type, and none holding a class of the library's that can change, in the class or a base class it declares.
+    /// SL2 reaches a set only through a static field that holds one; this reads the class itself, so the check holds
+    /// for the sets a compiled pattern keeps per instance, which the register's third stated limit leaves to check A-11,
+    /// whatever the library's static fields hold. <c>FirstUseConcurrencyTests</c> reads the static sets' ranges.
+    /// </summary>
+    [Fact]
+    public void SL2_A_code_point_set_has_no_instance_field_that_can_change_after_construction()
+    {
+        const string Set = "Broiler.Regex.Ast.CodePointSet";
+        var library = Assemblies[Library];
+        Assert.Empty(SharedRules.MutableInstanceState(library, Set));
+
+        // Not vacuous: the class is the library's and the reading saw its field, the ranges.
+        Assert.Contains(Set, library.Classes);
+        Assert.Contains(library.InstanceFields, static f => f.Type == Set && f.Name == "_ranges" && f.IsReadOnly);
+    }
+
     // ---------------------------------------------------------------------------------------------
 
     [Fact]

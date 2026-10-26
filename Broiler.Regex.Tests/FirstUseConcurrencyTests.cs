@@ -51,24 +51,21 @@ public class FirstUseConcurrencyTests
     }
 
     /// <summary>
-    /// The cause, read directly: a <c>CodePointSet</c> has no field that a read could write, as every instance field
-    /// is readonly and none holds a collection whose contents can change, and every static set of the library leaves
-    /// its type's initialization normalized, so no read of a shared set writes to it (convention 10, decision D31).
+    /// The cause, read directly: every static set of the library leaves its type's initialization normalized, so no
+    /// read of a shared set has anything to write (convention 10, decision D31). The ranges are read from the set's
+    /// field, not through <c>Ranges</c>, so a set that normalized itself on a read could not hide what type
+    /// initialization left. That a <c>CodePointSet</c> has no instance field that can change at all is the
+    /// architecture tests' check, which reads the class as SL2 reads the objects static fields hold
+    /// (<c>SL2_A_code_point_set_has_no_instance_field_that_can_change_after_construction</c>).
     /// </summary>
     [Fact]
-    public void Code_point_sets_have_no_field_a_read_writes_and_every_static_one_is_normalized()
+    public void Every_static_code_point_set_leaves_type_initialization_normalized()
     {
         var problems = WithFreshLibrary(static library =>
         {
             var setType = library.GetType("Broiler.Regex.Ast.CodePointSet", throwOnError: true)!;
+            var rangesField = setType.GetField("_ranges", BindingFlags.Instance | BindingFlags.NonPublic)!;
             var found = new List<string>();
-            foreach (var field in setType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                if (!field.IsInitOnly)
-                    found.Add("CodePointSet." + field.Name + " is not readonly");
-                if (field.FieldType.IsArray || field.FieldType.Namespace == "System.Collections.Generic")
-                    found.Add("CodePointSet." + field.Name + " is a " + field.FieldType.Name + ", whose contents can change");
-            }
 
             var fields = library.GetTypes()
                 .SelectMany(static type => type.GetFields(
@@ -77,13 +74,14 @@ public class FirstUseConcurrencyTests
                 .ToList();
             Assert.NotEmpty(fields);
 
-            // Read only after the check above: on a set that normalizes on its first read, this read would hide what
-            // type initialization left.
-            var ranges = setType.GetProperty("Ranges")!;
             foreach (var field in fields)
             {
                 RuntimeHelpers.RunClassConstructor(field.DeclaringType!.TypeHandle);
-                var list = (IReadOnlyList<(int Lo, int Hi)>)ranges.GetValue(field.GetValue(null))!;
+                var list = ((System.Collections.IEnumerable)rangesField.GetValue(field.GetValue(null))!)
+                    .Cast<object>()
+                    .Select(static range => ((int Lo, int Hi))range)
+                    .ToList();
+                Assert.NotEmpty(list);
                 for (var i = 0; i < list.Count; i++)
                 {
                     if (list[i].Lo > list[i].Hi || (i > 0 && (long)list[i].Lo <= (long)list[i - 1].Hi + 1))
