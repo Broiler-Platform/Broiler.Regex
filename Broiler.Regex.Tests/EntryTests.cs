@@ -89,6 +89,71 @@ public class EntryTests
         Assert.Equal([0L, 0L, 0L, 0L], measured);
     }
 
+    /// <summary>
+    /// A pattern of <paramref name="groups"/> capture groups in one of task 2.4b's shapes, and a subject it matches:
+    /// numbered references, under i, named ones under u, the groups in a look-ahead or a look-behind, a negative
+    /// look-ahead before them, and classes under iu with optional word boundaries.
+    /// </summary>
+    private static (RegexProgram Program, string Subject) Shaped(string shape, int groups)
+    {
+        var body = string.Concat(Enumerable.Repeat("(?:(a)|b)", groups));
+        var references = string.Concat(Enumerable.Range(1, groups).Select(static g => "\\" + g));
+        var subject = new string('a', groups);
+        return shape switch
+        {
+            "references" => (TestProgram.Compile(body + references), subject + subject),
+            "references under i" => (TestProgram.Compile(body + references, "i"), subject + subject.ToUpperInvariant()),
+            "named references under u" => (TestProgram.Compile(
+                string.Concat(Enumerable.Range(1, groups).Select(static g => "(?:(?<g" + g + ">a)|b)"))
+                + string.Concat(Enumerable.Range(1, groups).Select(static g => "\\k<g" + g + ">")), "u"), subject + subject),
+            "look-ahead" => (TestProgram.Compile("(?=" + body + ")" + references), subject),
+            "look-behind" => (TestProgram.Compile("(?<=" + body + references + ")$"), subject + subject),
+            "negative look-ahead" => (TestProgram.Compile("(?!" + body + "c)" + body), subject),
+            "classes under iu and word edges" => (TestProgram.Compile(string.Concat(Enumerable.Repeat("(?:([a-c])|b)(?:\\b)?", groups)) + references, "iu"), subject + subject.ToUpperInvariant()),
+            _ => throw new ArgumentOutOfRangeException(nameof(shape)),
+        };
+    }
+
+    [Theory]
+    [InlineData("references")]
+    [InlineData("references under i")]
+    [InlineData("named references under u")]
+    [InlineData("look-ahead")]
+    [InlineData("look-behind")]
+    [InlineData("negative look-ahead")]
+    [InlineData("classes under iu and word edges")]
+    public void A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(string shape)
+    {
+        // Check A-8 for back-references, look-arounds and the i flag: the barriers' registers, the referenced groups'
+        // list and the case orbit's room come from the program and the pool like the rest, so after the pool holds them
+        // a call allocates nothing, at 1 group or at 1,000. The least of five calls is read: a collection between two
+        // calls may trim the shared pool, and the call after it rents anew what the one before gave back, which a call
+        // that allocated of itself would do at every call.
+        var measured = new long[4];
+        var counts = new[] { 1, 10, 100, 1_000 };
+        ProgramCompilerTests.OnASmallStack(() =>
+        {
+            for (var i = 0; i < counts.Length; i++)
+            {
+                var (program, subject) = Shaped(shape, counts[i]);
+                var slots = new int[program.SlotCount];
+                for (var warm = 0; warm < 3; warm++)
+                    Assert.Equal(RegexStatus.Match, program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _));
+
+                measured[i] = long.MaxValue;
+                for (var call = 0; call < 5; call++)
+                {
+                    var before = GC.GetAllocatedBytesForCurrentThread();
+                    program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _);
+                    measured[i] = Math.Min(measured[i], GC.GetAllocatedBytesForCurrentThread() - before);
+                }
+
+                Assert.True(slots[^2] >= 0 && slots[^1] == slots[^2] + 1, shape + ": the last of " + counts[i] + " groups did not capture one character");
+            }
+        });
+        Assert.Equal([0L, 0L, 0L, 0L], measured);
+    }
+
     [Fact]
     public void A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back()
     {

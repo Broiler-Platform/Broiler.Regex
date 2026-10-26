@@ -363,17 +363,21 @@ the groups that share the name, and the instruction compares the first whose cap
 test262's `built-ins/RegExp/lookBehind` cases, the specification's look-ahead notes, the issue #923 rows 3, 4, 6, 7 and
 8 with their backward forms, a negative look-around's captures reset, a back-reference in a look-behind to a group
 captured later in source order, modifiers nested and undone, `\b` under `iu` and `iv`, the non-`u` Canonicalize's guard
-and `v` strings longest first. **The old suite on the new backend**: `TestRegex` is the switch, and
-`NewBackendSuiteTests` runs every case of every behaviour test again on `BroilerRegex`'s internal route through the new
-backend (257 methods, 1,424 cases at this record, 716 of them building an instance on the route), the 17 cases xunit
-skips until task 2.4c among them; every case passes. **The differential over the whole grammar**: the suite population
-(13,806 pattern and flag pairs, 1,257,491 cases) and a seeded population drawing every construct under thirteen flag
-strings (14,028 pairs, 242,607 cases); no disagreement is unexplained: 203 suite cases and 57 generated ones are defect
-D2's, each confirmed by the old backend's answer to the pattern with every class of D2's shape written `(?:C)?`, C the
-class without the empty string, which equals the new backend's, and 8 suite cases M7's, by its shape; the counts are
-pinned for each population, as the stops are. **The corpus**: K05, G03, L01 to L05, F01, F02, O02, O03, O16 and O17
-answer their declared statuses in child processes and in the probe; O05 and O06 wait for task 2.4c, O07 and O08 for task
-2.6, the V rows for task 2.5 and the validate rows for task 2.8.
+and `v` strings longest first. **Ceilings and A-8**: every step, frame and trail ceiling met through look-arounds of the
+four kinds and through back-references answers that ceiling or the full answer, a negative look-around whose body
+reaches one answering the ceiling and not a match (`CeilingTests`), and check A-8 holds for back-references, named ones
+under `u`, references under `i`, look-arounds and classes under `iu` with word boundaries, at 1 to 1,000 groups
+(`EntryTests`). **The old suite on the new backend**: `TestRegex` is the switch, and `NewBackendSuiteTests` runs every
+case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (257 methods, 1,424 cases
+at this record, 716 of them building an instance on the route), the 17 cases xunit skips until task 2.4c among them;
+every case passes. **The differential over the whole grammar**: the suite population (13,806 pattern and flag pairs,
+1,257,491 cases) and a seeded population drawing every construct under thirteen flag strings (14,028 pairs, 242,607
+cases); no disagreement is unexplained: 203 suite cases and 57 generated ones are defect D2's, each confirmed by the old
+backend's answer to the pattern with every class of D2's shape written `(?:C)?`, C the class without the empty string,
+which equals the new backend's, and 8 suite cases M7's, by its shape; the counts are pinned for each population, as the
+stops are. **The corpus**: K05, G03, L01 to L05, F01, F02, O02, O03, O16 and O17 answer their declared statuses in child
+processes and in the probe; O05 and O06 wait for task 2.4c, O07 and O08 for task 2.6, the V rows for task 2.5 and the
+validate rows for task 2.8.
 
 **The old backend's defects the comparison found**, each pinned to the specification's answer in
 `OldBackendDefectTests` and shown as the old backend gives it: **D2**, a `v`-mode class holding the empty string tries it
