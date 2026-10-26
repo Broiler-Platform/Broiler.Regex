@@ -133,7 +133,7 @@ internal static class ProgramCompiler
     /// <param name="flags">The flags the tree was parsed under.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
     /// <param name="program">The program, or null when the answer is not <see cref="ProgramCompilation.Compiled"/>.</param>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=DE1EDA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=5DAD10
     // Broiler-Falsified-If: a tree holding an AnchorNode, a BackreferenceNode, a LookaroundNode, a ModifierGroupNode or a class with strings, or one parsed under i, is answered with a program
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(RegexNode tree, int captureCount, RegexFlags flags, RegexNesting nesting, out RegexProgram? program)
@@ -148,7 +148,7 @@ internal static class ProgramCompiler
             if (groups is null)
                 return ProgramCompilation.NotYetSupported;
 
-            program = new Emitter(captureCount, flags, groups).Emit(tree);
+            program = new ProgramWriter(captureCount, flags, groups).Emit(tree);
             return ProgramCompilation.Compiled;
         }
         catch (NestingLimitExceeded)
@@ -297,10 +297,10 @@ internal static class ProgramCompiler
     private readonly record struct Step(Work Work, RegexNode? Node, int Index = 0, Alternation? Alternation = null, Iteration? Iteration = null);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=5D4893
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=57A50A
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
-    private sealed class Emitter(int captureCount, RegexFlags flags, Dictionary<QuantifierNode, (int First, int Last)> groups)
+    private sealed class ProgramWriter(int captureCount, RegexFlags flags, Dictionary<QuantifierNode, (int First, int Last)> groups)
     {
         private readonly List<RegexInstruction> _code = [];
         private readonly List<int[]> _classes = [];

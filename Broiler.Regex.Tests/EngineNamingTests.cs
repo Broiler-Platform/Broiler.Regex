@@ -10,17 +10,20 @@ namespace Broiler.Regex.Tests;
 /// <summary>
 /// Decision D5 of Broiler.VM's JSD-0081 makes Broiler.VM's matcher the specification of the new backend's design and
 /// units, and ports none of its code: the backend is written in this library's own vocabulary, so it declares none of the
-/// names of that matcher's private members that a review of task 2.4a found copied, and nothing of this library is named
-/// as Broiler.VM's ceilings are unless it holds their values.
+/// names of that matcher's private members that task 2.4a's review and its verification found declared here, and nothing
+/// of this library is named as Broiler.VM's ceilings are unless it holds their values.
 /// </summary>
 public class EngineNamingTests
 {
-    /// <summary>The private names of Broiler.VM's <c>JsRegExpMatcher</c> the review found declared in the new backend.</summary>
+    /// <summary>
+    /// The private names of Broiler.VM's <c>JsRegExpMatcher</c> the review found declared in the new backend, and the two its
+    /// verification found after the fixes (<c>GiveBack</c>, <c>Emitter</c>).
+    /// </summary>
     private static readonly string[] Copied =
     [
         "Char", "Split", "Jump", "JumpIfAtLeast", "JumpIfBelow", "EmptyCheck", "Accept",
         "PushFrame", "Unwind", "Attempt", "Read", "Write", "Advance", "IsLineTerminator",
-        "frameTop", "trailTop", "MaximumFrames", "MaximumTrail",
+        "frameTop", "trailTop", "MaximumFrames", "MaximumTrail", "GiveBack", "Emitter",
     ];
 
     /// <summary>Every member the new backend's namespace and its program compiler declare, by name, compiler-generated ones left out.</summary>

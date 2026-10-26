@@ -151,21 +151,21 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's body is entered without checking the caller's nesting limit, or a pattern holding an assertion, a back-reference, a look-around, a modifier, a string class or the i flag is given a program
 - `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `90F711`, PENDING
   - Falsified if: a pattern of 512 nested groups under a limit of 512 answers Compiled, or one of 511 answers NestingLimitExceeded
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, RegexFlags, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `DE1EDA`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, RegexFlags, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5DAD10`, PENDING
   - Falsified if: a tree holding an AnchorNode, a BackreferenceNode, a LookaroundNode, a ModifierGroupNode or a class with strings, or one parsed under i, is answered with a program
 - `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `9D2059`, PENDING
   - Falsified if: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5D4893`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `57A50A`, PENDING
   - Falsified if: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `2A88DE`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `2A88DE`, PENDING
   - Falsified if: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5AD0F1`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5AD0F1`, PENDING
   - Falsified if: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `624325`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `624325`, PENDING
   - Falsified if: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `D63006`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `D63006`, PENDING
   - Falsified if: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.AddClass(CharSet)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `CEBA51`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `CEBA51`, PENDING
   - Falsified if: the class [^a-c] is given the ranges a to c rather than their complement, or a class's cost is not one plus its weight
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=ECMA-262 s22.2.2, `7D0010`, PENDING
   - Falsified if: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position

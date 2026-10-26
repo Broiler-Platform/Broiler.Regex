@@ -152,14 +152,14 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=4E288F
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=A5BCEE
     // Broiler-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
     // Broiler-Human:        PENDING
     internal void Release()
     {
         ArrayPool<int>.Shared.Return(_registers);
-        GiveBack(_frames);
-        GiveBack(_trail);
+        ReturnToPool(_frames);
+        ReturnToPool(_trail);
         _registers = _frames = _trail = [];
     }
 
@@ -490,22 +490,22 @@ internal ref struct RegexMachine
     }
 
     /// <summary>An array of at least <paramref name="length"/> holding the first <paramref name="used"/> integers of <paramref name="array"/>, which is given back.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=0810E8
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=7F7A40
     // Broiler-Falsified-If: a frame or a trail cell held before the growth reads back differently after it
     // Broiler-Human:        PENDING
     private static int[] Grow(int[] array, int used, int length)
     {
         var grown = length <= PooledLength ? ArrayPool<int>.Shared.Rent(length) : GC.AllocateUninitializedArray<int>(length);
         array.AsSpan(0, used).CopyTo(grown);
-        GiveBack(array);
+        ReturnToPool(array);
         return grown;
     }
 
     /// <summary>Gives a frame or trail array back to the shared pool, unless it is longer than <see cref="PooledLength"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=50B28D
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=C6B65F
     // Broiler-Falsified-If: an array longer than PooledLength is returned to the shared pool, or one of the pool's own is not
     // Broiler-Human:        PENDING
-    private static void GiveBack(int[] array)
+    private static void ReturnToPool(int[] array)
     {
         if (array.Length <= PooledLength)
             ArrayPool<int>.Shared.Return(array);
