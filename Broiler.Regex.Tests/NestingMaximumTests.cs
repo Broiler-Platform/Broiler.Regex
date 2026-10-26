@@ -61,6 +61,9 @@ public class NestingMaximumTests
             "v class" => (Repeat("[", n) + "a" + Repeat("]", n), RegexFlags.UnicodeSets, "a"),
             "vi class" => (Repeat("[", n) + "a" + Repeat("]", n), RegexFlags.UnicodeSets | RegexFlags.IgnoreCase, "A"),
             "v complement" => (Repeat("[^", n) + "a" + Repeat("]", n), RegexFlags.UnicodeSets, n % 2 == 0 ? "a" : "b"),
+            // Under vi, \P{Lu} is the characters with no simple case folding of their own less the folded Lu, so it
+            // holds 1 and not A (which folds to a); [^\P{Lu}] is the folded Lu, which A matches. Odd levels match A.
+            "vi complemented property" => (Repeat("[^", n) + @"\P{Lu}" + Repeat("]", n), RegexFlags.UnicodeSets | RegexFlags.IgnoreCase, n % 2 == 1 ? "A" : "1"),
             "v intersection" => (Repeat("[a&&", n) + "a" + Repeat("]", n), RegexFlags.UnicodeSets, "a"),
             // [a--b] is {a}, [a--[a--b]] is empty, and so on: an odd number of levels, as at the maximum, matches a.
             "v subtraction" => (Repeat("[a--", n) + "b" + Repeat("]", n), RegexFlags.UnicodeSets, "a"),
@@ -119,10 +122,11 @@ public class NestingMaximumTests
     public static TheoryData<string> MatchedShapes => new()
     {
         "capturing", "unicode capturing", "non-capturing", "named", "look-ahead", "negative look-ahead", "look-behind",
-        "capturing look-behind", "modifier", "v class", "vi class", "v complement", "v intersection", "v subtraction",
-        "v union", "repeated capturing group", "repeated non-capturing group", "optional capturing group", "alternation",
-        "sequence", "alternation of sequences", "modifier sequence", "modifier alternation of sequences",
-        "look-ahead sequence", "look-behind alternation of sequences", "groups over v classes", "modifiers over v classes",
+        "capturing look-behind", "modifier", "v class", "vi class", "v complement", "vi complemented property",
+        "v intersection", "v subtraction", "v union", "repeated capturing group", "repeated non-capturing group",
+        "optional capturing group", "alternation", "sequence", "alternation of sequences", "modifier sequence",
+        "modifier alternation of sequences", "look-ahead sequence", "look-behind alternation of sequences",
+        "groups over v classes", "modifiers over v classes",
     };
 
     /// <summary>
