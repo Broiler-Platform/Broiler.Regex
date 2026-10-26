@@ -24,10 +24,18 @@ namespace Broiler.Regex;
 /// <remarks>
 /// <para>
 /// <b>What is here today.</b> SJL-11.2 builds the status contract step by step, and this enum holds what its steps
-/// have needed so far: <see cref="Ok"/> and <see cref="LimitExceeded"/>, which task 2.3 introduced for the caller's
+/// have needed so far: <see cref="Success"/> and <see cref="LimitExceeded"/>, which task 2.3 introduced for the caller's
 /// nesting limit (<see cref="BroilerRegex.Compile"/>). The later steps add members and keep these: the new matcher's
 /// <c>Match</c> and <c>NoMatch</c> (task 2.4a), and the syntax status with its code, message identifier and position
-/// (task 2.8). A syntax error is still a <see cref="RegexSyntaxException"/> until then.
+/// (the validate entry of task 2.8). A syntax error from <see cref="BroilerRegex.Compile"/> is still a
+/// <see cref="RegexSyntaxException"/>.
+/// </para>
+/// <para>
+/// <b>A member D9 does not list.</b> Decision D9's statuses are a match, no match, a limit exceeded naming its
+/// dimension, and a syntax status: the answers of a match and of a validation. A compilation that completes is none of
+/// them, so <see cref="Success"/> is added for it, named and numbered as the Unicode owner's <c>UnicodeStatus.Success</c>
+/// is, as <see cref="LimitExceeded"/> is. Compiling answers <see cref="Success"/> or <see cref="LimitExceeded"/>; a match
+/// will answer <c>Match</c>, <c>NoMatch</c> or <see cref="LimitExceeded"/>, and never <see cref="Success"/>.
 /// </para>
 /// <para>
 /// <b>Not an exception.</b> A status is how the library reports a failure its contract admits. It throws only when
@@ -35,12 +43,12 @@ namespace Broiler.Regex;
 /// the caller's that throws propagates its own exception (convention 3).
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=0C5E7C
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=5AD0EA
 // Broiler-Human:        PENDING
 public enum RegexStatus
 {
-    /// <summary>The operation completed, and its result is set.</summary>
-    Ok = 0,
+    /// <summary>The operation completed, and its result is set: a compilation's compiled pattern.</summary>
+    Success = 0,
 
     /// <summary>
     /// A limit of the caller's policy was reached before the operation completed, and no result is set. The limit is

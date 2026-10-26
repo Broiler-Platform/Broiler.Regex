@@ -193,13 +193,13 @@ public sealed class BroilerRegex
     /// non-capturing, named, look-around, modifier) adds 1; under <c>v</c> each class adds 1, the outermost included.
     /// With 512, the limit both engines pass (decision D7), 511 nested groups compile and 512 are refused.
     /// </param>
-    /// <param name="regex">The compiled pattern, or null when the status is not <see cref="RegexStatus.Ok"/>.</param>
+    /// <param name="regex">The compiled pattern, or null when the status is not <see cref="RegexStatus.Success"/>.</param>
     /// <param name="limit">
     /// The limit reached when the status is <see cref="RegexStatus.LimitExceeded"/>: <see cref="RegexLimit.Nesting"/>;
     /// otherwise <see cref="RegexLimit.None"/>.
     /// </param>
     /// <returns>
-    /// <see cref="RegexStatus.Ok"/>, or <see cref="RegexStatus.LimitExceeded"/> when the pattern nests deeper than
+    /// <see cref="RegexStatus.Success"/>, or <see cref="RegexStatus.LimitExceeded"/> when the pattern nests deeper than
     /// <paramref name="nestingLimit"/>. The limit is checked before each descent of the parser and of the compiler, in
     /// the order the parser reads the pattern, so a syntax error the parser meets first is reported first, and a level
     /// past the limit is refused before anything after it is read.
@@ -208,8 +208,8 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=43CEE0
-    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Ok, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=C53672
+    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
         out BroilerRegex? regex, out RegexLimit limit)
@@ -223,7 +223,7 @@ public sealed class BroilerRegex
         {
             regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false);
             limit = RegexLimit.None;
-            return RegexStatus.Ok;
+            return RegexStatus.Success;
         }
         catch (NestingLimitExceeded)
         {

@@ -241,7 +241,7 @@ internal static class ProbePopulation
                 if (probeCase.NestingLimit is { } limit)
                 {
                     var status = BroilerRegex.Compile(probeCase.Pattern, RegexFlagsParser.Parse(probeCase.Flags), UnicodeTables.Instance, limit, out var regex, out var exceeded);
-                    compiled[i] = status == RegexStatus.Ok
+                    compiled[i] = status == RegexStatus.Success
                         ? new CompiledCase(probeCase, regex, null)
                         : new CompiledCase(probeCase, null, exceeded == RegexLimit.Nesting ? "limit:nesting" : "limit:another");
                     continue;

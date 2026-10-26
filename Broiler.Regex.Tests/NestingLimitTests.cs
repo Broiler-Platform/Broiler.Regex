@@ -54,7 +54,7 @@ public class NestingLimitTests
         foreach (var limit in (int[])[1, 2, 8, 512])
         {
             var (atLimit, flags, subject) = Nested(kind, limit - 1);
-            Assert.Equal(RegexStatus.Ok, Compile(atLimit, flags, limit, out var regex, out var exceeded));
+            Assert.Equal(RegexStatus.Success, Compile(atLimit, flags, limit, out var regex, out var exceeded));
             Assert.Equal(RegexLimit.None, exceeded);
             Assert.True(regex!.IsMatch(subject));
 
@@ -69,16 +69,16 @@ public class NestingLimitTests
     public void A_class_adds_a_level_under_v_only()
     {
         // Under v the outermost class is depth 2 and each nested class one more.
-        Assert.Equal(RegexStatus.Ok, Compile("[a]", RegexFlags.UnicodeSets, 2, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("[a]", RegexFlags.UnicodeSets, 2, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile("[a]", RegexFlags.UnicodeSets, 1, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile("[[a]]", RegexFlags.UnicodeSets, 2, out _, out _));
-        Assert.Equal(RegexStatus.Ok, Compile("[a&&[a--[b]]]", RegexFlags.UnicodeSets, 4, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("[a&&[a--[b]]]", RegexFlags.UnicodeSets, 4, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile("[a&&[a--[b]]]", RegexFlags.UnicodeSets, 3, out _, out _));
-        Assert.Equal(RegexStatus.Ok, Compile("[^[^[^a]]]", RegexFlags.UnicodeSets, 4, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("[^[^[^a]]]", RegexFlags.UnicodeSets, 4, out _, out _));
 
         // Without v a class does not nest, and adds nothing.
-        Assert.Equal(RegexStatus.Ok, Compile("[a]", RegexFlags.Unicode, 1, out _, out _));
-        Assert.Equal(RegexStatus.Ok, Compile("[[a]]", RegexFlags.None, 1, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("[a]", RegexFlags.Unicode, 1, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("[[a]]", RegexFlags.None, 1, out _, out _));
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class NestingLimitTests
     {
         // The pattern, a capturing group, a non-capturing group, a look-ahead, a modifier and a v class: depth 6.
         const string pattern = "((?:(?=(?i:[a]))))";
-        Assert.Equal(RegexStatus.Ok, Compile(pattern, RegexFlags.UnicodeSets, 6, out var regex, out _));
+        Assert.Equal(RegexStatus.Success, Compile(pattern, RegexFlags.UnicodeSets, 6, out var regex, out _));
         Assert.True(regex!.IsMatch("A"));
         Assert.Equal(RegexStatus.LimitExceeded, Compile(pattern, RegexFlags.UnicodeSets, 5, out _, out var exceeded));
         Assert.Equal(RegexLimit.Nesting, exceeded);
@@ -95,9 +95,9 @@ public class NestingLimitTests
     [Fact]
     public void Quantifiers_sequences_and_alternatives_add_no_level()
     {
-        Assert.Equal(RegexStatus.Ok, Compile("(?:a|b)*(?:c)+d|e{2}|(?=f)*", RegexFlags.None, 2, out var regex, out _));
+        Assert.Equal(RegexStatus.Success, Compile("(?:a|b)*(?:c)+d|e{2}|(?=f)*", RegexFlags.None, 2, out var regex, out _));
         Assert.True(regex!.IsMatch("abcd"));
-        Assert.Equal(RegexStatus.Ok, Compile("a*b+c?(?:)", RegexFlags.None, 2, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("a*b+c?(?:)", RegexFlags.None, 2, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile("((a)*)+", RegexFlags.None, 2, out _, out _));
     }
 
@@ -120,8 +120,8 @@ public class NestingLimitTests
         Assert.Throws<ArgumentOutOfRangeException>(() => Compile("a", RegexFlags.None, -1, out _, out _));
         Assert.Throws<ArgumentOutOfRangeException>(() => Compile("a", RegexFlags.None, BroilerRegex.MaximumNestingLimit + 1, out _, out _));
         Assert.Throws<ArgumentOutOfRangeException>(() => Compile("a", RegexFlags.None, int.MaxValue, out _, out _));
-        Assert.Equal(RegexStatus.Ok, Compile("a", RegexFlags.None, BroilerRegex.MaximumNestingLimit, out _, out _));
-        Assert.Equal(RegexStatus.Ok, Compile("a", RegexFlags.None, 1, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("a", RegexFlags.None, BroilerRegex.MaximumNestingLimit, out _, out _));
+        Assert.Equal(RegexStatus.Success, Compile("a", RegexFlags.None, 1, out _, out _));
         Assert.Throws<ArgumentNullException>(() => BroilerRegex.Compile(null!, RegexFlags.None, UnicodeTables.Instance, 1, out _, out _));
         Assert.Throws<ArgumentNullException>(() => BroilerRegex.Compile("a", RegexFlags.None, null!, 1, out _, out _));
     }

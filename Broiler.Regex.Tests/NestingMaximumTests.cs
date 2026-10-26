@@ -187,7 +187,7 @@ public class NestingMaximumTests
             // Not vacuous: three levels, depth 4, compile under a limit of 4 and are refused under 3, and the subject is
             // matched. Three, like the 511 levels at the maximum, is odd, which the alternating shapes need.
             var (pattern, flags, subject) = Shape(shape, 3);
-            Assert.Equal(RegexStatus.Ok, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 4, out var regex, out _));
+            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 4, out var regex, out _));
             Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 3, out _, out _));
             Assert.True(regex!.Match(subject).Success, shape);
         }
@@ -201,7 +201,7 @@ public class NestingMaximumTests
         var (pattern, flags, _) = Shape(shape, max - 1);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.Ok, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
+            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
             Assert.NotNull(regex);
 
             // The constructor parses under the same maximum.
@@ -217,7 +217,7 @@ public class NestingMaximumTests
         var (pattern, flags, subject) = Shape(shape, max - 1);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.Ok, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
+            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
             Assert.True(regex!.Match(subject).Success);
             Assert.True(TestRegex.Compile(pattern, flags).IsMatch(subject));
         });

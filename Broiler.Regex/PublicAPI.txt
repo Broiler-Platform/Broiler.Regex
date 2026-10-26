@@ -150,7 +150,7 @@ Broiler.Regex.RegexOverflowException sealed class : System.Exception
 Broiler.Regex.RegexOverflowException..ctor() method System.Void
 Broiler.Regex.RegexStatus enum
 Broiler.Regex.RegexStatus.LimitExceeded = 1
-Broiler.Regex.RegexStatus.Ok = 0
+Broiler.Regex.RegexStatus.Success = 0
 Broiler.Regex.RegexStatus.value__ field System.Int32
 Broiler.Regex.RegexSyntaxException sealed class : System.Exception
 Broiler.Regex.RegexSyntaxException..ctor(System.String, System.Int32) method System.Void

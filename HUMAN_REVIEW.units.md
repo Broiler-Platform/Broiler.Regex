@@ -132,8 +132,8 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `93E41A`, PENDING
   - Falsified if: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
-- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `43CEE0`, PENDING
-  - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Ok, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
+- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6, D7 and D9, `C53672`, PENDING
+  - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
 - `Broiler.Regex.BroilerRegex.Match(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `EBD5A7`, PENDING
   - Falsified if: Match(input, -1) does not give the result that Match(input, 0) gives, so a negative start is not clamped to 0
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `FC8D95`, PENDING

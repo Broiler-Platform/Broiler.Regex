@@ -43,7 +43,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - `.gitattributes`, which stores every text file with LF line endings.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
-  compiles a pattern under the caller's limit and answers a `RegexStatus`: `Ok` with the compiled pattern, or
+  compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
   `LimitExceeded` with `RegexLimit.Nesting` when the pattern nests deeper, checked before each descent of the parser
   and of the compiler. Depth is counted as Broiler.VM's matcher counts it: the pattern is depth 1, each group of any
   kind adds 1, and under `v` each class adds 1. `BroilerRegex.MaximumNestingLimit` (512) is the largest limit a
@@ -56,8 +56,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   with the depths they fail at, in the package README's known limitations. win-x64 was not measured. The constant is
   never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
   precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
-  nesting needs; the new matcher (task 2.4a) and the syntax status (task 2.8) add members to them. A syntax error from
-  `Compile` is still a `RegexSyntaxException` until task 2.8.
+  nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
+  `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
+  and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match will answer
+  `Match` or `NoMatch` instead. A syntax error from `Compile` is still a `RegexSyntaxException`.
 
 ### Changed
 
