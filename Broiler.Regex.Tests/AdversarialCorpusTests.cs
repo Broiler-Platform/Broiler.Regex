@@ -8,8 +8,10 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// The adversarial corpus's rows within task 2.4a's subset (<c>tests/Adversarial/corpus.tsv</c>; classes K, A, W, G
-/// without anchors, M, F, N and the ordinary rows), each run through the new backend's entry with the row's policy in a
+/// The adversarial corpus's rows the new backend's entry answers (<c>tests/Adversarial/corpus.tsv</c>): task 2.4a's
+/// (classes K, A, W, G without anchors, M, F without assertions, N and the ordinary rows) and task 2.4b's (the anchored K05
+/// and G03, the look-around class L, F01 and F02's <c>\B</c>, and the ordinary rows of look-arounds, case-insensitive
+/// classes and a <c>v</c>-mode class of strings), each run through the new backend's entry with the row's policy in a
 /// child process of its own, the probe under its hidden argument <c>--engine-row</c>, on a thread of the corpus's declared
 /// stack: a crash is observed as the child's exit, not suffered by the test host, and each row answers its declared
 /// status. Every other row is named with the reason it waits. Task 2.14's <c>--adversarial</c> mode later runs the whole
@@ -17,12 +19,13 @@ namespace Broiler.Regex.Tests;
 /// </summary>
 public class AdversarialCorpusTests
 {
-    /// <summary>The rows whose declared status the new backend answers in task 2.4a.</summary>
+    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's.</summary>
     private static readonly string[] RowIds =
     [
         "K01", "K02", "K03", "K04", "A01", "A02", "W01", "W02", "G01", "G02", "M01", "M02",
         "N01", "N02", "N04", "N05", "N07", "N08", "N10", "N11", "N13", "N14", "N16", "N17", "F03", "F04",
         "O01", "O04", "O09", "O10", "O11", "O12", "O13", "O14", "O15", "O18",
+        "K05", "G03", "L01", "L02", "L03", "L04", "L05", "F01", "F02", "O02", "O03", "O16", "O17",
     ];
 
     public static TheoryData<string> Rows
@@ -39,28 +42,20 @@ public class AdversarialCorpusTests
     /// <summary>The rows that wait for a later task, and why.</summary>
     private static readonly Dictionary<string, string> Waiting = new(StringComparer.Ordinal)
     {
-        ["K05"] = "anchors ^ and $: task 2.4b",
-        ["L01"] = "look-ahead: task 2.4b", ["L02"] = "look-ahead: task 2.4b", ["L03"] = "look-ahead: task 2.4b",
-        ["L04"] = "lookbehind: task 2.4b", ["L05"] = "lookbehind: task 2.4b",
-        ["G03"] = "anchors ^ and $: task 2.4b",
         ["N03"] = "the validate entry: task 2.8", ["N06"] = "the validate entry: task 2.8", ["N09"] = "the validate entry: task 2.8",
         ["N12"] = "the validate entry: task 2.8", ["N15"] = "the validate entry: task 2.8", ["N18"] = "the validate entry: task 2.8",
-        ["F01"] = "the assertion \\B: task 2.4b", ["F02"] = "the assertion \\B: task 2.4b",
         ["V01"] = "the compile budget: task 2.5", ["V02"] = "the compile budget: task 2.5", ["V03"] = "the compile budget: task 2.5",
         ["V04"] = "the compile budget: task 2.5", ["V05"] = "the compile budget: task 2.5",
-        ["O02"] = "look-ahead and anchors: task 2.4b", ["O03"] = "lookbehind and anchors: task 2.4b",
         ["O05"] = "a greedy run of [a] over 10,000,001 characters: the run instruction of task 2.4c (the corpus's presumption 3); the loop form passes the frame ceiling",
-        ["O06"] = "anchors ^ and $: task 2.4b; and the run instruction of task 2.4c",
+        ["O06"] = "the same greedy run of [a] between ^ and $: the run instruction of task 2.4c; the loop form passes the frame ceiling",
         ["O07"] = "a group name repeated across alternatives: task 2.6",
-        ["O08"] = "a back-reference: task 2.4b",
-        ["O16"] = "case-insensitive matching: task 2.4b",
-        ["O17"] = "a v-mode class of strings: task 2.4b",
+        ["O08"] = "a group name repeated across alternatives, with a back-reference to it: task 2.6 (the parser refuses it until then)",
         ["O19"] = "the validate entry: task 2.8",
     };
 
     [Theory]
     [MemberData(nameof(Rows))]
-    public void A_row_in_the_subset_answers_its_declared_status_in_a_child_process(string id)
+    public void A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(string id)
     {
         var declared = Corpus().Single(row => row[0] == id)[7];
         var (exit, output, error) = RunProbe("--engine-row", CorpusPath, id);
