@@ -13,5 +13,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Broiler.Regex\Broiler.Regex.csproj" />
+    <!-- Built first and run from its own output: AdversarialCorpusTests runs each corpus row in a child process of the
+         probe. An executable is not referenced as an assembly. -->
+    <ProjectReference Include="..\probes\Regex.Probe\Regex.Probe.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

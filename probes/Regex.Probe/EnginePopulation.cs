@@ -1,0 +1,88 @@
+using System;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace Broiler.Regex.Probe;
+
+/// <summary>
+/// The new backend's cases in the probe's report (task 2.4a of SJL-11.2): its internal entry, run on the probe's thread
+/// of <see cref="ProbePopulation.StackBytes"/>, so that the Native AOT run proves under its own stack what the JIT run
+/// proves: the flat sequences of 100,000 terms (the adversarial corpus's F03 and F04) and the nesting cases at the maximum
+/// (N01, N07, N13) complete through the new entry, and the new backend answers its ceilings, its meter, its anchored
+/// argument and its transitional refusal as the JIT does. Each case is written in the corpus's terms
+/// (<see cref="EngineRun"/>), and the report gives each its answer and the units the match did.
+/// </summary>
+internal static class EnginePopulation
+{
+    /// <summary>The population's name, written into its first line.</summary>
+    internal const string Name = "engine-1";
+
+    private const string Ordinary = "meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none";
+
+    /// <summary>The cases: an identifier, the corpus row it repeats or "-", the operation, the pattern, the flags, the subject and the policy.</summary>
+    internal static (string Id, string Row, string Op, string Pattern, string Flags, string Subject, string Policy)[] Cases() =>
+    [
+        // The critic's crash cases (plan row 2.4a): a flat sequence of 100,000 terms and nesting at the maximum.
+        ("E01", "F03", "match@0", "\"(?:a)\" * 100000", "-", "\"a\" * 100000", Ordinary),
+        ("E02", "F04", "match@0", "\"(?:a|b)\" * 100000", "-", "\"a\" * 100000", Ordinary),
+        ("E03", "N01", "match@0", "\"(\" * 511 + \"a\" + \")\" * 511", "-", "\"a\"", Ordinary),
+        ("E04", "N07", "match@0", "\"(?:\" * 511 + \"a\" + \")\" * 511", "-", "\"a\"", Ordinary),
+        ("E05", "N13", "match@0", "\"[\" * 511 + \"a\" + \"]\" * 511", "v", "\"a\"", Ordinary),
+        ("E06", "N02", "compile", "\"(\" * 512 + \"a\" + \")\" * 512", "-", "-", Ordinary),
+        ("E07", "N11", "compile", "\"(?:\" * 1000000 + \"a\" + \")\" * 1000000", "-", "-", Ordinary),
+        ("E08", "-", "match@0", "\"(\" * 511 + \"a\" + \")+\" * 511", "-", "\"a\"", Ordinary),
+
+        // The ceilings, each named, and the meter.
+        ("E09", "K01", "match@0", "\"(a+)+b\"", "-", "\"b\" + \"a\" * 30", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E10", "M01", "match@0", "\"(?:a|ab)*c\"", "-", "\"ab\" * 10000 + \"c\"", "meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none"),
+        ("E11", "M02", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 10000 + \"c\"", "meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none"),
+        ("E12", "O12", "match@0", "\"[0-9]+x\"", "-", "\"x\" + \"1\" * 1000000", "meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E13", "O13", "match@0", "\"[0-9]+x\"", "-", "\"1\" * 100 + \"x\"", "meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
+
+        // Ordinary answers: captures, the empty check, lazy order, the anchored argument, code points.
+        ("E14", "O15", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 100 + \"c\"", Ordinary),
+        ("E15", "-", "match@0", "\"(a?)*?b|(?:(x)|y)+\"", "-", "\"yxy\"", Ordinary),
+        ("E16", "O09", "anchored@0", "\"b\"", "-", "\"ab\"", Ordinary),
+        ("E17", "O10", "anchored@1", "\"b\"", "-", "\"ab\"", Ordinary),
+        ("E18", "-", "match@1", "\"[^a]\\\\u{1F600}.\"", "u", "\"a\\ud83d\\ude00\\ud83d\\ude00b\"", Ordinary),
+        ("E19", "-", "match@0", "\"(?<x>a{2,3}?)(?<y>[\\\\s\\\\S]{1,2})\"", "s", "\"aaaa\\n\"", Ordinary),
+
+        // The transitional refusal of task 2.4a, and a syntax error.
+        ("E20", "-", "match@0", "\"^a\"", "-", "\"a\"", Ordinary),
+        ("E21", "-", "compile", "\"a{2,1}\"", "-", "-", Ordinary),
+    ];
+
+    /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>
+    internal static string Report()
+    {
+        var report = new StringBuilder();
+        report.Append("Broiler.Regex.Probe engine population ").Append(Name).Append('\n');
+        var answers = new StringBuilder();
+        var cases = Cases();
+        foreach (var (id, row, op, pattern, flags, subject, policy) in cases)
+        {
+            string answer;
+            ulong units;
+            try
+            {
+                answer = EngineRun.Answer(op, EngineRun.Expression(pattern), flags, EngineRun.Expression(subject), EngineRun.ParsePolicy(policy), out units);
+            }
+            catch (Exception exception)
+            {
+                answer = "threw " + (exception is ArgumentException ? "ArgumentException" : "another exception");
+                units = 0;
+            }
+
+            var line = answer + " units " + units.ToString(CultureInfo.InvariantCulture);
+            answers.Append(line).Append('\n');
+            report.Append(id).Append(' ').Append(row).Append(' ').Append(op).Append(" /").Append(pattern).Append('/').Append(flags)
+                .Append(' ').Append(subject).Append(' ').Append(policy).Append(": ").Append(line).Append('\n');
+        }
+
+        var digest = SHA256.HashData(Encoding.UTF8.GetBytes(answers.ToString()));
+        report.Append("cases ").Append(cases.Length.ToString(CultureInfo.InvariantCulture)).Append(", answers sha256 ")
+            .Append(Convert.ToHexStringLower(digest)).Append('\n');
+        return report.ToString();
+    }
+}

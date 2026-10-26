@@ -250,6 +250,21 @@ public class MachineTests
     }
 
     [Fact]
+    public void A_quantifier_that_gives_back_never_gives_back_past_the_start_inside_a_surrogate_pair()
+    {
+        // The old backend's defect D1 (DifferentialTests' remarks): its greedy run of one character gave back across a start
+        // inside a pair, joining the low half to the high half before it. No forward matcher of ECMA-262 §22.2.2 moves before
+        // the index it is called at, so the match and every capture begin at or after the start.
+        var smile = "😀";
+        Assert.Equal("nomatch", Run("[\\s\\S]*\\u{1F600}", "u", smile + "ba", 1));      // the old backend: match 1,2
+        Assert.Equal("nomatch", Run("[\\s\\S]?\\u{1F600}", "v", smile + "ba", 1));      // the old backend: match 1,2
+        Assert.Equal("nomatch", Run("(?:[\\s\\S])*\\u{1F600}", "u", smile + "ba", 1));  // the old backend agrees
+        Assert.Equal("match 2,3", Run("[\\s\\S]?[^\\u{1F600}]", "u", "\uD83D" + smile, 2)); // the old backend: nomatch
+        Assert.Equal("match 1,1 - 1,1", Run("(.{2})?\\u{1F600}|()", "u", smile + "bcx", 1));
+        Assert.Equal("match 1,4 3,4", Run("(.)*", "u", smile + "bc", 1));
+    }
+
+    [Fact]
     public void A_greedy_star_over_a_long_subject_runs_on_the_heap_on_a_1_MiB_thread()
     {
         var subject = new string('x', 1_000_000);
