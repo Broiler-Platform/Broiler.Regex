@@ -37,6 +37,7 @@ public class NewBackendSuiteTests(ITestOutputHelper output)
     {
         [nameof(NewBackendSuiteTests)] = "this test",
         [nameof(DifferentialTests)] = "compares the two backends itself",
+        [nameof(FastPathDifferentialTests)] = "compares the new backend's programs with and without the fast paths itself, through no public member",
         [nameof(AdversarialCorpusTests)] = "runs every row through the new backend's entry in a child process already",
         [nameof(OldBackendDefectTests) + "." + nameof(OldBackendDefectTests.D2_the_old_backend_answers_with_the_empty_string_first)] =
             "shows the old backend's answer to its defect D2",

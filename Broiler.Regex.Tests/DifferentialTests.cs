@@ -124,11 +124,18 @@ public class DifferentialTests(ITestOutputHelper output)
         "AaBb", "K\u212Ak", "\u017FsS", "a\nA\n",
     ];
 
-    [Fact]
-    public void The_suite_s_patterns_answer_the_same_on_both_backends()
+    /// <summary>
+    /// One pattern of a population under one flag string, the subjects it runs against, the starts it runs from in each,
+    /// and where it came from.
+    /// </summary>
+    internal sealed record PopulationCase(string Pattern, string Flags, string[] Subjects, Func<string, int[]> Starts, string Origin);
+
+    /// <summary>
+    /// The suite population over <paramref name="sources"/>: each string literal as a pattern, under the base flag strings
+    /// and those near it, against the literals near it and the base subjects, from the start, index 1 and the end.
+    /// </summary>
+    internal static IEnumerable<PopulationCase> SuitePopulation(string[] sources)
     {
-        var tally = new Tally();
-        var sources = TestSources();
         foreach (var file in sources)
         {
             var literals = Literals(File.ReadAllText(file)).ToArray();
@@ -138,9 +145,34 @@ public class DifferentialTests(ITestOutputHelper output)
                 var flags = BaseFlags.Concat(near.Where(LooksLikeFlags)).Distinct(StringComparer.Ordinal);
                 var subjects = near.Concat(BaseSubjects).Distinct(StringComparer.Ordinal).ToArray();
                 foreach (var flag in flags)
-                    tally.Pattern(pattern, flag, subjects, static subject => subject.Length == 0 ? [0] : [0, 1, subject.Length], Path.GetFileName(file) + ":" + line);
+                    yield return new(pattern, flag, subjects, static subject => subject.Length == 0 ? [0] : [0, 1, subject.Length], Path.GetFileName(file) + ":" + line);
             }
         }
+    }
+
+    /// <summary>The generated population of task 2.4b's seed: <see cref="Generated"/> patterns, each against up to eight subjects from the start and one other.</summary>
+    internal static IEnumerable<PopulationCase> SeededPopulation()
+    {
+        var random = new SplitMix64(Seed);
+        string[] flagChoices = ["", "i", "m", "s", "u", "iu", "us", "v", "iv", "vs", "y", "iy", "imsu"];
+        for (var i = 0; i < Generated; i++)
+        {
+            var flags = flagChoices[random.Below(flagChoices.Length)];
+            var generator = new PatternGenerator(random, flags);
+            var pattern = generator.Disjunction(0);
+            var subjects = Enumerable.Range(0, 8).Select(_ => Subject(random)).Distinct(StringComparer.Ordinal).ToArray();
+            var starts = subjects.ToDictionary(static subject => subject, subject => random.Below(subject.Length + 1), StringComparer.Ordinal);
+            yield return new(pattern, flags, subjects, subject => [0, starts[subject]], "generated #" + i);
+        }
+    }
+
+    [Fact]
+    public void The_suite_s_patterns_answer_the_same_on_both_backends()
+    {
+        var tally = new Tally();
+        var sources = TestSources();
+        foreach (var row in SuitePopulation(sources))
+            tally.Pattern(row.Pattern, row.Flags, row.Subjects, row.Starts, row.Origin);
 
         output.WriteLine($"suite population: {sources.Length} source files; {tally}");
         foreach (var stopped in tally.Stopped)
@@ -162,17 +194,10 @@ public class DifferentialTests(ITestOutputHelper output)
     public void A_seeded_population_over_the_whole_grammar_answers_the_same_on_both_backends()
     {
         var tally = new Tally();
-        var random = new SplitMix64(Seed);
-        string[] flagChoices = ["", "i", "m", "s", "u", "iu", "us", "v", "iv", "vs", "y", "iy", "imsu"];
-        for (var i = 0; i < Generated; i++)
+        foreach (var row in SeededPopulation())
         {
-            var flags = flagChoices[random.Below(flagChoices.Length)];
-            var generator = new PatternGenerator(random, flags);
-            var pattern = generator.Disjunction(0);
-            var subjects = Enumerable.Range(0, 8).Select(_ => Subject(random)).Distinct(StringComparer.Ordinal).ToArray();
-            var starts = subjects.ToDictionary(static subject => subject, subject => random.Below(subject.Length + 1), StringComparer.Ordinal);
-            tally.Pattern(pattern, flags, subjects, subject => [0, starts[subject]], "generated #" + i);
-            Assert.True(tally.NoProgram == 0, "a pattern the parser accepts was given no program: /" + pattern + "/" + flags);
+            tally.Pattern(row.Pattern, row.Flags, row.Subjects, row.Starts, row.Origin);
+            Assert.True(tally.NoProgram == 0, "a pattern the parser accepts was given no program: /" + row.Pattern + "/" + row.Flags);
         }
 
         output.WriteLine($"generated population: seed 0x{Seed:X}, {Generated} patterns; {tally}");
@@ -669,7 +694,7 @@ public class DifferentialTests(ITestOutputHelper output)
     }
 
     /// <summary>SplitMix64: a seeded generator whose stream is fixed by its seed on every platform.</summary>
-    private sealed class SplitMix64(ulong state)
+    internal sealed class SplitMix64(ulong state)
     {
         private ulong _state = state;
 
@@ -684,15 +709,15 @@ public class DifferentialTests(ITestOutputHelper output)
         }
     }
 
-    /// <summary>This test project's C# sources, the differential test's own file left out.</summary>
-    private static string[] TestSources()
+    /// <summary>This test project's C# sources, the differential tests' own files left out.</summary>
+    internal static string[] TestSources()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null && !File.Exists(Path.Combine(directory.FullName, "Broiler.Regex.slnx")))
             directory = directory.Parent;
         Assert.True(directory != null, "no Broiler.Regex.slnx above " + AppContext.BaseDirectory);
         return Directory.GetFiles(Path.Combine(directory!.FullName, "Broiler.Regex.Tests"), "*.cs")
-            .Where(static file => Path.GetFileName(file) != "DifferentialTests.cs")
+            .Where(static file => !Path.GetFileName(file).EndsWith("DifferentialTests.cs", StringComparison.Ordinal))
             .Order(StringComparer.Ordinal)
             .ToArray();
     }
