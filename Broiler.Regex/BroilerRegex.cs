@@ -279,7 +279,7 @@ public sealed class BroilerRegex
     /// <param name="start">
     /// Where the match starts, or the search begins: a code-unit index from 0 to the subject's length. Under <c>u</c> and
     /// <c>v</c> a start inside a surrogate pair splits the pair for the whole call: a read forward from the start meets the
-    /// pair's low half as a lone unit, and a read backward from it (a look-behind's, <c></c>'s, <c>^</c>'s under
+    /// pair's low half as a lone unit, and a read backward from it (a look-behind's, <c>\b</c>'s, <c>^</c>'s under
     /// <c>m</c>) its high half as another. This entry takes the start as given. RegExpBuiltinExec (ECMA-262 §22.2.7.2,
     /// step 13.b) runs its matcher from the pair instead, and an engine that answers as it does steps back to the pair's
     /// first unit before it calls, then reports from the offsets written and its own <c>lastIndex</c>: a non-empty match

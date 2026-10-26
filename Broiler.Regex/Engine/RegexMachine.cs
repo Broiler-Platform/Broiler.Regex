@@ -255,7 +255,7 @@ internal ref struct RegexMachine
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
     /// pair it stepped over; the position after the last character is tried too. The start is the caller's: under
     /// <c>u</c> and <c>v</c> a start inside a pair splits it for the whole call, so a read forward from the start meets
-    /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c></c>, <c>^</c> under
+    /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c>\b</c>, <c>^</c> under
     /// <c>m</c>) its high half as another. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that
     /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>). A program with a first test
     /// skips, before each attempt, the positions that test refuses (the remarks' start-position scan).
