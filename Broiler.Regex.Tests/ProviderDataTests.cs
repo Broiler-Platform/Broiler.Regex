@@ -48,9 +48,20 @@ public class ProviderDataTests
         { @"[^a]", "vi", "Aab", 2 },                              // AllCharacters under v with i
     };
 
+    /// <summary>
+    /// Check A-10's recording provider: a pattern of each kind compiles and matches through the caller's
+    /// provider, and the provider is asked for each group of tables the algorithms read.
+    /// </summary>
+    /// <remarks>
+    /// The rows do not tell the kinds of answer apart: the library builds the provider's objects, and the sets it
+    /// keeps for a compilation, when a compilation starts, so every group is read for any pattern, <c>a</c>
+    /// included. That an answer comes from the caller's tables, rather than only that the tables are read, is
+    /// what <see cref="A_match_reads_its_case_folding_from_the_callers_tables"/> shows for the foldings; that no
+    /// other data is reachable is the assembly-reference test's.
+    /// </remarks>
     [Theory]
     [MemberData(nameof(Reaches))]
-    public void Every_answer_is_read_through_the_tables_the_caller_hands_in(string pattern, string flags, string subject, int index)
+    public void A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(string pattern, string flags, string subject, int index)
     {
         var recording = new RecordingTables(UnicodeTables.Instance);
         var match = new BroilerRegex(pattern, flags, recording).Match(subject);
@@ -66,6 +77,34 @@ public class ProviderDataTests
         Assert.Contains(UnicodeTable.UpperData, recording.Read);
         Assert.Contains(UnicodeTable.StringPropertyData, recording.Read);
         Assert.Contains(UnicodeTable.LexicalTrie, recording.Read);
+    }
+
+    /// <summary>A provider whose tables read as empty once <see cref="Withdrawn"/> is set.</summary>
+    private sealed class WithdrawableTables(IUnicodeTables inner) : IUnicodeTables
+    {
+        public volatile bool Withdrawn;
+
+        public string UnicodeVersion => inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table) => Withdrawn ? default : inner.Table(table);
+    }
+
+    /// <summary>
+    /// An answer that changes with the caller's tables: a compiled pattern's case-insensitive match folds by the
+    /// tables it was handed, read when it matches, so withdrawing them after compilation changes the match.
+    /// </summary>
+    [Theory]
+    [InlineData("k", "i", "K")]      // the upper-casing branch of Canonicalize
+    [InlineData("ſ", "iu", "S")]     // simple case folding
+    [InlineData("[ſ]", "iu", "S")]   // a class's case-closed membership test
+    public void A_match_reads_its_case_folding_from_the_callers_tables(string pattern, string flags, string subject)
+    {
+        var tables = new WithdrawableTables(UnicodeTables.Instance);
+        var regex = new BroilerRegex(pattern, flags, tables);
+        Assert.True(regex.Match(subject).Success);
+
+        tables.Withdrawn = true;
+        Assert.False(regex.Match(subject).Success);
     }
 
     [Fact]
