@@ -10,7 +10,7 @@ namespace Broiler.Regex.Probe;
 /// of <see cref="ProbePopulation.StackBytes"/>, so that the Native AOT run proves under its own stack what the JIT run
 /// proves: the flat sequences of 100,000 terms (the adversarial corpus's F03 and F04) and the nesting cases at the maximum
 /// (N01, N07, N13) complete through the new entry, and the new backend answers its ceilings, its meter, its anchored
-/// argument and its transitional refusal as the JIT does. Each case is written in the corpus's terms
+/// argument and task 2.4b's constructs as the JIT does. Each case is written in the corpus's terms
 /// (<see cref="EngineRun"/>), and the report gives each its answer and the units the match did.
 /// </summary>
 internal static class EnginePopulation
@@ -53,9 +53,30 @@ internal static class EnginePopulation
         ("E20", "-", "match@1", "\"[^a]\\\\u{1F600}.\"", "u", "\"a\\ud83d\\ude00\\ud83d\\ude00b\"", Ordinary),
         ("E21", "-", "match@0", "\"(?<x>a{2,3}?)(?<y>[\\\\s\\\\S]{1,2})\"", "s", "\"aaaa\\n\"", Ordinary),
 
-        // The transitional refusal of task 2.4a, and a syntax error.
-        ("E22", "-", "match@0", "\"^a\"", "-", "\"a\"", Ordinary),
+        // A look-behind's back-reference to a group it captures later in source order (issue #923's row 4, which was
+        // the transitional refusal "^a" until task 2.4b), and a syntax error.
+        ("E22", "-", "match@0", "\"(?<=\\\\1(\\\\w+))c\"", "-", "\"ababc\"", Ordinary),
         ("E23", "-", "compile", "\"a{2,1}\"", "-", "-", Ordinary),
+
+        // The corpus's rows task 2.4b brings to the new backend: the anchors, the look-arounds, \B, case-insensitive
+        // classes and the v-mode class of strings, each as the row declares it.
+        ("E24", "K05", "match@0", "\"^(\\\\w+\\\\s?)*$\"", "-", "\"a\" * 30 + \"!\"", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E25", "G03", "match@0", "\"^[a]*$\"", "u", "\"a\" * 10000001", "meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E26", "L01", "match@0", "\"^(?!(?:(a+)+b|a*c))\"", "-", "\"a\" * 30 + \"c\"", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E27", "L02", "match@0", "\"^(?!(?:(a+)+b|a*c))\"", "u", "\"a\" * 30 + \"c\"", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E28", "L03", "match@0", "\"^(?=(?:(a+)+b|a*c))\"", "-", "\"a\" * 30 + \"c\"", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E29", "L04", "match@0", "\"$(?<=(?:b(a+)+|ca*))\"", "-", "\"c\" + \"a\" * 30", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E30", "L05", "match@0", "\"$(?<!(?:b(a+)+|ca*))\"", "u", "\"c\" + \"a\" * 30", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E31", "F01", "match@0", "\"\\\\B\" * 100000", "-", "\"\"", Ordinary),
+        ("E32", "F02", "match@0", "\"\\\\B\" * 100000", "u", "\"\"", Ordinary),
+        ("E33", "O02", "match@0", "\"^(?!(?:(a+)+b|a*c))\"", "u", "\"a\" * 12 + \"c\"", Ordinary),
+        ("E34", "O03", "match@0", "\"$(?<=(?:b(a+)+|ca*))\"", "-", "\"c\" + \"a\" * 12", Ordinary),
+        ("E35", "O16", "match@0", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iv", "\"A\"", Ordinary),
+        ("E36", "O17", "match@0", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "v", "\"\\ud83d\\ude00\"", Ordinary),
+
+        // NestingMaximumTests' look-behind shape at the maximum, matched right to left with no CLR recursion: a capture
+        // around an alternation of sequences on each of 510 levels inside a look-behind.
+        ("E37", "-", "match@0", "\"[\\\\s\\\\S]*(?<=\" + \"(b|x\" * 510 + \"a\" + \"x)\" * 510 + \")\"", "-", "\"x\" * 510 + \"a\" + \"x\" * 510", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>

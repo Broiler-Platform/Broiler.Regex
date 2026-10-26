@@ -312,6 +312,107 @@ Broiler.VM's realm and V8 report today (row M4 lists Broiler.VM's as that family
 match apart. Its CHANGELOG lists the answers that change from such a start (rows 2 and 4 of `SurrogateStartTests`,
 skipped until then). SJL-11.4's and SJL-11.5's adapters take the step for their engines.
 
+*Dated record, 2026-10-26 (task 2.4b of SJL-11.2; R4's matcher half and R7; decisions D5 and D8).*
+
+**What the new backend runs.** Every pattern the parser accepts: `ProgramCompilation` answers `Compiled` or
+`NestingLimitExceeded`, and task 2.4a's `NotYetSupported` is deleted (a test reads the enumeration, every member name of
+the assembly and its user-string heap, and finds it in none). The instructions added are `LiteralIgnoringCase`,
+`ClassIgnoringCase` and `CanonicalClass` (the `i` flag: Canonicalize's two branches read at match time from the
+provider's case folding, a class tested by the character's case orbit and inverted after, a `v`-mode class by the
+character's Canonicalize against its folded members); `LineStart` and `LineEnd` (`^ $`, the `m` flag in force as an
+operand); `WordEdge` and `NotWordEdge` (`\b \B`, the word class the flags give, U+017F and U+212A under `iu` and
+`iv`); `Backreference` and `BackreferenceIgnoringCase` (a reference to a group that did not participate matches the
+empty string; by code point under `u` and `v`); and `OpenLookaround` and `CloseLookaround`. An instruction carries
+`RightToLeft` when it stands in a look-behind's body. Modifier groups need no instruction: the compiler lowers a body
+under the flags it sets. A `v`-mode class holding strings lowers to an alternation of its strings, longest first, then
+its single characters, then the empty string (§22.2.2.7, Atom :: CharacterClass).
+
+**A look-around on the frame stack.** `OpenLookaround` pushes a frame like any other but with a negative address field,
+a *barrier*, and writes its index into a register of the look-around's own (through the trail). When the body matches,
+`CloseLookaround` sets the frame count back to the barrier's index, so the barrier and every frame the body pushed go at
+once and nothing after the look-around can backtrack into it (§22.2.2.6, step 2.b: m runs with the continuation that
+always succeeds); a positive look-around goes on from the barrier's position with the captures its body made, a negative
+one fails, and the next frame popped undoes the body's writes. When every way through the body fails, backtracking
+reaches the barrier: a positive one fails in its turn, and a negative one resumes after the look-around, from its
+position, its body's writes undone (step 2.d, "Return c(x)"). No second loop, no call and no second stack: A-4 holds.
+Under `i` the machine calls the Unicode owner's case folding, which reads the caller's provider during a match, the
+caller's code as the meter is and outside the graph A-4 reads: A-4 now pins the types of other assemblies the machine
+calls, so that a new one is reviewed, and refuses any type of the library that implements the provider's interface, so
+that the provider stays the caller's (its witness plants one that matches again). **The backward direction**: a
+look-behind's body is compiled with `RightToLeft` on each character, class and back-reference instruction, which then
+reads the character that ends at the index (a whole surrogate pair under `u` and `v`) and moves the index to its start;
+a sequence's terms are emitted last first and a group's end register is written first, so that its range reads left to
+right; a back-reference compares the capture from its last character. A look-ahead's body is forward wherever it stands.
+Under `u` and `v` a start inside a surrogate pair now splits the pair for every read of the call, so that a look-behind
+from the start meets the high half alone.
+
+**Charging (D8).** Each new instruction costs one unit; a class under `i` one plus its weight for each code point of an
+orbit (four at most at UCD 17.0.0); `\b` and `\B` one plus the word class's weight twice; a back-reference its capture's
+length in code units on top, charged after its dispatch and before it compares; popping a barrier nothing (the
+instruction that pushed it paid). Check A-1's per-dispatch test gains inputs reaching every new instruction, and a
+test that its declared inputs reach every operation, each that reads the subject in both directions. The order inside a
+back-reference's dispatch, its length charged before its first character is compared, gives the same units, charges and
+answer either way, so the per-dispatch read cannot see it; a test reads it through the caller's tables, which a
+comparison under `i` reads through the case folding, forward and in a look-behind.
+
+**Duplicate named groups stay task 2.6's.** The parser still refuses them. A back-reference's operands name a run of the
+program's list of referenced groups (`A` its first entry, `B` its length), one group long today; task 2.6 makes the run
+the groups that share the name, and the instruction compares the first whose capture is defined, R6's participating one.
+
+**The evidence.** Unit tests per construct and per direction (`MachineConstructTests`, `MachineLookaroundTests`):
+test262's `built-ins/RegExp/lookBehind` cases, the specification's look-ahead notes, the issue #923 rows 3, 4, 6, 7 and
+8 with their backward forms, a negative look-around's captures reset, a back-reference in a look-behind to a group
+captured later in source order, modifiers nested and undone, `\b` under `iu` and `iv`, the non-`u` Canonicalize's guard
+and `v` strings longest first. **Ceilings and A-8**: every step, frame and trail ceiling met through look-arounds of the
+four kinds and through back-references answers that ceiling or the full answer, a negative look-around whose body
+reaches one answering the ceiling and not a match (`CeilingTests`), and check A-8 holds for back-references, named ones
+under `u`, references under `i`, look-arounds and classes under `iu` with word boundaries, at 1 to 1,000 groups
+(`EntryTests`). **The old suite on the new backend**: `TestRegex` is the switch, and `NewBackendSuiteTests` runs every
+case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (265 methods, 1,475 cases
+at this record, 722 of them building an instance on the route), the 18 cases xunit skips until task 2.4c among them;
+every case passes. **The differential over the whole grammar**: the suite population (14,164 pattern and flag pairs,
+1,286,531 cases) and a seeded population drawing every construct under thirteen flag strings (14,028 pairs, 242,607
+cases); no disagreement is unexplained: 203 suite cases and 57 generated ones are defect D2's, each confirmed by the old
+backend's answer to the pattern with every class of D2's shape written `(?:C)?`, C the class without the empty string,
+which equals the new backend's, and 8 suite cases M7's, by its shape; the counts are pinned for each population, as the
+stops are. **The corpus**: K05, G03, L01 to L05, F01, F02, O02, O03, O16 and O17 answer their declared statuses in child
+processes and in the probe; O05 and O06 wait for task 2.4c, O07 and O08 for task 2.6, the V rows for task 2.5 and the
+validate rows for task 2.8.
+
+**The old backend's defects the comparison found**, each pinned to the specification's answer in `OldBackendDefectTests`
+and shown as the old backend gives it: **D2**, a `v`-mode class holding the empty string tries it before its single
+characters (`/[\q{}a]/v` on `a` answers the empty match; the specification tries the empty string last), pinned by
+`OldBackendDefectTests.D2_a_class_s_empty_string_is_tried_after_its_single_characters` and shown by
+`OldBackendDefectTests.D2_the_old_backend_answers_with_the_empty_string_first`; and **M7**, Broiler.VM's JSD-0081 row
+and decision D36's fix, a back-reference in a look-behind under `u` or `v` that compares the code units ending at the
+index and so can begin inside a surrogate pair (`/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` matches where the
+specification does not), pinned by `OldBackendDefectTests.M7_a_backward_back_reference_reads_whole_code_points_under_u`
+and shown by `OldBackendDefectTests.M7_the_old_backend_compares_the_code_units_that_end_at_the_index`. D1 is task 2.4a's
+(`SurrogateStartTests`). The public members show all three until task 2.4c routes them through the new backend.
+
+**What task 2.4c adds.** The fast paths: a greedy run over a class as one instruction (rows O05 and O06, whose loop form
+passes the frame ceiling), atom-run folding and the literal-prefix prefilter, and a remedy for a class of many strings,
+whose alternation costs about two units a string at each position (`\p{RGI_Emoji}`, about 5,500 units a position). The
+route: `BroilerRegex`'s internal route of task 2.4b, which steps back from a start inside a pair and reports the
+caller's start (an empty match found at the pair, decision D41's case, at the pair's start, where the public members
+report the caller's start), runs under the library's maxima and a step ceiling of 100,000,000 units, and throws
+`RegexOverflowException` at any ceiling (where the public members answer no match when the old backend's step budget
+runs out, and throw it only at its stack guard), becomes the public members' route with the ceilings, meter and statuses
+task 2.4c decides; `Matching/` and the old backend's defects D1, D2 and M7 go with it, and the trail bound of task
+2.4a's record is listed or lifted.
+
+**What task 2.5 adds**, besides its V rows: a compile charge for the program's lowering of classes of strings. The
+compiler lowers each occurrence of a class of strings in full and shares nothing between occurrences: a `Choice` and a
+`Goto` for each string, a `Literal` for each of its characters and the class of its single characters
+(`ProgramCompilerTests` pins it). `\p{RGI_Emoji}`, 13 characters of pattern, is 2,760 strings and 16,717 instructions at
+each occurrence; its parse and compilation for the new backend allocate about 2,920 KiB, where the parse alone allocates
+about 960 KiB and the old backend's constructor about 980 KiB; 100 occurrences, 1,300 characters, are 1,671,701
+instructions and about 231 MiB (the parse about 93 MiB, the old constructor about 96 MiB). Task 2.5's compile meter
+(decision D8's "in proportion to the expansion") must charge the lowered strings, the characters and strings each
+occurrence emits, and not only what the parser expands; or the compiler lowers each class of strings once, into a table
+its occurrences share. Until then only the internal route and the tests compile such a program; task 2.4c puts it on the
+public constructor's path, so task 2.5's charge, or the shared table, comes with it or before.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

@@ -100,6 +100,109 @@ public class CeilingTests
         Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Steps), run.Head());
     }
 
+    /// <summary>
+    /// Task 2.4b's constructs on the ceilings' paths: look-arounds of the four kinds whose bodies backtrack, a negative
+    /// one among them whose body would reach a ceiling, and back-references forward, under i and in a look-behind.
+    /// </summary>
+    public static TheoryData<string, string, string> ThroughLookaroundsAndReferences => new()
+    {
+        { "^(?!(?:(a+)+b|a*c))", "u", new string('a', 7) + "c" },
+        { "^(?=(?:(a+)+b|a*c))", "", new string('a', 7) + "c" },
+        { "$(?<=(?:b(a+)+|ca*))", "", "c" + new string('a', 7) },
+        { "$(?<!(?:b(a+)+|ca*))", "u", "c" + new string('a', 7) },
+        { "(?!(?:a|ab)*d)a", "", string.Concat(Enumerable.Repeat("ab", 12)) + "c" },
+        { "(?=(?:(a)|b)*c)", "", string.Concat(Enumerable.Repeat("ab", 12)) + "c" },
+        { "(?:(a)|b)*(?!\\1)c", "", string.Concat(Enumerable.Repeat("ab", 10)) + "c" },
+        { "(a+)+\\1b", "", new string('a', 7) },
+        { "(?<=\\1(a+))b", "i", new string('a', 9) + "b" },
+        { "(\\w+)\\s\\1\\b", "i", "Word wORD wordy word WORD" },
+    };
+
+    [Theory]
+    [MemberData(nameof(ThroughLookaroundsAndReferences))]
+    public void A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(
+        string pattern, string flags, string subject)
+    {
+        // Every step ceiling below the call's cost, every frame ceiling below what it holds at once and every trail
+        // ceiling below the writes it keeps answers LimitExceeded naming that ceiling; at and above, the full answer. A
+        // negative look-around whose body stopped at a ceiling would otherwise read the stop as the body's failure, and
+        // hold.
+        var program = TestProgram.Compile(pattern, flags);
+        var full = Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+        Assert.NotEqual(RegexStatus.LimitExceeded, full.Status);
+        for (ulong k = 1; k <= full.Units; k++)
+        {
+            var run = Run(program, subject, k, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+            if (k < full.Units)
+                Assert.True((run.Status, run.Limit) == (RegexStatus.LimitExceeded, RegexLimit.Steps) && run.Units <= k, "steps " + k + ": " + run.Answer + " " + run.Limit);
+            else
+                Assert.Equal((full.Answer, full.Units), (run.Answer, run.Units));
+        }
+
+        Assert.True(Needed(program, subject, RegexLimit.Frames, full) > 1, "no frame ceiling was reached");
+        Assert.True(Needed(program, subject, RegexLimit.Trail, full) > 1, "no trail ceiling was reached");
+    }
+
+    /// <summary>
+    /// The least frame or trail ceiling under which <paramref name="program"/> gives its full answer, every lower one
+    /// having answered LimitExceeded naming <paramref name="ceiling"/>.
+    /// </summary>
+    private static int Needed(RegexProgram program, string subject, RegexLimit ceiling, (RegexStatus Status, RegexLimit Limit, ulong Units, string Answer) full)
+    {
+        for (var c = 1; ; c++)
+        {
+            var run = ceiling == RegexLimit.Frames
+                ? Run(program, subject, null, c, RegexMatchCeilings.TrailCeilingMaximum)
+                : Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, c);
+            if (run.Status != RegexStatus.LimitExceeded)
+            {
+                Assert.Equal((full.Answer, full.Units), (run.Answer, run.Units));
+                return c;
+            }
+
+            Assert.True(run.Limit == ceiling, ceiling + " " + c + ": " + run.Limit);
+        }
+    }
+
+    private static (RegexStatus Status, RegexLimit Limit, ulong Units, string Answer) Run(RegexProgram program, string subject, ulong? steps, int frames, int trail)
+    {
+        var slots = new int[program.SlotCount];
+        var status = program.Match(subject, 0, false, slots, null, new RegexMatchCeilings(steps, frames, trail), out var limit, out var units);
+        return (status, limit, units, MachineTests.Render(status, slots));
+    }
+
+    [Fact]
+    public void A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match()
+    {
+        // The body of (?!…) backtracks catastrophically before it fails on its own; stopped at a ceiling first, the
+        // call answers the ceiling, where reading the stop as the body's failure would let the look-around hold.
+        var program = TestProgram.Compile("^(?!(?:(a+)+b|a*c))");
+        var subject = new string('a', 7) + "c";
+        Assert.Equal("nomatch", Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum).Answer);
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Steps), Head(Run(program, subject, 100, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum)));
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Frames), Head(Run(program, subject, null, 3, RegexMatchCeilings.TrailCeilingMaximum)));
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Trail), Head(Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, 5)));
+    }
+
+    [Fact]
+    public void A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares()
+    {
+        // (.{n})\1 over 2n characters: the reference costs one and its length, n; a ceiling anywhere in it answers
+        // steps, its units never above the ceiling, as the length is refused before a character is compared.
+        const int n = 50_000;
+        var program = TestProgram.Compile("(.{" + n + "})\\1", "s");
+        var subject = new string('a', 2 * n);
+        var full = Run(program, subject, null, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+        Assert.Equal(RegexStatus.Match, full.Status);
+        foreach (var k in new[] { full.Units - 1, full.Units - 2, full.Units - (n / 2), full.Units - n, full.Units - n - 1 })
+        {
+            var run = Run(program, subject, k, RegexMatchCeilings.FrameCeilingMaximum, RegexMatchCeilings.TrailCeilingMaximum);
+            Assert.True((run.Status, run.Limit) == (RegexStatus.LimitExceeded, RegexLimit.Steps) && run.Units <= k, "steps " + k + ": " + run.Answer + " " + run.Units);
+        }
+    }
+
+    private static (RegexStatus, RegexLimit) Head((RegexStatus Status, RegexLimit Limit, ulong Units, string Answer) run) => (run.Status, run.Limit);
+
     [Fact]
     public void A_ceiling_the_call_never_reaches_costs_nothing()
     {

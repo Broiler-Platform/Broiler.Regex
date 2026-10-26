@@ -17,8 +17,8 @@ namespace Broiler.Regex.Tests;
 /// shapes of <see cref="MatchedShapes"/>; the public matcher's continuations recurse per level and per term until task
 /// 2.4c routes matching through task 2.4a's backend, so for the shapes of <see cref="UnprovenShapes"/> matching at the
 /// maximum through <see cref="BroilerRegex"/> is not proven, and some of them exhaust the stack. The new backend matches
-/// those of them within its subset at the maximum on a 1 MiB thread
-/// (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
+/// every shape at the maximum on a 1 MiB thread, since task 2.4b those holding back-references, assertions and
+/// look-behinds too (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
 /// N cases).
 /// </summary>
 /// <remarks>
@@ -134,9 +134,9 @@ public class NestingMaximumTests
     /// <summary>
     /// The shapes whose match at the maximum is not proven: a capture with a sequence, an alternation, a back-reference,
     /// an assertion or a quantifier on each level costs the matcher's continuations more stack per level than a 1 MiB
-    /// thread holds 512 times over with a margin, and some fail at the maximum. Task 2.4a's backend, with no CLR
-    /// recursion (A-4's matcher half), matches each of them that holds no back-reference, assertion or look-behind (task
-    /// 2.4b's instructions); <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
+    /// thread holds 512 times over with a margin, and some fail at the maximum. The new backend, with no CLR recursion
+    /// (A-4's matcher half), matches each of them at the maximum, task 2.4a's for those holding no back-reference,
+    /// assertion or look-behind and task 2.4b's for the rest; <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
     /// linux-x64 are in <see cref="BroilerRegex.MaximumNestingLimit"/>'s remarks.
     /// </summary>
     public static TheoryData<string> UnprovenShapes => new()
@@ -194,8 +194,8 @@ public class NestingMaximumTests
             // Not vacuous: three levels, depth 4, compile under a limit of 4 and are refused under 3, and the subject is
             // matched. Three, like the 511 levels at the maximum, is odd, which the alternating shapes need.
             var (pattern, flags, subject) = Shape(shape, 3);
-            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 4, out var regex, out _));
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 3, out _, out _));
+            Assert.Equal(RegexStatus.Success, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, 4, out var regex, out _));
+            Assert.Equal(RegexStatus.LimitExceeded, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, 3, out _, out _));
             Assert.True(regex!.Match(subject).Success, shape);
         }
     }
@@ -208,7 +208,7 @@ public class NestingMaximumTests
         var (pattern, flags, _) = Shape(shape, max - 1);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
+            Assert.Equal(RegexStatus.Success, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
             Assert.NotNull(regex);
 
             // The constructor parses under the same maximum.
@@ -224,7 +224,7 @@ public class NestingMaximumTests
         var (pattern, flags, subject) = Shape(shape, max - 1);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
+            Assert.Equal(RegexStatus.Success, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, max, out var regex, out _));
             Assert.True(regex!.Match(subject).Success);
             Assert.True(TestRegex.Compile(pattern, flags).IsMatch(subject));
         });
@@ -250,7 +250,7 @@ public class NestingMaximumTests
         var (pattern, flags, _) = Shape(shape, max);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, max, out var regex, out var limit));
+            Assert.Equal(RegexStatus.LimitExceeded, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, max, out var regex, out var limit));
             Assert.Equal(RegexLimit.Nesting, limit);
             Assert.Null(regex);
             Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, flags));
@@ -264,8 +264,8 @@ public class NestingMaximumTests
         var (classes, flags, _) = Shape("v class", 1_000_000);
         OnASmallStack(() =>
         {
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(groups, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out _, out _));
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(classes, flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out _, out _));
+            Assert.Equal(RegexStatus.LimitExceeded, TestRegex.TryCompile(groups, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out _, out _));
+            Assert.Equal(RegexStatus.LimitExceeded, TestRegex.TryCompile(classes, flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out _, out _));
         });
     }
 }

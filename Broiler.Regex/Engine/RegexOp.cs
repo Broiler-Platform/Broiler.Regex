@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   1
 // Annotated:        1/1
-// Exempt:           14
+// Exempt:           25
 // Human-reviewed:   0/1
 // IP risk:          None
 // Security risk:    Medium
@@ -31,16 +31,24 @@ namespace Broiler.Regex.Engine;
 /// the registers as the specification's continuation would have seen them.
 /// </para>
 /// <para>
-/// <b>What task 2.4a holds, and what is still to come.</b> Literal characters compared without case folding,
-/// <c>.</c> with and without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted
-/// bounds and the specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's
-/// captures cleared at each iteration. The assertions, back-references, look-around in both directions, modifiers,
-/// case-insensitive comparison and the strings of a <c>v</c>-mode class are task 2.4b's instructions; the greedy run of a
-/// single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below are
-/// not a contract: a program is built and run by the same version of the library.
+/// <b>What tasks 2.4a and 2.4b hold, and what is still to come.</b> Task 2.4a's: literal characters, <c>.</c> with and
+/// without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted bounds and the
+/// specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's captures cleared
+/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>, the assertions <c>^ $ \b \B</c>,
+/// back-references and the four look-arounds, with the backward direction a look-behind's body reads in. The greedy run of
+/// a single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below
+/// are not a contract: a program is built and run by the same version of the library.
+/// </para>
+/// <para>
+/// <b>Direction.</b> An instruction with <see cref="RegexInstruction.RightToLeft"/> set stands in a look-behind's body,
+/// which the specification compiles with direction backward: each member below that reads "the next character" then
+/// reads the character that ends at the index, a surrogate pair under <c>u</c> and <c>v</c> included, and moves the index
+/// to where it starts (§22.2.2.7.1, step 1, with direction backward). The compiler emits a backward sequence's terms
+/// right to left and a backward group's end before its start (§22.2.2.3, Alternative :: Alternative Term, and §22.2.2.7,
+/// the group's CaptureRange(ye, xe)), so no other instruction reads the direction.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=BEC728
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=45FE7B
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -118,4 +126,81 @@ internal enum RegexOp : byte
 
     /// <summary>The pattern's last continuation: the match succeeds, from the attempt's start index to the current one.</summary>
     Succeed = 13,
+
+    /// <summary>
+    /// The matcher of a pattern character under <c>i</c> (§22.2.2.7.1 CharacterSetMatcher over a one-member set, with
+    /// rer.[[IgnoreCase]] true): the next character's Canonicalize (§22.2.2.7.3) must be <c>A</c>, the pattern character's
+    /// own Canonicalize, computed when the program was built.
+    /// </summary>
+    LiteralIgnoringCase = 14,
+
+    /// <summary>
+    /// CharacterSetMatcher under <c>i</c> over class number <c>A</c>, its members as written: the next character
+    /// matches when some member shares its Canonicalize, which the machine finds by testing the members of the
+    /// character's case orbit, every code point with the same Canonicalize; when <c>B</c> is one the class is inverted
+    /// (<c>[^…]</c>) and the character matches when no member shares it.
+    /// </summary>
+    ClassIgnoringCase = 15,
+
+    /// <summary>
+    /// CharacterSetMatcher under <c>v</c> with <c>i</c> over class number <c>A</c>, whose members are already canonical
+    /// forms: the parser folded each operand by MaybeSimpleCaseFolding (§22.2.2.9.5) and took every complement within
+    /// AllCharacters, so the next character matches when its Canonicalize is a member.
+    /// </summary>
+    CanonicalClass = 16,
+
+    /// <summary>
+    /// Assertion :: <c>^</c> (§22.2.2.6): the index is the input's first, or, when <c>A</c> is one (rer.[[Multiline]], the
+    /// <c>m</c> flag in force), the character before it is a LineTerminator.
+    /// </summary>
+    LineStart = 17,
+
+    /// <summary>
+    /// Assertion :: <c>$</c> (§22.2.2.6): the index is the input's end, or, when <c>A</c> is one, the character at it is a
+    /// LineTerminator.
+    /// </summary>
+    LineEnd = 18,
+
+    /// <summary>
+    /// Assertion :: <c>\b</c> (§22.2.2.6): IsWordChar of the character before the index and of the character at it
+    /// differ, the word characters being class number <c>A</c>, the WordCharacters (§22.2.2.9.3) of the flags in force.
+    /// </summary>
+    WordEdge = 19,
+
+    /// <summary>Assertion :: <c>\B</c>: IsWordChar of the two characters around the index, read from class <c>A</c>, agree.</summary>
+    NotWordEdge = 20,
+
+    /// <summary>
+    /// BackreferenceMatcher (§22.2.2.7.2): the characters the group captured must come next, compared exactly. The group is
+    /// read from the program's list of referenced groups, <c>B</c> entries from entry <c>A</c>: the first whose capture is
+    /// defined is the one compared, and when none is, the reference matches the empty string. Today a list holds one
+    /// group; a name ES2025 lets several groups share (task 2.6) becomes a list of them, the one that participated
+    /// being compared, with no change to the instruction.
+    /// </summary>
+    Backreference = 21,
+
+    /// <summary>
+    /// BackreferenceMatcher under <c>i</c>: as <see cref="Backreference"/>, each character compared by Canonicalize
+    /// (§22.2.2.7.3).
+    /// </summary>
+    BackreferenceIgnoringCase = 22,
+
+    /// <summary>
+    /// The start of a look-around (§22.2.2.6, Assertion :: <c>(?=</c>, <c>(?!</c>, <c>(?&lt;=</c> and <c>(?&lt;!</c>
+    /// Disjunction <c>)</c>): a barrier frame is pushed at the index, and register <c>A</c> takes its place on the frame
+    /// stack; matching goes on into the body. <c>B</c> is one for a negative look-around, whose barrier, when every way
+    /// through the body has failed, resumes at <c>C</c>, the address after the look-around, from the index it was pushed
+    /// at and with every capture the body made undone (step 2.d, "Return c(x)"). A positive look-around's barrier, reached
+    /// the same way, fails in its turn (step 2.c).
+    /// </summary>
+    OpenLookaround = 23,
+
+    /// <summary>
+    /// The end of a look-around's body, which has matched (§22.2.2.6, step 2.b, the continuation that "always returns its
+    /// MatchState argument"): the barrier frame register <c>A</c> names, and every frame above it, are dropped, so nothing
+    /// after the look-around backtracks into its body. A positive look-around then goes on at the next instruction, from
+    /// the index its barrier holds, with the captures its body made (steps 2.e to 2.h); a negative one, <c>B</c> one,
+    /// fails (step 2.c).
+    /// </summary>
+    CloseLookaround = 24,
 }

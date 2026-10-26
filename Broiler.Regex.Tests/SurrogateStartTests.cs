@@ -13,8 +13,9 @@ namespace Broiler.Regex.Tests;
 /// points, so a code-unit index inside a pair is no index of their input. The one meaning the specification gives such
 /// an index is RegExpBuiltinExec's <c>lastIndex</c> (§22.2.7.2): step 13.b starts the matcher at "the character that was
 /// obtained from element lastIndex of S", the whole pair, and steps 22 and 24 report <c>lastIndex</c> itself as the
-/// match's <c>"index"</c> and start (an empty match there is decision D41 of Broiler.VM's JSD-0081, which neither row
-/// below is). <see cref="Rows"/> holds RegExpBuiltinExec's answers, <c>lastIndex</c> the start and the <c>g</c> flag set.
+/// match's <c>"index"</c> and start (an empty match there is decision D41 of Broiler.VM's JSD-0081, which no row of
+/// <see cref="Rows"/> is and <see cref="EmptyRows"/> holds). <see cref="Rows"/> holds RegExpBuiltinExec's answers,
+/// <c>lastIndex</c> the start and the <c>g</c> flag set.
 /// </para>
 /// <para>
 /// <b>The new backend's entry and its caller.</b> <see cref="RegexProgram.Match"/> takes a code-unit start and reads
@@ -71,7 +72,8 @@ public class SurrogateStartTests
     [InlineData(5, "match 1,4 3,4")]
     public void The_entry_reads_a_start_inside_a_pair_forward_from_its_low_half_as_a_lone_unit(int row, string entry)
     {
-        // The entry's contract: nothing before the start is read, so neither the match nor a capture begins before it.
+        // The entry's contract: the pair is split for the call, and none of these patterns reads backward, so neither the
+        // match nor a capture begins before the start (a look-behind's reads are MachineLookaroundTests').
         var (pattern, flags, subject, lastIndex, _) = Rows[row];
         Assert.Equal(entry, MachineTests.Run(pattern, flags, subject, lastIndex));
     }
@@ -100,5 +102,59 @@ public class SurrogateStartTests
     {
         var (pattern, flags, subject, lastIndex, exec) = Rows[row];
         Assert.Equal(exec, DifferentialTests.Old(TestRegex.Compile(pattern, flags), subject, lastIndex));
+    }
+
+    /// <summary>
+    /// JSD-0081's row M4, the empty match: a pattern, its flags, a subject and a <c>lastIndex</c> inside a pair from
+    /// which the step back finds an empty match at the pair's first unit, and the two answers decision D41 admits, the
+    /// pair's start (Broiler.VM's realm) and <c>lastIndex</c> (Broiler.JS).
+    /// </summary>
+    /// <remarks>
+    /// RegExpBuiltinExec's record of such a match is ill-formed: its <c>"index"</c> is <c>lastIndex</c> (steps 22 and
+    /// 24) and its end the matcher's, the pair's first unit, before it, which GetMatchString's assertion forbids.
+    /// Decision D41 classes the case implementation-defined, this case only, until the text is corrected.
+    /// </remarks>
+    internal static readonly (string Pattern, string Flags, string Subject, int LastIndex, string PairStart, string LastIndexAnswer)[] EmptyRows =
+    [
+        ("(?:)", "u", "\U0001F600", 1, "match 0,0", "match 1,1"),
+        ("a*", "u", "\U0001F600b", 1, "match 0,0", "match 1,1"),
+        ("(?=)", "v", "\U0001F600", 1, "match 0,0", "match 1,1"),
+        ("()", "u", "\U0001F600b", 1, "match 0,0 0,0", "match 1,1 1,1"),
+        ("^", "u", "\U0001F600", 1, "match 0,0", "match 1,1"),
+        ("(?:)", "uy", "\U0001F600", 1, "match 0,0", "match 1,1"),
+    ];
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void The_route_through_the_new_backend_reports_an_empty_match_at_the_pair_s_start(int row)
+    {
+        // The internal route, which task 2.4c makes the public members': it steps back to the pair, as
+        // RegExpBuiltinExec's step 13.b does, and reports the empty match it finds there where it found it, one of
+        // decision D41's answers, through Match and IsMatch alike.
+        var (pattern, flags, subject, lastIndex, pairStart, _) = EmptyRows[row];
+        var regex = BroilerRegex.OnTheNewBackend(pattern, RegexFlagsParser.Parse(flags), Broiler.Unicode.Tables.UnicodeTables.Instance);
+        Assert.Equal(pairStart, DifferentialTests.Old(regex, subject, lastIndex));
+        Assert.True(regex.IsMatch(subject, lastIndex));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4, Skip = "The old backend's defect D1: it does not step back across a start inside a pair, so ^ fails at the low half and it answers no match. Task 2.4c's route through the new backend takes the step back.")]
+    [InlineData(5)]
+    public void The_public_members_answer_an_empty_match_from_a_start_inside_a_pair_as_decision_D41_admits(int row)
+    {
+        // The old backend answers lastIndex, Broiler.JS's answer; the route through the new backend the pair's start,
+        // Broiler.VM's realm's. Task 2.4c decides which the public members keep; each is well-formed, an empty match
+        // that neither ends before it starts nor throws.
+        var (pattern, flags, subject, lastIndex, pairStart, lastIndexAnswer) = EmptyRows[row];
+        Assert.Contains(DifferentialTests.Old(TestRegex.Compile(pattern, flags), subject, lastIndex), (string[])[pairStart, lastIndexAnswer]);
     }
 }

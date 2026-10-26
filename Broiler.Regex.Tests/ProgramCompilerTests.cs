@@ -1,5 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using Broiler.Regex.Ast;
@@ -13,22 +19,29 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// The program compiler of task 2.4a (decision D5 of Broiler.VM's JSD-0081): the lowering of each construct of the subset
-/// to instructions, the transitional "not yet supported" answer for task 2.4b's constructs, the caller's nesting limit,
-/// and compilation at the nesting maximum and of a flat sequence of 100,000 terms on a 1 MiB thread.
+/// The program compiler of tasks 2.4a and 2.4b (decision D5 of Broiler.VM's JSD-0081): the lowering of each construct of
+/// the grammar to instructions, the absence of task 2.4a's transitional answer, the caller's nesting limit, and
+/// compilation at the nesting maximum and of a flat sequence of 100,000 terms on a 1 MiB thread.
 /// </summary>
 public class ProgramCompilerTests
 {
-    /// <summary>The program's instructions, one per entry, as "Op A,B,C"; the operands an instruction does not read are left out.</summary>
+    /// <summary>
+    /// The program's instructions, one per entry, as "Op A,B,C"; the operands an instruction does not read are left out,
+    /// and an instruction that reads right to left ends in " rtl".
+    /// </summary>
     internal static string[] Listing(RegexProgram program) => program.Code.ToArray().Select(static i => i.Op switch
     {
         RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
+            or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass or RegexOp.LineStart or RegexOp.LineEnd
+            or RegexOp.WordEdge or RegexOp.NotWordEdge
             => i.Op + " " + Decimal(i.A),
-        RegexOp.Choice or RegexOp.ClearCaptures => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
-        RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
+        RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase or RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase
+            or RegexOp.CloseLookaround
+            => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
+        RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration or RegexOp.OpenLookaround
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
-    }).ToArray();
+    } + (i.RightToLeft ? " rtl" : "")).ToArray();
 
     private static string Decimal(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
@@ -58,6 +71,109 @@ public class ProgramCompilerTests
     public void Each_construct_lowers_to_the_instructions_of_the_remarks(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("a", "i", new[] { "LiteralIgnoringCase 65", "Succeed" })]
+    [InlineData("a", "iu", new[] { "LiteralIgnoringCase 97", "Succeed" })]
+    [InlineData("\\u017F", "i", new[] { "LiteralIgnoringCase 383", "Succeed" })]
+    [InlineData("\\u017F", "iu", new[] { "LiteralIgnoringCase 115", "Succeed" })]
+    [InlineData("[a-c]", "i", new[] { "ClassIgnoringCase 0,0", "Succeed" })]
+    [InlineData("[^a-c]", "i", new[] { "ClassIgnoringCase 0,1", "Succeed" })]
+    [InlineData("[a-c]", "iv", new[] { "CanonicalClass 0", "Succeed" })]
+    [InlineData("[^a-c]", "iv", new[] { "CanonicalClass 0", "Succeed" })]
+    public void Under_i_a_character_is_its_Canonicalize_and_a_class_its_members_tested_by_case_orbit(string pattern, string flags, string[] expected)
+    {
+        // A character is compared by Canonicalize, the non-u branch an upper case (A, 65) that keeps U+017F outside ASCII,
+        // and the u branch simple case folding (s, 115). A class keeps its members as written and its inversion apart from
+        // them, as CharacterSetMatcher inverts after it compares; a v-mode class is already folded and complemented.
+        var program = TestProgram.Compile(pattern, flags);
+        Assert.Equal(expected, Listing(program));
+        Assert.NotNull(program.Folding);
+    }
+
+    [Theory]
+    [InlineData("^a$", "", new[] { "LineStart 0", "Literal 97", "LineEnd 0", "Succeed" })]
+    [InlineData("^a$", "m", new[] { "LineStart 1", "Literal 97", "LineEnd 1", "Succeed" })]
+    [InlineData("\\ba\\B", "", new[] { "WordEdge 0", "Literal 97", "NotWordEdge 0", "Succeed" })]
+    [InlineData("\\b[a]\\b", "iu", new[] { "WordEdge 0", "ClassIgnoringCase 1,0", "WordEdge 0", "Succeed" })]
+    public void An_assertion_lowers_to_one_instruction_reading_the_flags_in_force(string pattern, string flags, string[] expected)
+    {
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("(?i:a)a", "", new[] { "LiteralIgnoringCase 65", "Literal 97", "Succeed" })]
+    [InlineData("(?-i:a)a", "i", new[] { "Literal 97", "LiteralIgnoringCase 65", "Succeed" })]
+    [InlineData("(?m:^)^", "", new[] { "LineStart 1", "LineStart 0", "Succeed" })]
+    [InlineData("(?s-m:.$).$", "m", new[] { "Any", "LineEnd 0", "AnyButLineTerminator", "LineEnd 1", "Succeed" })]
+    [InlineData("(?i:\\b)\\b", "u", new[] { "WordEdge 0", "WordEdge 1", "Succeed" })]
+    public void A_modifier_group_lowers_its_body_under_its_flags_and_nothing_after_it(string pattern, string flags, string[] expected)
+    {
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("(?=a)", "", new[] { "OpenLookaround 2,0,3", "Literal 97", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?!a)b", "", new[] { "OpenLookaround 2,1,3", "Literal 97", "CloseLookaround 2,1", "Literal 98", "Succeed" })]
+    [InlineData("(?<=ab)c", "", new[] { "OpenLookaround 2,0,4", "Literal 98 rtl", "Literal 97 rtl", "CloseLookaround 2,0", "Literal 99", "Succeed" })]
+    [InlineData("(?<!a|bc)", "", new[] { "OpenLookaround 2,1,7", "Choice 2,4", "Literal 97 rtl", "Goto 6", "Literal 99 rtl", "Literal 98 rtl", "CloseLookaround 2,1", "Succeed" })]
+    [InlineData("(?<=(a)\\1)", "i", new[] { "OpenLookaround 4,0,6", "BackreferenceIgnoringCase 0,1 rtl", "SavePosition 3", "LiteralIgnoringCase 65 rtl", "SavePosition 2", "CloseLookaround 4,0", "Succeed" })]
+    [InlineData("(?<=[a-c].)", "", new[] { "OpenLookaround 2,0,4", "AnyButLineTerminator rtl", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=(?=a).)", "", new[] { "OpenLookaround 2,0,6", "AnyButLineTerminator rtl", "OpenLookaround 3,0,5", "Literal 97", "CloseLookaround 3,0", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?=(?<=a)b)", "", new[] { "OpenLookaround 2,0,6", "OpenLookaround 3,0,4", "Literal 97 rtl", "CloseLookaround 3,0", "Literal 98", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=a*)", "", new[] { "OpenLookaround 2,0,7", "Choice 2,6", "SavePosition 3", "Literal 97 rtl", "RejectEmptyIteration 3,-1,0", "Goto 1", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=^\\b$)", "m", new[] { "OpenLookaround 2,0,5", "LineEnd 1", "WordEdge 0", "LineStart 1", "CloseLookaround 2,0", "Succeed" })]
+    public void A_look_around_lowers_to_a_barrier_around_its_body_and_a_look_behind_s_body_right_to_left(string pattern, string flags, string[] expected)
+    {
+        // A look-around's register is its own, taken when it is lowered; its start's third operand is the address after
+        // its close. Backward, a sequence's terms are emitted last first and a group's end register is written first;
+        // assertions, choices and loops read no direction.
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Fact]
+    public void A_back_reference_reads_a_list_of_its_group_from_the_program_s_referenced_groups()
+    {
+        // Each reference holds a run of entries of the program's list, one group long today; task 2.6's duplicate names
+        // make a run of the groups that share a name, with no change to the instruction.
+        var program = TestProgram.Compile("(?<a>x)(y)\\2\\k<a>(?i:\\1)");
+        Assert.Equal(["Backreference 0,1", "Backreference 1,1", "BackreferenceIgnoringCase 2,1"],
+            Listing(program).Where(static l => l.StartsWith("Backreference", StringComparison.Ordinal)));
+        Assert.Equal([2], program.ReferencedGroups(0, 1).ToArray());
+        Assert.Equal([1], program.ReferencedGroups(1, 1).ToArray());
+        Assert.Equal([1], program.ReferencedGroups(2, 1).ToArray());
+        Assert.All(program.Code.ToArray().Where(static i => i.Op is RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase), static i => Assert.Equal(1, i.Cost));
+    }
+
+    [Fact]
+    public void A_word_boundary_reads_the_word_characters_of_its_flags_and_costs_one_plus_their_weight_twice()
+    {
+        // WordCharacters (§22.2.2.9.3): the basic set's four ranges, and under u or v with i two more, U+017F and the
+        // Kelvin sign; a boundary tests the characters on both sides, so it costs 1 + 2 x 2.
+        var basic = TestProgram.Compile("\\b", "i");
+        Assert.Equal([48, 57, 65, 90, 95, 95, 97, 122], basic.ClassRanges(0).ToArray());
+        var folded = TestProgram.Compile("\\b", "iu");
+        Assert.Equal([48, 57, 65, 90, 95, 95, 97, 122, 0x17F, 0x17F, 0x212A, 0x212A], folded.ClassRanges(0).ToArray());
+        Assert.Equal((5, 5), (basic.Code[0].Cost, folded.Code[0].Cost));
+        Assert.Equal(1, TestProgram.Compile("^$", "m").Code[0].Cost);
+    }
+
+    [Fact]
+    public void A_class_under_i_costs_one_plus_its_weight_for_each_code_point_of_an_orbit()
+    {
+        // Each orbit holds at most four code points at UCD 17.0.0, in both branches of Canonicalize; \p{L} is 684 ranges,
+        // weight nine, so a test under iu searches for up to four code points: 1 + 4 x 9. A v-mode class under i searches
+        // for one, the character's Canonicalize, in the folded set's own ranges. A class of one range costs one however it is
+        // tested.
+        var unicode = TestProgram.Compile("\\p{L}", "iu");
+        Assert.Equal((4, 37), (unicode.OrbitLength, unicode.Code[0].Cost));
+        var sets = TestProgram.Compile("\\p{L}", "iv");
+        Assert.Equal((RegexOp.CanonicalClass, 1 + RegexProgram.ClassWeight(sets.ClassRanges(0).Length / 2)), (sets.Code[0].Op, sets.Code[0].Cost));
+        var legacy = TestProgram.Compile("[a-z]", "i");
+        Assert.Equal((4, 1), (legacy.OrbitLength, legacy.Code[0].Cost));
+        Assert.Equal(1, TestProgram.Compile("a", "i").Code[0].Cost);
+        Assert.Null(TestProgram.Compile("a").Folding);
     }
 
     [Fact]
@@ -111,8 +227,9 @@ public class ProgramCompilerTests
     [Fact]
     public void Every_cost_is_one_but_a_class_test_s_and_a_capture_reset_of_any_width_costs_one()
     {
-        // Decision D8: one unit per instruction dispatched, and a class test's weight on top; nothing else is weighed.
-        var program = TestProgram.Compile("((a)(b)(c))+[a-cx-z]");
+        // Decision D8: one unit per instruction dispatched, and a class test's weight on top; nothing else is weighed, a
+        // look-around's start and close and a backward read included.
+        var program = TestProgram.Compile("((a)(b)(c))+[a-cx-z](?<=[a-cx-z](?!b))");
         Assert.All(program.Code.ToArray(), static i => Assert.Equal(i.Op == RegexOp.Class ? 2 : 1, i.Cost));
         var clear = program.Code.ToArray().Single(static i => i.Op == RegexOp.ClearCaptures);
         Assert.Equal((2, 9, 1), (clear.A, clear.B, clear.Cost));
@@ -128,6 +245,43 @@ public class ProgramCompilerTests
         Assert.Equal(9, program.RegisterCount);
         Assert.False(program.Unicode);
         Assert.True(TestProgram.Compile("a", "v").Unicode);
+    }
+
+    [Theory]
+    [InlineData("[\\q{abc|ab}]", "v", new[] { "Choice 1,5", "Literal 97", "Literal 98", "Literal 99", "Goto 10", "Choice 6,9", "Literal 97", "Literal 98", "Goto 10", "Class 0", "Succeed" })]
+    [InlineData("[\\q{ab}c-e]", "v", new[] { "Choice 1,4", "Literal 97", "Literal 98", "Goto 5", "Class 0", "Succeed" })]
+    [InlineData("[\\q{ab|}c]", "v", new[] { "Choice 1,4", "Literal 97", "Literal 98", "Goto 7", "Choice 5,7", "Class 0", "Goto 7", "Succeed" })]
+    [InlineData("[\\q{}]", "v", new[] { "Choice 1,3", "Class 0", "Goto 3", "Succeed" })]
+    [InlineData("[\\q{AB}]", "vi", new[] { "Choice 1,4", "LiteralIgnoringCase 97", "LiteralIgnoringCase 98", "Goto 5", "CanonicalClass 0", "Succeed" })]
+    [InlineData("[\\q{\\u{1F600}a}]", "v", new[] { "Choice 1,4", "Literal 128512", "Literal 97", "Goto 5", "Class 0", "Succeed" })]
+    [InlineData("(?<=[\\q{ab}])", "v", new[] { "OpenLookaround 2,0,7", "Choice 2,5", "Literal 98 rtl", "Literal 97 rtl", "Goto 6", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    public void A_class_with_strings_lowers_to_an_alternation_of_its_strings_longest_first_then_its_characters_then_the_empty_string(string pattern, string flags, string[] expected)
+    {
+        // §22.2.2.7, Atom :: CharacterClass, steps 3 to 8. The class of single characters is always an alternative, even
+        // empty, as the specification appends its CharacterSetMatcher; the empty string, when held, is an empty last one.
+        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Fact]
+    public void The_transitional_not_yet_supported_answer_is_gone_from_the_library_s_metadata()
+    {
+        // Task 2.4a's seam: the compiler's third answer, for a construct whose instructions task 2.4b had still to add.
+        // It is not an answer of the enumeration any more, and no member, type or string of the assembly names it.
+        Assert.Equal(["Compiled", "NestingLimitExceeded"], Enum.GetNames<ProgramCompilation>());
+        var assembly = typeof(ProgramCompilation).Assembly;
+        const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+        var names = assembly.GetTypes().SelectMany(static t => t.GetMembers(all).Select(static m => m.Name).Append(t.Name));
+        Assert.DoesNotContain(names, static n => n.Contains("NotYetSupported", StringComparison.OrdinalIgnoreCase));
+
+        using var stream = File.OpenRead(assembly.Location);
+        using var portable = new PEReader(stream);
+        var metadata = portable.GetMetadataReader();
+        var strings = new List<string>();
+        for (var handle = MetadataTokens.UserStringHandle(1); !handle.IsNil; handle = metadata.GetNextHandle(handle))
+            strings.Add(metadata.GetUserString(handle));
+        Assert.NotEmpty(strings);
+        Assert.DoesNotContain(strings, static text => text.Contains("not yet supported", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("NotYetSupported", StringComparison.Ordinal));
     }
 
     [Theory]
@@ -147,12 +301,33 @@ public class ProgramCompilerTests
     [InlineData("a", "i")]
     [InlineData("[a]", "iv")]
     [InlineData("[\\q{ab}]", "v")]
-    [InlineData("\\p{RGI_Emoji}", "v")]
     [InlineData("x(?:y|(z\\b))*", "")]
-    public void A_construct_of_task_2_4b_is_answered_not_yet_supported_with_no_program_and_nothing_thrown(string pattern, string flags)
+    [InlineData("(?=a)(?<!b)[\\q{xy}]\\1(a)", "v")]
+    [InlineData("^\\b\\B$(?i:a)(?<n>b)\\k<n>", "iu")]
+    [InlineData("\\p{RGI_Emoji}", "v")]
+    public void Every_construct_task_2_4a_refused_now_compiles(string pattern, string flags)
     {
-        Assert.Equal(ProgramCompilation.NotYetSupported, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));
-        Assert.Null(program);
+        // Task 2.4a's eighteen rows, each construct it answered "not yet supported" alone, and two that combine them.
+        // \p{RGI_Emoji} comes last, so that the differential's suite population, which runs a pattern against the
+        // literals below it, does not run it against the long patterns as subjects (task 2.4c's fast paths).
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program));
+        Assert.NotNull(program);
+    }
+
+    [Fact]
+    public void A_class_of_strings_is_lowered_in_full_at_each_of_its_occurrences()
+    {
+        // The compile-time expansion that task 2.5's compile meter must charge (the roadmap's record of task 2.4b):
+        // each occurrence of a class of strings becomes a Choice and a Goto for each string, a Literal for each of its
+        // characters, the class of its single characters and nothing shared, so \p{RGI_Emoji}'s 2,760 strings are
+        // 16,717 instructions, and a second occurrence as many again.
+        const string Emoji = "\\p{RGI_Emoji}";
+        var strings = ((CharClassNode)RegexParser.Parse(Emoji, RegexFlags.UnicodeSets, UnicodeTables.Instance, out _)).Set.Strings;
+        var characters = strings.Sum(static text => text.EnumerateRunes().Count());
+        var once = TestProgram.Compile(Emoji, "v").Code.Length - 1;
+        Assert.Equal((2_760, 16_717), (strings.Count, once));
+        Assert.Equal((2 * strings.Count) + characters + 1, once);
+        Assert.Equal((2 * once) + 1, TestProgram.Compile(Emoji + Emoji, "v").Code.Length);
     }
 
     [Fact]
@@ -182,24 +357,14 @@ public class ProgramCompilerTests
 
         // A tree the parser built under a deeper limit is refused by the compiler's own check.
         var data = new RegexUnicode(UnicodeTables.Instance);
-        var tree = RegexParser.Parse(Nested(4), RegexFlags.None, data, new RegexNesting(512), out var captures, out _);
-        Assert.Equal(ProgramCompilation.NestingLimitExceeded, ProgramCompiler.Compile(tree, captures, RegexFlags.None, new RegexNesting(4), out var program));
+        var tree = RegexParser.Parse(Nested(4), RegexFlags.None, data, new RegexNesting(512), out var captures, out var names);
+        Assert.Equal(ProgramCompilation.NestingLimitExceeded, ProgramCompiler.Compile(tree, captures, names, RegexFlags.None, data, new RegexNesting(4), out var program));
         Assert.Null(program);
-        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captures, RegexFlags.None, new RegexNesting(5), out _));
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captures, names, RegexFlags.None, data, new RegexNesting(5), out _));
     }
 
-    /// <summary>The subset's shapes of <see cref="NestingMaximumTests"/>: those built of groups, alternations, sequences, quantifiers and v-mode classes alone.</summary>
-    public static TheoryData<string> SubsetShapes => new()
-    {
-        "capturing", "unicode capturing", "non-capturing", "named", "v class", "v complement", "v intersection",
-        "v subtraction", "v union", "repeated capturing group", "repeated non-capturing group", "optional capturing group",
-        "alternation", "sequence", "alternation of sequences", "capturing sequence", "capturing alternation of sequences",
-        "named alternation of sequences", "capturing alternation of optional sequences", "repeated alternation of sequences",
-        "repeated capturing alternation of sequences",
-    };
-
     [Theory]
-    [MemberData(nameof(SubsetShapes))]
+    [MemberData(nameof(NestingMaximumTests.AllShapes), MemberType = typeof(NestingMaximumTests))]
     public void A_pattern_at_the_maximum_compiles_on_a_1_MiB_stack_and_one_level_past_it_is_refused(string shape)
     {
         var max = BroilerRegex.MaximumNestingLimit;

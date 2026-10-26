@@ -39,23 +39,32 @@ namespace Broiler.Regex.Architecture.Tests;
 /// method the namespace reaches, its own included, takes a function pointer (<c>ldftn</c>, <c>ldvirtftn</c>), invokes a
 /// delegate other than the meter, calls a virtual, abstract or interface method of this assembly through
 /// <c>callvirt</c>, or uses <c>calli</c>. Every path out of the namespace is then in the graph. A call to another
-/// assembly ends it. That rests on what the namespace calls there, the shared array pool, spans, <c>Math</c>,
-/// <c>BitOperations</c>, <c>char</c> and the argument checks, calling no code of this library's, which the test does not
-/// read and a review of each new such call confirms; and the meter is the caller's code, which may call a match of its
-/// own: that is the caller's recursion, not the library's. The in-memory witness plants each shape the graph once missed
-/// (a closure calling its own delegate, a delegate a type initializer caches, an override and an interface
-/// implementation in another namespace that call back, a meter the library makes of a method of the namespace) and is
-/// refused for each.
+/// assembly ends it. That rests on what the namespace calls there calling no code of this library's, which the graph
+/// does not read: the types it calls are pinned (<see cref="ReviewedExternalTypes"/>), each reviewed, so that a new one
+/// fails the test until it is. They are the runtime's array pool, arrays, spans, <c>GC</c>, <c>Math</c>,
+/// <c>BitOperations</c>, <c>char</c>, <c>Nullable</c>, <c>object</c> and the argument checks, and, since task 2.4b, the
+/// Unicode owner's case folding, which under <c>i</c> reads the provider it was built over at match time. That provider
+/// and the meter are the caller's code, which may call a match of its own: that is the caller's recursion, not the
+/// library's. The provider stays the caller's because no type of the library implements its interface, which is refused
+/// wherever it is declared. The in-memory witness plants each shape the graph once missed (a closure calling its own
+/// delegate, a delegate a type initializer caches, an override and an interface implementation in another namespace
+/// that call back, a meter the library makes of a method of the namespace, a provider of the library's own wrapping the
+/// caller's tables that matches again) and is refused for each.
 /// </para>
 /// </remarks>
 public class MatcherRecursionTests
 {
     private const string MatcherNamespace = "Broiler.Regex.Engine";
 
+    /// <summary>The Unicode owner's provider interface: the case folding the machine calls under <c>i</c> reads the tables through it.</summary>
+    private const string ProviderInterface = "Broiler.Unicode.Algorithms.IUnicodeTables";
+
     /// <summary>
-    /// What check A-4 refuses in a graph: every cycle through the namespace; every way into the namespace the graph could
-    /// not follow, a virtual or abstract method or an interface implementation declared in it; and every transfer out of
-    /// a method the namespace reaches that the graph cannot follow (<see cref="CallGraph.UnresolvedFrom"/>).
+    /// What check A-4 refuses in a graph: every cycle through the namespace; every way into the namespace the graph
+    /// could not follow, a virtual or abstract method or an interface implementation declared in it; every transfer out
+    /// of a method the namespace reaches that the graph cannot follow (<see cref="CallGraph.UnresolvedFrom"/>); and
+    /// every type of the library that implements the provider's interface, which the case folding calls during a match
+    /// from the Unicode owner's assembly, where the graph does not reach.
     /// </summary>
     private static List<string> Refusals(CallGraph graph) =>
     [
@@ -63,6 +72,24 @@ public class MatcherRecursionTests
         .. graph.VirtualMethodsIn(MatcherNamespace).Select(static m => m + " is virtual"),
         .. graph.InterfaceImplementationsIn(MatcherNamespace).Select(static t => t + " implements an interface"),
         .. graph.UnresolvedFrom(MatcherNamespace),
+        .. graph.ImplementationsOf(ProviderInterface).Select(static t => t + " implements " + ProviderInterface + ", which the case folding calls during a match"),
+    ];
+
+    /// <summary>
+    /// The types of other assemblies whose members a method the namespace reaches calls or makes, its own methods
+    /// included: the calls the graph does not follow, each reviewed for a way back into the library. The runtime's
+    /// shared array pool, arrays, spans and their extensions, <c>GC</c>'s array allocation, <c>Math</c>,
+    /// <c>BitOperations</c>, <c>char</c>, <c>Nullable</c>, <c>object</c>'s constructor and the argument checks call no
+    /// code of the library's; the Unicode owner's case folding (task 2.4b: <c>SimpleFold</c>, <c>SimpleUpper</c>,
+    /// <c>Orbit</c> and <c>UpperOrbit</c>, at match time under <c>i</c>) reads the provider it was built over, which is
+    /// the caller's, as no type of the library implements its interface (<see cref="Refusals"/>). A type that joins
+    /// this list is a call to review before the list is moved.
+    /// </summary>
+    private static readonly string[] ReviewedExternalTypes =
+    [
+        "Broiler.Unicode.Algorithms.UnicodeCaseFolding", "System.ArgumentException", "System.ArgumentOutOfRangeException",
+        "System.Array", "System.Buffers.ArrayPool`1", "System.Char", "System.GC", "System.Math", "System.MemoryExtensions",
+        "System.Nullable`1", "System.Numerics.BitOperations", "System.Object", "System.ReadOnlySpan`1", "System.Span`1",
     ];
 
     [Fact]
@@ -79,8 +106,12 @@ public class MatcherRecursionTests
         Assert.Contains("Broiler.Regex.Engine.RegexMachine.PushChoicePoint(System.Int32,System.Int32)", graph.Callees(Loop));
         Assert.True(graph.Reaches(graph.Methods.Single(static m => m.StartsWith("Broiler.Regex.Engine.RegexProgram.Match(", StringComparison.Ordinal)), Loop));
 
-        // The only method outside the namespace that it reaches is the meter's invocation, the caller's code.
+        // The only method outside the namespace that it reaches is the meter's invocation, the caller's code; the calls
+        // into other assemblies are those reviewed, the case folding among them, which reads the caller's provider, the
+        // caller's code too, as no type of the library implements its interface (Refusals).
         Assert.Equal(["Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64)"], graph.ReachedFrom(MatcherNamespace).Where(static m => !m.StartsWith(MatcherNamespace + ".", StringComparison.Ordinal)));
+        Assert.Equal(ReviewedExternalTypes, graph.ExternalTypesFrom(MatcherNamespace));
+        Assert.Contains("Broiler.Unicode.Algorithms.UnicodeCaseFolding", graph.ExternalTypesFrom(MatcherNamespace));
 
         // And the reading finds what the library has elsewhere: the old closure matcher of Matching/ makes and invokes
         // delegates, which the graph cannot follow; the parser's descent recurses, under the nesting limit.
@@ -123,7 +154,38 @@ public class MatcherRecursionTests
         Assert.NotEqual(sources.Single(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)).Text, loop.Single(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)).Text);
         Assert.Contains(CallGraph.Read(Compile(loop)).CyclesThrough(MatcherNamespace), static c => c.Contains("Broiler.Regex.Engine.RegexMachine.MatchFrom(System.Int32)", StringComparison.Ordinal)
             && c.Contains("Broiler.Regex.Engine.RegexMachine.Pay()", StringComparison.Ordinal));
+
+        // A recursion through the caller's provider, which the graph cannot follow into the Unicode owner's assembly:
+        // the case folding the machine calls under i reads the tables it was built over, and a provider of the
+        // library's own that matches again would close a cycle match -> folding -> provider -> match. The library wraps
+        // the caller's tables in such a provider here; it is refused as an implementation of the provider's interface.
+        const string Folding = "        _folding = new UnicodeCaseFolding(tables);";
+        var unicode = sources.Single(static s => s.Path.EndsWith("Unicode/RegexUnicode.cs", StringComparison.Ordinal));
+        Assert.Contains(Folding, unicode.Text);
+        var wrapped = sources.Select(s => s.Path == unicode.Path
+            ? (Path: s.Path, Text: s.Text.Replace(Folding, "        _folding = new UnicodeCaseFolding(new PlantedTables(tables));", StringComparison.Ordinal))
+            : s).ToList();
+        var provider = Refusals(CallGraph.Read(Compile([.. wrapped, ("Broiler.Regex/Unicode/PlantedTables.cs", PlantedTables)])));
+        Assert.Contains(provider, static r => r.StartsWith("Broiler.Regex.Unicode.PlantedTables implements Broiler.Unicode.Algorithms.IUnicodeTables", StringComparison.Ordinal));
     }
+
+    private const string PlantedTables = """
+        namespace Broiler.Regex.Unicode
+        {
+            internal sealed class PlantedTables(Broiler.Unicode.Algorithms.IUnicodeTables inner) : Broiler.Unicode.Algorithms.IUnicodeTables
+            {
+                internal static Broiler.Regex.Engine.RegexProgram? Again;
+
+                public string UnicodeVersion => inner.UnicodeVersion;
+
+                public System.ReadOnlySpan<byte> Table(Broiler.Unicode.Algorithms.UnicodeTable table)
+                {
+                    Again?.Match(System.ReadOnlySpan<char>.Empty, 0, false, System.Span<int>.Empty, null, default, out _, out _);
+                    return inner.Table(table);
+                }
+            }
+        }
+        """;
 
     private const string PlantedRecursion = """
         namespace Broiler.Regex.Engine
@@ -255,6 +317,8 @@ public class MatcherRecursionTests
         private readonly Dictionary<string, string> _namespaces = new(StringComparer.Ordinal);
         private readonly List<string> _virtuals = [];
         private readonly List<string> _interfaces = [];
+        private readonly List<(string Type, string Interface)> _implementations = [];
+        private readonly Dictionary<string, SortedSet<string>> _external = new(StringComparer.Ordinal);
         private readonly Dictionary<string, List<string>> _unresolved = new(StringComparer.Ordinal);
 
         /// <summary>The meter's delegate type: its invocation is followed to every method the library makes a meter of.</summary>
@@ -269,6 +333,13 @@ public class MatcherRecursionTests
         internal IEnumerable<string> VirtualMethodsIn(string ns) => _virtuals.Where(m => InNamespace(_namespaces[m], ns));
 
         internal IEnumerable<string> InterfaceImplementationsIn(string ns) => _interfaces.Where(t => t.StartsWith(ns + ".", StringComparison.Ordinal));
+
+        /// <summary>Every type of the assembly that implements the interface named <paramref name="name"/>, wherever it is declared.</summary>
+        internal IEnumerable<string> ImplementationsOf(string name) => _implementations.Where(i => i.Interface == name).Select(static i => i.Type);
+
+        /// <summary>The types of other assemblies whose members a method that namespace <paramref name="ns"/> reaches calls or makes.</summary>
+        internal List<string> ExternalTypesFrom(string ns) =>
+            ReachedFrom(ns).Where(_external.ContainsKey).SelectMany(m => _external[m]).Distinct().Order(StringComparer.Ordinal).ToList();
 
         internal static CallGraph Read(byte[] image)
         {
@@ -290,6 +361,11 @@ public class MatcherRecursionTests
                 var type = metadata.GetTypeDefinition(typeHandle);
                 if (type.GetInterfaceImplementations().Count > 0)
                     graph._interfaces.Add(SignatureNames.Qualified(metadata, typeHandle));
+                foreach (var implementation in type.GetInterfaceImplementations())
+                {
+                    var implemented = metadata.GetInterfaceImplementation(implementation).Interface;
+                    graph._implementations.Add((SignatureNames.Qualified(metadata, typeHandle), TypeName(metadata, names, implemented)));
+                }
             }
 
             // The virtual methods of the assembly by simple name and arity, which a virtual call to another assembly's
@@ -335,6 +411,12 @@ public class MatcherRecursionTests
                         var targets = Resolve(metadata, names, operand).Select(NameOf).ToList();
                         foreach (var target in targets)
                             graph._edges[name].Add(target);
+                        if (targets.Count == 0 && DeclaringType(metadata, names, operand) is { } external)
+                        {
+                            if (!graph._external.TryGetValue(name, out var types))
+                                graph._external[name] = types = new SortedSet<string>(StringComparer.Ordinal);
+                            types.Add(external);
+                        }
 
                         switch (opCode)
                         {
@@ -450,6 +532,44 @@ public class MatcherRecursionTests
                 _ => member.Parent.Kind.ToString(),
             };
             return parent + "." + metadata.GetString(member.Name) + "(" + string.Join(",", member.DecodeMethodSignature(names, null).ParameterTypes) + ")";
+        }
+
+        /// <summary>A type's name, a generic instance's without its arguments.</summary>
+        private static string TypeName(MetadataReader metadata, SignatureNames names, EntityHandle type)
+        {
+            var name = type.Kind switch
+            {
+                HandleKind.TypeReference => SignatureNames.Qualified(metadata, (TypeReferenceHandle)type),
+                HandleKind.TypeDefinition => SignatureNames.Qualified(metadata, (TypeDefinitionHandle)type),
+                HandleKind.TypeSpecification => metadata.GetTypeSpecification((TypeSpecificationHandle)type).DecodeSignature(names, null),
+                _ => type.Kind.ToString(),
+            };
+            var arguments = name.IndexOf('<', StringComparison.Ordinal);
+            return arguments < 0 ? name : name[..arguments];
+        }
+
+        /// <summary>The type that declares a method operand of another assembly, or null for one this assembly defines.</summary>
+        private static string? DeclaringType(MetadataReader metadata, SignatureNames names, EntityHandle operand)
+        {
+            if (operand.Kind == HandleKind.MethodSpecification)
+                operand = metadata.GetMethodSpecification((MethodSpecificationHandle)operand).Method;
+            if (operand.Kind != HandleKind.MemberReference)
+                return null;
+            var parent = metadata.GetMemberReference((MemberReferenceHandle)operand).Parent;
+            if (parent.Kind == HandleKind.TypeDefinition)
+                return null;
+            if (parent.Kind == HandleKind.TypeSpecification)
+            {
+                var blob = metadata.GetBlobReader(metadata.GetTypeSpecification((TypeSpecificationHandle)parent).Signature);
+                if (blob.ReadSignatureTypeCode() == SignatureTypeCode.GenericTypeInstance)
+                {
+                    blob.ReadSignatureTypeCode();
+                    if (blob.ReadTypeHandle().Kind == HandleKind.TypeDefinition)
+                        return null;
+                }
+            }
+
+            return TypeName(metadata, names, parent);
         }
 
         /// <summary>A method operand's parameter count.</summary>

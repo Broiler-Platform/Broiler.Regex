@@ -17,9 +17,9 @@ namespace Broiler.Regex.Probe;
 /// <see cref="EnginePopulation"/>, which the report carries.
 /// </summary>
 /// <remarks>
-/// The answers beyond the corpus's statuses are <c>unsupported</c>, for a pattern holding a construct whose
-/// instructions task 2.4b adds (the compiler's transitional answer), for an operation other than <c>compile</c>,
-/// <c>match@k</c> and <c>anchored@k</c>, and for a policy with a compile budget (requirement R2, task 2.5's). Task 2.14's
+/// The answers beyond the corpus's statuses are <c>unsupported</c>, for an operation other than <c>compile</c>,
+/// <c>match@k</c> and <c>anchored@k</c>, and for a policy with a compile budget (requirement R2, task 2.5's); since task
+/// 2.4b every pattern the parser accepts compiles to a program, unless it nests past the row's limit. Task 2.14's
 /// <c>--adversarial</c> mode, which runs every row with both controls of the rule's part C, is built on this.
 /// </remarks>
 internal static class EngineRun
@@ -55,8 +55,6 @@ internal static class EngineRun
 
         if (compiled == ProgramCompilation.NestingLimitExceeded)
             return "limit:nesting";
-        if (compiled != ProgramCompilation.Compiled)
-            return "unsupported";
         if (op == "compile")
             return "ok";
 
