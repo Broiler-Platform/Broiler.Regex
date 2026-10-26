@@ -27,6 +27,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Broiler.Regex\Broiler.Regex.csproj" />
+    <!-- The Unicode owner's tables, which the probe hands to every compilation: test-only data, as the library
+         references the provider's algorithms alone (R11, decision D11 of Broiler.VM's JSD-0081). -->
+    <PackageReference Include="Broiler.Unicode.Tables" />
   </ItemGroup>
 
 </Project>

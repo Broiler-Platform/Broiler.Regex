@@ -8,6 +8,8 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
+    <!-- The Unicode owner's tables, handed to every compilation as its IUnicodeTables: test-only data (R11, decision D11). -->
+    <PackageReference Include="Broiler.Unicode.Tables" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Broiler.Regex\Broiler.Regex.csproj" />

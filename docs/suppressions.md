@@ -42,4 +42,21 @@ Package validation compares every pack of `Broiler.Regex` with the last publishe
 in `Broiler.Regex/CompatibilitySuppressions.xml`, listed here with its R item, and recorded in
 [`CHANGELOG.md`](../CHANGELOG.md) under **Changed**.
 
-None yet.
+### R11: Unicode data through the Unicode owner's provider (task 2.2 of SJL-11.2, 2026-10-26)
+
+The package reads its Unicode data through `Broiler.Unicode.Algorithms` alone and carries no table, so whatever
+needed a table without being handed one cannot remain (decision D11; decision D12: "a table-less constructor cannot
+survive R11", and no shim is kept for a member R11 makes impossible). Each member below needed the old packages'
+tables or the deleted case-folding table; each is suppressed by `Broiler.Regex/CompatibilitySuppressions.xml` as
+package validation generated it (`ApiCompatGenerateSuppressionFile`), and nothing else is.
+
+| Suppression | Target | What replaces it |
+|---|---|---|
+| CP0001 | `T:Broiler.Regex.Unicode.CaseFolding` | Deleted with its generated table and generator. Canonicalize is the provider's `UnicodeCaseFolding`, read through the internal `RegexUnicode`. |
+| CP0001 | `T:Broiler.Regex.Unicode.UnicodeCharSets` | Internal. Its property resolution, white space, folded word set and `AllCharacters` are `RegexUnicode`'s, from the provider; what is not Unicode data (`\d`, the basic word set, the code space) stays in the internal class. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.#ctor(System.String,Broiler.Regex.RegexFlags)` | `BroilerRegex(string, RegexFlags, IUnicodeTables)`. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.#ctor(System.String,System.String)` | `BroilerRegex(string, string?, IUnicodeTables)`. |
+| CP0002 | `M:Broiler.Regex.Parsing.RegexParser.#ctor(System.String,Broiler.Regex.RegexFlags)` | `RegexParser(string, RegexFlags, IUnicodeTables)`. |
+| CP0002 | `M:Broiler.Regex.Parsing.RegexParser.Parse(System.String,Broiler.Regex.RegexFlags,System.Int32@,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int32}@)` | `RegexParser.Parse(string, RegexFlags, IUnicodeTables, out int)`. The group-name map is not an out parameter of the new member, which convention 1 would refuse in a public signature (check C1); it stays `BroilerRegex.GroupNames` and `RegexParser.GroupNames`. |
+| CP0002 | `M:Broiler.Regex.Ast.CharSet.AddEscape(Broiler.Regex.Ast.ClassEscape,System.Boolean,System.Boolean)` | Internal, taking the compilation's provider answers: `\s` is the provider's Space_Separator and `\w` under `iu` its folding. |
+| CP0002 | `M:Broiler.Regex.Ast.CharSet.Contains(System.Int32,System.Boolean,System.Boolean)` | Internal, taking the compilation's provider answers: a case-insensitive test folds by the provider. |

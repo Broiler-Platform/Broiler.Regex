@@ -22,17 +22,19 @@ dotnet add package Broiler.Regex --prerelease --source https://api.nuget.org/v3/
 
 ```csharp
 using Broiler.Regex;
+using Broiler.Unicode.Tables;
 
-var regex = new BroilerRegex(@"\p{Script=Greek}+", "u");
+var regex = new BroilerRegex(@"\p{Script=Greek}+", "u", UnicodeTables.Instance);
 var match = regex.Match("123αβ"); // Success = true, Index = 3, Length = 2
 ```
 
-Unicode data comes from `Broiler.UniCode.Properties` and
-`Broiler.UniCode.Emoji.StringProperties`, version `0.1.0-preview.3`, the version
-`Directory.Packages.props` pins and the package depends on at least. Their assembly
-namespaces remain `Broiler.Unicode.Properties` and `UnicodeEmoji.StringProperties`.
-Requirement R11 of the [roadmap](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/roadmap.md)
-replaces both with the Unicode owner's provider, `Broiler.Unicode.Algorithms`, during milestone SJL-11.
+The package carries no Unicode data. It depends on the Unicode owner's provider,
+`Broiler.Unicode.Algorithms` `0.1.0-preview.5`, alone, and every compilation takes the
+caller's tables as an `IUnicodeTables` (requirement R11 of the
+[roadmap](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/roadmap.md)):
+a JavaScript engine hands in the tables it embeds, and the example above hands in the
+owner's `Broiler.Unicode.Tables` `0.1.0-preview.5`, which a caller references itself.
+The tables must be of the Unicode version the provider reads, 17.0.0.
 
 ## Build and publish
 

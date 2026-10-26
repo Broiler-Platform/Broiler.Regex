@@ -48,12 +48,50 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's
   IL changes.
-- No public API changes; package validation against `0.1.0-preview.4` passes with no suppression.
+- **Unicode data through the Unicode owner's provider (R11; task 2.2, decision D11).** The package depends on
+  `Broiler.Unicode.Algorithms` `0.1.0-preview.5` alone, in place of `Broiler.UniCode.Properties` and
+  `Broiler.UniCode.Emoji.StringProperties` `0.1.0-preview.3`, and compilation takes the caller's tables as an
+  `IUnicodeTables`: property escapes, the properties of strings, both branches of Canonicalize and `\s`'s
+  Space_Separator are the provider's answers over them. An engine hands
+  in the tables it embeds; the tests and the probe hand in `Broiler.Unicode.Tables` `0.1.0-preview.5`, which the
+  package does not reference. `CaseFolding`, its generated table `CaseFoldingData` and the generator under
+  `Broiler.Regex/Unicode/tools/` are deleted. The breaks below are each suppressed in
+  `Broiler.Regex/CompatibilitySuppressions.xml` and listed in [`docs/suppressions.md`](docs/suppressions.md); every
+  one is R11's, since none of these members can work without tables it is not handed (decision D12):
+  - `BroilerRegex(string, RegexFlags)` and `BroilerRegex(string, string?)` are removed; their replacements take an
+    `IUnicodeTables` as a third argument.
+  - `RegexParser(string, RegexFlags)` and `RegexParser.Parse(string, RegexFlags, out int, out IReadOnlyDictionary<string, int>)`
+    are removed; their replacements take an `IUnicodeTables`, and the new `Parse` answers the capture count only
+    (the group-name map stays on `BroilerRegex.GroupNames`, as convention 1 keeps a collection out of a new public
+    signature).
+  - The public types `Broiler.Regex.Unicode.CaseFolding` (deleted) and `Broiler.Regex.Unicode.UnicodeCharSets` (now
+    internal) are removed.
+  - `CharSet.AddEscape(ClassEscape, bool, bool)` and `CharSet.Contains(int, bool, bool)` are now internal: each
+    needs the compilation's provider answers.
+  - A provider of another Unicode version, or one lacking a table the algorithms read, is refused with an
+    `ArgumentException` when a pattern is compiled, and a null provider with an `ArgumentNullException`.
 
 ### Observable changes
 
-None. No matching, parsing or flag answer of the package changes.
+- **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
+  tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
+  provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`
+  matched names loosely, ignoring letter case, `_`, `-` and spaces, so it accepted `\p{letter}`, `\p{ascii}`,
+  `\p{Script=greek}`, `\p{GC=Lu}`, `\p{ScriptExtensions=Greek}`, `\p{Script = Greek}` and, under `v`,
+  `\p{rgiemoji}`; each is now a `RegexSyntaxException`, the specification's early error.
+- **`Katakana_Or_Hiragana` is a Script value (R5).** `\p{Script=Katakana_Or_Hiragana}`, `\p{sc=Hrkt}` and the
+  same under `Script_Extensions` are accepted, matching nothing, as no code point has that value; `0.1.0-preview.4`
+  refused them.
 
 ### Data
 
-None. The package reads the same Unicode data, from the same packages, as `0.1.0-preview.4`.
+- **The Unicode data is the caller's, and the package declares no version of its own (R11).** It reads the tables
+  of the Unicode version `Broiler.Unicode.Algorithms` `0.1.0-preview.5` reads, 17.0.0, and refuses any other.
+  `0.1.0-preview.4` carried its case-folding table (UCD 17.0.0, `CaseFoldingData.UnicodeVersion`) and took its
+  property and emoji data from `Broiler.UniCode.Properties` and `Broiler.UniCode.Emoji.StringProperties`
+  `0.1.0-preview.3`.
+- **No answer moves with the data.** For every name and value the provider admits, the property's code points, a
+  property of strings' code points and sequences, both Canonicalize mappings over the whole code space, and `\s`'s
+  Space_Separator part are the same from the provider over `Broiler.Unicode.Tables` `0.1.0-preview.5` as from
+  `0.1.0-preview.4`'s own data, compared member by member at task 2.2; the only difference is the
+  `Katakana_Or_Hiragana` value above, which `0.1.0-preview.4` did not resolve.

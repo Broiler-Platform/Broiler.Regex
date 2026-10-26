@@ -11,7 +11,7 @@ public class CanonicalizeTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 

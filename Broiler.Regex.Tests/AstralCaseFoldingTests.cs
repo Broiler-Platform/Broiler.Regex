@@ -30,7 +30,7 @@ public class AstralCaseFoldingTests
     [InlineData(GaraySmallCa, GarayCapitalCa)]
     public void AstralAtom_MatchesItsFoldEquivalent(string pattern, string equivalent)
     {
-        var re = new BroilerRegex(pattern, RegexFlags.IgnoreCase | RegexFlags.Unicode);
+        var re = TestRegex.Compile(pattern, RegexFlags.IgnoreCase | RegexFlags.Unicode);
         var m = re.Match("<" + equivalent + ">");
         Assert.True(m.Success);
         Assert.Equal(equivalent, m.Value);
@@ -41,7 +41,7 @@ public class AstralCaseFoldingTests
     [InlineData(WarangCitiCapitalNgaa, WarangCitiSmallNgaa)]
     public void AstralClassMember_MatchesItsFoldEquivalent(string member, string equivalent)
     {
-        var re = new BroilerRegex("[" + member + "]+", RegexFlags.IgnoreCase | RegexFlags.Unicode);
+        var re = TestRegex.Compile("[" + member + "]+", RegexFlags.IgnoreCase | RegexFlags.Unicode);
         var m = re.Match("<" + member + equivalent + ">");
         Assert.True(m.Success);
         Assert.Equal(member + equivalent, m.Value);
@@ -50,7 +50,7 @@ public class AstralCaseFoldingTests
     [Fact(Timeout = 600000)]
     public void AstralAtom_DoesNotFoldWithoutIgnoreCase()
     {
-        var re = new BroilerRegex(DeseretCapitalLongI, RegexFlags.Unicode);
+        var re = TestRegex.Compile(DeseretCapitalLongI, RegexFlags.Unicode);
         Assert.False(re.Match(DeseretSmallLongI).Success);
         Assert.True(re.Match(DeseretCapitalLongI).Success);
     }
@@ -58,7 +58,7 @@ public class AstralCaseFoldingTests
     [Fact(Timeout = 600000)]
     public void AstralAtom_DoesNotFoldAcrossUnrelatedCodePoints()
     {
-        var re = new BroilerRegex(DeseretCapitalLongI, RegexFlags.IgnoreCase | RegexFlags.Unicode);
+        var re = TestRegex.Compile(DeseretCapitalLongI, RegexFlags.IgnoreCase | RegexFlags.Unicode);
         Assert.False(re.Match(WarangCitiSmallNgaa).Success);
         Assert.False(re.Match("\U00010401").Success);
     }
@@ -70,7 +70,7 @@ public class AstralCaseFoldingTests
     [InlineData("ſ", "s")]   // LATIN SMALL LETTER LONG S folds to s
     public void BmpFoldingIsUnchanged(string pattern, string equivalent)
     {
-        var re = new BroilerRegex(pattern, RegexFlags.IgnoreCase | RegexFlags.Unicode);
+        var re = TestRegex.Compile(pattern, RegexFlags.IgnoreCase | RegexFlags.Unicode);
         Assert.True(re.Match(equivalent).Success);
     }
 }

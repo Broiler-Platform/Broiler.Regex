@@ -10,11 +10,10 @@ The shipping package is `Broiler.Regex`, targeting .NET 10.
   authorized to create and push `Broiler.Regex` versions. The publish workflow reads
   it as `secrets.NUGET_TOKEN` and hands it to its steps as the environment variable
   `NUGET_API_KEY`.
-- Dependencies `Broiler.UniCode.Properties` and
-  `Broiler.UniCode.Emoji.StringProperties` at `0.1.0-preview.3`, the version
-  `Directory.Packages.props` pins, must remain available on nuget.org. They are
-  already published. NuGet package IDs are case-insensitive; the existing assembly
-  namespaces have not changed.
+- The dependency `Broiler.Unicode.Algorithms` at `0.1.0-preview.5`, the version
+  `Directory.Packages.props` pins, must remain available on nuget.org; it is already
+  published. `Broiler.Unicode.Tables` at the same version, which the tests and the
+  Native AOT probe read, is not a dependency of the package.
 - Review the current revision and its documented limitations before publishing.
   `HUMAN_REVIEW.md` records an older, revision-scoped human attestation; automated
   checks do not renew that attestation.

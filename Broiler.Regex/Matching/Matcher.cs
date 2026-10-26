@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   44
 // Annotated:        44/44
-// Exempt:           18
+// Exempt:           19
 // Human-reviewed:   0/44
 // IP risk:          Low
 // Security risk:    High
@@ -63,6 +63,7 @@ internal sealed class Matcher
     private readonly bool _unicode;
     private readonly bool _sticky;
     private readonly IReadOnlyDictionary<string, int> _groupNames;
+    private readonly RegexUnicode _data;
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C93794
     // Broiler-Human:        PENDING
     private const long StepLimit = 10_000_000;
@@ -85,12 +86,13 @@ internal sealed class Matcher
             (DotAll || (add & RegexFlags.DotAll) != 0) && (remove & RegexFlags.DotAll) == 0);
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=D05D03
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=5; Fingerprint=C1F96E
     // Broiler-Falsified-If: a pattern compiled with only the v flag matches '.' against one UTF-16 unit of a surrogate pair, because the matcher's Unicode mode stays off
     // Broiler-Human:        PENDING
     public Matcher(RegexNode root, int captureCount, RegexFlags flags,
-        IReadOnlyDictionary<string, int> groupNames)
+        IReadOnlyDictionary<string, int> groupNames, RegexUnicode data)
     {
+        _data = data;
         _captureCount = captureCount;
         _unicode = flags.IsUnicodeMode();
         _sticky = (flags & RegexFlags.Sticky) != 0;
@@ -535,7 +537,7 @@ internal sealed class Matcher
     /// can iterate it instead of recursing. A class carrying string members is not
     /// eligible: it is an alternation, not a single-character matcher.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=39E79B
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=B3054A
     // Broiler-Falsified-If: /[\q{abc}]*/v on 'abc' matches only the empty string because a class with string members was treated as a single-code-point body
     // Broiler-Human:        PENDING
     private bool TryGetSingleCharPredicate(RegexNode child, Flags flags, [NotNullWhen(true)] out CharPredicate? predicate)
@@ -546,7 +548,7 @@ internal sealed class Matcher
         {
             case CharNode ch:
                 var target = ch.CodePoint;
-                predicate = cp => CaseFolding.Equal(cp, target, ignoreCase, unicode);
+                predicate = cp => _data.Equal(cp, target, ignoreCase, unicode);
                 return true;
             case AnyCharNode:
                 var dotAll = flags.DotAll;
@@ -554,7 +556,7 @@ internal sealed class Matcher
                 return true;
             case CharClassNode cls when !cls.Set.HasStrings:
                 var set = cls.Set;
-                predicate = cp => set.Contains(cp, ignoreCase, unicode);
+                predicate = cp => set.Contains(cp, ignoreCase, unicode, _data);
                 return true;
             default:
                 predicate = null;
@@ -794,7 +796,7 @@ internal sealed class Matcher
 
     // ----- Atom matchers ------------------------------------------------------
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=43E20F
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=C1F548
     // Broiler-Falsified-If: under the u flag, /\u{1F600}$/u fails on the surrogate pair 😀 because the character matcher advances by one UTF-16 unit instead of two
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileChar(int codePoint, Direction dir, Flags flags)
@@ -805,7 +807,7 @@ internal sealed class Matcher
         {
             if (!ReadCodePoint(s, dir, out var actual, out var nextPos))
                 return null;
-            return CaseFolding.Equal(actual, codePoint, ignoreCase, unicode)
+            return _data.Equal(actual, codePoint, ignoreCase, unicode)
                 ? c(s.WithPosition(nextPos)) : null;
         };
     }
@@ -826,7 +828,7 @@ internal sealed class Matcher
         };
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=A79481
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=0463A9
     // Broiler-Falsified-If: under the u flag, /^[^a]$/u fails on the surrogate pair 😀 because the class consumes only its high half
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileCharClass(CharSet set, Direction dir, Flags flags)
@@ -841,7 +843,7 @@ internal sealed class Matcher
         {
             if (!ReadCodePoint(s, dir, out var actual, out var nextPos))
                 return null;
-            return set.Contains(actual, ignoreCase, unicode)
+            return set.Contains(actual, ignoreCase, unicode, _data)
                 ? c(s.WithPosition(nextPos)) : null;
         };
     }
@@ -852,7 +854,7 @@ internal sealed class Matcher
     /// compiles it to the alternation of its strings followed by its code points, longest
     /// alternative first, and each alternative is a backtracking point of its own.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=6F1EA6
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=7A1F27
     // Broiler-Falsified-If: /[\q{abc|ab}]c/v fails on 'abc' because the class does not fall back from its longest string member to a shorter one
     // Broiler-Human:        PENDING
     private CompiledMatcher CompileCharClassWithStrings(CharSet set, Direction dir, bool ignoreCase, bool unicode)
@@ -874,16 +876,16 @@ internal sealed class Matcher
 
             if (!ReadCodePoint(s, dir, out var actual, out var nextPos))
                 return null;
-            return set.Contains(actual, ignoreCase, unicode)
+            return set.Contains(actual, ignoreCase, unicode, _data)
                 ? c(s.WithPosition(nextPos)) : null;
         };
     }
 
     /// <summary>Matches a literal string at the cursor in <paramref name="dir"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=3693E8
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=E0F974
     // Broiler-Falsified-If: in a look-behind, a string member longer than the text before the cursor, such as \q{abc} at index 2, is read from a negative index instead of failing
     // Broiler-Human:        PENDING
-    private static bool TryMatchLiteral(MatchState s, Direction dir, string literal,
+    private bool TryMatchLiteral(MatchState s, Direction dir, string literal,
         bool ignoreCase, bool unicode, out int after)
     {
         int from;
@@ -980,16 +982,16 @@ internal sealed class Matcher
     /// code point that folds into the basic set — so <c>ſ</c> and <c>K</c> are word
     /// characters for <c>\b</c> exactly when they are members of <c>\w</c>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=AF970C
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=26869D
     // Broiler-Falsified-If: without the u flag, /\b/i treats U+017F LATIN SMALL LETTER LONG S as a word character
     // Broiler-Human:        PENDING
-    private bool IsWordChar(int cp, Flags flags) => UnicodeCharSets.IsWord(cp, flags.IgnoreCase, _unicode);
+    private bool IsWordChar(int cp, Flags flags) => _data.IsWord(cp, flags.IgnoreCase, _unicode);
 
     /// <summary>Code-point-aware, case-fold-aware comparison of two equal-length regions.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=662E7A
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=1B38A4
     // Broiler-Falsified-If: a region whose last unit is the high half of a surrogate pair compares equal although the pair's low half lies past the region's end
     // Broiler-Human:        PENDING
-    private static bool RegionEquals(string a, int aStart, string b, int bStart, int len,
+    private bool RegionEquals(string a, int aStart, string b, int bStart, int len,
         bool ignoreCase, bool unicode)
     {
         int ai = aStart, bi = bStart;
@@ -998,7 +1000,7 @@ internal sealed class Matcher
         {
             var (acp, aw) = ReadAt(a, ai, unicode);
             var (bcp, bw) = ReadAt(b, bi, unicode);
-            if (!CaseFolding.Equal(acp, bcp, ignoreCase, unicode))
+            if (!_data.Equal(acp, bcp, ignoreCase, unicode))
                 return false;
             ai += aw;
             bi += bw;

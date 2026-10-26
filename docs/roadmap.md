@@ -13,6 +13,14 @@ properties of strings); `v`-mode class-set intersection, subtraction, nesting an
 table-driven from the UCD revision named by `CaseFoldingData.UnicodeVersion`, including
 `AllCharacters` and the fold-then-complement ordering `v` mode needs.
 
+*Dated note, 2026-10-26 (task 2.2 of SJL-11.2, requirement R11 of section 6): "resolve from the pinned
+Broiler.Unicode property tables" and "table-driven from the UCD revision named by
+`CaseFoldingData.UnicodeVersion`" no longer describe the code. Property escapes, the properties of strings
+and both branches of `Canonicalize` are read through `Broiler.Unicode.Algorithms` over the tables the caller
+hands in as an `IUnicodeTables`, by the exact names ECMA-262 admits; `CaseFoldingData`, its generator and
+`CaseFolding` are deleted, and the package declares no Unicode version of its own. The paragraph above is kept
+as written.*
+
 Remaining:
 
 - Run the pinned test262 RegExp and UnicodeSets paths in CI under the expanded routing.

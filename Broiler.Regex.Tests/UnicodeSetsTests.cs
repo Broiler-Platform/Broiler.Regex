@@ -13,7 +13,7 @@ public class UnicodeSetsTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -188,7 +188,7 @@ public class UnicodeSetsTests
     [InlineData(@"[\q{ab}")]         // unterminated
     [InlineData(@"[[a]")]
     public void InvalidClassSet_IsASyntaxError(string pattern)
-        => Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "v"));
+        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
 
     [Theory]
     // An escaped syntax character or reserved punctuator is itself.
@@ -205,7 +205,7 @@ public class UnicodeSetsTests
     {
         // The pre-scan counts capturing groups before parsing; a `v`-mode class nests, so
         // the ']' of an inner class must not put the scan back outside the class.
-        var re = new BroilerRegex(@"([[a-c][x-z]])", "v");
+        var re = TestRegex.Compile(@"([[a-c][x-z]])", "v");
         Assert.Equal(1, re.CaptureCount);
         Assert.Equal("y", re.Match("y").Groups[1].Value);
     }

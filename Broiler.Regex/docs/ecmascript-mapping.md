@@ -43,11 +43,12 @@ Broiler.Regex models these directly:
 | §22.2.2.7 AtomEscape (character) | `CompileChar` |
 | §22.2.2.9 BackreferenceMatcher | `CompileBackreference` |
 | §22.2.2.9 CompileToCharSet | `RegexParser` class parsing → `CharSet` |
-| §22.2.2.9.2 WordCharacters | `UnicodeCharSets.WordSet` |
-| §22.2.2.9.4 AllCharacters | `UnicodeCharSets.AllCharacters` |
+| §22.2.2.9.2 WordCharacters | `RegexUnicode.EscapeSet` / `RegexUnicode.IsWord` |
+| §22.2.2.9.4 AllCharacters | `RegexParser.ComplementOperand` / `RegexUnicode.BuildCanonicalCharacters` |
 | §22.2.2.9.5 MaybeSimpleCaseFolding | `RegexParser.Fold` / `CodePointSet.Map` |
 | §22.2.2.9.6 CharacterComplement | `RegexParser.ComplementOperand` |
-| §22.2.2.9.4 Canonicalize | `Unicode/CaseFolding.cs` |
+| §22.2.2.7.3 Canonicalize | `RegexUnicode.Canonicalize`, over the provider's `UnicodeCaseFolding` |
+| §22.2.2.9 UnicodeMatchProperty / UnicodeMatchPropertyValue | `RegexUnicode.ResolveProperty`, over the provider's `UnicodeProperties` and `UnicodeStringProperties` |
 | §22.2.2.10 CharacterSetMatcher | `CompileCharClass` / `CharSet.Contains` |
 
 ### Why direction matters (look-behind)

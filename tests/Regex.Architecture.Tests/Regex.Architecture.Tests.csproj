@@ -29,6 +29,8 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <!-- The tables the probe's population compiles against, which SL9 runs through the library. -->
+    <PackageReference Include="Broiler.Unicode.Tables" />
   </ItemGroup>
 
   <ItemGroup>

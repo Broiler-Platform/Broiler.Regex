@@ -12,7 +12,7 @@ public class AnnexBGrammarTests
 {
     private static string? Match(string pattern, string flags, string input)
     {
-        var m = new BroilerRegex(pattern, flags).Match(input);
+        var m = TestRegex.Compile(pattern, flags).Match(input);
         return m.Success ? m.Value : null;
     }
 
@@ -35,7 +35,7 @@ public class AnnexBGrammarTests
         Assert.Null(Match(@"\u{1F600}", "", "\U0001F600"));
         // …which is what makes this class a range from '}' to 'u' — out of order, and so a
         // syntax error rather than an emoji range.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\u{1F600}-\u{1F64F}]", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\u{1F600}-\u{1F64F}]", ""));
     }
 
     [Theory]
@@ -49,7 +49,7 @@ public class AnnexBGrammarTests
     public void UnescapedBraceOrBracket_IsLiteralOnlyOutsideUnicodeMode(string pattern)
     {
         Assert.NotNull(Match(pattern, "", pattern));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Theory]
@@ -61,7 +61,7 @@ public class AnnexBGrammarTests
     public void ClassEscapeAsRangeEndpoint_IsAnErrorOnlyInUnicodeMode(string pattern)
     {
         Assert.Equal("-", Match(pattern, "", "-"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Fact(Timeout = 600000)]
@@ -70,8 +70,8 @@ public class AnnexBGrammarTests
         // Unicode mode: `\p{L}` is a class, so it cannot end a range. Without the flag it
         // is the six characters `p{L}` — and the class then asks for the range `}` to `a`,
         // which is out of order.
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\p{L}-a]", "u"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"[\p{L}-a]", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\p{L}-a]", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"[\p{L}-a]", ""));
     }
 
     [Fact(Timeout = 600000)]
@@ -93,7 +93,7 @@ public class AnnexBGrammarTests
     public void QuantifiedLookahead_IsAllowedOutsideUnicodeMode(string pattern, string input)
     {
         Assert.Equal("", Match(pattern, "", input));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Theory]
@@ -109,8 +109,8 @@ public class AnnexBGrammarTests
     [InlineData("$?")]
     public void QuantifiedNonLookahead_IsASyntaxError(string pattern)
     {
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, ""));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "u"));
     }
 
     [Fact(Timeout = 600000)]
@@ -130,13 +130,13 @@ public class AnnexBGrammarTests
         // the pattern is the literal text "k<n>" rather than a reference to nothing.
         Assert.Equal("k<n>", Match(@"\k<n>", "", "k<n>"));
         Assert.Equal("k", Match(@"\k", "", "k"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"\k<n>", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"\k<n>", "u"));
 
         // Once the pattern declares one, `\k` is a reference again — including a forward
         // one — and naming a group that does not exist is an error.
         Assert.Equal("aa", Match(@"(?<n>a)\k<n>", "", "aa"));
         Assert.Equal("a", Match(@"\k<n>(?<n>a)", "", "a"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"(?<n>a)\k<m>", ""));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"(?<n>a)\k<m>", ""));
     }
 
     [Fact(Timeout = 600000)]
@@ -148,6 +148,6 @@ public class AnnexBGrammarTests
         Assert.Equal("-", Match(@"[a\-z]", "u", "-"));
         Assert.Equal("-", Match(@"[\-]", "v", "-"));
         Assert.Equal("-", Match(@"\-", "", "-"));
-        Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(@"\-", "u"));
+        Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(@"\-", "u"));
     }
 }
