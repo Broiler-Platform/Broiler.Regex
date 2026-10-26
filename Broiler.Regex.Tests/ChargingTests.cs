@@ -94,13 +94,14 @@ public class ChargingTests
 
     /// <summary>
     /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
-    /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
+    /// nine and ten, captures reset at each iteration, a quantifier bounded above, a reset of a thousand groups, starts after the first position and
     /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
     /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
     /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, back-references, under i and under
     /// a step ceiling, whose length is charged after the dispatch and before the comparison, and look-arounds of the four
     /// kinds, a look-behind's back-reference read right to left, one started inside a surrogate pair, a negative
-    /// look-behind whose body backtracks to a step ceiling, and v-mode classes holding strings, the empty one among them.
+    /// look-behind whose body backtracks to a step ceiling, look-behinds whose bodies read every kind of character, class
+    /// and back-reference right to left, and v-mode classes holding strings, the empty one among them.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -129,6 +130,9 @@ public class ChargingTests
         { "(?<!b(a+)+)c", "", new string('a', 24) + "c", 0, false, 5_000UL },
         { "[\\q{abc|ab|}x]+y", "vi", string.Concat(Enumerable.Repeat("ABcXab", 100)) + "z", 0, false, null },
         { "(?<=[\\q{ab|b}])\\p{RGI_Emoji_Flag_Sequence}", "v", string.Concat(Enumerable.Repeat("ab\U0001F1EF", 60)), 0, false, null },
+        { "(?:(a)|b){2,4}c", "", string.Concat(Enumerable.Repeat("abab", 150)) + "x", 0, false, null },
+        { "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", "", string.Concat(Enumerable.Repeat("\naBKazx1", 80)), 0, false, null },
+        { "(?<=[\\p{Ll}--[q]]{2})\\d", "iv", string.Concat(Enumerable.Repeat("aB1Q2", 120)) + "!", 0, false, null },
     };
 
     [Theory]
@@ -173,6 +177,26 @@ public class ChargingTests
         Assert.True(meter.Charged >= units && meter.Charged - units < RegexMachine.Block, meter.Charged + " charged for " + units + " units");
         Assert.All(meter.Charges, static c => Assert.True(c > 0 && c % RegexMachine.Block == 0, "a charge of " + c));
         Assert.True(units <= RegexMachine.Block || meter.Charges.Count > 1, units + " units were charged in one block");
+    }
+
+    [Fact]
+    public void The_declared_inputs_reach_every_instruction_in_both_directions()
+    {
+        // Check A-1 covers each instruction the compiler emits: every operation of RegexOp appears in the program of at
+        // least one declared input, and every operation that reads the subject, each character, class and back-reference
+        // test, appears read right to left in a look-behind's body; no other operation is given a direction.
+        var code = DeclaredInputs.Select(static row => TestProgram.Compile((string)row[0], (string)row[1]))
+            .SelectMany(static program => program.Code.ToArray()).ToList();
+        var forward = code.Select(static i => i.Op).ToHashSet();
+        Assert.Empty(Enum.GetValues<RegexOp>().Where(op => !forward.Contains(op)));
+        var backward = code.Where(static i => i.RightToLeft).Select(static i => i.Op).ToHashSet();
+        RegexOp[] read =
+        [
+            RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass,
+            RegexOp.Any, RegexOp.AnyButLineTerminator, RegexOp.Backreference, RegexOp.BackreferenceIgnoringCase,
+        ];
+        Assert.Empty(read.Where(op => !backward.Contains(op)));
+        Assert.Empty(backward.Where(op => !read.Contains(op)));
     }
 
     /// <summary>Inputs whose every step ceiling, from one unit to their whole cost, is tried.</summary>

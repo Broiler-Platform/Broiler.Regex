@@ -345,7 +345,8 @@ for every read of the call, so that a look-behind from the start meets the high 
 **Charging (D8).** Each new instruction costs one unit; a class under `i` one plus its weight for each code point of an
 orbit (four at most at UCD 17.0.0); `\b` and `\B` one plus the word class's weight twice; a back-reference its capture's
 length in code units on top, charged after its dispatch and before it compares; popping a barrier nothing (the
-instruction that pushed it paid). Check A-1's per-dispatch test gains inputs reaching every new instruction.
+instruction that pushed it paid). Check A-1's per-dispatch test gains inputs reaching every new instruction, and a
+test that its declared inputs reach every operation, each that reads the subject in both directions.
 
 **Duplicate named groups stay task 2.6's.** The parser still refuses them. A back-reference's operands name a run of the
 program's list of referenced groups (`A` its first entry, `B` its length), one group long today; task 2.6 makes the run
@@ -356,7 +357,7 @@ the groups that share the name, and the instruction compares the first whose cap
 their backward forms, a negative look-around's captures reset, a back-reference in a look-behind to a group captured
 later in source order, modifiers nested and undone, `\b` under `iu` and `iv`, the non-`u` Canonicalize's guard and `v`
 strings longest first. **The old suite on the new backend**: `TestRegex` is the switch, and `NewBackendSuiteTests` runs
-every case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (255 methods, 1,419
+every case of every behaviour test again on `BroilerRegex`'s internal route through the new backend (257 methods, 1,424
 cases at this record, 716 of them building an instance on the route), the 17 cases xunit skips until task 2.4c among
 them; every case passes. **The differential over the whole grammar**: the suite population (13,768 pattern and flag
 pairs, 1,253,040 cases) and a seeded population drawing every construct under thirteen flag strings (14,028 pairs,
