@@ -40,6 +40,8 @@ public class NewBackendSuiteTests(ITestOutputHelper output)
         [nameof(AdversarialCorpusTests)] = "runs every row through the new backend's entry in a child process already",
         [nameof(OldBackendDefectTests) + "." + nameof(OldBackendDefectTests.D2_the_old_backend_answers_with_the_empty_string_first)] =
             "shows the old backend's answer to its defect D2",
+        [nameof(OldBackendDefectTests) + "." + nameof(OldBackendDefectTests.M7_the_old_backend_compares_the_code_units_that_end_at_the_index)] =
+            "shows the old backend's answer to JSD-0081's row M7",
     };
 
     [Fact]

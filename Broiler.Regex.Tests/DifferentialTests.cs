@@ -17,7 +17,7 @@ namespace Broiler.Regex.Tests;
 /// The differential test of tasks 2.4a and 2.4b: the new backend and the old one answer the same, index, length and every
 /// capture, on two populations over the whole grammar. The <b>suite population</b> is every string literal of this test
 /// project's sources taken as a pattern, under each flag string near it and under nine base flag strings, against the
-/// literals near it and a fixed set of subjects, from three start indices; the <b>generated population</b> is drawn by a
+/// literals near each of its occurrences and a fixed set of subjects, from three start indices; the <b>generated population</b> is drawn by a
 /// seeded SplitMix64 from every construct the parser accepts, under thirteen flag strings. Since task 2.4b every pattern
 /// compiles to a program, and a pattern that does not is a failure; a disagreement is either one of the old backend's
 /// recorded defects (<see cref="Defects"/>), each pinned to the specification's answer, or a failure.
@@ -39,10 +39,15 @@ namespace Broiler.Regex.Tests;
 /// backend giving up rather than answering.
 /// </para>
 /// <para>
-/// <b>The old backend's defects.</b> Task 2.4b's comparison over the whole grammar found one defect of the old backend's
-/// besides D1, D2: a <c>v</c>-mode class holding the empty string tries it before its single characters, where the
-/// specification tries it last (<see cref="OldBackendDefectTests"/>). A disagreement is attributed to it when the pattern
-/// holds such a class with a single character in it; every other disagreement fails the comparison, and there is none.
+/// <b>The old backend's defects.</b> Task 2.4b's comparison over the whole grammar found two defects of the old
+/// backend's besides D1 (<see cref="OldBackendDefectTests"/> pins each). D2: a <c>v</c>-mode class holding the empty
+/// string tries it before its single characters, where the specification tries it last; a disagreement is attributed to
+/// it when the pattern holds such a class with a single character in it. M7, JSD-0081's row: under <c>u</c> and
+/// <c>v</c> a back-reference in a look-behind compares the code units that end at the index rather than the code points,
+/// so it can begin inside a surrogate pair; a disagreement is attributed to it when the pattern holds a back-reference in
+/// a look-behind, the flags are <c>u</c> or <c>v</c> and the subject holds a surrogate. M7 was found once a pattern that
+/// the sources repeat met every subject its occurrences bring, not only those beside its first. Every other disagreement
+/// fails the comparison, and there is none.
 /// </para>
 /// <para>
 /// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
@@ -77,11 +82,13 @@ public class DifferentialTests(ITestOutputHelper output)
     private const int Generated = 20_000;
 
     /// <summary>
-    /// How many of the suite's cases the step ceiling stops: <c>\p{RGI_Emoji}</c> under <c>v</c> and <c>iv</c> on two
-    /// subjects of 29 and 31 units from two starts, as its strings, tried one by one in the order the specification gives
-    /// them, cost about two units each at each start position (task 2.4c's fast paths).
+    /// How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> of ChargingTests' declared
+    /// inputs under each flag string on the subjects of twelve to fifteen <c>a</c>s its occurrences bring, and
+    /// <c>\p{RGI_Emoji}</c> under <c>v</c> and <c>iv</c> on the subjects of 29 and 31 units beside it, as its strings, tried
+    /// one by one in the order the specification gives them, cost about two units each at each start position (task 2.4c's
+    /// fast paths).
     /// </summary>
-    private const int SuiteOverStepsPinned = 8;
+    private const int SuiteOverStepsPinned = 38;
 
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
     private const int OverStepsPinned = 2;
@@ -125,11 +132,12 @@ public class DifferentialTests(ITestOutputHelper output)
         Assert.True(tally.NoProgram == 0, tally.NoProgram + " patterns the parser accepts were given no program");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
 
-        // The suite's cases the step ceiling stops are pinned: \p{RGI_Emoji} on the two longest subjects beside it; none
-        // may stop at a frame or trail ceiling: the subjects are a few characters long, so a stop there is the new backend
-        // giving up, not an answer.
+        // The suite's cases the step ceiling stops are pinned: the catastrophic (a+)+b on twelve to fifteen a's, and
+        // \p{RGI_Emoji} on the two longest subjects beside it; none may stop at a frame or trail ceiling: the subjects are
+        // a few characters long, so a stop there is the new backend giving up, not an answer.
         Assert.Equal((SuiteOverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
-        Assert.All(tally.Stopped, static stopped => Assert.Matches(@"^MachineConstructTests\.cs:\d+: /\\p\{RGI_Emoji\}/i?v on ", stopped));
+        Assert.All(tally.Stopped, static stopped => Assert.Matches(
+            @"^(MachineConstructTests\.cs:\d+: /\\p\{RGI_Emoji\}/i?v on |ChargingTests\.cs:\d+: /\(a\+\)\+b/[imsuvy]* on ""a{12,15}c?"" from )", stopped));
     }
 
     [Fact]
@@ -197,17 +205,20 @@ public class DifferentialTests(ITestOutputHelper output)
 
     /// <summary>
     /// An old-backend defect a disagreement is attributed to: its name, as the roadmap's record of task 2.4b gives it, the
-    /// test that pins the specification's answer, and the construct of the parsed pattern without which it cannot arise.
-    /// A disagreement is attributed to the first defect whose construct the pattern holds; one that none explains fails
-    /// the comparison.
+    /// test that pins the specification's answer, and the case without which it cannot arise, read from the parsed
+    /// pattern, the flags and the subject. A disagreement is attributed to the first defect whose case it is; one that
+    /// none explains fails the comparison.
     /// </summary>
-    internal sealed record Defect(string Name, string Pin, Func<RegexNode, bool> Holds);
+    internal sealed record Defect(string Name, string Pin, Func<RegexNode, string, string, bool> Holds);
 
     /// <summary>The old backend's defects the comparison found, each pinned to the specification's answer.</summary>
     internal static readonly Defect[] Defects =
     [
         new("D2", nameof(OldBackendDefectTests.D2_a_class_s_empty_string_is_tried_after_its_single_characters),
-            static tree => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } })),
+            static (tree, _, _) => Any(tree, static node => node is CharClassNode { Set: { MatchesEmptyString: true, CodePoints.IsEmpty: false } })),
+        new("M7", nameof(OldBackendDefectTests.M7_a_backward_back_reference_reads_whole_code_points_under_u),
+            static (tree, flags, subject) => (flags.Contains('u') || flags.Contains('v')) && subject.Any(char.IsSurrogate)
+                && Any(tree, static node => node is LookaroundNode { Behind: true } look && Any(look.Child, static inner => inner is BackreferenceNode))),
     ];
 
     /// <summary>Whether some node of <paramref name="tree"/> satisfies <paramref name="test"/>.</summary>
@@ -339,13 +350,14 @@ public class DifferentialTests(ITestOutputHelper output)
 
         /// <summary>The first cases a ceiling stopped, for the report.</summary>
         internal readonly List<string> Stopped = [];
-        private readonly HashSet<(string, string)> _seen = [];
+        private readonly HashSet<(string, string, string, int)> _seen = [];
 
-        internal void Pattern(string pattern, string flags, string[] subjects, Func<string, int[]> starts, string origin)
+        /// <summary>Each pattern-flag pair met, with its two compilations and its tree, or null when it is no pattern.</summary>
+        private readonly Dictionary<(string, string), (BroilerRegex Old, RegexProgram Program, RegexNode Tree)?> _compiled = [];
+
+        /// <summary>Compiles a pattern-flag pair met for the first time on both backends, and counts it.</summary>
+        private (BroilerRegex Old, RegexProgram Program, RegexNode Tree)? Compile(string pattern, string flags)
         {
-            if (!_seen.Add((pattern, flags)))
-                return;
-
             BroilerRegex old;
             RegexProgram? program;
             try
@@ -354,26 +366,51 @@ public class DifferentialTests(ITestOutputHelper output)
                 if (ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out program) != ProgramCompilation.Compiled)
                 {
                     NoProgram++;
-                    return;
+                    return null;
                 }
             }
             catch (RegexSyntaxException)
             {
                 NotPatterns++;
-                return;
+                return null;
             }
 
             Patterns++;
-            foreach (var construct in ConstructsOf(RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _), flags))
+            var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _);
+            foreach (var construct in ConstructsOf(tree, flags))
                 Constructs[construct] = Constructs.GetValueOrDefault(construct) + 1;
+            return (old, program!, tree);
+        }
+
+        /// <summary>
+        /// Runs <paramref name="pattern"/> under <paramref name="flags"/> against <paramref name="subjects"/>. A pattern
+        /// met again, as the suite's sources repeat one beside other subjects, is compiled once and runs against every
+        /// subject any occurrence brings; a case already compared is not compared again.
+        /// </summary>
+        internal void Pattern(string pattern, string flags, string[] subjects, Func<string, int[]> starts, string origin)
+        {
+            if (!_compiled.TryGetValue((pattern, flags), out var compiled))
+            {
+                compiled = Compile(pattern, flags);
+                _compiled[(pattern, flags)] = compiled;
+            }
+
+            if (compiled is not { } pair)
+                return;
+
+            var (old, program, tree) = pair;
+
             var anchored = flags.Contains('y');
             var unicode = flags.Contains('u') || flags.Contains('v');
-            var slots = new int[program!.SlotCount];
+            var slots = new int[program.SlotCount];
             var readsBackward = ReadsRightToLeft(program);
             foreach (var subject in subjects)
             {
                 foreach (var start in starts(subject).Distinct())
                 {
+                    if (!_seen.Add((pattern, flags, subject, start)))
+                        continue;
+
                     // A start inside a surrogate pair is compared under the entry's contract, on a copy whose unit before
                     // the start is no surrogate, so that the old backend (defect D1) does not read the pair's high half
                     // either; a look-behind reads the copy on both backends.
@@ -419,8 +456,7 @@ public class DifferentialTests(ITestOutputHelper output)
                     if (expected == actual)
                         continue;
 
-                    var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, out _);
-                    var defect = Defects.FirstOrDefault(d => d.Holds(tree));
+                    var defect = Defects.FirstOrDefault(d => d.Holds(tree, flags, subject));
                     if (defect is null)
                         Disagreements.Add($"{origin}: /{Escape(pattern)}/{flags} on \"{Escape(subject)}\" from {start}: old {expected}, new {actual}");
                     else
