@@ -343,16 +343,22 @@ public sealed class BroilerRegex
     private RegexMatch? Run(string input, int start) => _program is null ? _matcher!.Run(input, start) : RunProgram(_program, input, start);
 
     /// <summary>
-    /// The internal route's match: RegExpBuiltinExec (ECMA-262 §22.2.7.2) over the new backend's entry. Under <c>u</c> and
-    /// <c>v</c> a start inside a surrogate pair steps back to the pair (step 13.b), and a match found there reports the
-    /// start the caller gave as its index (steps 22 and 24), as Broiler.VM's realm does. The program runs under the
-    /// library's frame and trail maxima and a step ceiling of 100,000,000 units; reaching a ceiling throws
-    /// <see cref="RegexOverflowException"/>, the exception the old backend throws when its stack guard refuses a match.
-    /// Task 2.4c sets the public route's ceilings and meter, and the statuses they answer.
+    /// The internal route's match: RegExpBuiltinExec (ECMA-262 §22.2.7.2) over the new backend's entry. Under <c>u</c>
+    /// and <c>v</c> a start inside a surrogate pair steps back to the pair (step 13.b). A match found there that ends
+    /// at or after the start the caller gave reports that start as its index (steps 22 and 24, the text's answer, which
+    /// JSD-0081's row M4 makes Broiler.VM's correction: its realm reports the pair's first unit for every match there).
+    /// An empty match found there ends before the caller's start, and the text's record of it is ill-formed; decision
+    /// D41 of JSD-0081 classes that case implementation-defined and records two answers, the pair's start (Broiler.VM's
+    /// realm) and the caller's start (Broiler.JS, and the old backend). The route reports it at the pair's start, where
+    /// it was found, the one record whose captures and match agree. Task 2.4c decides what the public members report
+    /// from such a start. The program runs under the library's frame and trail maxima and a step ceiling of 100,000,000
+    /// units; reaching a ceiling throws <see cref="RegexOverflowException"/>, the exception the old backend throws when
+    /// its stack guard refuses a match. Task 2.4c sets the public route's ceilings and meter, and the statuses they
+    /// answer.
     /// </summary>
     /// <exception cref="RegexOverflowException">The match reached the step, frame or trail ceiling.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=BD98A3
-    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, or a sticky instance finds a match after its start
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=43A7CE
+    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0 or throws, or a sticky instance finds a match after its start
     // Broiler-Human:        PENDING
     private RegexMatch? RunProgram(RegexProgram program, string input, int start)
     {
@@ -368,8 +374,10 @@ public sealed class BroilerRegex
         if (status != RegexStatus.Match)
             return null;
 
-        var index = slots[0] == from ? start : slots[0];
+        // A match at the pair the start stepped back to reports the caller's start, unless it ends before it: an empty
+        // one there, decision D41's case, is reported where it was found.
         var end = slots[1];
+        var index = slots[0] == from && end >= start ? start : slots[0];
         var value = input[index..end];
         var groups = new RegexGroup[CaptureCount + 1];
         groups[0] = new RegexGroup(true, index, end - index, value, null);

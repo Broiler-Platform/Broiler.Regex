@@ -222,7 +222,10 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   such a pair for the whole call: a read forward from the start meets the low half as a lone unit,
   and one backward from it (a look-behind, `\b`, `^` under `m`) the high half as another. The step
   back to the pair is its caller's: `BroilerRegex`'s internal route takes it, as RegExpBuiltinExec
-  does, and reports the caller's start as the index; task 2.4c decides the index the public members
+  does, and reports the caller's start as the index of a match found there, but for an empty one,
+  which ends before that start and which Broiler.VM's JSD-0081 classes implementation-defined by its
+  decision D41 (row M4): the route reports it at the pair's start, Broiler.VM's realm's answer, and the
+  public matcher at the caller's start, Broiler.JS's. Task 2.4c decides the index the public members
   report.
 - **The new backend's trail and a loop that holds no choice (task 2.4a).** The trail keeps every
   register write of an attempt until the attempt ends, as Broiler.VM's does, a counted loop's

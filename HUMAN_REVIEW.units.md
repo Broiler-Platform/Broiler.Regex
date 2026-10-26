@@ -153,8 +153,8 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate
 - `Broiler.Regex.BroilerRegex.Run(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `081BFB`, PENDING
   - Falsified if: an instance built on the new backend's route matches through the old backend's continuations, or one the public members built through the new backend's program
-- `Broiler.Regex.BroilerRegex.RunProgram(RegexProgram, string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `BD98A3`, PENDING
-  - Falsified if: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, or a sticky instance finds a match after its start
+- `Broiler.Regex.BroilerRegex.RunProgram(RegexProgram, string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41, `43A7CE`, PENDING
+  - Falsified if: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0 or throws, or a sticky instance finds a match after its start
 - `Broiler.Regex.Compiling.ProgramCompiler` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `393186`, PENDING
   - Falsified if: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
 - `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `79AA61`, PENDING
