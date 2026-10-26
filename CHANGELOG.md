@@ -72,6 +72,18 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     needs the compilation's provider answers.
   - A provider of another Unicode version, or one lacking a table the algorithms read, is refused with an
     `ArgumentException` when a pattern is compiled, and a null provider with an `ArgumentNullException`.
+- **A `CodePointSet` is immutable after construction (R10: conventions 7 and 10; task 2.3, decision D31).** A set's
+  ranges are sorted and merged when it is built, and nothing changes them after; every operation answers a new set,
+  and `Union` is one pass over the two sorted range lists. `0.1.0-preview.4`'s set was a list that its readers sorted
+  and merged in place on their first read, without a lock, so a set shared by concurrent matches, or held in one of
+  the library's static fields (`UnicodeCharSets`' internal `FullRange`, `DigitSet` and `BasicWordSet`), was rewritten
+  by whichever thread read it first. The breaks are suppressed in `Broiler.Regex/CompatibilitySuppressions.xml` and
+  listed in [`docs/suppressions.md`](docs/suppressions.md):
+  - `CodePointSet.AddCodePoint`, `AddRange` and `AddAll` are removed: each could only change a set. `Of` and
+    `Union` build the same sets, and `CharSet`'s adders still add to a class, each now making a new set.
+  - `CodePointSet.Clone` answers the set itself, which cannot change; `Ranges` is a list that cannot be changed,
+    where `0.1.0-preview.4` handed out the set's own list. `Of` with its bounds out of order still throws
+    `ArgumentException`.
 
 ### Observable changes
 

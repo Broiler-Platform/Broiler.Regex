@@ -52,9 +52,6 @@ Broiler.Regex.Ast.ClassEscape.Word = 2
 Broiler.Regex.Ast.ClassEscape.value__ field System.Int32
 Broiler.Regex.Ast.CodePointSet sealed class
 Broiler.Regex.Ast.CodePointSet..ctor() method System.Void
-Broiler.Regex.Ast.CodePointSet.AddAll(Broiler.Regex.Ast.CodePointSet) method System.Void
-Broiler.Regex.Ast.CodePointSet.AddCodePoint(System.Int32) method System.Void
-Broiler.Regex.Ast.CodePointSet.AddRange(System.Int32, System.Int32) method System.Void
 Broiler.Regex.Ast.CodePointSet.Clone() method Broiler.Regex.Ast.CodePointSet
 Broiler.Regex.Ast.CodePointSet.Complement() method Broiler.Regex.Ast.CodePointSet
 Broiler.Regex.Ast.CodePointSet.Contains(System.Int32) method System.Boolean

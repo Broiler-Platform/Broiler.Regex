@@ -79,3 +79,23 @@ and the same for `Broiler.Unicode.Properties.dll`, "referenced by 'lib/net10.0/B
 do not weaken the comparison, which reads the public surface of the two `Broiler.Regex.dll` files: no public signature
 of `0.1.0-preview.4` names a type of either assembly (its API listing, `PublicAPI.txt` at the start of task 2.2, names
 none), so each of its members is still compared, and the pack succeeds only with the suppressions above.
+
+### R10: a `CodePointSet` is immutable after construction (task 2.3 of SJL-11.2, 2026-10-26)
+
+The programme's conventions 7 and 10, which this repository adopted under R10, and decision D31 of Broiler.VM's
+JSD-0081 ask that every `CodePointSet` be immutable after construction and that no static field hold mutable state.
+`0.1.0-preview.4`'s set was a list that its three public adders appended to and that its readers sorted and merged in
+place on their first read, without a lock, so a set shared by a compiled pattern's concurrent matches, or held in a
+static field, was rewritten by whichever thread read it first. A set is now normalized when it is built and never
+changes, and the three adders, which can only change a set, are removed; no shim is kept for them, since a set they
+could change would not be immutable. Each is suppressed by `Broiler.Regex/CompatibilitySuppressions.xml` as package
+validation generated it.
+
+| Suppression | Target | What replaces it |
+|---|---|---|
+| CP0002 | `M:Broiler.Regex.Ast.CodePointSet.AddAll(Broiler.Regex.Ast.CodePointSet)` | `CodePointSet.Union`, which answers a new set; `CharSet.AddSet`, which adds a set to a class. |
+| CP0002 | `M:Broiler.Regex.Ast.CodePointSet.AddCodePoint(System.Int32)` | `CodePointSet.Of(codePoint, codePoint)` with `Union`; `CharSet.AddCodePoint`. |
+| CP0002 | `M:Broiler.Regex.Ast.CodePointSet.AddRange(System.Int32,System.Int32)` | `CodePointSet.Of(lo, hi)` with `Union`; `CharSet.AddRange`. |
+
+The members that only read a set, or answer a new one, stay with their `0.1.0-preview.4` signatures; `Clone` now
+answers the set itself, since a set that cannot change is its own copy.
