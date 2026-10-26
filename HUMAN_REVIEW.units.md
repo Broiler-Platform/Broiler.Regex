@@ -202,7 +202,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
 - `Broiler.Regex.Matching.Matcher.CompileAtomRun(CharPredicate[])` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `6E2087`, PENDING
   - Falsified if: /abc/ on 'ab' throws IndexOutOfRangeException instead of failing when the subject ends partway through the run
 - `Broiler.Regex.Matching.Matcher.Alternation(CompiledMatcher[])` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `73E749`, PENDING
-  - Falsified if: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'; or, as it does today until task 2.4a's meter, a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
+  - Falsified if: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'; or, as it does today until task 2.4c routes matching to task 2.4a's meter, a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
 - `Broiler.Regex.Matching.Matcher.CompileGroup(GroupNode, Direction, CompiledMatcher)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=none cited, `FD28DF`, PENDING
   - Falsified if: /(?<=(ab))c/ on 'abc' reports group 1 with an index other than 0 or a length other than 2
 - `Broiler.Regex.Matching.Matcher.CompileGeneralQuantifier(CompiledMatcher, int[], int, int, bool)` in `Broiler.Regex/Matching/Matcher.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `81AB79`, PENDING

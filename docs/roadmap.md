@@ -236,6 +236,54 @@ its dimension (steps, frames, trail, nesting or compile); or a syntax status wit
 identifier and a position. No expected failure is an exception. A meter that throws propagates its
 exception, and the instance it was charged for then answers a new call as a new instance would.
 
+*Dated record, 2026-10-26 (task 2.4a of SJL-11.2; R1, R3, R4's matcher half, R7 and R8; decisions D5, D8, D9 and
+D10).*
+
+**What the new backend runs.** `Compiling/ProgramCompiler.cs` lowers the syntax tree to a `RegexProgram` on work
+lists of the heap, entering each group through the caller's nesting limit (`RegexNesting.Descend`), and
+`Engine/RegexMachine.cs` runs it in one loop with an explicit frame stack and an undo trail: a frame is three integers
+(the address to resume, the position, the trail's height), a trail cell two (the register and the value it held).
+No method of `Broiler.Regex.Engine` reaches itself in the IL call graph (`MatcherRecursionTests`, check A-4's matcher
+half, with a planted recursion watched failing). The program holds literals without case folding, `.` with and
+without `s`, classes as code-point ranges (under `u`, without it, and `v`-mode classes of code points), sequence,
+alternation, `* + ? {n} {n,} {n,m}` greedy and lazy with the specification's empty-iteration rule, and capturing,
+named and non-capturing groups, a quantified atom's captures cleared at each iteration. The unit is one instruction
+dispatched; a class test costs one plus the floor of the base-2 logarithm of its range count, the steps of the binary
+search it does, which is how this library reads D8's "a property class's weight per character tested" for classes
+flattened to ranges; a capture reset costs one per group it clears. The meter, `RegexWorkCharge`, is charged in whole
+blocks of 512 units before the work, so before the k-th unit at least k have been charged and the over-charge is
+below one block; a call charges across all its start positions with no reset. The caller's ceilings are steps
+(optional), frames and trail, each reached answered as `LimitExceeded` naming it; a ceiling below 1, and a frame or
+trail ceiling above the library's maxima of 2^24 frames and 2^25 cells, is a broken precondition
+(`ArgumentOutOfRangeException`), and both engines pass D10's 2^20 and 2^21. The entry takes a subject span, a start, an
+anchored argument independent of `y` and the caller's slots, and answers `Match`, `NoMatch` or `LimitExceeded`; its
+registers, frames and trail are rented from the shared array pool and returned, so a call allocates nothing that grows
+with the capture count, and the program is immutable and shared across threads. The entry, the program and the meter
+are internal until task 2.4c; `RegexStatus.Match` and `NoMatch` and `RegexLimit.Steps`, `Frames` and `Trail` are public,
+as an enum's members are, and recorded as provisional in the CHANGELOG.
+
+**The transitional seam.** For a tree holding an assertion (`^ $ \b \B`), a back-reference, a look-around, a
+modifier group, the `i` flag or a `v`-mode class of strings, the compiler answers
+`ProgramCompilation.NotYetSupported`: no program, nothing thrown. Task 2.4b adds those instructions and removes the
+answer. Task 2.4c adds the fast paths (a greedy run over a class as one instruction, the corpus's presumption 3;
+atom-run folding; the literal-prefix prefilter), routes `BroilerRegex` through the new backend and deletes
+`Matching/`, `Budget`, `StepLimit` and `RegexOverflowException`; the skipped theory of `NestingMaximumTests` runs then,
+and the corpus's rows O05 and O06, whose 10,000,001-character run passes the frame ceiling in the loop form, match then.
+
+**The evidence.** Unit tests per instruction, per quantifier form and per ceiling; a test of the charging property of
+check A-1 with a recording meter over the corpus's declared inputs; a differential test of the two backends over every
+string literal of the test project in the subset (4,320 pattern and flag pairs and 251,884 cases at this record) and a seeded population
+of 20,000 generated patterns (173,428 cases), all agreeing; and the corpus's 36 rows within the subset, each run in a
+child process through the probe's hidden argument `--engine-row` on the declared 1 MiB stack, each answering its
+declared status. The probe's report carries the new backend's cases, the flat sequences of 100,000 terms and the
+nesting maximum among them, under Native AOT as under the JIT.
+
+**Found on the way: the old backend's defect D1.** Under `u` or `v`, the old matcher's greedy run of one character
+gives back across a start inside a surrogate pair, joining the low half to the high half before the start, so
+`Match` from such a start can answer a match of a character before it, and a group captured before the match. The new
+backend reads the low half as a character of its own and never reads before the start, the answer of ECMA-262
+§22.2.2's forward matchers; a test pins it. The public members keep the defect until task 2.4c.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

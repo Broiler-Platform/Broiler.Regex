@@ -51,19 +51,43 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   documentation records, and proven there on linux-x64 for the parser and the compiler: a pattern of every shape
   measured, at the maximum, parses and compiles on a 1 MiB thread under the JIT (`NestingMaximumTests`) and in the
   Native AOT probe, which now runs its population on a thread of that stack, and one level past it is refused with the
-  nesting status. Matching at the maximum is proven only for the shapes `NestingMaximumTests.MatchedShapes` lists; the
-  matcher's continuations recurse until task 2.4a, and the shapes found to exhaust the stack at match time are listed,
+  nesting status. Matching at the maximum through the public members is proven only for the shapes
+  `NestingMaximumTests.MatchedShapes` lists; their matcher's continuations recurse until task 2.4c routes matching
+  through task 2.4a's backend, and the shapes found to exhaust the stack at match time are listed,
   with the depths they fail at, in the package README's known limitations. win-x64 was not measured. The constant is
   never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
   precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
   nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
   `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
-  and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match will answer
-  `Match` or `NoMatch` instead. A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature of
+  and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match answers
+  `Match` or `NoMatch` instead (below). A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature of
   `Compile` is provisional**, and no published version carries it: task 2.5 replaces it to take the caller's compile
   meter, a nullable `RegexWorkCharge` (convention 4), and D9's syntax status needs room for a code, a message identifier
   and a position. The plan gives that status to the validate entry of task 2.8 and names no task that moves
   `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for `0.2.0-preview.1`, holds that open.
+- **The new backend, internal (task 2.4a; R1, R3, R4's matcher half, R7, R8; decisions D5, D8, D9 and D10).** A
+  compiler from the syntax tree to an instruction program (`Compiling/ProgramCompiler.cs`, with no recursion, under the
+  caller's nesting limit) and one backtracking loop with an explicit frame stack and an undo trail (`Engine/`), written
+  new from Broiler.VM's matcher as its specification, with no code ported. Its match entry takes a subject span, a start,
+  an anchored argument independent of `y`, the caller's slots (two offsets per group, group 0 first, -1 for a group that
+  did not participate), a nullable meter and the caller's ceilings; it answers `Match`, `NoMatch` or `LimitExceeded`
+  naming the ceiling reached. Every dispatched instruction is charged one unit, except a class test, charged one plus
+  the floor of the base-2 logarithm of its range count, and a capture reset, charged one per group it clears; the units
+  are paid in blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its own exception. The step ceiling is optional;
+  the frame and trail ceilings are at least 1 and at most 16,777,216 frames and 33,554,432 trail cells, and both engines
+  pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and trail come from the shared array pool, so a call
+  allocates nothing that grows with the capture count once the pool holds them. The program runs literals, `.`,
+  classes (`v`-mode classes of code points included), sequence, alternation, every quantifier form with the
+  specification's empty-iteration rule, and the three kinds of group, clearing a quantified atom's captures at each
+  iteration; for the constructs of task 2.4b (`^ $ \b \B`, back-references, look-around, modifier groups, the `i` flag,
+  `v`-mode classes of strings) the compiler answers "not yet supported", a transitional answer task 2.4b removes. The
+  entry, the program, the compiler, the ceilings and the meter `RegexWorkCharge` are **internal** (visible to the tests
+  and the probe) until task 2.4c routes `BroilerRegex` through them; the public members still match with `Matching/`.
+  **Public, and provisional like `Compile`:** `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps`
+  (2), `RegexLimit.Frames` (3) and `RegexLimit.Trail` (4), extending task 2.3's enums. They could not wait: an enum's
+  members take the enum's accessibility, and the new entry answers these two public enums, so its answers are public
+  members whatever the entry's own accessibility. `PublicAPI.txt` lists them; package validation accepts them as
+  additions.
 
 ### Changed
 
@@ -126,7 +150,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `0.1.0-preview.4` parsed and compiled whatever its stack held and ended the process with a stack overflow past it:
   on a 1 MiB thread, at a few hundred levels for some shapes, and on any stack for a pattern such as 1,000,000 opening
   parentheses. A pattern within the maximum compiles and matches as before, and its match can still exhaust a small
-  stack for the shapes the README lists, until task 2.4a.
+  stack for the shapes the README lists, until task 2.4c routes matching through task 2.4a's backend.
 - **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
   tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
   provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`

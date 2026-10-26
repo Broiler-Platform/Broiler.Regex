@@ -33,24 +33,29 @@ internal static class EnginePopulation
         ("E07", "N11", "compile", "\"(?:\" * 1000000 + \"a\" + \")\" * 1000000", "-", "-", Ordinary),
         ("E08", "-", "match@0", "\"(\" * 511 + \"a\" + \")+\" * 511", "-", "\"a\"", Ordinary),
 
+        // Shapes whose match at the maximum the public matcher does not prove until task 2.4c (NestingMaximumTests'
+        // UnprovenShapes within the subset): a capture around an alternation of sequences on each level, plain and repeated.
+        ("E09", "-", "match@0", "\"(b|x\" * 511 + \"a\" + \"x)\" * 511", "-", "\"x\" * 511 + \"a\" + \"x\" * 511", Ordinary),
+        ("E10", "-", "match@0", "\"(b|x\" * 511 + \"a\" + \"x)+\" * 511", "-", "\"x\" * 511 + \"a\" + \"x\" * 511", Ordinary),
+
         // The ceilings, each named, and the meter.
-        ("E09", "K01", "match@0", "\"(a+)+b\"", "-", "\"b\" + \"a\" * 30", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
-        ("E10", "M01", "match@0", "\"(?:a|ab)*c\"", "-", "\"ab\" * 10000 + \"c\"", "meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none"),
-        ("E11", "M02", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 10000 + \"c\"", "meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none"),
-        ("E12", "O12", "match@0", "\"[0-9]+x\"", "-", "\"x\" + \"1\" * 1000000", "meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
-        ("E13", "O13", "match@0", "\"[0-9]+x\"", "-", "\"1\" * 100 + \"x\"", "meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E11", "K01", "match@0", "\"(a+)+b\"", "-", "\"b\" + \"a\" * 30", "meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E12", "M01", "match@0", "\"(?:a|ab)*c\"", "-", "\"ab\" * 10000 + \"c\"", "meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none"),
+        ("E13", "M02", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 10000 + \"c\"", "meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none"),
+        ("E14", "O12", "match@0", "\"[0-9]+x\"", "-", "\"x\" + \"1\" * 1000000", "meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
+        ("E15", "O13", "match@0", "\"[0-9]+x\"", "-", "\"1\" * 100 + \"x\"", "meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none"),
 
         // Ordinary answers: captures, the empty check, lazy order, the anchored argument, code points.
-        ("E14", "O15", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 100 + \"c\"", Ordinary),
-        ("E15", "-", "match@0", "\"(a?)*?b|(?:(x)|y)+\"", "-", "\"yxy\"", Ordinary),
-        ("E16", "O09", "anchored@0", "\"b\"", "-", "\"ab\"", Ordinary),
-        ("E17", "O10", "anchored@1", "\"b\"", "-", "\"ab\"", Ordinary),
-        ("E18", "-", "match@1", "\"[^a]\\\\u{1F600}.\"", "u", "\"a\\ud83d\\ude00\\ud83d\\ude00b\"", Ordinary),
-        ("E19", "-", "match@0", "\"(?<x>a{2,3}?)(?<y>[\\\\s\\\\S]{1,2})\"", "s", "\"aaaa\\n\"", Ordinary),
+        ("E16", "O15", "match@0", "\"(?:(a)|b)*c\"", "-", "\"a\" * 100 + \"c\"", Ordinary),
+        ("E17", "-", "match@0", "\"(a?)*?b|(?:(x)|y)+\"", "-", "\"yxy\"", Ordinary),
+        ("E18", "O09", "anchored@0", "\"b\"", "-", "\"ab\"", Ordinary),
+        ("E19", "O10", "anchored@1", "\"b\"", "-", "\"ab\"", Ordinary),
+        ("E20", "-", "match@1", "\"[^a]\\\\u{1F600}.\"", "u", "\"a\\ud83d\\ude00\\ud83d\\ude00b\"", Ordinary),
+        ("E21", "-", "match@0", "\"(?<x>a{2,3}?)(?<y>[\\\\s\\\\S]{1,2})\"", "s", "\"aaaa\\n\"", Ordinary),
 
         // The transitional refusal of task 2.4a, and a syntax error.
-        ("E20", "-", "match@0", "\"^a\"", "-", "\"a\"", Ordinary),
-        ("E21", "-", "compile", "\"a{2,1}\"", "-", "-", Ordinary),
+        ("E22", "-", "match@0", "\"^a\"", "-", "\"a\"", Ordinary),
+        ("E23", "-", "compile", "\"a{2,1}\"", "-", "-", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>
