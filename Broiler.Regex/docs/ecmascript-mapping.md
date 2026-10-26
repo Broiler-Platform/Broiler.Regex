@@ -1,7 +1,7 @@
 # ECMA-262 §22.2 → Broiler.Regex mapping
 
 How each piece of the ECMAScript regular-expression specification maps onto the
-code in this project. Section numbers refer to ECMA-262 (2024+).
+code in this project. Section numbers are those of ECMA-262 2025 (ES2025).
 
 ## §22.2.1 Patterns (grammar) → `Parsing/RegexParser.cs` + `Ast/`
 
@@ -41,18 +41,18 @@ Broiler.Regex models these directly:
 | Matcher | `CompiledMatcher` delegate |
 | Direction (forward / backward) | `Matcher.Direction` |
 | §22.2.2.3.1 RepeatMatcher | `CompileQuantifier` (incl. empty-match guard) |
-| §22.2.2.3.4 capturing group | `CompileGroup` |
+| §22.2.2.7 CompileAtom, a capturing group | `CompileGroup` |
 | §22.2.2.4 Assertions / look-around | `CompileAnchor`, `CompileLookaround` |
 | §22.2.2.7 AtomEscape (character) | `CompileChar` |
-| §22.2.2.9 BackreferenceMatcher | `CompileBackreference` |
+| §22.2.2.7.2 BackreferenceMatcher | `CompileBackreference` |
 | §22.2.2.9 CompileToCharSet | `RegexParser` class parsing → `CharSet` |
-| §22.2.2.9.2 WordCharacters | `RegexUnicode.EscapeSet` / `RegexUnicode.IsWord` |
+| §22.2.2.9.3 WordCharacters | `RegexUnicode.EscapeSet` / `RegexUnicode.IsWord` |
 | §22.2.2.9.4 AllCharacters | `RegexParser.ComplementOperand` / `RegexUnicode.BuildCanonicalCharacters` |
 | §22.2.2.9.5 MaybeSimpleCaseFolding | `RegexParser.Fold` / `CodePointSet.Map` |
 | §22.2.2.9.6 CharacterComplement | `RegexParser.ComplementOperand` |
 | §22.2.2.7.3 Canonicalize | `RegexUnicode.Canonicalize`, over the provider's `UnicodeCaseFolding` |
-| §22.2.2.9 UnicodeMatchProperty / UnicodeMatchPropertyValue | `RegexUnicode.ResolveProperty`, over the provider's `UnicodeProperties` and `UnicodeStringProperties` |
-| §22.2.2.10 CharacterSetMatcher | `CompileCharClass` / `CharSet.Contains` |
+| §22.2.2.9.7 UnicodeMatchProperty / §22.2.2.9.8 UnicodeMatchPropertyValue | `RegexUnicode.ResolveProperty`, over the provider's `UnicodeProperties` and `UnicodeStringProperties` |
+| §22.2.2.7.1 CharacterSetMatcher | `CompileCharClass` / `CharSet.Contains` |
 
 ### Why direction matters (look-behind)
 
@@ -81,8 +81,9 @@ modifier group may toggle (`ModifierGroupNode`).
 §22.2.2.9.5 folds each class-set operand through `scf` **before** §22.2.2.9.6 complements
 it, and §22.2.2.9.4 makes that complement's universe the code points that fold to
 themselves. `RegexParser.Fold` and `ComplementOperand` keep exactly that order, which is
-the whole reason `[^\p{Lu}]` matches neither `A` nor `a` under `vi` while it matches `a`
-under `ui`. Because every operand is folded, `CharSet.CaseFolded` lets the matcher
+the whole reason `\P{Lu}` matches neither `A` nor `a` under `vi` while it matches both
+under `ui`, whose case closure runs over the complement (`[^\p{Lu}]` matches neither in both
+modes). Because every operand is folded, `CharSet.CaseFolded` lets the matcher
 canonicalize the subject and test membership directly instead of walking its fold orbit —
 the two are equivalent once the set holds only canonical members.
 

@@ -296,15 +296,15 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a compiled pattern reads a Unicode answer that no IUnicodeTables call made during its compilation or matching could have supplied, so a recording provider misses a table the library read
 - `Broiler.Regex.Unicode.RegexUnicode.RegexUnicode(IUnicodeTables)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=none cited, `4DA887`, PENDING
   - Falsified if: tables whose UnicodeVersion is not the provider's are accepted, so the library matches against a data version no caller pinned
-- `Broiler.Regex.Unicode.RegexUnicode.OrbitIntersects(CodePointSet, int, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `43DE79`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.OrbitIntersects(CodePointSet, int, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `43DE79`, PENDING
   - Falsified if: under iu, a class holding only U+212A KELVIN SIGN is reported not to hold a code point case-equivalent to 'k'
 - `Broiler.Regex.Unicode.RegexUnicode.EscapeSet(ClassEscape, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `C95A93`, PENDING
   - Falsified if: EscapeSet(NonWord, ignoreCase: true, unicode: true) contains U+017F, so /\W/iu matches LATIN SMALL LETTER LONG S
-- `Broiler.Regex.Unicode.RegexUnicode.IsWord(int, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.5, `03C9D1`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.IsWord(int, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.4.1, `03C9D1`, PENDING
   - Falsified if: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
-- `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `1593A1`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.4, `1593A1`, PENDING
   - Falsified if: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
-- `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `76BE3F`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.7, `76BE3F`, PENDING
   - Falsified if: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
 - `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `34C07C`, PENDING
   - Falsified if: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as

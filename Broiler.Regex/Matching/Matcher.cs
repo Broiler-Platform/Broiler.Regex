@@ -978,7 +978,7 @@ internal sealed class Matcher
     }
 
     /// <summary>
-    /// §22.2.2.5 IsWordChar reads WordCharacters, which under <c>iu</c> also holds every
+    /// §22.2.2.4.1 IsWordChar reads WordCharacters, which under <c>iu</c> also holds every
     /// code point that folds into the basic set — so <c>ſ</c> and <c>K</c> are word
     /// characters for <c>\b</c> exactly when they are members of <c>\w</c>.
     /// </summary>

@@ -155,7 +155,7 @@ public sealed class CharSet
 
     /// <summary>
     /// Tests whether <paramref name="codePoint"/> is a member of this class
-    /// (§22.2.2.10 CharacterSetMatcher), folding by the Unicode answers of the compilation that built it.
+    /// (§22.2.2.7.1 CharacterSetMatcher), folding by the Unicode answers of the compilation that built it.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=62C600
     // Broiler-Falsified-If: a CharSet with both CaseFolded and Negated set answers as if it were not negated, because the CaseFolded branch returns before Negated is applied

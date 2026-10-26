@@ -112,7 +112,7 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
 - `\p{…}` / `\P{…}` property escapes: General_Category, binary properties, `Script`,
   `Script_Extensions`, and the UTS #51 properties of strings under `v`
 - `v`-mode class-set expressions: nesting, `&&`, `--`, `\q{…}` string alternatives,
-  and the fold-then-complement ordering that makes `[^\p{Lu}]` mean something
+  and the fold-then-complement ordering that makes `\P{Lu}` mean something
   different under `vi` than under `ui`
 - The Annex B / Unicode-mode grammar split: `\u{…}`, a bare `]`/`{`/`}`, a class escape
   as a range endpoint, a quantified look-ahead, and `\k<n>` in a pattern that declares no

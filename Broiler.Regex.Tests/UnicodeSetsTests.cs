@@ -79,9 +79,9 @@ public class UnicodeSetsTests
     [Theory]
     // §22.2.1 MaybeSimpleCaseFolding folds each operand BEFORE the complement is taken,
     // and §22.2.2.9 AllCharacters restricts that complement to the code points which fold
-    // to themselves. Together they are why `v` and `u` disagree here: /[^\p{Lu}]/ui
-    // matches nothing an uppercase letter folds from, while /[^\p{Lu}]/vi additionally
-    // rejects the uppercase letters themselves.
+    // to themselves. /[^\p{Lu}]/vi matches neither `A` nor `a`, as /[^\p{Lu}]/ui does: there
+    // CharacterSetMatcher's invert refuses every code point that folds like an uppercase
+    // letter. Where `v` and `u` disagree is \P{Lu}, below.
     [InlineData(@"[^\p{Lu}]", "A", null)]
     [InlineData(@"[^\p{Lu}]", "a", null)]
     [InlineData(@"[^\p{Lu}]", "1", "1")]
@@ -108,7 +108,7 @@ public class UnicodeSetsTests
 
     [Theory]
     // The same rule reaches a standalone escape, which under `v` is a class-set operand
-    // of its own: /\P{Lu}/vi rejects both cases where /\P{Lu}/ui accepts the lowercase.
+    // of its own: /\P{Lu}/vi rejects both cases where /\P{Lu}/ui accepts both.
     [InlineData(@"\P{Lu}", "a", null)]
     [InlineData(@"\P{Lu}", "A", null)]
     [InlineData(@"\P{Lu}", "1", "1")]
@@ -119,6 +119,29 @@ public class UnicodeSetsTests
     [InlineData(@"\S", "a", "a")]
     public void IgnoreCase_ReachesStandaloneEscapes(string pattern, string input, string? expected)
         => Assert.Equal(expected, Match(pattern, "vi", input));
+
+    [Theory]
+    // The comments above, pinned in both modes. \P{Lu} is where `u` and `v` disagree: under `ui` the case
+    // closure runs over the complement, which holds `a`, so both cases match; under `vi` the complement is taken
+    // after folding, within the code points that fold to themselves, so neither does. [^\p{Lu}] matches neither
+    // case in both modes (§22.2.2.7.1, CharacterSetMatcher's invert), and [^\P{Ll}] matches nothing under `ui`
+    // and what \p{Ll} matches under `vi`.
+    [InlineData(@"\P{Lu}", "ui", "A", "A")]
+    [InlineData(@"\P{Lu}", "ui", "a", "a")]
+    [InlineData(@"\P{Lu}", "vi", "A", null)]
+    [InlineData(@"\P{Lu}", "vi", "a", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "A", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "a", null)]
+    [InlineData(@"[^\p{Lu}]", "ui", "1", "1")]
+    [InlineData(@"[^\p{Lu}]", "vi", "A", null)]
+    [InlineData(@"[^\p{Lu}]", "vi", "a", null)]
+    [InlineData(@"[^\P{Ll}]", "ui", "a", null)]
+    [InlineData(@"[^\P{Ll}]", "ui", "A", null)]
+    [InlineData(@"[^\P{Ll}]", "vi", "a", "a")]
+    [InlineData(@"[^\P{Ll}]", "vi", "A", "A")]
+    [InlineData(@"[^\P{Ll}]", "vi", "1", null)]
+    public void TheFoldOrder_SeparatesUAndVOnAComplementedProperty(string pattern, string flags, string input, string? expected)
+        => Assert.Equal(expected, Match(pattern, flags, input));
 
     [Fact(Timeout = 600000)]
     public void KelvinSign_FoldsWithTheAsciiLetter()

@@ -50,7 +50,7 @@ public sealed class RegexParser
     /// <summary>
     /// The effective <c>i</c> flag at the cursor. A <c>v</c>-mode class folds its operands
     /// while it is being built (§22.2.1 MaybeSimpleCaseFolding), and <c>\w</c>'s set widens
-    /// under <c>iu</c> (§22.2.2.9.2), so both need the flag as an inline modifier group
+    /// under <c>iu</c> (§22.2.2.9.3), so both need the flag as an inline modifier group
     /// leaves it — not only as the pattern's own flags set it.
     /// </summary>
     private readonly Stack<bool> _ignoreCase = new();
@@ -768,7 +768,10 @@ public sealed class RegexParser
     //
     // With `i`, MaybeSimpleCaseFolding folds each operand as it is produced — before any
     // complement is taken. That ordering is the whole observable difference between
-    // `[^\p{Lu}]` under `vi` (matches neither `A` nor `a`) and under `ui` (matches `a`).
+    // `\P{Lu}` under `vi` (matches neither `A` nor `a`) and under `ui` (matches both: the
+    // case closure of the complement holds `a`, which `A` folds to). `[^\p{Lu}]` matches
+    // neither in both modes, as CharacterSetMatcher's invert (§22.2.2.7.1) refuses every
+    // code point that folds like an uppercase letter.
 
     /// <summary>
     /// One evaluated class-set operand: code points plus string members, and §22.2.1.8 MayContainStrings of the

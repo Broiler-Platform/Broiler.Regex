@@ -118,14 +118,14 @@ internal sealed class RegexUnicode
 
     /// <summary>
     /// Whether <paramref name="set"/> holds a code point whose canonical form is that of
-    /// <paramref name="codePoint"/>: the question §22.2.2.9's CharacterSetMatcher asks of a class under <c>i</c>.
+    /// <paramref name="codePoint"/>: the question §22.2.2.7.1 CharacterSetMatcher asks of a class under <c>i</c>.
     /// </summary>
     /// <remarks>
     /// Canonicalizing every member of a class is impossible for a set the size of <c>\p{L}</c>, so the test runs
     /// the other way: the provider writes the code point's orbit (every code point sharing its canonical form,
     /// rarely more than four) and each is a range lookup.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=43DE79
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=Low; Security=High; Resources=1; Fingerprint=43DE79
     // Broiler-Falsified-If: under iu, a class holding only U+212A KELVIN SIGN is reported not to hold a code point case-equivalent to 'k'
     // Broiler-Human:        PENDING
     internal bool OrbitIntersects(CodePointSet set, int codePoint, bool unicode)
@@ -161,7 +161,7 @@ internal sealed class RegexUnicode
     /// <summary>The set matched by one built-in class escape, a new set the caller may change.</summary>
     /// <remarks>
     /// <paramref name="ignoreCase"/> and <paramref name="unicode"/> only matter for <c>\w</c> and <c>\W</c>:
-    /// §22.2.2.9.2 WordCharacters widens the basic word set with every code point that case-folds into it when
+    /// §22.2.2.9.3 WordCharacters widens the basic word set with every code point that case-folds into it when
     /// both flags are on, which is why <c>/\W/iu</c> must not match <c>ſ</c>.
     /// </remarks>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=C95A93
@@ -178,21 +178,21 @@ internal sealed class RegexUnicode
         _ => CodePointSet.Empty(),
     };
 
-    /// <summary>§22.2.2.9.2 WordCharacters, <c>\w</c>'s set for the given mode.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.2; IP=Low; Security=Medium; Resources=0; Fingerprint=2B40F7
+    /// <summary>§22.2.2.9.3 WordCharacters, <c>\w</c>'s set for the given mode.</summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Medium; Resources=0; Fingerprint=2B40F7
     // Broiler-Human:        PENDING
     private CodePointSet WordSet(bool ignoreCase, bool unicode)
         => ignoreCase && unicode ? _foldedWordSet : UnicodeCharSets.BasicWordSet;
 
-    /// <summary>§22.2.2.5 IsWordChar, which <c>\b</c> and <c>\B</c> read.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.5; IP=None; Security=High; Resources=0; Fingerprint=03C9D1
+    /// <summary>§22.2.2.4.1 IsWordChar, which <c>\b</c> and <c>\B</c> read.</summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.4.1; IP=None; Security=High; Resources=0; Fingerprint=03C9D1
     // Broiler-Falsified-If: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
     // Broiler-Human:        PENDING
     internal bool IsWord(int codePoint, bool ignoreCase, bool unicode)
         => WordSet(ignoreCase, unicode).Contains(codePoint);
 
     /// <summary>
-    /// §22.2.2.9's AllCharacters under <c>v</c> with <c>i</c>: every code point that folds to itself, the universe
+    /// §22.2.2.9.4 AllCharacters under <c>v</c> with <c>i</c>: every code point that folds to itself, the universe
     /// a complement is taken against there. A new set, built on each call; the parser keeps the one it builds.
     /// </summary>
     /// <remarks>
@@ -204,7 +204,7 @@ internal sealed class RegexUnicode
     /// stay in the universe; under <c>vi</c> every lookup canonicalizes the subject first, so no match would
     /// change, and the test would report it.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=2; Fingerprint=1593A1
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=Low; Security=High; Resources=2; Fingerprint=1593A1
     // Broiler-Falsified-If: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
     // Broiler-Human:        PENDING
     internal CodePointSet BuildCanonicalCharacters()
@@ -239,10 +239,10 @@ internal sealed class RegexUnicode
     }
 
     /// <summary>
-    /// §22.2.2.9.2's WordCharacters under <c>i</c> with <c>u</c> or <c>v</c>: the basic word characters and every
+    /// §22.2.2.9.3 WordCharacters under <c>i</c> with <c>u</c> or <c>v</c>: the basic word characters and every
     /// code point whose simple case folding is one of them, from the provider's orbits.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.2; IP=Low; Security=Low; Resources=1; Fingerprint=E762B0
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Low; Resources=1; Fingerprint=E762B0
     // Broiler-Human:        PENDING
     private CodePointSet BuildFoldedWordSet()
     {
@@ -262,7 +262,7 @@ internal sealed class RegexUnicode
         return CodePointSet.FromRanges(ranges);
     }
 
-    // ----- Property escapes (§22.2.2.9 UnicodeMatchProperty) ---------------------
+    // ----- Property escapes (§22.2.2.9.7 UnicodeMatchProperty) -------------------
 
     /// <summary>
     /// Resolves the property escape <c>\p{name}</c> or <c>\p{name=value}</c> by the exact names ECMA-262 admits,
@@ -272,10 +272,10 @@ internal sealed class RegexUnicode
     /// The lone form is a General_Category value or group, a binary property, or a property of strings, in that
     /// order, which is how the specification's tables are laid out; the <c>name=value</c> form is
     /// General_Category, Script or Script_Extensions with one of their values. A name is matched as written: no
-    /// case folding, no ignoring of <c>_</c>, <c>-</c> or spaces, no <c>Is</c> prefix (§22.2.2.9,
-    /// UnicodeMatchProperty and UnicodeMatchPropertyValue).
+    /// case folding, no ignoring of <c>_</c>, <c>-</c> or spaces, no <c>Is</c> prefix (§22.2.2.9.7
+    /// UnicodeMatchProperty and §22.2.2.9.8 UnicodeMatchPropertyValue).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=76BE3F
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=Low; Security=High; Resources=3; Fingerprint=76BE3F
     // Broiler-Falsified-If: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
     // Broiler-Human:        PENDING
     internal UnicodeCharSets.PropertyMatch? ResolveProperty(string name, string? value)
