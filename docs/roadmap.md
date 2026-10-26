@@ -199,6 +199,16 @@ where recursion remains") and the reading of the area design's requirement 4 and
 "nesting bounded without CLR recursion". Rewriting a parser that is not the defect into explicit stacks
 is not required.
 
+*Dated note, 2026-10-26 (task 2.3 of SJL-11.2, R4): the parser and the closure compiler check the caller's
+nesting limit before each descent and answer `RegexStatus.LimitExceeded` with `RegexLimit.Nesting`, under
+`BroilerRegex.MaximumNestingLimit` (512). On linux-x64, a pattern of every shape measured at the task's review,
+nested to the maximum, parses and compiles on a 1 MiB thread under the JIT and Native AOT; win-x64 was not
+measured. The matcher's half of R4 is task 2.4a's: until its matcher replaces the continuations, matching at the
+maximum is proven only for the shapes `NestingMaximumTests.MatchedShapes` lists, and the review's mixtures that
+exhaust a 1 MiB stack at match time within the maximum are task 2.4a's open items, each listed with the depth it
+first failed at in the package README's known limitations and kept as a skipped test in `NestingMaximumTests`,
+which task 2.4a runs.*
+
 **R5, R6 and R10's test262, read (decision D14).** A library cannot run test262 alone, so "test262 ...
 in this repository's CI" is read as a host job and a host-free library job. The **host job** checks out Broiler.JS at a retained commit
 named by a dated record in this file, packs this commit's package into a local feed listed first, builds

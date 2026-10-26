@@ -135,16 +135,43 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   limit, up to `BroilerRegex.MaximumNestingLimit` (512, the limit both engines pass), and
   answers `RegexStatus.LimitExceeded` with `RegexLimit.Nesting`; the constructors and
   `RegexParser.Parse` parse under the maximum and refuse a deeper pattern with a
-  `RegexSyntaxException`. The maximum was measured on a 1 MiB stack on linux-x64, where a
-  pattern at it compiles and matches under the JIT and Native AOT (the measurement and its
-  margins are in the constant's documentation); win-x64 was not measured. The parser still
-  recurses a few frames per level, and the matcher's continuations recurse per level and per
-  term of a sequence until the new matcher of SJL-11.2 task 2.4a. So a long flat sequence of
-  terms that are not single code points still exhausts a small stack and ends the process, as
-  it did in `0.1.0-preview.4`: 5,000 capturing groups in a row do on a 1 MiB thread, where
-  2,000 match. The `RegexOverflowException` backstop, which the JavaScript layer catches to
-  fall back to .NET, is checked only where a general quantifier's driver starts, so it does
-  not reach that case.
+  `RegexSyntaxException`. On linux-x64, a pattern of every shape measured, nested to the
+  maximum, parses and compiles on a 1 MiB stack under the JIT and Native AOT (the measurement
+  and its margins are in the constant's documentation); win-x64 was not measured, so the
+  maximum is proven on linux-x64 only.
+- **Matching at the nesting maximum is proven only for some shapes**, until the new matcher of
+  SJL-11.2 task 2.4a (R4's matcher half). The parser still recurses a few frames per level, and
+  the matcher's continuations recurse per level and per term of a sequence, so a pattern within
+  the maximum can exhaust a small stack when it is matched. `NestingMaximumTests.MatchedShapes`
+  lists the shapes that match at the maximum on a 1 MiB thread: each kind of level alone, and an
+  alternation, a sequence or an alternation of sequences on each level without a capture. A
+  capture with more on each level is not proven, and the review of task 2.3 found these to fail,
+  each an open item for task 2.4a and a skipped test in `NestingMaximumTests` (the levels at which
+  a match on a 1 MiB thread first failed on linux-x64, in fresh processes; a depth is one more;
+  "overflow" is a `RegexOverflowException`, otherwise the process ended with a stack overflow):
+
+  | Shape, written for two levels | JIT Release | JIT Debug | Native AOT |
+  |---|---|---|---|
+  | `(b\|x\1\B(b\|x\2\Ba\2x)\1x)` | 506 | 328 | 2,506 |
+  | `(b\|x\1\B(b\|x\2\Bax)+x)+` | 465, overflow | 321, overflow | 1,463, overflow |
+  | `(b\|x\1(b\|x\2ax)+x)+` | 510, overflow | 357, overflow | 1,463, overflow |
+  | `(b\|x\1\B(b\|x\2\Ba\Bx)\Bx)`, and inside a look-behind | 531 | 357 | 2,506 |
+  | `(b\|x\B(b\|x\Ba\Bx)\Bx)` | 630 | 440 | 2,506 |
+  | `(b\|x\1(b\|x\2ax)x)` | 676 | 446 | 2,506 |
+  | `(b\|x(b\|xax)+x)+` | 625, overflow | 453, overflow | 1,463, overflow |
+  | `(?:b\|x(?:b\|xax)+x)+` | 688, overflow | 501, overflow | 1,463, overflow |
+  | `(b\|x?(b\|x?ax?)x?)` | 698 | 535 | 1,810 |
+  | `(b\|x(b\|xax)x)`, named, and inside a look-behind | 845 | 584 | 2,506 |
+  | the same with capturing, non-capturing, named and modifier groups in turn | 937 | 659 | 2,833 |
+  | `(x(xax)x)` | 1,053 | 691 | 3,260 |
+
+  At the maximum, 511 levels, the first two rows fail under the JIT in Release, each in all 20 of
+  24 runs that had the default tiering, and the third in 4 of 24; the first eight rows fail under
+  the JIT in Debug in every run. A long flat sequence of terms that are not single code points exhausts
+  a small stack in the same way and ends the process, as it did in `0.1.0-preview.4`: 5,000
+  capturing groups in a row do on a 1 MiB thread, where 2,000 match. The `RegexOverflowException`
+  backstop, which the JavaScript layer catches to fall back to .NET, is checked only where a
+  general quantifier's driver starts, so it does not reach a crash that happens elsewhere.
 - The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path

@@ -47,10 +47,14 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `LimitExceeded` with `RegexLimit.Nesting` when the pattern nests deeper, checked before each descent of the parser
   and of the compiler. Depth is counted as Broiler.VM's matcher counts it: the pattern is depth 1, each group of any
   kind adds 1, and under `v` each class adds 1. `BroilerRegex.MaximumNestingLimit` (512) is the largest limit a
-  caller may pass, chosen from a measurement of the stack each kind of nesting costs on a 1 MiB thread that its
-  documentation records, and proven there: a pattern at it compiles and matches on a 1 MiB thread under the JIT
-  (`NestingMaximumTests`) and in the Native AOT probe, which now runs its population on a thread of that stack, and
-  one level past it is refused with the nesting status. A limit below 1 or above it is the caller's broken
+  caller may pass, chosen from a measurement of the stack each shape of nesting costs on a 1 MiB thread that its
+  documentation records, and proven there on linux-x64 for the parser and the compiler: a pattern of every shape
+  measured, at the maximum, parses and compiles on a 1 MiB thread under the JIT (`NestingMaximumTests`) and in the
+  Native AOT probe, which now runs its population on a thread of that stack, and one level past it is refused with the
+  nesting status. Matching at the maximum is proven only for the shapes `NestingMaximumTests.MatchedShapes` lists; the
+  matcher's continuations recurse until task 2.4a, and the shapes found to exhaust the stack at match time are listed,
+  with the depths they fail at, in the package README's known limitations. win-x64 was not measured. The constant is
+  never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
   precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
   nesting needs; the new matcher (task 2.4a) and the syntax status (task 2.8) add members to them. A syntax error from
   `Compile` is still a `RegexSyntaxException` until task 2.8.
@@ -109,12 +113,14 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 ### Observable changes
 
-- **A pattern nested deeper than 512 levels is refused (R4; task 2.3, decision D6).** The constructors of
+- **A pattern nested deeper than depth 512 is refused (R4; task 2.3, decision D6)**: more than 511 nested groups, or
+  under `v` more than 511 nested classes, the pattern itself being depth 1. The constructors of
   `BroilerRegex` and `RegexParser.Parse`, which take no limit, parse under `BroilerRegex.MaximumNestingLimit` and
   refuse a deeper pattern with a `RegexSyntaxException` at the group or class that opens the level past it.
   `0.1.0-preview.4` parsed and compiled whatever its stack held and ended the process with a stack overflow past it:
   on a 1 MiB thread, at a few hundred levels for some shapes, and on any stack for a pattern such as 1,000,000 opening
-  parentheses. A pattern within the maximum compiles and matches as before.
+  parentheses. A pattern within the maximum compiles and matches as before, and its match can still exhaust a small
+  stack for the shapes the README lists, until task 2.4a.
 - **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
   tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
   provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`

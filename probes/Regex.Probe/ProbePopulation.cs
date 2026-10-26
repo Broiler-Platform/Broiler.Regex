@@ -12,10 +12,11 @@ namespace Broiler.Regex.Probe;
 /// One case of the probe's population: a pattern and its flags, a subject, and the index the match starts at;
 /// with <see cref="All"/>, every match the global iteration finds from the start of the subject. With
 /// <see cref="NestingLimit"/>, the pattern is compiled by <see cref="BroilerRegex.Compile"/> under that limit, and
-/// otherwise by the constructor; <see cref="Shown"/> is how the report writes a pattern too long to write out.
+/// otherwise by the constructor; <see cref="Shown"/> and <see cref="SubjectShown"/> are how the report writes a pattern
+/// and a subject too long to write out.
 /// </summary>
 internal sealed record ProbeCase(string Id, string Pattern, string Flags, string Subject, int Start, bool All = false,
-    int? NestingLimit = null, string? Shown = null);
+    int? NestingLimit = null, string? Shown = null, string? SubjectShown = null);
 
 /// <summary>A case compiled once: the instance every run shares, or the answer compilation gave instead.</summary>
 internal sealed record CompiledCase(ProbeCase Case, BroilerRegex? Regex, string? Refusal);
@@ -33,8 +34,9 @@ internal sealed record CompiledCase(ProbeCase Case, BroilerRegex? Regex, string?
 /// the Unicode owner's tables (<c>Broiler.Unicode.Tables</c>, which the probe hands to every compilation as the
 /// library's provider), the global iteration, refusals, and, from task 2.3 of SJL-11.2, nesting at the library's
 /// maximum, one level past it and far past it, compiled under a nesting limit and run on a thread of
-/// <see cref="StackBytes"/>, so that the Native AOT run proves the maximum as the JIT run does (requirement R4). It
-/// holds no declared answer: the
+/// <see cref="StackBytes"/>, so that the Native AOT run proves the maximum as the JIT run does (requirement R4): a
+/// pattern at the maximum parses and compiles, one of the shapes the maximum proves matching for matches a subject that
+/// reaches its innermost level, and one level past is refused. It holds no declared answer: the
 /// report is what the package answers, and the Native AOT run is held to the JIT run, byte for byte. The vectors
 /// and the adversarial corpus, which do declare answers, are added to the probe by SJL-11.2's later steps.
 /// </para>
@@ -141,7 +143,10 @@ internal static class ProbePopulation
 
         // Nesting (R4, decision D6): at BroilerRegex.MaximumNestingLimit, one level past it and far past it, compiled
         // under a nesting limit and matched, on a thread of StackBytes. Depth counts as Broiler.VM's does: the pattern
-        // is depth 1, each group adds 1, and under v each class adds 1; so 511 levels are the maximum, 512.
+        // is depth 1, each group adds 1, and under v each class adds 1; so 511 levels are the maximum, 512. Every
+        // subject of a case at the maximum reaches the innermost level, except where a case says it proves the parse
+        // and the compilation alone: the shapes whose match at the maximum the matcher does not yet prove (task 2.4a;
+        // MaximumNestingLimit's remarks) are matched against a subject that fails at the outermost level.
         Nested("N01", "(", "a", ")", 511, "", "a"),
         Nested("N02", "(", "a", ")", 512, "", "a"),
         Nested("N03", "(?:", "a", ")", 511, "", "a"),
@@ -151,20 +156,36 @@ internal static class ProbePopulation
         Nested("N07", "(?=", "a", ")", 511, "", "a"),
         Nested("N08", "(?<=", "a", ")", 511, "", "a", prefix: "a"),
         Nested("N09", "(?i:", "a", ")", 511, "", "A"),
-        Nested("N10", "(?:b|x", "a", "x)*", 511, "", "b"),
+
+        // A repeated alternation of sequences, parsed and compiled at the maximum; its match at depth is a known gap.
+        Nested("N10", "(?:b|x", "a", "x)+", 511, "", ""),
         Nested("N11", "(?:x?", "a", "x?)", 511, "", "a"),
         Nested("N12", "(", "a", ")", 1_000_000, "", "a"),
         Nested("N13", "[", "a", "]", 1_000_000, "v", "a"),
         Nested("N14", "(", "a", ")", 512, "", "a", limit: null),
+
+        // The general quantifier's driver at every level, to the innermost: a repeated capturing group.
+        Nested("N15", "(", "a", ")+", 511, "", "a"),
+
+        // The shape that costs the matcher's continuations the most stack among those the maximum proves matching for:
+        // an alternation of sequences, on a subject that reaches the innermost level.
+        Nested("N16", "(?:b|x", "a", "x)", 511, "", "a", before: "x", after: "x"),
+
+        // The review's witness of a match at the maximum that exhausts a 1 MiB stack under the JIT: a capture around an
+        // alternation of sequences with back-references and assertions. Parsed and compiled at the maximum, and refused
+        // one level past it.
+        NumberedBackReferences("N17", 511),
+        NumberedBackReferences("N18", 512),
     ];
 
     /// <summary>
     /// A case of <paramref name="levels"/> nested <paramref name="open"/> ... <paramref name="close"/> around
     /// <paramref name="inner"/>, compiled under <paramref name="limit"/> (the library's maximum unless given; null
-    /// for the constructor, which parses under that maximum).
+    /// for the constructor, which parses under that maximum). The subject is <paramref name="subject"/> with
+    /// <paramref name="before"/> and <paramref name="after"/> once a level around it.
     /// </summary>
     private static ProbeCase Nested(string id, string open, string inner, string close, int levels, string flags, string subject,
-        string prefix = "", int? limit = BroilerRegex.MaximumNestingLimit)
+        string prefix = "", int? limit = BroilerRegex.MaximumNestingLimit, string before = "", string after = "")
     {
         var pattern = new StringBuilder(prefix);
         for (var i = 0; i < levels; i++)
@@ -176,7 +197,36 @@ internal static class ProbePopulation
         // Written as the adversarial corpus writes a repeated text: 'x'^k is k copies of x.
         var shown = (prefix.Length > 0 ? "'" + Escape(prefix) + "' + " : "") + "'" + Escape(open) + "'^" + Decimal(levels)
             + " + '" + Escape(inner) + "' + '" + Escape(close) + "'^" + Decimal(levels);
-        return new ProbeCase(id, pattern.ToString(), flags, subject, 0, NestingLimit: limit, Shown: shown);
+        if (before.Length == 0 && after.Length == 0)
+            return new ProbeCase(id, pattern.ToString(), flags, subject, 0, NestingLimit: limit, Shown: shown);
+
+        var text = new StringBuilder();
+        for (var i = 0; i < levels; i++)
+            text.Append(before);
+        text.Append(subject);
+        for (var i = 0; i < levels; i++)
+            text.Append(after);
+        var subjectShown = "'" + Escape(before) + "'^" + Decimal(levels) + " + '" + Escape(subject) + "' + '" + Escape(after) + "'^" + Decimal(levels);
+        return new ProbeCase(id, pattern.ToString(), flags, text.ToString(), 0, NestingLimit: limit, Shown: shown, SubjectShown: subjectShown);
+    }
+
+    /// <summary>
+    /// A case of <paramref name="levels"/> nested capturing groups, the level <c>k</c> (1 the outermost) an alternation of
+    /// <c>b</c> and a sequence that opens with <c>x\k\B</c> and closes with <c>\kx</c>, around <c>a</c>, compiled under the
+    /// library's maximum and matched against the empty subject, which fails at the outermost level.
+    /// </summary>
+    private static ProbeCase NumberedBackReferences(string id, int levels)
+    {
+        var pattern = new StringBuilder();
+        for (var k = 1; k <= levels; k++)
+            pattern.Append("(b|x\\").Append(Decimal(k)).Append("\\B");
+        pattern.Append('a');
+        for (var k = levels; k >= 1; k--)
+            pattern.Append("\\").Append(Decimal(k)).Append("x)");
+
+        var shown = "'(b|x" + Escape("\\") + "k" + Escape("\\") + "B' for k = 1 to " + Decimal(levels) + " + 'a' + '"
+            + Escape("\\") + "kx)' for k = " + Decimal(levels) + " to 1";
+        return new ProbeCase(id, pattern.ToString(), "", "", 0, NestingLimit: BroilerRegex.MaximumNestingLimit, Shown: shown);
     }
 
     /// <summary>Compiles every case once, as an engine compiles a pattern once and matches it many times.</summary>
@@ -223,7 +273,7 @@ internal static class ProbePopulation
                 .Append(" /").Append(probeCase.Shown ?? Escape(probeCase.Pattern)).Append('/').Append(probeCase.Flags)
                 .Append(probeCase.NestingLimit is { } limit ? " nesting " + Decimal(limit) : "")
                 .Append(probeCase.All ? " all" : " @" + Decimal(probeCase.Start))
-                .Append(" \"").Append(Escape(probeCase.Subject)).Append("\": ")
+                .Append(probeCase.SubjectShown is { } subjectShown ? " " + subjectShown + ": " : " \"" + Escape(probeCase.Subject) + "\": ")
                 .Append(answer).Append('\n');
         }
 

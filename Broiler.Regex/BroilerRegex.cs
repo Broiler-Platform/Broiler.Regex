@@ -54,32 +54,51 @@ public sealed class BroilerRegex
     /// <remarks>
     /// <para>
     /// <b>A limit above what the stack survives is not a limit.</b> The parser recurses, a few frames for each level of
-    /// nesting, and so do the matcher's continuations until task 2.4a replaces them; a limit is only a refusal if the
-    /// deepest pattern it admits completes on the smallest stack an engine compiles and matches on. The adversarial
-    /// corpus declares that stack: 1 MiB (<c>tests/Adversarial/corpus.tsv</c>, <c>stack-bytes</c>).
+    /// nesting; a limit is only a refusal if the deepest pattern it admits parses and compiles on the smallest stack an
+    /// engine compiles on. The adversarial corpus declares that stack: 1 MiB (<c>tests/Adversarial/corpus.tsv</c>,
+    /// <c>stack-bytes</c>). The compiler walks the tree on the heap and limits no shape.
     /// </para>
     /// <para>
-    /// <b>Measured, with the margin stated.</b> At task 2.3 of SJL-11.2, on linux-x64, a scratch tool compiled one
-    /// shape of nesting on a thread of a 1 MiB stack, in a child process, matched it against a subject that reaches its
-    /// innermost level, and bisected the depth at which the process ended with a stack overflow. The shapes were each
-    /// kind of level alone (capturing, non-capturing, named, look-ahead, look-behind, modifier groups and <c>v</c>-mode
-    /// classes, nested, intersected, subtracted and complemented) and the shapes that cost the most stack for one
-    /// level: an alternation of sequences, a quantified one, and a sequence in a modifier. The deepest depth that
-    /// completed for the worst shape was 1,053 under the JIT in Release (an alternation of sequences, in the
-    /// matcher's continuations), 740 under the JIT in Debug (a <c>v</c>-mode class, in the parser) and 2,833 under
-    /// Native AOT (a <c>v</c>-mode class). This maximum is the largest power of two at most half the first, and the
-    /// limit both engines pass (decision D7): a margin of 2.0 under the JIT in Release, 1.4 in Debug and 5.5 under
-    /// Native AOT. Compilation walks the tree on the heap and limits no shape. Frames are larger on win-x64, which was
-    /// not measured here.
+    /// <b>What is proven at this maximum, on linux-x64.</b> A pattern of every shape measured, nested to this maximum,
+    /// parses and compiles on a 1 MiB thread under the JIT, in Release and in Debug, and under Native AOT, and one level
+    /// past it is refused with the nesting status, never a stack overflow: decision D6's bound on the parser and the
+    /// compiler (<c>NestingMaximumTests</c>; the Native AOT probe's N cases). Matching at this maximum is proven only for
+    /// the shapes <c>NestingMaximumTests.MatchedShapes</c> lists: each kind of level alone, and an alternation, a sequence
+    /// or an alternation of sequences on each level without a capture. The matcher's continuations recurse per level and
+    /// per term of a sequence until task 2.4a replaces them (check A-4's matcher half), so a pattern within this maximum
+    /// whose levels each hold a capture with a sequence, an alternation, a back-reference, an assertion or a quantifier
+    /// can exhaust a 1 MiB stack at match time, ending the process or throwing <see cref="RegexOverflowException"/>.
+    /// Those shapes are task 2.4a's open items: the package README lists each with the depth it first failed at. win-x64,
+    /// whose frames are larger, was not measured; the maximum is proven on linux-x64 only.
     /// </para>
     /// <para>
-    /// <b>Proven where it is used.</b> A pattern at this maximum compiles and matches on a 1 MiB thread under the JIT
-    /// (the test <c>NestingMaximumTests</c> starts its own thread) and in the Native AOT probe, whose nesting cases run
-    /// on a thread of that stack; one level past it is refused with the nesting status, never a stack overflow.
+    /// <b>Measured, with the margin stated.</b> At the review of task 2.3 of SJL-11.2, on linux-x64, a scratch tool
+    /// bisected, for each of 40 shapes, the deepest nesting that parses and compiles, and the deepest that matches a
+    /// subject reaching the innermost level, on a thread of a 1 MiB stack in a fresh process. A depth passed only when
+    /// every run of it passed: under the JIT in Release three runs with the default tiering, one with optimised code
+    /// only and one with none; in Debug two; under Native AOT two. A stack overflow, any exception, a
+    /// <see cref="RegexOverflowException"/> included, and a wrong answer each failed it. The shapes were each kind of level
+    /// alone (capturing, non-capturing, named, look-ahead, negative look-ahead, look-behind, modifier and repeated groups,
+    /// and <c>v</c>-mode classes, nested, complemented, intersected, subtracted and joined) and mixtures of a capture, an
+    /// alternation, a sequence, a back-reference, an assertion and a quantified inner group on each level, forward and
+    /// inside a look-behind. Parsing and compiling, the deepest depth that passed for the worst shape was 1,164 under the
+    /// JIT in Release (modifier groups), 738 in Debug (complemented property classes under <c>vi</c>) and 2,830 under
+    /// Native AOT (the same): this maximum is the largest power of two at most half the first, and the limit both
+    /// engines pass (decision D7), a margin of 2.27 in Release, 1.44 in Debug and 5.53 under Native AOT. Matching, the
+    /// worst shape measured, a repeated capture around an alternation of sequences with a back-reference and an
+    /// assertion on each level, first failed at 465 levels in Release, 321 in Debug and 1,463 under Native AOT: below
+    /// this maximum under the JIT. Every shape was then run at this maximum, 24 times in Release, 6 in Debug and twice
+    /// under Native AOT: every one parsed and compiled every time, and every shape of <c>MatchedShapes</c> matched.
+    /// </para>
+    /// <para>
+    /// <b>A constant, fixed below.</b> A caller compiles the value in. Decision D7 makes 512 the limit both engines pass,
+    /// so this maximum is never lowered below 512 in the <c>0.x</c> line: a platform whose stack does not hold it is a
+    /// defect of the parser's or the matcher's stack use, not a reason for a lower maximum. A later version may raise it,
+    /// which leaves a caller built against this one passing a limit that is still valid.
     /// </para>
     /// </remarks>
     // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=953223
-    // Broiler-Falsified-If: a pattern nested to this depth, compiled and matched on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow
+    // Broiler-Falsified-If: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
     // Broiler-Human:        PENDING
     public const int MaximumNestingLimit = 512;
 

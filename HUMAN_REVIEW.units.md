@@ -125,7 +125,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
 - `Broiler.Regex.BroilerRegex` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `1B83F8`, PENDING
   - Falsified if: two threads making their first Match calls at the same time on one instance built from [zab] both normalize the class's out-of-order range list in place, and one throws or misses a match that a single thread finds
 - `Broiler.Regex.BroilerRegex.MaximumNestingLimit` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decision D6, `953223`, PENDING
-  - Falsified if: a pattern nested to this depth, compiled and matched on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow
+  - Falsified if: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, string?, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `14510D`, PENDING
   - Falsified if: a flags string with a repeated letter such as "gg" produces an instance instead of throwing RegexSyntaxException
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `DFF8D4`, PENDING
