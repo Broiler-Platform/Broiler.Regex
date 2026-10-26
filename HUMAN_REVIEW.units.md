@@ -161,7 +161,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
 - `Broiler.Regex.Compiling.ProgramCompiler.Emitter.Visit(RegexNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2, `5AD0F1`, PENDING
   - Falsified if: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
-- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `FF8661`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Emitter.OpenIteration(QuantifierNode, Stack<Step>)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `624325`, PENDING
   - Falsified if: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
 - `Broiler.Regex.Compiling.ProgramCompiler.Emitter.CloseIteration(Iteration)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.3.1, `D63006`, PENDING
   - Falsified if: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body

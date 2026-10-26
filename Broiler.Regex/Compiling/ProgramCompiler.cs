@@ -411,7 +411,7 @@ internal static class ProgramCompiler
         /// Begins a quantifier's lowering: its registers, the bound checks and the choice, the iteration's start and
         /// capture reset; the body and <see cref="Work.CloseIteration"/> go on the work list.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=FF8661
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=624325
         // Broiler-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
         // Broiler-Human:        PENDING
         private void OpenIteration(QuantifierNode quantifier, Stack<Step> work)
@@ -446,7 +446,7 @@ internal static class ProgramCompiler
             Add(RegexOp.SavePosition, iteration.Mark);
             var (first, last) = groups[quantifier];
             if (last >= first)
-                Add(RegexOp.ClearCaptures, 2 * first, (2 * last) + 1, 0, last - first + 1);
+                Add(RegexOp.ClearCaptures, 2 * first, (2 * last) + 1);
 
             work.Push(new Step(Work.CloseIteration, null, Iteration: iteration));
             work.Push(new Step(Work.Visit, quantifier.Child));

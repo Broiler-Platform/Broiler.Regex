@@ -51,9 +51,10 @@ internal readonly struct RegexInstruction
     internal readonly int C;
 
     /// <summary>
-    /// The units the machine charges before it dispatches the instruction: one for the dispatch, plus a class test's
-    /// weight for <see cref="RegexOp.Class"/>, plus one for every capture group past the first that
-    /// <see cref="RegexOp.ClearCaptures"/> resets (<see cref="RegexProgram"/>'s remarks, "Units"). Always at least one.
+    /// The units the machine charges before it dispatches the instruction: one for the dispatch, as decision D8 counts
+    /// it, plus a class test's weight for <see cref="RegexOp.Class"/> (<see cref="RegexProgram.ClassWeight"/>). Every other
+    /// instruction, a <see cref="RegexOp.ClearCaptures"/> of any width included, costs one. How the units are charged is
+    /// <see cref="RegexMachine"/>'s remarks, "Charging".
     /// </summary>
     internal readonly int Cost;
 }

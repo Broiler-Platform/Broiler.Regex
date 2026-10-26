@@ -216,8 +216,7 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   backend answers "not yet supported" for `^ $ \b \B`, back-references, look-around, modifier groups,
   the `i` flag and `v`-mode classes of strings. Until task 2.4c it has no fast path: a greedy
   quantifier over one class pushes a frame per character, so `[a]*` over the adversarial corpus's
-  10,000,001 characters (row O05) reaches the corpus's frame ceiling rather than matching, and a
-  quantified group clears its captures at each iteration at a cost of one unit per group.
+  10,000,001 characters (row O05) reaches the corpus's frame ceiling rather than matching.
 - The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path

@@ -71,9 +71,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   new from Broiler.VM's matcher as its specification, with no code ported. Its match entry takes a subject span, a start,
   an anchored argument independent of `y`, the caller's slots (two offsets per group, group 0 first, -1 for a group that
   did not participate), a nullable meter and the caller's ceilings; it answers `Match`, `NoMatch` or `LimitExceeded`
-  naming the ceiling reached. Every dispatched instruction is charged one unit, except a class test, charged one plus
-  the floor of the base-2 logarithm of its range count, and a capture reset, charged one per group it clears; the units
-  are paid in blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its own exception. The step ceiling is optional;
+  naming the ceiling reached. Every dispatched instruction is charged one unit, a capture reset of any width included,
+  except a class test, charged one plus the floor of the base-2 logarithm of its range count; the units are paid in
+  blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its
+  own exception. The step ceiling is optional;
   the frame and trail ceilings are at least 1 and at most 16,777,216 frames and 33,554,432 trail cells, and both engines
   pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and trail come from the shared array pool, so a call
   allocates nothing that grows with the capture count once the pool holds them. The program runs literals, `.`,

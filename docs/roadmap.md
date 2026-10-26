@@ -250,9 +250,10 @@ alternation, `* + ? {n} {n,} {n,m}` greedy and lazy with the specification's emp
 named and non-capturing groups, a quantified atom's captures cleared at each iteration. The unit is one instruction
 dispatched; a class test costs one plus the floor of the base-2 logarithm of its range count, the steps of the binary
 search it does, which is how this library reads D8's "a property class's weight per character tested" for classes
-flattened to ranges; a capture reset costs one per group it clears. The meter, `RegexWorkCharge`, is charged in whole
-blocks of 512 units before the work, so before the k-th unit at least k have been charged and the over-charge is
-below one block; a call charges across all its start positions with no reset. The caller's ceilings are steps
+flattened to ranges; every other instruction costs one, a capture reset of any width included, as Broiler.VM charges
+its own. The meter, `RegexWorkCharge`, is charged in whole blocks of 512 units before the work, so before the k-th unit
+at least k have been charged and the over-charge is below one block; a call charges across all its start positions
+with no reset. The caller's ceilings are steps
 (optional), frames and trail, each reached answered as `LimitExceeded` naming it; a ceiling below 1, and a frame or
 trail ceiling above the library's maxima of 2^24 frames and 2^25 cells, is a broken precondition
 (`ArgumentOutOfRangeException`), and both engines pass D10's 2^20 and 2^21. The entry takes a subject span, a start, an

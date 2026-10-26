@@ -8,7 +8,7 @@ namespace Broiler.Regex.Tests;
 
 /// <summary>
 /// The new backend's charging (requirement R1; decisions D8 and D9 of Broiler.VM's JSD-0081; bundle <c>sjl-11-001</c>'s
-/// check A-1): one unit per instruction dispatched, a class test's weight and a capture reset's groups on top, charged to
+/// check A-1): one unit per instruction dispatched and a class test's weight on top, charged to
 /// the caller's meter in whole blocks of 512 before the work, across every start position of a call with no reset.
 /// </summary>
 public class ChargingTests
@@ -48,15 +48,16 @@ public class ChargingTests
     [InlineData("[a]", "a", "", 2)]
     [InlineData("[a-cx-z]", "y", "", 3)]
     [InlineData("\\p{L}", "a", "u", 11)]
-    [InlineData("(?:(a)(b))*", "", "", 7)]
+    [InlineData("(?:(a)(b))*", "", "", 6)]
+    [InlineData("(?:(a)(b)(c)(d))*", "", "", 6)]
     [InlineData("a*", "aa", "", 14)]
-    public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_and_a_reset_s_groups_on_top(string pattern, string subject, string flags, ulong units)
+    public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
-        // ranges, weight nine, so ten for the test and one for Succeed. (?:(a)(b))* on "": Choice, the mark, the two groups'
-        // reset (two), group 1's start, the failed Literal, then Succeed from the frame. a* on "aa": two iterations of
-        // Choice, mark, Literal, RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from
-        // the frame.
+        // ranges, weight nine, so ten for the test and one for Succeed. (?:(a)(b))* on "": Choice, the mark, the reset of
+        // both groups (one dispatch, one unit, as decision D8 counts it), group 1's start, the failed Literal, then Succeed
+        // from the frame; four groups cost the same. a* on "aa": two iterations of Choice, mark, Literal,
+        // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }

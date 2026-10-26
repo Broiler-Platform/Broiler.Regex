@@ -109,12 +109,13 @@ public class ProgramCompilerTests
     }
 
     [Fact]
-    public void Every_cost_is_at_least_one_and_a_capture_reset_costs_one_per_group()
+    public void Every_cost_is_one_but_a_class_test_s_and_a_capture_reset_of_any_width_costs_one()
     {
-        var program = TestProgram.Compile("((a)(b)(c))+");
-        Assert.All(program.Code.ToArray(), static i => Assert.True(i.Cost >= 1));
+        // Decision D8: one unit per instruction dispatched, and a class test's weight on top; nothing else is weighed.
+        var program = TestProgram.Compile("((a)(b)(c))+[a-cx-z]");
+        Assert.All(program.Code.ToArray(), static i => Assert.Equal(i.Op == RegexOp.Class ? 2 : 1, i.Cost));
         var clear = program.Code.ToArray().Single(static i => i.Op == RegexOp.ClearCaptures);
-        Assert.Equal(4, clear.Cost);
+        Assert.Equal((2, 9, 1), (clear.A, clear.B, clear.Cost));
     }
 
     [Fact]
