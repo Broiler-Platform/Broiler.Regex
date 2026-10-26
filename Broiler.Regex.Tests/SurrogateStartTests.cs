@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Broiler.Regex.Engine;
 using Xunit;
 
@@ -145,14 +144,14 @@ public class SurrogateStartTests
     public void The_public_members_report_an_empty_match_from_a_start_inside_a_pair_at_the_pair_s_start(int row)
     {
         // Decision D41's case: the library's answer is the pair's start, where the match was found, Broiler.VM's realm's
-        // answer; Match and IsMatch agree, and the record is well-formed, an empty match that neither ends before it
-        // starts nor throws.
-        var (pattern, flags, subject, lastIndex, pairStart, lastIndexAnswer) = EmptyRows[row];
+        // answer, not lastIndex; Match and IsMatch agree, and the record is well-formed, an empty match that neither ends
+        // before it starts nor throws.
+        var (pattern, flags, subject, lastIndex, pairStart, _) = EmptyRows[row];
         var regex = TestRegex.Compile(pattern, flags);
         Assert.Equal(pairStart, TestRegex.Answer(regex, subject, lastIndex));
-        Assert.NotEqual(lastIndexAnswer, pairStart);
+        var match = regex.Match(subject, lastIndex);
+        Assert.Equal((lastIndex - 1, 0, ""), (match.Index, match.Length, match.Value));
         Assert.True(regex.IsMatch(subject, lastIndex));
-        Assert.Equal("", regex.Match(subject, lastIndex).Value);
     }
 
     [Theory]
@@ -165,13 +164,16 @@ public class SurrogateStartTests
     public void The_offset_entry_gives_an_engine_what_its_own_answer_to_decision_D41_needs(int row)
     {
         // An engine that steps back itself gets the matcher's raw offsets from the pair and keeps its own lastIndex, so it
-        // can give either answer decision D41 admits: the pair's start as the offsets say, or lastIndex.
-        var (pattern, flags, subject, lastIndex, pairStart, lastIndexAnswer) = EmptyRows[row];
+        // can give either answer decision D41 admits: the pair's start as the offsets say, or lastIndex. The offsets say
+        // which case it is, a match that ends before lastIndex, and taken as they are they are the string-bearing
+        // members' answer, Broiler.VM's realm's: the two routes through the library agree.
+        var (pattern, flags, subject, lastIndex, pairStart, _) = EmptyRows[row];
         var regex = TestRegex.Compile(pattern, flags);
         var slots = new int[regex.SlotCount];
         var anchored = flags.Contains('y');
         Assert.Equal(RegexStatus.Match, regex.Match(subject.AsSpan(), lastIndex - 1, anchored, slots, null, RegexMatchCeilings.Engines, out _));
         Assert.Equal(pairStart, MachineTests.Render(RegexStatus.Match, slots));
-        Assert.Equal(lastIndexAnswer, MachineTests.Render(RegexStatus.Match, slots.Select(offset => offset == lastIndex - 1 ? lastIndex : offset).ToArray()));
+        Assert.True(slots[1] < lastIndex, "the match the offsets describe ends at " + slots[1] + ", not before lastIndex " + lastIndex);
+        Assert.Equal(TestRegex.Answer(regex, subject, lastIndex), MachineTests.Render(RegexStatus.Match, slots));
     }
 }
