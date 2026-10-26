@@ -133,8 +133,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `BroilerRegex.SlotCount` says how many slots a match writes. The meter `RegexWorkCharge` and the ceilings
   `Broiler.Regex.Engine.RegexMatchCeilings` (with `Engines`, `EngineFrames`, `EngineTrail`, `FrameCeilingMaximum` and
   `TrailCeilingMaximum`) become public for it, and `RegexMatch` gains `Limit`. **All provisional**, like `Compile`:
-  task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves a library
-  delegate's runtime-made members out, as convention 1 admits the meter.
+  task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves the meter's
+  runtime-made members out, as convention 1 admits it, and refuses any other public delegate the library declares,
+  its declaration and every signature that names it.
 
 ### Changed
 

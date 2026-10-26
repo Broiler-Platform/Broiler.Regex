@@ -477,7 +477,11 @@ in cells); the public remarks and the CHANGELOG say so. The readings were loosen
 to fifty calls, which a call allocating on every other call passed; each reading now holds the collector off
 (`GC.TryStartNoGCRegion`), so no collection trims the pool between two calls, runs in a collection of tests that runs
 alone, and requires every one of twenty calls to allocate nothing. All of it is provisional, in the CHANGELOG and the remarks: task 2.5 adds the compile meter, task 2.9 fixes
-the surface. Check C1 now leaves a library delegate's runtime-made members out, as convention 1 admits the meter.
+the surface. Check C1 now leaves the meter's runtime-made members out, as convention 1 admits it. *Amended at the
+review of task 2.4c:* the exclusion first covered every public delegate the library declares, so a filter that runs
+the caller's code, and a member taking it, passed C1; it names `RegexWorkCharge` alone now
+(`SharedRules.AdmittedDelegates`), and the witness's second delegate, which it does not admit, is refused: its
+declaration, its constructor and `BeginInvoke`, which name `object`, and a member that takes it.
 
 **The string-bearing members (D10, D12; R1, R3; row M4, D23, D41).** `Match(string, int)`, `IsMatch` and `Matches` run
 the same program as RegExpBuiltinExec under decision D10's policy for an engine that passes no meter: no meter, no step

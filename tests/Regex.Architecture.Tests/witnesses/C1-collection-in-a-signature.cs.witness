@@ -1,8 +1,10 @@
 // C1 witness: public signatures that name a collection, a delegate that runs the caller's code, and object, which
 // convention 1 keeps out; a neutral one; a record, whose compiler-made members name object and Type because the
-// platform does; and the library's own delegate, a meter, whose runtime-made members name object, IAsyncResult and
-// AsyncCallback for the same reason, with a member that takes it. Check C1 must report the first three and pass the
-// rest.
+// platform does; the delegate the witness admits as convention 1 admits the library's meter, whose runtime-made members
+// name object, IAsyncResult and AsyncCallback for the same reason, with a member that takes it; and a delegate of the
+// witness's own that it does not admit, a filter that runs the caller's code, with a member that takes it. Check C1 must
+// report the first three, the filter (its declaration, its constructor and BeginInvoke, which name object) and the
+// member that takes it, and pass the rest.
 using System;
 using System.Collections.Generic;
 
@@ -26,5 +28,18 @@ public static class Api
 }
 
 public delegate void Meter(ulong units);
+
+public delegate bool Filter(int codePoint);
+
+public static class Hooks
+{
+    public static int Count(ReadOnlySpan<char> text, Filter keep)
+    {
+        var count = 0;
+        foreach (var unit in text)
+            count += keep(unit) ? 1 : 0;
+        return count;
+    }
+}
 
 public readonly record struct Span(int Start, int End);

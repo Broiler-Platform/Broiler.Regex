@@ -692,17 +692,28 @@ public class SharedRuleTests
     [Fact]
     public void C1_The_witness_is_refused_for_each_non_neutral_type()
     {
-        var violations = SharedRules.C1("Witness", ApiListing.Read(Witness.Emit("C1-collection-in-a-signature.cs.witness"))).ToList();
+        var violations = SharedRules.C1("Witness", ApiListing.Read(Witness.Emit("C1-collection-in-a-signature.cs.witness")), ["Witness.Meter"]).ToList();
         Assert.Contains(violations, static v => v.EndsWith("Witness.Api.Groups(System.String) method static System.Collections.Generic.IReadOnlyList`1<System.Int32>", StringComparison.Ordinal));
         Assert.Contains(violations, static v => v.EndsWith("Witness.Api.Map(System.Func`2<System.Int32,System.Int32>) method static System.Int32", StringComparison.Ordinal));
         Assert.Contains(violations, static v => v.EndsWith("Witness.Api.Box(System.Object) method static System.Int32", StringComparison.Ordinal));
 
+        // A delegate of the witness's own that convention 1 does not admit runs the caller's code like Func: its
+        // declaration, its runtime-made members that name object, and a member that takes it are refused.
+        Assert.Contains(violations, static v => v.EndsWith(": Witness.Filter delegate", StringComparison.Ordinal));
+        Assert.Contains(violations, static v => v.EndsWith(": Witness.Filter..ctor(System.Object, System.IntPtr) method System.Void", StringComparison.Ordinal));
+        Assert.Contains(violations, static v => v.Contains(": Witness.Filter.BeginInvoke(", StringComparison.Ordinal));
+        Assert.Contains(violations, static v => v.EndsWith(": Witness.Hooks.Count(System.ReadOnlySpan`1<System.Char>, Witness.Filter) method static System.Int32", StringComparison.Ordinal));
+
         // The neutral member and the record's own machinery, which names object and Type because the platform
-        // does, are not refused; nor is the library's own delegate, its runtime-made members or a member taking it.
+        // does, are not refused; nor is the delegate admitted, its runtime-made members or a member taking it.
         Assert.DoesNotContain(violations, static v => v.Contains("Witness.Api.Length(", StringComparison.Ordinal));
         Assert.DoesNotContain(violations, static v => v.Contains("Witness.Span.", StringComparison.Ordinal));
         Assert.DoesNotContain(violations, static v => v.Contains("Witness.Meter", StringComparison.Ordinal));
-        Assert.Equal(3, violations.Count);
+        Assert.DoesNotContain(violations, static v => v.Contains("Witness.Api.Metered(", StringComparison.Ordinal));
+        Assert.Equal(7, violations.Count);
+
+        // The library admits its meter alone: a planted delegate of its own is refused as the filter is.
+        Assert.Equal(["Broiler.Regex.RegexWorkCharge"], SharedRules.AdmittedDelegates);
     }
 
     [Fact]
