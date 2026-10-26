@@ -101,6 +101,11 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   without a match answers kept its `NamedGroups` as a new `Dictionary` behind `IReadOnlyDictionary`, which a cast
   changed for every later no-match of the process. It is now the empty `ReadOnlyDictionary`, so the cast fails and an
   `IDictionary` write throws `NotSupportedException`; `Groups` stays an empty array. No signature changes.
+- **A compiled pattern's group names cannot be changed (R10: convention 10; task 2.3).** `BroilerRegex.GroupNames`
+  and `RegexParser.GroupNames` were the parser's own `Dictionary` behind `IReadOnlyDictionary`, and the matcher read the
+  same instance on every match, so a cast changed the names every later match of that pattern reports, on any thread.
+  Both are now a `ReadOnlyDictionary` view of a map nothing else holds: a cast to `IDictionary` reports `IsReadOnly`, and
+  a write throws `NotSupportedException`. No signature changes.
 
 ### Observable changes
 

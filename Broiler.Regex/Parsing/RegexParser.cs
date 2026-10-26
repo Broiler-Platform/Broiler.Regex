@@ -3,19 +3,20 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   63
-// Annotated:        63/63
+// Relevant units:   64
+// Annotated:        64/64
 // Exempt:           21
-// Human-reviewed:   0/63
+// Human-reviewed:   0/64
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         59/51
+// Criteria:         60/51
 // Resource impact:  7/10 max
-// Unverified:       63
+// Unverified:       64
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
@@ -65,9 +66,18 @@ public sealed class RegexParser
     public int CaptureCount { get; private set; }
 
     /// <summary>Map of group name → 1-based capture index, available after parsing.</summary>
-    public IReadOnlyDictionary<string, int> GroupNames => _groupNames;
+    /// <remarks>
+    /// A read-only view of the parser's own map, which nothing else holds: a cast to <c>IDictionary</c> admits no
+    /// write, so the compiled pattern that keeps it, and its matcher, which reads it on every match, cannot be changed
+    /// through it (convention 10).
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=3C8667
+    // Broiler-Falsified-If: a cast of GroupNames to IDictionary admits a write, so Clear empties the names a compiled pattern's later matches report
+    // Broiler-Human:        PENDING
+    public IReadOnlyDictionary<string, int> GroupNames => _groupNamesView;
 
     private readonly Dictionary<string, int> _groupNames = [];
+    private readonly ReadOnlyDictionary<string, int> _groupNamesView;
     private int _totalCaptureGroups;
 
     /// <summary>
@@ -96,7 +106,7 @@ public sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=D7086F
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=BF48C1
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
@@ -107,6 +117,7 @@ public sealed class RegexParser
         _data = data;
         _nesting = nesting;
         _ignoreCase.Push((flags & RegexFlags.IgnoreCase) != 0);
+        _groupNamesView = new ReadOnlyDictionary<string, int>(_groupNames);
     }
 
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2

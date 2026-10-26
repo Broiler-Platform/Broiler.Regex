@@ -92,6 +92,10 @@ public sealed class BroilerRegex
     public int CaptureCount { get; }
 
     /// <summary>Group name → 1-based capture index.</summary>
+    /// <remarks>
+    /// Read-only all the way down: the map the matcher reads on every match, behind a view that admits no write through
+    /// a cast to <c>IDictionary</c>, so the compiled pattern cannot be changed through it (convention 10).
+    /// </remarks>
     public IReadOnlyDictionary<string, int> GroupNames { get; }
 
     /// <summary>Compiles <paramref name="pattern"/> under the flags string <paramref name="flags"/>.</summary>
