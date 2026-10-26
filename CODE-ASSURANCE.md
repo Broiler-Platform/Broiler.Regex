@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 22 |
 | Files not covered | 0 |
 | Files carrying an annotation | 22 |
-| Code units | 503 |
-| Relevant | 283 |
-| Exempt by predicate | 220 |
-| Annotated | 283 of 283 (100%) |
-| Human reviewed | 0 of 283 (0%) |
-| Unverified | 283 |
+| Code units | 518 |
+| Relevant | 288 |
+| Exempt by predicate | 230 |
+| Annotated | 288 of 288 (100%) |
+| Human reviewed | 0 of 288 (0%) |
+| Unverified | 288 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 283 |
+| HUMAN_PENDING | 288 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 220 |
+| EXEMPT | 230 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 143 |
+| None | 148 |
 | Low | 150 |
 | Medium | 0 |
 | High | 0 |
@@ -54,8 +54,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 19 |
-| Low | 80 |
-| Medium | 70 |
+| Low | 81 |
+| Medium | 74 |
 | High | 124 |
 | Critical | 0 |
 | *not annotated* | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 2.1 / 10 |
-| Units scored | 283 |
+| Units scored | 288 |
 
 ## High-security review areas
 
@@ -84,7 +84,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, RegexFlags, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, IReadOnlyDictionary<string, int>, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
@@ -199,7 +199,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 179 |
+| Units carrying a criterion | 182 |
 | Units required to carry one | 124 |
 | Required and missing | 0 |
 
@@ -220,14 +220,14 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 36 |
-| ParameterAssigningConstructor | 8 |
+| TrivialPropertyOrAccessor | 39 |
+| ParameterAssigningConstructor | 7 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 117 |
-| EnumMemberOfADeclaredVocabulary | 59 |
+| FieldDeclaringStorage | 122 |
+| EnumMemberOfADeclaredVocabulary | 62 |
 | DeclaredInSource | 0 |
 
 ## Per-unit exemptions
@@ -251,7 +251,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-503 of them, exempt and relevant alike - with the fingerprint of its declaration.
+518 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

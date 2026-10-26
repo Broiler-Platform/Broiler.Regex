@@ -60,6 +60,9 @@ public class DifferentialTests(ITestOutputHelper output)
     /// <summary>The generated population's size, in patterns, each against up to eight subjects from two starts.</summary>
     private const int Generated = 20_000;
 
+    /// <summary>How many of the suite's cases the step ceiling stops: the catastrophic <c>(a+)+b</c> under <c>i</c> and <c>iu</c>.</summary>
+    private const int SuiteOverStepsPinned = 6;
+
     /// <summary>How many of the seed's generated cases the step ceiling stops: the cases left out of the comparison.</summary>
     private const int OverStepsPinned = 22;
 
@@ -92,12 +95,16 @@ public class DifferentialTests(ITestOutputHelper output)
         }
 
         output.WriteLine($"suite population: {sources.Length} source files; {tally}");
+        foreach (var stopped in tally.Stopped)
+            output.WriteLine("  stopped: " + stopped);
         Assert.True(tally.Compared > 10_000, "the suite population compared only " + tally.Compared + " cases");
         Assert.True(tally.Disagreements.Count == 0, Report(tally));
 
-        // No case of the suite comes near the step ceiling, and none may stop at a frame or trail ceiling: the subjects
-        // are a few characters long, so a stop there is the new backend giving up, not an answer.
-        Assert.Equal((0, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
+        // The suite's cases the step ceiling stops are pinned, each the catastrophic (a+)+b of ChargingTests' declared
+        // inputs on a subject of twelve or fourteen a's, under the i flags written beside it; none may stop at a frame or
+        // trail ceiling: the subjects are a few characters long, so a stop there is the new backend giving up, not an answer.
+        Assert.Equal((SuiteOverStepsPinned, 0, 0), (tally.OverSteps, tally.OverFrames, tally.OverTrail));
+        Assert.All(tally.Stopped, static stopped => Assert.Contains("/(a+)+b/i", stopped, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -163,6 +170,9 @@ public class DifferentialTests(ITestOutputHelper output)
         internal int InsidePair;
         internal ulong MostUnits;
         internal readonly List<string> Disagreements = [];
+
+        /// <summary>The first cases a ceiling stopped, for the report.</summary>
+        internal readonly List<string> Stopped = [];
         private readonly HashSet<(string, string)> _seen = [];
 
         internal void Pattern(string pattern, string flags, string[] subjects, Func<string, int[]> starts, string origin)
@@ -198,6 +208,8 @@ public class DifferentialTests(ITestOutputHelper output)
                     var status = program.Match(subject, start, anchored, slots, null, Ceilings, out var limit, out var units);
                     if (status == RegexStatus.LimitExceeded)
                     {
+                        if (Stopped.Count < 40)
+                            Stopped.Add($"{origin}: /{Escape(pattern)}/{flags} on \"{Escape(subject)}\" from {start}: {limit} after {units} units");
                         _ = limit switch
                         {
                             RegexLimit.Steps => OverSteps++,

@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   19
 // Annotated:        19/19
-// Exempt:           7
+// Exempt:           8
 // Human-reviewed:   0/19
 // IP risk:          Low
 // Security risk:    High
@@ -103,6 +103,15 @@ internal sealed class RegexUnicode
         // The non-Unicode branch is defined on one UTF-16 code unit; a code point above it is left alone.
         return codePoint > 0xFFFF ? codePoint : _folding.SimpleUpper(codePoint);
     }
+
+    /// <summary>
+    /// The provider's case folding itself, which a compiled program of the new backend keeps for the Canonicalize and the
+    /// case orbits its instructions read at match time (task 2.4b of SJL-11.2). It is immutable, as every object of the
+    /// provider is.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=A617CF
+    // Broiler-Human:        PENDING
+    internal UnicodeCaseFolding Folding => _folding;
 
     /// <summary>True when the two code points are equal, or case-equivalent under <paramref name="ignoreCase"/>.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=Medium; Resources=0; Fingerprint=E06948

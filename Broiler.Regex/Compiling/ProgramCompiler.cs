@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   18
-// Annotated:        18/18
-// Exempt:           22
-// Human-reviewed:   0/18
+// Relevant units:   19
+// Annotated:        19/19
+// Exempt:           25
+// Human-reviewed:   0/19
 // IP risk:          None
 // Security risk:    High
 // Criteria:         10/10
 // Resource impact:  5/10 max
-// Unverified:       18
+// Unverified:       19
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -22,6 +22,7 @@ using Broiler.Regex.Engine;
 using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 using Broiler.Unicode.Algorithms;
+using CodePointSet = Broiler.Regex.Ast.CodePointSet;
 
 namespace Broiler.Regex.Compiling;
 
@@ -37,9 +38,9 @@ internal enum ProgramCompilation
     NestingLimitExceeded = 1,
 
     /// <summary>
-    /// The pattern holds a construct whose instructions task 2.4b adds: an assertion (<c>^ $ \b \B</c>), a back-reference,
-    /// a look-around, a modifier group, case-insensitive matching (the <c>i</c> flag), or a <c>v</c>-mode class holding
-    /// strings. A transitional answer of task 2.4a, which task 2.4b removes; no program is built, nothing is thrown.
+    /// The pattern holds a construct whose instructions task 2.4b has still to add: an assertion (<c>^ $ \b \B</c>), a
+    /// back-reference, a look-around, a modifier group, or a <c>v</c>-mode class holding strings. A transitional answer
+    /// of task 2.4a, which task 2.4b removes; no program is built, nothing is thrown.
     /// </summary>
     NotYetSupported = 2,
 }
@@ -47,7 +48,7 @@ internal enum ProgramCompilation
 /// <summary>
 /// The compiler from the parser's tree to the new backend's <see cref="RegexProgram"/> (decision D5 of Broiler.VM's
 /// JSD-0081): task 2.4a's lowering of literal characters, <c>.</c>, classes, sequence, alternation, groups and
-/// quantifiers. It lives outside the machine's namespace, <c>Broiler.Regex.Engine</c>, whose methods the architecture
+/// quantifiers, and task 2.4b's of comparison under <c>i</c>. It lives outside the machine's namespace, <c>Broiler.Regex.Engine</c>, whose methods the architecture
 /// tests hold to having no recursion (bundle <c>sjl-11-001</c>'s check A-4).
 /// </summary>
 /// <remarks>
@@ -64,8 +65,10 @@ internal enum ProgramCompilation
 /// address after the construct:
 /// </para>
 /// <list type="bullet">
-/// <item>a character: <c>Literal c</c>; <c>.</c>: <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class:
-/// <c>Class k</c>, its code points with its negation applied;</item>
+/// <item>a character: <c>Literal c</c>, or under <c>i</c> <c>LiteralIgnoringCase</c> with its Canonicalize; <c>.</c>:
+/// <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class: <c>Class k</c>, its code points with its negation
+/// applied, or under <c>i</c> <c>ClassIgnoringCase k, inverted</c>, its members as written, or <c>CanonicalClass k</c> for a
+/// <c>v</c>-mode class the parser folded;</item>
 /// <item><c>X₁|X₂|…|Xₙ</c>: <c>Choice +1, next</c> before each alternative but the last, and a <c>Goto L</c> after it;</item>
 /// <item>group <c>k</c>: <c>SavePosition 2k; X; SavePosition 2k+1</c>; a non-capturing group: <c>X</c>;</item>
 /// <item><c>X?</c>: <c>Choice body, L; body: SavePosition m; ClearCaptures; X; RejectEmptyIteration m</c> (the choice's
@@ -86,7 +89,7 @@ internal enum ProgramCompilation
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
-// Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's body is entered without checking the caller's nesting limit, or a pattern holding an assertion, a back-reference, a look-around, a modifier, a string class or the i flag is given a program
+// Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's body is entered without checking the caller's nesting limit, or a pattern holding an assertion, a back-reference, a look-around, a modifier or a string class is given a program
 // Broiler-Human:        PENDING
 internal static class ProgramCompiler
 {
@@ -102,7 +105,7 @@ internal static class ProgramCompiler
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=90F711
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=79AA61
     // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, or one of 511 answers NestingLimitExceeded
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program)
@@ -112,11 +115,13 @@ internal static class ProgramCompiler
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, BroilerRegex.MaximumNestingLimit);
 
         var nesting = new RegexNesting(nestingLimit);
+        var data = new RegexUnicode(tables);
         RegexNode tree;
         int captureCount;
+        IReadOnlyDictionary<string, int> groupNames;
         try
         {
-            tree = RegexParser.Parse(pattern, flags, new RegexUnicode(tables), nesting, out captureCount, out _);
+            tree = RegexParser.Parse(pattern, flags, data, nesting, out captureCount, out groupNames);
         }
         catch (NestingLimitExceeded)
         {
@@ -124,31 +129,31 @@ internal static class ProgramCompiler
             return ProgramCompilation.NestingLimitExceeded;
         }
 
-        return Compile(tree, captureCount, flags, nesting, out program);
+        return Compile(tree, captureCount, groupNames, flags, data, nesting, out program);
     }
 
     /// <summary>Compiles a tree the parser built under <paramref name="flags"/> to a program.</summary>
     /// <param name="tree">The parser's tree.</param>
     /// <param name="captureCount">The pattern's capturing groups, as the parser counted them.</param>
+    /// <param name="groupNames">The parser's map of group names to group numbers, which a named back-reference reads.</param>
     /// <param name="flags">The flags the tree was parsed under.</param>
+    /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
     /// <param name="program">The program, or null when the answer is not <see cref="ProgramCompilation.Compiled"/>.</param>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=5DAD10
-    // Broiler-Falsified-If: a tree holding an AnchorNode, a BackreferenceNode, a LookaroundNode, a ModifierGroupNode or a class with strings, or one parsed under i, is answered with a program
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=EA9B84
+    // Broiler-Falsified-If: a tree holding an AnchorNode, a BackreferenceNode, a LookaroundNode, a ModifierGroupNode or a class with strings is answered with a program, or a character under i is given an instruction that compares it exactly
     // Broiler-Human:        PENDING
-    internal static ProgramCompilation Compile(RegexNode tree, int captureCount, RegexFlags flags, RegexNesting nesting, out RegexProgram? program)
+    internal static ProgramCompilation Compile(RegexNode tree, int captureCount, IReadOnlyDictionary<string, int> groupNames,
+        RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program)
     {
         program = null;
-        if ((flags & RegexFlags.IgnoreCase) != 0)
-            return ProgramCompilation.NotYetSupported;
-
         try
         {
             var groups = Survey(tree, nesting);
             if (groups is null)
                 return ProgramCompilation.NotYetSupported;
 
-            program = new ProgramWriter(captureCount, flags, groups).Emit(tree);
+            program = new ProgramWriter(captureCount, flags, data, groups).Emit(tree);
             return ProgramCompilation.Compiled;
         }
         catch (NestingLimitExceeded)
@@ -163,7 +168,7 @@ internal static class ProgramCompiler
     /// null, and finds the capture groups of each quantifier's body, the registers its iterations reset.
     /// </summary>
     /// <exception cref="NestingLimitExceeded">The tree nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=9D2059
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=1E2380
     // Broiler-Falsified-If: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
     // Broiler-Human:        PENDING
     private static Dictionary<QuantifierNode, (int First, int Last)>? Survey(RegexNode tree, RegexNesting nesting)
@@ -192,7 +197,7 @@ internal static class ProgramCompiler
             {
                 case EmptyNode or CharNode or AnyCharNode:
                     break;
-                case CharClassNode cls when !cls.Set.HasStrings && !cls.Set.CaseFolded:
+                case CharClassNode cls when !cls.Set.HasStrings:
                     break;
                 case SequenceNode sequence:
                     for (var i = sequence.Terms.Count - 1; i >= 0; i--)
@@ -213,8 +218,8 @@ internal static class ProgramCompiler
                     pending.Push((quantifier.Child, depth, false));
                     break;
                 default:
-                    // An assertion, a back-reference, a look-around, a modifier group or a class holding strings: task
-                    // 2.4b's instructions.
+                    // An assertion, a back-reference, a look-around, a modifier group or a class holding strings: the
+                    // instructions task 2.4b has still to add.
                     return null;
             }
         }
@@ -297,20 +302,25 @@ internal static class ProgramCompiler
     private readonly record struct Step(Work Work, RegexNode? Node, int Index = 0, Alternation? Alternation = null, Iteration? Iteration = null);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=57A50A
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=DDB228
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
-    private sealed class ProgramWriter(int captureCount, RegexFlags flags, Dictionary<QuantifierNode, (int First, int Last)> groups)
+    private sealed class ProgramWriter(int captureCount, RegexFlags flags, RegexUnicode data, Dictionary<QuantifierNode, (int First, int Last)> groups)
     {
         private readonly List<RegexInstruction> _code = [];
         private readonly List<int[]> _classes = [];
         private readonly bool _dotAll = (flags & RegexFlags.DotAll) != 0;
+        private readonly bool _ignoreCase = (flags & RegexFlags.IgnoreCase) != 0;
+        private readonly bool _unicode = flags.IsUnicodeMode();
+
+        /// <summary>Whether an instruction compares under <c>i</c>, so that the program keeps the provider's case folding.</summary>
+        private bool _folds;
 
         /// <summary>The next free register: the capture registers come first, two per group, group 0's included.</summary>
         private int _registers = 2 * (captureCount + 1);
 
         /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Succeed"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=2A88DE
+        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=1D4C75
         // Broiler-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
         // Broiler-Human:        PENDING
         internal RegexProgram Emit(RegexNode tree)
@@ -352,11 +362,11 @@ internal static class ProgramCompiler
 
             Add(RegexOp.Succeed);
 
-            return new RegexProgram(_code.ToArray(), _classes.ToArray(), captureCount, _registers, flags.IsUnicodeMode());
+            return new RegexProgram(_code.ToArray(), _classes.ToArray(), captureCount, _registers, _unicode, _folds ? data.Folding : null);
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> now, and puts the rest on the work list.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=5AD0F1
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=4D3C6D
         // Broiler-Falsified-If: an alternation's alternatives, or a sequence's terms, are emitted in an order other than the pattern's
         // Broiler-Human:        PENDING
         private void Visit(RegexNode node, Stack<Step> work)
@@ -364,6 +374,10 @@ internal static class ProgramCompiler
             switch (node)
             {
                 case EmptyNode:
+                    break;
+                case CharNode character when _ignoreCase:
+                    _folds = true;
+                    Add(RegexOp.LiteralIgnoringCase, data.Canonicalize(character.CodePoint, _unicode));
                     break;
                 case CharNode character:
                     Add(RegexOp.Literal, character.CodePoint);
@@ -475,13 +489,42 @@ internal static class ProgramCompiler
                 Patch(iteration.AtMaximum, c: exit);
         }
 
-        /// <summary>Adds a class test: the class's code points with its negation applied, flattened into pairs.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=CEBA51
-        // Broiler-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, or a class's cost is not one plus its weight
+        /// <summary>
+        /// Adds a class test. Compared exactly, the class is its code points with its negation applied; under <c>i</c> it
+        /// is its members as written, tested against a character's case orbit and inverted after, as CharacterSetMatcher
+        /// inverts (§22.2.2.7.1); a <c>v</c>-mode class the parser folded is its canonical members, tested against a
+        /// character's Canonicalize.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=7ACC59
+        // Broiler-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
         // Broiler-Human:        PENDING
         private void AddClass(CharSet set)
         {
-            var codePoints = set.Negated ? set.CodePoints.Complement() : set.CodePoints;
+            if (set.CaseFolded)
+            {
+                _folds = true;
+                var canonical = AddRanges(set.CodePoints);
+                Add(RegexOp.CanonicalClass, _classes.Count - 1, 0, 0, RegexProgram.ClassCost(canonical, 1));
+            }
+            else if (_ignoreCase)
+            {
+                _folds = true;
+                var members = AddRanges(set.CodePoints);
+                var searches = _unicode ? data.Folding.MaxOrbit : data.Folding.MaxUpperOrbit;
+                Add(RegexOp.ClassIgnoringCase, _classes.Count - 1, set.Negated ? 1 : 0, 0, RegexProgram.ClassCost(members, searches));
+            }
+            else
+            {
+                var ranges = AddRanges(set.Negated ? set.CodePoints.Complement() : set.CodePoints);
+                Add(RegexOp.Class, _classes.Count - 1, 0, 0, RegexProgram.ClassCost(ranges, 1));
+            }
+        }
+
+        /// <summary>Adds the ranges of <paramref name="codePoints"/> to the program's classes, flattened into pairs, and answers how many there are.</summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=F61797
+        // Broiler-Human:        PENDING
+        private int AddRanges(CodePointSet codePoints)
+        {
             var ranges = codePoints.Ranges;
             var pairs = new int[2 * ranges.Count];
             for (var i = 0; i < ranges.Count; i++)
@@ -491,7 +534,7 @@ internal static class ProgramCompiler
             }
 
             _classes.Add(pairs);
-            Add(RegexOp.Class, _classes.Count - 1, 0, 0, 1 + RegexProgram.ClassWeight(ranges.Count));
+            return ranges.Count;
         }
 
         /// <summary>Appends an instruction and answers its address.</summary>

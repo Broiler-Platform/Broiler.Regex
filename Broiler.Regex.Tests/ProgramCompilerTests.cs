@@ -23,8 +23,9 @@ public class ProgramCompilerTests
     internal static string[] Listing(RegexProgram program) => program.Code.ToArray().Select(static i => i.Op switch
     {
         RegexOp.Literal or RegexOp.Class or RegexOp.Goto or RegexOp.SavePosition or RegexOp.SetCounter or RegexOp.IncrementCounter
+            or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass
             => i.Op + " " + Decimal(i.A),
-        RegexOp.Choice or RegexOp.ClearCaptures => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
+        RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
         RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
@@ -58,6 +59,42 @@ public class ProgramCompilerTests
     public void Each_construct_lowers_to_the_instructions_of_the_remarks(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("a", "i", new[] { "LiteralIgnoringCase 65", "Succeed" })]
+    [InlineData("a", "iu", new[] { "LiteralIgnoringCase 97", "Succeed" })]
+    [InlineData("\\u017F", "i", new[] { "LiteralIgnoringCase 383", "Succeed" })]
+    [InlineData("\\u017F", "iu", new[] { "LiteralIgnoringCase 115", "Succeed" })]
+    [InlineData("[a-c]", "i", new[] { "ClassIgnoringCase 0,0", "Succeed" })]
+    [InlineData("[^a-c]", "i", new[] { "ClassIgnoringCase 0,1", "Succeed" })]
+    [InlineData("[a-c]", "iv", new[] { "CanonicalClass 0", "Succeed" })]
+    [InlineData("[^a-c]", "iv", new[] { "CanonicalClass 0", "Succeed" })]
+    public void Under_i_a_character_is_its_Canonicalize_and_a_class_its_members_tested_by_case_orbit(string pattern, string flags, string[] expected)
+    {
+        // A character is compared by Canonicalize, the non-u branch an upper case (A, 65) that keeps U+017F outside ASCII,
+        // and the u branch simple case folding (s, 115). A class keeps its members as written and its inversion apart from
+        // them, as CharacterSetMatcher inverts after it compares; a v-mode class is already folded and complemented.
+        var program = TestProgram.Compile(pattern, flags);
+        Assert.Equal(expected, Listing(program));
+        Assert.NotNull(program.Folding);
+    }
+
+    [Fact]
+    public void A_class_under_i_costs_one_plus_its_weight_for_each_code_point_of_an_orbit()
+    {
+        // Each orbit holds at most four code points at UCD 17.0.0, in both branches of Canonicalize; \p{L} is 684 ranges,
+        // weight nine, so a test under iu searches for up to four code points: 1 + 4 x 9. A v-mode class under i searches
+        // for one, the character's Canonicalize, in the folded set's own ranges. A class of one range costs one however it is
+        // tested.
+        var unicode = TestProgram.Compile("\\p{L}", "iu");
+        Assert.Equal((4, 37), (unicode.OrbitLength, unicode.Code[0].Cost));
+        var sets = TestProgram.Compile("\\p{L}", "iv");
+        Assert.Equal((RegexOp.CanonicalClass, 1 + RegexProgram.ClassWeight(sets.ClassRanges(0).Length / 2)), (sets.Code[0].Op, sets.Code[0].Cost));
+        var legacy = TestProgram.Compile("[a-z]", "i");
+        Assert.Equal((4, 1), (legacy.OrbitLength, legacy.Code[0].Cost));
+        Assert.Equal(1, TestProgram.Compile("a", "i").Code[0].Cost);
+        Assert.Null(TestProgram.Compile("a").Folding);
     }
 
     [Fact]
@@ -144,8 +181,6 @@ public class ProgramCompilerTests
     [InlineData("(?=a){0}b", "")]
     [InlineData("(?i:a)", "")]
     [InlineData("(?-m:a)", "")]
-    [InlineData("a", "i")]
-    [InlineData("[a]", "iv")]
     [InlineData("[\\q{ab}]", "v")]
     [InlineData("\\p{RGI_Emoji}", "v")]
     [InlineData("x(?:y|(z\\b))*", "")]
@@ -182,10 +217,10 @@ public class ProgramCompilerTests
 
         // A tree the parser built under a deeper limit is refused by the compiler's own check.
         var data = new RegexUnicode(UnicodeTables.Instance);
-        var tree = RegexParser.Parse(Nested(4), RegexFlags.None, data, new RegexNesting(512), out var captures, out _);
-        Assert.Equal(ProgramCompilation.NestingLimitExceeded, ProgramCompiler.Compile(tree, captures, RegexFlags.None, new RegexNesting(4), out var program));
+        var tree = RegexParser.Parse(Nested(4), RegexFlags.None, data, new RegexNesting(512), out var captures, out var names);
+        Assert.Equal(ProgramCompilation.NestingLimitExceeded, ProgramCompiler.Compile(tree, captures, names, RegexFlags.None, data, new RegexNesting(4), out var program));
         Assert.Null(program);
-        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captures, RegexFlags.None, new RegexNesting(5), out _));
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captures, names, RegexFlags.None, data, new RegexNesting(5), out _));
     }
 
     /// <summary>The subset's shapes of <see cref="NestingMaximumTests"/>: those built of groups, alternations, sequences, quantifiers and v-mode classes alone.</summary>

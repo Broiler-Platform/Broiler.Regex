@@ -3,20 +3,21 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   21
-// Annotated:        21/21
-// Exempt:           23
-// Human-reviewed:   0/21
+// Relevant units:   23
+// Annotated:        23/23
+// Exempt:           25
+// Human-reviewed:   0/23
 // IP risk:          None
 // Security risk:    High
-// Criteria:         12/6
+// Criteria:         14/6
 // Resource impact:  8/10 max
-// Unverified:       21
+// Unverified:       23
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System;
 using System.Buffers;
+using Broiler.Unicode.Algorithms;
 
 namespace Broiler.Regex.Engine;
 
@@ -99,6 +100,12 @@ internal ref struct RegexMachine
     private readonly bool _unicode;
     private readonly RegexWorkCharge? _meter;
 
+    /// <summary>The Unicode owner's case folding, for the instructions that compare under <c>i</c>; null when none does.</summary>
+    private readonly UnicodeCaseFolding? _folding;
+
+    /// <summary>Room for one character's case orbit, rented when the program tests a class under <c>i</c>, and empty otherwise.</summary>
+    private int[] _orbit;
+
     /// <summary>The step ceiling in units, <see cref="ulong.MaxValue"/> for none.</summary>
     private readonly ulong _stepCeiling;
 
@@ -131,7 +138,7 @@ internal ref struct RegexMachine
     private int _end;
 
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=CF7012
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=5CA4C9
     // Broiler-Human:        PENDING
     internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
@@ -145,14 +152,16 @@ internal ref struct RegexMachine
         _trailCeiling = ceilings.Trail;
         _paid = meter is null ? ulong.MaxValue : 0;
         _threshold = Math.Min(_paid, _stepCeiling);
+        _folding = program.Folding;
         _registers = ArrayPool<int>.Shared.Rent(program.RegisterCount);
         _registers.AsSpan(0, program.RegisterCount).Fill(-1);
         _frames = ArrayPool<int>.Shared.Rent(16 * FrameSize);
         _trail = ArrayPool<int>.Shared.Rent(16 * CellSize);
+        _orbit = program.OrbitLength > 0 ? ArrayPool<int>.Shared.Rent(program.OrbitLength) : [];
     }
 
     /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=A5BCEE
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FBCED8
     // Broiler-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
     // Broiler-Human:        PENDING
     internal void Release()
@@ -160,7 +169,9 @@ internal ref struct RegexMachine
         ArrayPool<int>.Shared.Return(_registers);
         ReturnToPool(_frames);
         ReturnToPool(_trail);
-        _registers = _frames = _trail = [];
+        if (_orbit.Length > 0)
+            ArrayPool<int>.Shared.Return(_orbit);
+        _registers = _frames = _trail = _orbit = [];
     }
 
     /// <summary>The ceiling the call reached, when it answered <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</summary>
@@ -239,7 +250,7 @@ internal ref struct RegexMachine
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=A00DEB
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=F06560
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -290,6 +301,33 @@ internal ref struct RegexMachine
                     if (position < _subject.Length)
                     {
                         CharacterAt(position, out width);
+                        position += width;
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.LiteralIgnoringCase:
+                    if (position < _subject.Length && Canonical(CharacterAt(position, out width)) == instruction.A)
+                    {
+                        position += width;
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.ClassIgnoringCase:
+                    if (position < _subject.Length && InClassIgnoringCase(instruction.A, CharacterAt(position, out width)) != (instruction.B != 0))
+                    {
+                        position += width;
+                        pc++;
+                        continue;
+                    }
+
+                    break;
+                case RegexOp.CanonicalClass:
+                    if (position < _subject.Length && InClass(instruction.A, Canonical(CharacterAt(position, out width))))
+                    {
                         position += width;
                         pc++;
                         continue;
@@ -428,6 +466,36 @@ internal ref struct RegexMachine
             else if (codePoint > ranges[(2 * middle) + 1])
                 low = middle + 1;
             else
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Canonicalize (ECMA-262 §22.2.2.7.3) of <paramref name="character"/>, read from the Unicode owner's case folding:
+    /// its simple case folding under <c>u</c> and <c>v</c>, and without them the upper case of one code unit, kept when
+    /// it is not one code unit or would move a character outside ASCII into it.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Medium; Resources=0; Fingerprint=AB7FCA
+    // Broiler-Falsified-If: without u, U+017F LATIN SMALL LETTER LONG S canonicalizes to S, or under u it does not canonicalize to s
+    // Broiler-Human:        PENDING
+    private readonly int Canonical(int character) => _unicode ? _folding!.SimpleFold(character) : _folding!.SimpleUpper(character);
+
+    /// <summary>
+    /// Whether class <paramref name="index"/> holds a member whose Canonicalize is that of <paramref name="character"/>:
+    /// CharacterSetMatcher's test under <c>i</c> (ECMA-262 §22.2.2.7.1), made by testing each code point of the
+    /// character's case orbit, which the Unicode owner writes, every code point sharing its Canonicalize, itself included.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=1; Fingerprint=C0C750
+    // Broiler-Falsified-If: under u a class holding only U+212A KELVIN SIGN is reported not to hold k, or without u a class holding only s is reported to hold U+017F
+    // Broiler-Human:        PENDING
+    private readonly bool InClassIgnoringCase(int index, int character)
+    {
+        var count = _unicode ? _folding!.Orbit(character, _orbit) : _folding!.UpperOrbit(character, _orbit);
+        for (var member = 0; member < count; member++)
+        {
+            if (InClass(index, _orbit[member]))
                 return true;
         }
 

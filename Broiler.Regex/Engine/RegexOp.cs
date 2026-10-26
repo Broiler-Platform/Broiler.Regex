@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   1
 // Annotated:        1/1
-// Exempt:           14
+// Exempt:           17
 // Human-reviewed:   0/1
 // IP risk:          None
 // Security risk:    Medium
@@ -31,16 +31,15 @@ namespace Broiler.Regex.Engine;
 /// the registers as the specification's continuation would have seen them.
 /// </para>
 /// <para>
-/// <b>What task 2.4a holds, and what is still to come.</b> Literal characters compared without case folding,
-/// <c>.</c> with and without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted
-/// bounds and the specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's
-/// captures cleared at each iteration. The assertions, back-references, look-around in both directions, modifiers,
-/// case-insensitive comparison and the strings of a <c>v</c>-mode class are task 2.4b's instructions; the greedy run of a
-/// single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below are
-/// not a contract: a program is built and run by the same version of the library.
+/// <b>What tasks 2.4a and 2.4b hold, and what is still to come.</b> Task 2.4a's: literal characters, <c>.</c> with and
+/// without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted bounds and the
+/// specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's captures cleared
+/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>. The greedy run of a single code point,
+/// atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths. The numbers below are not a contract: a
+/// program is built and run by the same version of the library.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=BEC728
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=903B5F
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -118,4 +117,26 @@ internal enum RegexOp : byte
 
     /// <summary>The pattern's last continuation: the match succeeds, from the attempt's start index to the current one.</summary>
     Succeed = 13,
+
+    /// <summary>
+    /// The matcher of a pattern character under <c>i</c> (§22.2.2.7.1 CharacterSetMatcher over a one-member set, with
+    /// rer.[[IgnoreCase]] true): the next character's Canonicalize (§22.2.2.7.3) must be <c>A</c>, the pattern character's
+    /// own Canonicalize, computed when the program was built.
+    /// </summary>
+    LiteralIgnoringCase = 14,
+
+    /// <summary>
+    /// CharacterSetMatcher under <c>i</c> over class number <c>A</c>, its members as written: the next character
+    /// matches when some member shares its Canonicalize, which the machine finds by testing the members of the
+    /// character's case orbit, every code point with the same Canonicalize; when <c>B</c> is one the class is inverted
+    /// (<c>[^…]</c>) and the character matches when no member shares it.
+    /// </summary>
+    ClassIgnoringCase = 15,
+
+    /// <summary>
+    /// CharacterSetMatcher under <c>v</c> with <c>i</c> over class number <c>A</c>, whose members are already canonical
+    /// forms: the parser folded each operand by MaybeSimpleCaseFolding (§22.2.2.9.5) and took every complement within
+    /// AllCharacters, so the next character matches when its Canonicalize is a member.
+    /// </summary>
+    CanonicalClass = 16,
 }

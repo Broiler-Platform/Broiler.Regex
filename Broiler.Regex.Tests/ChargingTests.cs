@@ -51,13 +51,20 @@ public class ChargingTests
     [InlineData("(?:(a)(b))*", "", "", 6)]
     [InlineData("(?:(a)(b)(c)(d))*", "", "", 6)]
     [InlineData("a*", "aa", "", 14)]
+    [InlineData("a", "A", "i", 2)]
+    [InlineData("[a-cx-z]", "Y", "i", 6)]
+    [InlineData("\\p{L}", "a", "iu", 38)]
+    [InlineData("[^a-cx-z]", "Y", "i", 10)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
         // ranges, weight nine, so ten for the test and one for Succeed. (?:(a)(b))* on "": Choice, the mark, the reset of
         // both groups (one dispatch, one unit, as decision D8 counts it), group 1's start, the failed Literal, then Succeed
         // from the frame; four groups cost the same. a* on "aa": two iterations of Choice, mark, Literal,
-        // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame.
+        // RejectEmptyIteration and Goto, then Choice, mark and the failed Literal, then Succeed from the frame. Under i
+        // (task 2.4b) a character costs one as before, and a class one plus its weight for each code point of a
+        // character's case orbit, four at most: [a-cx-z] under i costs 1 + 4 x 1, and \p{L} under iu 1 + 4 x 9. The
+        // inverted [^a-cx-z] fails at Y and at the end of the subject, five units each.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
@@ -65,7 +72,8 @@ public class ChargingTests
     /// <summary>
     /// The declared set of inputs of check A-1's recording meter: catastrophic and ordinary patterns, classes of weight
     /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
-    /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position.
+    /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
+    /// 2.4b's instructions: characters and classes under i, with and without u, and a v-mode class folded when parsed.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -80,6 +88,9 @@ public class ChargingTests
         { "[\\s\\S]*\\u{1F600}", "u", "\U0001F600ba" + new string('x', 200), 1, false, null },
         { "(a+)+b", "", "aaaaaaaaaaaaaac", 0, false, 7_777UL },
         { "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", "", "aaaaaaaaaaaa", 0, false, null },
+        { "(?:[\\p{L}\\p{Nd}]|K)+\\u212A", "iu", string.Concat(Enumerable.Repeat("aB1\u017Fk", 120)) + "!", 0, false, null },
+        { "[^\\W\\d]+[^k]x", "i", string.Concat(Enumerable.Repeat("Kk", 300)) + "K", 0, false, null },
+        { "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", "iv", string.Concat(Enumerable.Repeat("gH7", 200)) + "a", 0, false, null },
     };
 
     [Theory]
