@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   14
-// Annotated:        14/14
-// Exempt:           10
-// Human-reviewed:   0/14
+// Relevant units:   17
+// Annotated:        17/17
+// Exempt:           22
+// Human-reviewed:   0/17
 // IP risk:          None
 // Security risk:    High
-// Criteria:         7/3
+// Criteria:         9/6
 // Resource impact:  8/10 max
-// Unverified:       14
+// Unverified:       17
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -39,6 +39,15 @@ namespace Broiler.Regex.Engine;
 /// fails, every write of the attempt has been undone, so the next position starts from registers that all read -1, with
 /// no reset of its own.
 /// </para>
+/// <para>
+/// <b>Charging.</b> Before it dispatches an instruction the machine adds the instruction's cost to the units spent. When
+/// that passes the step ceiling, the instruction is not dispatched and the call answers
+/// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has been
+/// charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
+/// instruction dispatched. So before the k-th unit of work, at least k units have been charged, and the meter is never
+/// more than <see cref="Block"/> - 1 units ahead of the work. The units of one call run on across all its start positions,
+/// with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid for it.
+/// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
 // Broiler-Falsified-If: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
@@ -55,10 +64,22 @@ internal ref struct RegexMachine
     // Broiler-Human:        PENDING
     private const int CellSize = 2;
 
+    /// <summary>The units the meter is charged in, whole blocks before the work they pay for (decision D8).</summary>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=5491AD
+    // Broiler-Human:        PENDING
+    internal const ulong Block = 512;
+
     private readonly RegexProgram _program;
     private readonly ReadOnlySpan<RegexInstruction> _code;
     private readonly ReadOnlySpan<char> _subject;
     private readonly bool _unicode;
+    private readonly RegexWorkCharge? _meter;
+
+    /// <summary>The step ceiling in units, <see cref="ulong.MaxValue"/> for none.</summary>
+    private readonly ulong _stepCeiling;
+
+    private readonly int _frameCeiling;
+    private readonly int _trailCeiling;
 
     /// <summary>The registers: the capture registers, then the quantifiers' loop registers.</summary>
     private readonly int[] _registers;
@@ -73,23 +94,49 @@ internal ref struct RegexMachine
 
     private int _trailTop;
 
+    /// <summary>The units of work the call has dispatched, the instruction being dispatched included.</summary>
+    private ulong _spent;
+
+    /// <summary>The units the meter has been charged, <see cref="ulong.MaxValue"/> when there is no meter.</summary>
+    private ulong _paid;
+
+    /// <summary>The smaller of <see cref="_paid"/> and <see cref="_stepCeiling"/>: the units the loop may spend before it stops to charge or to refuse.</summary>
+    private ulong _threshold;
+
     /// <summary>Where the attempt that matched ended.</summary>
     private int _end;
 
-    /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=EE306C
+    /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=6C6E04
     // Broiler-Human:        PENDING
-    internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject)
+    internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
         _program = program;
         _code = program.Code;
         _subject = subject;
         _unicode = program.Unicode;
+        _meter = meter;
+        _stepCeiling = ceilings.Steps ?? ulong.MaxValue;
+        _frameCeiling = ceilings.Frames;
+        _trailCeiling = ceilings.Trail;
+        _paid = meter is null ? ulong.MaxValue : 0;
+        _threshold = Math.Min(_paid, _stepCeiling);
         _registers = new int[program.RegisterCount];
         _registers.AsSpan().Fill(-1);
         _frames = new int[16 * FrameSize];
         _trail = new int[16 * CellSize];
     }
+
+    /// <summary>The ceiling the call reached, when it answered <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</summary>
+    internal RegexLimit Exceeded { get; private set; }
+
+    /// <summary>
+    /// The units of work the call did: every instruction it dispatched, the one that reached a frame or trail ceiling
+    /// included, and not the one the step ceiling refused.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=036C68
+    // Broiler-Human:        PENDING
+    internal readonly ulong Spent => _spent;
 
     /// <summary>
     /// Runs the program from <paramref name="start"/>, or at it alone when <paramref name="anchored"/> is set, and writes
@@ -100,7 +147,7 @@ internal ref struct RegexMachine
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
     /// pair it stepped over; the position after the last character is tried too.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=6D1A62
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=ABDC1A
     // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, or under u a search starts inside a surrogate pair it stepped over
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
@@ -108,10 +155,13 @@ internal ref struct RegexMachine
         var at = start;
         while (true)
         {
-            if (Attempt(at))
+            switch (Attempt(at))
             {
-                WriteSlots(at, slots);
-                return RegexStatus.Match;
+                case Outcome.Matched:
+                    WriteSlots(at, slots);
+                    return RegexStatus.Match;
+                case Outcome.Exceeded:
+                    return RegexStatus.LimitExceeded;
             }
 
             if (anchored || at >= _subject.Length)
@@ -121,20 +171,42 @@ internal ref struct RegexMachine
         }
     }
 
-    /// <summary>
-    /// One attempt from <paramref name="origin"/>: the loop that dispatches instructions until the program accepts or
-    /// every frame of the attempt is spent.
-    /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=4DA762
-    // Broiler-Falsified-If: an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
+    /// <summary>How one attempt ended.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C1744
     // Broiler-Human:        PENDING
-    private bool Attempt(int origin)
+    private enum Outcome
+    {
+        /// <summary>The program accepted.</summary>
+        Matched,
+
+        /// <summary>Every frame of the attempt is spent.</summary>
+        Failed,
+
+        /// <summary>A ceiling was reached: <see cref="Exceeded"/> names it.</summary>
+        Exceeded,
+    }
+
+    /// <summary>
+    /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
+    /// accepts, every frame of the attempt is spent, or a ceiling is reached.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=C12DF4
+    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
+    // Broiler-Human:        PENDING
+    private Outcome Attempt(int origin)
     {
         var pc = 0;
         var position = origin;
         while (true)
         {
             var instruction = _code[pc];
+            _spent += (ulong)instruction.Cost;
+            if (_spent > _threshold && !Pay())
+            {
+                _spent -= (ulong)instruction.Cost;
+                return Outcome.Exceeded;
+            }
+
             switch (instruction.Op)
             {
                 case RegexOp.Char:
@@ -175,28 +247,35 @@ internal ref struct RegexMachine
 
                     break;
                 case RegexOp.Split:
-                    PushFrame(instruction.B, position);
+                    if (!PushFrame(instruction.B, position))
+                        return Outcome.Exceeded;
                     pc = instruction.A;
                     continue;
                 case RegexOp.Jump:
                     pc = instruction.A;
                     continue;
                 case RegexOp.SavePosition:
-                    Write(instruction.A, position);
+                    if (!Write(instruction.A, position))
+                        return Outcome.Exceeded;
                     pc++;
                     continue;
                 case RegexOp.ClearCaptures:
                     for (var register = instruction.A; register <= instruction.B; register++)
-                        Write(register, -1);
+                    {
+                        if (!Write(register, -1))
+                            return Outcome.Exceeded;
+                    }
+
                     pc++;
                     continue;
                 case RegexOp.SetCounter:
-                    Write(instruction.A, 0);
+                    if (!Write(instruction.A, 0))
+                        return Outcome.Exceeded;
                     pc++;
                     continue;
                 case RegexOp.IncrementCounter:
-                    if (_registers[instruction.A] < int.MaxValue)
-                        Write(instruction.A, _registers[instruction.A] + 1);
+                    if (_registers[instruction.A] < int.MaxValue && !Write(instruction.A, _registers[instruction.A] + 1))
+                        return Outcome.Exceeded;
                     pc++;
                     continue;
                 case RegexOp.JumpIfAtLeast:
@@ -213,14 +292,14 @@ internal ref struct RegexMachine
                     continue;
                 case RegexOp.Accept:
                     _end = position;
-                    return true;
+                    return Outcome.Matched;
             }
 
             // The instruction failed: resume at the newest frame, with every write made since it undone.
             if (_frameTop == 0)
             {
                 Unwind(0);
-                return false;
+                return Outcome.Failed;
             }
 
             _frameTop--;
@@ -229,6 +308,29 @@ internal ref struct RegexMachine
             position = _frames[frame + 1];
             Unwind(_frames[frame + 2]);
         }
+    }
+
+    /// <summary>
+    /// Settles the units spent past <see cref="_threshold"/>: refuses them when they pass the step ceiling, and otherwise
+    /// charges the meter the whole blocks that cover them, before the instruction they pay for is dispatched.
+    /// </summary>
+    /// <returns>False when the step ceiling refuses them; the meter's exception, if it throws, propagates.</returns>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=05547C
+    // Broiler-Falsified-If: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused
+    // Broiler-Human:        PENDING
+    private bool Pay()
+    {
+        if (_spent > _stepCeiling)
+        {
+            Exceeded = RegexLimit.Steps;
+            return false;
+        }
+
+        var blocks = ((_spent - _paid) + Block - 1) / Block;
+        _meter!(blocks * Block);
+        _paid += blocks * Block;
+        _threshold = Math.Min(_paid, _stepCeiling);
+        return true;
     }
 
     /// <summary>The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as one code point.</summary>
@@ -288,37 +390,53 @@ internal ref struct RegexMachine
     // Broiler-Human:        PENDING
     private static bool IsLineTerminator(int codePoint) => codePoint is 0x0A or 0x0D or 0x2028 or 0x2029;
 
-    /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=0C4720
+    /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>, unless the frame ceiling is reached.</summary>
+    /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=87F2FC
+    // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
     // Broiler-Human:        PENDING
-    private void PushFrame(int resume, int position)
+    private bool PushFrame(int resume, int position)
     {
+        if (_frameTop == _frameCeiling)
+        {
+            Exceeded = RegexLimit.Frames;
+            return false;
+        }
+
         var frame = _frameTop * FrameSize;
         if (frame + FrameSize > _frames.Length)
-            Array.Resize(ref _frames, _frames.Length * 2);
+            Array.Resize(ref _frames, (int)Math.Min((long)_frames.Length * 2, (long)_frameCeiling * FrameSize));
         _frames[frame] = resume;
         _frames[frame + 1] = position;
         _frames[frame + 2] = _trailTop;
         _frameTop++;
+        return true;
     }
 
-    /// <summary>Writes <paramref name="value"/> into register <paramref name="register"/>, keeping what it held on the trail.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=14453F
-    // Broiler-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed
+    /// <summary>Writes <paramref name="value"/> into register <paramref name="register"/>, keeping what it held on the trail, unless the trail ceiling is reached.</summary>
+    /// <returns>False, with <see cref="Exceeded"/> set, when the write changes the register and the trail already holds as many cells as its ceiling admits.</returns>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=F2896E
+    // Broiler-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
     // Broiler-Human:        PENDING
-    private void Write(int register, int value)
+    private bool Write(int register, int value)
     {
         var held = _registers[register];
         if (held == value)
-            return;
+            return true;
+        if (_trailTop == _trailCeiling)
+        {
+            Exceeded = RegexLimit.Trail;
+            return false;
+        }
 
         var cell = _trailTop * CellSize;
         if (cell + CellSize > _trail.Length)
-            Array.Resize(ref _trail, _trail.Length * 2);
+            Array.Resize(ref _trail, (int)Math.Min((long)_trail.Length * 2, (long)_trailCeiling * CellSize));
         _trail[cell] = register;
         _trail[cell + 1] = held;
         _trailTop++;
         _registers[register] = value;
+        return true;
     }
 
     /// <summary>Undoes every register write above trail height <paramref name="height"/>, newest first.</summary>

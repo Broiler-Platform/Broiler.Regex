@@ -22,9 +22,12 @@ public class MachineTests
     {
         var program = TestProgram.Compile(pattern, flags);
         var slots = new int[program.SlotCount];
-        var status = program.Match(subject, start, anchored, slots);
+        var status = program.Match(subject, start, anchored, slots, null, Ample, out _, out _);
         return Render(status, slots);
     }
+
+    /// <summary>Ceilings no test of the loop's semantics reaches: no step ceiling, and the library's maximum frames and trail.</summary>
+    internal static RegexMatchCeilings Ample => new(null, RegexMatchCeilings.MaximumFrames, RegexMatchCeilings.MaximumTrail);
 
     internal static string Render(RegexStatus status, int[] slots)
     {

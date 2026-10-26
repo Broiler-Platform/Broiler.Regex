@@ -143,8 +143,11 @@ Broiler.Regex.RegexFlagsParser static class
 Broiler.Regex.RegexFlagsParser.IsUnicodeMode(Broiler.Regex.RegexFlags) method static System.Boolean
 Broiler.Regex.RegexFlagsParser.Parse(System.String) method static Broiler.Regex.RegexFlags
 Broiler.Regex.RegexLimit enum
+Broiler.Regex.RegexLimit.Frames = 3
 Broiler.Regex.RegexLimit.Nesting = 1
 Broiler.Regex.RegexLimit.None = 0
+Broiler.Regex.RegexLimit.Steps = 2
+Broiler.Regex.RegexLimit.Trail = 4
 Broiler.Regex.RegexLimit.value__ field System.Int32
 Broiler.Regex.RegexOverflowException sealed class : System.Exception
 Broiler.Regex.RegexOverflowException..ctor() method System.Void

@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   2
 // Annotated:        2/2
-// Exempt:           6
+// Exempt:           9
 // Human-reviewed:   0/2
 // IP risk:          None
 // Security risk:    Low
@@ -79,10 +79,12 @@ public enum RegexStatus
 /// of Broiler.VM's JSD-0081; convention 5).
 /// </summary>
 /// <remarks>
-/// Task 2.3 of SJL-11.2 introduced <see cref="Nesting"/>. The new matcher's step, frame and trail ceilings (task 2.4a)
-/// and the compile budget (task 2.5) join it as members of their own; none changes the members here.
+/// Task 2.3 of SJL-11.2 introduced <see cref="Nesting"/>, and task 2.4a the new backend's three ceilings,
+/// <see cref="Steps"/>, <see cref="Frames"/> and <see cref="Trail"/> (requirements R1 and R3, decisions D8 to D10), public
+/// for the reason <see cref="RegexStatus"/>'s remarks give although the entry that answers them is internal until task
+/// 2.4c. The compile budget (task 2.5) joins them as a member of its own; none changes the members here.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=B88E60
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=094E76
 // Broiler-Human:        PENDING
 public enum RegexLimit
 {
@@ -94,4 +96,22 @@ public enum RegexLimit
     /// counts (requirement R4, decision D6).
     /// </summary>
     Nesting = 1,
+
+    /// <summary>
+    /// The caller's step ceiling: the match would do more units of work than it admits, counted in the units the meter is
+    /// charged in (requirement R1, decision D8).
+    /// </summary>
+    Steps = 2,
+
+    /// <summary>
+    /// The caller's frame ceiling: the match would hold more backtrack points at once than it admits (requirement R3,
+    /// decision D10).
+    /// </summary>
+    Frames = 3,
+
+    /// <summary>
+    /// The caller's trail ceiling: the match would hold more undoable register writes at once than it admits
+    /// (requirement R3, decision D10).
+    /// </summary>
+    Trail = 4,
 }

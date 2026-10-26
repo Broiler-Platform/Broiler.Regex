@@ -97,16 +97,29 @@ internal sealed class RegexProgram
     /// <summary>
     /// Matches <paramref name="subject"/> from <paramref name="start"/>, or at <paramref name="start"/> alone when
     /// <paramref name="anchored"/> is set, and writes the match's offsets into <paramref name="slots"/>: two per group,
-    /// group 0 first, -1 for a group that did not participate (requirements R7 and R8).
+    /// group 0 first, -1 for a group that did not participate (requirements R7 and R8). The work is charged to
+    /// <paramref name="meter"/> before it is done, in blocks, and bounded by <paramref name="ceilings"/> (R1 and R3).
     /// </summary>
-    /// <returns><see cref="RegexStatus.Match"/> or <see cref="RegexStatus.NoMatch"/>.</returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=212A41
-    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, or /a(b)?/ on "a" writes a slot other than -1 for group 1
+    /// <param name="subject">The subject.</param>
+    /// <param name="start">Where the match starts, or the search begins.</param>
+    /// <param name="anchored">Whether to try <paramref name="start"/> alone, whatever the pattern's <c>y</c> flag.</param>
+    /// <param name="slots">The caller's slots for the offsets.</param>
+    /// <param name="meter">The caller's meter, or null for none.</param>
+    /// <param name="ceilings">The caller's step, frame and trail ceilings.</param>
+    /// <param name="limit">The ceiling reached when the answer is <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</param>
+    /// <param name="units">The units of work the call did, which the meter was charged for before they were done.</param>
+    /// <returns><see cref="RegexStatus.Match"/>, <see cref="RegexStatus.NoMatch"/> or <see cref="RegexStatus.LimitExceeded"/>.</returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=58BECD
+    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, /a(b)?/ on "a" writes a slot other than -1 for group 1, or a call that reaches a ceiling answers Match or NoMatch
     // Broiler-Human:        PENDING
-    internal RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots)
+    internal RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots,
+        RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit, out ulong units)
     {
-        var machine = new RegexMachine(this, subject);
-        return machine.Run(start, anchored, slots);
+        var machine = new RegexMachine(this, subject, meter, ceilings);
+        var status = machine.Run(start, anchored, slots);
+        limit = machine.Exceeded;
+        units = machine.Spent;
+        return status;
     }
 
     /// <summary>
