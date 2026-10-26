@@ -82,7 +82,6 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 - **`Katakana_Or_Hiragana` is a Script value (R5).** `\p{Script=Katakana_Or_Hiragana}`, `\p{sc=Hrkt}` and the
   same under `Script_Extensions` are accepted, matching nothing, as no code point has that value; `0.1.0-preview.4`
   refused them.
-
 - **Group names are RegExpIdentifierNames, read the same way in every mode (R5).** A GroupName's code points are
   held to IdentifierStartChar and IdentifierPartChar by the provider's `EcmaScriptLexical` (ECMA-262 §22.2.1.1), so
   `(?<1>x)`, `(?<a-b>x)`, `(?<a b>x)`, `(?<a.b>x)`, `(?<\u0031>x)` and a name holding U+0000 are refused, which
@@ -103,6 +102,15 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   pattern that declares a group name, Annex B's identity escapes exclude `k` (§B.1.2), so `[\k<a>](?<a>x)` is refused,
   which `0.1.0-preview.4` read as a class holding `k`; without a group name and without `u` and `v`, `\k` is still the
   letter.
+- **`\0` looks ahead at the ASCII digits alone (R5).** `CharacterEscape :: 0 [lookahead ∉ DecimalDigit]`
+  (ECMA-262 §22.2.1) makes `\0` NUL before any digit but `0` to `9`, so `\0` followed by U+0661 ARABIC-INDIC DIGIT
+  ONE or U+FF11 FULLWIDTH DIGIT ONE matches NUL and then that digit in every mode; `0.1.0-preview.4` looked ahead with
+  `char.IsDigit`, read `\0` there as the character `0` without `u` and `v` and refused the pattern under them.
+- **Annex B's legacy octal escapes outside Unicode mode (§B.1.2).** Without `u` and `v`, `\0` before an ASCII digit
+  and a class's `\1` to `\7` are LegacyOctalEscapeSequences: `\01` is U+0001, `\012` U+000A, `\08` NUL and then `8`,
+  `[\1]` U+0001 and `[\101]` `A`. `0.1.0-preview.4` read each as the identity escape of its first digit, so `\01`
+  matched `01` and `[\1]` the digit `1`. Under `u` and `v` each stays a syntax error, and an atom's `\1` to `\9` is a
+  back-reference first, as it was.
 
 ### Data
 

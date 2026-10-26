@@ -1220,8 +1220,8 @@ public sealed class RegexParser
         }
     }
 
-    /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0 identity.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=3F1AAA
+    /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0, legacy octal, identity.</summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=BF6DE9
     // Broiler-Falsified-If: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
     // Broiler-Human:        PENDING
     private int ReadCharacterEscape()
@@ -1241,11 +1241,19 @@ public sealed class RegexParser
             case 't': _pos++; return '\t';
             case 'f': _pos++; return '\f';
             case 'v': _pos++; return '\v';
-            case '0' when !char.IsDigit(PeekAt(1)): _pos++; return 0;
+            // CharacterEscape :: 0 [lookahead ∉ DecimalDigit], and DecimalDigit is the ASCII
+            // digits alone (§22.2.1): \0 before U+0661 ARABIC-INDIC DIGIT ONE is NUL, then that digit.
+            case '0' when !char.IsAsciiDigit(PeekAt(1)): _pos++; return 0;
             case 'x' when _unicode || HasHexDigits(1, 2): return ReadHexEscape(2);
             case 'u' when _unicode || HasHexDigits(1, 4): return ReadUnicodeEscape(_unicode);
             case 'c': return ReadControlEscape();
         }
+
+        // Annex B's LegacyOctalEscapeSequence, outside Unicode mode only (§B.1.2): \0 before an
+        // ASCII digit, as in \01 or \08 (NUL, then 8), and in a class \1 to \7. An atom's \1 to
+        // \9 never reaches here; ParseAtomEscape reads it as a back-reference or an octal first.
+        if (!_unicode && c is >= '0' and <= '7')
+            return ReadLegacyOctalOrIdentity();
 
         // Annex B: outside Unicode mode a `\x`/`\u` that does not introduce a well-formed
         // escape is the identity escape of that letter, so /\u{2}/ is "uu" and
