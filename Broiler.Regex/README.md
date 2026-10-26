@@ -63,15 +63,17 @@ to regex, and are out of scope for this component.)
 ## Architecture
 
 Two backends live side by side until SJL-11.2 task 2.4c. The public members match with the
-continuation-passing matcher of `Matching/`; task 2.4a's new backend, internal until then, compiles
-the same tree to an instruction program that one loop runs. Task 2.4c routes `BroilerRegex` through
-the new backend and deletes the old matcher.
+continuation-passing matcher of `Matching/`; the new backend of tasks 2.4a and 2.4b, internal until
+then, compiles the same tree to an instruction program that one loop runs, and since task 2.4b runs
+every pattern the parser accepts. `BroilerRegex` has an internal route through it, which the test
+suite uses to run every behaviour test on both backends; task 2.4c makes that route the public
+members' only one and deletes the old matcher.
 
 ```
                                    ┌─▶ Matcher (CPS backtracker) ──▶ RegexMatch       public, until 2.4c
 pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)                   (Matching/)
             (Parsing/)     (Ast/)  └─▶ ProgramCompiler ──▶ RegexProgram + RegexMachine ──▶ caller's slots
-                                       (Compiling/)        (Engine/)                        internal, 2.4a
+                                       (Compiling/)        (Engine/)                internal, 2.4a and 2.4b
 ```
 
 * **`Parsing/RegexParser.cs`** — recursive-descent parser for the ECMAScript
@@ -89,17 +91,23 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   * `RepeatMatcher`'s empty-iteration guard (fixes #8).
   * Code-point-aware atom and back-reference matching under `u`/`v`
     (fixes #6, #7).
-* **`Compiling/ProgramCompiler.cs`** (task 2.4a) — lowers the tree to a `RegexProgram` on work
-  lists of the heap, with no recursion, checking the caller's nesting limit before it enters each
-  group. A tree holding what the program cannot hold yet (`^ $ \b \B`, a back-reference, a
-  look-around, a modifier group, the `i` flag, a `v`-mode class of strings) is answered "not yet
-  supported", a transitional answer task 2.4b removes.
+* **`Compiling/ProgramCompiler.cs`** (tasks 2.4a and 2.4b) — lowers the tree to a `RegexProgram` on
+  work lists of the heap, with no recursion, checking the caller's nesting limit before it enters each
+  group, modifier group and look-around. Every tree the parser builds compiles: under `i` a character
+  is lowered to its Canonicalize and a class to its members as written; a modifier group's body under
+  the flags it sets; a look-around to a barrier around its body, a look-behind's body right to left
+  (its terms last first, each character and back-reference reading backward, a group's end register
+  written first so that captures read in source order); a `v`-mode class of strings to an alternation
+  of its strings, longest first, then its single characters, then the empty string.
 * **`Engine/`** (task 2.4a) — the new backend. `RegexOp` and `RegexInstruction` are its instruction
   set; `RegexProgram` is the immutable program, shared across threads, with the internal match entry
   (a subject span, a start, an anchored argument independent of `y`, offsets written into the
   caller's slots); `RegexMachine` is the one backtracking loop, with an explicit frame stack and an
   undo trail (defunctionalised continuations) rented from the shared array pool, and no CLR
-  recursion, which an architecture test reads from the IL; `RegexMatchCeilings` holds the caller's
+  recursion, which an architecture test reads from the IL. A look-around is a barrier frame on the
+  same stack, dropped with every frame above it when its body matches; a comparison under `i` reads
+  the provider's case folding at match time, a class by the case orbit of the character; a
+  back-reference reads a list of groups, one long until task 2.6's duplicate names. `RegexMatchCeilings` holds the caller's
   step, frame and trail ceilings, each answered as `RegexStatus.LimitExceeded` naming it. Every
   dispatched instruction is charged to the caller's meter, `RegexWorkCharge`, in blocks of 512
   units paid before the work.
@@ -161,9 +169,10 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   and its margins are in the constant's documentation); win-x64 was not measured, so the
   maximum is proven on linux-x64 only.
 - **Matching at the nesting maximum through the public members is proven only for some shapes**,
-  until task 2.4c routes them through the new backend of SJL-11.2 task 2.4a (R4's matcher half),
-  which matches each shape of the table below that it runs (those without a back-reference, an
-  assertion or a look-behind) at the maximum on a 1 MiB thread. The parser still recurses a few
+  until task 2.4c routes them through the new backend of SJL-11.2 tasks 2.4a and 2.4b (R4's matcher
+  half), which matches every shape of the table below at the maximum on a 1 MiB thread
+  (`MachineTests`; the probe's E09, E10 and E37 under Native AOT), and every one of them through its
+  internal route (`NewBackendSuiteTests`). The parser still recurses a few
   frames per level, and the public matcher's continuations recurse per level and per term of a
   sequence, so a pattern within
   the maximum can exhaust a small stack when it is matched. `NestingMaximumTests.MatchedShapes`
@@ -209,9 +218,12 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   public matcher does so only by accident: its greedy run of one character steps back across the
   start and its general loop does not, so `Match("😀ba", 1)` matches at 1 for `/[\s\S]*\u{1F600}/u`
   and not for `/(?:[\s\S])*\u{1F600}/u` (`SurrogateStartTests` pins the specification's answers, the
-  rows the public matcher misses skipped until task 2.4c). The new backend's internal entry reads
-  such a start forward from the low half, as a lone unit; the step back to the pair is its caller's,
-  and task 2.4c's route through it takes the step and decides the index the public members report.
+  rows the public matcher misses skipped until task 2.4c). The new backend's internal entry splits
+  such a pair for the whole call: a read forward from the start meets the low half as a lone unit,
+  and one backward from it (a look-behind, `\b`, `^` under `m`) the high half as another. The step
+  back to the pair is its caller's: `BroilerRegex`'s internal route takes it, as RegExpBuiltinExec
+  does, and reports the caller's start as the index; task 2.4c decides the index the public members
+  report.
 - **The new backend's trail and a loop that holds no choice (task 2.4a).** The trail keeps every
   register write of an attempt until the attempt ends, as Broiler.VM's does, a counted loop's
   included when it holds no choice open: two cells an iteration that consumes, its mark and its
@@ -222,11 +234,21 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   matcher no match. When task 2.4c routes the public members through the new backend, it lists the
   answers that change or makes a write with no choice pending leave no cell (`CeilingTests` pins the
   bound).
-- **The new backend's subset and its missing fast paths (task 2.4a).** Until task 2.4b, the internal
-  backend answers "not yet supported" for `^ $ \b \B`, back-references, look-around, modifier groups,
-  the `i` flag and `v`-mode classes of strings. Until task 2.4c it has no fast path: a greedy
-  quantifier over one class pushes a frame per character, so `[a]*` over the adversarial corpus's
-  10,000,001 characters (row O05) reaches the corpus's frame ceiling rather than matching.
+- **The new backend's missing fast paths (task 2.4c).** A greedy quantifier over one class pushes a
+  frame per character, so `[a]*` and `^[a]*$` over the adversarial corpus's 10,000,001 characters
+  (rows O05 and O06) reach the corpus's frame ceiling rather than matching. A `v`-mode class of
+  strings tries its strings one by one, in the order the specification gives them, at each start
+  position: about two units a string that does not match, so `\p{RGI_Emoji}` costs about 5,500 units a
+  position (row O17) and passes 100,000 units on a subject of 30. Task 2.4c's run instruction and
+  prefilter are the remedies.
+- **Two defects of the old backend, which the public members show until task 2.4c (task 2.4b's
+  differential comparison; `OldBackendDefectTests` pins the specification's answers).** D2: a
+  `v`-mode class holding the empty string tries it before its single characters, so `/[\q{}a]/v` on
+  `a` answers the empty match where the specification answers `a`. M7, Broiler.VM's JSD-0081 row: under
+  `u` and `v` a back-reference in a look-behind compares the code units that end at the index, and can
+  begin inside a surrogate pair, so `/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` matches where the
+  specification, comparing code points, does not. The new backend answers both as the specification
+  does.
 - The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path
@@ -241,7 +263,9 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
     it matches `a` and not `A` — while canonicalizing both for a longer alternative —
     `UnicodeSetsTests.SingleCharacterStringAlternative_FoldsUnlikeV8`.
 - Two defects found during SJL-11.2 task 2.2's review, older than the task and left for the
-  class-set work of a later SJL-11.2 task (each fails against ES2025's §22.2.1 grammar):
+  class-set work of a later SJL-11.2 task (each fails against ES2025's §22.2.1 grammar). Both are the
+  parser's reading of `\q{…}`, which both backends take as the parser gives it, so task 2.4b's `v`
+  strings did not need them fixed and left them:
   - `\b` inside `\q{…}` is refused: `/[\q{\b}]/v`, `/[^\q{\b}]/v` and `/[\q{a\bc}]/v` throw
     `RegexSyntaxException`, where `ClassSetCharacter` admits `\b` (U+0008).
   - An escaped lead surrogate followed by an escaped trail surrogate in `\q{…}` is read as

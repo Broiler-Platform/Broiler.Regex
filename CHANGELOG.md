@@ -103,9 +103,11 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   call, a look-behind's included. The compiler's "not yet supported" answer is deleted, and `NotYetSupported` appears
   nowhere in the assembly. `BroilerRegex` gains an internal route through the new backend, which the test suite uses to
   run every behaviour test on both backends; the public members still match with `Matching/` until task 2.4c. The
-  differential comparison over the whole grammar found one more defect of the old backend's, D2: a `v`-mode class
-  holding the empty string tries it before its single characters (`/[\q{}a]/v` on `a` answers the empty match), which
-  task 2.4c's route corrects; the roadmap's record of task 2.4b lists it.
+  differential comparison over the whole grammar found two defects of the old backend's, which the public members show
+  until task 2.4c's route corrects them and the roadmap's record of task 2.4b lists: D2, a `v`-mode class holding the
+  empty string tries it before its single characters (`/[\q{}a]/v` on `a` answers the empty match), and JSD-0081's row
+  M7, a back-reference in a look-behind under `u` or `v` compared by code units, which can begin inside a surrogate
+  pair.
 
 ### Changed
 
