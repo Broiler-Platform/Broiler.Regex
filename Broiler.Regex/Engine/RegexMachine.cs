@@ -79,12 +79,14 @@ namespace Broiler.Regex.Engine;
 /// </para>
 /// <para>
 /// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned
-/// when the call ends (<see cref="Release"/>), its exceptions included, so after the pool holds arrays of the sizes a
-/// pattern needs, a call allocates nothing at all, whatever its capture count (requirement R8, bundle
-/// <c>sjl-11-001</c>'s check A-8). The frames and the trail start small and double as a match needs them, never past
-/// their ceilings; past <see cref="PooledLength"/> integers they are allocated for the call alone and left to the
-/// collector, so a call that held many frames or cells leaves none of them pooled (a pooled array stays with the thread
-/// that returned it, or in the pool's per-processor stores, until the pool trims it). While an array doubles, the one
+/// when the call ends (<see cref="Release"/>), its exceptions included. The frames and the trail start small and double
+/// as a match needs them, never past their ceilings; past <see cref="PooledLength"/> integers they are allocated for the
+/// call alone and left to the collector, so a call that held many frames or cells leaves none of them pooled (a pooled
+/// array stays with the thread that returned it, or in the pool's per-processor stores, until the pool trims it). So
+/// after the pool holds arrays of the sizes a pattern needs, a call that holds at most 16,384 frames and 32,768 trail
+/// cells allocates nothing at all, whatever its capture count (requirement R8, bundle <c>sjl-11-001</c>'s check A-8);
+/// a group that participates writes two cells, so past about 16,384 such groups every call allocates its own trail,
+/// which grows with them. While an array doubles, the one
 /// it replaces is held too. An array holds whatever its last user left in it; the machine reads only the registers it
 /// fills when it starts and the frames and cells it has written.
 /// </para>

@@ -75,9 +75,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its
   own exception. The step ceiling is optional; the frame and trail ceilings are at least 1 and at most 16,777,216 frames
   and 33,554,432 trail cells, and both engines pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and
-  trail come from the shared array pool, so a call allocates nothing that grows with the capture count once the pool
-  holds them; frames and trail past 65,536 integers are allocated for the call and left to the collector, so a call's
-  peak does not stay pooled. The program runs literals, `.`, classes (`v`-mode classes of code points included),
+  trail come from the shared array pool; frames and trail past 65,536 integers are allocated for the call and left to
+  the collector, so a call's peak does not stay pooled. So once the pool holds them a call allocates nothing that grows
+  with the capture count while it holds at most 16,384 frames and 32,768 trail cells, about 16,384 participating
+  groups (task 2.4c's review stated the bound; before, this entry read as if there were none). The program runs literals, `.`, classes (`v`-mode classes of code points included),
   sequence, alternation, every quantifier form with the specification's empty-iteration rule, and the three kinds of
   group, clearing a quantified atom's captures at each iteration; task 2.4b adds the rest of the grammar (below), and
   the "not yet supported" answer task 2.4a gave it in the meantime is gone. The program and the compiler are internal;
@@ -125,7 +126,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   writing two offsets per group into the caller's slots, group 0 first and -1 for a group that did not participate;
   the anchored argument is independent of `y`, and the start is taken as given (under `u` and `v` a start inside a
   surrogate pair splits it, and an engine that answers as RegExpBuiltinExec steps back before it calls); no string is
-  made, and once the shared pool holds what the pattern needs a call allocates nothing, whatever the capture count.
+  made, and once the shared pool holds what the pattern needs a call allocates nothing, whatever the capture count,
+  while it holds at most 16,384 backtrack frames and 32,768 trail cells; past them its frames or trail are its own, so
+  a pattern of more than about 16,384 participating groups allocates, in every call, a trail that grows with them
+  (check A-8's bound, pinned at 16,384 and 16,385 groups).
   `BroilerRegex.SlotCount` says how many slots a match writes. The meter `RegexWorkCharge` and the ceilings
   `Broiler.Regex.Engine.RegexMatchCeilings` (with `Engines`, `EngineFrames`, `EngineTrail`, `FrameCeilingMaximum` and
   `TrailCeilingMaximum`) become public for it, and `RegexMatch` gains `Limit`. **All provisional**, like `Compile`:

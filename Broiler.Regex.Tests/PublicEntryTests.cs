@@ -11,8 +11,11 @@ namespace Broiler.Regex.Tests;
 /// The public offset entry of task 2.4c, <c>BroilerRegex.Match</c> over a span (requirements R7 and R8; bundle
 /// <c>sjl-11-001</c>'s checks A-7 and A-8): its signature carries no string, its anchored argument is independent of the
 /// <c>y</c> flag, it writes the caller's slots, answers statuses with the ceiling reached, charges the caller's meter, and
-/// allocates nothing that grows with the capture count.
+/// allocates nothing that grows with the capture count, up to the frames and trail cells the shared pool keeps. The
+/// allocation readings hold the garbage collector off, so the class runs in their collection
+/// (<see cref="AllocationReading"/>).
 /// </summary>
+[Collection(AllocationReading.Collection)]
 public class PublicEntryTests
 {
     private static BroilerRegex Regex(string pattern, string flags = "") => new(pattern, flags, UnicodeTables.Instance);
@@ -117,10 +120,10 @@ public class PublicEntryTests
     public void A_call_allocates_nothing_that_grows_with_the_capture_count()
     {
         // Check A-8 on the public entry: after the shared pool holds the arrays a pattern needs, a call allocates nothing,
-        // at 1 group or at 1,000, with no meter or with one; the least of up to fifty calls is read, the first that
-        // allocates nothing ending the reading, as a collection between two calls may trim the pool.
+        // at 1 group or at 1,000, with no meter or with one: each of twenty calls, with no collection to trim the pool
+        // between them (AllocationReading).
         var counts = new[] { 1, 10, 100, 1_000 };
-        var measured = new long[counts.Length * 2];
+        var measured = new long[counts.Length * 2][];
         RegexWorkCharge meter = static _ => { };
         ProgramCompilerTests.OnASmallStack(() =>
         {
@@ -132,21 +135,46 @@ public class PublicEntryTests
                 for (var metered = 0; metered < 2; metered++)
                 {
                     var charge = metered == 0 ? null : meter;
-                    for (var warm = 0; warm < 3; warm++)
-                        Assert.Equal(RegexStatus.Match, regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _));
-
-                    measured[(2 * i) + metered] = long.MaxValue;
-                    for (var call = 0; call < 50 && measured[(2 * i) + metered] > 0; call++)
-                    {
-                        var before = GC.GetAllocatedBytesForCurrentThread();
-                        regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _);
-                        measured[(2 * i) + metered] = Math.Min(measured[(2 * i) + metered], GC.GetAllocatedBytesForCurrentThread() - before);
-                    }
-
+                    var status = RegexStatus.NoMatch;
+                    measured[(2 * i) + metered] = AllocationReading.BytesPerCall(() => status = regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _));
+                    Assert.Equal(RegexStatus.Match, status);
                     Assert.Equal(counts[i], slots[^1]);
                 }
             }
         });
-        Assert.Equal(new long[counts.Length * 2], measured);
+        Assert.All(measured, static calls => Assert.Equal(new long[calls.Length], calls));
+    }
+
+    [Theory]
+    [InlineData("(a)", 16_384, 0)]
+    [InlineData("(a)", 16_385, 4 << 17)]
+    [InlineData("(?:a|bc)", 16_384, 0)]
+    [InlineData("(?:a|bc)", 16_385, 4 << 17)]
+    public void A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(
+        string group, int count, int least)
+    {
+        // Check A-8's bound. The frames and the trail come from the shared pool up to RegexMachine.PooledLength integers,
+        // 65,536: 16,384 frames of four and 32,768 trail cells of two. A longer array is the call's alone, so that one
+        // call's peak does not stay pooled (task 2.4a). (a) repeated writes two trail cells a group and holds no frame,
+        // so 16,384 groups that all participate allocate nothing once the pool is warm, and one more allocates, in each
+        // call, the trail's next doubling, 131,072 integers; (?:a|bc) repeated holds a frame each and writes no cell,
+        // the same bound in frames. Past it, then, a call allocates what grows with the capture count.
+        Assert.Equal(1 << 16, RegexMachine.PooledLength);
+        var regex = Regex(string.Concat(Enumerable.Repeat(group, count)));
+        var subject = new string('a', count);
+        var slots = new int[regex.SlotCount];
+        var measured = new long[2][];
+        RegexWorkCharge meter = static _ => { };
+        ProgramCompilerTests.OnASmallStack(() =>
+        {
+            for (var metered = 0; metered < 2; metered++)
+            {
+                var charge = metered == 0 ? null : meter;
+                var status = RegexStatus.NoMatch;
+                measured[metered] = AllocationReading.BytesPerCall(() => status = regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _), calls: 10);
+                Assert.Equal(RegexStatus.Match, status);
+            }
+        });
+        Assert.All(measured, calls => Assert.All(calls, bytes => Assert.True(least == 0 ? bytes == 0 : bytes >= least, bytes + " bytes in a call")));
     }
 }

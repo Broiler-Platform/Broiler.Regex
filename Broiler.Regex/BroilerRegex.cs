@@ -309,8 +309,11 @@ public sealed class BroilerRegex
     /// <para>
     /// <b>Memory.</b> The call's registers, frames and trail are arrays rented from the shared array pool and given back
     /// before it returns, its exceptions included; once the pool holds arrays of the sizes the pattern needs, a call
-    /// allocates nothing, whatever the capture count (check A-8). The compiled pattern is not changed by a call, so
-    /// concurrent calls on one instance, and a call the meter makes while it is charged, each answer as alone.
+    /// allocates nothing, whatever the capture count (check A-8), as long as it holds at most 16,384 backtrack frames and
+    /// 32,768 trail cells at once. Past them its frames or trail are allocated for the call alone, so that one call's peak
+    /// does not stay pooled; a capturing group that participates writes two trail cells, so a pattern of more than about
+    /// 16,384 such groups allocates, in every call, a trail that grows with them. The compiled pattern is not changed by
+    /// a call, so concurrent calls on one instance, and a call the meter makes while it is charged, each answer as alone.
     /// </para>
     /// <para>
     /// <b>Failures.</b> A broken precondition is an exception (convention 3); reaching a ceiling is a status, never
@@ -321,7 +324,7 @@ public sealed class BroilerRegex
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=DF6AB2
-    // Broiler-Falsified-If: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 groups allocates once the pool is warm
+    // Broiler-Falsified-If: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 or 16,384 groups allocates once the pool is warm
     // Broiler-Human:        PENDING
     public RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots, RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit) =>
         _program.Match(subject, start, anchored, slots, meter, ceilings, out limit, out _);

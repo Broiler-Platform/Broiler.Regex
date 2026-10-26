@@ -469,7 +469,14 @@ was). It takes the start as given: under `u` and `v` a start inside a pair split
 RegExpBuiltinExec steps back to the pair before it calls, then reports from the offsets and its own `lastIndex`, which
 is what row M4 and decision D41 need of it. `PublicEntryTests` holds A-7 (`/b/` and `/b/y` alike for each value of the
 argument) and A-8 (no string in the signature; a call through 1 to 1,000 groups allocating nothing, with no meter and
-with one). All of it is provisional, in the CHANGELOG and the remarks: task 2.5 adds the compile meter, task 2.9 fixes
+with one). *Amended at the review of task 2.4c:* A-8 holds up to a bound, which the record of task 2.4a gave as
+frames and trail past 65,536 integers allocated for the call alone: a call holding at most 16,384 frames and 32,768
+trail cells allocates nothing once the pool is warm, so a pattern of up to 16,384 participating groups, each writing
+two cells, does, and one of 16,385 allocates its trail in every call (`PublicEntryTests` pins both sides, in frames and
+in cells); the public remarks and the CHANGELOG say so. The readings were loosened during this task to the least of up
+to fifty calls, which a call allocating on every other call passed; each reading now holds the collector off
+(`GC.TryStartNoGCRegion`), so no collection trims the pool between two calls, runs in a collection of tests that runs
+alone, and requires every one of twenty calls to allocate nothing. All of it is provisional, in the CHANGELOG and the remarks: task 2.5 adds the compile meter, task 2.9 fixes
 the surface. Check C1 now leaves a library delegate's runtime-made members out, as convention 1 admits the meter.
 
 **The string-bearing members (D10, D12; R1, R3; row M4, D23, D41).** `Match(string, int)`, `IsMatch` and `Matches` run
