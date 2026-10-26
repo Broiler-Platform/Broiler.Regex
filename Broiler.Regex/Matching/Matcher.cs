@@ -464,11 +464,11 @@ internal sealed class Matcher
     /// <b>A defect it has today.</b> Trying an alternative charges no step of the run's <c>Budget</c>, so outside a
     /// quantifier nothing bounds the alternatives a failing match backtracks through: n copies of <c>(?:a|a)</c>
     /// followed by <c>b</c>, run on n <c>a</c> characters, explore about 2^n paths, and the time doubles with each copy
-    /// (on linux-x64 in Release, 24 copies take 1.3 s and 28 copies 19 s). The new matcher's meter, which charges every
-    /// instruction it dispatches (task 2.4a, requirement R1), bounds it; the package README records it.
+    /// (on linux-x64 in Release, 24 copies take 1.3 s and 28 copies 19 s). The new backend's meter, which charges every
+    /// instruction it dispatches (task 2.4a, requirement R1), bounds it from task 2.4c on; the package README records it.
     /// </remarks>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=6; Fingerprint=73E749
-    // Broiler-Falsified-If: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'; or, as it does today until task 2.4a's meter, a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
+    // Broiler-Falsified-If: an alternation answers a later alternative's match although an earlier one matches, so /a|ab/ on 'ab' matches 'ab'; or, as it does today until task 2.4c routes matching to task 2.4a's meter, a quantifier-free pattern of 40 copies of (?:a|a) followed by b, run on 40 'a' characters, explores about 2^40 paths because no alternative consumes a Budget step
     // Broiler-Human:        PENDING
     private static CompiledMatcher Alternation(CompiledMatcher[] matchers)
     {
