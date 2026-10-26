@@ -26,17 +26,18 @@ namespace Broiler.Regex.Tests;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>The old backend's budget.</b> The old backend runs under its own step budget, ten million steps per start position,
-/// which it answers as a failed start, not as a limit (task 2.4c deletes it). The new one runs under a step ceiling of
-/// <see cref="StepCeiling"/> units and the engines' frame and trail ceilings, and a case it stops at a ceiling is counted,
-/// not compared, so that no comparison rests on the old budget's silent failure. The ceiling was set from the first run's
-/// disagreements, under a ceiling of two million units: three were the old budget's (nested counted quantifiers over an
-/// empty alternative, <c>((?&lt;n0&gt;[^]?|){2,}){2,}</c>, on subjects of five to nine characters, where the old backend
-/// answered no match after five to eleven seconds although a prefix of the subject matched), and each took the new backend
-/// about 241,000 units. Under the ceiling of 100,000, task 2.4a's seed stopped 22 generated cases, the largest compared
-/// taking 95,843 units. Task 2.4b's population, drawn from the whole grammar with a seed of its own, stops 2 and its
-/// largest compared case takes 25,619 units; the suite's stops are \p{RGI_Emoji}'s (<see cref="SuiteOverStepsPinned"/>).
-/// The cases left out are pinned: the stops of each population, at least 170,000 generated cases compared, and no case of
+/// <b>The old backend's budget.</b> The old backend runs under its own step budget, ten million steps per start
+/// position, which it answers as a failed start, not as a limit (task 2.4c deletes it). The new one runs under a step
+/// ceiling of <see cref="StepCeiling"/> units and the engines' frame and trail ceilings, and a case it stops at a
+/// ceiling is counted, not compared, so that no comparison rests on the old budget's silent failure. The ceiling was
+/// set from the first run's disagreements, under a ceiling of two million units: three were the old budget's (nested
+/// counted quantifiers over an empty alternative, <c>((?&lt;n0&gt;[^]?|){2,}){2,}</c>, on subjects of five to nine
+/// characters, where the old backend answered no match after five to eleven seconds although a prefix of the subject
+/// matched), and each took the new backend about 241,000 units. Under the ceiling of 100,000, task 2.4a's seed stopped
+/// 22 generated cases, the largest compared taking 95,843 units. Task 2.4b's population, drawn from the whole grammar
+/// with a seed of its own, stops 2 and its largest compared case takes 25,619 units; the suite's stops are
+/// <c>(a+)+b</c>'s on twelve to fifteen <c>a</c>s and <c>\p{RGI_Emoji}</c>'s (<see cref="SuiteOverStepsPinned"/>). The
+/// cases left out are pinned: the stops of each population, at least 170,000 generated cases compared, and no case of
 /// either population stopped at a frame or trail ceiling, which on subjects of at most nine pieces would be the new
 /// backend giving up rather than answering.
 /// </para>
@@ -57,21 +58,21 @@ namespace Broiler.Regex.Tests;
 /// </para>
 /// <para>
 /// <b>A start inside a surrogate pair, and the old backend's defect D1.</b> Under <c>u</c> and <c>v</c> the new entry
-/// reads a start inside a pair forward from the pair's low half, as a lone unit, and read nothing before it until task 2.4b. That is the
-/// entry's contract, under which RegExpBuiltinExec's step back to the pair (ECMA-262 §22.2.7.2, step 13.b) is the
-/// caller's, as Broiler.VM's realm takes it; it is not the specification's answer from such a <c>lastIndex</c>, which
-/// starts at the whole pair (<see cref="SurrogateStartTests"/> holds both). The old backend is inconsistent there, and
-/// that is defect D1: its greedy run of one character gives back across the start and reads the high half before it, so
-/// <c>/[\s\S]*\u{1F600}/u</c> from index 1 of <c>"\u{1F600}ba"</c> answers a match at 1 of the character at 0,
-/// RegExpBuiltinExec's answer by accident, while the same pattern as a loop, <c>/(?:[\s\S])*\u{1F600}/u</c>, does not
-/// step back and answers no match. The comparison is of the entry's contract: a case starting inside a pair is compared
-/// with the old backend's answer on a copy of the subject whose unit before the start is no surrogate, so that the old
-/// backend does not read the pair's high half before the start either. The first run found seven disagreements, all D1.
-/// Since task 2.4b's look-behinds the new entry does read before the start, and reads the high half there as a lone
-/// unit (the pair is split for the whole call); the copy holds <c>#</c> there instead, so a program with an instruction
-/// that reads right to left runs on the copy too, and the split itself is <see cref="MachineLookaroundTests"/>'s to pin.
-/// Every other read before the start, <c>\b</c>'s and <c>^</c>'s under <c>m</c>, finds a non-word character that is no
-/// line terminator in both, the lone high half and <c>#</c>.
+/// reads a start inside a pair forward from the pair's low half, as a lone unit, and until task 2.4b it read nothing
+/// before it. That is the entry's contract, under which RegExpBuiltinExec's step back to the pair (ECMA-262 §22.2.7.2,
+/// step 13.b) is the caller's, as Broiler.VM's realm takes it; it is not the specification's answer from such a
+/// <c>lastIndex</c>, which starts at the whole pair (<see cref="SurrogateStartTests"/> holds both). The old backend is
+/// inconsistent there, and that is defect D1: its greedy run of one character gives back across the start and reads the
+/// high half before it, so <c>/[\s\S]*\u{1F600}/u</c> from index 1 of <c>"\u{1F600}ba"</c> answers a match at 1 of the
+/// character at 0, RegExpBuiltinExec's answer by accident, while the same pattern as a loop,
+/// <c>/(?:[\s\S])*\u{1F600}/u</c>, does not step back and answers no match. The comparison is of the entry's contract:
+/// a case starting inside a pair is compared with the old backend's answer on a copy of the subject whose unit before
+/// the start is no surrogate, so that the old backend does not read the pair's high half before the start either. The
+/// first run found seven disagreements, all D1. Since task 2.4b's look-behinds the new entry does read before the
+/// start, and reads the high half there as a lone unit (the pair is split for the whole call); the copy holds <c>#</c>
+/// there instead, so a program with an instruction that reads right to left runs on the copy too, and the split itself
+/// is <see cref="MachineLookaroundTests"/>'s to pin. Every other read before the start, <c>\b</c>'s and <c>^</c>'s
+/// under <c>m</c>, finds a non-word character that is no line terminator in both, the lone high half and <c>#</c>.
 /// </para>
 /// <para>
 /// The sticky flag <c>y</c> is the new entry's anchored argument; the old backend reads it from its flags.

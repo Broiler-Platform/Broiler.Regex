@@ -81,10 +81,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   peak does not stay pooled. The program runs literals, `.`, classes (`v`-mode classes of code points included),
   sequence, alternation, every quantifier form with the specification's empty-iteration rule, and the three kinds of
   group, clearing a quantified atom's captures at each iteration; task 2.4b adds the rest of the grammar (below), and
-  the "not yet supported" answer task 2.4a gave it in the meantime is gone. The entry, the program, the compiler, the ceilings and the
-  meter `RegexWorkCharge` are **internal** (visible to the tests and the probe) until task 2.4c routes `BroilerRegex`
-  through them; the public members still match with `Matching/`. **Public, and provisional like `Compile`:**
-  `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and
+  the "not yet supported" answer task 2.4a gave it in the meantime is gone. The entry, the program, the compiler, the
+  ceilings and the meter `RegexWorkCharge` are **internal** (visible to the tests and the probe) until task 2.4c routes
+  `BroilerRegex` through them; the public members still match with `Matching/`. **Public, and provisional like
+  `Compile`:** `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and
   `RegexLimit.Trail` (4), extending task 2.3's enums. They could not wait: an enum's members take the enum's
   accessibility, and the new entry answers these two public enums, so its answers are public members whatever the
   entry's own accessibility. `PublicAPI.txt` lists them; package validation accepts them as additions.

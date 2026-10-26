@@ -379,13 +379,16 @@ stops are. **The corpus**: K05, G03, L01 to L05, F01, F02, O02, O03, O16 and O17
 processes and in the probe; O05 and O06 wait for task 2.4c, O07 and O08 for task 2.6, the V rows for task 2.5 and the
 validate rows for task 2.8.
 
-**The old backend's defects the comparison found**, each pinned to the specification's answer in
-`OldBackendDefectTests` and shown as the old backend gives it: **D2**, a `v`-mode class holding the empty string tries it
-before its single characters (`/[\q{}a]/v` on `a` answers the empty match; the specification tries the empty string
-last); and **M7**, Broiler.VM's JSD-0081 row and decision D36's fix, a back-reference in a look-behind under `u` or `v`
-that compares the code units ending at the index and so can begin inside a surrogate pair (`/(?<=\1(.))x/u` on
-`"\uD83D\uDE00\uDE00x"` matches where the specification does not). D1 is task 2.4a's. The public members show all three
-until task 2.4c routes them through the new backend.
+**The old backend's defects the comparison found**, each pinned to the specification's answer in `OldBackendDefectTests`
+and shown as the old backend gives it: **D2**, a `v`-mode class holding the empty string tries it before its single
+characters (`/[\q{}a]/v` on `a` answers the empty match; the specification tries the empty string last), pinned by
+`OldBackendDefectTests.D2_a_class_s_empty_string_is_tried_after_its_single_characters` and shown by
+`OldBackendDefectTests.D2_the_old_backend_answers_with_the_empty_string_first`; and **M7**, Broiler.VM's JSD-0081 row
+and decision D36's fix, a back-reference in a look-behind under `u` or `v` that compares the code units ending at the
+index and so can begin inside a surrogate pair (`/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` matches where the
+specification does not), pinned by `OldBackendDefectTests.M7_a_backward_back_reference_reads_whole_code_points_under_u`
+and shown by `OldBackendDefectTests.M7_the_old_backend_compares_the_code_units_that_end_at_the_index`. D1 is task 2.4a's
+(`SurrogateStartTests`). The public members show all three until task 2.4c routes them through the new backend.
 
 **What task 2.4c adds.** The fast paths: a greedy run over a class as one instruction (rows O05 and O06, whose loop form
 passes the frame ceiling), atom-run folding and the literal-prefix prefilter, and a remedy for a class of many strings,

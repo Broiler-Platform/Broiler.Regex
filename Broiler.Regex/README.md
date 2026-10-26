@@ -99,12 +99,12 @@ pattern ──▶ RegexParser ──▶ AST ───┤   (Matching/)          
   (its terms last first, each character and back-reference reading backward, a group's end register
   written first so that captures read in source order); a `v`-mode class of strings to an alternation
   of its strings, longest first, then its single characters, then the empty string.
-* **`Engine/`** (task 2.4a) — the new backend. `RegexOp` and `RegexInstruction` are its instruction
-  set; `RegexProgram` is the immutable program, shared across threads, with the internal match entry
-  (a subject span, a start, an anchored argument independent of `y`, offsets written into the
-  caller's slots); `RegexMachine` is the one backtracking loop, with an explicit frame stack and an
-  undo trail (defunctionalised continuations) rented from the shared array pool, and no CLR
-  recursion, which an architecture test reads from the IL; the calls the loop makes into other
+* **`Engine/`** (tasks 2.4a and 2.4b) — the new backend. `RegexOp` and `RegexInstruction` are its
+  instruction set; `RegexProgram` is the immutable program, shared across threads, with the internal
+  match entry (a subject span, a start, an anchored argument independent of `y`, offsets written
+  into the caller's slots); `RegexMachine` is the one backtracking loop, with an explicit frame
+  stack and an undo trail (defunctionalised continuations) rented from the shared array pool, and no
+  CLR recursion, which an architecture test reads from the IL; the calls the loop makes into other
   assemblies are pinned there, the case folding among them, which reads the caller's provider during
   a match as the meter is called, so no type of the library may implement the provider's interface.
   A look-around is a barrier frame on the same stack, dropped with every frame above it when its
