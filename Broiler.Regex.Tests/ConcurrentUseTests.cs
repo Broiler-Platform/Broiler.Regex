@@ -70,43 +70,80 @@ public class ConcurrentUseTests
             return Render(regex.Match(c.Subject), regex.GroupNames);
         })];
 
+    /// <summary>
+    /// The warm library: its types are initialized and its code compiled by the single-threaded run first. In each
+    /// lockstep round the shared instances are new, and every thread waits at a barrier before each case and then
+    /// matches the same shared instance, so a case's first match on its instance is made by all the threads at once,
+    /// which is where a compiled pattern that changes itself on a read would race. A staggered pass follows, each
+    /// thread starting at another case. An exception a worker meets is a failure of the test, not of the test host.
+    /// </summary>
+    /// <remarks>
+    /// Against <c>0.1.0-preview.4</c>'s <c>CodePointSet</c>, which sorted and merged its ranges in place on its first
+    /// read, the lockstep rounds fail where a staggered pass alone almost never does: the threads rarely make one
+    /// instance's first match at the same time unless they wait for each other.
+    /// </remarks>
     [Fact]
     public void Warm_concurrent_compiles_and_matches_answer_as_one_thread_does()
     {
         var expected = SingleThreaded();
         Assert.DoesNotContain("nomatch", expected); // not vacuous: every case matches
-        var shared = Cases.Select(static c => TestRegex.Compile(c.Pattern, c.Flags)).ToArray();
 
         var failures = new List<string>();
-        var barrier = new Barrier(Threads);
-        var workers = Enumerable.Range(0, Threads).Select(t => new Thread(() =>
+        void Check(int t, int k, BroilerRegex shared)
         {
-            barrier.SignalAndWait();
-            for (var round = 0; round < 8; round++)
+            try
             {
-                for (var i = 0; i < Cases.Length; i++)
+                // Odd threads compile their own instance too; every thread matches the shared one.
+                var (pattern, flags, subject) = Cases[k];
+                var answers = new List<string> { Render(shared.Match(subject), shared.GroupNames) };
+                if (t % 2 == 1)
                 {
-                    // Odd threads compile their own instance; every thread matches the shared one.
-                    var (pattern, flags, subject) = Cases[(i + t) % Cases.Length];
-                    var k = (i + t) % Cases.Length;
-                    var answers = new List<string> { Render(shared[k].Match(subject), shared[k].GroupNames) };
-                    if (t % 2 == 1)
-                    {
-                        var own = TestRegex.Compile(pattern, flags);
-                        answers.Add(Render(own.Match(subject), own.GroupNames));
-                    }
+                    var own = TestRegex.Compile(pattern, flags);
+                    answers.Add(Render(own.Match(subject), own.GroupNames));
+                }
 
-                    foreach (var answer in answers.Where(a => a != expected[k]))
-                    {
-                        lock (failures)
-                            failures.Add("case " + k + ": " + answer + " where one thread answers " + expected[k]);
-                    }
+                foreach (var answer in answers.Where(a => a != expected[k]))
+                {
+                    lock (failures)
+                        failures.Add("case " + k + ": " + answer + " where one thread answers " + expected[k]);
                 }
             }
-        })).ToList();
+            catch (Exception e)
+            {
+                lock (failures)
+                    failures.Add("case " + k + ": " + e.GetType().Name + ": " + e.Message);
+            }
+        }
 
-        workers.ForEach(static w => w.Start());
-        workers.ForEach(static w => w.Join());
+        void OnEveryThread(Action<int, Barrier> body)
+        {
+            var barrier = new Barrier(Threads);
+            var workers = Enumerable.Range(0, Threads).Select(t => new Thread(() => body(t, barrier))).ToList();
+            workers.ForEach(static w => w.Start());
+            workers.ForEach(static w => w.Join());
+        }
+
+        for (var round = 0; round < 8; round++)
+        {
+            var shared = Cases.Select(static c => TestRegex.Compile(c.Pattern, c.Flags)).ToArray();
+            OnEveryThread((t, barrier) =>
+            {
+                for (var k = 0; k < Cases.Length; k++)
+                {
+                    barrier.SignalAndWait();
+                    Check(t, k, shared[k]);
+                }
+            });
+        }
+
+        var staggered = Cases.Select(static c => TestRegex.Compile(c.Pattern, c.Flags)).ToArray();
+        OnEveryThread((t, barrier) =>
+        {
+            barrier.SignalAndWait();
+            for (var i = 0; i < Cases.Length; i++)
+                Check(t, (i + t) % Cases.Length, staggered[(i + t) % Cases.Length]);
+        });
+
         Assert.Empty(failures);
     }
 
