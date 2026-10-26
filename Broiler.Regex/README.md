@@ -172,6 +172,13 @@ pattern string ──▶ RegexParser ──▶ RegexNode AST ──▶ Matcher (
   capturing groups in a row do on a 1 MiB thread, where 2,000 match. The `RegexOverflowException`
   backstop, which the JavaScript layer catches to fall back to .NET, is checked only where a
   general quantifier's driver starts, so it does not reach a crash that happens elsewhere.
+- **An alternation charges no step.** The step budget is charged by quantifier iterations and
+  scans, not by trying an alternative, so outside a quantifier nothing bounds the paths a
+  failing match backtracks through: n copies of `(?:a|a)` followed by `b`, run on n `a`
+  characters, explore about 2^n paths, and the time doubles with each copy (on linux-x64 in
+  Release, 24 copies take 1.3 s, 26 take 5 s and 28 take 19 s; 40 would take most of a day).
+  The new matcher's meter, which charges every instruction it dispatches (SJL-11.2 task 2.4a,
+  requirement R1), bounds it; `Matcher`'s alternation records it as its falsifier until then.
 - The general driver enumerates each level's body matches by re-running
   the body per alternative, so a body with heavy internal backtracking is matched more than
   once per iteration; the shared step budget bounds that, and the single-code-point fast path
