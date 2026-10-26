@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   1
 // Annotated:        1/1
-// Exempt:           21
+// Exempt:           23
 // Human-reviewed:   0/1
 // IP risk:          None
 // Security risk:    Medium
@@ -34,12 +34,12 @@ namespace Broiler.Regex.Engine;
 /// <b>What tasks 2.4a and 2.4b hold, and what is still to come.</b> Task 2.4a's: literal characters, <c>.</c> with and
 /// without <c>s</c>, character classes, sequence, alternation, greedy and lazy quantifiers with counted bounds and the
 /// specification's empty-iteration rule, and capturing and non-capturing groups with a quantified atom's captures cleared
-/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>, and the assertions <c>^ $ \b \B</c>.
-/// The greedy run of a single code point, atom-run folding and the literal-prefix prefilter are task 2.4c's fast paths.
-/// The numbers below are not a contract: a program is built and run by the same version of the library.
+/// at each iteration. Task 2.4b's: characters and classes compared under <c>i</c>, the assertions <c>^ $ \b \B</c> and
+/// back-references. The greedy run of a single code point, atom-run folding and the literal-prefix prefilter are task
+/// 2.4c's fast paths. The numbers below are not a contract: a program is built and run by the same version of the library.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=0D190C
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Medium; Resources=0; Fingerprint=FE5653
 // Broiler-Human:        PENDING
 internal enum RegexOp : byte
 {
@@ -160,4 +160,19 @@ internal enum RegexOp : byte
 
     /// <summary>Assertion :: <c>\B</c>: IsWordChar of the two characters around the index, read from class <c>A</c>, agree.</summary>
     NonWordBoundary = 20,
+
+    /// <summary>
+    /// BackreferenceMatcher (§22.2.2.7.2): the characters the group captured must follow, compared exactly. The group is
+    /// read from the program's list of referenced groups, <c>B</c> entries from entry <c>A</c>: the first whose capture is
+    /// defined is the one compared, and when none is, the reference matches the empty string. Today a list holds one
+    /// group; a name ES2025 lets several groups share (task 2.6) becomes a list of them, the one that participated
+    /// being compared, with no change to the instruction.
+    /// </summary>
+    Backreference = 21,
+
+    /// <summary>
+    /// BackreferenceMatcher under <c>i</c>: as <see cref="Backreference"/>, each character compared by Canonicalize
+    /// (§22.2.2.7.3).
+    /// </summary>
+    BackreferenceIgnoringCase = 22,
 }

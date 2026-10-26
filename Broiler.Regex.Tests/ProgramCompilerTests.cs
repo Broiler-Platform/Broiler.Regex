@@ -26,7 +26,8 @@ public class ProgramCompilerTests
             or RegexOp.LiteralIgnoringCase or RegexOp.CanonicalClass or RegexOp.LineStart or RegexOp.LineEnd
             or RegexOp.WordBoundary or RegexOp.NonWordBoundary
             => i.Op + " " + Decimal(i.A),
-        RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
+        RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase or RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase
+            => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
         RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
@@ -100,6 +101,20 @@ public class ProgramCompilerTests
     public void A_modifier_group_lowers_its_body_under_its_flags_and_nothing_after_it(string pattern, string flags, string[] expected)
     {
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Fact]
+    public void A_back_reference_reads_a_list_of_its_group_from_the_program_s_referenced_groups()
+    {
+        // Each reference holds a run of entries of the program's list, one group long today; task 2.6's duplicate names
+        // make a run of the groups that share a name, with no change to the instruction.
+        var program = TestProgram.Compile("(?<a>x)(y)\\2\\k<a>(?i:\\1)");
+        Assert.Equal(["Backreference 0,1", "Backreference 1,1", "BackreferenceIgnoringCase 2,1"],
+            Listing(program).Where(static l => l.StartsWith("Backreference", StringComparison.Ordinal)));
+        Assert.Equal([2], program.ReferencedGroups(0, 1).ToArray());
+        Assert.Equal([1], program.ReferencedGroups(1, 1).ToArray());
+        Assert.Equal([1], program.ReferencedGroups(2, 1).ToArray());
+        Assert.All(program.Code.ToArray().Where(static i => i.Op is RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase), static i => Assert.Equal(1, i.Cost));
     }
 
     [Fact]
@@ -203,8 +218,6 @@ public class ProgramCompilerTests
     }
 
     [Theory]
-    [InlineData("(a)\\1", "")]
-    [InlineData("(?<n>a)\\k<n>", "")]
     [InlineData("(?=a)", "")]
     [InlineData("(?!a)", "")]
     [InlineData("(?<=a)b", "")]

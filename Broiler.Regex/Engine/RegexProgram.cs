@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   7
-// Annotated:        7/7
-// Exempt:           8
-// Human-reviewed:   0/7
+// Relevant units:   8
+// Annotated:        8/8
+// Exempt:           9
+// Human-reviewed:   0/8
 // IP risk:          None
 // Security risk:    High
 // Criteria:         4/2
 // Resource impact:  8/10 max
-// Unverified:       7
+// Unverified:       8
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -51,12 +51,16 @@ internal sealed class RegexProgram
     /// <summary>Each class's ranges, flattened into pairs of inclusive bounds.</summary>
     private readonly int[][] _classes;
 
+    /// <summary>The groups the back-references read, each reference's list one run of entries (<see cref="RegexOp.Backreference"/>).</summary>
+    private readonly int[] _referenced;
+
     /// <summary>
     /// A program over <paramref name="code"/> and <paramref name="classes"/>, which the caller hands over and does not
     /// keep.
     /// </summary>
     /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Succeed"/> or a failure.</param>
     /// <param name="classes">Each class's ranges as pairs of inclusive bounds, sorted and disjoint.</param>
+    /// <param name="referenced">The group numbers the back-references read, each reference's list one run of entries.</param>
     /// <param name="captureCount">The pattern's capturing groups, group 0 not counted.</param>
     /// <param name="registerCount">The registers the program uses: the capture registers and the quantifiers' loop registers.</param>
     /// <param name="unicode">Whether the pattern has <c>u</c> or <c>v</c>, so that a surrogate pair is read as one character.</param>
@@ -64,12 +68,13 @@ internal sealed class RegexProgram
     /// The Unicode owner's case folding, which an instruction comparing under <c>i</c> reads for Canonicalize and for a
     /// character's case orbit; null for a program with no such instruction.
     /// </param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=419136
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=891770
     // Broiler-Human:        PENDING
-    internal RegexProgram(RegexInstruction[] code, int[][] classes, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
+    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
     {
         _code = code;
         _classes = classes;
+        _referenced = referenced;
         CaptureCount = captureCount;
         RegisterCount = registerCount;
         Unicode = unicode;
@@ -110,6 +115,11 @@ internal sealed class RegexProgram
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4B63A2
     // Broiler-Human:        PENDING
     internal ReadOnlySpan<RegexInstruction> Code => _code;
+
+    /// <summary>The <paramref name="count"/> group numbers a back-reference reads, from entry <paramref name="first"/> of the program's list.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E32DD4
+    // Broiler-Human:        PENDING
+    internal ReadOnlySpan<int> ReferencedGroups(int first, int count) => _referenced.AsSpan(first, count);
 
     /// <summary>The ranges of class <paramref name="index"/>, as pairs of inclusive bounds.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121

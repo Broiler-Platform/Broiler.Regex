@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   25
-// Annotated:        25/25
+// Relevant units:   26
+// Annotated:        26/26
 // Exempt:           25
-// Human-reviewed:   0/25
+// Human-reviewed:   0/26
 // IP risk:          None
 // Security risk:    High
-// Criteria:         16/6
+// Criteria:         17/7
 // Resource impact:  8/10 max
-// Unverified:       25
+// Unverified:       26
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -250,7 +250,7 @@ internal ref struct RegexMachine
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=6127FC
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=DA92A7
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame, or a frame resumes with a register write made after it still in force
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -366,6 +366,18 @@ internal ref struct RegexMachine
                     }
 
                     break;
+                case RegexOp.Backreference:
+                case RegexOp.BackreferenceIgnoringCase:
+                    switch (MatchReference(instruction, ref position))
+                    {
+                        case Outcome.Matched:
+                            pc++;
+                            continue;
+                        case Outcome.Exceeded:
+                            return Outcome.Exceeded;
+                    }
+
+                    break;
                 case RegexOp.Choice:
                     if (!PushChoicePoint(instruction.B, position))
                         return Outcome.Exceeded;
@@ -451,6 +463,62 @@ internal ref struct RegexMachine
         _paid += blocks * Block;
         _threshold = Math.Min(_paid, _stepCeiling);
         return true;
+    }
+
+    /// <summary>
+    /// BackreferenceMatcher (ECMA-262 §22.2.2.7.2) at <paramref name="position"/>: the characters of the first group of
+    /// the instruction's list whose capture is defined, compared one by one with the input's, exactly or by Canonicalize;
+    /// the empty string when no group of the list has a capture. Before the characters are compared, the meter is charged
+    /// the capture's length in code units, the most characters the comparison reads (decision D8's "a back-reference's
+    /// length").
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> past the characters matched;
+    /// <see cref="Outcome.Failed"/>; or <see cref="Outcome.Exceeded"/>, when the length passes the step ceiling.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=CBCF46
+    // Broiler-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, or under u a captured lone high surrogate matches the pair it would begin
+    // Broiler-Human:        PENDING
+    private Outcome MatchReference(in RegexInstruction instruction, ref int position)
+    {
+        int from = -1, to = -1;
+        foreach (var group in _program.ReferencedGroups(instruction.A, instruction.B))
+        {
+            if (_registers[2 * group] >= 0 && _registers[(2 * group) + 1] >= 0)
+            {
+                (from, to) = (_registers[2 * group], _registers[(2 * group) + 1]);
+                break;
+            }
+        }
+
+        if (to <= from)
+            return Outcome.Matched;
+
+        var length = (ulong)(to - from);
+        _spent += length;
+        if (_spent > _threshold && !Pay())
+        {
+            _spent -= length;
+            return Outcome.Exceeded;
+        }
+
+        DispatchObserver?.Invoke(_spent);
+        var ignoreCase = instruction.Op == RegexOp.BackreferenceIgnoringCase;
+        var at = position;
+        for (var read = from; read < to;)
+        {
+            if (at >= _subject.Length)
+                return Outcome.Failed;
+            var wanted = CharacterAt(read, out var wantedWidth);
+            var found = CharacterAt(at, out var foundWidth);
+            if (wanted != found && !(ignoreCase && Canonical(wanted) == Canonical(found)))
+                return Outcome.Failed;
+            read += wantedWidth;
+            at += foundWidth;
+        }
+
+        position = at;
+        return Outcome.Matched;
     }
 
     /// <summary>The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as one code point.</summary>

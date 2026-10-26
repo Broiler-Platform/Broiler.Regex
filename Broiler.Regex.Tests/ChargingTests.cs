@@ -57,6 +57,9 @@ public class ChargingTests
     [InlineData("[^a-cx-z]", "Y", "i", 10)]
     [InlineData("^a", "ba", "", 4)]
     [InlineData("\\bb", "ab b", "", 24)]
+    [InlineData("(a)\\1", "aa", "", 6)]
+    [InlineData("(a+)\\1", "aaaa", "", 49)]
+    [InlineData("\\1(a)", "a", "", 5)]
     public void A_call_s_units_are_one_per_instruction_with_a_class_s_weight_on_top(string pattern, string subject, string flags, ulong units)
     {
         // a on "bbb": a failed Literal at 0, 1 and 2, and at 3, the end. [a-cx-z]: two ranges, weight one. \p{L}: 684
@@ -68,7 +71,11 @@ public class ChargingTests
         // character's case orbit, four at most: [a-cx-z] under i costs 1 + 4 x 1, and \p{L} under iu 1 + 4 x 9. The
         // inverted [^a-cx-z] fails at Y and at the end of the subject, five units each. ^a on "ba": the assertion and the
         // failed Literal at 0, the assertion alone at 1 and 2. \bb on "ab b": a boundary costs 1 + 2 x 2, the word
-        // characters' weight for each side; it holds at 0, 2 and 3 and fails at 1, and the Literal fails twice first.
+        // characters' weight for each side; it holds at 0, 2 and 3 and fails at 1, and the Literal fails twice first. A
+        // back-reference costs one for its dispatch and the captured length before it compares: (a)\1 on "aa" is the two
+        // saves, the Literal, the reference (1 + 1) and Succeed; \1(a) on "a" reads a group with no capture, one unit.
+        // (a+)\1 on "aaaa": the loop's 33 units take all four a's, and the reference is then tried with captures of
+        // four, three and two characters, costing 5, 4 and 3, the last matching, with a save before each and Succeed.
         var program = TestProgram.Compile(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
     }
@@ -78,7 +85,8 @@ public class ChargingTests
     /// nine and ten, captures reset at each iteration, a reset of a thousand groups, starts after the first position and
     /// inside a surrogate pair, an anchored start, two step ceilings, and searches that fail at every position; and task
     /// 2.4b's instructions: characters and classes under i, with and without u, a v-mode class folded when parsed, and the
-    /// assertions ^ $ \b \B, with m and under iu, and modifier groups nested and undone.
+    /// assertions ^ $ \b \B, with m and under iu, modifier groups nested and undone, and back-references, under i and under
+    /// a step ceiling, whose length is charged after the dispatch and before the comparison.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -99,6 +107,8 @@ public class ChargingTests
         { "^(?:\\b\\w+\\B\\w\\b\\W?)+$", "m", string.Concat(Enumerable.Repeat("ab cd\nef gh ", 80)) + "!", 0, false, null },
         { "\\b\\w+\\b", "iu", string.Concat(Enumerable.Repeat("\u017F\u212A- ", 150)), 2, false, null },
         { "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", "", string.Concat(Enumerable.Repeat("Ab\n\nAB\n\n", 100)), 0, false, null },
+        { "(\\w+)\\s\\1(?:\\s\\1)*$", "i", string.Concat(Enumerable.Repeat("Word wORD ", 40)) + "word", 0, false, null },
+        { "(?<w>a+)\\k<w>b", "u", new string('a', 200) + "b", 0, false, 2_000UL },
     };
 
     [Theory]

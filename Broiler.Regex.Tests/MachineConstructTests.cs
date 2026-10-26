@@ -5,8 +5,8 @@ namespace Broiler.Regex.Tests;
 /// <summary>
 /// The new backend's constructs of task 2.4b against ECMA-262's Pattern semantics (§22.2.2): characters and classes
 /// compared under <c>i</c> by both branches of Canonicalize (§22.2.2.7.3), the assertions <c>^ $ \b \B</c>
-/// (§22.2.2.6), and the modifier groups <c>(?ims-ims:…)</c>, whose flags are in force for their body alone. Every expected
-/// answer is the specification's, read from the section each theory names, in the form
+/// (§22.2.2.6), the modifier groups <c>(?ims-ims:…)</c>, whose flags are in force for their body alone, and numbered and
+/// named back-references (§22.2.2.7.2). Every expected answer is the specification's, read from the section each theory names, in the form
 /// <see cref="MachineTests.Render"/> writes.
 /// </summary>
 public class MachineConstructTests
@@ -182,5 +182,57 @@ public class MachineConstructTests
         // with rer's IgnoreCase, Multiline and DotAll updated by the added and removed flags, and what follows the group
         // with rer as it was; a v-mode class folds by the flag in force where it stands.
         Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Theory]
+    [InlineData("(a)\\1", "", "aa", "match 0,2 0,1")]
+    [InlineData("(a)\\1", "", "ab", "nomatch")]
+    [InlineData("\\1(a)", "", "a", "match 0,1 0,1")]
+    [InlineData("(a)|\\1b", "", "b", "match 0,1 -")]
+    [InlineData("(a)?\\1b", "", "b", "match 0,1 -")]
+    [InlineData("(a*)\\1", "", "aaaa", "match 0,4 0,2")]
+    [InlineData("(a*)b\\1+", "", "baaa", "match 0,1 0,0")]
+    [InlineData("(a)\\1{3}", "", "aaaa", "match 0,4 0,1")]
+    [InlineData("(?:(a)|b\\1)+", "", "ab", "match 0,2 -")]
+    [InlineData("(a(?:\\1x)?)b", "", "axb", "match 0,3 0,2")]
+    [InlineData("(a(?:\\1x)?)b", "", "ab", "match 0,2 0,1")]
+    [InlineData("(?<n>ab)\\k<n>", "", "abab", "match 0,4 0,2")]
+    [InlineData("\\k<n>(?<n>a)", "", "a", "match 0,1 0,1")]
+    [InlineData("(?<n>a)(?<m>b)\\k<m>\\k<n>", "u", "abba", "match 0,4 0,1 1,2")]
+    [InlineData("(.)\\1", "u", "\U0001F600\U0001F600", "match 0,4 0,2")]
+    [InlineData("(.)\\1", "", "\U0001F600\U0001F600", "nomatch")]
+    [InlineData("(..)\\1", "", "\U0001F600\U0001F600", "match 0,4 0,2")]
+    public void A_back_reference_matches_what_its_group_captured_and_the_empty_string_when_it_did_not_participate(string pattern, string flags, string subject, string expected)
+    {
+        // BackreferenceMatcher (§22.2.2.7.2): the characters the group captured, compared one by one with the input's;
+        // a group whose capture is undefined, because it has not participated or a quantifier's iteration cleared it,
+        // makes the reference match the empty string. Under u and v a character is a code point.
+        Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Theory]
+    [InlineData("(a)\\1", "i", "aA", "match 0,2 0,1")]
+    [InlineData("(\\u017F)\\1", "i", "\u017Fs", "nomatch")]
+    [InlineData("(\\u017F)\\1", "iu", "\u017Fs", "match 0,2 0,1")]
+    [InlineData("(\\u212A)\\1", "iu", "\u212Ak", "match 0,2 0,1")]
+    [InlineData("(\\u212A)\\1", "i", "\u212Ak", "nomatch")]
+    [InlineData("([a-z]+)\\1", "i", "aBcAbC", "match 0,6 0,3")]
+    [InlineData("(\\u{10400})\\1", "iu", "\U00010400\U00010428", "match 0,4 0,2")]
+    [InlineData("(a)(?i:\\1)", "", "aA", "match 0,2 0,1")]
+    [InlineData("(?i:(a))(?-i:\\1)", "", "Aa", "nomatch")]
+    public void Under_i_a_back_reference_compares_by_Canonicalize(string pattern, string flags, string subject, string expected)
+    {
+        // §22.2.2.7.2, step c: "If there exists an integer i ... such that Canonicalize(rer, s[i]) is not
+        // Canonicalize(rer, Input[g + i]), return failure", with rer's IgnoreCase where the reference stands.
+        Assert.Equal(expected, MachineTests.Run(pattern, flags, subject));
+    }
+
+    [Fact]
+    public void Under_u_a_lone_surrogate_captured_is_not_the_pair_it_would_begin()
+    {
+        // Theory data would carry a lone surrogate through xunit's serialization, which replaces it, so the subjects are here.
+        Assert.Equal("nomatch", MachineTests.Run("(\\uD83D)\\1", "u", "\uD83D\uD83D\uDE00"));
+        Assert.Equal("match 0,2 0,1", MachineTests.Run("(\\uD83D)\\1", "", "\uD83D\uD83D\uDE00"));
+        Assert.Equal("match 1,3 1,2", MachineTests.Run("(.)\\1", "u", "x\uDE00\uDE00"));
     }
 }
