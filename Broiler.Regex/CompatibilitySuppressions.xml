@@ -24,6 +24,27 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.Ast.CodePointSet.AddAll(Broiler.Regex.Ast.CodePointSet)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.Ast.CodePointSet.AddCodePoint(System.Int32)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.Ast.CodePointSet.AddRange(System.Int32,System.Int32)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Broiler.Regex.BroilerRegex.#ctor(System.String,Broiler.Regex.RegexFlags)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>

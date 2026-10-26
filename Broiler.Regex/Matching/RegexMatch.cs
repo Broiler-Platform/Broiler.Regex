@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Broiler.Regex.Matching;
 
@@ -66,11 +67,15 @@ public sealed class RegexMatch
     public IReadOnlyList<RegexGroup> Groups { get; }
     public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=C3E4DA
-    // Broiler-Falsified-If: RegexMatch.Empty reports Success as true or a non-empty Groups list
+    /// <summary>
+    /// The no-match result, which every call that finds no match answers. Nothing reachable from it can change: its
+    /// groups are an empty array and its named groups an empty read-only dictionary (convention 7).
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=E09821
+    // Broiler-Falsified-If: RegexMatch.Empty reports Success as true or a non-empty Groups list, or a cast of its NamedGroups to IDictionary admits a write
     // Broiler-Human:        PENDING
     public static readonly RegexMatch Empty =
-        new(false, -1, 0, "", Array.Empty<RegexGroup>(), new Dictionary<string, RegexGroup>());
+        new(false, -1, 0, "", Array.Empty<RegexGroup>(), ReadOnlyDictionary<string, RegexGroup>.Empty);
 
     internal RegexMatch(bool success, int index, int length, string value,
         IReadOnlyList<RegexGroup> groups, IReadOnlyDictionary<string, RegexGroup> namedGroups)

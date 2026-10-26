@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   14
-// Annotated:        14/14
+// Relevant units:   15
+// Annotated:        15/15
 // Exempt:           13
-// Human-reviewed:   0/14
+// Human-reviewed:   0/15
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         7/2
+// Criteria:         7/3
 // Resource impact:  4/10 max
-// Unverified:       14
+// Unverified:       15
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -33,7 +33,8 @@ namespace Broiler.Regex.Ast;
 // Broiler-Human:        PENDING
 public sealed class CharSet
 {
-    private readonly CodePointSet _set = new();
+    /// <summary>The code points added so far: an immutable set, replaced by each addition.</summary>
+    private CodePointSet _set = new();
     private List<string>? _strings;
     private HashSet<string>? _members;
 
@@ -91,18 +92,30 @@ public sealed class CharSet
     // Broiler-Human:        PENDING
     public bool MatchesEmptyString => _members?.Contains("") == true;
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=547200
+    /// <summary>Adds one code point. Each call makes a new set, in time linear in the ranges this class holds.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=E6E064
     // Broiler-Human:        PENDING
-    public void AddCodePoint(int codePoint) => _set.AddCodePoint(codePoint);
+    public void AddCodePoint(int codePoint) => _set = _set.Union(CodePointSet.Of(codePoint, codePoint));
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=13A512
+    /// <summary>Adds the code points <paramref name="lo"/> to <paramref name="hi"/>, refusing a range written high to low.</summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=11B259
     // Broiler-Falsified-If: a class range written high to low, such as [z-a], is added to the set instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public void AddRange(int lo, int hi)
     {
+        CheckRange(lo, hi);
+        _set = _set.Union(CodePointSet.Of(lo, hi));
+    }
+
+    /// <summary>The early error of a class range written high to low (ECMA-262 §22.2.1.1, ClassAtom - ClassAtom).</summary>
+    /// <exception cref="RegexSyntaxException"><paramref name="lo"/> is greater than <paramref name="hi"/>.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=0; Fingerprint=64DF54
+    // Broiler-Falsified-If: [z-a] is accepted, or [a-a] refused
+    // Broiler-Human:        PENDING
+    internal static void CheckRange(int lo, int hi)
+    {
         if (lo > hi)
             throw new RegexSyntaxException($"Range out of order in character class: U+{lo:X}-U+{hi:X}");
-        _set.AddRange(lo, hi);
     }
 
     /// <summary>
@@ -110,15 +123,15 @@ public sealed class CharSet
     /// class: <c>\s</c> reads the provider's Space_Separator, and <c>\w</c> under <c>i</c> with <c>u</c> or
     /// <c>v</c> its case folding.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=39FD92
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=A56D76
     // Broiler-Human:        PENDING
     internal void AddEscape(ClassEscape escape, bool ignoreCase, bool unicode, RegexUnicode data)
-        => _set.AddAll(data.EscapeSet(escape, ignoreCase, unicode));
+        => _set = _set.Union(data.EscapeSet(escape, ignoreCase, unicode));
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=597BF4
-    // Broiler-Falsified-If: two threads first compiling [\p{RGI_Emoji}] under v at the same moment both normalize the cached property's code-point set in place through AddSet, and one throws or builds a class missing a code point
+    /// <summary>Adds every code point of <paramref name="set"/>, which is not changed.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=3A7F6D
     // Broiler-Human:        PENDING
-    public void AddSet(CodePointSet set) => _set.AddAll(set);
+    public void AddSet(CodePointSet set) => _set = _set.Union(set);
 
     /// <summary>
     /// Adds a multi-code-point member. A one-code-point string is an ordinary member of
