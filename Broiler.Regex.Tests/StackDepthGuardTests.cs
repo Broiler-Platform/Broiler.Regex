@@ -10,7 +10,7 @@ namespace Broiler.Regex.Tests;
 /// engines' frame and trail ceilings, decision D10's, which the string-bearing members pass. A quantifier over one
 /// character is a run, one frame however long; any other body holds a frame per iteration and writes its group starts
 /// and captures to the trail, so a long enough subject reaches a ceiling, and the members answer it as a ceiling,
-/// never as no match: <see cref="BroilerRegex.Match(string, int)"/> with <see cref="Matching.RegexMatch.Limit"/>,
+/// never as no match: <see cref="BroilerRegex.Match(string, int)"/> with <see cref="RegexMatch.Limit"/>,
 /// <see cref="BroilerRegex.IsMatch"/> and <see cref="BroilerRegex.Matches"/> with an
 /// <see cref="InvalidOperationException"/> (requirement R1).
 /// </summary>

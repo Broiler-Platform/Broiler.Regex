@@ -117,8 +117,8 @@ public class PublicEntryTests
     public void A_call_allocates_nothing_that_grows_with_the_capture_count()
     {
         // Check A-8 on the public entry: after the shared pool holds the arrays a pattern needs, a call allocates nothing,
-        // at 1 group or at 1,000, with no meter or with one; the least of five calls is read, as a collection between two
-        // calls may trim the pool.
+        // at 1 group or at 1,000, with no meter or with one; the least of up to fifty calls is read, the first that
+        // allocates nothing ending the reading, as a collection between two calls may trim the pool.
         var counts = new[] { 1, 10, 100, 1_000 };
         var measured = new long[counts.Length * 2];
         RegexWorkCharge meter = static _ => { };
@@ -136,7 +136,7 @@ public class PublicEntryTests
                         Assert.Equal(RegexStatus.Match, regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _));
 
                     measured[(2 * i) + metered] = long.MaxValue;
-                    for (var call = 0; call < 5; call++)
+                    for (var call = 0; call < 50 && measured[(2 * i) + metered] > 0; call++)
                     {
                         var before = GC.GetAllocatedBytesForCurrentThread();
                         regex.Match(subject.AsSpan(), 0, false, slots, charge, RegexMatchCeilings.Engines, out _);

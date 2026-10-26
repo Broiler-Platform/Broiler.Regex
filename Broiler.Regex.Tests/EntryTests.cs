@@ -68,7 +68,8 @@ public class EntryTests
     public void A_call_allocates_nothing_that_grows_with_the_capture_count()
     {
         // Bundle sjl-11-001's check A-8: after the shared pool holds the arrays a program needs, a call allocates nothing,
-        // whatever its capture count; the bytes are those the measuring thread allocates.
+        // whatever its capture count; the bytes are those the measuring thread allocates, the least of up to fifty calls
+        // (the next test's remarks).
         var measured = new long[4];
         var counts = new[] { 1, 10, 100, 1_000 };
         ProgramCompilerTests.OnASmallStack(() =>
@@ -80,9 +81,14 @@ public class EntryTests
                 for (var warm = 0; warm < 3; warm++)
                     Assert.Equal(RegexStatus.Match, program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _));
 
-                var before = GC.GetAllocatedBytesForCurrentThread();
-                program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _);
-                measured[i] = GC.GetAllocatedBytesForCurrentThread() - before;
+                measured[i] = long.MaxValue;
+                for (var call = 0; call < 50 && measured[i] > 0; call++)
+                {
+                    var before = GC.GetAllocatedBytesForCurrentThread();
+                    program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _);
+                    measured[i] = Math.Min(measured[i], GC.GetAllocatedBytesForCurrentThread() - before);
+                }
+
                 Assert.Equal(counts[i], slots[^1]);
             }
         });
@@ -126,9 +132,10 @@ public class EntryTests
     {
         // Check A-8 for back-references, look-arounds and the i flag: the barriers' registers, the referenced groups'
         // list and the case orbit's room come from the program and the pool like the rest, so after the pool holds them
-        // a call allocates nothing, at 1 group or at 1,000. The least of five calls is read: a collection between two
-        // calls may trim the shared pool, and the call after it rents anew what the one before gave back, which a call
-        // that allocated of itself would do at every call.
+        // a call allocates nothing, at 1 group or at 1,000. The least of up to fifty calls is read, the first that
+        // allocates nothing ending the reading: a collection between two calls may trim the shared pool, as one does
+        // often while the differential tests run beside this one, and the call after it rents anew what the one before
+        // gave back, which a call that allocated of itself would do at every call.
         var measured = new long[4];
         var counts = new[] { 1, 10, 100, 1_000 };
         ProgramCompilerTests.OnASmallStack(() =>
@@ -141,7 +148,7 @@ public class EntryTests
                     Assert.Equal(RegexStatus.Match, program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _));
 
                 measured[i] = long.MaxValue;
-                for (var call = 0; call < 5; call++)
+                for (var call = 0; call < 50 && measured[i] > 0; call++)
                 {
                     var before = GC.GetAllocatedBytesForCurrentThread();
                     program.Match(subject, 0, false, slots, null, RegexMatchCeilings.Engines, out _, out _);

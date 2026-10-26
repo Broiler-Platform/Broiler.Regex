@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using Broiler.Regex.Matching;
 using Broiler.Unicode.Tables;
 
 namespace Broiler.Regex.Probe;
@@ -144,10 +143,9 @@ internal static class ProbePopulation
         // Nesting (R4, decision D6): at BroilerRegex.MaximumNestingLimit, one level past it and far past it, compiled
         // under a nesting limit and matched, on a thread of StackBytes. Depth counts as Broiler.VM's does: the pattern
         // is depth 1, each group adds 1, and under v each class adds 1; so 511 levels are the maximum, 512. Every
-        // subject of a case at the maximum reaches the innermost level, except where a case says it proves the parse
-        // and the compilation alone: the shapes whose match at the maximum the public matcher does not prove until task
-        // 2.4c routes it through task 2.4a's backend (MaximumNestingLimit's remarks; the engine population matches them)
-        // are matched against a subject that fails at the outermost level.
+        // subject of a case at the maximum reaches the innermost level. Before task 2.4c routed the public members through
+        // task 2.4a's backend, the shapes whose match at the maximum the old matcher did not prove (N10, N17) were matched
+        // against a subject that failed at the outermost level; they now reach the innermost too.
         Nested("N01", "(", "a", ")", 511, "", "a"),
         Nested("N02", "(", "a", ")", 512, "", "a"),
         Nested("N03", "(?:", "a", ")", 511, "", "a"),
@@ -158,8 +156,8 @@ internal static class ProbePopulation
         Nested("N08", "(?<=", "a", ")", 511, "", "a", prefix: "a"),
         Nested("N09", "(?i:", "a", ")", 511, "", "A"),
 
-        // A repeated alternation of sequences, parsed and compiled at the maximum; its match at depth is a known gap.
-        Nested("N10", "(?:b|x", "a", "x)+", 511, "", ""),
+        // A repeated alternation of sequences at the maximum, matched to the innermost level.
+        Nested("N10", "(?:b|x", "a", "x)+", 511, "", "a", before: "x", after: "x"),
         Nested("N11", "(?:x?", "a", "x?)", 511, "", "a"),
         Nested("N12", "(", "a", ")", 1_000_000, "", "a"),
         Nested("N13", "[", "a", "]", 1_000_000, "v", "a"),
@@ -172,9 +170,9 @@ internal static class ProbePopulation
         // an alternation of sequences, on a subject that reaches the innermost level.
         Nested("N16", "(?:b|x", "a", "x)", 511, "", "a", before: "x", after: "x"),
 
-        // The review's witness of a match at the maximum that exhausts a 1 MiB stack under the JIT: a capture around an
-        // alternation of sequences with back-references and assertions. Parsed and compiled at the maximum, and refused
-        // one level past it.
+        // The review's witness of a match at the maximum that exhausted a 1 MiB stack under the JIT on the old matcher: a
+        // capture around an alternation of sequences with back-references and assertions. Matched to the innermost level
+        // at the maximum, and refused one level past it.
         NumberedBackReferences("N17", 511),
         NumberedBackReferences("N18", 512),
     ];
@@ -214,7 +212,8 @@ internal static class ProbePopulation
     /// <summary>
     /// A case of <paramref name="levels"/> nested capturing groups, the level <c>k</c> (1 the outermost) an alternation of
     /// <c>b</c> and a sequence that opens with <c>x\k\B</c> and closes with <c>\kx</c>, around <c>a</c>, compiled under the
-    /// library's maximum and matched against the empty subject, which fails at the outermost level.
+    /// library's maximum and matched against <c>x</c> once a level, <c>a</c> and <c>x</c> once a level, which reaches the
+    /// innermost level: each reference names its own group, not yet closed, and matches the empty string.
     /// </summary>
     private static ProbeCase NumberedBackReferences(string id, int levels)
     {
@@ -227,7 +226,9 @@ internal static class ProbePopulation
 
         var shown = "'(b|x" + Escape("\\") + "k" + Escape("\\") + "B' for k = 1 to " + Decimal(levels) + " + 'a' + '"
             + Escape("\\") + "kx)' for k = " + Decimal(levels) + " to 1";
-        return new ProbeCase(id, pattern.ToString(), "", "", 0, NestingLimit: BroilerRegex.MaximumNestingLimit, Shown: shown);
+        var subject = new string('x', levels) + "a" + new string('x', levels);
+        return new ProbeCase(id, pattern.ToString(), "", subject, 0, NestingLimit: BroilerRegex.MaximumNestingLimit, Shown: shown,
+            SubjectShown: "'x'^" + Decimal(levels) + " + 'a' + 'x'^" + Decimal(levels));
     }
 
     /// <summary>Compiles every case once, as an engine compiles a pattern once and matches it many times.</summary>
@@ -351,13 +352,12 @@ internal static class ProbePopulation
     private static string Shown(RegexGroup group) => group.Success ? Span(group.Index, group.Length) : "-";
 
     /// <summary>
-    /// An exception as the probe reports it: the library's own two by name, and with the syntax error's
+    /// An exception as the probe reports it: the library's own, the syntax error, by name and with its
     /// position; any other by its type, which no message or resource text enters.
     /// </summary>
     private static string Thrown(Exception exception) => exception switch
     {
         RegexSyntaxException syntax => "syntax @" + Decimal(syntax.Position),
-        RegexOverflowException => "overflow",
         ArgumentOutOfRangeException => "threw ArgumentOutOfRangeException",
         ArgumentException => "threw ArgumentException",
         InvalidOperationException => "threw InvalidOperationException",

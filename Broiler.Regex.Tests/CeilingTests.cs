@@ -64,7 +64,7 @@ public class CeilingTests
         // The trail keeps every write that changes a register until the attempt ends, whether or not a choice is open: a
         // loop of a{n} (the general lowering) pushes no frame, but each iteration writes its mark and its count, and the
         // count's start one more. Under the engines' ceilings of decision D10 that bounds a counted loop to 1,048,575
-        // iterations; the old backend, the public members' until task 2.4c, matches past it.
+        // iterations; the old backend, the public members' until task 2.4c, matched past it.
         const int most = (RegexMatchCeilings.EngineTrail - 1) / 2;
         Assert.Equal(1_048_575, most);
         var subject = new string('a', most + 1);

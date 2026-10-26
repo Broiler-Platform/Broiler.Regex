@@ -5,6 +5,7 @@ using System.Text;
 using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
 using Broiler.Regex.Parsing;
+using Broiler.Regex.Unicode;
 using Broiler.Unicode.Tables;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,8 +16,8 @@ namespace Broiler.Regex.Tests;
 /// The differential test of task 2.4c's fast paths (plan row 2.4c, item 2): every pattern of a population compiles twice,
 /// with the fast paths and without them (the program compiler's internal option, <c>fastPaths</c>), and the two programs
 /// answer the same on every case, the status, the ceiling a limit names, the index, the length and every capture. The
-/// populations are task 2.4b's two (<see cref="DifferentialTests.SuitePopulation"/> and
-/// <see cref="DifferentialTests.SeededPopulation"/>) and a third drawn from a seed of its own and weighted to the shapes
+/// populations are task 2.4b's two (<see cref="TestPopulations.SuitePopulation"/> and
+/// <see cref="TestPopulations.SeededPopulation"/>) and a third drawn from a seed of its own and weighted to the shapes
 /// the fast paths replace (<see cref="FastPathPopulation"/>).
 /// </summary>
 /// <remarks>
@@ -57,7 +58,7 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
     public void The_suite_s_patterns_answer_the_same_with_and_without_the_fast_paths()
     {
         var tally = new Tally();
-        foreach (var row in DifferentialTests.SuitePopulation(DifferentialTests.TestSources()))
+        foreach (var row in TestPopulations.SuitePopulation(TestPopulations.TestSources()))
             tally.Pattern(row);
 
         Report("suite population", tally);
@@ -74,13 +75,17 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
     public void Task_2_4b_s_seeded_population_answers_the_same_with_and_without_the_fast_paths()
     {
         var tally = new Tally();
-        foreach (var row in DifferentialTests.SeededPopulation())
+        foreach (var row in TestPopulations.SeededPopulation())
             tally.Pattern(row);
 
         Report("task 2.4b's generated population", tally);
         Assert.True(tally.Disagreements.Count == 0, Disagreements(tally));
         Assert.True(tally.Compared >= 240_000, "the generated population compared only " + tally.Compared + " cases");
         Assert.Equal((0, 0, 2, 0, 0, 0), Stops(tally));
+
+        // The population draws every construct of the grammar, each kind of node, class and look-around, as task 2.4b's
+        // differential asserted of it.
+        Assert.All(TestPopulations.ConstructNames, name => Assert.True(tally.Constructs.GetValueOrDefault(name) >= 100, name + " was drawn " + tally.Constructs.GetValueOrDefault(name) + " times"));
     }
 
     [Fact]
@@ -129,9 +134,9 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
     /// alternations, assertions and back-references; under the flag strings of task 2.4b's population, against subjects of
     /// up to sixteen pieces drawn from the atoms' characters, from the start and one other index.
     /// </summary>
-    internal static IEnumerable<DifferentialTests.PopulationCase> FastPathPopulation()
+    internal static IEnumerable<TestPopulations.PopulationCase> FastPathPopulation()
     {
-        var random = new DifferentialTests.SplitMix64(Seed);
+        var random = new TestPopulations.SplitMix64(Seed);
         string[] flagChoices = ["", "i", "m", "s", "u", "iu", "us", "v", "iv", "vs", "y", "iy", "imsu"];
         for (var i = 0; i < Weighted; i++)
         {
@@ -143,7 +148,7 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
         }
     }
 
-    private static string Subject(DifferentialTests.SplitMix64 random)
+    private static string Subject(TestPopulations.SplitMix64 random)
     {
         string[] pieces =
         [
@@ -158,7 +163,7 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
     }
 
     /// <summary>A pattern weighted to the fast paths' shapes under <paramref name="flags"/> (<see cref="FastPathPopulation"/>).</summary>
-    private sealed class WeightedGenerator(DifferentialTests.SplitMix64 random, string flags)
+    private sealed class WeightedGenerator(TestPopulations.SplitMix64 random, string flags)
     {
         private readonly bool _unicode = flags.Contains('u') || flags.Contains('v');
         private readonly bool _sets = flags.Contains('v');
@@ -295,6 +300,9 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
         /// <summary>How many programs hold each fast path, and each right to left, and how many have a first test.</summary>
         internal readonly SortedDictionary<string, int> Shapes = new(StringComparer.Ordinal);
 
+        /// <summary>How many pattern-flag pairs hold each construct of <see cref="TestPopulations.ConstructNames"/>.</summary>
+        internal readonly SortedDictionary<string, int> Constructs = new(StringComparer.Ordinal);
+
         private readonly Dictionary<(string, string), (RegexProgram Fast, RegexProgram General)?> _compiled = [];
         private readonly HashSet<(string, string, string, int)> _seen = [];
 
@@ -324,12 +332,15 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
 
             if (fast.FirstTest >= 0)
                 shapes.Add("first test");
+            var tree = RegexParser.Parse(pattern, RegexFlagsParser.Parse(flags), new RegexUnicode(UnicodeTables.Instance), new RegexNesting(BroilerRegex.MaximumNestingLimit), out _, out _);
+            foreach (var construct in TestPopulations.ConstructsOf(tree, flags))
+                Constructs[construct] = Constructs.GetValueOrDefault(construct) + 1;
             foreach (var shape in shapes)
                 Shapes[shape] = Shapes.GetValueOrDefault(shape) + 1;
             return (fast, general!);
         }
 
-        internal void Pattern(DifferentialTests.PopulationCase row)
+        internal void Pattern(TestPopulations.PopulationCase row)
         {
             if (!_compiled.TryGetValue((row.Pattern, row.Flags), out var compiled))
             {
@@ -350,7 +361,7 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
 
                     var fast = Run(programs.Fast, subject, start, anchored, Ceilings);
                     var general = Run(programs.General, subject, start, anchored, Ceilings);
-                    var where = $"{row.Origin}: /{DifferentialTests.Escape(row.Pattern)}/{row.Flags} on \"{DifferentialTests.Escape(subject)}\" from {start}";
+                    var where = $"{row.Origin}: /{TestPopulations.Escape(row.Pattern)}/{row.Flags} on \"{TestPopulations.Escape(subject)}\" from {start}";
                     var fastStopped = fast.Limit == RegexLimit.Steps;
                     var generalStopped = general.Limit == RegexLimit.Steps;
                     OverFrames += (fast.Limit == RegexLimit.Frames ? 1 : 0) + (general.Limit == RegexLimit.Frames ? 1 : 0);

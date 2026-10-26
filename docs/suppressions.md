@@ -99,3 +99,25 @@ validation generated it.
 
 The members that only read a set, or answer a new one, stay with their `0.1.0-preview.4` signatures; `Clone` now
 answers the set itself, since a set that cannot change is its own copy.
+
+### R1 and R4: the old backend deleted (task 2.4c of SJL-11.2, 2026-10-26)
+
+Every member matches through the new backend since task 2.4c, and the old one is deleted (decision D20 of Broiler.VM's
+JSD-0081): `Matching/`, whose closure compiler recursed per level and per term (requirement R4) and whose per-start
+`Budget`, under `StepLimit`, answered no match when it ran out (requirement R1), and `RegexOverflowException`, which
+reported that recursion's stack guard and has nothing left to report: a ceiling is a status now (decision D9). The
+string-bearing `RegexMatch` and `RegexGroup` stay, as requirement R8 allows and decision D12 keeps them, but not in the
+deleted backend's namespace: they move from `Broiler.Regex.Matching` to `Broiler.Regex`, unchanged but for
+`RegexMatch.Limit`, and the two members that answer them keep their names and parameters. Each break is suppressed by
+`Broiler.Regex/CompatibilitySuppressions.xml` as package validation generated it, and nothing else is.
+
+| Suppression | Target | What replaces it |
+|---|---|---|
+| CP0001 | `T:Broiler.Regex.RegexOverflowException` | Deleted (R1, R4). A match that reaches a ceiling answers `RegexStatus.LimitExceeded` naming it through the offset entry, a failed `RegexMatch` whose `Limit` names it through `Match(string, int)`, and an `InvalidOperationException` through `IsMatch` and `Matches`, whose results have no room for it; no match recurses on the CLR stack, so none is refused for its depth. |
+| CP0001 | `T:Broiler.Regex.Matching.RegexMatch` | `Broiler.Regex.RegexMatch`, the same members and `Limit` (R8 keeps it; R1 and R4 delete its namespace). |
+| CP0001 | `T:Broiler.Regex.Matching.RegexGroup` | `Broiler.Regex.RegexGroup`, the same members. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Match(System.String,System.Int32)` | The same member answering `Broiler.Regex.RegexMatch`. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Matches(System.String)` | The same member answering `IEnumerable<Broiler.Regex.RegexMatch>`. |
+
+A caller that names the types recompiles with `using Broiler.Regex;` in place of `using Broiler.Regex.Matching;`; one
+that reads them through `var`, as the feed check's consumer does, compiles unchanged.

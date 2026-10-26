@@ -141,7 +141,7 @@ public class SharedRuleTests
         // parameters). Until task 2.3 it held a new Dictionary there, and SL2 refused the field.
         Assert.Equal(
             ["System.Collections.ObjectModel.ReadOnlyDictionary`2<!0,!1>"],
-            library.StaticInitializerCreations["Broiler.Regex.Matching.RegexMatch.Empty"]);
+            library.StaticInitializerCreations["Broiler.Regex.RegexMatch.Empty"]);
     }
 
     [Fact]
@@ -232,12 +232,11 @@ public class SharedRuleTests
     [Fact]
     public void SL2_The_library_holds_no_static_field_its_declared_type_cannot_vouch_for_but_those_read()
     {
-        // Matcher's identity continuation is a static lambda (Matcher.cs, "static s => s"), which can capture nothing,
-        // so the delegate's target holds no state. EmptyNode.Instance and AnyCharNode.Instance are sealed classes with
-        // no field, which the declared type vouches for, and every other static field is a row of the list.
-        Assert.Equal(
-            ["Broiler.Regex.Matching.Matcher.IdentityContinuation is typed Broiler.Regex.Matching.Matcher+Continuation, a delegate, whose target SL2 does not read"],
-            SharedRules.SL2DeclaredTypeGap(Assemblies[Library]));
+        // None is left: the old matcher's identity continuation, a static lambda typed as a delegate whose target SL2
+        // does not read, went with Matching/ in task 2.4c. EmptyNode.Instance and AnyCharNode.Instance are sealed
+        // classes with no field, which the declared type vouches for, and RegexMatch's shared results are sealed
+        // classes of get-only members.
+        Assert.Empty(SharedRules.SL2DeclaredTypeGap(Assemblies[Library]));
     }
 
     /// <summary>

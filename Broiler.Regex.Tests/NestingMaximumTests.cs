@@ -13,10 +13,10 @@ namespace Broiler.Regex.Tests;
 /// The library's nesting maximum on the smallest stack the adversarial corpus declares, 1 MiB (requirement R4,
 /// decision D6 of Broiler.VM's JSD-0081; bundle sjl-11-001's check A-4), on a thread each test starts itself: a
 /// pattern of any shape nested to <see cref="BroilerRegex.MaximumNestingLimit"/> parses and compiles, and one level past
-/// it is refused with the nesting status, never a stack overflow. A pattern at the maximum also matches for the
-/// shapes of <see cref="MatchedShapes"/>; the public matcher's continuations recurse per level and per term until task
-/// 2.4c routes matching through task 2.4a's backend, so for the shapes of <see cref="UnprovenShapes"/> matching at the
-/// maximum through <see cref="BroilerRegex"/> is not proven, and some of them exhaust the stack. The new backend matches
+/// it is refused with the nesting status, never a stack overflow. A pattern at the maximum also matches, through
+/// <see cref="BroilerRegex"/>, for the shapes of <see cref="MatchedShapes"/> and of <see cref="UnprovenShapes"/>: the
+/// old matcher's continuations recursed per level and per term, so before task 2.4c routed matching through task 2.4a's
+/// backend the second list's shapes were not proven, and some of them exhausted the stack. The new backend matches
 /// every shape at the maximum on a 1 MiB thread, since task 2.4b those holding back-references, assertions and
 /// look-behinds too (<see cref="MachineTests.A_pattern_at_the_nesting_maximum_matches_on_a_1_MiB_thread"/>). The Native AOT probe runs the same proof on a thread of the same stack (its population's
 /// N cases).

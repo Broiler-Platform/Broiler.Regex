@@ -19,8 +19,8 @@ namespace Broiler.Regex.Architecture.Tests;
 /// it, "no CLR recursion in the matcher"; convention 5): no method of the matcher's namespace,
 /// <c>Broiler.Regex.Engine</c>, reaches itself, directly or through a cycle, in the IL call graph of the library's built
 /// assembly. The program compiler lives outside that namespace (task 2.4a), and the parser recurses under the caller's
-/// nesting limit, which the nesting tests bound; the old closure matcher of <c>Matching/</c> is outside it too, and task
-/// 2.4c deletes it.
+/// nesting limit, which the nesting tests bound. The old closure matcher of <c>Matching/</c>, outside it too, made and
+/// invoked delegates the graph cannot follow; task 2.4c deleted it, and every member matches through the namespace.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -114,11 +114,13 @@ public class MatcherRecursionTests
         Assert.Equal(ReviewedExternalTypes, graph.ExternalTypesFrom(MatcherNamespace));
         Assert.Contains("Broiler.Unicode.Algorithms.UnicodeCaseFolding", graph.ExternalTypesFrom(MatcherNamespace));
 
-        // And the reading finds what the library has elsewhere: the old closure matcher of Matching/ makes and invokes
-        // delegates, which the graph cannot follow; the parser's descent recurses, under the nesting limit.
-        Assert.Contains(graph.UnresolvedFrom("Broiler.Regex.Matching"), static u => u.Contains(" Ldftn ", StringComparison.Ordinal));
-        Assert.Contains(graph.UnresolvedFrom("Broiler.Regex.Matching"), static u => u.Contains(" invokes ", StringComparison.Ordinal));
+        // And the reading finds what the library has elsewhere: the parser's descent recurses, under the nesting limit;
+        // and every public member that matches reaches the loop, the old backend's closure matcher deleted.
         Assert.Contains(graph.CyclesThrough("Broiler.Regex.Parsing"), static c => c.Contains("RegexParser.ParseDisjunction()", StringComparison.Ordinal));
+        Assert.DoesNotContain(graph.Methods, static m => m.StartsWith("Broiler.Regex.Matching.", StringComparison.Ordinal));
+        foreach (var member in graph.Methods.Where(static m => m.StartsWith("Broiler.Regex.BroilerRegex.Match(", StringComparison.Ordinal)
+            || m.StartsWith("Broiler.Regex.BroilerRegex.IsMatch(", StringComparison.Ordinal)))
+            Assert.True(graph.Reaches(member, Loop), member + " does not reach the loop");
     }
 
     [Fact]
@@ -279,7 +281,7 @@ public class MatcherRecursionTests
         """;
 
     /// <summary>Every C# source of the library, with its path relative to the repository root, outside build output.</summary>
-    private static List<(string Path, string Text)> LibrarySources()
+    internal static List<(string Path, string Text)> LibrarySources()
     {
         var library = Path.Combine(SharedTree.Root, "Broiler.Regex");
         return Directory.EnumerateFiles(library, "*.cs", SearchOption.AllDirectories)
@@ -290,7 +292,7 @@ public class MatcherRecursionTests
     }
 
     /// <summary>Compiles sources as the library is compiled, against the platform and the Unicode owner's algorithms, and answers the image.</summary>
-    private static byte[] Compile(IEnumerable<(string Path, string Text)> sources)
+    internal static byte[] Compile(IEnumerable<(string Path, string Text)> sources)
     {
         var options = new CSharpParseOptions(LanguageVersion.Latest);
         var trees = sources.Select(s => CSharpSyntaxTree.ParseText(s.Text, options, path: s.Path, encoding: System.Text.Encoding.UTF8));

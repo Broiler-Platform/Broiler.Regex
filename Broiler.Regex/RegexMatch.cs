@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Broiler.Regex.Matching;
+namespace Broiler.Regex;
 
 /// <summary>
 /// A single captured group within a <see cref="RegexMatch"/>. Mirrors the shape
