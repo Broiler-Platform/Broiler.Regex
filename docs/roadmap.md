@@ -116,6 +116,11 @@ each operand at compile time, so an operand the size of `\p{L}` is measurable pe
 `new BroilerRegex`. Any optimization must retain explicit timeout/backtracking limits and
 identical capture/ordering semantics.
 
+*(Dated note, 2026-10-27, task 2.5 of SJL-11.2: MaybeSimpleCaseFolding of an operand of more than 4,096 code points
+now maps only the code points it shares with `Cased`, which holds every code point simple case folding moves, so its
+work is in proportion to the operand's ranges: 4,469 code points of `\p{L}`'s 145,672, and the fold is charged to the
+caller's compile meter through `Compile`. Section 6's record of that date has the units.)*
+
 ## 5. Preview gate
 
 - Run unit, Broiler.JS integration, focused test262, fuzz, timeout, and allocation
@@ -556,6 +561,260 @@ nothing to catch, as the exception is gone and a ceiling is answered as `RegexMa
 row 2.9 names it kept; it is kept, in another namespace, which is a break package validation needs suppressed. Plan
 section 4.3's A-1 names "the per-start reset" as a metadata fact; it is read as no member named `Reset`, the reset
 having been `Budget.Reset`, and an iterator's compiler-made `IEnumerator.Reset` is not it.
+
+*Dated record, 2026-10-27 (task 2.5 of SJL-11.2; R2; decisions D8, D9, D10 and D12; check A-2 of bundle
+`sjl-11-001`).*
+
+**The meter's shape on compile (D9, D10).** Both of the shapes the plan offered, each where it fits. `RegexLimit`
+gains the compile dimension decision D9 lists, `RegexLimit.Compile` (5), and the caller's budget is a parameter of
+`BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?
+meter, out BroilerRegex?, out RegexLimit)`, beside the nesting limit, not a member of `RegexMatchCeilings`: that type is
+a match's, its frame and trail ceilings mean nothing to a compilation, and a compile budget there would make every
+match caller state one; Broiler.Unicode's operations take their limits and their meter as parameters in the same
+order. The budget and the meter are independent: the budget bounds this compilation's units and is answered as a
+status before the work that would pass it; the meter is the caller's running count, charged in whole blocks of 512
+units before the work (`CompileCharge.Block`, the block of task 2.4a's machine), and may throw, its exception reaching
+the caller unchanged with no state of the library changed (`CompileCharge` is made for one compilation and kept by
+nothing it answers; a compiled program keeps the provider's case folding alone). A budget of zero is a broken
+precondition; null is none. The constructors take neither, decision D10's policy for an engine that passes no meter.
+`Compile`'s signature of task 2.3 is replaced, not overloaded; both are provisional and no published version carries
+either.
+
+**The units, place by place (D8, check A-2).** Each place whose work the pattern or the provider's data decides
+charges it before doing it, named by the internal `CompileSite`:
+
+| Place | Unit | Where |
+|---|---|---|
+| `Pattern` | one per code unit of the pattern, before the pre-scan; the parse's and the program compiler's walks cost a constant per code unit or node and ride on it | `RegexParser.ParsePattern` |
+| `Property` | one per range of a property's set, before it is copied; for a property of strings one per range and per sequence before any is read, and each sequence's code units before its string is built | `RegexUnicode.ToCodePointSet`, `AddStringProperty` |
+| `Normalize` | one per range gathered, and ⌊log₂ n⌋ more per range when they arrive out of order | `CodePointSet.FromRanges`, `Builder.ToSet` |
+| `Union`, `Intersection` | one per range of each operand | `CodePointSet`'s internal overloads |
+| `Difference` | one per range of each operand, and one | the same |
+| `Complement` | one per range, and one | the same |
+| `CaseFold` | one per range of a set folded, one per code point mapped one at a time, and a string's code units | `RegexUnicode.SimpleCaseFold`, `RegexParser.Fold` |
+| `Strings` | a string's code units, at least one, each time a class's strings add it or look it up, and when the class takes it | `ClassStrings.Add`, `Contains`; `RegexParser.ToCharSet` |
+| `StringOrder` | the class's code units 1 + ⌊log₂ n⌋ times, for its order longest first | `RegexParser.ToCharSet` |
+| `Universe` | `Cased`'s ranges copied and its code points scanned for `AllCharacters` under `vi`; `\s`'s Space_Separator ranges and three; the 63 code points of `\w` whose orbits the folded `\w` reads | `RegexUnicode` |
+| `Program` | one per range a class instruction copies; a class of strings' code units and one to read and hash them, again for each earlier table of its key compared, and its code units and 1 + ⌊log₂ n⌋ per string for a new table; with the fast paths off, each string's code units for its lowering | `ProgramCompiler` |
+
+A whole compilation, measured through the probe's `--engine-row` with no budget: `/abc/` 3 units, `/\p{L}/u` 2,057,
+`/\p{L}/vi` 26,134, `/[a-z]/vi` 40, `/\w+\b/iu` 941, `/[^a]/vi` 7,478, `/\p{RGI_Emoji}/v` 337,986 (of which the
+order of its 2,760 strings, a sort's bound, 213,072) and a hundred `\p{RGI_Emoji}` in a row 30,519,819, the cost task
+2.4c's record left this task to charge. Ordering, the sort's 1 + ⌊log₂ n⌋, is charged as a bound, not as the
+comparisons the sort makes.
+
+**MaybeSimpleCaseFolding in proportion to ranges.** The parser mapped every code point of a `v`-mode operand under
+`i` one at a time, 145,672 calls for `\p{L}`, which a charge per code point would have made 145,672 units.
+`RegexUnicode.SimpleCaseFold` maps a set of at most 4,096 code points that way and splits a larger one by `Cased`:
+every code point simple case folding moves is `Cased` (`ProviderDataTests` checks it over the whole code space;
+`Changes_When_Casefolded` cannot serve, as three code points that fold are not in it), so the part outside `Cased` is
+kept as it is and the part inside, at most `Cased`'s 4,632 code points, is mapped. `\p{L}`'s fold is 5,153 units:
+its 684 ranges and the 4,469 code points it shares with `Cased`. `CompileChargingTests` holds the result equal to the
+fold of every code point for the general categories, `Cased`, `Any`, `ASCII`, `Assigned`, `Alphabetic`,
+`Changes_When_Casefolded`, ten cased and uncased scripts and the complement of each, and 200 sets drawn with a fixed
+seed either side of the limit. The sets `\s`, the folded `\w`, `Cased` and `AllCharacters` under `vi` are built the
+first time a compilation reads them, where `RegexUnicode`'s constructor built the first two for every compilation.
+Under `i` without `v` no class is folded at compile time (task 2.4b folds at match time, charged per match); `i`
+reaches compilation only through the folded `\w` under `iu`, a `Universe` charge.
+
+**The union structure (plan row 2.5).** The strings of a `v`-mode class operand were a `List<string>` searched by
+`List.Contains` before each addition, and intersections and differences filtered one list by `Contains` on the other:
+a union of n strings made O(n²) comparisons and a meet of a and b strings O(a·b), fifty `\p{RGI_Emoji}` in one class
+about 187 million. `Ast/ClassStrings.cs` replaces it: an insertion-ordered set, a list for the order the strings were
+met in and a `HashSet<string>` compared by code unit for membership, so adding or finding a string is one hash of its
+code units, O(its length) expected, and a union, an intersection, a difference or a `\q{…}` of n alternatives is
+O(the code units of its operands), which is what it charges. The hash set's order is never read: the class still sorts
+its strings longest first, by code unit, so no match changes. The program compiler found an earlier occurrence's table
+by comparing the strings with every table built before; it now finds candidates by a key of direction, folding, count
+and a hash of the strings in order, and compares string by string only those. A non-`v` class's property escapes are
+kept whole in `CodePointSet.Builder` and joined two by two, a level at a time, each range read at most
+⌈log₂ (k + 1)⌉ times for k sets. `CompileChargingTests` bounds the touches: a union of 4,000 strings touched
+24,018,000 units of strings before the replacement and touches at most eight times their code units now; two hundred
+classes of 500 strings cost the program compiler 31,468,185 units before the hash and at most 4,819,200 now. Those
+bounds read the account, which `ClassStrings` charges once per addition or lookup whatever the lookup costs, so the
+review of this task could put the list search back with the charges unchanged and pass every test. Since the review
+the work is read too: a `ClassStrings` takes the comparer that alone decides its membership, the parser's ordinal one
+or a test's, and with a comparer that counts its calls a union, an intersection, a difference and a disjunction of n
+strings make at most 8n comparisons, where the list search makes about n², some 250,000 at n = 500
+(`A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n`); a comparer that
+equates strings of different case holds the membership to the comparer, so a search by any other means is refused as
+well (`A_class_s_strings_are_members_by_the_comparer_they_are_made_with_and_by_no_other`). *Amended at the integration
+of tasks 2.5 and 2.7:* the bound on the program compiler's tables read the account too, so the verifier of this task
+could make each occurrence compare its strings with every earlier table, its charges unchanged, and pass every test,
+`Each_occurrence_of_a_class_of_strings_finds_its_table_by_a_hash_of_its_strings` among them. The lookup is now read on
+the work as well: the program compiler finds an earlier table through a comparer of strings, for the hash and for the
+comparison alike, ordinal but for a test's, and that comparer alone decides which table an occurrence shares (one that
+equates strings of different case gives `[\q{ab|cd}]` and `[\q{AB|CD}]` one table). With a comparer that counts its
+calls, two hundred classes of the same 500 strings and one string of each class's own, which the class's order puts
+last, make 100,200 calls, one hash per string, where at most four times that are admitted; the verifier's mutant makes
+10,070,100 and fails `An_occurrence_of_a_class_of_strings_compares_its_strings_with_the_tables_of_its_hash_alone`, the
+one test of the suite it fails.
+
+**Class V (check A-2's second half).** The corpus's five V rows answer their declared `limit:compile` under the JIT
+(`AdversarialCorpusTests`, each in a child process through the probe's `--engine-row`) and in the probe's report
+(E43 to E47), and no longer wait for task 2.5:
+
+| Row | Pattern | Flags | Budget | Answer | Units spent | Whole compilation (E48 to E52) |
+|---|---|---|---|---|---|---|
+| V01 | `[` + `\p{L}` × 50 + `]` | `v` | 300 | `limit:compile` | 252 | 136,368 |
+| V02 | the same | `iv` | 300 | `limit:compile` | 252 | 1,350,949 |
+| V03 | the same | `iu` | 300 | `limit:compile` | 252 | 136,368 |
+| V04 | `[` + `\p{RGI_Emoji}` × 50 + `]` | `v` | 1,000 | `limit:compile` | 999 | 3,099,677 |
+| V05 | the same | `iv` | 1,000 | `limit:compile` | 999 | 4,942,927 |
+
+Each budget exceeds the pattern's length (252 and 652 code units), and each whole compilation is charged more than a
+hundred times its budget, which `AdversarialCorpusTests` checks; the probe also compiles the five patterns with no
+budget, as the constructors do. Before this task's fourth commit the probe answered the five rows `unsupported`.
+
+**The per-unit test and its control.** `CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches`
+reads, through an observer the library never sets, what each place charged over a declared set of 35 expansions,
+the `v`-mode and case-insensitive ones among them, each row's declared units computed from the provider's data or
+written out in its comment: at least one unit per range and per string, and where a place's unit says more, that unit. The blocks are
+read at every charge (`The_meter_holds_whole_blocks_covering_every_unit_charged_and_never_a_block_more`): before the
+k-th unit at least k units have been charged, never a block more. That test reads the account, not the work; the order
+of a charge and the work it pays for is read on the work, where a test can see it:
+`Each_range_copied_from_the_provider_is_charged_before_it_is_read` watches the caller's tables and holds every read of
+a table of ranges, two for each range a copy reads, to a unit charged at `Property` or `Universe` before it, over
+eight patterns of property escapes, properties of strings, `\s` and `AllCharacters` under `vi`. The control removed
+each of the library's 25 charge statements in turn, its expression still evaluated and its charge not made, rebuilt,
+and ran the compile-charging tests: every removal fails at least one row (24 of them a row of the per-unit test, the
+general lowering's charge the test of the fast paths off). Its first run found eleven statements no row needed,
+because another charge at the same place paid the floor; the rows were tightened to the places' own units before the
+fifth commit. The review of this task found two regressions every test passed: the quadratic list search back in
+`ClassStrings` with its charges unchanged, and `ToCodePointSet`'s charge moved after its copy. Each now fails a test
+that reads the work: the list search by the default comparison fails the membership test of the union structure
+(above), the same search through the set's own comparer its count of comparisons, and each charge moved after its copy
+(`ToCodePointSet`'s, `\s`'s and a property of strings') the reads of the tables; five mutants, the whole suite run for
+each, each failing those tests alone. Each behaviour change
+was watched failing first: the first commit's tests against a charge that charges nothing (24 of 35), the set
+algebra's rows against the first commit (23 rows and the fold test), the bounds of the union structure against the
+second, the V rows against the third.
+
+**Names (decision D5).** The program compiler's account was first `_charge`, the name of the field of Broiler.VM's
+runner that holds its meter; it is `_account`, as is the parser's, and `EngineNamingTests` lists `charge`, watched
+failing on the first name. `ClassStrings` is the parser's, outside the backend, and its members are the base class
+library's verbs.
+
+**The surface.** Public additions, each provisional and marked in `PublicAPI.txt` by a `# provisional:` line: the
+new `Compile` signature and `RegexLimit.Compile`. `PublicAPI.txt`'s marks also name every member the CHANGELOG calls
+provisional since task 2.3 (the offset entry, `SlotCount`, `RegexWorkCharge`, `RegexMatchCeilings` and its members,
+`RegexMatch.Limit`, and the members of `RegexStatus` and `RegexLimit` that task 2.4a added); the listing's rewrite
+keeps a mark while its member is listed, and rule SL6 refuses one whose member is gone (a witness test of each). No
+break of `0.1.0-preview.4`'s surface: `Compile` and `RegexLimit` are not in it, and no suppression is added. The
+starting violation list closes no row; its citations moved with the lines of `RegexParser.cs`, `CodePointSet.cs` and
+`BroilerRegex.cs`.
+
+**What the later tasks still owe.**
+- **Task 2.8.** The validate entry with no meter and no expansion (decision D18): every expansion this record charges
+  is one the validate entry must not make, so it resolves property names through the provider's `TryResolve` without
+  copying their sets (`RegexUnicode.ToCodePointSet`), folds nothing and builds no class; the corpus's N rows and O19
+  still wait for it, and the probe answers `unsupported` for the operation.
+- **Task 2.9.** `Compile`'s provisional signature (the budget's place and the syntax error still an exception) and
+  `RegexLimit.Compile`, and the marks of `PublicAPI.txt`, removed as each member is settled; the public `RegexParser`
+  constructor and `Parse` and the public `CodePointSet` operations, whose work grows with the pattern or the sets and
+  which take no meter (convention 4), as the constructors take none.
+- **Task 2.14.** The `--adversarial` mode builds on `EngineRun`, whose policy now reads the compile budget and whose
+  one meter is charged by the compilation and then the match. Part C names no control for class V: its two controls
+  are a scratch build that answers `LimitExceeded` naming steps as no match, which every K, A, L, W and G row must
+  report, and one without the nesting check, which every N row past the limit must. E48 to E52 record each V
+  pattern's whole compilation with no budget, the evidence of the rows' margin, not a control.
+- **SJL-11.4.** Broiler.VM's adapter replaces its `source.Length + 32` (row B7) with this meter, through `Compile`.
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.* JSD-0081 and the plan agree on D8 and on
+D9's compile dimension. Part C asks a row declared exhausted for a hundred times its budget "by regexpref's count of
+the specification's matcher steps"; `regexpref` does not exist yet and counts no compilation, so the corpus's README
+states the V rows' margin in R2's own terms, the ranges and strings touched, and this library's test reads the library's
+own charge for the whole compilation, which charges at least those. D10 sets the engines' frame and trail ceilings and
+Broiler.JS's absent meter, and names no compile budget for an engine; the constructors take none. The plan's row 2.5
+names `Fold` under `vi`, which is where this task folds and charges, so the plan and the code agree; the task's brief
+also asked for `Fold` under `i`, and under `i` alone nothing is folded at compile time (above), so there is no such
+fold to charge. Plan row 2.8 gives the validate entry "a nullable meter"; JSD-0081's D18 and the plan's own D18 give it
+"no expansion, no meter", and JSD-0081 is read: task 2.8's entry takes no meter (above). Broiler.VM's realm charges a
+compilation `source.Length + 32`; this library's units are its own, in proportion to the expansion, as D8 reads.
+
+*Dated record, 2026-10-27 (task 2.7 of SJL-11.2; R9, check A-9; decisions D9, D11 and D20, and D5's rule).*
+
+**What it builds.** The namespace `Broiler.Regex.Text` (`Text/`), every member provisional until task 2.9:
+`RegexFlagsText.Parse` reads a flags string as a `RegexFlagsStatus` (`Success`, `UnknownFlag`, `DuplicateFlag`,
+`UnicodeWithUnicodeSets`) with the position of the code unit refused, RegExpInitialize's checks over the whole string
+first and ParsePattern's `u` with `v` after (ECMA-262 §22.2.3.3, §22.2.3.4), and `RegexFlagsText.Format` writes a
+flags value in the `flags` getter's order (§22.2.6.4); `new RegexEscaper(IUnicodeTables)` holds the provider's
+`EcmaScriptLexical` (D11), and its `EscapeString` is `RegExp.escape`'s text (§22.2.5.1, EncodeForRegExpEscape) and the
+static `EscapePattern` the `source` text (EscapeRegExpPattern, §22.2.6.13.1). `RegexFlagsParser.Parse` reads the same
+grammar and throws as before, so the starting violation list's SL4 row loses its two places in `RegexFlags.cs`.
+
+**The shapes, and why.**
+- **The flags' status is an enum of its own.** D9's syntax status, with a code, a message identifier and a position,
+  is the validate entry's (task 2.8); the three refusals of a flags string are its codes here, the member's name its
+  message identifier (SJL-D-11: each engine renders its own text), with the position beside it. Task 2.9 may fold
+  them into task 2.8's status. The reader decides by the ninth code unit, so it takes no meter (convention 4).
+- **The escapes answer `RegexStatus.Success` or `LimitExceeded`** past the caller's maximum length, their only limit,
+  as the Unicode owner's case mapping answers `UnicodeStatus`. D9's dimensions are steps, frames, trail, nesting and
+  compile, so no `RegexLimit` member names a length; one was not added beside task 2.5's compile member, and task 2.9
+  decides whether the surface needs it.
+- **The meter.** One unit per code unit read before the measuring pass and one per code unit written before the
+  writing pass, paid in whole blocks of 512 on one account, never a block more than the work: `RegexWorkCharge`'s
+  documented blocks (D8). A text that needs no change is answered as itself and costs its reading only. Broiler.VM's
+  realm charges `RegExp.escape` its input's length and then its output's today (`StringCharge` at
+  `JsRealm.RegExp.cs:1462` and `:1491`), and `source` nothing. For a text that changes, the two totals agree up to the
+  block. For a text of n code units that needs no change they do not: Broiler.VM charges 2n, and the helper charges
+  its reading only, n rounded up to the block. *Amended at the integration of tasks 2.5 and 2.7:* that is about half
+  of Broiler.VM's charge for a long text only (10,000 underscores: 20,000 today, 10,240 here); the two agree at 256
+  code units, 512 each, and for an unchanged text of 1 to 255 code units the helper charges more than Broiler.VM, a
+  whole block of 512 against 2n (100 underscores: 200 today, 512 here), where this record first said about half for
+  every such text. Either way it is a fuel difference SJL-11.4 must read at its cut-over under decision D8, where an
+  exhaustion verdict it moves is class C2 of Broiler.VM's rule. The meter is nullable for an engine that charges
+  nothing. *Amended at the review of task 2.7:* this record first said the totals agree up to the block for every
+  text.
+- **`EscapePattern` takes no flags**: each rewrite holds in all three modes (its remarks), so one pattern gives one
+  text whatever its flags.
+
+**How the engines' members map (D20; read as the specification of what each needs, nothing copied, and
+`TextNamingTests` holds the namespace to none of their names).**
+- Broiler.VM: `RegExpNormalizeFlags` onto `Parse` and `Format`, every refusal its "Invalid regular expression flags"
+  `SyntaxError`; the binder's `CheckRegExp` flag checks onto `Parse`, `UnicodeWithUnicodeSets` its "u and v may not be
+  combined" message; `RegExpHasFlag` onto the `RegexFlags` bits; `RegExpEscapeText`, `RegExpEscapeCodePoint` and
+  `RegExpEscapeHex` onto `EscapeString` with `StringLengthCeiling` as the maximum (`LimitExceeded` its `RangeError`)
+  and `engine.Charge` as the meter; `RegExpSourceText` onto `EscapePattern`.
+- Broiler.JS: `ParseFlags` onto `Parse` and the bits, its messages naming the code unit at the position;
+  `BuildFlagsString` onto `Format`; `Escape` and `TryAppendEscape`, with the helpers they call, onto `EscapeString`
+  with no meter; `EscapePatternSource` and `TryAppendLineTerminatorEscape` onto `EscapePattern`, whose text is
+  Broiler.JS's for every pattern.
+- What stays the engines': `RegExp.escape`'s TypeError for a non-String, the `flags` getter's property reads and
+  `toString` (rows F2, T4), the prototype's `(?:)` receiver rule, every message's text, a literal's flags position in
+  its own source, and Broiler.JS's `RegexOptions`, which retire with its translator. One answer moves in Broiler.JS: a
+  flags string with `u`, `v` and a later unknown or repeated flag (`uvx`, `uvu`) is refused for the later code unit,
+  in the specification's order, where `ParseFlags` names `u` with `v`; both are a `SyntaxError`.
+
+**The evidence.** `FlagsTextTests` (every ordering of every set of the eight flags, every code unit alone, every
+string of up to three code units over the flags and twelve strangers, against the specification's steps as an
+oracle); `EscapeStringTests` (every code point first and after the first, against §22.2.5.1 with the sets written
+out and UCD 17.0.0's Space_Separators held equal to the provider's; U+0085; test262's `built-ins/RegExp/escape`,
+313 cases ported as data; correspondence row T5; the round trip under no flag, `u` and `v`; the meter and the limit);
+`PatternSourceTests` (every code unit in five shapes, under three modes: a text that is not a literal's body only
+from a pattern that does not compile, and a rewritten pattern answering as its text; every string literal of the
+test project the same; `staging/sm/RegExp/escape.js`'s 49 cases; rows T1 to T4); `TextNamingTests`. Each test was
+watched failing against a stub. The Native AOT probe's population `text-1` answers as the JIT does, byte for byte.
+A-4 and A-8 are unchanged and pass.
+
+**What the later tasks owe.** Task 2.8: the syntax status, which `RegexFlagsStatus` may join. Task 2.9: the surface
+of these members, a length dimension or not, and `RegexFlagsParser.Parse`'s exception (convention 3). Task 2.12: the
+vectors' flag, escape and `source` operations mapped onto these helpers. SJL-11.4 and SJL-11.5: the adapters above.
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.* JSD-0081 classes row T2, a `/` in a
+class, implementation-defined; the library keeps it, Broiler.JS's text, because test262's
+`staging/sm/RegExp/escape.js`, the file row T3's correction of Broiler.VM names, asks for `[/]` too, so Broiler.VM's
+`source` for such a pattern changes at SJL-11.4 with T3 and is listed there. Plan row 2.7 and the brief ask for every
+new member provisional "in `PublicAPI.txt`"; that file is SL6's generated listing and holds no marks, so the
+CHANGELOG, the remarks and this record say it. The edition is not a difference: `RegExp.escape` is ES2025's, added by
+the 16th edition (as the ES2026 text's own introduction says), so the clause numbers the mapping gives it
+(§22.2.5.1, §22.2.5.1.1, §22.2.6.13.1) agree with the mapping's ES2025 header. The text read is Broiler.VM's archived
+ES2026 (`tc39/ecma262` `0248456c`), whose numbers for those clauses are the same, with test262 at the pin `ccaac100`
+as its executable form; the one clause the helpers cite whose number moved, UnicodeEscape (§25.5.2.4 in ES2025,
+§25.5.4.4 in ES2026), is cited with both. *Amended at the review of task 2.7:* this record first said `RegExp.escape`
+is ES2026's. *Amended at the integration of tasks 2.5 and 2.7:* task 2.5, written beside this one, gave
+`PublicAPI.txt` its `# provisional:` marks, which the listing's rewrite keeps; the integration marks the thirteen
+lines of `Broiler.Regex.Text` with them, so the file now says what the brief asked.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

@@ -88,6 +88,21 @@ internal static class EnginePopulation
         ("E40", "-", "match@0", "\"(?<=[\\\\d]{2,}?x|ab)\\\\w*?cd\"", "-", "\"12xyzcdabq\" * 40 + \"12xcd\"", Ordinary),
         ("E41", "-", "match@0", "\"(?:[\\\\q{abc|ab|}x]|(?<=[\\\\q{\\\\u{1F600}a|b}]))+y\"", "vi", "\"ABcXab\" * 50 + \"\\ud83d\\ude00Ay\"", Ordinary),
         ("E42", "-", "match@3", "\"\\\\p{RGI_Emoji}+\"", "v", "\"abc\\ud83d\\udc4d\\ud83c\\udffd\\ud83d\\ude00!\"", Ordinary),
+
+        // The corpus's class V, which task 2.5 brings to the compile budget: fifty \p{L} in a class under v, vi and iu, and
+        // fifty \p{RGI_Emoji} under v and vi, each refused at its budget (requirement R2, check A-2), with the units spent
+        // when the budget refused the next charge; and the same expansions compiled with no budget, the units their whole
+        // compilations charge, which are at least a hundred times each budget (the corpus's margin for class V).
+        ("E43", "V01", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "v", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300"),
+        ("E44", "V02", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iv", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300"),
+        ("E45", "V03", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iu", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300"),
+        ("E46", "V04", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "v", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000"),
+        ("E47", "V05", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "iv", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000"),
+        ("E48", "-", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "v", "-", Ordinary),
+        ("E49", "-", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iv", "-", Ordinary),
+        ("E50", "-", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iu", "-", Ordinary),
+        ("E51", "-", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "v", "-", Ordinary),
+        ("E52", "-", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "iv", "-", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>

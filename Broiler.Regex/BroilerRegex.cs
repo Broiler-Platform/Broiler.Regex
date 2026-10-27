@@ -46,6 +46,12 @@ namespace Broiler.Regex;
 /// answer there; a caller that needs a bound on the work passes a meter or a step ceiling to the offset entry.
 /// </para>
 /// <para>
+/// <b>Compilation is charged</b> (requirement R2, decision D8 of Broiler.VM's JSD-0081; task 2.5). <see cref="Compile"/>
+/// takes the caller's meter and compile budget and charges the work its expansions do, in proportion to the ranges and
+/// strings they touch, in blocks before the work, as a match is charged; the constructors, like the string-bearing
+/// members, take neither, as an engine that passes no meter does (decision D10).
+/// </para>
+/// <para>
 /// <b>Unicode data is the caller's</b> (requirement R11, decision D11 of Broiler.VM's JSD-0081): compilation
 /// takes the Unicode owner's tables as an <see cref="IUnicodeTables"/> and reads property escapes, case folding,
 /// the properties of strings, white space and the identifier classes of group names through the provider's
@@ -159,6 +165,8 @@ public sealed class BroilerRegex
     /// The pattern is parsed and compiled under <see cref="MaximumNestingLimit"/>. A pattern nested deeper is refused as
     /// every pattern this constructor does not compile is, with a <see cref="RegexSyntaxException"/> at the group or
     /// class that opens the level past it; <see cref="Compile"/> takes the caller's own limit and answers a status.
+    /// No meter is charged and no compile budget bounds the work, which is in proportion to the ranges and strings the
+    /// pattern's expansions touch; <see cref="Compile"/> takes the caller's meter and budget.
     /// </remarks>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
@@ -173,9 +181,10 @@ public sealed class BroilerRegex
 
     /// <summary>
     /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>, to the new backend's
-    /// program. A pattern nested deeper is refused with a
+    /// program, charging <paramref name="data"/>'s account. A pattern nested deeper is refused with a
     /// <see cref="RegexSyntaxException"/> when <paramref name="refusesAsSyntax"/> is set, and otherwise with the
-    /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status.
+    /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status; a compilation past the account's
+    /// budget ends with the <see cref="CompileBudgetSpent"/> that <see cref="Compile"/> answers as a status.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=310E62
     // Broiler-Falsified-If: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
@@ -185,7 +194,8 @@ public sealed class BroilerRegex
         Pattern = pattern;
         Flags = flags;
 
-        // One view of the provider serves the parse and every later match of this instance.
+        // One compilation's view of the provider, charged to its account, serves the parse and the lowering; the program
+        // keeps only the provider's case folding from it, for its matches.
         try
         {
             var ast = RegexParser.Parse(Pattern, flags, data, nesting, out var captureCount, out var groupNames);
@@ -205,9 +215,10 @@ public sealed class BroilerRegex
     }
 
     /// <summary>
-    /// Compiles <paramref name="pattern"/> under <paramref name="flags"/>, refusing a pattern nested deeper than
-    /// <paramref name="nestingLimit"/> with a status rather than an exception (requirement R4, decisions D6 and D9 of
-    /// Broiler.VM's JSD-0081; conventions 3 and 5).
+    /// Compiles <paramref name="pattern"/> under <paramref name="flags"/>, charging the caller's
+    /// <paramref name="meter"/> for the work and refusing, with a status rather than an exception, a pattern nested deeper
+    /// than <paramref name="nestingLimit"/> or whose compilation would do more work than <paramref name="compileBudget"/>
+    /// admits (requirements R2 and R4, decisions D6, D8 and D9 of Broiler.VM's JSD-0081; conventions 3 to 5).
     /// </summary>
     /// <param name="pattern">The pattern's source text.</param>
     /// <param name="flags">The flags.</param>
@@ -218,41 +229,68 @@ public sealed class BroilerRegex
     /// non-capturing, named, look-around, modifier) adds 1; under <c>v</c> each class adds 1, the outermost included.
     /// With 512, the limit both engines pass (decision D7), 511 nested groups compile and 512 are refused.
     /// </param>
+    /// <param name="compileBudget">
+    /// The units of work the compilation may do, at least one, or null for no budget; counted in the units the meter is
+    /// charged in (the remarks). A compilation that would do more stops before the work that would pass it.
+    /// </param>
+    /// <param name="meter">The caller's meter, charged in blocks before the work it pays for, or null for none (convention 4).</param>
     /// <param name="regex">The compiled pattern, or null when the status is not <see cref="RegexStatus.Success"/>.</param>
     /// <param name="limit">
-    /// The limit reached when the status is <see cref="RegexStatus.LimitExceeded"/>: <see cref="RegexLimit.Nesting"/>;
-    /// otherwise <see cref="RegexLimit.None"/>.
+    /// The limit reached when the status is <see cref="RegexStatus.LimitExceeded"/>: <see cref="RegexLimit.Nesting"/> or
+    /// <see cref="RegexLimit.Compile"/>; otherwise <see cref="RegexLimit.None"/>.
     /// </param>
     /// <returns>
     /// <see cref="RegexStatus.Success"/>, or <see cref="RegexStatus.LimitExceeded"/> when the pattern nests deeper than
-    /// <paramref name="nestingLimit"/>. The limit is checked before each descent of the parser and of the compiler, in
-    /// the order the parser reads the pattern, so a syntax error the parser meets first is reported first, and a level
-    /// past the limit is refused before anything after it is read.
+    /// <paramref name="nestingLimit"/> or its compilation would pass <paramref name="compileBudget"/>. Each is checked in
+    /// the order the parser reads the pattern and then the compiler lowers it, before the work it guards: the nesting
+    /// limit before each descent, the budget before each charge, so a syntax error or a limit the parser meets first is
+    /// reported first.
     /// </returns>
     /// <remarks>
-    /// <b>A provisional signature.</b> No published version carries this member, and it is replaced, not overloaded,
-    /// before <c>0.2.0-preview.1</c> ships: task 2.5 adds the caller's compile meter, a nullable <c>RegexWorkCharge</c>,
-    /// as a parameter (convention 4), and decision D9's syntax status carries a code, a message identifier and a
-    /// position, for which two out parameters have no room. The plan gives that syntax status to the validate entry
-    /// (task 2.8) and names no task that moves this member's syntax error onto it; task 2.9, which fixes the public
-    /// surface, holds that open. The shape follows Broiler.Unicode's operations: a status, the result in an out
-    /// parameter, the meter a parameter.
+    /// <para>
+    /// <b>The units</b> (decision D8, "compilation charged in proportion to the expansion"; bundle <c>sjl-11-001</c>'s check
+    /// A-2). One unit per code unit of the pattern, which the parse reads; one per range of each code-point set a union,
+    /// an intersection, a difference or a complement reads, and per range a property escape expands to; one per string
+    /// a class's strings add or look up, by its length in code units and at least one; one per code point a case fold maps
+    /// one at a time, which a set of more than 4,096 code points avoids by folding through <c>Cased</c>, in proportion to
+    /// its ranges; and the program compiler's copies of each class's ranges and each class of strings' table. Ranges and
+    /// strings gathered out of order cost a sort's 1 + ⌊log₂ n⌋ each. Work that is the same for every pattern, a constant
+    /// per code unit of the parse and per node of the tree, is in the pattern's units. A meter is charged whole blocks of
+    /// 512 units, before the work they pay for, as a match's meter is: before the k-th unit of work, at least k units
+    /// have been charged, and never a block more than the work.
+    /// </para>
+    /// <para>
+    /// <b>The budget and the meter are the caller's, and independent.</b> The budget bounds this compilation's units and
+    /// answers a status; the meter, the caller's own count across operations, may throw, and its exception reaches the
+    /// caller unchanged, ending the compilation with no state of the library changed, so a new call answers as before.
+    /// The constructors charge no meter and take no budget, as an engine that passes no meter compiles (decision D10).
+    /// </para>
+    /// <para>
+    /// <b>A provisional signature.</b> No published version carries this member. Task 2.5 replaced the signature task 2.3
+    /// gave it, adding the caller's compile budget and meter (convention 4); task 2.9 fixes the public surface for
+    /// <c>0.2.0-preview.1</c>, and decision D9's syntax status carries a code, a message identifier and a position, for
+    /// which two out parameters have no room. The plan gives that syntax status to the validate entry (task 2.8) and names
+    /// no task that moves this member's syntax error onto it; task 2.9 holds that open. The shape follows
+    /// Broiler.Unicode's operations: a status, the limits and the meter as parameters, the result in an out parameter.
+    /// </para>
     /// </remarks>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1): still an exception here, although convention 3 makes it an expected failure (see the remarks).</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="compileBudget"/> is zero.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6, D7 and D9; IP=Low; Security=High; Resources=7; Fingerprint=C53672
-    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, or a pattern of 1,000,000 nested groups ends the process
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=3C8E92
+    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, or the meter is charged after the work it pays for
     // Broiler-Human:        PENDING
-    public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
-        out BroilerRegex? regex, out RegexLimit limit)
+    public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, ulong? compileBudget,
+        RegexWorkCharge? meter, out BroilerRegex? regex, out RegexLimit limit)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);
+        if (compileBudget == 0)
+            throw new ArgumentOutOfRangeException(nameof(compileBudget), "A compile budget, when there is one, is at least one unit.");
 
-        var data = new RegexUnicode(tables);
+        var data = new RegexUnicode(tables, new CompileCharge(meter, compileBudget));
         try
         {
             regex = new BroilerRegex(pattern, flags, data, new RegexNesting(nestingLimit), refusesAsSyntax: false);
@@ -263,6 +301,12 @@ public sealed class BroilerRegex
         {
             regex = null;
             limit = RegexLimit.Nesting;
+            return RegexStatus.LimitExceeded;
+        }
+        catch (CompileBudgetSpent)
+        {
+            regex = null;
+            limit = RegexLimit.Compile;
             return RegexStatus.LimitExceeded;
         }
     }

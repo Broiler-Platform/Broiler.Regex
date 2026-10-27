@@ -55,15 +55,17 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   2.4c routed it through task 2.4a's backend (below); the old matcher's continuations recursed, and the shapes found
   to exhaust the stack at match time were the package README's known limitations until then. win-x64 was not
   measured. The constant is never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
-  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
-  nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
+  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` held only what
+  nesting needs; the new matcher (task 2.4a) added members to both and the compile budget (task 2.5) added
+  `RegexLimit.Compile` (below), and the validate entry's syntax status (task 2.8) adds more.
   `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
   and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match answers
   `Match` or `NoMatch` instead (below). A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature
-  of `Compile` is provisional**, and no published version carries it: task 2.5 replaces it to take the caller's compile
-  meter, a nullable `RegexWorkCharge` (convention 4), and D9's syntax status needs room for a code, a message identifier
-  and a position. The plan gives that status to the validate entry of task 2.8 and names no task that moves
-  `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for `0.2.0-preview.1`, holds that open.
+  of `Compile` is provisional**, and no published version carries it: task 2.5 replaced it, adding the caller's compile
+  budget and the caller's compile meter, a nullable `RegexWorkCharge` (convention 4; below), and D9's syntax status
+  needs room for a code, a message identifier and a position. The plan gives that status to the validate entry of task
+  2.8 and names no task that moves `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for
+  `0.2.0-preview.1`, holds that open.
 - **The new backend, internal (task 2.4a; R1, R3, R4's matcher half, R7, R8; decisions D5, D8, D9 and D10).** A compiler
   from the syntax tree to an instruction program (`Compiling/ProgramCompiler.cs`, with no recursion, under the caller's
   nesting limit) and one backtracking loop with an explicit frame stack and an undo trail (`Engine/`), written new from
@@ -133,9 +135,58 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `BroilerRegex.SlotCount` says how many slots a match writes. The meter `RegexWorkCharge` and the ceilings
   `Broiler.Regex.Engine.RegexMatchCeilings` (with `Engines`, `EngineFrames`, `EngineTrail`, `FrameCeilingMaximum` and
   `TrailCeilingMaximum`) become public for it, and `RegexMatch` gains `Limit`. **All provisional**, like `Compile`:
-  task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves the meter's
-  runtime-made members out, as convention 1 admits it, and refuses any other public delegate the library declares,
-  its declaration and every signature that names it.
+  task 2.5 added the compile meter and the compile budget to `Compile` (below), and task 2.9 fixes the surface of
+  `0.2.0-preview.1`. Check C1 leaves the meter's runtime-made members out, as convention 1 admits it, and refuses any
+  other public delegate the library declares, its declaration and every signature that names it.
+- **The compile meter and the compile budget (task 2.5; R2; decisions D8, D9 and D10; check A-2).**
+  `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?
+  meter, out BroilerRegex?, out RegexLimit)` charges the caller's meter for the work of the compilation, in blocks of
+  512 units paid before the work, as a match is charged, and answers `LimitExceeded` with the new
+  `RegexLimit.Compile` (5) when the work would pass the caller's compile budget, before the work that would pass it; a
+  budget of zero is a broken precondition (`ArgumentOutOfRangeException`), and null is no budget. The units are in
+  proportion to the ranges and strings the pattern's expansions touch: one per code unit of the pattern; one per range
+  a property escape expands to, and for a property of strings one per sequence and one per code unit of each; one per
+  range of each operand of a union, an intersection, a difference or a complement, and a sort's 1 + floor(log2 n) per
+  range gathered out of order; for MaybeSimpleCaseFolding one per range and one per code point mapped one at a time;
+  for a class's strings their code units each time one is added, looked up or taken, and the class's order; the sets
+  a compilation builds from the provider; and the program compiler's copies of class ranges and string tables. A
+  meter that throws ends the compilation with its own exception and changes no state of the library. The constructors
+  take neither budget nor meter, as an engine that passes no meter compiles (decision D10). **Provisional:** the
+  signature and `RegexLimit.Compile`, until task 2.9 fixes the surface of `0.2.0-preview.1`. `PublicAPI.txt` now
+  marks each member these entries call provisional with a `# provisional:` line, which the listing's rewrite keeps and
+  rule SL6 refuses once its member is gone. The adversarial corpus's class V, fifty `\p{L}` in a class under `v`,
+  `vi` and `iu` at a budget of 300 units and fifty `\p{RGI_Emoji}` under `v` and `vi` at 1,000, answers its declared
+  `limit:compile` under the JIT and through the probe.
+- **The text helpers (R9; task 2.7, check A-9; decisions D9, D11, D20), all provisional**: task 2.9 fixes the public
+  surface of `0.2.0-preview.1`, and `PublicAPI.txt`, which rule SL6 generates, marks each with a `# provisional:`
+  line. The new namespace `Broiler.Regex.Text` holds what both engines' flag parsers, `RegExp.escape` helpers and
+  `source` writers move onto at their cut-overs (decision D20):
+  - `RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out int position)` reads a flags string as a
+    `RegexFlagsStatus`, `Success`, `UnknownFlag`, `DuplicateFlag` or `UnicodeWithUnicodeSets`, never an exception:
+    RegExpInitialize's checks over the whole string first (ECMA-262 §22.2.3.3), the refusal at the first unknown or
+    repeated code unit, then ParsePattern's `u` with `v` (§22.2.3.4) at the later of the two. It decides by the ninth
+    code unit, so it takes no meter. `RegexFlagsText.Format(RegexFlags)` writes the letters in the `flags` getter's
+    order, `d g i m s u v y` (§22.2.6.4). `RegexFlagsParser.Parse` reads the same grammar and answers as before, with
+    the same messages, so nothing it answers changes.
+  - `new RegexEscaper(IUnicodeTables)` and its `EscapeString(string, int maxLength, RegexWorkCharge?, out string?)`:
+    `RegExp.escape`'s text (§22.2.5.1, EncodeForRegExpEscape §22.2.5.1.1), a first ASCII digit or letter as `\xHH`,
+    a SyntaxCharacter or `/` after a backslash, U+0009 to U+000D as `\t \n \v \f \r`, the punctuators
+    `` ,-=<>#&!%:;@~'`" ``, WhiteSpace, LineTerminator and a lone surrogate in lower-case hexadecimal, every other code
+    point as itself. WhiteSpace is the provider's `EcmaScriptLexical` over the caller's tables (decision D11), so
+    U+0085 and U+180E are not escaped.
+  - `RegexEscaper.EscapePattern(string, int maxLength, RegexWorkCharge?, out string?)`: the `source` getter's text
+    (EscapeRegExpPattern, §22.2.6.13.1): `(?:)` for the empty pattern, `\/` for a `/` outside a class, `\n`, `\r`,
+    `\u2028` and `\u2029` for a line terminator, raw or after a backslash, every other code unit as itself; a class is
+    read as a RegularExpressionLiteral reads one, so a `/` in it is kept, the text test262's
+    `staging/sm/RegExp/escape.js` asks for. The text holds under every mode, so it takes no flags.
+  - Both answer `RegexStatus.Success`, or `RegexStatus.LimitExceeded` when the result would pass the caller's maximum
+    length, their only limit; both charge the meter one unit per code unit read before reading and one per code unit
+    written before writing, in whole blocks of 512 on one account (decision D8's blocks, convention 4), and answer a
+    text that needs no change as itself, at the cost of its reading.
+  - Tests over the specification's sets, every code point or code unit enumerated, U+0085 among them; test262's
+    `built-ins/RegExp/escape` and `staging/sm/RegExp/escape.js` cases ported as data, test-only, with test262's
+    licence beside them ([`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)); and the Native AOT probe's population
+    `text-1`, whose report CI holds to the JIT's.
 
 ### Changed
 
@@ -209,8 +260,33 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   ("Where Broiler.Regex stands") for task 2.9, which decides between the owner's admission of the exception for a
   member decision D12 keeps and a status-returning form. The offset entry is the status-returning form for a caller
   that expects to meet a ceiling.
+- **`Compile`'s provisional signature is replaced (task 2.5; R2).** Task 2.3's
+  `Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` is gone, replaced rather than
+  overloaded by the signature above, which adds the compile budget and the meter. No published version carries
+  either, so package validation against `0.1.0-preview.4` reads an addition and no suppression is added.
+- **The strings of a `v`-mode class are an insertion-ordered hash set (task 2.5, plan row 2.5).** The parser searched
+  a list before adding each string, so a union of operands of n strings in all made O(n²) comparisons, and an
+  intersection or a difference of a and b strings O(a·b): fifty `\p{RGI_Emoji}` in one class, about 138,000 strings,
+  made about 187 million comparisons. Each string is now hashed once per addition or lookup, O(its code units). The
+  program compiler finds the table an earlier occurrence of the same strings built by a hash of them, where it compared
+  every earlier table string by string. Internal; no signature changes.
 
 ### Observable changes
+
+- **Compilation is charged (R2; task 2.5).** `Compile` charges the caller's meter for the compilation and answers the
+  compile budget as `LimitExceeded` naming `Compile` (Added). No compiled pattern answers a match differently: the
+  sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as every
+  assertion of a match's answer in task 2.4c's test suite, passing unchanged, and the new tests of the fold, which hold
+  it to a fold of every code point, show. The suite's other edits change no match's answer: the fast-path
+  differential's tally of cases the general lowering alone stops under its first ceiling grew from 16 to 64 only
+  because task 2.5's tests added classes of `\p{RGI_Emoji}` to the literals its population is drawn from (without that
+  file it still stops 16); the program compiler's answers gained `CompileBudgetExceeded`; the tests' `Compile` helper
+  passes no budget and no meter; the corpus test runs the V rows it named as waiting, and checks their margin; and
+  `EngineNamingTests` lists one more name. Compiling costs less where the work was quadratic or per code point:
+  MaybeSimpleCaseFolding of an operand of more than 4,096 code points maps only the code points it shares with
+  `Cased`, which holds every code point simple case folding moves (4,469 of `\p{L}`'s 145,672), and a class's strings
+  are added and found by a hash (Changed). The sets of `\s` and of the folded `\w` are built the first time a
+  compilation reads them, where every compilation built both.
 
 - **The string-bearing members answer as the specification does where the old matcher did not (task 2.4c).** The
   three defects the differential comparison found are corrected: a start inside a surrogate pair under `u` and `v` runs

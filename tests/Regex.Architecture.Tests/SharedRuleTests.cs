@@ -477,8 +477,9 @@ public class SharedRuleTests
             Assert.NotEmpty(listing);
             var baseline = ApiListing.BaselinePath(library);
             if (update)
-                File.WriteAllText(baseline, ApiListing.Render(library.Name, listing));
+                File.WriteAllText(baseline, ApiListing.Render(library.Name, listing, ApiListing.ReadProvisional(baseline)));
             violations.AddRange(SharedRules.SL6(library.Name, listing, ApiListing.ReadBaseline(baseline)));
+            violations.AddRange(SharedRules.SL6Provisional(library.Name, listing, ApiListing.ReadProvisional(baseline)));
 
             var evaluated = Tools.Evaluate(library.Path, ["IsPackable", "EnablePackageValidation", "PackageValidationBaselineVersion"]);
             Assert.Equal("true", evaluated["IsPackable"]);
@@ -486,6 +487,24 @@ public class SharedRuleTests
         }
 
         StartingViolations.AssertExactly("SL6", violations);
+    }
+
+    [Fact]
+    public void SL6_A_provisional_mark_whose_member_is_gone_is_refused_and_a_rewrite_keeps_the_marks_of_listed_members()
+    {
+        string[] listing = ["Witness.Status enum", "Witness.Status.Overflow = 3"];
+        string[] marks = ["Witness.Status.Overflow = 3", "Witness.Status.Malformed = 1"];
+        Assert.Equal(
+            ["Witness's baseline marks as provisional public API the assembly does not have: Witness.Status.Malformed = 1"],
+            SharedRules.SL6Provisional("Witness", listing, marks));
+
+        var rewritten = ApiListing.Render("Witness", listing, marks);
+        Assert.Contains("\n" + ApiListing.ProvisionalMark + "Witness.Status.Overflow = 3\n", rewritten, StringComparison.Ordinal);
+        Assert.DoesNotContain("Malformed", rewritten, StringComparison.Ordinal);
+        var lines = rewritten.Split('\n').Where(static l => l.Length > 0).ToList();
+        Assert.Equal(listing, lines.Where(static l => !l.StartsWith('#')));
+        Assert.Equal(["Witness.Status.Overflow = 3"], lines.Where(static l => l.StartsWith(ApiListing.ProvisionalMark, StringComparison.Ordinal)).Select(static l => l[ApiListing.ProvisionalMark.Length..]));
+        Assert.Empty(SharedRules.SL6("Witness", listing, lines.Where(static l => !l.StartsWith('#')).ToList()));
     }
 
     [Fact]

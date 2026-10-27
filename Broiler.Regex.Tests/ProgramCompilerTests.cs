@@ -350,8 +350,9 @@ public class ProgramCompilerTests
     public void The_transitional_not_yet_supported_answer_is_gone_from_the_library_s_metadata()
     {
         // Task 2.4a's seam: the compiler's third answer, for a construct whose instructions task 2.4b had still to add.
-        // It is not an answer of the enumeration any more, and no member, type or string of the assembly names it.
-        Assert.Equal(["Compiled", "NestingLimitExceeded"], Enum.GetNames<ProgramCompilation>());
+        // It is not an answer of the enumeration any more, and no member, type or string of the assembly names it. Task
+        // 2.5's compile budget is the enumeration's third answer now.
+        Assert.Equal(["Compiled", "NestingLimitExceeded", "CompileBudgetExceeded"], Enum.GetNames<ProgramCompilation>());
         var assembly = typeof(ProgramCompilation).Assembly;
         const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
         var names = assembly.GetTypes().SelectMany(static t => t.GetMembers(all).Select(static m => m.Name).Append(t.Name));

@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using Broiler.Regex.Compiling;
+using Broiler.Unicode.Tables;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
@@ -13,15 +17,16 @@ namespace Broiler.Regex.Tests;
 /// and G03, the look-around class L, F01 and F02's <c>\B</c>, and the ordinary rows of look-arounds, case-insensitive
 /// classes and a <c>v</c>-mode class of strings), and task 2.4c's O05 and O06, the greedy run of <c>[a]</c> over
 /// 10,000,001 characters that the run instruction matches with one frame (the corpus's presumption 3), where the loop it
-/// replaces passed the frame ceiling; each run through the new backend's entry with the row's policy in a
-/// child process of its own, the probe under its hidden argument <c>--engine-row</c>, on a thread of the corpus's declared
-/// stack: a crash is observed as the child's exit, not suffered by the test host, and each row answers its declared
-/// status. Every other row is named with the reason it waits. Task 2.14's <c>--adversarial</c> mode later runs the whole
-/// corpus with both controls of the rule's part C.
+/// replaces passed the frame ceiling, and task 2.5's class V, fifty property escapes in one class under <c>v</c>,
+/// <c>vi</c> and <c>iu</c>, each refused at its compile budget (requirement R2; check A-2's second half); each run through
+/// the new backend's entry with the row's policy in a child process of its own, the probe under its hidden argument
+/// <c>--engine-row</c>, on a thread of the corpus's declared stack: a crash is observed as the child's exit, not suffered
+/// by the test host, and each row answers its declared status. Every other row is named with the reason it waits. Task
+/// 2.14's <c>--adversarial</c> mode later runs the whole corpus with both controls of the rule's part C.
 /// </summary>
 public class AdversarialCorpusTests
 {
-    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's, then task 2.4c's.</summary>
+    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's, then task 2.4c's, then task 2.5's.</summary>
     private static readonly string[] RowIds =
     [
         "K01", "K02", "K03", "K04", "A01", "A02", "W01", "W02", "G01", "G02", "M01", "M02",
@@ -29,6 +34,7 @@ public class AdversarialCorpusTests
         "O01", "O04", "O09", "O10", "O11", "O12", "O13", "O14", "O15", "O18",
         "K05", "G03", "L01", "L02", "L03", "L04", "L05", "F01", "F02", "O02", "O03", "O16", "O17",
         "O05", "O06",
+        "V01", "V02", "V03", "V04", "V05",
     ];
 
     public static TheoryData<string> Rows
@@ -47,8 +53,6 @@ public class AdversarialCorpusTests
     {
         ["N03"] = "the validate entry: task 2.8", ["N06"] = "the validate entry: task 2.8", ["N09"] = "the validate entry: task 2.8",
         ["N12"] = "the validate entry: task 2.8", ["N15"] = "the validate entry: task 2.8", ["N18"] = "the validate entry: task 2.8",
-        ["V01"] = "the compile budget: task 2.5", ["V02"] = "the compile budget: task 2.5", ["V03"] = "the compile budget: task 2.5",
-        ["V04"] = "the compile budget: task 2.5", ["V05"] = "the compile budget: task 2.5",
         ["O07"] = "a group name repeated across alternatives: task 2.6",
         ["O08"] = "a group name repeated across alternatives, with a back-reference to it: task 2.6 (the parser refuses it until then)",
         ["O19"] = "the validate entry: task 2.8",
@@ -62,6 +66,44 @@ public class AdversarialCorpusTests
         var (exit, output, error) = RunProbe("--engine-row", CorpusPath, id);
         Assert.True(exit == 0, $"the probe for {id} exited {exit}: {error}");
         Assert.Equal(Expand(id + " " + declared), Expand(output.TrimEnd('\n')));
+    }
+
+    [Fact]
+    public void Each_class_V_row_s_expansion_charges_at_least_a_hundred_times_its_budget()
+    {
+        // The corpus's margin for class V (tests/Adversarial/README.md, section 3): the units R2's charge counts, the ranges
+        // and strings the expansion touches at least, are at least a hundred times the row's compile budget, and the budget
+        // is larger than the pattern's length, so that a charge of a unit per pattern character alone would not refuse it.
+        // Here the whole compilation, with no budget, is charged: at least a hundred times the budget, for every V row.
+        var rows = Corpus().Where(static row => row[1] == "V").ToArray();
+        Assert.Equal(5, rows.Length);
+        foreach (var row in rows)
+        {
+            var pattern = Expression(row[3]);
+            var budget = ulong.Parse(row[6].Split(' ').Single(static key => key.StartsWith("compile=", StringComparison.Ordinal))["compile=".Length..], CultureInfo.InvariantCulture);
+            Assert.True(budget > (ulong)pattern.Length, row[0] + ": a budget of " + budget + " for " + pattern.Length + " code units");
+
+            var charge = new CompileCharge(null, null);
+            Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(row[4]), UnicodeTables.Instance, 512, out _, charge: charge));
+            Assert.True(charge.Spent >= 100 * budget, row[0] + ": " + charge.Spent + " units for a budget of " + budget);
+        }
+    }
+
+    /// <summary>An expression of the corpus (its README, section 1): JSON string literals, each optionally followed by <c>* n</c>, joined by <c>+</c>.</summary>
+    private static string Expression(string text)
+    {
+        var built = new StringBuilder();
+        foreach (var term in text.Split(" + "))
+        {
+            var star = term.LastIndexOf("\" * ", StringComparison.Ordinal);
+            var literal = star < 0 ? term : term[..(star + 1)];
+            var count = star < 0 ? 1 : int.Parse(term[(star + 4)..], CultureInfo.InvariantCulture);
+            var value = System.Text.Json.JsonSerializer.Deserialize<string>(literal)!;
+            for (var i = 0; i < count; i++)
+                built.Append(value);
+        }
+
+        return built.ToString();
     }
 
     [Fact]

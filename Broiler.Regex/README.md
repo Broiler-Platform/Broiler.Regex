@@ -102,25 +102,57 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   every position the scan skips and a back-reference's length are charged to the caller's meter,
   `RegexWorkCharge`, in blocks of 512 units paid before the work; `RegexMatchCeilings` holds the
   caller's step, frame and trail ceilings, each answered as `RegexStatus.LimitExceeded` naming it.
+* **`CompileCharge.cs`** — one compilation's account (task 2.5, requirement R2): the caller's meter,
+  charged in blocks of 512 units before the work as a match's is, and the caller's compile budget,
+  past which no work is done. Each place whose work the pattern or the provider's data decides
+  charges it before doing it, named by `CompileSite`: the pattern's code units; a property escape's
+  ranges, and a property of strings' sequences and their code units; each range a union, an
+  intersection, a difference or a complement reads, and the sort of ranges gathered out of order; a
+  fold's ranges and the code points it maps one at a time; a class string's code units each time it
+  is added, looked up or taken, and the class's order; the sets built from the provider (`Cased`,
+  `\s`, the folded `\w`, `AllCharacters` under `vi`); and the program compiler's copies of class
+  ranges and string tables.
 * **`BroilerRegex.cs`** — the public façade. The **offset entry**,
   `Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)`,
   takes a start, an anchored argument independent of `y`, the caller's slots, meter and ceilings, and
   answers a status, allocating nothing once the pool is warm (provisional until task 2.9). The
   string-bearing `Match` / `IsMatch` / `Matches`, which mirror the shape `JSRegExp` needs
   (`Success`, `Index`, `Length`, indexed and named groups), run the same program as RegExpBuiltinExec,
-  with no meter and the engines' frame and trail ceilings (decision D10).
+  with no meter and the engines' frame and trail ceilings (decision D10). `Compile(string, RegexFlags,
+  IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?, out BroilerRegex?, out
+  RegexLimit)` compiles under the caller's nesting limit, compile budget and meter and answers
+  `Success` or `LimitExceeded` naming `Nesting` or `Compile` (provisional until task 2.9); the
+  constructors take neither budget nor meter.
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
   difference and complement, immutable once built, so a set is shared between threads. Every class member kind reduces to one of these, so
-  `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand.
+  `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand. A compilation
+  calls internal overloads that charge its account a unit per range read; the public members charge
+  nothing.
+* **`Ast/ClassStrings.cs`** — the strings of a `v`-mode class operand while the parser builds it: an
+  insertion-ordered hash set (task 2.5), so a union, an intersection, a difference or a `\q{…}` reads
+  each string a bounded number of times, where the list it replaces was searched before each
+  addition.
 * **`Unicode/RegexUnicode.cs`** — every Unicode answer a compilation reads, through the
   provider over the caller's `IUnicodeTables`: `\p{…}` resolution by the exact names
   ECMA-262 admits (General_Category, binary properties, `Script`, `Script_Extensions`,
   and the UTS #51 properties of strings), both branches of `Canonicalize` and the fold
-  orbits the class-membership test walks, `\s`, the folded `\w` set and `AllCharacters`.
-  The package declares no Unicode version of its own.
+  orbits the class-membership test walks, `\s`, the folded `\w` set and `AllCharacters`, the
+  last three built the first time a compilation reads them. MaybeSimpleCaseFolding folds a set of
+  more than 4,096 code points through `Cased`, which holds every code point simple case folding
+  moves, so its work is in proportion to the set's ranges. The package declares no Unicode version of
+  its own.
 * **`Unicode/UnicodeCharSets.cs`** — the parts of the class escapes that are not Unicode
   data: `\d`, the basic `\w` set and the code space, and the public members of `0.1` that
   read no table (`IsDigit`, `PositiveEscape`, `IsComplementEscape`, `PropertyMatch`).
+* **`Text/`** — the text helpers both engines' `RegExp` objects call (requirement R9, task 2.7; provisional until
+  task 2.9 fixes the surface). `RegexFlagsText.Parse` reads a flags string as a `RegexFlagsStatus` with the position of
+  the code unit it refuses (an unknown flag, a repeated flag, `u` with `v`) and `RegexFlagsText.Format` writes a flags
+  value in the `flags` getter's order, `dgimsuvy`. `RegexEscaper.EscapeString` is `RegExp.escape`'s text, over the
+  provider's `EcmaScriptLexical` white space (so U+0085 is not escaped), and `RegexEscaper.EscapePattern` the
+  `source` getter's text (EscapeRegExpPattern: `/` outside a class and the line terminators escaped, the empty pattern
+  `(?:)`). Both take the caller's maximum length, answered as `LimitExceeded`, and its meter, charged one unit per code
+  unit read and written, in blocks of 512 before each pass. An engine keeps its own argument checks, receivers,
+  property reads and message text (conventions 2 and 3).
 
 ## What works today
 
@@ -140,6 +172,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
 - `v`-mode class-set expressions: nesting, `&&`, `--`, `\q{…}` string alternatives,
   and the fold-then-complement ordering that makes `\P{Lu}` mean something
   different under `vi` than under `ui`
+- The text helpers of requirement R9: flags read as a status with a position and written in canonical order,
+  `RegExp.escape`'s text and the `source` text (`Text/`)
 - The Annex B / Unicode-mode grammar split: `\u{…}`, a bare `]`/`{`/`}`, a class escape
   as a range endpoint, a quantified look-ahead, and `\k<n>` in a pattern that declares no
   group name are each a literal or a legal term in one mode and a syntax error in the
@@ -194,11 +228,19 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   realm does (Broiler.JS reports the caller's start). The offset entry takes the start as given and
   splits the pair for the call; an engine steps back itself and gives its own D41 answer from the
   offsets written (`SurrogateStartTests`).
-- **Compilation is not charged yet (task 2.5).** A `v`-mode class of strings is one table its
-  occurrences share since task 2.4c, so `\p{RGI_Emoji}` is three instructions and its construction
-  allocates about 1.3 MiB, of which the parse is about 0.95 MiB; 100 occurrences are about 100 MiB,
-  of which the parse is about 94 MiB. Task 2.5's compile meter charges the parse's expansion and the
-  set algebra; until then a pattern's compilation is bounded only by its length.
+- **Compilation is charged through `Compile`, not through the constructors** (task 2.5, R2;
+  decision D10). `BroilerRegex.Compile` charges the caller's meter and refuses past the caller's
+  compile budget with `RegexLimit.Compile`, in units in proportion to the ranges and strings the
+  pattern's expansions touch: `/abc/` costs 3 units, `/\p{L}/u` about 2,100, `/\p{L}/vi` about
+  26,000, `/\p{RGI_Emoji}/v` about 338,000 (most of it the bound of ordering its 2,760 strings,
+  1 + ⌊log₂ n⌋ units per code unit) and a class of fifty `\p{RGI_Emoji}` under `vi` about 4.9
+  million. The constructors take neither meter nor budget, as an engine that passes no meter
+  compiles, so their compilation is bounded only by the pattern; a caller that compiles untrusted
+  patterns calls `Compile` with a budget. The public `RegexParser` and the public `CodePointSet`
+  operations charge nothing either: their work is done in the caller's name (task 2.9 decides their
+  surface). The units count work, not memory: a compilation's allocation follows the same
+  expansions, about 1.3 MiB for `\p{RGI_Emoji}` at task 2.4c's measurement, of which the parse was
+  about 0.95 MiB.
 - Two deliberate divergences from V8, both under `vi` and both pinned by a test:
   - `\p{ASCII}` follows §22.2.2.9, which folds a lone binary property's set, so `ſ`
     (which folds to `s`) matches. V8 answers "no match" here while agreeing on
@@ -222,8 +264,9 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   or trail cell, an atom run reads its atoms with one dispatch, a class of strings looks up the
   strings that begin with the character at hand, and a search skips the positions its first test
   refuses. Over the test suite's population of patterns the work with them is 18.6 million units
-  against 41.4 million without (`FastPathDifferentialTests`). A `v`-mode class under `i` folds its
-  whole operand set at compile time — measurable for an operand the size of `\p{L}`.
+  against 41.4 million without (`FastPathDifferentialTests`). A `v`-mode class under `i` folds an
+  operand of more than 4,096 code points through `Cased` since task 2.5: `\p{L}`'s fold maps the
+  4,469 code points it shares with `Cased` one at a time, where it mapped all 145,672.
 
 ## Integration status
 

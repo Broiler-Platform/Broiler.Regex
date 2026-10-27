@@ -23,20 +23,22 @@ namespace Broiler.Regex;
 /// A meter that throws stops the operation, and its exception reaches the caller unchanged; the library leaves no shared
 /// state changed, so the same compiled pattern answers a new call as a new one would.
 /// </summary>
-/// <param name="units">The units about to be spent: a whole number of blocks (decision D8; the new backend's block is 512 units).</param>
+/// <param name="units">The units about to be spent: a whole number of blocks (decision D8; the block is 512 units, for a match and for a compilation).</param>
 /// <remarks>
 /// <para>
 /// <b>Public since task 2.4c, provisional.</b> The offset entry,
 /// <see cref="BroilerRegex.Match(System.ReadOnlySpan{char}, int, bool, System.Span{int}, RegexWorkCharge?, Engine.RegexMatchCeilings, out RegexLimit)"/>,
-/// takes it; task 2.5 gives <see cref="BroilerRegex.Compile"/> the same meter for compilation (requirement R2), and task
-/// 2.9 fixes the public surface of <c>0.2.0-preview.1</c>, so its name and shape may still change before that version
-/// ships. The meter is not a cancellation token and the library never polls a clock: cancellation reaches an operation
+/// takes it, and since task 2.5 <see cref="BroilerRegex.Compile"/> charges the same meter for compilation (requirement
+/// R2), in units in proportion to the ranges and strings its expansions touch; task 2.9 fixes the public surface of
+/// <c>0.2.0-preview.1</c>, so its name and shape may still change before that version ships. The meter is not a cancellation token and the library never polls a clock: cancellation reaches an operation
 /// through the meter, by throwing.
 /// </para>
 /// <para>
 /// <b>When it is called.</b> Before the work it pays for, in whole blocks, from the thread that calls the operation, so
 /// that before the k-th unit of work at least k units have been charged and never a block more than the work: a
-/// match's units run on across all its start positions, with no reset at each.
+/// match's units run on across all its start positions, with no reset at each, and a compilation's across its parse,
+/// its set algebra and its lowering. A caller that passes one meter to a compilation and then to matches of the compiled
+/// pattern sees each operation's own blocks.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Medium; Resources=0; Fingerprint=87B1DC

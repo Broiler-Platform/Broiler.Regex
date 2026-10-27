@@ -7,8 +7,9 @@ namespace Broiler.Regex.Probe;
 /// <summary>
 /// The probe's entry point: <c>Broiler.Regex.Probe [--report path]</c>. On a thread of
 /// <see cref="ProbePopulation.StackBytes"/>, it compiles every case of <see cref="ProbePopulation"/> once and matches
-/// it, runs every case of <see cref="EnginePopulation"/> through the new backend's entry, writes the report to standard
-/// output and, with <c>--report</c>, to the file named, and exits 0. It exits 2 on arguments it does not read. What it
+/// it, runs every case of <see cref="EnginePopulation"/> through the new backend's entry and the text helpers over
+/// <see cref="TextPopulation"/>, writes the report to standard output and, with <c>--report</c>, to the file named, and
+/// exits 0. It exits 2 on arguments it does not read. What it
 /// proves is in the publish and in the comparison of its Native AOT report with its JIT report, which CI makes.
 /// </summary>
 /// <remarks>
@@ -40,7 +41,7 @@ internal static class Program
         // The population runs on a thread of the smallest stack the adversarial corpus declares, so that its nesting
         // cases prove the library's maximum there, under Native AOT as under the JIT.
         var report = "";
-        var thread = new Thread(() => report = ProbePopulation.Report(ProbePopulation.Compile(ProbePopulation.Cases())) + EnginePopulation.Report(), ProbePopulation.StackBytes);
+        var thread = new Thread(() => report = ProbePopulation.Report(ProbePopulation.Compile(ProbePopulation.Cases())) + EnginePopulation.Report() + TextPopulation.Report(), ProbePopulation.StackBytes);
         thread.Start();
         thread.Join();
         if (reportPath is not null)
