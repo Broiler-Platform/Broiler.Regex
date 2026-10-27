@@ -50,6 +50,13 @@ held by the same person (Broiler.VM's exception EX-30), and nobody independent h
 | `run-reference-arms.sh`: the arms, the population, the comparison and the classification | Before the candidate reading |
 | One directory of logs per reading, each step's command the first line of its log | At each reading |
 
+*Added 2026-10-27, at task 2.14 of SJL-11.2; no rule changed.* Part C's runs are CI's at the reading's commit: the
+`native-aot-probe` job's `adversarial-aot.txt` and `adversarial-jit.txt` for linux-x64 and win-x64 (each row's child
+exit and status line, the two compared byte for byte), and the `adversarial-controls` job's `control-steps.txt`,
+`control-nesting.txt` and `revert.txt` (the two controls and their revert), each kept as an artifact of its run. A
+reading names those runs by their identifiers and retains the reports by their SHA-256;
+[`probes/Regex.Probe/README.md`](../../../probes/Regex.Probe/README.md) gives the commands that repeat them locally.
+
 **The readings**, named as they come:
 - **The candidate reading**, at the commit `0.2.0-preview.1` is packed from. A part NOT MET there blocks both
   cut-overs.
