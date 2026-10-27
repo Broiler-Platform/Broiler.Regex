@@ -34,7 +34,8 @@ internal static class EnginePopulation
         ("E08", "-", "match@0", "\"(\" * 511 + \"a\" + \")+\" * 511", "-", "\"a\"", Ordinary),
 
         // Shapes whose match at the maximum the old matcher did not prove before task 2.4c (NestingMaximumTests'
-        // UnprovenShapes within the subset): a capture around an alternation of sequences on each level, plain and repeated.
+        // ShapesTheOldMatcherDidNotProve within the subset): a capture around an alternation of sequences on each level,
+        // plain and repeated.
         ("E09", "-", "match@0", "\"(b|x\" * 511 + \"a\" + \"x)\" * 511", "-", "\"x\" * 511 + \"a\" + \"x\" * 511", Ordinary),
         ("E10", "-", "match@0", "\"(b|x\" * 511 + \"a\" + \"x)+\" * 511", "-", "\"x\" * 511 + \"a\" + \"x\" * 511", Ordinary),
 

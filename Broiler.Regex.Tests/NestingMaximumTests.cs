@@ -14,7 +14,7 @@ namespace Broiler.Regex.Tests;
 /// decision D6 of Broiler.VM's JSD-0081; bundle sjl-11-001's check A-4), on a thread each test starts itself: a
 /// pattern of any shape nested to <see cref="BroilerRegex.MaximumNestingLimit"/> parses and compiles, and one level past
 /// it is refused with the nesting status, never a stack overflow. A pattern at the maximum also matches, through
-/// <see cref="BroilerRegex"/>, for the shapes of <see cref="MatchedShapes"/> and of <see cref="UnprovenShapes"/>: the
+/// <see cref="BroilerRegex"/>, for the shapes of <see cref="MatchedShapes"/> and of <see cref="ShapesTheOldMatcherDidNotProve"/>: the
 /// old matcher's continuations recursed per level and per term, so before task 2.4c routed matching through task 2.4a's
 /// backend the second list's shapes were not proven, and some of them exhausted the stack. The new backend matches
 /// every shape at the maximum on a 1 MiB thread, since task 2.4b those holding back-references, assertions and
@@ -85,7 +85,7 @@ public class NestingMaximumTests
             "groups over v classes" => (MixedGroups(n - n / 4) + Repeat("[", n / 4) + "a" + Repeat("]", n / 4) + Repeat(")", n - n / 4), RegexFlags.UnicodeSets, "a"),
             "modifiers over v classes" => (Repeat("(?i:", n / 2) + Repeat("[", n - n / 2) + "a" + Repeat("]", n - n / 2) + Repeat(")", n / 2), RegexFlags.UnicodeSets, "A"),
 
-            // Mixtures whose match at the maximum is not proven (UnprovenShapes).
+            // Mixtures whose match at the maximum the old matcher did not prove (ShapesTheOldMatcherDidNotProve).
             "capturing sequence" => (Repeat("(x", n) + "a" + Repeat("x)", n), RegexFlags.None, xax),
             "capturing alternation of sequences" => (Repeat("(b|x", n) + "a" + Repeat("x)", n), RegexFlags.None, xax),
             "named alternation of sequences" => (Each(static i => "(?<g" + Decimal(i) + ">b|x") + "a" + Repeat("x)", n), RegexFlags.None, xax),
@@ -132,14 +132,14 @@ public class NestingMaximumTests
     };
 
     /// <summary>
-    /// The shapes whose match at the maximum is not proven: a capture with a sequence, an alternation, a back-reference,
-    /// an assertion or a quantifier on each level costs the matcher's continuations more stack per level than a 1 MiB
-    /// thread holds 512 times over with a margin, and some fail at the maximum. The new backend, with no CLR recursion
+    /// The shapes whose match at the maximum the old matcher did not prove: a capture with a sequence, an alternation, a
+    /// back-reference, an assertion or a quantifier on each level cost its continuations more stack per level than a
+    /// 1 MiB thread holds 512 times over with a margin, and some failed at the maximum. The new backend, with no CLR recursion
     /// (A-4's matcher half), matches each of them at the maximum, task 2.4a's for those holding no back-reference,
     /// assertion or look-behind and task 2.4b's for the rest; <see cref="BroilerRegex"/> reaches it at task 2.4c. The depths each first failed at on
     /// linux-x64 are in <see cref="BroilerRegex.MaximumNestingLimit"/>'s remarks.
     /// </summary>
-    public static TheoryData<string> UnprovenShapes => new()
+    public static TheoryData<string> ShapesTheOldMatcherDidNotProve => new()
     {
         "capturing sequence", "capturing alternation of sequences", "named alternation of sequences",
         "mixed alternation of sequences", "capturing alternation of optional sequences",
@@ -158,7 +158,7 @@ public class NestingMaximumTests
         get
         {
             var all = new TheoryData<string>();
-            foreach (var shape in MatchedShapes.Concat(UnprovenShapes))
+            foreach (var shape in MatchedShapes.Concat(ShapesTheOldMatcherDidNotProve))
                 all.Add((string)shape[0]);
             return all;
         }
@@ -236,8 +236,8 @@ public class NestingMaximumTests
     /// which has no CLR recursion (check A-4): each now matches on a 1 MiB stack, as every other shape does.
     /// </summary>
     [Theory]
-    [MemberData(nameof(UnprovenShapes))]
-    public void A_pattern_at_the_maximum_that_the_matcher_does_not_yet_prove_matches_on_a_1_MiB_stack(string shape)
+    [MemberData(nameof(ShapesTheOldMatcherDidNotProve))]
+    public void A_pattern_at_the_maximum_of_a_shape_the_old_matcher_did_not_prove_matches_on_a_1_MiB_stack(string shape)
     {
         A_pattern_at_the_maximum_matches_on_a_1_MiB_stack(shape);
     }

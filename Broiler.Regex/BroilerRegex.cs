@@ -75,7 +75,7 @@ public sealed class BroilerRegex
     /// past it is refused with the nesting status, never a stack overflow: decision D6's bound on the parser and the
     /// compiler (<c>NestingMaximumTests</c>; the Native AOT probe's N cases). Matching at this maximum is the new
     /// backend's since task 2.4c, which has no CLR recursion (check A-4's matcher half): every shape measured, those of
-    /// <c>NestingMaximumTests.MatchedShapes</c> and of <c>UnprovenShapes</c> alike, matches at this maximum on a 1 MiB
+    /// <c>NestingMaximumTests.MatchedShapes</c> and of <c>ShapesTheOldMatcherDidNotProve</c> alike, matches at this maximum on a 1 MiB
     /// thread, whatever its levels hold. Before task 2.4c the old backend's continuations recursed per level and per
     /// term of a sequence, and the second list's shapes could exhaust a 1 MiB stack. win-x64 was not measured; the
     /// maximum is proven on linux-x64 only.
