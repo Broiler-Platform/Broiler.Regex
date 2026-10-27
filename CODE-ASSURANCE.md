@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 22 |
 | Files not covered | 0 |
 | Files carrying an annotation | 22 |
-| Code units | 553 |
-| Relevant | 312 |
+| Code units | 557 |
+| Relevant | 316 |
 | Exempt by predicate | 241 |
-| Annotated | 312 of 312 (100%) |
-| Human reviewed | 0 of 312 (0%) |
-| Unverified | 312 |
+| Annotated | 316 of 316 (100%) |
+| Human reviewed | 0 of 316 (0%) |
+| Unverified | 316 |
 
 ## Review states
 
@@ -32,7 +32,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 312 |
+| HUMAN_PENDING | 316 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -42,7 +42,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Value | Units |
 |---|---:|
-| None | 222 |
+| None | 226 |
 | Low | 103 |
 | Medium | 0 |
 | High | 0 |
@@ -54,9 +54,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 97 |
+| Low | 98 |
 | Medium | 87 |
-| High | 128 |
+| High | 131 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.7 / 10 |
-| Units scored | 312 |
+| Units scored | 316 |
 
 ## High-security review areas
 
@@ -183,9 +183,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Text.RegexEscaper.SyntaxCharactersAndSolidus` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.OtherPunctuators` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.EscapeString(string, int, RegexWorkCharge?, out string?)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.EscapePattern(string, int, RegexWorkCharge?, out string?)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.EncodeString(string, Span<char>)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.EncodeCodePoint(ref TextWriter, int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.EncodePattern(string, Span<char>, out bool)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.TextWriter.Hex(int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.TextWriter.LineTerminator(char)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.MeterAccount` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexEscaper.MeterAccount.Spend(long)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexFlagsText` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, human line PENDING
@@ -203,8 +206,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 180 |
-| Units required to carry one | 128 |
+| Units carrying a criterion | 183 |
+| Units required to carry one | 131 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -255,7 +258,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-553 of them, exempt and relevant alike - with the fingerprint of its declaration.
+557 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

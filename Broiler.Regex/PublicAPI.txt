@@ -178,6 +178,7 @@ Broiler.Regex.RegexWorkCharge.EndInvoke(System.IAsyncResult) method virtual Syst
 Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64) method virtual System.Void
 Broiler.Regex.Text.RegexEscaper sealed class
 Broiler.Regex.Text.RegexEscaper..ctor(Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
+Broiler.Regex.Text.RegexEscaper.EscapePattern(System.String, System.Int32, Broiler.Regex.RegexWorkCharge, System.String&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.Text.RegexEscaper.EscapeString(System.String, System.Int32, Broiler.Regex.RegexWorkCharge, System.String&) method Broiler.Regex.RegexStatus
 Broiler.Regex.Text.RegexFlagsStatus enum
 Broiler.Regex.Text.RegexFlagsStatus.DuplicateFlag = 2

@@ -114,7 +114,7 @@ public class FlagsTextTests
     }
 
     /// <summary>The flags and code units a reader could take for one: upper case, a space, NUL, look-alikes, a lone surrogate.</summary>
-    private const string Strangers = "xGUY \0ſıｇK𐀀";
+    private const string Strangers = "xGUY \0\u017F\u0131\uFF47\u212A\uD800\uDC00";
 
     [Fact]
     public void Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it()

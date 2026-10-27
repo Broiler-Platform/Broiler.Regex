@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   22
-// Annotated:        22/22
+// Relevant units:   26
+// Annotated:        26/26
 // Exempt:           5
-// Human-reviewed:   0/22
+// Human-reviewed:   0/26
 // IP risk:          None
 // Security risk:    High
-// Criteria:         9/9
+// Criteria:         12/12
 // Resource impact:  2/10 max
-// Unverified:       22
+// Unverified:       26
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -22,7 +22,9 @@ namespace Broiler.Regex.Text;
 
 /// <summary>
 /// The text half of requirement R9 (task 2.7 of SJL-11.2): <c>RegExp.escape</c>'s text, a string escaped for
-/// representation inside a pattern (<see cref="EscapeString"/>). Both engines' escape helpers move onto it at their
+/// representation inside a pattern (<see cref="EscapeString"/>), and the <c>source</c> getter's text, a pattern escaped
+/// for representation as a string (<see cref="EscapePattern"/>). Despite their names the two do different things, as
+/// ECMA-262's note under RegExp.escape says. Both engines' escape and <c>source</c> helpers move onto these at their
 /// cut-overs (decision D20 of Broiler.VM's JSD-0081).
 /// </summary>
 /// <remarks>
@@ -83,6 +85,11 @@ public sealed class RegexEscaper
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B94BC5
     // Broiler-Human:        PENDING
     private const string HexDigits = "0123456789abcdef";
+
+    /// <summary>The <c>source</c> text of the empty pattern, which the specification offers itself.</summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern; IP=None; Security=Low; Resources=0; Fingerprint=80DBEF
+    // Broiler-Human:        PENDING
+    private const string EmptyPattern = "(?:)";
 
     private readonly EcmaScriptLexical _lexical;
 
@@ -155,6 +162,72 @@ public sealed class RegexEscaper
         return RegexStatus.Success;
     }
 
+    /// <summary>
+    /// The <c>source</c> getter's text (ECMA-262 §22.2.6.13.1, EscapeRegExpPattern): <paramref name="pattern"/> with the
+    /// code points escaped that would stop <c>"/" + source + "/" + flags</c> from being a RegularExpressionLiteral that
+    /// behaves as the pattern does.
+    /// </summary>
+    /// <param name="pattern">The pattern as the regular expression was given it (its [[OriginalSource]]).</param>
+    /// <param name="maxLength">The longest result the caller accepts, in UTF-16 code units.</param>
+    /// <param name="meter">The caller's meter, or null; charged as the type's remarks say.</param>
+    /// <param name="source">The text when the status is <see cref="RegexStatus.Success"/>; null otherwise.</param>
+    /// <returns>
+    /// <see cref="RegexStatus.Success"/>, or <see cref="RegexStatus.LimitExceeded"/> when the result would be longer than
+    /// <paramref name="maxLength"/> (or than the longest string the runtime holds), its only limit, with no result.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// <b>The text.</b> The empty pattern is <c>(?:)</c>, which the specification offers. Otherwise every code unit is
+    /// copied but these: a <c>/</c> outside a class becomes <c>\/</c>; a LineTerminator becomes its escape, LF
+    /// <c>\n</c>, CR <c>\r</c>, U+2028 <c>\u2028</c> and U+2029 <c>\u2029</c>, and so does one after a backslash, the
+    /// backslash and the line terminator together giving the escape's two or six code units. A class is read as a
+    /// RegularExpressionLiteral reads it (§12.9.5): from an unescaped <c>[</c> to the next unescaped <c>]</c>, where a
+    /// <c>/</c> is the literal's own and is kept. A backslash takes the code unit after it with it, so <c>\/</c>,
+    /// <c>\[</c> and <c>\]</c> are copied and open or close nothing. U+0085, a lone surrogate and every other code
+    /// unit are copied.
+    /// </para>
+    /// <para>
+    /// <b>Why it holds in every mode, so that it takes no flags.</b> The specification asks for a text that behaves as
+    /// the pattern does under the pattern's flags; each rewrite here holds under all three modes: <c>\/</c> is an
+    /// identity escape with and without <c>u</c> and <c>v</c>, each line terminator's escape matches it in a class and
+    /// out of one, and a line terminator after a backslash is an identity escape only without <c>u</c> and <c>v</c>,
+    /// where its escape matches the same code point. Under <c>v</c> a <c>/</c> inside a class is a syntax error, so a
+    /// pattern that compiled holds none to keep. One pattern gives one text, as the specification requires of two calls
+    /// with the same pattern and flags.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="pattern"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxLength"/> is negative.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern; IP=None; Security=High; Resources=2; Fingerprint=42B3A9
+    // Broiler-Falsified-If: a solidus outside a class or a LineTerminator, raw or after a backslash, is copied as it is, the empty pattern answers other than "(?:)", or a result longer than maxLength answers Success
+    // Broiler-Human:        PENDING
+    public static RegexStatus EscapePattern(string pattern, int maxLength, RegexWorkCharge? meter, out string? source)
+    {
+        ArgumentNullException.ThrowIfNull(pattern);
+        ArgumentOutOfRangeException.ThrowIfNegative(maxLength);
+
+        var account = new MeterAccount(meter);
+        account.Spend(pattern.Length);
+        var changed = true;
+        var length = pattern.Length == 0 ? EmptyPattern.Length : EncodePattern(pattern, [], out changed);
+        if (length > Math.Min(maxLength, LongestString))
+        {
+            source = null;
+            return RegexStatus.LimitExceeded;
+        }
+
+        if (!changed)
+        {
+            source = pattern;
+            return RegexStatus.Success;
+        }
+
+        account.Spend(length);
+        source = pattern.Length == 0
+            ? EmptyPattern
+            : string.Create((int)length, pattern, static (destination, text) => EncodePattern(text, destination, out _));
+        return RegexStatus.Success;
+    }
 
     /// <summary>
     /// RegExp.escape's loop over <paramref name="text"/>'s code points: writes the result into <paramref name="destination"/>
@@ -206,6 +279,62 @@ public sealed class RegexEscaper
         }
     }
 
+    /// <summary>
+    /// EscapeRegExpPattern's walk over <paramref name="pattern"/> (the remarks of <see cref="EscapePattern"/>): writes the
+    /// text into <paramref name="destination"/> when it is not empty, and answers its length either way.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern; IP=None; Security=High; Resources=1; Fingerprint=CF6821
+    // Broiler-Falsified-If: a solidus inside a class is escaped, one after an escaped bracket is not, or the length answered differs from what the same walk writes
+    // Broiler-Human:        PENDING
+    private static long EncodePattern(string pattern, Span<char> destination, out bool changed)
+    {
+        var writer = new TextWriter(destination);
+        var inClass = false;
+        changed = false;
+        for (var at = 0; at < pattern.Length; at++)
+        {
+            var unit = pattern[at];
+            if (unit == '\\' && at + 1 < pattern.Length)
+            {
+                var escapedUnit = pattern[++at];
+                if (EcmaScriptLexical.IsLineTerminator(escapedUnit))
+                {
+                    writer.LineTerminator(escapedUnit);
+                    changed = true;
+                }
+                else
+                {
+                    writer.Put(unit);
+                    writer.Put(escapedUnit);
+                }
+
+                continue;
+            }
+
+            if (EcmaScriptLexical.IsLineTerminator(unit))
+            {
+                writer.LineTerminator(unit);
+                changed = true;
+                continue;
+            }
+
+            if (unit == '/' && !inClass)
+            {
+                writer.Put('\\');
+                writer.Put('/');
+                changed = true;
+                continue;
+            }
+
+            if (unit == '[')
+                inClass = true;
+            else if (unit == ']')
+                inClass = false;
+            writer.Put(unit);
+        }
+
+        return writer.Length;
+    }
 
     /// <summary>The code point at <paramref name="at"/>, a surrogate pair read as one and a lone surrogate as itself, and how many code units it spans.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s11.1.4 CodePointAt; IP=None; Security=Medium; Resources=0; Fingerprint=014522
@@ -305,6 +434,21 @@ public sealed class RegexEscaper
             UnicodeEscape(0xDC00 + ((codePoint - 0x10000) & 0x3FF));
         }
 
+        /// <summary>The escape EscapeRegExpPattern writes for a line terminator: <c>\n</c>, <c>\r</c>, <c>\u2028</c> or <c>\u2029</c>.</summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern; IP=None; Security=High; Resources=0; Fingerprint=F86135
+        // Broiler-Falsified-If: LF, CR, U+2028 or U+2029 is written as other than \n, \r, \u2028 or \u2029
+        // Broiler-Human:        PENDING
+        internal void LineTerminator(char unit)
+        {
+            if (unit is '\n' or '\r')
+            {
+                Put('\\');
+                Put(unit == '\n' ? 'n' : 'r');
+                return;
+            }
+
+            UnicodeEscape(unit);
+        }
 
         /// <summary>UnicodeEscape (ECMA-262 §22.1.3.17.3): <c>\u</c> and four lower-case hexadecimal digits.</summary>
         // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.1.3.17.3 UnicodeEscape; IP=None; Security=Medium; Resources=0; Fingerprint=BA1AE1

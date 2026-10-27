@@ -26,8 +26,9 @@ not replace the Unicode Terms of Use for Unicode-provided data.
 The test project `Broiler.Regex.Tests`, which is not packed, carries cases ported as data from **test262**, the
 ECMAScript conformance suite ([tc39/test262](https://github.com/tc39/test262)), at commit
 `ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e`, the programme's pin (task 2.7 of milestone SJL-11.2, 2026-10-27):
-`Broiler.Regex.Tests/Test262EscapeCases.cs` holds the cases of `test/built-ins/RegExp/escape/`. Each file names the
-test262 files it is from with the copyright notice each states. test262 is Copyright (C) 2012 Ecma International, made
+`Broiler.Regex.Tests/Test262EscapeCases.cs` holds the cases of `test/built-ins/RegExp/escape/`, and
+`Broiler.Regex.Tests/Test262SourceCases.cs` those of `test/staging/sm/RegExp/escape.js`. Each file names the test262
+files it is from with the copyright notice each states. test262 is Copyright (C) 2012 Ecma International, made
 available under the BSD License (3-clause), whose text, notice and disclaimer are kept beside the data at
 [`Broiler.Regex.Tests/test262-LICENSE.txt`](Broiler.Regex.Tests/test262-LICENSE.txt), as its condition 1 requires. The
 package carries none of it.

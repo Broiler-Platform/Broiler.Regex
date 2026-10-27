@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 312 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 316 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 22 |
-| Code units | 553 |
-| Relevant | 312 |
+| Code units | 557 |
+| Relevant | 316 |
 | Exempt | 241 |
-| Assessed | 312 of 312 (100%) |
-| Human reviewed | 0 of 312 (0%) |
-| Unverified | 312 |
+| Assessed | 316 of 316 (100%) |
+| Human reviewed | 0 of 316 (0%) |
+| Unverified | 316 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,7 +67,7 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 312 |
+| HUMAN_PENDING | 316 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -103,7 +103,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/RegexStatus.cs` | 11 | 2 | 9 | 2 | None | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 2 | 1 | 1 | 1 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexWorkCharge.cs` | 1 | 1 | 0 | 1 | None | Medium | 0/0 |
-| `Broiler.Regex/Text/RegexEscaper.cs` | 27 | 22 | 5 | 22 | None | High | 9/9 |
+| `Broiler.Regex/Text/RegexEscaper.cs` | 31 | 26 | 5 | 26 | None | High | 12/12 |
 | `Broiler.Regex/Text/RegexFlagsText.cs` | 13 | 9 | 4 | 9 | None | High | 2/2 |
 | `Broiler.Regex/Unicode/RegexUnicode.cs` | 27 | 19 | 8 | 19 | Low | High | 8/8 |
 | `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 13 | 9 | 4 | 9 | Low | Medium | 6/0 |
@@ -349,12 +349,18 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: one of the sixteen punctuators the specification lists is missing here, or another code point is here
 - `Broiler.Regex.Text.RegexEscaper.EscapeString(string, int, RegexWorkCharge?, out string?)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1 RegExp.escape, `95B5D0`, PENDING
   - Falsified if: a leading ASCII letter or digit, a SyntaxCharacter, a ControlEscape character, a listed punctuator, a WhiteSpace or LineTerminator code point or a lone surrogate is answered as itself, U+0085 is escaped, or a result longer than maxLength answers Success
+- `Broiler.Regex.Text.RegexEscaper.EscapePattern(string, int, RegexWorkCharge?, out string?)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern, `42B3A9`, PENDING
+  - Falsified if: a solidus outside a class or a LineTerminator, raw or after a backslash, is copied as it is, the empty pattern answers other than "(?:)", or a result longer than maxLength answers Success
 - `Broiler.Regex.Text.RegexEscaper.EncodeString(string, Span<char>)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1 RegExp.escape, `DF8A4F`, PENDING
   - Falsified if: the length answered for a text differs from the number of code units the same walk writes for it
 - `Broiler.Regex.Text.RegexEscaper.EncodeCodePoint(ref TextWriter, int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1.1 EncodeForRegExpEscape, `55161C`, PENDING
   - Falsified if: a code point of the specification's five classes is written as itself, or a code point outside them is escaped
+- `Broiler.Regex.Text.RegexEscaper.EncodePattern(string, Span<char>, out bool)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern, `CF6821`, PENDING
+  - Falsified if: a solidus inside a class is escaped, one after an escaped bracket is not, or the length answered differs from what the same walk writes
 - `Broiler.Regex.Text.RegexEscaper.TextWriter.Hex(int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1.1 EncodeForRegExpEscape, `83F162`, PENDING
   - Falsified if: a code point up to U+00FF is written other than as \x and two lower-case digits, or one past it other than as \u and four lower-case digits for each of its code units
+- `Broiler.Regex.Text.RegexEscaper.TextWriter.LineTerminator(char)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.6.13.1 EscapeRegExpPattern, `F86135`, PENDING
+  - Falsified if: LF, CR, U+2028 or U+2029 is written as other than \n, \r, \u2028 or \u2029
 - `Broiler.Regex.Text.RegexEscaper.MeterAccount` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=JSD-0081 decision D8, `F3A2C8`, PENDING
   - Falsified if: the meter is called with a number of units that is not a whole number of blocks, after the work it pays for, or with more than a block over the units spent
 - `Broiler.Regex.Text.RegexEscaper.MeterAccount.Spend(long)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=JSD-0081 decision D8, `E6C410`, PENDING
@@ -395,5 +401,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-312 of the 312 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+316 of the 316 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.
