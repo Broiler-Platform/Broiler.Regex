@@ -70,21 +70,53 @@ public class CompileChargingTests
         return count;
     }
 
-    /// <summary>The ranges of single code points and the sequences of a property of strings, <c>RGI_Emoji</c> the sum of the others'.</summary>
-    private static (int Ranges, int Sequences) Strings(string name)
+    /// <summary>
+    /// The ranges of single code points, the sequences and the sequences' UTF-16 code units of a property of strings,
+    /// <c>RGI_Emoji</c> the sum of the others'.
+    /// </summary>
+    private static (int Ranges, int Sequences, long CodeUnits) Strings(string name)
     {
         Assert.True(StringProperties.TryResolve(name, out var property), name);
         if (!property.IsUnion)
-            return (property.CodePointRangeCount, property.SequenceCount);
-        var (ranges, sequences) = (0, 0);
+            return (property.CodePointRangeCount, property.SequenceCount, CodeUnits(property));
+        var (ranges, sequences, codeUnits) = (0, 0, 0L);
         for (var id = 0; id < StringProperties.PropertyCount; id++)
         {
             var member = StringProperties.Property(id);
             if (!member.IsUnion)
-                (ranges, sequences) = (ranges + member.CodePointRangeCount, sequences + member.SequenceCount);
+                (ranges, sequences, codeUnits) = (ranges + member.CodePointRangeCount, sequences + member.SequenceCount, codeUnits + CodeUnits(member));
         }
 
-        return (ranges, sequences);
+        return (ranges, sequences, codeUnits);
+    }
+
+    private static long CodeUnits(StringProperty property)
+    {
+        var sequences = property.GetSequences();
+        Span<int> sequence = stackalloc int[StringPropertySequences.MaxSequenceLength];
+        var units = 0L;
+        while (sequences.TryRead(sequence, out var length))
+        {
+            for (var i = 0; i < length; i++)
+                units += sequence[i] > 0xFFFF ? 2 : 1;
+        }
+
+        return units;
+    }
+
+    /// <summary>The code points two properties share, from the provider's sets.</summary>
+    private static long CodePointsInBoth(string first, string second)
+    {
+        CodePointSet Set(string name)
+        {
+            Assert.True(Properties.TryResolve(name, out var provided), name);
+            var ranges = new List<(int Lo, int Hi)>();
+            for (var range = 0; range < provided.RangeCount; range++)
+                ranges.Add((provided.First(range), provided.Last(range)));
+            return CodePointSet.FromRanges(ranges);
+        }
+
+        return Set(first).Intersect(Set(second)).CodePointCount();
     }
 
     // ----- Compile's budget and meter --------------------------------------------------------------------------------
@@ -245,7 +277,10 @@ public class CompileChargingTests
     /// <summary>
     /// The declared set of check A-2: <c>v</c>-mode and case-insensitive expansions, and the places that charge them, each
     /// with the units it must charge at least, read from the provider's own data by these tests rather than from the
-    /// library: one per range and per string the expansion touches (the place's unit, <see cref="CompileSite"/>).
+    /// library: one per range and per string the expansion touches, and where a place's unit says more (a sort's factor,
+    /// a string's code units, each time a string is touched), that unit (<see cref="CompileSite"/>). Each charge the
+    /// library makes is needed by at least one row: removing any one of them fails a row (the roadmap's record of task 2.5
+    /// lists the control, a run with each charge removed in turn).
     /// </summary>
     public static TheoryData<string, string, string, long> DeclaredExpansions
     {
@@ -262,7 +297,7 @@ public class CompileChargingTests
                 { "\\p{L}", "u", nameof(CompileSite.Property), Ranges("L") },
                 { "\\p{Script=Greek}", "u", nameof(CompileSite.Property), Ranges("Script", "Greek") },
                 { "[\\P{Lu}]", "v", nameof(CompileSite.Property), Ranges("Lu") },
-                { "\\p{RGI_Emoji}", "v", nameof(CompileSite.Property), emoji.Ranges + emoji.Sequences },
+                { "\\p{RGI_Emoji}", "v", nameof(CompileSite.Property), emoji.Ranges + emoji.Sequences + emoji.CodeUnits },
                 { "\\p{RGI_Emoji_Flag_Sequence}", "v", nameof(CompileSite.Property), Strings("RGI_Emoji_Flag_Sequence").Sequences },
 
                 // The set algebra: a unit per range of each operand.
@@ -276,18 +311,22 @@ public class CompileChargingTests
                 { "[\\P{L}a]", "u", nameof(CompileSite.Complement), Ranges("L") + 1 },
                 { "\\D\\W\\S", "", nameof(CompileSite.Complement), 3 },
 
-                // Ranges gathered out of order: a unit per range for the merge, and the sort.
-                { "[zyxwvutsrqponmlkjihgfedcba]", "", nameof(CompileSite.Normalize), 26 },
+                // Ranges gathered out of order: a unit per range for the merge, and the sort's ⌊log₂ 26⌋ = 4 more per range.
+                { "[zyxwvutsrqponmlkjihgfedcba]", "", nameof(CompileSite.Normalize), 26 * 5 },
                 { "[\\p{L}]", "u", nameof(CompileSite.Normalize), Ranges("L") },
 
-                // MaybeSimpleCaseFolding under vi: a unit per range of each operand folded, and per string.
-                { "\\p{L}", "vi", nameof(CompileSite.CaseFold), Ranges("L") },
+                // MaybeSimpleCaseFolding under vi: a unit per range of each operand folded, per code point mapped one at a time
+                // (of \p{L}, those it shares with Cased), and a string's code units.
+                { "\\p{L}", "vi", nameof(CompileSite.CaseFold), Ranges("L") + CodePointsInBoth("L", "Cased") },
                 { "[\\p{Lu}\\p{Ll}]", "vi", nameof(CompileSite.CaseFold), Ranges("Lu") + Ranges("Ll") },
                 { "\\p{RGI_Emoji}", "vi", nameof(CompileSite.CaseFold), emoji.Sequences },
-                { "[\\q{AB|cD|Ef}]", "vi", nameof(CompileSite.CaseFold), 3 },
+                { "[\\q{AB|cD|Ef}]", "vi", nameof(CompileSite.CaseFold), 6 },
 
-                // A class's strings: a unit per string a union, an intersection or a difference adds or looks up.
-                { "[\\q{ab|cd|ef|gh}]", "v", nameof(CompileSite.Strings), 4 },
+                // A class's strings: a string's code units each time a disjunction, a union, an intersection or a difference
+                // adds it or looks it up, and when the class takes it: four strings of two, added and taken; and ab, cd, then
+                // cd, ef added, ab and cd looked up, cd kept and taken.
+                { "[\\q{ab|cd|ef|gh}]", "v", nameof(CompileSite.Strings), 16 },
+                { "[\\q{ab|cd}&&\\q{cd|ef}]", "v", nameof(CompileSite.Strings), 16 },
                 { "[\\p{RGI_Emoji}\\q{ab}]", "v", nameof(CompileSite.Strings), emoji.Sequences + 1 },
                 { "[\\p{RGI_Emoji}&&\\p{RGI_Emoji}]", "v", nameof(CompileSite.Strings), 2L * emoji.Sequences },
                 { "[\\p{RGI_Emoji}--\\q{ab}]", "v", nameof(CompileSite.Strings), emoji.Sequences + 1 },
@@ -298,10 +337,14 @@ public class CompileChargingTests
                 { "\\s", "", nameof(CompileSite.Universe), Properties.SpaceSeparator.RangeCount + 3 },
                 { "\\w", "iu", nameof(CompileSite.Universe), 63 },
 
-                // The program compiler: a unit per range a class copies, and per string a table holds.
+                // The program compiler: a unit per range a class copies, and for a class of strings its code units, and one,
+                // to read them, its code units and 1 + ⌊log₂ n⌋ per string for a new table, and its code units, and one, for
+                // each earlier table of the same hash compared: abc and de read (6), a new table (5 + 2 × 2) and x's range
+                // (1); then the same class again, read (6), compared with the first table (6), and x's range (1).
                 { "\\p{L}", "u", nameof(CompileSite.Program), Ranges("L") },
                 { "\\p{RGI_Emoji}", "v", nameof(CompileSite.Program), emoji.Sequences },
-                { "[\\q{abc|ab}x]", "v", nameof(CompileSite.Program), 2 },
+                { "[\\q{abc|de}x]", "v", nameof(CompileSite.Program), 16 },
+                { "[\\q{abc|de}x][\\q{abc|de}x]", "v", nameof(CompileSite.Program), 29 },
             };
         }
     }
