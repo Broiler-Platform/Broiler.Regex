@@ -76,8 +76,11 @@ public sealed class RegexEscaper
     // Broiler-Human:        PENDING
     private const string OtherPunctuators = ",-=<>#&!%:;@~'`\"";
 
-    /// <summary>The ControlEscape letters of U+0009 to U+000D, in that order (ECMA-262's table "ControlEscape Code Point Values").</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=Medium; Resources=0; Fingerprint=8787C8
+    /// <summary>
+    /// The ControlEscape letters of U+0009 to U+000D, in that order: ECMA-262's table "ControlEscape Code Point Values",
+    /// in §22.2.1.7 (Static Semantics: CharacterValue), which EncodeForRegExpEscape reads.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.7 table ControlEscape Code Point Values; IP=None; Security=Medium; Resources=0; Fingerprint=8787C8
     // Broiler-Human:        PENDING
     private const string ControlEscapeLetters = "tnvfr";
 
@@ -450,8 +453,11 @@ public sealed class RegexEscaper
             UnicodeEscape(unit);
         }
 
-        /// <summary>UnicodeEscape (ECMA-262 §22.1.3.17.3): <c>\u</c> and four lower-case hexadecimal digits.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.1.3.17.3 UnicodeEscape; IP=None; Security=Medium; Resources=0; Fingerprint=BA1AE1
+        /// <summary>
+        /// UnicodeEscape, under JSON.stringify (ECMA-262 §25.5.2.4 in ES2025, §25.5.4.4 in ES2026): <c>\u</c> and four
+        /// lower-case hexadecimal digits.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s25.5.2.4 UnicodeEscape (s25.5.4.4 in ES2026); IP=None; Security=Medium; Resources=0; Fingerprint=BA1AE1
         // Broiler-Human:        PENDING
         private void UnicodeEscape(int unit)
         {
