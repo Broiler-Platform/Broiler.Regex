@@ -47,7 +47,9 @@ dotnet test Broiler.Regex.slnx
 
 The solution's tests include `tests/Regex.Architecture.Tests`, the shared JavaScript libraries
 programme's architecture rules, which hold the code to the programme's
-[conventions](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/conventions.md);
+[conventions](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/conventions.md),
+and `tests/Regex.Fuzz`, the fuzz target, whose declared session CI runs beside them
+([its README](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/tests/Regex.Fuzz/README.md));
 releases are recorded in the [changelog](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/CHANGELOG.md).
 
 See the [preview publishing guide](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/publishing.md)

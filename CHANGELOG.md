@@ -41,6 +41,19 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - CI jobs for the architecture tests, the probe and the assurance check (Broiler.Code's
     `assurance check --root Broiler.RegEx`).
   - `.gitattributes`, which stores every text file with LF line endings.
+  - `tests/Regex.Fuzz`, the fuzz target (task 2.11; decision D32 of Broiler.VM's JSD-0081, check E-5 of bundle
+    `sjl-11-001`): a seeded, deterministic, grammar-based generator of patterns (every construct the parser accepts,
+    every flag combination, the adversarial corpus's classes, near misses that reach refusals) and subjects (lone
+    surrogates and pairs, long runs), each case compiled with a nesting limit, a compile budget and a meter and matched
+    through the offset entry, from every start and anchored or not, and through the string-bearing members, with every
+    ceiling set. A finding is an exception no entry documents, a disagreement between entries, an answer the
+    documentation rules out, or a child process that ends or stops answering. CI's `fuzz` job runs the declared seed,
+    20261027, for 24,000 iterations on ubuntu-latest and windows-latest; its `fuzz-control` job builds the target with
+    a throw planted in a declared parser path, the `v`-mode class-set subtraction, compiled into the target only, and
+    requires the declared seed to report it. `tests/Regex.Fuzz/known-findings.tsv` lists the finding in library code
+    the declared session reaches and that is not fixed yet (`/[\q{\uD800}]/v` escapes as an `ArgumentException`); the
+    row leaves the file with its fix. A long local run found a second, recorded in `docs/roadmap.md` (`/[a--bc/v`
+    compiles, as `/[a--b]/v`). The package is unchanged.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

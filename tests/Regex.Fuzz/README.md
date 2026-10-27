@@ -43,11 +43,11 @@ answering, is a finding at the iteration it was in), and each known finding's re
 - **Seed** `20261027`, **iterations** 0 to 23,999 (`FuzzSession.DeclaredSeed`, `FuzzSession.DeclaredIterations`).
 - **CI**: the `fuzz` job of [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml), on ubuntu-latest and
   windows-latest, bounded by the job's 20 minutes and the session step's 10, and inside it by the watchdog's 120 seconds
-  per child line. Locally, on four cores (linux-x64), the session takes 26 to 28 seconds; one core takes about two
-  minutes.
+  per child line. Locally, on four cores (linux-x64), the session took 26 to 28 seconds on a quiet machine and 37 to
+  40 seconds beside other builds.
 - **Its transcript digest** at the commit that added it was
-  `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`, the same over two runs, over three and four
-  workers, and under `tr-TR`. The digest is a record, not a pin: the records hold the units the meter was charged and
+  `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`, the same over five runs, over three and four
+  worker processes and under `tr-TR`. The digest is a record, not a pin: the records hold the units the meter was charged and
   the library's answers, so it moves with any change of the library's behaviour or units, and CI prints it without
   comparing it.
 
