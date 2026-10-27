@@ -176,6 +176,15 @@ Broiler.Regex.RegexWorkCharge..ctor(System.Object, System.IntPtr) method System.
 Broiler.Regex.RegexWorkCharge.BeginInvoke(System.UInt64, System.AsyncCallback, System.Object) method virtual System.IAsyncResult
 Broiler.Regex.RegexWorkCharge.EndInvoke(System.IAsyncResult) method virtual System.Void
 Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64) method virtual System.Void
+Broiler.Regex.Text.RegexFlagsStatus enum
+Broiler.Regex.Text.RegexFlagsStatus.DuplicateFlag = 2
+Broiler.Regex.Text.RegexFlagsStatus.Success = 0
+Broiler.Regex.Text.RegexFlagsStatus.UnicodeWithUnicodeSets = 3
+Broiler.Regex.Text.RegexFlagsStatus.UnknownFlag = 1
+Broiler.Regex.Text.RegexFlagsStatus.value__ field System.Int32
+Broiler.Regex.Text.RegexFlagsText static class
+Broiler.Regex.Text.RegexFlagsText.Format(Broiler.Regex.RegexFlags) method static System.String
+Broiler.Regex.Text.RegexFlagsText.Parse(System.ReadOnlySpan`1<System.Char>, Broiler.Regex.RegexFlags&, System.Int32&) method static Broiler.Regex.Text.RegexFlagsStatus
 Broiler.Regex.Unicode.UnicodeCharSets static class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch sealed class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void

@@ -57,49 +57,40 @@ public enum RegexFlags
 }
 
 /// <summary>
-/// Parses and validates an ECMAScript flags string (ECMA-262 §22.2.3.1 step 4
-/// + §22.2.6). Each flag may appear at most once; <c>u</c> and <c>v</c> are
-/// mutually exclusive; an unknown letter is a syntax error.
+/// Parses and validates an ECMAScript flags string (RegExpInitialize, ECMA-262 §22.2.3.3, and ParsePattern's refusal of
+/// <c>u</c> with <c>v</c>, §22.2.3.4), throwing for a string they refuse. Each flag may appear at most once; <c>u</c> and
+/// <c>v</c> are mutually exclusive; an unknown letter is a syntax error.
 /// </summary>
+/// <remarks>
+/// The reader of <c>0.1.0-preview.4</c>, kept with its answers and its messages. Since task 2.7 of SJL-11.2 it reads the
+/// grammar of <see cref="Text.RegexFlagsText.Parse"/>, which answers the same refusals as a status with a position and no
+/// exception (convention 3); task 2.9, which fixes the public surface, decides this member's future.
+/// </remarks>
 // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=8E3CEF
 // Broiler-Falsified-If: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
 // Broiler-Human:        PENDING
 public static class RegexFlagsParser
 {
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.1; IP=Low; Security=High; Resources=1; Fingerprint=A19067
+    /// <summary>The flags <paramref name="flags"/> sets, or a <see cref="RegexSyntaxException"/> for a string ECMA-262 refuses.</summary>
+    /// <param name="flags">The flags string; null or empty sets no flag.</param>
+    /// <returns>The flags.</returns>
+    /// <exception cref="RegexSyntaxException">
+    /// A code unit outside <c>d g i m s u v y</c>, a flag written twice, or <c>u</c> with <c>v</c>, with the message
+    /// <c>0.1.0-preview.4</c> gave each and no position.
+    /// </exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=D31393
     // Broiler-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public static RegexFlags Parse(string? flags)
     {
-        var result = RegexFlags.None;
-        if (string.IsNullOrEmpty(flags))
-            return result;
-
-        foreach (var ch in flags)
+        var status = Text.RegexFlagsText.Parse(flags, out var result, out var position);
+        return status switch
         {
-            var flag = ch switch
-            {
-                'd' => RegexFlags.HasIndices,
-                'g' => RegexFlags.Global,
-                'i' => RegexFlags.IgnoreCase,
-                'm' => RegexFlags.Multiline,
-                's' => RegexFlags.DotAll,
-                'u' => RegexFlags.Unicode,
-                'y' => RegexFlags.Sticky,
-                'v' => RegexFlags.UnicodeSets,
-                _ => throw new RegexSyntaxException($"Invalid regular expression flags: '{ch}'"),
-            };
-
-            if ((result & flag) != 0)
-                throw new RegexSyntaxException($"Duplicate regular expression flag: '{ch}'");
-
-            result |= flag;
-        }
-
-        if ((result & RegexFlags.Unicode) != 0 && (result & RegexFlags.UnicodeSets) != 0)
-            throw new RegexSyntaxException("The 'u' and 'v' regular expression flags cannot be combined");
-
-        return result;
+            Text.RegexFlagsStatus.Success => result,
+            Text.RegexFlagsStatus.UnknownFlag => throw new RegexSyntaxException("Invalid regular expression flags: '" + flags![position] + "'"),
+            Text.RegexFlagsStatus.DuplicateFlag => throw new RegexSyntaxException("Duplicate regular expression flag: '" + flags![position] + "'"),
+            _ => throw new RegexSyntaxException("The 'u' and 'v' regular expression flags cannot be combined"),
+        };
     }
 
     /// <summary>True when either <c>u</c> or <c>v</c> is set (both imply code-point semantics).</summary>
