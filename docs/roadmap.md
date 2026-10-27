@@ -437,7 +437,11 @@ order inside each, which a charge made just after its read would leave unchanged
 character read reads the caller's tables once, and `ChargingTests` takes the units charged at each read of the tables
 for a greedy and a lazy run (both loops and the lazy frame's next character), an atom run, a folded class of strings
 and its single characters, and the scan, over a character, a run's atom, an atom run's first atom and after a group's
-start, and into a step ceiling. *Amended at the review of task 2.4c:* the scan first tested each position and charged
+start, and into a step ceiling. Check A-1's "a non-matching subject of n positions charges at least n units" is read with
+n the subject's characters: the search's last position, the end, holds no character, and under the scan it is neither
+tested nor charged, as Broiler.VM's scan charges it nothing, so `b` over n characters costs n units, and over the
+empty subject none, the meter uncalled even under a step ceiling of one unit; without a first test the end is an
+attempt and costs a unit (`ChargingTests`). *Amended at the review of task 2.4c:* the scan first tested each position and charged
 it after, and charged the admitted position nothing in the scan; it now charges before the test, as the contract's
 "prepaid" reads, with the same units. Each place's mutant that reads before it charges (both loops of a run, the lazy
 frame, the atom run's later atoms, a string's character, a class of strings' single characters, the scan), the run

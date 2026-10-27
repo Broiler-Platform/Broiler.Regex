@@ -566,14 +566,25 @@ public class ChargingTests
     }
 
     [Fact]
-    public void A_non_matching_subject_of_n_positions_charges_at_least_n_units()
+    public void A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan()
     {
+        // Check A-1's "a non-matching subject of n positions charges at least n units", read with n the subject's
+        // characters: a search tries n + 1 positions, 0 to n, and every one that holds a character costs at least a
+        // unit, an attempt's or a skip's. The end holds none: without a first test it is an attempt, a unit at least;
+        // under the start-position scan it is neither tested nor charged, as Broiler.VM's scan charges it nothing, so
+        // b over n a's costs n units exactly, one a skip, and over the empty subject none, with no charge to the meter.
         const int n = 10_000;
         var meter = new RecordingMeter();
         var run = Run(TestProgram.Compile("b"), new string('a', n), meter.Charge);
-        Assert.Equal(RegexStatus.NoMatch, run.Status);
-        Assert.True(run.Units >= n, run.Units + " units");
+        Assert.Equal((RegexStatus.NoMatch, (ulong)n), (run.Status, run.Units));
         Assert.True(meter.Charged >= run.Units);
+        Assert.True(Run(TestProgram.General("b"), new string('a', n), null).Units >= n + 1);
+
+        var empty = new RecordingMeter();
+        var nothing = Run(TestProgram.Compile("b"), "", empty.Charge, steps: 1);
+        Assert.Equal((RegexStatus.NoMatch, 0UL), (nothing.Status, nothing.Units));
+        Assert.Empty(empty.Charges);
+        Assert.Equal(1UL, Run(TestProgram.General("b"), "", null).Units);
     }
 
     [Fact]
