@@ -81,7 +81,8 @@ status or, for a `validate` row, waits, and the probe's exit code agrees. Its `-
 for a text in UTF-16 and UTF-8. CI's `adversarial-controls` job builds each control, runs it and checks its report,
 shows the control's text in the control's probe assembly, shows that no control built `Broiler.Regex/bin`, then
 builds the probe as usual, checks that report as the revert, and shows that the library's DLL lacks both the
-controls' text and the switch's name. About 40 seconds of builds and runs locally on linux-x64.
+controls' text and the switch's name. 30 to 45 seconds of builds and runs locally on linux-x64 (35 and 36 on two
+fresh copies of the tree at `57002e0`, every build without build servers).
 
 What the controls reported on 2026-10-27, the same under the JIT and under Native AOT on linux-x64:
 

@@ -1225,9 +1225,11 @@ control`, `part C` or `RegexAdversarialControl`, in UTF-16 or UTF-8, where each 
 and compares the two reports with `cmp`, a step failing on a row that differs or a child that ends abnormally, each
 step bounded by 10 minutes. The new `adversarial-controls` job, on ubuntu-latest within 20 minutes, builds and checks
 each control, shows that no control built `Broiler.Regex/bin`, then builds the probe as usual, checks the revert and
-searches the library's DLL for the controls' text; its steps took 42 seconds on a fresh copy of this tree locally (15,
-13 and 14 for the three builds and runs). The reports are kept as artifacts of the runs, which the bundle's README now
-names as part C's evidence at a reading.
+searches the library's DLL for the controls' text; its steps took 35 and 36 seconds on two fresh copies of the tree at
+`57002e0` locally, every build without build servers (11 to 13 seconds for each of the three builds and runs). Two
+earlier local measurements of the same steps took 42 seconds, the figure commit `13bda4a`'s message gives, of a copy
+taken before two small edits of that commit's code, and 30; so about 30 to 45 seconds. The reports are kept as
+artifacts of the runs, which the bundle's README now names as part C's evidence at a reading.
 
 **Rule SL3 and the probe.** Rule SL3 refused `System.Diagnostics.Process` for the probe, which may do file I/O
 only, so the mode, which starts processes, failed it (the probe named `Process` and `ProcessStartInfo`). The probe's

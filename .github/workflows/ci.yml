@@ -183,8 +183,9 @@ jobs:
   # (probes/Regex.Probe/AdversarialControls.targets), never building Broiler.Regex.dll: (1) LimitExceeded naming steps
   # answered NoMatch, which must report every K, A, L, W and G row; (2) the nesting check removed, which must report every
   # N row past the limit, each ending abnormally or differing. eng/adversarial-controls.py holds each report to exactly
-  # the rows its control must report, and the revert, the probe built as usual again, to no row reported. The library's
-  # DLL, built only by the revert, holds neither control's text. Under the JIT; about 40 s of builds and runs locally.
+  # the rows its control must report that run (the validate rows wait for task 2.8), and the revert, the probe built as
+  # usual again, to no row reported. The library's DLL, built only by the revert, holds neither control's text. Under
+  # the JIT; 30 to 45 s of builds and runs locally on linux-x64.
   adversarial-controls:
     name: Adversarial corpus, part C's controls
     runs-on: ubuntu-latest
