@@ -1005,7 +1005,7 @@ public sealed class RegexParser
         return new ClassSetValue { Set = ComplementOperand(value.Set) };
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=314DFD
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=3CE8A7
     // Broiler-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetExpression()
@@ -1014,11 +1014,14 @@ public sealed class RegexParser
             return new ClassSetValue();
 
         var start = _pos;
-        var accumulated = ParseClassSetRangeOrOperand();
+        var accumulated = ParseClassSetRangeOrOperand(out var range);
 
-        if (Peek() == '&' && PeekAt(1) == '&')
+        // A ClassIntersection and a ClassSubtraction begin with a ClassSetOperand (§22.2.1); a ClassSetRange is a
+        // ClassUnion's alone. After a range, '--' and '&&' are no operator, and the union's first RejectMixedOperator
+        // refuses them, so [a-z--b] and [a-a&&c] are the refusal of a mixed expression, at the range.
+        if (!range && Peek() == '&' && PeekAt(1) == '&')
             return ParseClassIntersection(accumulated, start);
-        if (Peek() == '-' && PeekAt(1) == '-')
+        if (!range && Peek() == '-' && PeekAt(1) == '-')
             return ParseClassSubtraction(accumulated, start);
 
         // A union's operands are gathered and its set is built once, at the end, joined two by two; its strings are
@@ -1029,7 +1032,7 @@ public sealed class RegexParser
         while (!AtEnd && Peek() != ']')
         {
             RejectMixedOperator(start);
-            var operand = ParseClassSetRangeOrOperand();
+            var operand = ParseClassSetRangeOrOperand(out _);
             union.AddAll(operand.Set);
             accumulated.MayContainStrings |= operand.MayContainStrings;
             accumulated.Strings.UnionWith(operand.Strings, _account);
@@ -1095,7 +1098,7 @@ public sealed class RegexParser
     /// than a silently reassociated expression.
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=9001F0
-    // Broiler-Falsified-If: [ab--c] or [ab&&c] under v is accepted instead of throwing
+    // Broiler-Falsified-If: [ab--c], [ab&&c] or [a-z--b] under v is accepted instead of throwing
     // Broiler-Human:        PENDING
     private void RejectMixedOperator(int start)
     {
@@ -1122,11 +1125,13 @@ public sealed class RegexParser
                 "A class-set expression may not mix union, '&&' and '--' without nesting", start);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=4A932C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=8C19B5
     // Broiler-Falsified-If: a range endpoint that is a class escape or \q{...}, as in [a-\d] under v, is accepted instead of throwing
     // Broiler-Human:        PENDING
-    private ClassSetValue ParseClassSetRangeOrOperand()
+    private ClassSetValue ParseClassSetRangeOrOperand(out bool range)
     {
+        // range says whether a ClassSetRange was read, which only a ClassUnion may hold.
+        range = false;
         var start = _pos;
         var operand = ParseClassSetOperand(out var single);
 
@@ -1143,6 +1148,7 @@ public sealed class RegexParser
             throw new RegexSyntaxException(
                 $"Range out of order in character class: U+{single.Value:X}-U+{highSingle.Value:X}", start);
 
+        range = true;
         return Fold(new ClassSetValue { Set = CodePointSet.Of(single.Value, highSingle.Value) });
     }
 

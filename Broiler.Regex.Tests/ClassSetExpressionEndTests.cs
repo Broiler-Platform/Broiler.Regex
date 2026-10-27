@@ -5,16 +5,20 @@ using Xunit;
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// Where a <c>v</c>-mode class-set expression ends (ECMA-262 §22.2.1): a ClassIntersection or a ClassSubtraction ends at
-/// its last ClassSetOperand, which only another operator of the same kind or the class's <c>]</c> may follow, so an
-/// operand after it is a syntax error, and a class the pattern ends inside is an unterminated one.
+/// Where a <c>v</c>-mode class-set expression ends and begins (ECMA-262 §22.2.1): a ClassIntersection or a
+/// ClassSubtraction ends at its last ClassSetOperand, which only another operator of the same kind or the class's
+/// <c>]</c> may follow, so an operand after it is a syntax error, and a class the pattern ends inside is an unterminated
+/// one; and it begins with a ClassSetOperand, never a ClassSetRange, which is a ClassUnion's alone, so a range before
+/// <c>&amp;&amp;</c> or <c>--</c> is a syntax error too.
 /// </summary>
 /// <remarks>
 /// Until the integration of tasks 2.6 and 2.11 the parser refused only an operator of the other kind there and then took
 /// whatever character followed for the closing <c>]</c> without reading it: <c>/[a--bc/v</c> and <c>/[a&amp;&amp;ac/v</c>
 /// compiled and matched <c>a</c>, as <c>/[a--b]/v</c> and <c>/[a&amp;&amp;a]/v</c> do, and <c>/[a--bc]/v</c> was refused
 /// for the stray <c>]</c> the swallowed <c>c</c> left. The fuzz target's long run found it (iterations 215,039 and
-/// 814,524 of seed 20261027).
+/// 814,524 of seed 20261027). Until the integration's review the parser also took a range read first for the first
+/// operand of an intersection or a subtraction: <c>/[a-z--b]/v</c> compiled as <c>a-z</c> minus <c>b</c>, and
+/// <c>/[a-a&amp;&amp;c]/v</c> as an empty class. The review's differential reading against V8 found it.
 /// </remarks>
 public class ClassSetExpressionEndTests
 {
@@ -72,6 +76,58 @@ public class ClassSetExpressionEndTests
         }
     }
 
+    /// <summary>
+    /// A range before either operator, its ends written raw, escaped, as a reserved punctuator or as a hexadecimal escape,
+    /// the operator's operand a character, a <c>\q{…}</c> or a nested class, at nesting depths 0 to 2, with and without
+    /// <c>^</c>.
+    /// </summary>
+    public static IEnumerable<object[]> RangesBeforeAnOperator()
+    {
+        string[] expressions = ["a-z--b", "a-a&&c", @"\--b--c", @"a-\x63&&\q{c}", "a-z--[b-y]"];
+        foreach (var expression in expressions)
+        {
+            for (var depth = 0; depth <= 2; depth++)
+            {
+                foreach (var negated in new[] { false, true })
+                {
+                    var open = new string('[', depth) + (negated ? "[^" : "[");
+                    yield return [open + expression + new string(']', depth + 1), open.Length];
+                }
+            }
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(RangesBeforeAnOperator))]
+    public void A_range_before_an_intersection_or_a_subtraction_is_a_syntax_error(string pattern, int expressionStart)
+    {
+        foreach (var flags in new[] { RegexFlags.UnicodeSets, RegexFlags.UnicodeSets | RegexFlags.IgnoreCase })
+        {
+            var refusal = Refusal(pattern, flags);
+            Assert.Equal(Mixed, refusal.Message);
+            Assert.Equal(expressionStart, refusal.Position);
+        }
+    }
+
+    [Theory]
+    // The review's differential reading's forms, and a range after an operand of a union, refused as before.
+    [InlineData("[a-b&&c]", 1)]
+    [InlineData("[b-b&&c]", 1)]
+    [InlineData(@"[\x63-\x63--\q{c}]", 1)]
+    [InlineData("[^a-z--[b-y]]", 2)]
+    [InlineData(@"[[\--b--c]]", 2)]
+    [InlineData("[a-z--b]-", 1)]
+    [InlineData("[a-z--b", 1)]
+    [InlineData("[a-z&&&b]", 1)]
+    [InlineData("[ba-z--c]", 1)]
+    [InlineData("[ba-z&&c]", 1)]
+    public void A_range_before_an_operator_is_refused_where_the_expression_begins(string pattern, int position)
+    {
+        var refusal = Refusal(pattern, RegexFlags.UnicodeSets);
+        Assert.Equal(Mixed, refusal.Message);
+        Assert.Equal(position, refusal.Position);
+    }
+
     [Theory]
     // The fuzz target's reductions and the brief's, and the other operators' forms.
     [InlineData("[a--bc", 1)]
@@ -119,6 +175,14 @@ public class ClassSetExpressionEndTests
     [InlineData("[[a&&a][b--c]]", "b", "match 0,1")]
     [InlineData(@"[\q{ab|c}--c]", "ab", "match 0,2")]
     [InlineData("[[[a--b]]]", "a", "match 0,1")]
+    // A range as an operand of an intersection or a subtraction, nested as ECMA-262 nests it, and ranges in a union.
+    [InlineData("[[a-z]--b]", "z", "match 0,1")]
+    [InlineData("[[a-z]--b]", "b", "nomatch")]
+    [InlineData("[[a-z]--[b-y]]", "c", "nomatch")]
+    [InlineData("[[a-c]&&[c-e]]", "c", "match 0,1")]
+    [InlineData("[[a-c]&&[c-e]]", "b", "nomatch")]
+    [InlineData("[a-zA-Z]", "Q", "match 0,1")]
+    [InlineData(@"[\--b]", "a", "match 0,1")]
     public void An_expression_closed_by_its_bracket_is_unchanged(string pattern, string subject, string expected)
         => Assert.Equal(expected, TestRegex.Answer(TestRegex.Compile(pattern, "v"), subject, 0));
 }
