@@ -136,6 +136,25 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves the meter's
   runtime-made members out, as convention 1 admits it, and refuses any other public delegate the library declares,
   its declaration and every signature that names it.
+- **The compile meter and the compile budget (task 2.5; R2; decisions D8, D9 and D10; check A-2).**
+  `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?
+  meter, out BroilerRegex?, out RegexLimit)` charges the caller's meter for the work of the compilation, in blocks of
+  512 units paid before the work, as a match is charged, and answers `LimitExceeded` with the new
+  `RegexLimit.Compile` (5) when the work would pass the caller's compile budget, before the work that would pass it; a
+  budget of zero is a broken precondition (`ArgumentOutOfRangeException`), and null is no budget. The units are in
+  proportion to the ranges and strings the pattern's expansions touch: one per code unit of the pattern; one per range
+  a property escape expands to, and for a property of strings one per sequence and one per code unit of each; one per
+  range of each operand of a union, an intersection, a difference or a complement, and a sort's 1 + floor(log2 n) per
+  range gathered out of order; for MaybeSimpleCaseFolding one per range and one per code point mapped one at a time;
+  for a class's strings their code units each time one is added, looked up or taken, and the class's order; the sets
+  a compilation builds from the provider; and the program compiler's copies of class ranges and string tables. A
+  meter that throws ends the compilation with its own exception and changes no state of the library. The constructors
+  take neither budget nor meter, as an engine that passes no meter compiles (decision D10). **Provisional:** the
+  signature and `RegexLimit.Compile`, until task 2.9 fixes the surface of `0.2.0-preview.1`. `PublicAPI.txt` now
+  marks each member these entries call provisional with a `# provisional:` line, which the listing's rewrite keeps and
+  rule SL6 refuses once its member is gone. The adversarial corpus's class V, fifty `\p{L}` in a class under `v`,
+  `vi` and `iu` at a budget of 300 units and fifty `\p{RGI_Emoji}` under `v` and `vi` at 1,000, answers its declared
+  `limit:compile` under the JIT and through the probe.
 
 ### Changed
 
@@ -209,8 +228,28 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   ("Where Broiler.Regex stands") for task 2.9, which decides between the owner's admission of the exception for a
   member decision D12 keeps and a status-returning form. The offset entry is the status-returning form for a caller
   that expects to meet a ceiling.
+- **`Compile`'s provisional signature is replaced (task 2.5; R2).** Task 2.3's
+  `Compile(string, RegexFlags, IUnicodeTables, int, out BroilerRegex?, out RegexLimit)` is gone, replaced rather than
+  overloaded by the signature above, which adds the compile budget and the meter. No published version carries
+  either, so package validation against `0.1.0-preview.4` reads an addition and no suppression is added.
+- **The strings of a `v`-mode class are an insertion-ordered hash set (task 2.5, plan row 2.5).** The parser searched
+  a list before adding each string, so a union of operands of n strings in all made O(n²) comparisons, and an
+  intersection or a difference of a and b strings O(a·b): fifty `\p{RGI_Emoji}` in one class, about 138,000 strings,
+  made about 187 million comparisons. Each string is now hashed once per addition or lookup, O(its code units). The
+  program compiler finds the table an earlier occurrence of the same strings built by a hash of them, where it compared
+  every earlier table string by string. Internal; no signature changes.
 
 ### Observable changes
+
+- **Compilation is charged (R2; task 2.5).** `Compile` charges the caller's meter for the compilation and answers the
+  compile budget as `LimitExceeded` naming `Compile` (Added). No compiled pattern answers a match differently: the
+  sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as the test
+  suite of task 2.4c, passing unchanged, and the new tests of the fold, which hold it to a fold of every code point,
+  show. Compiling costs less where the work was quadratic
+  or per code point: MaybeSimpleCaseFolding of an operand of more than 4,096 code points maps only the code points it
+  shares with `Cased`, which holds every code point simple case folding moves (4,469 of `\p{L}`'s 145,672), and a
+  class's strings are added and found by a hash (Changed). The sets of `\s` and of the folded `\w` are built the
+  first time a compilation reads them, where every compilation built both.
 
 - **The string-bearing members answer as the specification does where the old matcher did not (task 2.4c).** The
   three defects the differential comparison found are corrected: a start inside a surrogate pair under `u` and `v` runs

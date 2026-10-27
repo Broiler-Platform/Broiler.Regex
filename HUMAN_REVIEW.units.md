@@ -183,11 +183,11 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a character under the i flag in force is given an instruction that compares it exactly, or the dot under s one that refuses a line terminator
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAtomRun(SequenceNode, int, int, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=none cited, `FFC2CE`, PENDING
   - Falsified if: a run's cost is not its first atom's, or its atoms are emitted in an order other than the sequence's matched order
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.StringTableOf(CharSet, bool)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7, `E02670`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.StringTableOf(CharSet, bool)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7, `041A74`, PENDING
   - Falsified if: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `3DE6EB`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddClass(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `989588`, PENDING
   - Falsified if: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
-- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddStrings(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7, `C7894A`, PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddStrings(CharSet, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.7, `BC8ED7`, PENDING
   - Falsified if: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.AddAnchor(AnchorKind, Scope)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, Spec=ECMA-262 s22.2.2.6, `7D25B8`, PENDING
   - Falsified if: under u with i a word boundary reads a word class without U+017F, or without i or without u one with it
@@ -247,7 +247,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2
 - `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, RegexUnicode, RegexNesting, out int, out IReadOnlyDictionary<string, int>)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `47A0F9`, PENDING
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
-- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `43961A`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `4C16E2`, PENDING
   - Falsified if: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
 - `Broiler.Regex.Parsing.RegexParser.PreScan()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `83B68B`, PENDING
   - Falsified if: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
@@ -275,21 +275,21 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a repeated modifier flag such as (?ii:a) is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ParseAtomEscape()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `F4EA90`, PENDING
   - Falsified if: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
-- `Broiler.Regex.Parsing.RegexParser.ParseCharacterClass()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `B64CBF`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseCharacterClass()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `41A6F0`, PENDING
   - Falsified if: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ReadClassAtom(CharSet, CodePointSet.Builder, out bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `2DF760`, PENDING
   - Falsified if: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
 - `Broiler.Regex.Parsing.RegexParser.ParseClassSet()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `8B4152`, PENDING
   - Falsified if: UsesPropertyEscape stays set from an earlier class, so the second class of /[\p{L}][a]/v is flagged as using a property escape
-- `Broiler.Regex.Parsing.RegexParser.ReadPropertyOperand(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `C12152`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadPropertyOperand(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `9772BA`, PENDING
   - Falsified if: under vi \P{Ll} is complemented before its members are folded, so /\P{Ll}/vi matches 'a'
 - `Broiler.Regex.Parsing.RegexParser.ParseNestedClass()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `CB6961`, PENDING
   - Falsified if: a v-mode class nested 100,000 '[' deep exhausts the native stack instead of raising a catchable exception
-- `Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `34CD50`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `314DFD`, PENDING
   - Falsified if: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
-- `Broiler.Regex.Parsing.RegexParser.ParseClassIntersection(ClassSetValue, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `D01A2C`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseClassIntersection(ClassSetValue, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `D08118`, PENDING
   - Falsified if: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
-- `Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction(ClassSetValue, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `EC18B2`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction(ClassSetValue, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `79DAB5`, PENDING
   - Falsified if: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
 - `Broiler.Regex.Parsing.RegexParser.RejectMixedOperator(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `9001F0`, PENDING
   - Falsified if: [a--b&&c] or [a&&b--c] under v is accepted instead of throwing
@@ -297,7 +297,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a range endpoint that is a class escape or \q{...}, as in [a-\d] under v, is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ParseClassSetOperand(out int?)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `D908B6`, PENDING
   - Falsified if: an unescaped '(' or a doubled punctuator such as '!!' is accepted as a literal inside a v-mode class
-- `Broiler.Regex.Parsing.RegexParser.ParseClassStringDisjunction()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `ED8D58`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseClassStringDisjunction()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `29D105`, PENDING
   - Falsified if: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
 - `Broiler.Regex.Parsing.RegexParser.IsClassSetSyntaxCharacter(char)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `596E48`, PENDING
   - Falsified if: it returns false for one of ( ) [ ] { } / - \ | or true for any other character
@@ -319,7 +319,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: outside u, \x4 at the end of the pattern is decoded as a hex escape instead of the identity escape x followed by 4
 - `Broiler.Regex.Parsing.RegexParser.ReadUnicodeEscape(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `482AAD`, PENDING
   - Falsified if: under u, \uD83D\u{41} is rejected as an invalid hexadecimal escape instead of reading a lone lead surrogate followed by A, or \uD83D\u{DC38} is read as the one code point U+1F438
-- `Broiler.Regex.Parsing.RegexParser.ReadPropertyEscapeSet()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `CC6C42`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadPropertyEscapeSet()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `2FE744`, PENDING
   - Falsified if: \P{L} answers the letters, or \p{RGI_Emoji} under u is accepted instead of throwing
 - `Broiler.Regex.Parsing.RegexParser.ResolvePropertyEscape(bool, out bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `228A1F`, PENDING
   - Falsified if: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing, or \p{RGI_Emoji} reports IsStringProperty false
@@ -351,21 +351,21 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
 - `Broiler.Regex.Unicode.RegexUnicode` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.3, `3576CE`, PENDING
   - Falsified if: a compiled pattern reads a Unicode answer that no IUnicodeTables call made during its compilation or matching could have supplied, so a recording provider misses a table the library read
-- `Broiler.Regex.Unicode.RegexUnicode.RegexUnicode(IUnicodeTables, CompileCharge?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=none cited, `9D263C`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.RegexUnicode(IUnicodeTables, CompileCharge?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=none cited, `9A8BCF`, PENDING
   - Falsified if: tables whose UnicodeVersion is not the provider's are accepted, so the library matches against a data version no caller pinned
 - `Broiler.Regex.Unicode.RegexUnicode.OrbitIntersects(CodePointSet, int, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.1, `43DE79`, PENDING
   - Falsified if: under iu, a class holding only U+212A KELVIN SIGN is reported not to hold a code point case-equivalent to 'k'
-- `Broiler.Regex.Unicode.RegexUnicode.EscapeSet(ClassEscape, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `BA71F5`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.EscapeSet(ClassEscape, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `16B70C`, PENDING
   - Falsified if: EscapeSet(NonWord, ignoreCase: true, unicode: true) contains U+017F, so /\W/iu matches LATIN SMALL LETTER LONG S
 - `Broiler.Regex.Unicode.RegexUnicode.IsWord(int, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.4.1, `03C9D1`, PENDING
   - Falsified if: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
-- `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.4, `3745E6`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.4, `A87AAD`, PENDING
   - Falsified if: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
-- `Broiler.Regex.Unicode.RegexUnicode.SimpleCaseFold(CodePointSet)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.5, `B1CA2C`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.SimpleCaseFold(CodePointSet)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.5, `769205`, PENDING
   - Falsified if: the set it answers for \p{L}, \p{Lu}, \P{Ll}, [A-Z] or any other set differs from the set of each member's simple case folding, or folding \p{L} charges a unit per code point
 - `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9.7, `DEC057`, PENDING
   - Falsified if: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
-- `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `01AD5A`, PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.9, `623BE5`, PENDING
   - Falsified if: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
 
 ## 10. What This Record Does Not Say

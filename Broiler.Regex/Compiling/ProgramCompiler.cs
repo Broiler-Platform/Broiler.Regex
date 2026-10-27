@@ -418,7 +418,7 @@ internal static class ProgramCompiler
         private readonly Dictionary<StringTableKey, List<int>> _stringTables = [];
 
         /// <summary>The compilation's account, which the lowering charges before what the expansions decide (task 2.5).</summary>
-        private readonly CompileCharge _charge = data.Charge;
+        private readonly CompileCharge _account = data.Account;
         private readonly bool _unicode = flags.IsUnicodeMode();
 
         /// <summary>The class of the word characters compared exactly, then under <c>i</c>, once it is added; -1 before.</summary>
@@ -755,7 +755,7 @@ internal static class ProgramCompiler
         /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>). Task 2.4c compared each
         /// occurrence's strings with every table built before it, string by string.
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=E02670
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=041A74
         // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
         // Broiler-Human:        PENDING
         private int StringTableOf(CharSet set, bool rightToLeft)
@@ -771,7 +771,7 @@ internal static class ProgramCompiler
                 }
             }
 
-            _charge.Charge(CompileSite.Program, units + 1);
+            _account.Charge(CompileSite.Program, units + 1);
             var hash = new HashCode();
             foreach (var member in strings)
                 hash.Add(member, StringComparer.Ordinal);
@@ -780,7 +780,7 @@ internal static class ProgramCompiler
             {
                 foreach (var candidate in candidates)
                 {
-                    _charge.Charge(CompileSite.Program, units + 1);
+                    _account.Charge(CompileSite.Program, units + 1);
                     if (SameStrings(_strings[candidate].Strings, strings))
                         return candidate;
                 }
@@ -791,7 +791,7 @@ internal static class ProgramCompiler
             }
 
             candidates.Add(_strings.Count);
-            _charge.Charge(CompileSite.Program, units + ((long)strings.Count * CompileCharge.SortFactor(strings.Count)));
+            _account.Charge(CompileSite.Program, units + ((long)strings.Count * CompileCharge.SortFactor(strings.Count)));
             if (set.CaseFolded)
                 _folds = true;
 
@@ -861,7 +861,7 @@ internal static class ProgramCompiler
         /// inverts (§22.2.2.7.1); a <c>v</c>-mode class the parser folded is its canonical members, tested against a
         /// character's Canonicalize.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=3DE6EB
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=989588
         // Broiler-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
         // Broiler-Human:        PENDING
         private void AddClass(CharSet set, Scope scope)
@@ -881,7 +881,7 @@ internal static class ProgramCompiler
             }
             else
             {
-                var ranges = AddRanges(set.Negated ? set.CodePoints.Complement(_charge) : set.CodePoints);
+                var ranges = AddRanges(set.Negated ? set.CodePoints.Complement(_account) : set.CodePoints);
                 Add(RegexOp.Class, _classes.Count - 1, 0, 0, RegexProgram.ClassCost(ranges, 1), scope.RightToLeft);
             }
         }
@@ -903,7 +903,7 @@ internal static class ProgramCompiler
         /// table's dispatch costs one and its weight, the floor of the base-2 logarithm of the number of characters strings
         /// begin with, as a class of that many ranges is weighed (<see cref="RegexProgram.ClassWeight"/>).
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=C7894A
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=BC8ED7
         // Broiler-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
         // Broiler-Human:        PENDING
         private void AddStrings(CharSet set, Scope scope)
@@ -924,7 +924,7 @@ internal static class ProgramCompiler
                 if (text.Length == 0)
                     continue;
 
-                _charge.Charge(CompileSite.Program, text.Length);
+                _account.Charge(CompileSite.Program, text.Length);
                 var choice = Add(RegexOp.Choice, _code.Count + 1, -1);
                 characters.Clear();
                 for (var at = 0; at < text.Length; at++)
@@ -1027,12 +1027,12 @@ internal static class ProgramCompiler
         /// Adds the ranges of <paramref name="codePoints"/> to the program's classes, flattened into pairs, and answers how
         /// many there are; charged a unit per range before they are copied (<see cref="CompileSite.Program"/>).
         /// </summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=7D3E6A
+        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=3F1ABA
         // Broiler-Falsified-If: a range is copied before a unit is charged for it
         // Broiler-Human:        PENDING
         private int AddRanges(CodePointSet codePoints)
         {
-            _charge.Charge(CompileSite.Program, codePoints.RangeCount);
+            _account.Charge(CompileSite.Program, codePoints.RangeCount);
             var ranges = codePoints.Ranges;
             var pairs = new int[2 * ranges.Count];
             for (var i = 0; i < ranges.Count; i++)

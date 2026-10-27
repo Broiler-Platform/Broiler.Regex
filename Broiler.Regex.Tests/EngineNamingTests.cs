@@ -22,7 +22,9 @@ public class EngineNamingTests
     /// library's own syntax tree keeps the public <c>AnchorKind.WordBoundary</c> it has had since before SJL-11), and the
     /// names of the VM's look-around machinery that task 2.4b's barrier frames could have taken, and those of its run, its
     /// prefilter and its step counting that task 2.4c's fast paths could have taken, with <c>Repeat</c>, a node kind of
-    /// the VM's parser that task 2.4c's first name for a run's entry took, now <c>EnterRun</c>.
+    /// the VM's parser that task 2.4c's first name for a run's entry took, now <c>EnterRun</c>; and <c>charge</c>, the
+    /// field of the VM's runner that holds its meter, which task 2.5's first name for the program compiler's account of a
+    /// compilation took, now <c>_account</c> (the machine's meter has been <c>_meter</c> since task 2.4a).
     /// </summary>
     private static readonly string[] Copied =
     [
@@ -33,7 +35,7 @@ public class EngineNamingTests
         "assertionTop", "Backward", "Fold", "Lines", "BackRef", "Bol", "Eol", "EmitLook", "EmitCapture",
         "TakeRun", "TakeSet", "TakeChar", "Floor", "RunForward", "RunBackward", "EmitRepeat", "EmitIteration",
         "PrefilterAdmits", "prefilterKind", "prefilterValue", "prefilterFold", "perSkip", "Tick", "Spend", "Settle",
-        "StepsPerCharge", "Backtrack", "Repeat",
+        "StepsPerCharge", "Backtrack", "Repeat", "charge",
     ];
 
     /// <summary>Every member the new backend's namespace and its program compiler declare, by name, compiler-generated ones left out.</summary>
