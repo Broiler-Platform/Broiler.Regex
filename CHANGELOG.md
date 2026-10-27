@@ -338,6 +338,16 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   expression's first operand, whatever follows the last operand (a character, an escape, a nested class, a `\q{…}`, a
   property, a lone `-` or `&`) and at any nesting depth; a class the pattern ends inside after the last operand, as
   `/[a--b/v` or `/[a&&[b]/v`, stays "Unterminated character class" at its `[`.
+- **A range before `&&` or `--` is a syntax error (R5; found by the integration's review, a differential reading
+  against V8; the integration of tasks 2.6 and 2.11).** ECMA-262 §22.2.1 begins a ClassIntersection and a
+  ClassSubtraction with a ClassSetOperand. A ClassSetRange belongs to a ClassUnion alone, and after one neither `--`
+  nor `&&` can be read. `0.1.0-preview.4` took a range read first for the first operand of the operator after it:
+  `/[a-z--b]/v` compiled as `a-z` minus `b`, matching `a` and `z` and not `b`; `/[a-a&&c]/v` compiled as an empty
+  class; and `/[\--b--c]/v`, `/[^a-b--c]/v` and `/[[a-b&&c]]/v` compiled too. Each is now the `RegexSyntaxException`
+  of a mixed class-set expression at the expression's first operand, as `/[ba-z--c]/v`, a range after a union's first
+  operand, already was. `/[a-z--b/v`, which `0.1.0-preview.4` refused as an unterminated class at its `[`, is that
+  refusal too. V8 refuses all of them as an invalid set operation. A range nested as an operand, as in
+  `/[[a-z]--b]/v`, is unchanged.
 - **A group name repeated only across alternatives that cannot both participate is admitted (R6; task 2.6).** Every
   repeated name was a `RegexSyntaxException` until this task; `(?<x>a)|(?<x>b)` compiles and matches `bab` at 0 with
   group 1 unmatched and group 2 `b`, and `(?:(?<x>a)|(?<x>b))\k<x>` matches `bb` and not `ab`. `RegexMatch.NamedGroups`

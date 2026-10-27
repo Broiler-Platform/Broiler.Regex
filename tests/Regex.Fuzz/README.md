@@ -49,12 +49,18 @@ answering, is a finding at the iteration it was in), and each known finding's re
   `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`, the same over five runs, over three and four
   worker processes and under `tr-TR`. At the review's fixes, whose `Matches` comparisons the records note, it was
   `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, again the same over five runs, over three and four
-  worker processes and under `tr-TR`, the session taking 21 to 33 seconds on four cores beside other builds. At the
-  integration of tasks 2.6 and 2.11, whose fixes of the two library defects the target found change the library's
-  answers to the patterns they touch, it is `2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, the same
-  over two runs with four worker processes, over one and three, and under `tr-TR`. The digest is a record, not a pin:
-  the records hold the units the meter was charged and the library's answers, so it moves with any change of the
-  library's behaviour or units, and CI prints it without comparing it.
+  worker processes and under `tr-TR`, the session taking 21 to 33 seconds on four cores beside other builds. The
+  integration of tasks 2.6 and 2.11 moved it three times. The merge alone made it
+  `835849920282be8d19042f8be6f22b2328c25f6c032b45586933f8d5d341bb6c`: task 2.6 admits a group name repeated across
+  alternatives, which the library refused before, and 228 iterations, each a pattern that repeats a name, are answered
+  otherwise, no other changing: 215 compile where they were refused, and 13 are refused at another place or for another
+  reason. The fixes of the two library defects the target found then change the library's answers to the patterns they
+  touch: it was `62a3783a517aab85df291cb733c8aacf91e0d5773cfce6e86d60fa4c306f250d` after the first and is
+  `2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846` after the second, the same over two runs with four
+  worker processes, over one and three, and under `tr-TR`. The fix that followed the integration's review, which refuses
+  a range before `&&` or `--`, a form the generator never writes, changes no answer of the session, and the digest stays
+  `2eb41e…`. The digest is a record, not a pin: the records hold the units the meter was charged and the library's
+  answers, so it moves with any change of the library's behaviour or units, and CI prints it without comparing it.
 
 ## What one iteration does
 

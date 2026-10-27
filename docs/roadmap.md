@@ -1142,6 +1142,29 @@ entries, not the specification, so the vectors (task 2.12) and the reference arm
 next. What task 2.11's record says the later tasks owe stands, except the library owner's fixes, which this integration
 made.
 
+*Added at the integration's review, 2026-10-27.* **A range before `&&` or `--`, refused** (`379c6b6`). The review
+read 1,482,230 generated `v` and `vi` class sets against V8 (node 22.22.0) at `cd8a464`: 206 compiled here and were
+refused there, each with a ClassSetRange before `&&` or `--`, as `/[a-z--b]/v`, which compiled as `a-z` minus `b`.
+ECMA-262 §22.2.1 begins a ClassIntersection and a ClassSubtraction with a ClassSetOperand; a ClassSetRange belongs to a
+ClassUnion alone, and after one neither `--` nor `&&` can be read. `ParseClassSetExpression` passed a range read first
+to `ParseClassIntersection` or `ParseClassSubtraction` as their first operand: the beginning of the expressions whose
+end the second fix above closed. `0.1.0-preview.4` and the merge compiled the same forms, test262 at `ccaac100` has no
+file with one, and the fuzz target's grammar writes ranges only in unions, so the declared session could not reach it.
+`ParseClassSetRangeOrOperand` now says whether it read a range, and after one the expression is a union, whose
+`RejectMixedOperator` refuses the operator as a mixed class-set expression at the expression's first operand. All 206
+forms are now that refusal, and V8 refuses each as an invalid set operation. `ClassSetExpressionEndTests`' 47 new
+cases (five range-first expressions at depths 0 to 2, with and without `^`, under `v` and `vi`, the review's forms, and
+controls) had 38 failing before and all pass. The declared session's digest stays
+`2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, no answer of it changing. The review also read the
+digest at each step of the integration: the merge alone made it
+`835849920282be8d19042f8be6f22b2328c25f6c032b45586933f8d5d341bb6c`, task 2.6's admission of a repeated group name
+answering 228 iterations otherwise, each a pattern that repeats a name and no other changing; the first fix made it
+`62a3783a517aab85df291cb733c8aacf91e0d5773cfce6e86d60fa4c306f250d`; and the second `2eb41e…`. The fuzz target's README
+now names both causes. And two cases of `ClassStringCodePointTests`, commented as one escape of a lead and a trail,
+held the raw pair in their patterns, so no case asserted the answer of an escaped pair in a `\q{…}`; they now write the
+escape, with its answers in set operations, complemented and under `vi`, and the raw pairs stay as cases of their own
+(`0320c78`).
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
