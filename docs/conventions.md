@@ -58,9 +58,12 @@ review: a failed `RegexMatch` naming it, as its last element.
 - **The Native AOT probe**, `probes/Regex.Probe`, is an executable. It writes its report to a file, so
   convention 8's I/O clause does not hold for it; every other clause of convention 8 does, and so do
   conventions 12 and 17.
-- **The test projects**, `Broiler.Regex.Tests` and `tests/Regex.Architecture.Tests`, are held to
-  convention 17, and to nothing that would stop xunit discovering them. They are not Native AOT code and
-  declare neither flag of convention 12.
+- **The test projects**, `Broiler.Regex.Tests`, `tests/Regex.Architecture.Tests` and `tests/Regex.Fuzz`, are
+  held to convention 17, and to nothing that would stop xunit discovering them. They are not Native AOT code and
+  declare neither flag of convention 12. `tests/Regex.Fuzz`, the fuzz target (task 2.11 of SJL-11.2), is an
+  executable as well as a test project, which reads one file, its list of known findings, writes one only when asked,
+  a transcript, and starts its own children; its planted-defect build compiles the library's sources into itself,
+  never into the package.
 - **The scripts** under `eng/` and the documents are held to convention 17's line endings.
 
 ## The conventions

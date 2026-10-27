@@ -40,8 +40,8 @@ internal sealed record SharedProject(string Name, string Path, SharedProjectKind
 /// <remarks>
 /// Broiler.Unicode keeps the programme's projects beside older packages and reads a set of directories named by
 /// prefix. Every project of this repository is the programme's, so the rules read all of them: the library at
-/// <c>Broiler.Regex/</c>, its tests at <c>Broiler.Regex.Tests/</c>, the probe under <c>probes/</c> and the
-/// architecture tests under <c>tests/</c>. A new project in one of these places is read the day it is added, so
+/// <c>Broiler.Regex/</c>, its tests at <c>Broiler.Regex.Tests/</c>, the probe under <c>probes/</c>, and the
+/// architecture tests and the fuzz target under <c>tests/</c>. A new project in one of these places is read the day it is added, so
 /// a new library cannot pass by being unknown: SL1's layering table has no row for it.
 /// </remarks>
 internal static class SharedTree

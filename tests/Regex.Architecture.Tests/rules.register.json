@@ -4,7 +4,7 @@
     "programme in Broiler.VM/docs/javascript-shared-libraries/), adopted under the owner condition R10 of milestone SJL-11",
     "(docs/roadmap.md section 6, docs/conventions.md) and ported from Broiler.Unicode's tests/Unicode.Architecture.Tests,",
     "in Broiler.VM's register shape: each row states the rule as it holds this repository's projects - the library",
-    "Broiler.Regex, the Native AOT probe probes/Regex.Probe and the two test projects - names the test that asserts it and",
+    "Broiler.Regex, the Native AOT probe probes/Regex.Probe and the three test projects - names the test that asserts it and",
     "the witness it is shown refusing, and has a status. Beside the rules, contractChecks holds the three contract",
     "conventions of the programme's architecture.md section 4 that Broiler.VM's JSD-0081 (section X3) finds Broiler.Regex",
     "breaching and that metadata can decide. Every rule and check is Active, and the library does not yet meet every one:",
@@ -100,7 +100,7 @@
     {
       "id": "SL10",
       "status": "Active",
-      "statement": "No C# source of this repository's projects (the library, the probe and the two test projects) holds a preprocessor directive, no file of the repository holds a CR, and .gitattributes gives every text file LF line endings (convention 17).",
+      "statement": "No C# source of this repository's projects (the library, the probe and the three test projects) holds a preprocessor directive, no file of the repository holds a CR, and .gitattributes gives every text file LF line endings (convention 17).",
       "evidence": "Every .cs file of the projects parsed with Roslyn, its directive trivia read; the bytes of every file of the repository outside version control's directory, build output, test results, packed artefacts, the witnesses and the package icon; .gitattributes",
       "nonVacuousWhen": "Every source of every project is parsed, the generated table and the probe included, and every file read, the adversarial corpus, the workflows and the documents among them; the witnesses hold a conditional region and a pragma, each directive reported by line, and a file stored with CRLF, which .gitattributes keeps as-is.",
       "test": "SL10_No_source_holds_a_preprocessor_directive_and_no_file_a_CR",

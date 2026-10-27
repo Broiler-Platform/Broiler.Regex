@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The fuzz target of Broiler.RegEx (milestone SJL-11, requirement R10 of docs/roadmap.md section 6; decision D32 of
+    Broiler.VM's JSD-0081; bundle sjl-11-001's check E-5): a seeded, deterministic, grammar-based generator of patterns
+    and subjects, whose every case is compiled with every limit and a meter set and matched through the offset entry
+    and the string-bearing members with every ceiling set. README.md beside this file says what it generates, what it
+    counts as a finding, its declared seed and iterations, and its planted-defect control.
+
+    It is a test project and an executable at once. dotnet test runs its xunit tests, a short session at the declared
+    seed among them; its own Main (GenerateProgramFile is off) runs a session of any length, in child processes it
+    supervises, which is what the fuzz job of .github/workflows/ci.yml does. It runs under the JIT only and declares
+    neither flag of convention 12, as the other test projects do (docs/conventions.md, "Scope").
+
+    THE PLANTED DEFECT (D32's control). With -p:RegexFuzzPlant=true this project does not reference the library: it
+    compiles the library's sources into itself, with one declared line of the parser replaced by a throw, so that the
+    declared seed can be shown to find a defect planted in a parser path. The replacement is made at build time into a
+    copy under obj/, never in the library's source, and the library project is not built in that mode, so the plant
+    cannot reach Broiler.Regex.dll. The anchor below must occur exactly once in the parser, or the build fails: a plant
+    that changed nothing would be a control that controls nothing.
+  -->
+  <PropertyGroup>
+    <RootNamespace>Broiler.Regex.Fuzz</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Convention 12 is the library's and the probe's; a test project declares neither flag ("Scope"). -->
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <!-- The Unicode owner's tables, handed to every compilation as its IUnicodeTables: test-only data (R11, decision D11). -->
+    <PackageReference Include="Broiler.Unicode.Tables" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="known-findings.tsv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RegexFuzzPlant)' != 'true'">
+    <ProjectReference Include="..\..\Broiler.Regex\Broiler.Regex.csproj" />
+  </ItemGroup>
+
+  <!-- The declared parser path of the plant: the class-set subtraction of a v-mode class (RegexParser.ParseClassSubtraction). -->
+  <PropertyGroup>
+    <RegexFuzzPlantSource>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', '..', 'Broiler.Regex', 'Parsing', 'RegexParser.cs'))</RegexFuzzPlantSource>
+    <RegexFuzzPlantAnchor>Set = accumulated.Set.Subtract(operand.Set, _account),</RegexFuzzPlantAnchor>
+    <RegexFuzzPlantLine>Set = _pos >= 0 ? throw new System.InvalidOperationException("planted defect (D32 control): class-set subtraction") : accumulated.Set.Subtract(operand.Set, _account),</RegexFuzzPlantLine>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RegexFuzzPlant)' == 'true'">
+    <PackageReference Include="Broiler.Unicode.Algorithms" />
+    <Compile Include="..\..\Broiler.Regex\**\*.cs"
+             Exclude="..\..\Broiler.Regex\bin\**;..\..\Broiler.Regex\obj\**;..\..\Broiler.Regex\Parsing\RegexParser.cs"
+             Link="Planted\Library\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Copies the parser with its anchor replaced, byte for byte otherwise; refuses an anchor that is not there exactly once. -->
+  <UsingTask TaskName="RegexFuzzPlantCopy" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Source ParameterType="System.String" Required="true" />
+      <Destination ParameterType="System.String" Required="true" />
+      <Anchor ParameterType="System.String" Required="true" />
+      <Replacement ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var text = System.IO.File.ReadAllText(Source);
+        var first = text.IndexOf(Anchor, System.StringComparison.Ordinal);
+        if (first < 0 || text.IndexOf(Anchor, first + 1, System.StringComparison.Ordinal) >= 0)
+        {
+            Log.LogError("The plant's anchor occurs other than exactly once in " + Source + ": the declared parser path moved. Declare the plant again in tests/Regex.Fuzz/Regex.Fuzz.csproj and its README.");
+            return false;
+        }
+
+        var planted = text.Substring(0, first) + Replacement + text.Substring(first + Anchor.Length);
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Destination));
+        if (!System.IO.File.Exists(Destination) || System.IO.File.ReadAllText(Destination) != planted)
+            System.IO.File.WriteAllText(Destination, planted);
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="PlantTheDeclaredDefect" BeforeTargets="CoreCompile" Condition="'$(RegexFuzzPlant)' == 'true'">
+    <PropertyGroup>
+      <_RegexFuzzPlantedFile>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'planted', 'RegexParser.cs'))</_RegexFuzzPlantedFile>
+    </PropertyGroup>
+    <RegexFuzzPlantCopy Source="$(RegexFuzzPlantSource)" Destination="$(_RegexFuzzPlantedFile)" Anchor="$(RegexFuzzPlantAnchor)" Replacement="$(RegexFuzzPlantLine)" />
+    <ItemGroup>
+      <Compile Include="$(_RegexFuzzPlantedFile)" />
+    </ItemGroup>
+    <Message Importance="high" Text="Regex.Fuzz: the declared defect is planted in a copy of the parser ($(_RegexFuzzPlantedFile)); this build tests that copy, not Broiler.Regex.dll." />
+  </Target>
+
+</Project>
