@@ -579,9 +579,14 @@ grammar and throws as before, so the starting violation list's SL4 row loses its
   decides whether the surface needs it.
 - **The meter.** One unit per code unit read before the measuring pass and one per code unit written before the
   writing pass, paid in whole blocks of 512 on one account, never a block more than the work: `RegexWorkCharge`'s
-  documented blocks (D8). A text that needs no change is answered as itself and costs its reading. Broiler.VM's realm
-  charges `RegExp.escape` its input's and its output's lengths today and `source` nothing; its totals agree up to the
-  block, and the meter is nullable for an engine that charges nothing.
+  documented blocks (D8). A text that needs no change is answered as itself and costs its reading only. Broiler.VM's
+  realm charges `RegExp.escape` its input's length and then its output's today (`StringCharge` at
+  `JsRealm.RegExp.cs:1462` and `:1491`), and `source` nothing. For a text that changes, the two totals agree up to the
+  block. For a text of n code units that needs no change they do not: Broiler.VM charges 2n, and the helper charges
+  its reading only, n rounded up to the block, about half (10,000 underscores: 20,000 today, 10,240 here). That is a
+  fuel difference SJL-11.4 must read at its cut-over under decision D8, where an exhaustion verdict it moves is class
+  C2 of Broiler.VM's rule. The meter is nullable for an engine that charges nothing. *Amended at the review of task
+  2.7:* this record first said the totals agree up to the block for every text.
 - **`EscapePattern` takes no flags**: each rewrite holds in all three modes (its remarks), so one pattern gives one
   text whatever its flags.
 
@@ -622,9 +627,13 @@ class, implementation-defined; the library keeps it, Broiler.JS's text, because 
 `staging/sm/RegExp/escape.js`, the file row T3's correction of Broiler.VM names, asks for `[/]` too, so Broiler.VM's
 `source` for such a pattern changes at SJL-11.4 with T3 and is listed there. Plan row 2.7 and the brief ask for every
 new member provisional "in `PublicAPI.txt`"; that file is SL6's generated listing and holds no marks, so the
-CHANGELOG, the remarks and this record say it. This repository's mapping cites ES2025's numbers, and `RegExp.escape`
-is ES2026's: the text read is Broiler.VM's archived ES2026 (`tc39/ecma262` `0248456c`), with test262 at the pin
-`ccaac100` as its executable form.
+CHANGELOG, the remarks and this record say it. The edition is not a difference: `RegExp.escape` is ES2025's, added by
+the 16th edition (as the ES2026 text's own introduction says), so the clause numbers the mapping gives it
+(§22.2.5.1, §22.2.5.1.1, §22.2.6.13.1) agree with the mapping's ES2025 header. The text read is Broiler.VM's archived
+ES2026 (`tc39/ecma262` `0248456c`), whose numbers for those clauses are the same, with test262 at the pin `ccaac100`
+as its executable form; the one clause the helpers cite whose number moved, UnicodeEscape (§25.5.2.4 in ES2025,
+§25.5.4.4 in ES2026), is cited with both. *Amended at the review of task 2.7:* this record first said `RegExp.escape`
+is ES2026's.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
