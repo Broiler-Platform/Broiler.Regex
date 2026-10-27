@@ -55,15 +55,17 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   2.4c routed it through task 2.4a's backend (below); the old matcher's continuations recursed, and the shapes found
   to exhaust the stack at match time were the package README's known limitations until then. win-x64 was not
   measured. The constant is never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
-  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
-  nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
+  precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` held only what
+  nesting needs; the new matcher (task 2.4a) added members to both and the compile budget (task 2.5) added
+  `RegexLimit.Compile` (below), and the validate entry's syntax status (task 2.8) adds more.
   `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
   and of a validation: it is named and numbered as Broiler.Unicode's `UnicodeStatus.Success`, and a match answers
   `Match` or `NoMatch` instead (below). A syntax error from `Compile` is still a `RegexSyntaxException`. **The signature
-  of `Compile` is provisional**, and no published version carries it: task 2.5 replaces it to take the caller's compile
-  meter, a nullable `RegexWorkCharge` (convention 4), and D9's syntax status needs room for a code, a message identifier
-  and a position. The plan gives that status to the validate entry of task 2.8 and names no task that moves
-  `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for `0.2.0-preview.1`, holds that open.
+  of `Compile` is provisional**, and no published version carries it: task 2.5 replaced it, adding the caller's compile
+  budget and the caller's compile meter, a nullable `RegexWorkCharge` (convention 4; below), and D9's syntax status
+  needs room for a code, a message identifier and a position. The plan gives that status to the validate entry of task
+  2.8 and names no task that moves `Compile`'s syntax error onto it; task 2.9, which fixes the public surface for
+  `0.2.0-preview.1`, holds that open.
 - **The new backend, internal (task 2.4a; R1, R3, R4's matcher half, R7, R8; decisions D5, D8, D9 and D10).** A compiler
   from the syntax tree to an instruction program (`Compiling/ProgramCompiler.cs`, with no recursion, under the caller's
   nesting limit) and one backtracking loop with an explicit frame stack and an undo trail (`Engine/`), written new from
@@ -133,9 +135,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `BroilerRegex.SlotCount` says how many slots a match writes. The meter `RegexWorkCharge` and the ceilings
   `Broiler.Regex.Engine.RegexMatchCeilings` (with `Engines`, `EngineFrames`, `EngineTrail`, `FrameCeilingMaximum` and
   `TrailCeilingMaximum`) become public for it, and `RegexMatch` gains `Limit`. **All provisional**, like `Compile`:
-  task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves the meter's
-  runtime-made members out, as convention 1 admits it, and refuses any other public delegate the library declares,
-  its declaration and every signature that names it.
+  task 2.5 added the compile meter and the compile budget to `Compile` (below), and task 2.9 fixes the surface of
+  `0.2.0-preview.1`. Check C1 leaves the meter's runtime-made members out, as convention 1 admits it, and refuses any
+  other public delegate the library declares, its declaration and every signature that names it.
 - **The compile meter and the compile budget (task 2.5; R2; decisions D8, D9 and D10; check A-2).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?
   meter, out BroilerRegex?, out RegexLimit)` charges the caller's meter for the work of the compilation, in blocks of
@@ -243,13 +245,18 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 - **Compilation is charged (R2; task 2.5).** `Compile` charges the caller's meter for the compilation and answers the
   compile budget as `LimitExceeded` naming `Compile` (Added). No compiled pattern answers a match differently: the
-  sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as the test
-  suite of task 2.4c, passing unchanged, and the new tests of the fold, which hold it to a fold of every code point,
-  show. Compiling costs less where the work was quadratic
-  or per code point: MaybeSimpleCaseFolding of an operand of more than 4,096 code points maps only the code points it
-  shares with `Cased`, which holds every code point simple case folding moves (4,469 of `\p{L}`'s 145,672), and a
-  class's strings are added and found by a hash (Changed). The sets of `\s` and of the folded `\w` are built the
-  first time a compilation reads them, where every compilation built both.
+  sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as every
+  assertion of a match's answer in task 2.4c's test suite, passing unchanged, and the new tests of the fold, which hold
+  it to a fold of every code point, show. The suite's other edits change no match's answer: the fast-path
+  differential's tally of cases the general lowering alone stops under its first ceiling grew from 16 to 64 only
+  because task 2.5's tests added classes of `\p{RGI_Emoji}` to the literals its population is drawn from (without that
+  file it still stops 16); the program compiler's answers gained `CompileBudgetExceeded`; the tests' `Compile` helper
+  passes no budget and no meter; the corpus test runs the V rows it named as waiting, and checks their margin; and
+  `EngineNamingTests` lists one more name. Compiling costs less where the work was quadratic or per code point:
+  MaybeSimpleCaseFolding of an operand of more than 4,096 code points maps only the code points it shares with
+  `Cased`, which holds every code point simple case folding moves (4,469 of `\p{L}`'s 145,672), and a class's strings
+  are added and found by a hash (Changed). The sets of `\s` and of the folded `\w` are built the first time a
+  compilation reads them, where every compilation built both.
 
 - **The string-bearing members answer as the specification does where the old matcher did not (task 2.4c).** The
   three defects the differential comparison found are corrected: a start inside a surrogate pair under `u` and `v` runs
