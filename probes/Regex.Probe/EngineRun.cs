@@ -17,10 +17,13 @@ namespace Broiler.Regex.Probe;
 /// <see cref="EnginePopulation"/>, which the report carries.
 /// </summary>
 /// <remarks>
-/// The answers beyond the corpus's statuses are <c>unsupported</c>, for an operation other than <c>compile</c>,
-/// <c>match@k</c> and <c>anchored@k</c>, and for a policy with a compile budget (requirement R2, task 2.5's); since task
-/// 2.4b every pattern the parser accepts compiles to a program, unless it nests past the row's limit. Task 2.14's
-/// <c>--adversarial</c> mode, which runs every row with both controls of the rule's part C, is built on this.
+/// The answer beyond the corpus's statuses is <c>unsupported</c>, for an operation other than <c>compile</c>,
+/// <c>match@k</c> and <c>anchored@k</c> (the validate entry is task 2.8's); since task 2.4b every pattern the parser
+/// accepts compiles to a program, unless it nests past the row's limit, and since task 2.5 the compilation is charged to
+/// the row's meter and bounded by its compile budget (requirement R2), answering <c>limit:compile</c> past it. The meter is
+/// the same for the compilation and the match, as an engine's is (bundle <c>sjl-11-001</c>'s check A-2: "compile charges
+/// the same meter"), each charging it in its own blocks. Task 2.14's <c>--adversarial</c> mode, which runs every row with
+/// both controls of the rule's part C, is built on this.
 /// </remarks>
 internal static class EngineRun
 {
@@ -32,31 +35,57 @@ internal static class EngineRun
         }
     }
 
-    /// <summary>A row's policy: the meter's allowance, the step, frame and trail ceilings, the nesting limit, and whether it sets a compile budget.</summary>
-    internal readonly record struct Policy(ulong? Meter, ulong? Steps, int Frames, int Trail, int Nesting, bool CompileBudget);
+    /// <summary>A row's policy: the meter's allowance, the step, frame and trail ceilings, the nesting limit, and the compile budget.</summary>
+    internal readonly record struct Policy(ulong? Meter, ulong? Steps, int Frames, int Trail, int Nesting, ulong? Compile);
 
-    /// <summary>The answer of one case and the units its match did (zero for a case that does not match).</summary>
+    /// <summary>
+    /// The answer of one case and the units its match did, or, for a <c>compile</c> case, its compilation did; zero for a
+    /// case that does not match, and the meter's total when the meter's allowance ends the case.
+    /// </summary>
     internal static string Answer(string op, string pattern, string flags, string subject, Policy policy, out ulong units)
     {
         units = 0;
-        if (policy.CompileBudget)
-            return "unsupported";
+        var charged = 0UL;
+        RegexWorkCharge? meter = policy.Meter is { } allowance
+            ? spent =>
+            {
+                charged += spent;
+                if (charged > allowance)
+                    throw new MeterSpent();
+            }
+            : null;
 
         ProgramCompilation compiled;
         RegexProgram? program;
+        var compilation = new CompileCharge(meter, policy.Compile);
         try
         {
-            compiled = ProgramCompiler.Compile(pattern, flags == "-" ? RegexFlags.None : RegexFlagsParser.Parse(flags), UnicodeTables.Instance, policy.Nesting, out program);
+            compiled = ProgramCompiler.Compile(pattern, flags == "-" ? RegexFlags.None : RegexFlagsParser.Parse(flags), UnicodeTables.Instance, policy.Nesting, out program,
+                charge: compilation);
         }
         catch (RegexSyntaxException)
         {
             return "syntax";
         }
+        catch (MeterSpent)
+        {
+            units = charged;
+            return "meter-exception";
+        }
 
         if (compiled == ProgramCompilation.NestingLimitExceeded)
             return "limit:nesting";
+        if (compiled == ProgramCompilation.CompileBudgetExceeded)
+        {
+            units = compilation.Spent;
+            return "limit:compile";
+        }
+
         if (op == "compile")
+        {
+            units = compilation.Spent;
             return "ok";
+        }
 
         bool anchored;
         string index;
@@ -68,16 +97,6 @@ internal static class EngineRun
             return "unsupported";
 
         var slots = new int[program!.SlotCount];
-        var charged = 0UL;
-        RegexWorkCharge? meter = policy.Meter is { } allowance
-            ? spent =>
-            {
-                charged += spent;
-                if (charged > allowance)
-                    throw new MeterSpent();
-            }
-            : null;
-
         try
         {
             var status = program.Match(subject, int.Parse(index, NumberStyles.None, CultureInfo.InvariantCulture), anchored, slots, meter,
@@ -91,6 +110,7 @@ internal static class EngineRun
                     RegexLimit.Steps => "steps",
                     RegexLimit.Frames => "frames",
                     RegexLimit.Trail => "trail",
+                    RegexLimit.Compile => "compile",
                     _ => "another",
                 },
             };
@@ -142,7 +162,7 @@ internal static class EngineRun
         int Whole(string value) => int.Parse(value, NumberStyles.None, CultureInfo.InvariantCulture);
 
         return new Policy(Optional(Value(0, "meter")), Optional(Value(1, "steps")), Whole(Value(2, "frames")), Whole(Value(3, "trail")),
-            Whole(Value(4, "nesting")), Value(5, "compile") != "none");
+            Whole(Value(4, "nesting")), Optional(Value(5, "compile")));
     }
 
     /// <summary>
