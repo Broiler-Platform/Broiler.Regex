@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 355 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 356 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 25 |
-| Code units | 633 |
-| Relevant | 355 |
-| Exempt | 278 |
-| Assessed | 355 of 355 (100%) |
-| Human reviewed | 0 of 355 (0%) |
-| Unverified | 355 |
+| Code units | 636 |
+| Relevant | 356 |
+| Exempt | 280 |
+| Assessed | 356 of 356 (100%) |
+| Human reviewed | 0 of 356 (0%) |
+| Unverified | 356 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 355 |
+| HUMAN_PENDING | 356 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 278 |
+| EXEMPT | 280 |
 
 ## 5. Aliases In The Tree
 
@@ -99,7 +99,7 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Engine/RegexProgram.cs` | 21 | 10 | 11 | 10 | None | High | 4/2 |
 | `Broiler.Regex/Engine/RegexStrings.cs` | 15 | 6 | 9 | 6 | None | High | 2/1 |
 | `Broiler.Regex/Parsing/RegexNesting.cs` | 7 | 4 | 3 | 4 | None | High | 2/2 |
-| `Broiler.Regex/Parsing/RegexParser.cs` | 86 | 64 | 22 | 64 | Low | High | 60/52 |
+| `Broiler.Regex/Parsing/RegexParser.cs` | 89 | 65 | 24 | 65 | Low | High | 61/53 |
 | `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
 | `Broiler.Regex/RegexGroupNames.cs` | 12 | 7 | 5 | 7 | None | Medium | 6/0 |
 | `Broiler.Regex/RegexMatch.cs` | 24 | 9 | 15 | 9 | None | Low | 3/0 |
@@ -254,7 +254,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
 - `Broiler.Regex.Parsing.RegexParser.PreScan()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `83B68B`, PENDING
   - Falsified if: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
-- `Broiler.Regex.Parsing.RegexParser.ParseDisjunction()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `598B1F`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseDisjunction()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `3B256C`, PENDING
   - Falsified if: a pattern of 100,000 nested '(?:' groups exhausts the native stack in this recursion instead of raising a catchable exception
 - `Broiler.Regex.Parsing.RegexParser.ParseAlternative()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `FBAC09`, PENDING
   - Falsified if: a raw U+0000 character inside the pattern ends the alternative early, so the text after it is lost or rejected
@@ -270,7 +270,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: {3,2} is accepted, or {2147483648} wraps to a negative count instead of saturating at int.MaxValue
 - `Broiler.Regex.Parsing.RegexParser.ParseAtom()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `42FB2F`, PENDING
   - Falsified if: under u or v an unescaped ']', '{' or '}' is returned as a literal character instead of raising a syntax error, or without them /{2}/ is read as the text {2}
-- `Broiler.Regex.Parsing.RegexParser.ParseGroup()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `262D46`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParseGroup()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `4D8F24`, PENDING
   - Falsified if: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
 - `Broiler.Regex.Parsing.RegexParser.ParseModifierGroup()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `FE26C3`, PENDING
   - Falsified if: the i flag added by (?i:...) is still in effect after its ')', so a following v-mode class is case-folded
@@ -328,6 +328,8 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing, or \p{RGI_Emoji} reports IsStringProperty false
 - `Broiler.Regex.Parsing.RegexParser.ReadGroupName()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1.1, `E75C85`, PENDING
   - Falsified if: a group name holding a lone surrogate escape, such as (?<\uD800>a), escapes as ArgumentOutOfRangeException instead of RegexSyntaxException, or (?<1>a) or (?<a-b>a) is accepted
+- `Broiler.Regex.Parsing.RegexParser.MightBothParticipate(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1.4, `DD9C39`, PENDING
+  - Falsified if: (?<a>x)|(?<a>y), (?:(?<a>x)|(?<a>y))|(?<a>z) or ((?<a>x)|(?<a>y))* is refused, or (?<a>x)(?<a>y), (?:(?<a>x)|(?<a>y))(?<a>z), (?<a>x|(?<a>y)) or (?:(?<a>x)|b)(?:(?<a>y)|c) is accepted
 - `Broiler.Regex.Parsing.RegexParser.Descend(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=JSD-0081 decision D6, `266817`, PENDING
   - Falsified if: a group opened at the limit's depth is entered instead of refused, so the parser's recursion outgrows the limit
 - `Broiler.Regex.Parsing.RegexParser.AtEnd` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=none cited, `3FD96C`, PENDING
@@ -414,5 +416,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-355 of the 355 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+356 of the 356 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

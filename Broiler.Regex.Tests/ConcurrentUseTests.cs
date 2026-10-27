@@ -18,7 +18,7 @@ namespace Broiler.Regex.Tests;
 /// <remarks>
 /// The cases reach every part of a compiled pattern a match reads: classes and their sets, case folding in both
 /// modes, <c>\w</c> and <c>\b</c> under <c>iu</c>, <c>v</c>-mode set operations over properties and strings,
-/// look-behind, captures and named groups, and a nested pattern.
+/// look-behind, captures and named groups, a name two groups share (requirement R6), and a nested pattern.
 /// </remarks>
 public class ConcurrentUseTests
 {
@@ -37,6 +37,7 @@ public class ConcurrentUseTests
         (@"[\d\s]+", "", "x1 2 3"),
         (@"(?<=(\d+)(\d+))$", "", "1053"),
         (@"(?<year>\d{4})-(?<month>\d{2})", "", "on 2026-10"),
+        (@"(?:(?<a>x)|(?<a>y))\k<a>(?<b>z)?", "", "xyyz"),
         (@"(a|ab)(c|bcd)(d*)", "", "abcd"),
         (@"(?:(a)|b)+", "", "ab"),
         (@"(?i:[a-z]+)\d", "", "ABC1"),

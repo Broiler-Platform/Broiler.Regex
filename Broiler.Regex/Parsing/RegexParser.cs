@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   64
-// Annotated:        64/64
-// Exempt:           22
-// Human-reviewed:   0/64
+// Relevant units:   65
+// Annotated:        65/65
+// Exempt:           24
+// Human-reviewed:   0/65
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         60/52
+// Criteria:         61/53
 // Resource impact:  7/10 max
-// Unverified:       64
+// Unverified:       65
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -82,6 +82,16 @@ public sealed class RegexParser
 
     /// <summary>The names, in the order of their first groups.</summary>
     private readonly List<string> _namesInOrder = [];
+
+    /// <summary>The position of the <c>(</c> of each name's latest group, which a later group of the name is checked against.</summary>
+    private readonly Dictionary<string, int> _latestGroupOf = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// The Disjunctions the cursor is inside, outermost first: where each began and where its current Alternative began,
+    /// both source positions. A group of a name repeated later is in a closed Alternative of one of them exactly when the
+    /// two cannot both participate (<see cref="MightBothParticipate"/>).
+    /// </summary>
+    private readonly List<(int Start, int AlternativeStart)> _disjunctions = [];
 
     private int _totalCaptureGroups;
 
@@ -261,18 +271,23 @@ public sealed class RegexParser
 
     // ----- Disjunction / Alternative -----------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=598B1F
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3B256C
     // Broiler-Falsified-If: a pattern of 100,000 nested '(?:' groups exhausts the native stack in this recursion instead of raising a catchable exception
     // Broiler-Human:        PENDING
     private RegexNode ParseDisjunction()
     {
+        // Disjunction :: Alternative | Disjunction: each Alternative after a '|' begins a new region of this Disjunction,
+        // which a group of a name repeated in it is checked against (MightBothParticipate, §22.2.1.4).
+        _disjunctions.Add((_pos, _pos));
         var alternatives = new List<RegexNode> { ParseAlternative() };
         while (Peek() == '|')
         {
             _pos++;
+            _disjunctions[^1] = (_disjunctions[^1].Start, _pos);
             alternatives.Add(ParseAlternative());
         }
 
+        _disjunctions.RemoveAt(_disjunctions.Count - 1);
         return alternatives.Count == 1 ? alternatives[0] : new DisjunctionNode(alternatives);
     }
 
@@ -522,7 +537,7 @@ public sealed class RegexParser
         return new CharNode(cp);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=262D46
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=4D8F24
     // Broiler-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
     // Broiler-Human:        PENDING
     private RegexNode ParseGroup()
@@ -552,11 +567,12 @@ public sealed class RegexParser
                 var name = ReadGroupName();
                 var index = ++_captureCount;
 
-                // §22.2.1.1: two GroupSpecifiers may not share a name — compared as decoded, so
-                // (?<a>x)(?<\u0061>y) repeats the name a. ES2025's exception for alternatives that
-                // cannot both participate is requirement R6's, which this parser does not yet admit.
-                if (_groupsByName.ContainsKey(name))
+                // §22.2.1.1: two GroupSpecifiers may share a name only when MightBothParticipate is false for them
+                // (§22.2.1.4), the names compared as decoded, so (?<a>x)(?<\u0061>y) repeats the name a and is refused,
+                // and (?<a>x)|(?<\u0061>y) is admitted (requirement R6).
+                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier))
                     throw new RegexSyntaxException("Duplicate capture group name '" + name + "'", open);
+                _latestGroupOf[name] = open;
                 if (!_groupsByName.TryGetValue(name, out var named))
                 {
                     _groupsByName.Add(name, named = []);
@@ -1688,6 +1704,46 @@ public sealed class RegexParser
             throw new RegexSyntaxException("Empty group name", _pos);
         _pos++; // consume '>'
         return name.ToString();
+    }
+
+    /// <summary>
+    /// MightBothParticipate (ECMA-262 §22.2.1.4) of the group whose <c>(</c> is at <paramref name="earlier"/> and the
+    /// group the cursor is declaring: true unless some Disjunction holds the two in different Alternatives.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The pattern is read left to right, so such a Disjunction is one the cursor is still inside, and the earlier group is
+    /// in one of its Alternatives that has closed: between where the Disjunction began and where its current Alternative
+    /// began. Those regions of the open Disjunctions are disjoint and in source order (each Disjunction begins inside the
+    /// current Alternative of the one around it), so the one to test is that of the innermost open Disjunction that began
+    /// at or before the group, found by a binary search over at most the nesting limit's levels.
+    /// </para>
+    /// <para>
+    /// <b>The latest group of a name is enough.</b> The parser checks a group against the latest earlier group of its name
+    /// only. If that one cannot participate with it, neither can any group of the name before it: the two earlier groups
+    /// were themselves admitted, so a Disjunction holds them in different Alternatives; while it is open the older one is
+    /// in a closed Alternative of it too, and once it has closed it lies inside the closed Alternative of an open
+    /// Disjunction that holds the latest one, and so does the older one. So every name costs one test per group, a
+    /// constant amount of the work the pattern's units pay for (<see cref="CompileSite.Pattern"/>).
+    /// </para>
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4; IP=None; Security=High; Resources=1; Fingerprint=DD9C39
+    // Broiler-Falsified-If: (?<a>x)|(?<a>y), (?:(?<a>x)|(?<a>y))|(?<a>z) or ((?<a>x)|(?<a>y))* is refused, or (?<a>x)(?<a>y), (?:(?<a>x)|(?<a>y))(?<a>z), (?<a>x|(?<a>y)) or (?:(?<a>x)|b)(?:(?<a>y)|c) is accepted
+    // Broiler-Human:        PENDING
+    private bool MightBothParticipate(int earlier)
+    {
+        int low = 0, high = _disjunctions.Count - 1;
+        while (low < high)
+        {
+            var middle = (low + high + 1) / 2;
+            if (_disjunctions[middle].Start <= earlier)
+                low = middle;
+            else
+                high = middle - 1;
+        }
+
+        var (start, alternativeStart) = _disjunctions[low];
+        return !(start <= earlier && earlier < alternativeStart);
     }
 
     // ----- Nesting (convention 5, decision D6) ---------------------------------
