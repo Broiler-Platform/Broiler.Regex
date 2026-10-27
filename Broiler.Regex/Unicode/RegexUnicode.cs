@@ -5,11 +5,11 @@
 // ----------------------
 // Relevant units:   19
 // Annotated:        19/19
-// Exempt:           8
+// Exempt:           9
 // Human-reviewed:   0/19
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         8/8
+// Criteria:         10/8
 // Resource impact:  3/10 max
 // Unverified:       19
 //
@@ -42,9 +42,12 @@ namespace Broiler.Regex.Unicode;
 /// names.
 /// </para>
 /// <para>
-/// <b>Immutable.</b> Everything it holds is built in the constructor and never changed: the provider's objects
-/// are immutable, and the two sets it builds are normalized before the constructor returns. A compiled pattern
-/// keeps one instance for its matches, which may run on several threads at once.
+/// <b>One compilation's.</b> An instance serves one compilation, on its thread, and carries that compilation's
+/// <see cref="CompileCharge"/>, which each property escape it resolves charges before the provider's ranges and
+/// sequences are read (requirement R2, task 2.5 of SJL-11.2). Everything else it holds is built in the constructor
+/// and never changed: the provider's objects are immutable, and the two sets it builds are normalized before the
+/// constructor returns. Nothing the compilation answers keeps the instance: a compiled program keeps the provider's
+/// case folding alone.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=High; Resources=2; Fingerprint=3576CE
@@ -65,14 +68,15 @@ internal sealed class RegexUnicode
     private readonly CodePointSet _spaceSet;
     private readonly CodePointSet _foldedWordSet;
 
-    /// <summary>The answers of <paramref name="tables"/>.</summary>
+    /// <summary>The answers of <paramref name="tables"/>, for one compilation charged to <paramref name="charge"/>.</summary>
     /// <param name="tables">The Unicode owner's tables, of the version the provider's algorithms read.</param>
+    /// <param name="charge">The compilation's account (task 2.5), or null for one with no meter and no budget.</param>
     /// <exception cref="ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=4DA887
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=032756
     // Broiler-Falsified-If: tables whose UnicodeVersion is not the provider's are accepted, so the library matches against a data version no caller pinned
     // Broiler-Human:        PENDING
-    internal RegexUnicode(IUnicodeTables tables)
+    internal RegexUnicode(IUnicodeTables tables, CompileCharge? charge = null)
     {
         ArgumentNullException.ThrowIfNull(tables);
         _properties = new UnicodeProperties(tables);
@@ -82,7 +86,13 @@ internal sealed class RegexUnicode
         _maxOrbit = Math.Max(_folding.MaxOrbit, _folding.MaxUpperOrbit);
         _spaceSet = BuildSpaceSet();
         _foldedWordSet = BuildFoldedWordSet();
+        Charge = charge ?? new CompileCharge(null, null);
     }
+
+    /// <summary>The compilation's account, which every expansion of the compilation charges before its work (requirement R2).</summary>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=FC3C03
+    // Broiler-Human:        PENDING
+    internal CompileCharge Charge { get; }
 
     // ----- Canonicalize (§22.2.2.7.3) -----------------------------------------
 
@@ -293,7 +303,7 @@ internal sealed class RegexUnicode
     /// case folding, no ignoring of <c>_</c>, <c>-</c> or spaces, no <c>Is</c> prefix (§22.2.2.9.7
     /// UnicodeMatchProperty and §22.2.2.9.8 UnicodeMatchPropertyValue).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=Low; Security=High; Resources=3; Fingerprint=76BE3F
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=Low; Security=High; Resources=3; Fingerprint=DEC057
     // Broiler-Falsified-If: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
     // Broiler-Human:        PENDING
     internal UnicodeCharSets.PropertyMatch? ResolveProperty(string name, string? value)
@@ -301,12 +311,12 @@ internal sealed class RegexUnicode
         if (value != null)
         {
             return _properties.TryResolve(name, value, out var pair)
-                ? new UnicodeCharSets.PropertyMatch(ToCodePointSet(pair), [], isStringProperty: false)
+                ? new UnicodeCharSets.PropertyMatch(ToCodePointSet(pair, CompileSite.Property), [], isStringProperty: false)
                 : null;
         }
 
         if (_properties.TryResolve(name, out var lone))
-            return new UnicodeCharSets.PropertyMatch(ToCodePointSet(lone), [], isStringProperty: false);
+            return new UnicodeCharSets.PropertyMatch(ToCodePointSet(lone, CompileSite.Property), [], isStringProperty: false);
 
         if (_stringProperties.TryResolve(name, out var property))
             return ResolveStringProperty(property);
@@ -316,7 +326,9 @@ internal sealed class RegexUnicode
 
     /// <summary>
     /// A property of strings: its single code points as a set and its sequences of two or more as strings.
-    /// <c>RGI_Emoji</c> is the union of the others, which the provider holds no data for of its own.
+    /// <c>RGI_Emoji</c> is the union of the others, which the provider holds no data for of its own. The compilation is
+    /// charged, before anything is read, one unit per range and per sequence of each property read, and each sequence's
+    /// code units before its string is built (<see cref="CompileSite.Property"/>).
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=34C07C
     // Broiler-Falsified-If: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
@@ -342,10 +354,12 @@ internal sealed class RegexUnicode
         return new UnicodeCharSets.PropertyMatch(CodePointSet.FromRanges(ranges), [.. strings], isStringProperty: true);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=2; Fingerprint=33F660
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=2; Fingerprint=A50A68
+    // Broiler-Falsified-If: a sequence's string is built before its code units are charged, or a property's ranges and sequences are read before a unit is charged for each
     // Broiler-Human:        PENDING
-    private static void AddStringProperty(StringProperty property, List<(int Lo, int Hi)> ranges, List<string> strings)
+    private void AddStringProperty(StringProperty property, List<(int Lo, int Hi)> ranges, List<string> strings)
     {
+        Charge.Charge(CompileSite.Property, (long)property.CodePointRangeCount + property.SequenceCount);
         for (var range = 0; range < property.CodePointRangeCount; range++)
             ranges.Add((property.FirstCodePoint(range), property.LastCodePoint(range)));
 
@@ -354,6 +368,11 @@ internal sealed class RegexUnicode
         var text = new StringBuilder();
         while (sequences.TryRead(sequence, out var length))
         {
+            var units = 0;
+            for (var i = 0; i < length; i++)
+                units += sequence[i] > 0xFFFF ? 2 : 1;
+            Charge.Charge(CompileSite.Property, units);
+
             text.Clear();
             for (var i = 0; i < length; i++)
                 text.Append(char.ConvertFromUtf32(sequence[i]));
@@ -361,11 +380,16 @@ internal sealed class RegexUnicode
         }
     }
 
-    /// <summary>The conversion of a set the provider answers into this library's <see cref="CodePointSet"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=15F8D4
+    /// <summary>
+    /// The conversion of a set the provider answers into this library's <see cref="CodePointSet"/>, charged to the
+    /// compilation at <paramref name="site"/> one unit per range copied, before the copy.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=995F59
+    // Broiler-Falsified-If: a range is copied before a unit is charged for it
     // Broiler-Human:        PENDING
-    internal static CodePointSet ToCodePointSet(ProviderSet set)
+    private CodePointSet ToCodePointSet(ProviderSet set, CompileSite site)
     {
+        Charge.Charge(site, set.RangeCount);
         var ranges = new List<(int Lo, int Hi)>(set.RangeCount);
         AddRanges(ranges, set);
         return CodePointSet.FromRanges(ranges);

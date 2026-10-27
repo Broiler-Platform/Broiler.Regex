@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   64
 // Annotated:        64/64
-// Exempt:           21
+// Exempt:           22
 // Human-reviewed:   0/64
 // IP risk:          Low
 // Security risk:    High
@@ -53,6 +53,12 @@ public sealed class RegexParser
     /// needs it and kept for the rest of this parse.
     /// </summary>
     private CodePointSet? _canonicalCharacters;
+
+    /// <summary>
+    /// The compilation's account (requirement R2, task 2.5 of SJL-11.2): the pattern's read and every expansion the parse
+    /// makes are charged there before their work.
+    /// </summary>
+    private readonly CompileCharge _charge;
 
     /// <summary>
     /// The effective <c>i</c> flag at the cursor. A <c>v</c>-mode class folds its operands
@@ -106,7 +112,7 @@ public sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=BF48C1
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=096D1C
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
@@ -115,6 +121,7 @@ public sealed class RegexParser
         _unicode = flags.IsUnicodeMode();
         _unicodeSets = (flags & RegexFlags.UnicodeSets) != 0;
         _data = data;
+        _charge = data.Charge;
         _nesting = nesting;
         _ignoreCase.Push((flags & RegexFlags.IgnoreCase) != 0);
         _groupNamesView = new ReadOnlyDictionary<string, int>(_groupNames);
@@ -171,11 +178,15 @@ public sealed class RegexParser
         return node;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=A1C02A
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=43961A
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
     {
+        // The pattern's units, one per code unit, before the pre-scan reads each of them once and the parse reads them
+        // again (requirement R2: the parse's own work, a constant amount per code unit).
+        _charge.Charge(CompileSite.Pattern, _src.Length);
+
         // Pre-scan to learn the total capture-group count and the declared group
         // names. ECMAScript needs both up front: in Unicode mode `\1` is always a
         // back-reference (its validity depends on the total count), and a forward

@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   2
 // Annotated:        2/2
-// Exempt:           9
+// Exempt:           10
 // Human-reviewed:   0/2
 // IP risk:          None
 // Security risk:    Low
@@ -30,9 +30,9 @@ namespace Broiler.Regex;
 /// (<c>BroilerRegex.Match</c> over a span), answering this enum. The later steps add members and keep these: the syntax status with
 /// its code, message identifier and position (the validate entry of task 2.8). A syntax error from
 /// <see cref="BroilerRegex.Compile"/> is still a <see cref="RegexSyntaxException"/>, and the signature of
-/// <see cref="BroilerRegex.Compile"/> is provisional: task 2.5 replaces it to take the caller's meter, and a syntax
-/// status needs room for its code, message identifier and position (its remarks). The members here are kept whatever
-/// replaces it, and their numbers are fixed.
+/// <see cref="BroilerRegex.Compile"/> is provisional: task 2.5 replaced it to take the caller's compile budget and meter,
+/// and a syntax status needs room for its code, message identifier and position (its remarks). The members here are kept
+/// whatever replaces it, and their numbers are fixed.
 /// </para>
 /// <para>
 /// <b>A member D9 does not list.</b> Decision D9's statuses are a match, no match, a limit exceeded naming its
@@ -81,9 +81,10 @@ public enum RegexStatus
 /// Task 2.3 of SJL-11.2 introduced <see cref="Nesting"/>, and task 2.4a the new backend's three ceilings,
 /// <see cref="Steps"/>, <see cref="Frames"/> and <see cref="Trail"/> (requirements R1 and R3, decisions D8 to D10), public
 /// with the status, and answered since task 2.4c by the offset entry and, as <c>RegexMatch.Limit</c>, by the
-/// string-bearing <c>Match</c>. The compile budget (task 2.5) joins them as a member of its own; none changes the members here.
+/// string-bearing <c>Match</c>. Task 2.5 added <see cref="Compile"/>, the caller's compile budget (requirement R2),
+/// which <see cref="BroilerRegex.Compile"/> answers; it changed none of the members before it.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=094E76
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=2530A5
 // Broiler-Human:        PENDING
 public enum RegexLimit
 {
@@ -113,4 +114,12 @@ public enum RegexLimit
     /// (requirement R3, decision D10).
     /// </summary>
     Trail = 4,
+
+    /// <summary>
+    /// The caller's compile budget: compiling the pattern would do more units of work than it admits, counted in the
+    /// units the meter is charged in, in proportion to the ranges and strings its expansions touch (requirement R2,
+    /// decisions D8 and D9). Provisional, with <see cref="BroilerRegex.Compile"/>'s signature (task 2.9 fixes the public
+    /// surface).
+    /// </summary>
+    Compile = 5,
 }

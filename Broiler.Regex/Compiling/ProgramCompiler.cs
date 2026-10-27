@@ -5,11 +5,11 @@
 // ----------------------
 // Relevant units:   33
 // Annotated:        33/33
-// Exempt:           27
+// Exempt:           29
 // Human-reviewed:   0/33
 // IP risk:          None
 // Security risk:    High
-// Criteria:         20/18
+// Criteria:         21/18
 // Resource impact:  5/10 max
 // Unverified:       33
 //
@@ -27,7 +27,7 @@ using CodePointSet = Broiler.Regex.Ast.CodePointSet;
 namespace Broiler.Regex.Compiling;
 
 /// <summary>How a compilation to the new backend's program ended.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=ED53A7
+// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E12D19
 // Broiler-Human:        PENDING
 internal enum ProgramCompilation
 {
@@ -36,6 +36,9 @@ internal enum ProgramCompilation
 
     /// <summary>The pattern nests deeper than the caller's nesting limit (requirement R4, decisions D6 and D7).</summary>
     NestingLimitExceeded = 1,
+
+    /// <summary>Compiling the pattern would do more work than the caller's compile budget admits (requirement R2, task 2.5).</summary>
+    CompileBudgetExceeded = 2,
 }
 
 /// <summary>
@@ -115,6 +118,13 @@ internal enum ProgramCompilation
 /// With them off (<c>fastPaths: false</c>, for the differential that holds them to the forms above and for the tests that
 /// read those forms), a program holds none of the three, and answers every match the same.
 /// </para>
+/// <para>
+/// <b>Charged (requirement R2, task 2.5).</b> The walks cost a constant amount per node of the tree, which the pattern's
+/// units pay for (<see cref="CompileSite.Pattern"/>); what the expansions decide is charged to the compilation's account
+/// before it is done (<see cref="CompileSite.Program"/>): each range a class instruction copies, and for a class of strings
+/// each string's code units to read it, again for each earlier table it is compared with and for its text, and the
+/// table's order; or, with the fast paths off, each string's code units for its lowering.
+/// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
 // Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
@@ -129,36 +139,42 @@ internal static class ProgramCompiler
     /// <param name="flags">The flags; <c>d</c>, <c>g</c>, <c>m</c> and <c>y</c> change nothing a program does.</param>
     /// <param name="tables">The Unicode owner's tables, which the parser reads.</param>
     /// <param name="nestingLimit">The deepest nesting admitted, from 1 to <see cref="BroilerRegex.MaximumNestingLimit"/>, counted as <see cref="BroilerRegex.Compile"/> counts.</param>
-    /// <param name="program">The program, or null when the nesting limit refused the pattern.</param>
+    /// <param name="program">The program, or null when the nesting limit or the compile budget refused the pattern.</param>
     /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
+    /// <param name="charge">The compilation's account, with the caller's meter and compile budget (task 2.5), or null for none.</param>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=3815FE
-    // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, or one of 511 answers NestingLimitExceeded
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=382899
+    // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, one of 511 answers NestingLimitExceeded, or a compilation past its budget answers Compiled
     // Broiler-Human:        PENDING
-    internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true)
+    internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true,
+        CompileCharge? charge = null)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, BroilerRegex.MaximumNestingLimit);
 
         var nesting = new RegexNesting(nestingLimit);
-        var data = new RegexUnicode(tables);
+        var data = new RegexUnicode(tables, charge);
         RegexNode tree;
         int captureCount;
         IReadOnlyDictionary<string, int> groupNames;
         try
         {
             tree = RegexParser.Parse(pattern, flags, data, nesting, out captureCount, out groupNames);
+            return Compile(tree, captureCount, groupNames, flags, data, nesting, out program, fastPaths);
         }
         catch (NestingLimitExceeded)
         {
             program = null;
             return ProgramCompilation.NestingLimitExceeded;
         }
-
-        return Compile(tree, captureCount, groupNames, flags, data, nesting, out program, fastPaths);
+        catch (CompileBudgetSpent)
+        {
+            program = null;
+            return ProgramCompilation.CompileBudgetExceeded;
+        }
     }
 
     /// <summary>Compiles a tree the parser built under <paramref name="flags"/> to a program.</summary>
@@ -166,11 +182,12 @@ internal static class ProgramCompiler
     /// <param name="captureCount">The pattern's capturing groups, as the parser counted them.</param>
     /// <param name="groupNames">The parser's map of group names to group numbers, which a named back-reference reads.</param>
     /// <param name="flags">The flags the tree was parsed under.</param>
-    /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps.</param>
+    /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps and whose account the lowering charges.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
     /// <param name="program">The program, or null when the nesting limit refused the tree.</param>
     /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
     /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
+    /// <exception cref="CompileBudgetSpent">The lowering would take the compilation past the caller's compile budget.</exception>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=DD0361
     // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
     // Broiler-Human:        PENDING
@@ -385,6 +402,9 @@ internal static class ProgramCompiler
 
         /// <summary>The tables of strings built so far, each shared by every occurrence of its strings in its direction and folding.</summary>
         private readonly List<StringTable> _strings = [];
+
+        /// <summary>The compilation's account, which the lowering charges before what the expansions decide (task 2.5).</summary>
+        private readonly CompileCharge _charge = data.Charge;
         private readonly bool _unicode = flags.IsUnicodeMode();
 
         /// <summary>The class of the word characters compared exactly, then under <c>i</c>, once it is added; -1 before.</summary>
@@ -714,25 +734,41 @@ internal static class ProgramCompiler
         /// code points are its own, combining a surrogate pair into one, and under a fold each one's Canonicalize, as the
         /// alternation's instructions would compare them.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=57A3F4
+        /// <remarks>
+        /// The strings are charged their code units before they are read, and again for each earlier table of the same
+        /// direction and folding they are compared with, string by string, before the comparison; a new table's text is
+        /// charged the strings' code units, and its order, the strings grouped by the character they begin with, a sort's
+        /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>).
+        /// </remarks>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=909E2C
         // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
         // Broiler-Human:        PENDING
         private int StringTableOf(CharSet set, bool rightToLeft)
         {
             var strings = new List<string>();
+            var units = 0L;
             foreach (var written in set.Strings)
             {
                 if (written.Length > 0)
+                {
                     strings.Add(written);
+                    units += written.Length;
+                }
             }
 
+            _charge.Charge(CompileSite.Program, units + 1);
             for (var i = 0; i < _strings.Count; i++)
             {
                 var known = _strings[i];
-                if (known.RightToLeft == rightToLeft && known.Folded == set.CaseFolded && SameStrings(known.Strings, strings))
+                if (known.RightToLeft != rightToLeft || known.Folded != set.CaseFolded)
+                    continue;
+
+                _charge.Charge(CompileSite.Program, units + 1);
+                if (SameStrings(known.Strings, strings))
                     return i;
             }
 
+            _charge.Charge(CompileSite.Program, units + ((long)strings.Count * CompileCharge.SortFactor(strings.Count)));
             if (set.CaseFolded)
                 _folds = true;
 
@@ -844,7 +880,7 @@ internal static class ProgramCompiler
         /// table's dispatch costs one and its weight, the floor of the base-2 logarithm of the number of characters strings
         /// begin with, as a class of that many ranges is weighed (<see cref="RegexProgram.ClassWeight"/>).
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=C1FA48
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=C7894A
         // Broiler-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
         // Broiler-Human:        PENDING
         private void AddStrings(CharSet set, Scope scope)
@@ -865,6 +901,7 @@ internal static class ProgramCompiler
                 if (text.Length == 0)
                     continue;
 
+                _charge.Charge(CompileSite.Program, text.Length);
                 var choice = Add(RegexOp.Choice, _code.Count + 1, -1);
                 characters.Clear();
                 for (var at = 0; at < text.Length; at++)
@@ -963,11 +1000,16 @@ internal static class ProgramCompiler
             Add(scope.IgnoreCase ? RegexOp.BackreferenceIgnoringCase : RegexOp.Backreference, _referenced.Count - 1, 1, rightToLeft: scope.RightToLeft);
         }
 
-        /// <summary>Adds the ranges of <paramref name="codePoints"/> to the program's classes, flattened into pairs, and answers how many there are.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=F61797
+        /// <summary>
+        /// Adds the ranges of <paramref name="codePoints"/> to the program's classes, flattened into pairs, and answers how
+        /// many there are; charged a unit per range before they are copied (<see cref="CompileSite.Program"/>).
+        /// </summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=7D3E6A
+        // Broiler-Falsified-If: a range is copied before a unit is charged for it
         // Broiler-Human:        PENDING
         private int AddRanges(CodePointSet codePoints)
         {
+            _charge.Charge(CompileSite.Program, codePoints.RangeCount);
             var ranges = codePoints.Ranges;
             var pairs = new int[2 * ranges.Count];
             for (var i = 0; i < ranges.Count; i++)

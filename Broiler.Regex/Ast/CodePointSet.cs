@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   20
-// Annotated:        20/20
+// Relevant units:   21
+// Annotated:        21/21
 // Exempt:           4
-// Human-reviewed:   0/20
+// Human-reviewed:   0/21
 // IP risk:          Low
 // Security risk:    Medium
 // Criteria:         9/0
 // Resource impact:  6/10 max
-// Unverified:       20
+// Unverified:       21
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -139,6 +139,11 @@ public sealed class CodePointSet
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=96A816
     // Broiler-Human:        PENDING
     public bool IsEmpty => _ranges.IsEmpty;
+
+    /// <summary>How many ranges the set holds: the units an operation of a compilation charges for reading it.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=995345
+    // Broiler-Human:        PENDING
+    internal int RangeCount => _ranges.Length;
 
     /// <summary>This set itself: a set never changes, so it is its own copy.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=ADF644

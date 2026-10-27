@@ -66,9 +66,10 @@ public class FastPathDifferentialTests(ITestOutputHelper output)
         Assert.True(tally.Compared >= 1_300_000, "the suite population compared only " + tally.Compared + " cases");
 
         // Under the first ceiling (a+)+b's 26 cases on twelve to fifteen a's stop in both programs, as in the old-versus-new
-        // differential, and the general lowering alone stops 16, \p{RGI_Emoji}'s strings tried one by one; all 42 answer
-        // the same under the second.
-        Assert.Equal((26, 0, 16, 0, 0, 0), Stops(tally));
+        // differential, and the general lowering alone stops 40, \p{RGI_Emoji}'s strings tried one by one; all 66 answer
+        // the same under the second. The general lowering stopped 16 until task 2.5's CompileChargingTests added classes of
+        // RGI_Emoji to the suite's literals, which stop 24 more (the population without that file still stops 16).
+        Assert.Equal((26, 0, 40, 0, 0, 0), Stops(tally));
     }
 
     [Fact]

@@ -722,6 +722,17 @@ internal static class SharedRules
             yield return assembly + "'s baseline records public API the assembly does not have: " + line;
     }
 
+    /// <summary>
+    /// SL6's marks of provisional members (<see cref="ApiListing.ProvisionalMark"/>), this repository's own since task 2.5
+    /// of SJL-11.2: each names a member the assembly has, by its line in the listing, so that no mark outlives its member.
+    /// </summary>
+    internal static IEnumerable<string> SL6Provisional(string assembly, IReadOnlyList<string> listing, IReadOnlyList<string> provisional)
+    {
+        var current = listing.ToHashSet(StringComparer.Ordinal);
+        foreach (var line in provisional.Where(l => !current.Contains(l)))
+            yield return assembly + "'s baseline marks as provisional public API the assembly does not have: " + line;
+    }
+
     /// <summary>SL6's package-validation half: a packed library validates its package against the last published one.</summary>
     internal static IEnumerable<string> SL6PackageValidation(string project, IReadOnlyDictionary<string, string> evaluated, string baselineVersion)
     {

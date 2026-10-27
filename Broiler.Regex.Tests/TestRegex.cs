@@ -22,9 +22,9 @@ internal static class TestRegex
     /// <summary>The public constructor taking a flags string.</summary>
     internal static BroilerRegex New(string pattern, string? flags, IUnicodeTables tables) => new(pattern, flags, tables);
 
-    /// <summary><see cref="BroilerRegex.Compile"/>.</summary>
+    /// <summary><see cref="BroilerRegex.Compile"/> with no compile budget and no meter.</summary>
     internal static RegexStatus TryCompile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out BroilerRegex? regex, out RegexLimit limit) =>
-        BroilerRegex.Compile(pattern, flags, tables, nestingLimit, out regex, out limit);
+        BroilerRegex.Compile(pattern, flags, tables, nestingLimit, null, null, out regex, out limit);
 
     /// <summary>
     /// The string-bearing <see cref="BroilerRegex.Match(string, int)"/>'s answer in the form <see cref="MachineTests.Render"/>
