@@ -385,7 +385,7 @@ internal static class Verdicts
                 outcome.Note(site, match.Success ? Invariant($"m{match.Index},{match.Length}") : match.Limit.ToString());
                 outcome.Reach(match.Success ? "string:match" : match.Limit == RegexLimit.None ? "string:nomatch" : "string:limit");
                 var expected = Expected(subject, Math.Max(start, 0), from, reference);
-                var difference = Compare(match, expected, subject, regex.CaptureCount);
+                var difference = Compare(match, expected, subject, regex);
                 if (difference is not null)
                     outcome.Find("disagreement", site, difference + "; the offset entry from " + from.ToString(CultureInfo.InvariantCulture) + (sticky ? " anchored" : "") + " answered " + reference.Text);
             }
@@ -427,11 +427,14 @@ internal static class Verdicts
     /// match the shape <see cref="RegexMatch.Empty"/> and the ceilings' matches document (no index, no text, no groups);
     /// for a match its index, length and <see cref="RegexMatch.Value"/>, the subject's text there; group 0 as the whole
     /// match; each group's offsets and <see cref="RegexGroup.Value"/> from the slots, the empty text and index -1 for a
-    /// group that did not participate; and each <see cref="RegexMatch.NamedGroups"/> entry as a participating group of
-    /// its name where one participated, or as no match where none did.
+    /// group that did not participate, and each group's <see cref="RegexGroup.Number"/> its own; and each
+    /// <see cref="RegexMatch.NamedGroups"/> entry as the participating group of its name where one participated, its
+    /// <see cref="RegexGroup.Number"/> that group's, whose slots it reports, and <see cref="RegexGroupNames.ParticipatingGroup"/>
+    /// reading the same group from the slots; or, where none did, as no match, numbered as the name's first group.
     /// </summary>
-    private static string? Compare(RegexMatch match, (bool Success, int Index, int Length, RegexLimit Limit, int[] Slots) expected, string subject, int captureCount)
+    private static string? Compare(RegexMatch match, (bool Success, int Index, int Length, RegexLimit Limit, int[] Slots) expected, string subject, BroilerRegex regex)
     {
+        var captureCount = regex.CaptureCount;
         if (match.Success != expected.Success || match.Limit != expected.Limit)
             return Invariant($"the string-bearing match answered success {match.Success}, limit {match.Limit}; expected success {expected.Success}, limit {expected.Limit}");
         if (!expected.Success)
@@ -452,9 +455,10 @@ internal static class Verdicts
         if (match.Groups.Count != captureCount + 1)
             return Invariant($"the string-bearing match has {match.Groups.Count} groups for {captureCount} captures");
         var whole = match.Groups[0];
-        if (!whole.Success || whole.Index != expected.Index || whole.Length != expected.Length || whole.Value != value || whole.Name is not null)
-            return Invariant($"group 0 is {whole.Success} {whole.Index},{whole.Length} {FuzzCase.Quote(whole.Value)}{(whole.Name is null ? "" : " named " + whole.Name)}; the match is {expected.Index},{expected.Length} {FuzzCase.Quote(value)}");
-        var names = new SortedDictionary<string, List<RegexGroup>>(StringComparer.Ordinal);
+        if (!whole.Success || whole.Index != expected.Index || whole.Length != expected.Length || whole.Value != value || whole.Name is not null || whole.Number != 0)
+            return Invariant($"group 0 is {whole.Success} {whole.Index},{whole.Length} {FuzzCase.Quote(whole.Value)}{(whole.Name is null ? "" : " named " + whole.Name)}, number {whole.Number}; the match is {expected.Index},{expected.Length} {FuzzCase.Quote(value)}, group 0");
+        // Each name's groups by number, ascending: the first of them, and those the slots say participated.
+        var names = new SortedDictionary<string, (int First, List<int> Participating)>(StringComparer.Ordinal);
         for (var group = 1; group <= captureCount; group++)
         {
             var (from, to) = (expected.Slots[2 * group], expected.Slots[(2 * group) + 1]);
@@ -465,26 +469,43 @@ internal static class Verdicts
             var text = took ? subject[from..to] : "";
             if (actual.Success != took || actual.Index != (took ? from : -1) || actual.Length != (took ? to - from : 0) || actual.Value != text)
                 return Invariant($"group {group} is {actual.Success} {actual.Index},{actual.Length} {FuzzCase.Quote(actual.Value)}; the slots say {from},{to}{(took ? " " + FuzzCase.Quote(text) : "")}");
+            if (actual.Number != group)
+                return Invariant($"group {group} has the number {actual.Number}");
             if (actual.Name is { } name)
             {
-                if (!names.TryGetValue(name, out var participating))
-                    names[name] = participating = [];
+                if (!names.TryGetValue(name, out var groups))
+                    names[name] = groups = (group, []);
                 if (took)
-                    participating.Add(actual);
+                    groups.Participating.Add(group);
             }
         }
 
-        foreach (var (name, participating) in names)
+        foreach (var (name, (first, participating)) in names)
         {
             if (!match.NamedGroups.TryGetValue(name, out var named))
                 return "the named group " + name + " is not in NamedGroups";
-            var shown = Invariant($"{named.Success} {named.Index},{named.Length} {FuzzCase.Quote(named.Value)}");
+            var shown = Invariant($"{named.Success} {named.Index},{named.Length} {FuzzCase.Quote(named.Value)}, number {named.Number}");
             if (named.Name != name)
                 return "NamedGroups gives under the name " + name + " a group named " + (named.Name ?? "nothing");
-            if (participating.Count > 0 && !participating.Any(group => named.Success && named.Index == group.Index && named.Length == group.Length && named.Value == group.Value))
-                return "NamedGroups gives the name " + name + " as " + shown + ", which is no participating group of that name";
-            if (participating.Count == 0 && (named.Success || named.Index != -1 || named.Length != 0 || named.Value.Length != 0))
-                return "NamedGroups gives the name " + name + " as " + shown + ", where no group of that name participated";
+            // The entry's number is the participating group's, and its offsets that group's slots: R6 lets at most one
+            // group of a name participate, and RegexGroupNames.ParticipatingGroup reads the same one from the slots.
+            if (participating.Count > 0)
+            {
+                var number = named.Number;
+                if (!participating.Contains(number))
+                    return "NamedGroups gives the name " + name + " as " + shown + ", which is no participating group of that name (" + string.Join(", ", participating.Select(static n => n.ToString(CultureInfo.InvariantCulture))) + ")";
+                var (from, to) = (expected.Slots[2 * number], expected.Slots[(2 * number) + 1]);
+                if (!named.Success || named.Index != from || named.Length != to - from || named.Value != subject[from..to])
+                    return Invariant($"NamedGroups gives the name {name} as {shown}; the slots of group {number} say {from},{to}");
+            }
+            else if (named.Success || named.Index != -1 || named.Length != 0 || named.Value.Length != 0 || named.Number != first)
+            {
+                return Invariant($"NamedGroups gives the name {name} as {shown}, where no group of that name participated; the name's first group is {first}");
+            }
+
+            var read = regex.GroupNames.ParticipatingGroup(name, expected.Slots);
+            if (read != (participating.Count > 0 ? named.Number : 0))
+                return Invariant($"RegexGroupNames.ParticipatingGroup reads group {read} of the name {name} from the slots; the string-bearing match gives {shown}");
         }
 
         if (match.NamedGroups.Count != names.Count)
@@ -599,7 +620,7 @@ internal static class Verdicts
 
         for (var i = 0; i < expected.Count; i++)
         {
-            var difference = Compare(actual[i], expected[i], subject, regex.CaptureCount);
+            var difference = Compare(actual[i], expected[i], subject, regex);
             if (difference is not null)
             {
                 outcome.Find("disagreement", Invariant($"matches[{i}]"), difference);

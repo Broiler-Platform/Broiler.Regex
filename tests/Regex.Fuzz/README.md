@@ -116,7 +116,9 @@ is anything else:
   string-bearing members against the offset entry, through the mapping their documentation states
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
   decision D41, groups from the slots, each `Value` (the match's, group 0's and every group's) the subject's text at
-  the offsets reported, `NamedGroups` from a participating group of each name, a failed match with no index, text or
+  the offsets reported, each group's `Number` its own, `NamedGroups` from the participating group of each name, its
+  `Number` that group's and its offsets that group's slots, as `RegexGroupNames.ParticipatingGroup` reads them, or,
+  where no group of the name participated, the name's first group, unmatched, a failed match with no index, text or
   groups, `Matches`' iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
   as `Matches`' last element), compared wherever the wide call completed or met the frame or trail ceiling the
   string-bearing members also pass. `Matches` is emulated through the wide calls: those the case made already, from
