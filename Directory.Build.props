@@ -27,7 +27,9 @@
     what those analyzers report is an error under TreatWarningsAsErrors above. Nothing is suppressed
     (docs/suppressions.md). The test projects, whose names end in ".Tests" as the packaging props'
     IsPackable convention already reads them, run under the JIT only and are not held: their reflection
-    over test assemblies is what xunit and the architecture rules are for.
+    over test assemblies is what xunit and the architecture rules are for. tests/Regex.Fuzz, the fuzz
+    target, is a test project whose name does not end in ".Tests", so neither condition reaches it: its
+    own project file sets these five properties back to false, and IsPackable to false.
   -->
   <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('.Tests'))">
     <IsAotCompatible>true</IsAotCompatible>
