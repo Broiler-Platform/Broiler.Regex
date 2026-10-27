@@ -916,6 +916,24 @@ Neither the plan nor JSD-0081 declares a seed or a count: this record does. The 
 the assurance config covers `tests/`"; `assurance.config.json` lists the library's project alone, so the target carries
 none.
 
+*Amended at the review of task 2.11, 2026-10-27.* The review's five findings were the target's and its records'; the
+library is unchanged. The string-bearing members' `Value`, the match's, group 0's and every group's, is now read against the
+subject at the offsets they report, each `NamedGroups` entry against a participating group of its name, and a failed
+match against the shape `RegexMatch.Empty` documents: a review's plant of a wrong substring in `BroilerRegex.Run` had
+passed the declared session, which now reports it. `Matches` is now compared at the engines' ceilings: its emulation
+always takes the wide calls the case made, so its first element is compared on every subject, and its ceiling element
+8 times at the declared seed, which the session now requires (`matches:limit`), where any subject over 4,096 units had
+been skipped and only subjects of about 500,000 units reach a ceiling; past its first element `Matches` is compared on
+subjects up to 4,096 units within 2^20 units, as before, a cut-short emulation over the elements it has. A row of
+`known-findings.tsv` now names a text of the exception's message and matches only with its method the innermost
+library frame, so that another exception on the same path is a finding: the review's plant of an `ArgumentException`
+for a three-unit `\q{…}` string, absorbed before as the listed row, is reported, and the row still counts 83. The
+declared session's digest is now `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, the same over five
+runs, over three and four worker processes and under `tr-TR`; the session took 21 to 33 seconds on four cores beside
+other builds, and the control still reports the plant at iteration 52 with one worker process. The comment of
+`Directory.Build.props` now names the fuzz target as the test project its `.Tests` rule does not reach, and the
+CHANGELOG says that the library, not the package, is unchanged: the packed README names the target.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

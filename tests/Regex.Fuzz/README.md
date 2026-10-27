@@ -47,9 +47,11 @@ answering, is a finding at the iteration it was in), and each known finding's re
   40 seconds beside other builds.
 - **Its transcript digest** at the commit that added it was
   `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`, the same over five runs, over three and four
-  worker processes and under `tr-TR`. The digest is a record, not a pin: the records hold the units the meter was charged and
-  the library's answers, so it moves with any change of the library's behaviour or units, and CI prints it without
-  comparing it.
+  worker processes and under `tr-TR`. At the review's fixes, whose `Matches` comparisons the records note, it is
+  `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, again the same over five runs, over three and
+  four worker processes and under `tr-TR`, the session taking 21 to 33 seconds on four cores beside other builds. The
+  digest is a record, not a pin: the records hold the units the meter was charged and the library's answers, so it
+  moves with any change of the library's behaviour or units, and CI prints it without comparing it.
 
 ## What one iteration does
 
