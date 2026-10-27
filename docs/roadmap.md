@@ -704,8 +704,10 @@ starting violation list closes no row; its citations moved with the lines of `Re
   constructor and `Parse` and the public `CodePointSet` operations, whose work grows with the pattern or the sets and
   which take no meter (convention 4), as the constructors take none.
 - **Task 2.14.** The `--adversarial` mode builds on `EngineRun`, whose policy now reads the compile budget and whose
-  one meter is charged by the compilation and then the match; the V rows' controls of part C are the same patterns
-  with no budget (E48 to E52 hold them) and with the budget a hundredth of the whole compilation.
+  one meter is charged by the compilation and then the match. Part C names no control for class V: its two controls
+  are a scratch build that answers `LimitExceeded` naming steps as no match, which every K, A, L, W and G row must
+  report, and one without the nesting check, which every N row past the limit must. E48 to E52 record each V
+  pattern's whole compilation with no budget, the evidence of the rows' margin, not a control.
 - **SJL-11.4.** Broiler.VM's adapter replaces its `source.Length + 32` (row B7) with this meter, through `Compile`.
 
 *Where the plan, JSD-0081 and this repository differ, read at this record.* JSD-0081 and the plan agree on D8 and on
@@ -714,9 +716,11 @@ the specification's matcher steps"; `regexpref` does not exist yet and counts no
 states the V rows' margin in R2's own terms, the ranges and strings touched, and this library's test reads the library's
 own charge for the whole compilation, which charges at least those. D10 sets the engines' frame and trail ceilings and
 Broiler.JS's absent meter, and names no compile budget for an engine; the constructors take none. The plan's row 2.5
-names `Fold` "under `vi` and `i`": under `i` alone nothing is folded at compile time (above). Broiler.VM's realm
-charges a compilation `source.Length + 32`; this library's units are its own, in proportion to the expansion, as D8
-reads.
+names `Fold` under `vi`, which is where this task folds and charges, so the plan and the code agree; the task's brief
+also asked for `Fold` under `i`, and under `i` alone nothing is folded at compile time (above), so there is no such
+fold to charge. Plan row 2.8 gives the validate entry "a nullable meter"; JSD-0081's D18 and the plan's own D18 give it
+"no expansion, no meter", and JSD-0081 is read: task 2.8's entry takes no meter (above). Broiler.VM's realm charges a
+compilation `source.Length + 32`; this library's units are its own, in proportion to the expansion, as D8 reads.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
