@@ -16,15 +16,15 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Files scanned | 21 |
+| Files scanned | 22 |
 | Files not covered | 0 |
-| Files carrying an annotation | 21 |
-| Code units | 526 |
-| Relevant | 290 |
-| Exempt by predicate | 236 |
-| Annotated | 290 of 290 (100%) |
-| Human reviewed | 0 of 290 (0%) |
-| Unverified | 290 |
+| Files carrying an annotation | 22 |
+| Code units | 553 |
+| Relevant | 312 |
+| Exempt by predicate | 241 |
+| Annotated | 312 of 312 (100%) |
+| Human reviewed | 0 of 312 (0%) |
+| Unverified | 312 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 290 |
+| HUMAN_PENDING | 312 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 236 |
+| EXEMPT | 241 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 199 |
+| None | 222 |
 | Low | 103 |
 | Medium | 0 |
 | High | 0 |
@@ -54,9 +54,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 94 |
-| Medium | 76 |
-| High | 119 |
+| Low | 97 |
+| Medium | 87 |
+| High | 128 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -65,8 +65,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Metric | Value |
 |---|---:|
 | Maximum | 8 / 10 |
-| Average over annotated units | 1.8 / 10 |
-| Units scored | 290 |
+| Average over annotated units | 1.7 / 10 |
+| Units scored | 312 |
 
 ## High-security review areas
 
@@ -179,6 +179,15 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Parsing.RegexParser.IsSyntaxChar(char)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.RegexFlagsParser` in `Broiler.Regex/RegexFlags.cs` - Security=High, human line PENDING
 - `Broiler.Regex.RegexFlagsParser.Parse(string?)` in `Broiler.Regex/RegexFlags.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.SyntaxCharactersAndSolidus` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.OtherPunctuators` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.EscapeString(string, int, RegexWorkCharge?, out string?)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.EncodeString(string, Span<char>)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.EncodeCodePoint(ref TextWriter, int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.TextWriter.Hex(int)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.MeterAccount` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Text.RegexEscaper.MeterAccount.Spend(long)` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexFlagsText` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Text.RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out int)` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Unicode.RegexUnicode` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
@@ -194,8 +203,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 171 |
-| Units required to carry one | 119 |
+| Units carrying a criterion | 180 |
+| Units required to carry one | 128 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -215,13 +224,13 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 44 |
+| TrivialPropertyOrAccessor | 45 |
 | ParameterAssigningConstructor | 7 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 111 |
+| FieldDeclaringStorage | 115 |
 | EnumMemberOfADeclaredVocabulary | 74 |
 | DeclaredInSource | 0 |
 
@@ -246,14 +255,14 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-526 of them, exempt and relevant alike - with the fingerprint of its declaration.
+553 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as
 trivial is no longer invisible: a semantic change to one moves a value in a generated file
 the check compares byte for byte. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx` holds the manifest to the tree.
 
-Beside the units it lists **every covered file** - 21 of them - with a
+Beside the units it lists **every covered file** - 22 of them - with a
 fingerprint over the complete token stream of its compilation unit. A unit entry exists only
 for a declaration kind the scanner enumerates, and an enumeration is a whitelist: an
 `[assembly: ...]` attribute is a member of nothing and can be in no unit at all.

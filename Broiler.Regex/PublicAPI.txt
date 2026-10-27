@@ -176,6 +176,9 @@ Broiler.Regex.RegexWorkCharge..ctor(System.Object, System.IntPtr) method System.
 Broiler.Regex.RegexWorkCharge.BeginInvoke(System.UInt64, System.AsyncCallback, System.Object) method virtual System.IAsyncResult
 Broiler.Regex.RegexWorkCharge.EndInvoke(System.IAsyncResult) method virtual System.Void
 Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64) method virtual System.Void
+Broiler.Regex.Text.RegexEscaper sealed class
+Broiler.Regex.Text.RegexEscaper..ctor(Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
+Broiler.Regex.Text.RegexEscaper.EscapeString(System.String, System.Int32, Broiler.Regex.RegexWorkCharge, System.String&) method Broiler.Regex.RegexStatus
 Broiler.Regex.Text.RegexFlagsStatus enum
 Broiler.Regex.Text.RegexFlagsStatus.DuplicateFlag = 2
 Broiler.Regex.Text.RegexFlagsStatus.Success = 0
