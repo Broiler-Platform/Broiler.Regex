@@ -59,7 +59,15 @@ answering, is a finding at the iteration it was in), and each known finding's re
   `2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846` after the second, the same over two runs with four
   worker processes, over one and three, and under `tr-TR`. The fix that followed the integration's review, which refuses
   a range before `&&` or `--`, a form the generator never writes, changes no answer of the session, and the digest stays
-  `2eb41e…`. The digest is a record, not a pin: the records hold the units the meter was charged and the library's
+  `2eb41e…`. Task 2.8 moved it twice. Its library change alone made it
+  `d2c0d2e09805b037b8abe4cd562a1c888c68f72f61d998fb14698fe33e4e0246`: 353 iterations are answered otherwise, no other
+  changing, 294 of them a class range out of order outside `v`, now refused at the range's position where its position
+  was -1, and 59 a property of strings negated or outside `v`, now refused before it is expanded, so charged the
+  pattern's read alone, 19 of whose tight compilations now answer the syntax error where they met their budget (18) or
+  their meter (1). The oracle's comparison of the validate entry, which adds its answers to each record, then made it
+  `1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`, the same over two runs with four worker processes
+  and over three under `tr-TR`; the session took 34 seconds on four cores beside other builds. The digest is a record,
+  not a pin: the records hold the units the meter was charged and the library's
   answers, so it moves with any change of the library's behaviour or units, and CI prints it without comparing it.
 
 ## What one iteration does
@@ -99,6 +107,8 @@ run of up to 65,536 characters; the classes have their own, of up to 1,100,000 c
   nesting limit, a budget of 2^26 units, a meter that counts) and a tight one (a random limit, budget and meter
   allowance);
 - the constructor, which takes no limit, beside the full compilation;
+- the validate entry (task 2.8) under each compilation's nesting limit, beside each compilation: it takes no meter and
+  no compile budget;
 - the offset entry `BroilerRegex.Match(ReadOnlySpan<char>, ...)` from every start of the case (0, the end, one at
   random, one inside a surrogate pair and one after it), anchored and not, under wide ceilings (a step ceiling of 2^18
   units, 2^23 for a long subject, and the engines' frames and trail) and a meter, and once under narrow ones, which
@@ -110,8 +120,8 @@ run of up to 65,536 characters; the classes have their own, of up to 1,100,000 c
 
 ## What counts as a finding
 
-An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension), a
-`RegexSyntaxException` from compilation, the session's own meter exception, a documented argument exception for an
+An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension, and the validate entry's
+`SyntaxError` with its diagnostic), a `RegexSyntaxException` from compilation, the session's own meter exception, a documented argument exception for an
 argument broken on purpose, and `IsMatch`'s `InvalidOperationException` for a match that reached a ceiling. A finding
 is anything else:
 
@@ -120,7 +130,9 @@ is anything else:
 - **process-end** and **hang**: a child that ends without its last line, or writes nothing for the watchdog's time,
   reported at the iteration after its last record, with that case; the child is restarted after it;
 - **disagreement**: two answers to one question that differ. A tight compilation that succeeds, or refuses a syntax
-  error, against the full one; the constructor against the full compilation; a narrow match call that completes
+  error, against the full one; the constructor against the full compilation; the validate entry against the compilation
+  under the same nesting limit, wherever that compilation met neither its compile budget nor its meter (the same status,
+  and for a syntax error the same code, message identifier, argument, position and message); a narrow match call that completes
   against the wide one; after the meter's exception, the same instance against its own earlier answer; the
   string-bearing members against the offset entry, through the mapping their documentation states
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
@@ -137,7 +149,9 @@ is anything else:
   enumeration's end is compared element for element and in its count, one cut short over the elements it has;
   `EscapePattern`'s text compiling or matching otherwise than its pattern; `EscapeString`'s text, compiled under any
   flags, failing to match its subject whole;
-- **contract**: an answer the documentation rules out: a status with the wrong limit, slots written past
+- **contract**: an answer the documentation rules out: a status with the wrong limit, a validation's diagnostic other
+  than its status's (a syntax error with no code, the nesting code or a position outside the pattern, an identifier
+  other than its code's, a nesting refusal whose argument is not the limit), slots written past
   `SlotCount`, slots other than -1 after any answer but a match or after the meter's exception, a match's offsets
   outside the subject, before an unanchored start or off an anchored one, a group's offsets out of order,
   `SlotCount` other than 2 × (`CaptureCount` + 1).
