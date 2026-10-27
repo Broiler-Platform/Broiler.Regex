@@ -398,7 +398,7 @@ public sealed class BroilerRegex
     /// <see cref="RegexMatch"/> whose <see cref="RegexMatch.Limit"/> names the ceiling, and ends. An enumeration that
     /// ends with no such element found every match there is.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=705430
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=46F375
     // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling ends the enumeration with no element naming it, or the enumeration goes on after it
     // Broiler-Human:        PENDING
     public IEnumerable<RegexMatch> Matches(string input)

@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   41
-// Annotated:        41/41
-// Exempt:           26
-// Human-reviewed:   0/41
+// Relevant units:   42
+// Annotated:        42/42
+// Exempt:           28
+// Human-reviewed:   0/42
 // IP risk:          None
 // Security risk:    High
-// Criteria:         29/16
+// Criteria:         30/17
 // Resource impact:  8/10 max
-// Unverified:       41
+// Unverified:       42
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -203,7 +203,7 @@ internal ref struct RegexMachine
     private int _splitAt;
 
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=5CA4C9
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=FBFF16
     // Broiler-Human:        PENDING
     internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
@@ -329,7 +329,7 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/> with <paramref name="at"/> the position admitted; <see cref="Outcome.Failed"/> when
     /// no position before the subject's end is; <see cref="Outcome.Exceeded"/> at the step ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=0D35D4
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=2AA4B0
     // Broiler-Falsified-If: a position is tested before its units are charged, a position whose character the first test admits is skipped, the scan passes the step ceiling, or under u it starts a test inside a surrogate pair it stepped over
     // Broiler-Human:        PENDING
     private Outcome Scan(int test, ref int at)
@@ -358,7 +358,7 @@ internal ref struct RegexMachine
     /// the test is neither made nor charged again. The instructions an attempt dispatches before its first test only
     /// write registers, so the attempt reaches that test at its start, once.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=0; Fingerprint=TBF
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=0; Fingerprint=ACAF56
     // Broiler-Falsified-If: an attempt the scan admitted makes or charges its first test again, or takes the scan's answer for a test other than its first
     // Broiler-Human:        PENDING
     private bool TakeScanned(int address, ref int position)
@@ -391,7 +391,7 @@ internal ref struct RegexMachine
     /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed; a marked
     /// frame takes its fast path's next way, or, with none left, fails in its turn too.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=09E9F3
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=BADA73
     // Broiler-Falsified-If: an instruction is dispatched before its units are charged, the attempt's first test the scan made is charged again, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, a frame a look-around's body pushed is resumed after the look-around's close, or a marked frame resumes at its own instruction rather than after the instructions it owns
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
@@ -673,7 +673,7 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> after the characters taken; <see cref="Outcome.Failed"/>
     /// when a required character is missing; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=654F0D
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=9C7EB7
     // Broiler-Falsified-If: a greedy run that reaches the step ceiling while it takes its extra characters answers a match of fewer, a run examines a character it has not charged, a greedy run's frame gives a character back below its required ones, or a lazy run takes a character before it tries its continuation
     // Broiler-Human:        PENDING
     private Outcome EnterRun(in RegexInstruction run, int address, ref int position)
@@ -715,7 +715,7 @@ internal ref struct RegexMachine
     /// (<see cref="TakeScanned"/>), and each later one charged its cost before it is read.
     /// </summary>
     /// <returns><see cref="Outcome.Matched"/> past the last atom, <see cref="Outcome.Failed"/> at the first that fails, or <see cref="Outcome.Exceeded"/>.</returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=High; Resources=2; Fingerprint=2F9D85
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=High; Resources=2; Fingerprint=A6E8E4
     // Broiler-Falsified-If: an atom run charges units other than its atoms dispatched one by one would, reads an atom after one has failed, or reads a later atom before charging it
     // Broiler-Human:        PENDING
     private Outcome Atoms(in RegexInstruction run, int address, ref int position)

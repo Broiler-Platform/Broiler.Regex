@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 20 |
 | Files not covered | 0 |
 | Files carrying an annotation | 20 |
-| Code units | 510 |
-| Relevant | 280 |
-| Exempt by predicate | 230 |
-| Annotated | 280 of 280 (100%) |
-| Human reviewed | 0 of 280 (0%) |
-| Unverified | 280 |
+| Code units | 513 |
+| Relevant | 281 |
+| Exempt by predicate | 232 |
+| Annotated | 281 of 281 (100%) |
+| Human reviewed | 0 of 281 (0%) |
+| Unverified | 281 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 280 |
+| HUMAN_PENDING | 281 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 230 |
+| EXEMPT | 232 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 189 |
+| None | 190 |
 | Low | 103 |
 | Medium | 0 |
 | High | 0 |
@@ -56,7 +56,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | None | 13 |
 | Low | 89 |
 | Medium | 74 |
-| High | 116 |
+| High | 117 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.9 / 10 |
-| Units scored | 280 |
+| Units scored | 281 |
 
 ## High-security review areas
 
@@ -105,6 +105,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Engine.RegexMachine` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Run(int, bool, Span<int>)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Scan(int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Engine.RegexMachine.TakeScanned(int, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.MatchFrom(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.Afford(int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Engine.RegexMachine.AtomHolds(in RegexInstruction, ref int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, human line PENDING
@@ -191,8 +192,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 168 |
-| Units required to carry one | 116 |
+| Units carrying a criterion | 169 |
+| Units required to carry one | 117 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -218,7 +219,7 @@ that the rule is reviewable in one place rather than in several hundred.
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 109 |
+| FieldDeclaringStorage | 111 |
 | EnumMemberOfADeclaredVocabulary | 70 |
 | DeclaredInSource | 0 |
 
@@ -243,7 +244,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-510 of them, exempt and relevant alike - with the fingerprint of its declaration.
+513 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as
