@@ -816,6 +816,112 @@ is ES2026's. *Amended at the integration of tasks 2.5 and 2.7:* task 2.5, writte
 `PublicAPI.txt` its `# provisional:` marks, which the listing's rewrite keeps; the integration marks the thirteen
 lines of `Broiler.Regex.Text` with them, so the file now says what the brief asked.
 
+*Dated record, 2026-10-27 (task 2.6 of SJL-11.2; R6, check A-6 of bundle `sjl-11-001`; decisions D8, D9, D12, D14
+and D36).*
+
+**What it builds.** ES2025's duplicate named groups. A group name may be declared by several groups when no two of
+them can both participate (ECMA-262 §22.2.1.1, MightBothParticipate §22.2.1.4); `\k<name>` reads every group of the
+name and matches the one that participated (§22.2.2.7.2); and a result maps the name to that group (§22.2.7.2,
+RegExpBuiltinExec, step 33). Requirement R6 and JSD-0081's condition (i), which wants this before Broiler.JS retires its
+translator, are met on this branch; the package that carries them is task 2.9's `0.2.0-preview.1`.
+
+**The parser's rule.** The parser keeps a stack of the Disjunctions it is inside, each with the position it began at
+and the position its current Alternative began at, and holds the latest group of each name, the names compared as
+decoded, after their escapes are read (decision D36's check of task 2.2). A named group whose name an earlier group
+declared is admitted exactly when that earlier group's `(` lies in a closed Alternative of an open Disjunction: the
+innermost open Disjunction that began at or before it, found by a binary search over the stack, whose depth the nesting
+limit bounds. Otherwise the later group is refused as before, a `RegexSyntaxException` at its `(` with the message of a
+repeated name. Reading the latest earlier group alone is enough: if every earlier pair of the name passed and the new
+group cannot participate with the latest, it cannot with any earlier one, which the remarks of `MightBothParticipate`
+prove from the nesting of Disjunctions. So each named group costs one test, paid for by task 2.5's `Pattern` units.
+`(?<a>x)|(?<a>y)`, `((?<a>x)|(?<a>y))*` and `(?<a>x)|(?:y|(?<a>z))` compile; `(?<a>x)(?<a>y)`,
+`(?:(?<a>x)|(?<a>y))(?<a>z)` and `(?<a>x|(?<a>y))` are refused at the later group. `DuplicateNamedGroupTests` holds
+admitted and refused tables in every mode, each refusal with its position, and a seeded population of 20,000 generated
+trees (seed 20261027). For each tree the test reads MightBothParticipate from the tree itself, over every pair of groups
+of a name, and compares it with the parser's verdict. Four mutants of the check each fail the tests: the innermost
+open Disjunction only, the outermost only, always and never fail 8, 38, 42 and 17 of their 98 cases. The new tests were
+watched failing against the parser of the task's first commit, which refused every repeated name: 39 of 40.
+
+**`\k` (check A-6; D8).** A named back-reference compiles to one `Backreference` instruction over the list of the
+name's groups, ascending, which task 2.4a's machine already read. The machine compares the first group in that list
+whose capture is defined, and at most one is defined: groups in different Alternatives, and a quantifier's body clears
+its captures at each iteration. This holds forward, right to left in a look-behind, under `i` by Canonicalize, and by
+code point under `u` and `v`. A reference to a name none of whose groups participated matches the empty string. The
+instruction costs what a back-reference always cost, one unit and its capture's length (D8). Reading the list is not
+charged, as `ClearCaptures` of any width costs one unit; the list is fixed when the pattern compiles, at most its
+capture count. A name shared by 1,000 alternatives is read by its reference (`Every_group_of_a_name_in_one_thousand_alternatives_is_read_by_its_reference`).
+Check A-8 holds: a match through a name of 1, 10 and 1,000 groups, and the reading of its participating group,
+allocate nothing per call.
+
+**The results' shape (D12, R8).** The library's own type, not a collection of the base class library (convention 1):
+- **`RegexGroupNames`**, which `BroilerRegex.GroupNames` and `RegexParser.GroupNames` answer, immutable and shared by a
+  compiled pattern's matches. `Count` and `NameAt(i)` give the names in the order of their first groups, which is the
+  order of the `groups` object's properties. `GroupsNamed(name)` gives a name's groups, ascending, as a `ReadOnlySpan<int>`,
+  empty for an undeclared name. `NameOfGroup(k)` gives a group's name or null. `ParticipatingGroup(name, slots)` gives
+  the group of the name whose start and end the offset entry wrote into the caller's slots, or 0. It allocates nothing,
+  and a span shorter than the pattern's slots is a broken precondition.
+- **`RegexGroup.Number`**, so the string-bearing `RegexMatch.NamedGroups[name]` (decision D12 keeps it, R8 allows it) is
+  the participating group, whose number says which. When none of a name's groups participated, the entry is the first
+  of them, unmatched. Each name is listed once, in the order of its first group.
+
+Every new member is provisional, marked in `PublicAPI.txt`. The two breaks are CP0002 for `BroilerRegex.get_GroupNames`
+and `RegexParser.get_GroupNames`, each a dictionary of each name to one group until now. Both are suppressed in
+`CompatibilitySuppressions.xml` and listed in `docs/suppressions.md`. No shim keeps the dictionary, which would answer a
+shared name wrongly. The two C1 rows of the starting violation list for `GroupNames` close with it.
+`EngineNamingTests` gains `names`, the field of Broiler.VM's parser that holds each group's name. Task 2.6's first name
+for the list of names took it, and the test was watched failing on it; the field is now `_nameList`, and the test reads
+`RegexGroupNames`' members as well as the backend's.
+
+**test262 (decision D14's reading of R6).** `Test262DuplicateNamedGroupsTests` ports as data, at the pin `ccaac100`,
+every file whose front matter lists `regexp-duplicate-named-groups`: 19 files, each assertion transcribed to the
+library's API where the library alone answers it. **Fifteen are judged here:** the two syntax files (the Annex B one
+through `compile`, whose own steps are the host's), `named-groups/duplicate-names-{exec, group-property-enumeration-order,
+match-indices, match, matchall, search, test}.js`, `prototype/exec/duplicate-named-{groups, indices-groups}-properties.js`,
+`String/prototype/match/duplicate-named-{groups, indices-groups}-properties.js`, and staging's
+`duplicate-named-groups.js` and `duplicate-named-groups-search.js`. **Four wait for task 2.10's host job**, because their
+assertions read a host's algorithm over the matches, GetSubstitution or split's splitter: `duplicate-names-replace.js`,
+`duplicate-names-replaceall.js`, `duplicate-names-split.js` and staging's `duplicate-named-groups-replace.js`. The test
+checks each match those four read. The test also covers the syntax tests of `language/literals/regexp/named-groups/`
+(the 56 files' literals) and `built-ins/RegExp/named-groups/`' two `property-names-invalid` files. Six of its nine tests
+failed against the task's first commit.
+
+**O07 and O08.** The adversarial corpus's two rows that waited for this task answer their declared statuses in a child
+process (`AdversarialCorpusTests`) and in the Native AOT probe (E53: `match 0,1 - 0,1 units 7`; E54:
+`match 0,2 - 0,1 units 9`). E55 to E57 add a reference under `i`, one read right to left and a name 1,000
+alternatives share. The smoke population gains shared names, two refusals and a rendering of a name's groups and the
+one that participated. The probe's report under Native AOT is the JIT's, byte for byte.
+
+**What the later tasks still owe.**
+- **Task 2.8.** The validate entry reads the same parse: the duplicate check needs no expansion and no meter beyond the
+  pattern's, so it moves with the parser. The refusal of a repeated name becomes D9's syntax status, with a code, a
+  message identifier and the later group's position; until then it is the `RegexSyntaxException` it was.
+- **Task 2.9.** The provisional surface of this task: `RegexGroupNames` and its five members, `RegexGroup.Number`, and
+  the two reshaped `GroupNames`. It also owes `RegexMatch.NamedGroups` and `Groups`, whose C1 rows stay, and the
+  unmatched entry of a name no group of which participated: the first group, or none.
+- **Task 2.10.** The host job judges all 19 files, the plan's check of row 2.6, the four above whole. The library
+  job runs the literal syntax tests under the JIT and through the probe, where this task's test runs under the JIT
+  alone.
+- **SJL-11.4 and SJL-11.5.** Broiler.VM's admission commit (D15), and its `NameOf`, `NumberOf` and groups object onto
+  `NameOfGroup` and `ParticipatingGroup`. Broiler.JS's `BuildCaptureMapFromBroiler` reads the old dictionary and moves at
+  SJL-11.5 (`docs/suppressions.md`).
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.*
+- **Plan row 2.6's check** is that "test262's files tagged `regexp-duplicate-named-groups` pass in 2.10's host job".
+  That job does not exist yet. Until it does, this task's host-free test judges 15 of the 19 and names the four that
+  wait. D14's library job names only the literal syntax tests, `property-escapes/generated` and
+  `unicodeSets/generated`, so this test reads more than that job will: the matching assertions, transcribed.
+- **The brief and plan row 2.6 refuse "with the syntax status (D9)".** That status is task 2.8's, and the parser still
+  throws, so the refusal keeps its exception, position and message, now at the later group of a pair that might both
+  participate.
+- **D8's units for a back-reference are unchanged,** as the plan asks. The instruction's work also scans the name's
+  groups, at most the pattern's capture count, uncharged as `ClearCaptures`' width is.
+- **Check A-6's "a result maps the name to the participating index"** holds where a group participated. Where none
+  did, ECMA-262 gives `groups` undefined for the name; `NamedGroups` gives the first group of the name, unmatched,
+  whose `Success` is false. Its `Number` is that group's, not a participating one.
+- **JSD-0081's row R6** describes `0.1.0-preview.4`: every duplicate refused (S1), and an escaped duplicate in one
+  alternative accepted (S2a). Task 2.2 corrected S2a and this task S1, so this repository and JSD-0081 agree. The 19
+  files that D15 admits at Broiler.VM's admission commit are the 19 this test reads at the same pin.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

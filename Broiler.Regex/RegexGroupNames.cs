@@ -50,36 +50,36 @@ namespace Broiler.Regex;
 public sealed class RegexGroupNames
 {
     /// <summary>The names, in the order of their first groups.</summary>
-    private readonly string[] _names;
+    private readonly string[] _nameList;
 
-    /// <summary>Each name's groups, ascending, at the name's position in <see cref="_names"/>.</summary>
-    private readonly int[][] _groups;
+    /// <summary>Each name's groups, ascending, at the name's position in <see cref="_nameList"/>.</summary>
+    private readonly int[][] _groupLists;
 
-    /// <summary>Each name's position in <see cref="_names"/>, compared by code unit; written once, by the constructor.</summary>
-    private readonly Dictionary<string, int> _positions;
+    /// <summary>Each name's position in <see cref="_nameList"/>, compared by code unit; written once, by the constructor.</summary>
+    private readonly Dictionary<string, int> _positionOf;
 
     /// <summary>Each group's name, by group number, or null for a group without one; index 0, the whole match, null.</summary>
-    private readonly string?[] _labels;
+    private readonly string?[] _nameOfGroup;
 
     /// <summary>
-    /// The names of a pattern of <paramref name="captureCount"/> capturing groups: <paramref name="names"/> in the order of
-    /// their first groups, and at the same positions in <paramref name="groups"/> the groups of each, ascending. The
+    /// The names of a pattern of <paramref name="captureCount"/> capturing groups: <paramref name="nameList"/> in the order of
+    /// their first groups, and at the same positions in <paramref name="groupLists"/> the groups of each, ascending. The
     /// arrays become the instance's own.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FC80A0
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=31A196
     // Broiler-Falsified-If: a group of a name is given no name, or another name's, or a group beyond the capture count is accepted
     // Broiler-Human:        PENDING
-    internal RegexGroupNames(string[] names, int[][] groups, int captureCount)
+    internal RegexGroupNames(string[] nameList, int[][] groupLists, int captureCount)
     {
-        _names = names;
-        _groups = groups;
-        _positions = new Dictionary<string, int>(names.Length, StringComparer.Ordinal);
-        _labels = new string?[captureCount + 1];
-        for (var at = 0; at < names.Length; at++)
+        _nameList = nameList;
+        _groupLists = groupLists;
+        _positionOf = new Dictionary<string, int>(nameList.Length, StringComparer.Ordinal);
+        _nameOfGroup = new string?[captureCount + 1];
+        for (var at = 0; at < nameList.Length; at++)
         {
-            _positions.Add(names[at], at);
-            foreach (var group in groups[at])
-                _labels[group] = names[at];
+            _positionOf.Add(nameList[at], at);
+            foreach (var group in groupLists[at])
+                _nameOfGroup[group] = nameList[at];
         }
 
         CaptureCount = captureCount;
@@ -90,9 +90,9 @@ public sealed class RegexGroupNames
 
     /// <summary>How many distinct names the pattern declares; zero when it declares none.</summary>
     /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=83FF89
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E964CF
     // Broiler-Human:        PENDING
-    public int Count => _names.Length;
+    public int Count => _nameList.Length;
 
     /// <summary>
     /// The name at <paramref name="index"/>, from 0 to <see cref="Count"/> - 1, in the order the names' first groups appear
@@ -102,14 +102,14 @@ public sealed class RegexGroupNames
     /// <returns>The name, decoded: the code points its GroupSpecifier spells, escapes read (§22.2.1.10 CapturingGroupName).</returns>
     /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative, or <see cref="Count"/> or more.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Low; Resources=0; Fingerprint=8F6086
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Low; Resources=0; Fingerprint=521344
     // Broiler-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ position 0 answers x, or a position of Count answers a name
     // Broiler-Human:        PENDING
     public string NameAt(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
-        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _names.Length);
-        return _names[index];
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _nameList.Length);
+        return _nameList[index];
     }
 
     /// <summary>
@@ -120,27 +120,27 @@ public sealed class RegexGroupNames
     /// <returns>The group numbers, a read-only view of the instance's own, which nothing changes.</returns>
     /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.9; IP=None; Security=Low; Resources=0; Fingerprint=68F8DD
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.9; IP=None; Security=Low; Resources=0; Fingerprint=DB3D86
     // Broiler-Falsified-If: for /(?<x>a)|(?<x>b)/ the groups of x are not 1 and 2, or a name the pattern does not declare answers a group
     // Broiler-Human:        PENDING
     public ReadOnlySpan<int> GroupsNamed(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
-        return _positions.TryGetValue(name, out var at) ? _groups[at] : default;
+        return _positionOf.TryGetValue(name, out var at) ? _groupLists[at] : default;
     }
 
     /// <summary>The name of group <paramref name="group"/>, or null when it has none, as group 0, the whole match, has none.</summary>
     /// <param name="group">A group number, from 0 to the pattern's capture count.</param>
     /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="group"/> is negative or past the pattern's capture count.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=91555C
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=219B4C
     // Broiler-Falsified-If: for /(?<x>a)|(b)|(?<x>c)/ group 3's name is not x, group 2 has one, or group 4 answers instead of throwing
     // Broiler-Human:        PENDING
     public string? NameOfGroup(int group)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(group);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(group, CaptureCount);
-        return _labels[group];
+        return _nameOfGroup[group];
     }
 
     /// <summary>

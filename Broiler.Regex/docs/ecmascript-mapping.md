@@ -28,6 +28,7 @@ code in this project. Section numbers are those of ECMA-262 2025 (ES2025).
 | Annex B `LegacyOctalEscapeSequence` (without `u` and `v`) | `ReadLegacyOctalOrIdentity` | `CharNode` |
 | `GroupName` / `RegExpIdentifierName` | `ReadGroupName`, over the provider's `EcmaScriptLexical` (`RegexUnicode.IsIdentifierStart` / `IsIdentifierPart`) | `GroupNode` |
 | `AtomEscape` `\k GroupName` | `ParseAtomEscape`, checked against the declared names once the pattern is read | `BackreferenceNode` |
+| §22.2.1.1 duplicate GroupSpecifiers, MightBothParticipate (§22.2.1.4) | `ParseGroup` over `MightBothParticipate`, against the latest earlier group of the name and the open Disjunctions | `RegexGroupNames` |
 
 ## §22.2.2 Pattern semantics (the matcher) → `Compiling/ProgramCompiler.cs` + `Engine/`
 

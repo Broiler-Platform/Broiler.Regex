@@ -78,7 +78,10 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   groups (capturing / non-capturing / named / inline-modifier), assertions
   (anchors, word boundaries, look-around), and escapes (including `\u{…}` and
   back-references). Produces a `RegexNode` tree, descending only under the
-  caller's nesting limit (`Parsing/RegexNesting.cs`).
+  caller's nesting limit (`Parsing/RegexNesting.cs`). A group name may repeat only across
+  alternatives that cannot both participate (ES2025, MightBothParticipate), the names compared as
+  decoded: the parser checks each named group against the latest earlier group of its name, against
+  the Disjunctions it is inside (task 2.6, requirement R6).
 * **`Ast/RegexNode.cs`** — the node hierarchy + `CharSet` (character-class model).
 * **`Compiling/ProgramCompiler.cs`** — lowers the tree to a `RegexProgram` on work lists of the heap,
   with no recursion, checking the caller's nesting limit before it enters each group, modifier group
@@ -112,6 +115,12 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   is added, looked up or taken, and the class's order; the sets built from the provider (`Cased`,
   `\s`, the folded `\w`, `AllCharacters` under `vi`); and the program compiler's copies of class
   ranges and string tables.
+* **`RegexGroupNames.cs`** — a pattern's group names (task 2.6, requirement R6; provisional until
+  task 2.9): the names in the order of their first groups, the order of the `groups` object's
+  properties; each name's groups, several for a name alternatives share; each group's name; and the
+  group of a name that participated in a match, read from the offset entry's slots with no allocation.
+  `BroilerRegex.GroupNames` and `RegexParser.GroupNames` answer it; `RegexMatch.NamedGroups` maps each
+  name to its participating group, whose `RegexGroup.Number` says which.
 * **`BroilerRegex.cs`** — the public façade. The **offset entry**,
   `Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)`,
   takes a start, an anchored argument independent of `y`, the caller's slots, meter and ceilings, and
@@ -160,6 +169,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
 - Alternation, sequencing, the empty pattern
 - Greedy & lazy quantifiers `* + ? {n} {n,} {n,m}` with the spec empty-match guard
 - Capturing / non-capturing / **named** groups and named/numeric back-references
+- ES2025 **duplicate named groups**: a name shared by alternatives that cannot both participate,
+  `\k<name>` matching the group that participated, and a result mapping the name to it
 - Anchors `^ $` (with/without `m`), word boundaries `\b \B`
 - Look-ahead and **look-behind** (positive & negative), backward-matching with
   preserved capture order
