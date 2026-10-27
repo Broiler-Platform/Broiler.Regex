@@ -41,6 +41,17 @@ field or local type or a generic argument (a parameter of type `MemberInfo`, a n
 names its one place: a static field, a public member or type, a file, a package or a setting. Each step of
 SJL-11.2 shrinks the list, and it is empty when SJL-11.2 ends (bundle `sjl-11-001`'s rule, check E-3).
 
+*Dated note, 2026-10-26 (review of task 2.4c of SJL-11.2): a breach no rule finds.* `BroilerRegex.IsMatch`
+throws an `InvalidOperationException` when a match reaches the engines' frame or trail ceiling, an expected
+failure under decision D9, which convention 3 makes a status. Its `bool` has no room for a third answer, and
+false would read as no match, which requirement R1 forbids; decision D12 keeps the member for its consumers.
+Check C3 reads the library's own exception types, not a base class library exception a member throws, so the
+starting violation list cannot hold this breach, and an empty list does not close it. Task 2.9, which fixes
+the public surface, closes it: by the owner's admission of the exception for this member, recorded in
+JSD-0081 or here, or by a status-returning form with the `bool` member deprecated. This note goes in the same
+change. `Matches`, which threw for the same reason during task 2.4c, answers the ceiling as data since its
+review: a failed `RegexMatch` naming it, as its last element.
+
 ## Scope
 
 - **The library**, `Broiler.Regex/` (the package `Broiler.Regex`), is held to every convention.

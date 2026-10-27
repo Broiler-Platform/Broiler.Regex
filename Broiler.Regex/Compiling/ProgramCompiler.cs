@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   25
-// Annotated:        25/25
-// Exempt:           25
-// Human-reviewed:   0/25
+// Relevant units:   33
+// Annotated:        33/33
+// Exempt:           27
+// Human-reviewed:   0/33
 // IP risk:          None
 // Security risk:    High
-// Criteria:         15/13
+// Criteria:         20/18
 // Resource impact:  5/10 max
-// Unverified:       25
+// Unverified:       33
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -50,8 +50,8 @@ internal enum ProgramCompilation
 /// <remarks>
 /// <para>
 /// <b>No recursion, and the nesting limit still checked.</b> The tree is walked twice on work lists of the heap, as the
-/// closure compiler of <c>Matching/</c> walks it, so compiling uses the same CLR stack at every depth; decision D6 would
-/// admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which finds each
+/// closure compiler of <c>Matching/</c>, deleted at task 2.4c, walked it, so compiling uses the same CLR stack at every
+/// depth; decision D6 would admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which finds each
 /// quantifier's groups, calls <see cref="RegexNesting.Descend"/> before it enters a group's, a modifier's or a
 /// look-around's body, as the parser did, so a tree the parser did not build cannot be deeper than the limit either;
 /// the second, which emits the instructions, walks the same tree after it.
@@ -97,6 +97,24 @@ internal enum ProgramCompilation
 /// fails takes its reset back with it; the empty check reads the count before the iteration's increment, so a count
 /// that stops at <see cref="int.MaxValue"/> still tells a required iteration from an optional one.
 /// </para>
+/// <para>
+/// <b>The fast paths (task 2.4c).</b> With its fast paths on, as the library always compiles, three shapes lower to
+/// instructions that charge each character they examine (<see cref="RegexOp"/>'s remarks), in place of the forms above:
+/// </para>
+/// <list type="bullet">
+/// <item>a quantifier over one character, <c>.</c> or a class without strings, <c>X{min,max}</c> greedy or lazy, is
+/// <c>GreedyRun min, max</c> or <c>LazyRun min, max</c> followed by <c>X</c>'s own instruction, <c>max</c>
+/// <see cref="int.MaxValue"/> when unbounded;</item>
+/// <item>two or more such atoms in a row of one sequence, in the order the sequence is matched, are <c>AtomRun k</c>
+/// followed by their <c>k</c> instructions, costing the first's cost;</item>
+/// <item>a <c>v</c>-mode class holding strings is <c>StringClass t, empty</c> followed by the class of its single
+/// characters, <c>t</c> the program's table of its strings, which every occurrence of the same strings read in the same
+/// direction shares, so a class of thousands of strings is two instructions and one table however often it occurs.</item>
+/// </list>
+/// <para>
+/// With them off (<c>fastPaths: false</c>, for the differential that holds them to the forms above and for the tests that
+/// read those forms), a program holds none of the three, and answers every match the same.
+/// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
 // Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
@@ -112,13 +130,14 @@ internal static class ProgramCompiler
     /// <param name="tables">The Unicode owner's tables, which the parser reads.</param>
     /// <param name="nestingLimit">The deepest nesting admitted, from 1 to <see cref="BroilerRegex.MaximumNestingLimit"/>, counted as <see cref="BroilerRegex.Compile"/> counts.</param>
     /// <param name="program">The program, or null when the nesting limit refused the pattern.</param>
+    /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=79AA61
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=3815FE
     // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, or one of 511 answers NestingLimitExceeded
     // Broiler-Human:        PENDING
-    internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program)
+    internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
@@ -139,7 +158,7 @@ internal static class ProgramCompiler
             return ProgramCompilation.NestingLimitExceeded;
         }
 
-        return Compile(tree, captureCount, groupNames, flags, data, nesting, out program);
+        return Compile(tree, captureCount, groupNames, flags, data, nesting, out program, fastPaths);
     }
 
     /// <summary>Compiles a tree the parser built under <paramref name="flags"/> to a program.</summary>
@@ -150,18 +169,19 @@ internal static class ProgramCompiler
     /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
     /// <param name="program">The program, or null when the nesting limit refused the tree.</param>
+    /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
     /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=6E37E6
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=DD0361
     // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(RegexNode tree, int captureCount, IReadOnlyDictionary<string, int> groupNames,
-        RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program)
+        RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program, bool fastPaths = true)
     {
         program = null;
         try
         {
             var groups = Survey(tree, nesting);
-            program = new ProgramWriter(captureCount, groupNames, flags, data, groups).Emit(tree);
+            program = new ProgramWriter(captureCount, groupNames, flags, data, groups, fastPaths).Emit(tree);
             return ProgramCompilation.Compiled;
         }
         catch (NestingLimitExceeded)
@@ -245,7 +265,7 @@ internal static class ProgramCompiler
         span.Last < span.First ? (first, last) : (Math.Min(span.First, first), Math.Max(span.Last, last));
 
     /// <summary>What one entry of the emitter's work list does.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C279E2
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=EC1FF0
     // Broiler-Human:        PENDING
     private enum Work
     {
@@ -269,6 +289,9 @@ internal static class ProgramCompiler
 
         /// <summary>End a look-around's body: its close, and its start's continuation pointed past it.</summary>
         CloseLookaround,
+
+        /// <summary>Fold a sequence's atoms, <see cref="Step.Count"/> of them from the <see cref="Step.Index"/>-th in the order it is matched, into an atom run.</summary>
+        FoldAtoms,
     }
 
     /// <summary>The addresses an alternation's lowering patches once its alternatives are emitted.</summary>
@@ -338,22 +361,30 @@ internal static class ProgramCompiler
     }
 
     /// <summary>One work-list entry: what to do, to which node under which flags, with which pending lowering.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1D86E6
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=FE0920
     // Broiler-Human:        PENDING
-    private readonly record struct Step(Work Work, RegexNode? Node, Scope Scope = default, int Index = 0, Alternation? Alternation = null, Iteration? Iteration = null);
+    private readonly record struct Step(Work Work, RegexNode? Node, Scope Scope = default, int Index = 0, Alternation? Alternation = null, Iteration? Iteration = null, int Count = 0);
+
+    /// <summary>A table of strings the writer built, with the strings, the direction and the folding it was built for.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D758C3
+    // Broiler-Human:        PENDING
+    private readonly record struct StringTable(IReadOnlyList<string> Strings, bool RightToLeft, bool Folded, RegexStrings Table);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=6B9AED
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=06D39B
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
     private sealed class ProgramWriter(int captureCount, IReadOnlyDictionary<string, int> groupNames, RegexFlags flags, RegexUnicode data,
-        Dictionary<QuantifierNode, (int First, int Last)> groups)
+        Dictionary<QuantifierNode, (int First, int Last)> groups, bool fastPaths)
     {
         private readonly List<RegexInstruction> _code = [];
         private readonly List<int[]> _classes = [];
 
         /// <summary>The groups the back-references read, each reference's list one run of entries.</summary>
         private readonly List<int> _referenced = [];
+
+        /// <summary>The tables of strings built so far, each shared by every occurrence of its strings in its direction and folding.</summary>
+        private readonly List<StringTable> _strings = [];
         private readonly bool _unicode = flags.IsUnicodeMode();
 
         /// <summary>The class of the word characters compared exactly, then under <c>i</c>, once it is added; -1 before.</summary>
@@ -366,7 +397,7 @@ internal static class ProgramCompiler
         private int _registers = 2 * (captureCount + 1);
 
         /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Succeed"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=7AC8C2
+        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=06C840
         // Broiler-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
         // Broiler-Human:        PENDING
         internal RegexProgram Emit(RegexNode tree)
@@ -409,16 +440,50 @@ internal static class ProgramCompiler
                         Add(RegexOp.CloseLookaround, open.A, open.B);
                         Patch(step.Index, c: _code.Count);
                         break;
+                    case Work.FoldAtoms:
+                        AddAtomRun((SequenceNode)step.Node!, step.Index, step.Count, step.Scope);
+                        break;
                 }
             }
 
             Add(RegexOp.Succeed);
 
-            return new RegexProgram(_code.ToArray(), _classes.ToArray(), _referenced.ToArray(), captureCount, _registers, _unicode, _folds ? data.Folding : null);
+            var strings = new RegexStrings[_strings.Count];
+            for (var i = 0; i < strings.Length; i++)
+                strings[i] = _strings[i].Table;
+            return new RegexProgram(_code.ToArray(), _classes.ToArray(), _referenced.ToArray(), strings, captureCount, _registers, _unicode, _folds ? data.Folding : null,
+                fastPaths ? FirstTest() : -1);
+        }
+
+        /// <summary>
+        /// The literal-prefix prefilter (<see cref="RegexProgram.FirstTest"/>): past the instructions at the start that only
+        /// write a register, the one-character test every attempt makes first, read left to right: a character or class
+        /// instruction, an atom run's first atom, or the atom of a run that requires a character; -1 for anything else.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=F1B6B9
+        // Broiler-Falsified-If: a pattern that can match without reading a character, such as a*b, a|b, ^a or (?=a)a, is given a first test, or one that reads past a choice is
+        // Broiler-Human:        PENDING
+        private int FirstTest()
+        {
+            var at = 0;
+            while (_code[at].Op is RegexOp.SavePosition or RegexOp.ClearCaptures or RegexOp.SetCounter)
+                at++;
+
+            var first = _code[at];
+            if (first.RightToLeft)
+                return -1;
+            return first.Op switch
+            {
+                RegexOp.Literal or RegexOp.Class or RegexOp.AnyButLineTerminator or RegexOp.Any or RegexOp.LiteralIgnoringCase
+                    or RegexOp.ClassIgnoringCase or RegexOp.CanonicalClass => at,
+                RegexOp.AtomRun => at + 1,
+                RegexOp.GreedyRun or RegexOp.LazyRun when first.A >= 1 => at + 1,
+                _ => -1,
+            };
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> under <paramref name="scope"/> now, and puts the rest on the work list.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=4115CF
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=0ADCCD
         // Broiler-Falsified-If: an alternation's alternatives are emitted in an order other than the pattern's, or a sequence's terms in an order other than the pattern's outside a look-behind's body and other than its reverse inside one
         // Broiler-Human:        PENDING
         private void Visit(RegexNode node, Scope scope, Stack<Step> work)
@@ -427,21 +492,11 @@ internal static class ProgramCompiler
             {
                 case EmptyNode:
                     break;
-                case CharNode character when scope.IgnoreCase:
-                    _folds = true;
-                    Add(RegexOp.LiteralIgnoringCase, data.Canonicalize(character.CodePoint, _unicode), rightToLeft: scope.RightToLeft);
-                    break;
-                case CharNode character:
-                    Add(RegexOp.Literal, character.CodePoint, rightToLeft: scope.RightToLeft);
-                    break;
-                case AnyCharNode:
-                    Add(scope.DotAll ? RegexOp.Any : RegexOp.AnyButLineTerminator, rightToLeft: scope.RightToLeft);
-                    break;
                 case CharClassNode cls when cls.Set.HasStrings:
                     AddStrings(cls.Set, scope);
                     break;
-                case CharClassNode cls:
-                    AddClass(cls.Set, scope);
+                case CharNode or AnyCharNode or CharClassNode:
+                    AddAtom(node, scope);
                     break;
                 case AnchorNode anchor:
                     AddAnchor(anchor.Kind, scope);
@@ -449,15 +504,29 @@ internal static class ProgramCompiler
                 case BackreferenceNode reference:
                     AddReference(reference, scope);
                     break;
-                case SequenceNode sequence when scope.RightToLeft:
-                    // §22.2.2.3, Alternative :: Alternative Term with direction backward: the term is matched first.
-                    foreach (var term in sequence.Terms)
-                        work.Push(new Step(Work.Visit, term, scope));
-                    break;
                 case SequenceNode sequence:
-                    for (var i = sequence.Terms.Count - 1; i >= 0; i--)
-                        work.Push(new Step(Work.Visit, sequence.Terms[i], scope));
+                {
+                    // The terms in the order they are matched, the last first right to left (§22.2.2.3, Alternative ::
+                    // Alternative Term with direction backward: the term is matched first), pushed so that the first
+                    // comes off the work list first. With the fast paths, each row of two or more atoms is one step that
+                    // folds them.
+                    for (var end = sequence.Terms.Count; end > 0;)
+                    {
+                        var start = end - 1;
+                        if (fastPaths && IsAtom(MatchedTerm(sequence, start, scope)))
+                        {
+                            while (start > 0 && IsAtom(MatchedTerm(sequence, start - 1, scope)))
+                                start--;
+                        }
+
+                        work.Push(end - start >= 2
+                            ? new Step(Work.FoldAtoms, sequence, scope, Index: start, Count: end - start)
+                            : new Step(Work.Visit, MatchedTerm(sequence, start, scope), scope));
+                        end = start;
+                    }
+
                     break;
+                }
                 case DisjunctionNode disjunction:
                 {
                     var alternation = new Alternation(disjunction.Alternatives.Count);
@@ -504,7 +573,7 @@ internal static class ProgramCompiler
         /// Begins a quantifier's lowering: its registers, the bound checks and the choice, the iteration's start and
         /// capture reset; the body and <see cref="Work.CloseIteration"/> go on the work list.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=52344A
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=F39735
         // Broiler-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
         // Broiler-Human:        PENDING
         private void OpenIteration(QuantifierNode quantifier, Scope scope, Stack<Step> work)
@@ -515,6 +584,14 @@ internal static class ProgramCompiler
             // RepeatMatcher with a maximum of zero returns its continuation at once (§22.2.2.3.1, step 1).
             if (max == 0)
                 return;
+
+            // A quantifier over one character is a run: one instruction, and its atom after it.
+            if (fastPaths && IsAtom(quantifier.Child))
+            {
+                Add(quantifier.Greedy ? RegexOp.GreedyRun : RegexOp.LazyRun, min, max == QuantifierNode.Unbounded ? int.MaxValue : max, rightToLeft: scope.RightToLeft);
+                AddAtom(quantifier.Child, scope);
+                return;
+            }
 
             var optional = min == 0 && (max == 1 || max == QuantifierNode.Unbounded);
             var iteration = new Iteration(quantifier, _registers++, optional ? -1 : _registers++);
@@ -569,6 +646,157 @@ internal static class ProgramCompiler
         }
 
         /// <summary>
+        /// Whether <paramref name="node"/> is an atom of one character, the body a run repeats and an atom run folds: a
+        /// pattern character, <c>.</c>, or a class without strings, each of which consumes exactly one character when it
+        /// matches, at most one way, and holds no group.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=0; Fingerprint=B770CA
+        // Broiler-Falsified-If: a class holding strings, a group of one character or an assertion is taken for an atom
+        // Broiler-Human:        PENDING
+        private static bool IsAtom(RegexNode node) => node is CharNode or AnyCharNode || node is CharClassNode { Set.HasStrings: false };
+
+        /// <summary>
+        /// The <paramref name="index"/>-th term of <paramref name="sequence"/> in the order it is matched: the pattern's order,
+        /// or right to left its reverse (§22.2.2.3, Alternative :: Alternative Term with direction backward).
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=Medium; Resources=0; Fingerprint=578969
+        // Broiler-Human:        PENDING
+        private static RegexNode MatchedTerm(SequenceNode sequence, int index, Scope scope) =>
+            sequence.Terms[scope.RightToLeft ? sequence.Terms.Count - 1 - index : index];
+
+        /// <summary>
+        /// Adds the instruction of an atom of one character (<see cref="IsAtom"/>): <c>Literal c</c>, or under <c>i</c>
+        /// <c>LiteralIgnoringCase</c> with its Canonicalize; <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class
+        /// test (<see cref="AddClass"/>).
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=1; Fingerprint=DDB1B9
+        // Broiler-Falsified-If: a character under the i flag in force is given an instruction that compares it exactly, or the dot under s one that refuses a line terminator
+        // Broiler-Human:        PENDING
+        private void AddAtom(RegexNode node, Scope scope)
+        {
+            switch (node)
+            {
+                case CharNode character when scope.IgnoreCase:
+                    _folds = true;
+                    Add(RegexOp.LiteralIgnoringCase, data.Canonicalize(character.CodePoint, _unicode), rightToLeft: scope.RightToLeft);
+                    break;
+                case CharNode character:
+                    Add(RegexOp.Literal, character.CodePoint, rightToLeft: scope.RightToLeft);
+                    break;
+                case AnyCharNode:
+                    Add(scope.DotAll ? RegexOp.Any : RegexOp.AnyButLineTerminator, rightToLeft: scope.RightToLeft);
+                    break;
+                case CharClassNode cls:
+                    AddClass(cls.Set, scope);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Adds an atom run: <c>AtomRun count</c>, then the <paramref name="count"/> atoms of <paramref name="sequence"/> from
+        /// its <paramref name="first"/>-th term in the order it is matched, the run costing what its first atom costs.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=1; Fingerprint=FFC2CE
+        // Broiler-Falsified-If: a run's cost is not its first atom's, or its atoms are emitted in an order other than the sequence's matched order
+        // Broiler-Human:        PENDING
+        private void AddAtomRun(SequenceNode sequence, int first, int count, Scope scope)
+        {
+            var run = Add(RegexOp.AtomRun, count, rightToLeft: scope.RightToLeft);
+            for (var k = 0; k < count; k++)
+                AddAtom(MatchedTerm(sequence, first + k, scope), scope);
+            _code[run] = new RegexInstruction(RegexOp.AtomRun, count, 0, 0, _code[run + 1].Cost, scope.RightToLeft);
+        }
+
+        /// <summary>
+        /// The index of the program's table of the strings of more than one character of <paramref name="set"/>, read
+        /// right to left when <paramref name="rightToLeft"/> is set: an earlier occurrence's table when it holds the same
+        /// strings in the same order, read the same way, under the same folding, and otherwise a new one. Each string's
+        /// code points are its own, combining a surrogate pair into one, and under a fold each one's Canonicalize, as the
+        /// alternation's instructions would compare them.
+        /// </summary>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=57A3F4
+        // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
+        // Broiler-Human:        PENDING
+        private int StringTableOf(CharSet set, bool rightToLeft)
+        {
+            var strings = new List<string>();
+            foreach (var written in set.Strings)
+            {
+                if (written.Length > 0)
+                    strings.Add(written);
+            }
+
+            for (var i = 0; i < _strings.Count; i++)
+            {
+                var known = _strings[i];
+                if (known.RightToLeft == rightToLeft && known.Folded == set.CaseFolded && SameStrings(known.Strings, strings))
+                    return i;
+            }
+
+            if (set.CaseFolded)
+                _folds = true;
+
+            // Each string's code points, then the strings grouped by the character a match of one begins with, its first
+            // or, right to left, its last, each group in the class's order; the groups in the order of their characters.
+            var textStarts = new int[strings.Count + 1];
+            var text = new List<int>();
+            var groups = new SortedDictionary<int, List<int>>();
+            for (var number = 0; number < strings.Count; number++)
+            {
+                textStarts[number] = text.Count;
+                var value = strings[number];
+                for (var at = 0; at < value.Length; at++)
+                {
+                    var codePoint = char.IsSurrogatePair(value, at) ? char.ConvertToUtf32(value[at], value[++at]) : value[at];
+                    text.Add(set.CaseFolded ? data.Canonicalize(codePoint, _unicode) : codePoint);
+                }
+
+                var key = text[rightToLeft ? text.Count - 1 : textStarts[number]];
+                if (!groups.TryGetValue(key, out var group))
+                    groups.Add(key, group = []);
+                group.Add(number);
+            }
+
+            textStarts[strings.Count] = text.Count;
+            var keys = new int[groups.Count];
+            var groupStarts = new int[groups.Count + 1];
+            var members = new int[strings.Count];
+            var groupEnds = new int[strings.Count];
+            var next = 0;
+            var index = 0;
+            foreach (var (key, group) in groups)
+            {
+                keys[index] = key;
+                groupStarts[index++] = next;
+                foreach (var number in group)
+                    members[next++] = number;
+                for (var member = groupStarts[index - 1]; member < next; member++)
+                    groupEnds[member] = next;
+            }
+
+            groupStarts[groups.Count] = next;
+            _strings.Add(new StringTable(strings, rightToLeft, set.CaseFolded,
+                new RegexStrings(keys, groupStarts, members, groupEnds, textStarts, text.ToArray(), rightToLeft, set.CaseFolded)));
+            return _strings.Count - 1;
+        }
+
+        /// <summary>Whether two lists hold the same strings in the same order, compared by code unit.</summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=6AAC00
+        // Broiler-Human:        PENDING
+        private static bool SameStrings(IReadOnlyList<string> a, IReadOnlyList<string> b)
+        {
+            if (a.Count != b.Count)
+                return false;
+            for (var i = 0; i < a.Count; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Adds a class test. Compared exactly, the class is its code points with its negation applied; under <c>i</c> it
         /// is its members as written, tested against a character's case orbit and inverted after, as CharacterSetMatcher
         /// inverts (§22.2.2.7.1); a <c>v</c>-mode class the parser folded is its canonical members, tested against a
@@ -604,19 +832,32 @@ internal static class ProgramCompiler
         /// each string of more than one character, longest first as the parser sorted them, each a sequence of its
         /// characters compared as a one-member class is, then the class of the single characters, then, when the class
         /// holds the empty string, an empty alternative. In a look-behind's body each string's characters are emitted
-        /// last first, as MatchSequence with direction backward matches them.
+        /// last first, as MatchSequence with direction backward matches them. With the fast paths it is instead
+        /// <c>StringClass</c> over the program's table of the strings (<see cref="StringTableOf"/>), then the class of the
+        /// single characters: the same ways in the same order, with the strings that cannot match left untried.
         /// </summary>
         /// <remarks>
         /// The parser sorts the strings by their length in code units; the specification orders them by their length in
         /// characters, and leaves strings of one length in any order. The two orders differ only between strings neither
         /// of which begins the other, and of two such strings at most one can match at an index, so the alternation answers
-        /// the same. Under <c>i</c> the strings were folded when parsed, so each character's Canonicalize is itself.
+        /// the same. Under <c>i</c> the strings were folded when parsed, so each character's Canonicalize is itself. The
+        /// table's dispatch costs one and its weight, the floor of the base-2 logarithm of the number of characters strings
+        /// begin with, as a class of that many ranges is weighed (<see cref="RegexProgram.ClassWeight"/>).
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=71C696
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=C1FA48
         // Broiler-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
         // Broiler-Human:        PENDING
         private void AddStrings(CharSet set, Scope scope)
         {
+            if (fastPaths)
+            {
+                var index = StringTableOf(set, scope.RightToLeft);
+                var cost = 1 + RegexProgram.ClassWeight(_strings[index].Table.KeyCount);
+                Add(RegexOp.StringClass, index, set.MatchesEmptyString ? 1 : 0, 0, cost, scope.RightToLeft);
+                AddClass(set, scope);
+                return;
+            }
+
             var exits = new List<int>();
             var characters = new List<int>();
             foreach (var text in set.Strings)

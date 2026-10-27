@@ -856,15 +856,56 @@ internal static class SharedRules
     private static readonly string[] ObjectMachinery = [".Equals(System.Object) method ", ".get_EqualityContract() method ", ".PrintMembers(System.Text.StringBuilder) method "];
 
     /// <summary>
+    /// The members the runtime gives every delegate type, which a delegate the library declares (convention 1 admits the
+    /// <c>RegexWorkCharge</c> meter of decision D9) cannot leave out: its constructor names <c>object</c>, and the
+    /// asynchronous pair <c>IAsyncResult</c>, <c>AsyncCallback</c> and <c>object</c>, because the platform does.
+    /// </summary>
+    private static readonly string[] DelegateMachinery = ["..ctor(System.Object, System.IntPtr) method ", ".BeginInvoke(", ".EndInvoke(System.IAsyncResult) method "];
+
+    /// <summary>
+    /// The library's own delegate types convention 1 admits in a public signature, by full name: the meter of decision
+    /// D9, <c>RegexWorkCharge</c>, alone. Any other public delegate the library declares can run the caller's code, as
+    /// <c>Func</c> can, and C1 refuses it.
+    /// </summary>
+    internal static readonly string[] AdmittedDelegates = ["Broiler.Regex.RegexWorkCharge"];
+
+    /// <summary>C1 over a public API listing of the library, which admits <see cref="AdmittedDelegates"/>.</summary>
+    internal static IEnumerable<string> C1(string assembly, IReadOnlyList<string> listing) => C1(assembly, listing, AdmittedDelegates);
+
+    /// <summary>
     /// C1 over a public API listing: every line that names a type convention 1 keeps out. A listing line names the
     /// library's own type or member first, under the library's namespace, so the base class library types it
-    /// names are its signature's.
+    /// names are its signature's. The runtime-made members of a delegate in <paramref name="admitted"/> are left out,
+    /// as the record machinery is, and a signature that takes or answers it names the library's type, which C1
+    /// passes. A public delegate the listing declares that is not admitted is refused as a delegate that can run the
+    /// caller's code: its declaration, each signature of another member that names it, and its runtime-made members
+    /// that name <c>object</c>.
     /// </summary>
-    internal static IEnumerable<string> C1(string assembly, IReadOnlyList<string> listing) =>
-        listing
+    internal static IEnumerable<string> C1(string assembly, IReadOnlyList<string> listing, IReadOnlyCollection<string> admitted)
+    {
+        var delegates = listing.Where(static line => line.EndsWith(" delegate", StringComparison.Ordinal))
+            .Select(static line => line[..^" delegate".Length]).ToList();
+        var kept = delegates.Where(type => admitted.Contains(type, StringComparer.Ordinal)).ToList();
+        var refused = delegates.Except(kept, StringComparer.Ordinal)
+            .Select(static type => (Type: type, Token: new System.Text.RegularExpressions.Regex(
+                @"(?<![\w.`])" + System.Text.RegularExpressions.Regex.Escape(type) + @"(?![\w`])",
+                System.Text.RegularExpressions.RegexOptions.CultureInvariant)))
+            .ToList();
+        return listing
             .Where(static line => !ObjectMachinery.Any(m => line.Contains(m, StringComparison.Ordinal)))
-            .Where(static line => NonNeutralType.IsMatch(line))
+            .Where(line => !kept.Any(type => DelegateMachinery.Any(m => line.StartsWith(type + m, StringComparison.Ordinal))))
+            .Where(line => NonNeutralType.IsMatch(line) || refused.Any(d => Names(d.Type, d.Token, line)))
             .Select(line => assembly + " names a base class library collection, delegate, object or Type in a public signature: " + line);
+    }
+
+    /// <summary>
+    /// Whether <paramref name="line"/> declares the delegate <paramref name="type"/> or names it in a signature. The
+    /// delegate's own members name it as their owner, which is not a signature's naming; they are read as any other
+    /// line is.
+    /// </summary>
+    private static bool Names(string type, System.Text.RegularExpressions.Regex token, string line) =>
+        line == type + " delegate"
+        || (token.IsMatch(line) && (!line.StartsWith(type + ".", StringComparison.Ordinal) || token.Matches(line).Count > 1));
 
     /// <summary>
     /// C3 over a public API listing: every public type that derives from an exception. Convention 3 makes an

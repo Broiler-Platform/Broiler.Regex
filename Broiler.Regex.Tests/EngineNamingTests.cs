@@ -20,7 +20,9 @@ public class EngineNamingTests
     /// verification found after the fixes (<c>GiveBack</c>, <c>Emitter</c>), the one task 2.4b's own check found on an
     /// instruction it added (<c>WordBoundary</c>, a node kind of the VM's parser, now <c>RegexOp.WordEdge</c>; the
     /// library's own syntax tree keeps the public <c>AnchorKind.WordBoundary</c> it has had since before SJL-11), and the
-    /// names of the VM's look-around machinery that task 2.4b's barrier frames could have taken.
+    /// names of the VM's look-around machinery that task 2.4b's barrier frames could have taken, and those of its run, its
+    /// prefilter and its step counting that task 2.4c's fast paths could have taken, with <c>Repeat</c>, a node kind of
+    /// the VM's parser that task 2.4c's first name for a run's entry took, now <c>EnterRun</c>.
     /// </summary>
     private static readonly string[] Copied =
     [
@@ -29,6 +31,9 @@ public class EngineNamingTests
         "frameTop", "trailTop", "MaximumFrames", "MaximumTrail", "GiveBack", "Emitter",
         "WordBoundary", "AssertBegin", "AssertEnd", "AssertKind", "CloseAssertion", "PushAssertion", "assertions",
         "assertionTop", "Backward", "Fold", "Lines", "BackRef", "Bol", "Eol", "EmitLook", "EmitCapture",
+        "TakeRun", "TakeSet", "TakeChar", "Floor", "RunForward", "RunBackward", "EmitRepeat", "EmitIteration",
+        "PrefilterAdmits", "prefilterKind", "prefilterValue", "prefilterFold", "perSkip", "Tick", "Spend", "Settle",
+        "StepsPerCharge", "Backtrack", "Repeat",
     ];
 
     /// <summary>Every member the new backend's namespace and its program compiler declare, by name, compiler-generated ones left out.</summary>

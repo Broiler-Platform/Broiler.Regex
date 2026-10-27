@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Broiler.Regex.Matching;
 using Xunit;
 
 namespace Broiler.Regex.Tests;

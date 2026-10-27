@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   8
-// Annotated:        8/8
-// Exempt:           9
-// Human-reviewed:   0/8
+// Relevant units:   10
+// Annotated:        10/10
+// Exempt:           11
+// Human-reviewed:   0/10
 // IP risk:          None
 // Security risk:    High
 // Criteria:         4/2
 // Resource impact:  8/10 max
-// Unverified:       8
+// Unverified:       10
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -54,6 +54,9 @@ internal sealed class RegexProgram
     /// <summary>The groups the back-references read, each reference's list one run of entries (<see cref="RegexOp.Backreference"/>).</summary>
     private readonly int[] _referenced;
 
+    /// <summary>The tables of strings the classes of strings read (<see cref="RegexOp.StringClass"/>), each shared by every occurrence of its strings.</summary>
+    private readonly RegexStrings[] _strings;
+
     /// <summary>
     /// A program over <paramref name="code"/> and <paramref name="classes"/>, which the caller hands over and does not
     /// keep.
@@ -61,6 +64,7 @@ internal sealed class RegexProgram
     /// <param name="code">The instructions; the last reachable one of every path is an <see cref="RegexOp.Succeed"/> or a failure.</param>
     /// <param name="classes">Each class's ranges as pairs of inclusive bounds, sorted and disjoint.</param>
     /// <param name="referenced">The group numbers the back-references read, each reference's list one run of entries.</param>
+    /// <param name="strings">The tables of strings the classes of strings read.</param>
     /// <param name="captureCount">The pattern's capturing groups, group 0 not counted.</param>
     /// <param name="registerCount">The registers the program uses: the capture registers and the quantifiers' loop registers.</param>
     /// <param name="unicode">Whether the pattern has <c>u</c> or <c>v</c>, so that a surrogate pair is read as one character.</param>
@@ -68,13 +72,17 @@ internal sealed class RegexProgram
     /// The Unicode owner's case folding, which an instruction comparing under <c>i</c> reads for Canonicalize and for a
     /// character's case orbit; null for a program with no such instruction.
     /// </param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=891770
+    /// <param name="firstTest">The address of the instruction the start-position scan tests positions with, or -1 for none (<see cref="FirstTest"/>).</param>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=B3022A
     // Broiler-Human:        PENDING
-    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding)
+    internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, RegexStrings[] strings, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding,
+        int firstTest = -1)
     {
         _code = code;
         _classes = classes;
         _referenced = referenced;
+        _strings = strings;
+        FirstTest = firstTest;
         CaptureCount = captureCount;
         RegisterCount = registerCount;
         Unicode = unicode;
@@ -99,6 +107,21 @@ internal sealed class RegexProgram
 
     /// <summary>The pattern's capturing groups, group 0 (the whole match) not counted.</summary>
     internal int CaptureCount { get; }
+
+    /// <summary>
+    /// The literal-prefix prefilter of task 2.4c (plan row 2.4c): the address of the one-character instruction every
+    /// attempt reads first, before any choice, or -1 when attempts read nothing that certain. An attempt at a position
+    /// whose character that test refuses fails there, so a search tests each position with it alone and enters the
+    /// program only where it holds (<see cref="RegexMachine"/>'s remarks, "The start-position scan").
+    /// </summary>
+    /// <remarks>
+    /// It is the test of the first instruction an attempt dispatches past those that only write a register (a group's
+    /// start, a capture reset, a count's start): a character or class instruction that reads left to right, the first atom
+    /// of an atom run, or the atom of a run that requires at least one character. Anything else first, a choice, an
+    /// assertion, a look-around, a class of strings, a run that may take nothing, a loop's bound check, leaves it -1. The
+    /// program compiler sets it only with its fast paths on.
+    /// </remarks>
+    internal int FirstTest { get; }
 
     /// <summary>How many slots a match writes: two per group, group 0 included.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=577663
@@ -126,6 +149,16 @@ internal sealed class RegexProgram
     // Broiler-Human:        PENDING
     internal ReadOnlySpan<int> ClassRanges(int index) => _classes[index];
 
+    /// <summary>The table of strings <paramref name="index"/>, which a <see cref="RegexOp.StringClass"/> names.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=516A25
+    // Broiler-Human:        PENDING
+    internal RegexStrings Strings(int index) => _strings[index];
+
+    /// <summary>How many tables of strings the program holds: one for each distinct class of strings, however often it occurs.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1962ED
+    // Broiler-Human:        PENDING
+    internal int StringTableCount => _strings.Length;
+
     /// <summary>
     /// Matches <paramref name="subject"/> from <paramref name="start"/>, or at <paramref name="start"/> alone when
     /// <paramref name="anchored"/> is set, and writes the match's offsets into <paramref name="slots"/>: two per group,
@@ -152,13 +185,15 @@ internal sealed class RegexProgram
     /// <param name="units">The units of work the call did, which the meter was charged for before they were done.</param>
     /// <returns><see cref="RegexStatus.Match"/>, <see cref="RegexStatus.NoMatch"/> or <see cref="RegexStatus.LimitExceeded"/>.</returns>
     /// <remarks>
-    /// <b>The entry of R7 and R8, internal until task 2.4c</b> routes <see cref="BroilerRegex"/> through it. A broken
+    /// <b>The entry of R7 and R8</b>, which <see cref="BroilerRegex"/>'s public offset entry and its string-bearing
+    /// members call since task 2.4c; this one also reports the units a call did, which tests and the probe read. A broken
     /// precondition, the caller's (convention 3), is an exception; every other answer is a status. The program is not
     /// changed by a call, so concurrent calls on one program, and a call the meter makes while it is charged, each answer
     /// as alone; the call's registers, frames and trail are arrays rented from the shared array pool and given back
-    /// before it returns, so after the pool holds arrays of the sizes the program needs, a call allocates nothing,
-    /// whatever its capture count. Frames and trail past <see cref="RegexMachine.PooledLength"/> integers are the call's
-    /// own and go to the collector, so a call that needed many leaves none of them pooled.
+    /// before it returns. Frames and trail past <see cref="RegexMachine.PooledLength"/> integers are the call's own and
+    /// go to the collector, so a call that needed many leaves none of them pooled. So after the pool holds arrays of the
+    /// sizes the program needs, a call that holds at most 16,384 frames and 32,768 trail cells allocates nothing,
+    /// whatever its capture count, and past them allocates its own frames or trail.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>

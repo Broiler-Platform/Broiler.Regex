@@ -51,11 +51,10 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   documentation records, and proven there on linux-x64 for the parser and the compiler: a pattern of every shape
   measured, at the maximum, parses and compiles on a 1 MiB thread under the JIT (`NestingMaximumTests`) and in the
   Native AOT probe, which now runs its population on a thread of that stack, and one level past it is refused with the
-  nesting status. Matching at the maximum through the public members is proven only for the shapes
-  `NestingMaximumTests.MatchedShapes` lists; their matcher's continuations recurse until task 2.4c routes matching
-  through task 2.4a's backend, and the shapes found to exhaust the stack at match time are listed,
-  with the depths they fail at, in the package README's known limitations. win-x64 was not measured. The constant is
-  never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
+  nesting status. Matching at the maximum through the public members is proven for every shape measured since task
+  2.4c routed it through task 2.4a's backend (below); the old matcher's continuations recursed, and the shapes found
+  to exhaust the stack at match time were the package README's known limitations until then. win-x64 was not
+  measured. The constant is never lowered below 512 in the `0.x` line (decision D7). A limit below 1 or above it is the caller's broken
   precondition, an `ArgumentOutOfRangeException` (convention 3). `RegexStatus` and `RegexLimit` hold only what
   nesting needs; the new matcher (task 2.4a) and the validate entry's syntax status (task 2.8) add members to them.
   `Success`, for a compilation that completes, is not one of decision D9's statuses, which are the answers of a match
@@ -76,16 +75,17 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   blocks of 512 before the work, across every start position with no reset; a meter that throws ends the call with its
   own exception. The step ceiling is optional; the frame and trail ceilings are at least 1 and at most 16,777,216 frames
   and 33,554,432 trail cells, and both engines pass 1,048,576 and 2,097,152 (decision D10). The registers, frames and
-  trail come from the shared array pool, so a call allocates nothing that grows with the capture count once the pool
-  holds them; frames and trail past 65,536 integers are allocated for the call and left to the collector, so a call's
-  peak does not stay pooled. The program runs literals, `.`, classes (`v`-mode classes of code points included),
+  trail come from the shared array pool; frames and trail past 65,536 integers are allocated for the call and left to
+  the collector, so a call's peak does not stay pooled. So once the pool holds them a call allocates nothing that grows
+  with the capture count while it holds at most 16,384 frames and 32,768 trail cells, about 16,384 participating
+  groups (task 2.4c's review stated the bound; before, this entry read as if there were none). The program runs literals, `.`, classes (`v`-mode classes of code points included),
   sequence, alternation, every quantifier form with the specification's empty-iteration rule, and the three kinds of
   group, clearing a quantified atom's captures at each iteration; task 2.4b adds the rest of the grammar (below), and
-  the "not yet supported" answer task 2.4a gave it in the meantime is gone. The entry, the program, the compiler, the
-  ceilings and the meter `RegexWorkCharge` are **internal** (visible to the tests and the probe) until task 2.4c routes
-  `BroilerRegex` through them; the public members still match with `Matching/`. **Public, and provisional like
-  `Compile`:** `RegexStatus.Match` (2), `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and
-  `RegexLimit.Trail` (4), extending task 2.3's enums. They could not wait: an enum's members take the enum's
+  the "not yet supported" answer task 2.4a gave it in the meantime is gone. The program and the compiler are internal;
+  the entry, the ceilings and the meter `RegexWorkCharge` became public with task 2.4c (below), which routes
+  `BroilerRegex` through them. **Public, and provisional like `Compile`:** `RegexStatus.Match` (2),
+  `RegexStatus.NoMatch` (3), `RegexLimit.Steps` (2), `RegexLimit.Frames` (3) and `RegexLimit.Trail` (4), extending
+  task 2.3's enums. They could not wait: an enum's members take the enum's
   accessibility, and the new entry answers these two public enums, so its answers are public members whatever the
   entry's own accessibility. `PublicAPI.txt` lists them; package validation accepts them as additions.
 - **The new backend runs every pattern the parser accepts (task 2.4b; R4's matcher half, R7; decisions D5 and D8),
@@ -101,13 +101,41 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   point of an orbit, a word boundary one plus the word class's weight twice, and a back-reference its capture's length
   on top when it runs. Under `u` and `v` a start inside a surrogate pair now splits the pair for every read of the
   call, a look-behind's included. The compiler's "not yet supported" answer is deleted, and `NotYetSupported` appears
-  nowhere in the assembly. `BroilerRegex` gains an internal route through the new backend, which the test suite uses to
-  run every behaviour test on both backends; the public members still match with `Matching/` until task 2.4c. The
-  differential comparison over the whole grammar found two defects of the old backend's, which the public members show
-  until task 2.4c's route corrects them and the roadmap's record of task 2.4b lists: D2, a `v`-mode class holding the
-  empty string tries it before its single characters (`/[\q{}a]/v` on `a` answers the empty match), and JSD-0081's row
-  M7, a back-reference in a look-behind under `u` or `v` compared by code units, which can begin inside a surrogate
-  pair.
+  nowhere in the assembly. The differential comparison over the whole grammar found two defects of the old backend's,
+  which task 2.4c's route corrects (Observable changes) and the roadmap's record of task 2.4b lists: D2, a `v`-mode class
+  holding the empty string tried it before its single characters (`/[\q{}a]/v` on `a` answered the empty match), and
+  JSD-0081's row M7, a back-reference in a look-behind under `u` or `v` compared by code units, which could begin inside
+  a surrogate pair.
+- **The new backend's fast paths, under the meter (task 2.4c; R1, decision D8).** A quantifier over one character or a
+  class without strings is a run, one instruction that takes its required characters, then greedy as many more as hold
+  and lazy none, and gives back or takes one at a time from one frame, with no trail cell; two or more one-character
+  atoms in a row are one atom run; a `v`-mode class of strings is one lookup in a table of its strings, keyed by the
+  character a string begins with (its last right to left) and shared by every occurrence of the same strings; and a
+  search tests start positions with the program's first one-character test, the literal-prefix prefilter, entering the
+  program only where it holds. Each charges what the work it replaces would: a run's dispatch one unit and each
+  character it examines its atom's cost, the one that ends the run included; an atom run its atoms' costs; a class of
+  strings one plus the weight of its first characters and a unit for each character of a string tried; a skipped start
+  position its first test's cost, one plus the class's weight. Check A-1 reads every one, in both directions where it
+  applies. The corpus's rows O05 and O06, `[a]*` and `^[a]*$` over 10,000,001 characters, match. A differential test
+  compares every program with and without its fast paths, over the test suite's string literals, task 2.4b's seeded
+  population and a population weighted to the shapes the fast paths replace: no disagreement (the roadmap's record of
+  task 2.4c).
+- **The offset entry is public (task 2.4c; R7, R8, R1, R3; checks A-7 and A-8).**
+  `BroilerRegex.Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots, RegexWorkCharge? meter,
+  RegexMatchCeilings ceilings, out RegexLimit limit)` answers `Match`, `NoMatch` or `LimitExceeded` naming the ceiling,
+  writing two offsets per group into the caller's slots, group 0 first and -1 for a group that did not participate;
+  the anchored argument is independent of `y`, and the start is taken as given (under `u` and `v` a start inside a
+  surrogate pair splits it, and an engine that answers as RegExpBuiltinExec steps back before it calls); no string is
+  made, and once the shared pool holds what the pattern needs a call allocates nothing, whatever the capture count,
+  while it holds at most 16,384 backtrack frames and 32,768 trail cells; past them its frames or trail are its own, so
+  a pattern of more than about 16,384 participating groups allocates, in every call, a trail that grows with them
+  (check A-8's bound, pinned at 16,384 and 16,385 groups).
+  `BroilerRegex.SlotCount` says how many slots a match writes. The meter `RegexWorkCharge` and the ceilings
+  `Broiler.Regex.Engine.RegexMatchCeilings` (with `Engines`, `EngineFrames`, `EngineTrail`, `FrameCeilingMaximum` and
+  `TrailCeilingMaximum`) become public for it, and `RegexMatch` gains `Limit`. **All provisional**, like `Compile`:
+  task 2.5 adds the compile meter and task 2.9 fixes the surface of `0.2.0-preview.1`. Check C1 leaves the meter's
+  runtime-made members out, as convention 1 admits it, and refuses any other public delegate the library declares,
+  its declaration and every signature that names it.
 
 ### Changed
 
@@ -160,17 +188,63 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   same instance on every match, so a cast changed the names every later match of that pattern reports, on any thread.
   Both are now a `ReadOnlyDictionary` view of a map nothing else holds: a cast to `IDictionary` reports `IsReadOnly`, and
   a write throws `NotSupportedException`. No signature changes.
+- **The old backend is deleted, and with it `RegexOverflowException` (R1, R4; task 2.4c, decision D20).** Every member
+  matches through the new backend; `Matching/` (the continuation-passing matcher, its per-start `Budget` under
+  `StepLimit`, and the greedy fast path's early exit) and the public `RegexOverflowException`, which reported that
+  matcher's stack guard, are gone. `RegexMatch` and `RegexGroup` stay, as R8 allows (decision D12), moved from
+  `Broiler.Regex.Matching` to `Broiler.Regex`, so `Match(string, int)` and `Matches(string)` answer the moved type. Each
+  break is suppressed in `Broiler.Regex/CompatibilitySuppressions.xml` and listed in
+  [`docs/suppressions.md`](docs/suppressions.md): the removed `RegexOverflowException` (CP0001, R1 and R4), the two
+  moved types (CP0001, kept under R8 out of the namespace R1 and R4 delete) and the two members that answer them
+  (CP0002). A caller that names the types recompiles with `using Broiler.Regex;`. A caller that catches
+  `RegexOverflowException` reads `RegexMatch.Limit` instead: Broiler.JS's fallback to .NET's engine on that exception
+  goes at its pin move, SJL-11.5.
+- **The string-bearing members run the new backend under decision D10's policy (task 2.4c; R1, R3, D12).**
+  `Match(string, int)`, `IsMatch` and `Matches` pass no meter and no step ceiling, as an engine that passes no meter
+  does, and the engines' frame and trail ceilings. A match that reaches one is answered as that ceiling, never as no
+  match: `Match` answers a failed `RegexMatch` whose new `Limit` names it, and `Matches` yields that failed match after
+  the matches before it, as its last element (a consumer that reads every element as a match checks `Success`). `IsMatch`,
+  whose `bool` has no room for a third answer, throws an `InvalidOperationException` naming it: **this departs from
+  convention 3**, which admits an exception only for a broken precondition, and is tracked in `docs/conventions.md`
+  ("Where Broiler.Regex stands") for task 2.9, which decides between the owner's admission of the exception for a
+  member decision D12 keeps and a status-returning form. The offset entry is the status-returning form for a caller
+  that expects to meet a ceiling.
 
 ### Observable changes
 
+- **The string-bearing members answer as the specification does where the old matcher did not (task 2.4c).** The
+  three defects the differential comparison found are corrected: a start inside a surrogate pair under `u` and `v` runs
+  the matcher from the pair, and a non-empty match found there reports the caller's start as its index and its
+  substring from there (row M4, decision D23; the old matcher's greedy run stepped back and its loop did not, defect
+  D1). The answers that change from such a start are rows 2 and 4 of `SurrogateStartTests`:
+  `/(?:[\s\S])*\u{1F600}/u` from 1 of `"😀ba"`, no match before, now matches at 1, ending at 2; and
+  `/(.{2})?\u{1F600}|()/u` from 1 of `"😀bcx"`, before an empty match at 1 with group 2 empty there, now matches the
+  pair, reported at 1 and ending at 2, with neither group. A `v`-mode class tries its empty string after its single
+  characters (D2: `/[\q{}a]/v` on `a` matches `a`); and under `u` and `v` a back-reference in a look-behind compares
+  code points (M7: `/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` does not match). An empty match found at the pair,
+  decision D41's implementation-defined case, is reported at the pair's start, Broiler.VM's realm's answer, where the
+  old matcher reported the caller's start, or, for `/^/u` from 1 of `"😀"`, which it read from the low half as a lone
+  unit, where `^` fails, no match.
+- **Exhaustion is a ceiling, never no match (R1, R3; task 2.4c).** The old matcher gave each start position 10,000,000
+  steps and answered no match, or a shorter match from its greedy fast path, when they ran out, and charged no step for
+  an alternative tried. The string-bearing members now run a catastrophic pattern to its answer, which can take time
+  exponential in the subject's length (the offset entry's meter and step ceiling bound it), and answer a frame or trail
+  ceiling as a ceiling (Changed). The trail bounds a loop over a body of more than one character: `(a)*` over 500,000
+  characters, `(?:ab){1048576}` over as many repetitions and `(?:){2147483647}` on the empty subject answer the trail
+  ceiling, where the old matcher matched the first two and answered no match for the third (the specification answers
+  an empty match). A quantifier over one character is a run with no trail cell, so `a{1048576}` and `[a]*` over
+  10,000,001 characters match.
+- **No match exhausts the stack (R4; task 2.4c).** Every shape the review of task 2.3 found to end the process or throw
+  `RegexOverflowException` when matched at the nesting maximum on a 1 MiB thread matches there, under the JIT and
+  Native AOT, and so do 5,000 capturing groups in a row, which ended the process before.
 - **A pattern nested deeper than depth 512 is refused (R4; task 2.3, decision D6)**: more than 511 nested groups, or
   under `v` more than 511 nested classes, the pattern itself being depth 1. The constructors of
   `BroilerRegex` and `RegexParser.Parse`, which take no limit, parse under `BroilerRegex.MaximumNestingLimit` and
   refuse a deeper pattern with a `RegexSyntaxException` at the group or class that opens the level past it.
   `0.1.0-preview.4` parsed and compiled whatever its stack held and ended the process with a stack overflow past it:
   on a 1 MiB thread, at a few hundred levels for some shapes, and on any stack for a pattern such as 1,000,000 opening
-  parentheses. A pattern within the maximum compiles and matches as before, and its match can still exhaust a small
-  stack for the shapes the README lists, until task 2.4c routes matching through task 2.4a's backend.
+  parentheses. A pattern within the maximum compiles and matches as before, and since task 2.4c no match exhausts the
+  stack (above).
 - **Property names are matched exactly (R5).** `\p{…}` and `\P{…}` admit exactly the names and values ECMA-262's
   tables and `PropertyValueAliases.txt` list (§22.2.2.9, UnicodeMatchProperty and UnicodeMatchPropertyValue), as the
   provider's `UnicodeProperties.TryResolve` and `UnicodeStringProperties.TryResolve` match them. `0.1.0-preview.4`
