@@ -15,7 +15,9 @@ namespace Broiler.Regex.Probe;
 /// <remarks>
 /// The hidden argument <c>--engine-row corpus id</c> runs one row of the adversarial corpus through the new backend's
 /// entry in this process alone (<see cref="EngineRun.Row"/>), so that a test can run each row in a child process and
-/// observe a crash rather than suffer it.
+/// observe a crash rather than suffer it. <c>--adversarial corpus [--report path]</c> runs every row of the corpus so,
+/// each in a child process of this probe, and reports each against its declared status (<see cref="AdversarialMode"/>,
+/// bundle <c>sjl-11-001</c>'s part C); README.md beside this file describes every mode.
 /// </remarks>
 internal static class Program
 {
@@ -23,6 +25,8 @@ internal static class Program
     {
         if (args.Length == 3 && args[0] == "--engine-row")
             return EngineRun.Row(args[1], args[2]);
+        if (args.Length > 0 && args[0] == "--adversarial")
+            return AdversarialMode.Run(args.AsSpan(1));
 
         string? reportPath = null;
         for (var i = 0; i < args.Length; i++)

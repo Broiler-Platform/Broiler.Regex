@@ -249,29 +249,33 @@ internal static class EngineRun
     /// <summary>
     /// The hidden argument <c>--engine-row corpus id</c>: runs the row <paramref name="id"/> of the corpus file through the
     /// new backend's entry on a thread of the corpus's declared stack and writes <c>id answer</c>. Exits 0 when the row
-    /// ran, whatever it answered; 3 when the corpus has no such row. A crash ends the process, which its parent observes.
+    /// ran, whatever it answered; 3 when the corpus cannot be read (<see cref="AdversarialCorpus"/>) or has no such row.
+    /// A crash ends the process, which its parent observes: <c>AdversarialCorpusTests</c> and the probe's own
+    /// <c>--adversarial</c> mode (<c>AdversarialMode</c>) run each row so.
     /// </summary>
     internal static int Row(string corpusPath, string id)
     {
-        var stackBytes = 0;
-        string[]? row = null;
-        foreach (var line in File.ReadAllLines(corpusPath))
+        AdversarialCorpus corpus;
+        try
         {
-            if (line.StartsWith("# stack-bytes: ", StringComparison.Ordinal))
-                stackBytes = int.Parse(line.AsSpan("# stack-bytes: ".Length), NumberStyles.None, CultureInfo.InvariantCulture);
-            else if (line.StartsWith(id + "\t", StringComparison.Ordinal))
-                row = line.Split('\t');
+            corpus = AdversarialCorpus.Read(corpusPath);
+        }
+        catch (Exception refusal) when (refusal is FormatException or IOException or UnauthorizedAccessException)
+        {
+            Console.Error.WriteLine(refusal.Message);
+            return 3;
         }
 
-        if (row is null || stackBytes == 0)
+        if (corpus.Find(id) is not { } row)
         {
-            Console.Error.WriteLine("no row " + id + " or no stack-bytes header in " + corpusPath);
+            Console.Error.WriteLine("no row " + id + " in " + corpusPath);
             return 3;
         }
 
         var answer = "";
         var units = 0UL;
-        var thread = new Thread(() => answer = Answer(row[2], Expression(row[3]), row[4], Expression(row[5]), ParsePolicy(row[6]), out units), stackBytes);
+        var thread = new Thread(() => answer = Answer(row.Op, Expression(row.Pattern), row.Flags, Expression(row.Subject), ParsePolicy(row.Policy), out units),
+            corpus.StackBytes);
         thread.Start();
         thread.Join();
         Console.Out.Write(id + " " + answer + "\n");

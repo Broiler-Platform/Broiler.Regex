@@ -426,7 +426,9 @@ internal static class SharedRules
 
     /// <summary>
     /// SL3 over a built assembly. <paramref name="allowIo"/> is the probe's: an executable writes its report to a
-    /// file, and every other clause still holds it.
+    /// file and, since task 2.14 of SJL-11.2, runs each row of the adversarial corpus in a child process of its own (its
+    /// <c>--adversarial</c> mode, bundle <c>sjl-11-001</c>'s part C), so file, console, environment and process I/O
+    /// are admitted for it, and every other clause still holds it.
     /// </summary>
     internal static IEnumerable<string> SL3(AssemblyFacts assembly, bool allowIo = false) => SL3Findings(assembly, allowIo).Select(static f => f.Violation);
 
@@ -472,7 +474,8 @@ internal static class SharedRules
     private static bool IsException(string type) => type.EndsWith("Exception", StringComparison.Ordinal);
 
     private static bool IsIoType(string type) =>
-        type.StartsWith("System.IO.", StringComparison.Ordinal) || type is "System.Console" or "System.Environment" or "System.AppContext";
+        type.StartsWith("System.IO.", StringComparison.Ordinal) || type.StartsWith("System.Diagnostics.Process", StringComparison.Ordinal)
+        || type is "System.Console" or "System.Environment" or "System.AppContext";
 
     // ---------------------------------------------------------------------------------------------
     // SL4: no platform globalization, no regular expressions, no culture.
