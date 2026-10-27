@@ -23,8 +23,7 @@ namespace Broiler.Regex.Tests;
 /// the new backend's entry with the row's policy in a child process of its own, the probe under its hidden argument
 /// <c>--engine-row</c>, on a thread of the corpus's declared stack: a crash is observed as the child's exit, not suffered
 /// by the test host, and each row answers its declared status. Every other row is named with the reason it waits. Task
-/// 2.14's <c>--adversarial</c> mode runs the whole corpus so under the JIT and Native AOT, with both controls of the rule's
-/// part C (<see cref="AdversarialModeTests"/>, the probe's README).
+/// 2.14's <c>--adversarial</c> mode later runs the whole corpus with both controls of the rule's part C.
 /// </summary>
 public class AdversarialCorpusTests
 {
