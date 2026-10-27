@@ -7,4 +7,3 @@
 # the iteration that first found it. A finding is the row's only when all of the first four agree, so that another
 # exception of the type from the same method is reported.
 # kind	type	method	message	pattern	flags	reported
-exception	System.ArgumentException	Broiler.Regex.Parsing.RegexParser.ParseClassStringDisjunction	surrogate char without a	"[\\q{\\ud800}]"	v	2026-10-27, task 2.11 of SJL-11.2: seed 20261027, iteration 280; a lone surrogate alone in a v-mode \q{...} reaches char.ConvertToUtf32 (Parsing/RegexParser.cs, ParseClassStringDisjunction's Flush); the fix is the library's, not this task's

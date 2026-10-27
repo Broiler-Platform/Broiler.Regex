@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   65
-// Annotated:        65/65
+// Relevant units:   66
+// Annotated:        66/66
 // Exempt:           24
-// Human-reviewed:   0/65
+// Human-reviewed:   0/66
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         61/53
+// Criteria:         62/54
 // Resource impact:  7/10 max
-// Unverified:       65
+// Unverified:       66
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -1133,7 +1133,7 @@ public sealed class RegexParser
     /// point when the operand was a lone character, which is the only shape a range end
     /// may take.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=D908B6
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=213D68
     // Broiler-Falsified-If: an unescaped '(' or a doubled punctuator such as '!!' is accepted as a literal inside a v-mode class
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetOperand(out int? single)
@@ -1165,38 +1165,51 @@ public sealed class RegexParser
                 return ReadPropertyOperand(allowStrings: true);
             }
 
+            single = ReadClassSetCharacter(escaped: true, "a 'v'-mode class");
+            return Fold(SingleCodePoint(single.Value));
+        }
+
+        single = ReadClassSetCharacter(escaped: false, "a 'v'-mode class");
+        return Fold(SingleCodePoint(single.Value));
+    }
+
+    /// <summary>
+    /// Reads one ClassSetCharacter (§22.2.1) and answers the code point it denotes, a lone surrogate as well as any other
+    /// (§22.2.2.9 CompileToCharSet): a source character that is neither a class-set syntax character nor the first of a
+    /// reserved double punctuator, or, when <paramref name="escaped"/> says its <c>\</c> is read, <c>\b</c>, a reserved
+    /// punctuator, or a CharacterEscape. A class-set operand and a <c>\q{…}</c> alternative read their characters here
+    /// alike; <paramref name="inside"/> names which in a refusal.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=BC9181
+    // Broiler-Falsified-If: \b is refused, a reserved double punctuator such as && is read as two characters, or an unescaped ( or | is read as a character, inside a v-mode class or a \q{...} alternative
+    // Broiler-Human:        PENDING
+    private int ReadClassSetCharacter(bool escaped, string inside)
+    {
+        if (escaped)
+        {
             if (Peek() == 'b')
             {
                 _pos++;
-                single = '\b';
-                return Fold(SingleCodePoint('\b'));
+                return '\b';
             }
 
             // `\` followed by one of the reserved punctuators is that punctuator; every
             // other escape is an ordinary CharacterEscape.
             if (IsClassSetReservedPunctuator(Peek()))
-            {
-                single = _src[_pos++];
-                return Fold(SingleCodePoint(single.Value));
-            }
-
-            single = ReadCharacterEscape();
-            return Fold(SingleCodePoint(single.Value));
+                return _src[_pos++];
+            return ReadCharacterEscape();
         }
 
-        // ClassSetCharacter: a source character that is neither a syntax character nor
-        // half of a reserved double punctuator.
+        var c = Peek();
         if (IsClassSetSyntaxCharacter(c))
-            throw new RegexSyntaxException($"'{c}' must be escaped inside a 'v'-mode class", _pos);
+            throw new RegexSyntaxException("'" + c + "' must be escaped inside " + inside, _pos);
         if (IsClassSetReservedDoublePunctuator(c) && PeekAt(1) == c)
-            throw new RegexSyntaxException($"'{c}{c}' is reserved inside a 'v'-mode class", _pos);
-
-        single = ReadSourceCodePoint();
-        return Fold(SingleCodePoint(single.Value));
+            throw new RegexSyntaxException("'" + c + c + "' is reserved inside " + inside, _pos);
+        return ReadSourceCodePoint();
     }
 
     /// <summary>Parses <c>\q{ ClassString (| ClassString)* }</c>, the cursor on the <c>'q'</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=29D105
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=BD7040
     // Broiler-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassStringDisjunction()
@@ -1212,23 +1225,31 @@ public sealed class RegexParser
         var singles = new CodePointSet.Builder();
         var current = new StringBuilder();
         var characters = 0;
+        var last = 0;
+        var leadThenTrail = false;
 
+        // §22.2.2.10 CompileClassSetString: an alternative is the sequence of the code points its ClassSetCharacters
+        // denote, one each, read as code points here and never inferred from the alternative's UTF-16 text.
         void Flush()
         {
             // §22.2.1.8: a ClassString may contain strings unless it is exactly one ClassSetCharacter,
             // counted as written, so an empty one or \uD83D\u{DE00} (a lead escape, then a trail) may.
             if (characters != 1)
                 value.MayContainStrings = true;
-            characters = 0;
 
-            var text = current.ToString();
+            // One character is an ordinary member of the code-point set, a lone surrogate as well as any other; a longer
+            // (or empty) alternative needs string matching, added once, by its hash, as its UTF-16 text, which reads back
+            // as its code points. Except where a lead surrogate is followed by a trail one, as \uD83D\u{DE00} writes them:
+            // the text would read as the one astral code point they are not, and the alternative matches nothing, as a
+            // subject read by code point (§22.2.7.2) never holds a lead followed by a trail, so it is not kept.
+            if (characters == 1)
+                singles.Add(last);
+            else if (!leadThenTrail)
+                value.Strings.Add(current.ToString(), _account);
+
+            characters = 0;
+            leadThenTrail = false;
             current.Clear();
-            // A one-character alternative is an ordinary member of the code-point set;
-            // only longer (and empty) alternatives need string matching, each added once, by its hash.
-            if (text.Length == 1 || (text.Length == 2 && char.IsSurrogatePair(text, 0)))
-                singles.Add(char.ConvertToUtf32(text, 0));
-            else
-                value.Strings.Add(text, _account);
         }
 
         while (true)
@@ -1250,23 +1271,14 @@ public sealed class RegexParser
                 continue;
             }
 
-            characters++;
             if (c == '\\')
-            {
                 _pos++;
-                if (IsClassSetReservedPunctuator(Peek()))
-                {
-                    current.Append(_src[_pos++]);
-                    continue;
-                }
-                current.Append(FromCodePoint(ReadCharacterEscape()));
-                continue;
-            }
-
-            if (IsClassSetSyntaxCharacter(c))
-                throw new RegexSyntaxException($"'{c}' must be escaped inside \\q{{…}}", _pos);
-
-            current.Append(FromCodePoint(ReadSourceCodePoint()));
+            var codePoint = ReadClassSetCharacter(escaped: c == '\\', "\\q{…}");
+            if (characters > 0 && last is >= 0xD800 and <= 0xDBFF && codePoint is >= 0xDC00 and <= 0xDFFF)
+                leadThenTrail = true;
+            characters++;
+            last = codePoint;
+            current.Append(FromCodePoint(codePoint));
         }
 
         value.Set = singles.ToSet(_account);
