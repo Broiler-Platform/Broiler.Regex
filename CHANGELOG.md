@@ -65,8 +65,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     builds of the probe (`-p:RegexAdversarialControl=steps`, `LimitExceeded` naming steps answered as no match, and
     `=nesting`, the nesting check removed), which compile the library's sources into the probe with one line changed
     and never build `Broiler.Regex.dll`; CI's `adversarial-controls` job requires the first to report exactly the K,
-    A, L, W and G rows and the second exactly the N rows past the limit, through `eng/adversarial-controls.py`, and the
-    revert none. The corpus has one reader, `probes/Regex.Probe/AdversarialCorpus.cs`, which the tests link, and rule
+    A, L, W and G rows and the second exactly the N rows past the limit that run, 9 of the 15 (the six `validate` rows
+    past the limit wait for task 2.8 and are not required yet), through `eng/adversarial-controls.py`, and the revert
+    none. The corpus has one reader, `probes/Regex.Probe/AdversarialCorpus.cs`, which the tests link, and rule
     SL3 admits the probe's child processes as it admits its file I/O. The rows whose operation is `validate` wait for
     task 2.8 and are reported by name. The library, `Broiler.Regex.dll` and its API, and the package are unchanged.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
