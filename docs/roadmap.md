@@ -758,10 +758,14 @@ grammar and throws as before, so the starting violation list's SL4 row loses its
   realm charges `RegExp.escape` its input's length and then its output's today (`StringCharge` at
   `JsRealm.RegExp.cs:1462` and `:1491`), and `source` nothing. For a text that changes, the two totals agree up to the
   block. For a text of n code units that needs no change they do not: Broiler.VM charges 2n, and the helper charges
-  its reading only, n rounded up to the block, about half (10,000 underscores: 20,000 today, 10,240 here). That is a
-  fuel difference SJL-11.4 must read at its cut-over under decision D8, where an exhaustion verdict it moves is class
-  C2 of Broiler.VM's rule. The meter is nullable for an engine that charges nothing. *Amended at the review of task
-  2.7:* this record first said the totals agree up to the block for every text.
+  its reading only, n rounded up to the block. *Amended at the integration of tasks 2.5 and 2.7:* that is about half
+  of Broiler.VM's charge for a long text only (10,000 underscores: 20,000 today, 10,240 here); the two agree at 256
+  code units, 512 each, and for an unchanged text of 1 to 255 code units the helper charges more than Broiler.VM, a
+  whole block of 512 against 2n (100 underscores: 200 today, 512 here), where this record first said about half for
+  every such text. Either way it is a fuel difference SJL-11.4 must read at its cut-over under decision D8, where an
+  exhaustion verdict it moves is class C2 of Broiler.VM's rule. The meter is nullable for an engine that charges
+  nothing. *Amended at the review of task 2.7:* this record first said the totals agree up to the block for every
+  text.
 - **`EscapePattern` takes no flags**: each rewrite holds in all three modes (its remarks), so one pattern gives one
   text whatever its flags.
 
