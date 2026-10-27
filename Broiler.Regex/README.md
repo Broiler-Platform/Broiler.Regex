@@ -131,7 +131,17 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?, out BroilerRegex?, out
   RegexLimit)` compiles under the caller's nesting limit, compile budget and meter and answers
   `Success` or `LimitExceeded` naming `Nesting` or `Compile` (provisional until task 2.9); the
-  constructors take neither budget nor meter.
+  constructors take neither budget nor meter. The **validate entry** (task 2.8; provisional until task 2.9),
+  `Validate(string, RegexFlags or string? flags, IUnicodeTables, int nestingLimit, out RegexDiagnostic, out
+  RegexLimit)`, runs the same parse with every set expansion left out (a property's name and kind are looked up in
+  the provider's tables, nothing is folded or combined) and answers `Success`, `SyntaxError` or `LimitExceeded`
+  naming `Nesting`, with no meter and no budget: its work is in proportion to the pattern.
+* **`RegexDiagnostic.cs`** — a refusal as data (decision D9): a `RegexDiagnosticCode`, one per
+  condition of the grammar, the early errors, the flags and the nesting limit, numbered by the part of
+  the grammar and fixed once published; its message identifier, the shared frontend's early-error
+  catalogue's where it has a row (EE0184 to EE0213); its argument; and its position, in the pattern or
+  in the flags text. The validate entry answers one, and every `RegexSyntaxException` the library
+  throws carries the same one as its `Diagnostic`.
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
   difference and complement, immutable once built, so a set is shared between threads. Every class member kind reduces to one of these, so
   `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand. A compilation
@@ -261,14 +271,6 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
     `/[\q{A}]/vi` matches `A`. V8 folds the member but not the subject at that length —
     it matches `a` and not `A` — while canonicalizing both for a longer alternative —
     `UnicodeSetsTests.SingleCharacterStringAlternative_FoldsUnlikeV8`.
-- Two defects found during SJL-11.2 task 2.2's review, older than the task and still open after task
-  2.4c, left for the class-set work of a later SJL-11.2 task (each fails against ES2025's §22.2.1
-  grammar). Both are the parser's reading of `\q{…}`, which the backend takes as the parser gives it:
-  - `\b` inside `\q{…}` is refused: `/[\q{\b}]/v`, `/[^\q{\b}]/v` and `/[\q{a\bc}]/v` throw
-    `RegexSyntaxException`, where `ClassSetCharacter` admits `\b` (U+0008).
-  - An escaped lead surrogate followed by an escaped trail surrogate in `\q{…}` is read as
-    one code point: `/^[\q{\uD83D\u{DE00}}]$/v` matches "😀", where the two escapes are
-    two code points and the alternative is a two-code-point string.
 - **Performance.** The backend interprets an instruction program, one dispatch at a time, so it
   stays slower than the compiled `System.Text.RegularExpressions`; no timing benchmark was taken for
   task 2.4c. Its fast paths cut the work it does: a run tests each character it takes with no frame
