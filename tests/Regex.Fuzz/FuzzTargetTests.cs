@@ -134,6 +134,22 @@ public class FuzzTargetTests
     }
 
     [Fact]
+    public void A_known_finding_absorbs_its_own_exception_alone()
+    {
+        // The control of the list: another exception of the listed type from the listed method, or from a method it
+        // calls, is a finding, so that a row cannot hide a new defect on the same path while the old one still fires.
+        var known = new KnownFinding("exception", "System.ArgumentException", "Broiler.Regex.Parsing.RegexParser.ParseClassStringDisjunction", "surrogate char without a", "", RegexFlags.None, "");
+        const string Listed = "System.ArgumentException: Found a high surrogate char without a following low surrogate at index: 0. (Parameter 's')";
+        const string Frames = " at Broiler.Regex.Parsing.RegexParser.ParseClassStringDisjunction (RegexParser.cs:1197) < Broiler.Regex.Parsing.RegexParser.ParseClassSetOperand (RegexParser.cs:1124)";
+        Assert.True(known.Matches(new Finding("exception", "compile/full", Listed + Frames)));
+        Assert.False(known.Matches(new Finding("exception", "compile/full", "System.ArgumentException: another defect on the same path" + Frames)));
+        Assert.False(known.Matches(new Finding("exception", "compile/full", Listed + " at Broiler.Regex.Parsing.ClassStrings.Add (ClassStrings.cs:40) <" + Frames[3..])));
+        Assert.False(known.Matches(new Finding("exception", "compile/full", "System.ArgumentOutOfRangeException: Found a high surrogate char without a following low surrogate" + Frames)));
+        Assert.False(known.Matches(new Finding("disagreement", "compile/full", Listed + Frames)));
+        Assert.False(known.Matches(new Finding("exception", "compile/full", Listed)));
+    }
+
+    [Fact]
     public void A_process_that_ends_is_a_finding_at_the_iteration_it_ended_in()
     {
         var log = new StringWriter(CultureInfo.InvariantCulture);

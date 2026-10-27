@@ -8,19 +8,30 @@ namespace Broiler.Regex.Fuzz;
 
 /// <summary>
 /// One finding in the library that this target reported and that is not fixed yet (<c>known-findings.tsv</c>): its
-/// kind, the exception's type, the library method on its stack, and a reproduction a test runs.
+/// kind, the exception's type, the innermost library method on its stack, a text its message holds, and a
+/// reproduction a test runs.
 /// </summary>
-internal sealed record KnownFinding(string Kind, string Type, string Method, string Pattern, RegexFlags Flags, string Reported)
+internal sealed record KnownFinding(string Kind, string Type, string Method, string Message, string Pattern, RegexFlags Flags, string Reported)
 {
-    /// <summary>Whether <paramref name="finding"/> is this one: the same kind and exception, from the same library method.</summary>
-    internal bool Matches(Finding finding) =>
-        finding.Kind == Kind
-        && finding.Detail.StartsWith(Type + ":", StringComparison.Ordinal)
-        && finding.Detail.Contains(" at ", StringComparison.Ordinal)
-        && finding.Detail[(finding.Detail.LastIndexOf(" at ", StringComparison.Ordinal) + 4)..]
-            .Split(" < ").Any(frame => frame.Split(" (")[0] == Method);
+    /// <summary>
+    /// Whether <paramref name="finding"/> is this one: the same kind and exception type, thrown with this method the
+    /// innermost of the library's frames, with a message that holds <see cref="Message"/>. Another exception of the type
+    /// from the same method, or from a method it calls, is not this one, and is reported as a finding.
+    /// </summary>
+    internal bool Matches(Finding finding)
+    {
+        if (finding.Kind != Kind || !finding.Detail.StartsWith(Type + ": ", StringComparison.Ordinal))
+            return false;
+        // Verdicts.Describe: "Type: message at Method (File.cs:line) < ...", the frames innermost first.
+        var at = finding.Detail.LastIndexOf(" at ", StringComparison.Ordinal);
+        if (at < Type.Length + 2)
+            return false;
+        var message = finding.Detail[(Type.Length + 2)..at];
+        var innermost = finding.Detail[(at + 4)..].Split(" < ")[0].Split(" (")[0];
+        return innermost == Method && message.Contains(Message, StringComparison.Ordinal);
+    }
 
-    internal string Key => Kind + " " + Type + " in " + Method;
+    internal string Key => Kind + " " + Type + " (\"" + Message + "\") in " + Method;
 }
 
 /// <summary>
@@ -52,15 +63,18 @@ internal static partial class KnownFindings
             if (line.Length == 0 || line.StartsWith('#'))
                 continue;
             var fields = line.Split('\t');
-            if (fields.Length != 6)
-                throw new FormatException("known-findings.tsv: a row has " + fields.Length + " fields, not 6: " + line);
+            if (fields.Length != 7)
+                throw new FormatException("known-findings.tsv: a row has " + fields.Length + " fields, not 7: " + line);
+            if (fields[3].Length == 0)
+                throw new FormatException("known-findings.tsv: a row has no text of the exception's message: " + line);
             list.Add(new KnownFinding(
                 fields[0],
                 fields[1],
                 fields[2],
-                JsonSerializer.Deserialize<string>(fields[3]) ?? throw new FormatException("known-findings.tsv: the pattern is not a JSON string: " + fields[3]),
-                Letters(fields[4]),
-                fields[5]));
+                fields[3],
+                JsonSerializer.Deserialize<string>(fields[4]) ?? throw new FormatException("known-findings.tsv: the pattern is not a JSON string: " + fields[4]),
+                Letters(fields[5]),
+                fields[6]));
         }
 
         return list;

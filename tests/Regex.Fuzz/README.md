@@ -151,6 +151,12 @@ fixed yet: a session prints each as known and does not fail on it, a declared se
 as stale, and `FuzzTargetTests.Each_known_finding_still_reproduces` fails once its reproduction no longer reproduces.
 A row leaves the file in the change that fixes its defect. The library code is not this target's to change.
 
+A row is a finding's only when the kind, the exception's type, the innermost library frame on its stack and a text
+its message holds all agree, so that another exception of the type thrown from the same method, or from a method it
+calls, is reported as a finding while the listed one still fires
+(`FuzzTargetTests.A_known_finding_absorbs_its_own_exception_alone`). The row of `/[\q{\uD800}]/v` holds
+`surrogate char without a`, which the runtime's messages for a lone high and a lone low surrogate share.
+
 ## Reproducing a finding
 
 Every finding names its seed and iteration. `--show` prints the case; `--replay` runs it in one process, prints every
