@@ -24,7 +24,7 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:118 Broiler.Regex/Parsing/RegexParser.cs:207 Broiler.Regex/Parsing/RegexParser.cs:518 Broiler.Regex/Parsing/RegexParser.cs:526 Broiler.Regex/Parsing/RegexParser.cs:682 Broiler.Regex/Parsing/RegexParser.cs:1126 Broiler.Regex/Parsing/RegexParser.cs:1444 Broiler.Regex/Parsing/RegexParser.cs:1812
+SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:118 Broiler.Regex/Parsing/RegexParser.cs:207 Broiler.Regex/Parsing/RegexParser.cs:518 Broiler.Regex/Parsing/RegexParser.cs:526 Broiler.Regex/Parsing/RegexParser.cs:682 Broiler.Regex/Parsing/RegexParser.cs:1144 Broiler.Regex/Parsing/RegexParser.cs:1462 Broiler.Regex/Parsing/RegexParser.cs:1830
 SL5	Broiler.Regex: NoWarn suppresses CS1570	CS1570	eng/Broiler.Packaging.props:72
 SL5	Broiler.Regex: NoWarn suppresses CS1572	CS1572	eng/Broiler.Packaging.props:72
 SL5	Broiler.Regex: NoWarn suppresses CS1573	CS1573	eng/Broiler.Packaging.props:72

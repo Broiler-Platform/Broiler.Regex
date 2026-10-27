@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   66
-// Annotated:        66/66
+// Relevant units:   67
+// Annotated:        67/67
 // Exempt:           24
-// Human-reviewed:   0/66
+// Human-reviewed:   0/67
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         62/54
+// Criteria:         63/55
 // Resource impact:  7/10 max
-// Unverified:       66
+// Unverified:       67
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -983,6 +983,8 @@ public sealed class RegexParser
             _pos++;
         }
 
+        // The expression returns at the class's ']' or at the pattern's end, never before another character: a union
+        // reads operands up to either, and an intersection or a subtraction refuses whatever else follows its last one.
         var value = ParseClassSetExpression();
 
         if (AtEnd)
@@ -1037,7 +1039,7 @@ public sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=D08118
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=747DAC
     // Broiler-Falsified-If: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassIntersection(ClassSetValue first, int start)
@@ -1059,11 +1061,11 @@ public sealed class RegexParser
             };
         }
 
-        RejectMixedOperator(start);
+        RejectAfterLastOperand(start);
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=79DAB5
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=354D21
     // Broiler-Falsified-If: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSubtraction(ClassSetValue first, int start)
@@ -1083,23 +1085,39 @@ public sealed class RegexParser
             };
         }
 
-        RejectMixedOperator(start);
+        RejectAfterLastOperand(start);
         return accumulated;
     }
 
     /// <summary>
     /// A class-set expression is a union, an intersection or a subtraction — never a
-    /// mixture, so an operator (or trailing operand) left over after one of them is a
-    /// syntax error rather than a silently reassociated expression.
+    /// mixture, so an operator met between a union's operands is a syntax error rather
+    /// than a silently reassociated expression.
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=9001F0
-    // Broiler-Falsified-If: [a--b&&c] or [a&&b--c] under v is accepted instead of throwing
+    // Broiler-Falsified-If: [ab--c] or [ab&&c] under v is accepted instead of throwing
     // Broiler-Human:        PENDING
     private void RejectMixedOperator(int start)
     {
         if (AtEnd || Peek() == ']')
             return;
         if ((Peek() == '&' && PeekAt(1) == '&') || (Peek() == '-' && PeekAt(1) == '-'))
+            throw new RegexSyntaxException(
+                "A class-set expression may not mix union, '&&' and '--' without nesting", start);
+    }
+
+    /// <summary>
+    /// A ClassIntersection or a ClassSubtraction ends at its last operand (§22.2.1), which only the class's <c>]</c> may
+    /// follow, or the pattern's end, which <see cref="ParseNestedClass"/> then refuses as an unterminated class. An
+    /// operator of the other kind, or any operand, would mix the expression with another, so it is refused here, before
+    /// the class consumes its <c>]</c>.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=962FE3
+    // Broiler-Falsified-If: [a--bc or [a&&ac under v compiles, or [a--b&&c], [a&&b--c] or [a--b[c]] is accepted instead of throwing
+    // Broiler-Human:        PENDING
+    private void RejectAfterLastOperand(int start)
+    {
+        if (!AtEnd && Peek() != ']')
             throw new RegexSyntaxException(
                 "A class-set expression may not mix union, '&&' and '--' without nesting", start);
     }
