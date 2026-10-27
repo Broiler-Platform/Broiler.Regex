@@ -113,7 +113,9 @@ is anything else:
   against the wide one; after the meter's exception, the same instance against its own earlier answer; the
   string-bearing members against the offset entry, through the mapping their documentation states
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
-  decision D41, groups from the slots, `NamedGroups` from the participating group, `Matches`' iteration of §22.2.6.9,
+  decision D41, groups from the slots, each `Value` (the match's, group 0's and every group's) the subject's text at
+  the offsets reported, `NamedGroups` from a participating group of each name, a failed match with no index, text or
+  groups, `Matches`' iteration of §22.2.6.9,
   a ceiling reached as `RegexMatch.Limit` and as `IsMatch`'s exception), compared wherever the wide call completed or
   met the frame or trail ceiling the string-bearing members also pass; `EscapePattern`'s text compiling or matching
   otherwise than its pattern; `EscapeString`'s text, compiled under any flags, failing to match its subject whole;
