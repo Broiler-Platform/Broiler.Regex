@@ -24,7 +24,7 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:118 Broiler.Regex/Parsing/RegexParser.cs:207 Broiler.Regex/Parsing/RegexParser.cs:518 Broiler.Regex/Parsing/RegexParser.cs:526 Broiler.Regex/Parsing/RegexParser.cs:682 Broiler.Regex/Parsing/RegexParser.cs:1149 Broiler.Regex/Parsing/RegexParser.cs:1468 Broiler.Regex/Parsing/RegexParser.cs:1836
+SL4	Broiler.Regex interpolates a string without a format provider, which formats its values by the current culture	$"	Broiler.Regex/Ast/CharSet.cs:118
 SL5	Broiler.Regex: NoWarn suppresses CS1570	CS1570	eng/Broiler.Packaging.props:72
 SL5	Broiler.Regex: NoWarn suppresses CS1572	CS1572	eng/Broiler.Packaging.props:72
 SL5	Broiler.Regex: NoWarn suppresses CS1573	CS1573	eng/Broiler.Packaging.props:72
@@ -49,12 +49,17 @@ C1	Broiler.Regex names a base class library collection, delegate, object or Type
 # Task 2.6 (2026-10-27) removes the two C1 rows of BroilerRegex.GroupNames and RegexParser.GroupNames: requirement R6
 # reshapes both from a dictionary of each name to one group into the library's own RegexGroupNames, since ES2025 lets
 # several groups share a name (a break docs/suppressions.md lists), so neither names a collection in a public signature.
-C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>	public IEnumerable<RegexMatch> Matches(string input)	Broiler.Regex/BroilerRegex.cs:461
+C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>	public IEnumerable<RegexMatch> Matches(string input)	Broiler.Regex/BroilerRegex.cs:594
 C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.RegexGroup>	public IReadOnlyList<RegexGroup> Groups { get; }	Broiler.Regex/RegexMatch.cs:76
 C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.RegexGroup>	public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }	Broiler.Regex/RegexMatch.cs:86
 C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void	class PropertyMatch(CodePointSet codePoints, IReadOnlyList<string> strings)	Broiler.Regex/Unicode/UnicodeCharSets.cs:86
 C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch.Strings field readonly System.Collections.Generic.IReadOnlyList`1<System.String>	public readonly IReadOnlyList<string> Strings = strings;	Broiler.Regex/Unicode/UnicodeCharSets.cs:108
-C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexSyntaxException sealed class : System.Exception	public sealed class RegexSyntaxException(	Broiler.Regex/RegexSyntaxException.cs:28
+C3	Broiler.Regex declares a public exception type for a failure its contract admits: Broiler.Regex.RegexSyntaxException sealed class : System.Exception	public sealed class RegexSyntaxException(	Broiler.Regex/RegexSyntaxException.cs:36
 # Task 2.7 (2026-10-27) removes two places of the SL4 row, Broiler.Regex/RegexFlags.cs:90 and :94: RegexFlagsParser.Parse
 # now reads the grammar of Text/RegexFlagsText.cs and builds its two messages, unchanged, by concatenating a code unit,
 # which reads no culture. The row's other places are the parser's and CharSet's.
+# Task 2.8 (2026-10-27) removes the parser's seven places of the SL4 row, Broiler.Regex/Parsing/RegexParser.cs:207,
+# :518, :526, :682, :1149, :1468 and :1836: every refusal of the parser is now built by RegexParser.Refuse with its
+# diagnostic code, and its message, unchanged, concatenates its values, a number through NumberFormatInfo.InvariantInfo,
+# which reads no culture. The row's one place left is CharSet's, the check of the public CharSet.AddRange, which no
+# compilation reaches with a range out of order: the parser refuses one itself, at the range's position, before it adds.
