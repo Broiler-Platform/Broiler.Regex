@@ -68,18 +68,34 @@ public class ClassStringCodePointTests
             (@"[^\q{\uD800}]", "v", "a", "match 0,1"),
         ]);
 
+    /// <summary>
+    /// U+10000 and U+1F600, each written as one RegExpUnicodeEscapeSequence of a lead and a trail surrogate (§22.2.1),
+    /// the escape that denotes the pair's one code point. Each is written in two halves, so that the source holds the
+    /// escape's ASCII text: an editing tool that joins an escaped pair into the character it denotes once turned the
+    /// cases that use them into cases of a raw pair.
+    /// </summary>
+    private const string EscapedU10000 = @"\uD800" + @"\uDC00";
+
+    private const string EscapedU1F600 = @"\uD83D" + @"\uDE00";
+
     [Fact]
     public void A_lone_surrogate_beside_a_pair_is_its_own_code_point()
         => AssertAll(
         [
-            (@"[\q{\uD800|𐀀}]", "v", "\uD800", "match 0,1"),
-            (@"[\q{\uD800|𐀀}]", "v", "𐀀", "match 0,2"), // one escape of a lead and a trail: U+10000
+            (@"[\q{\uD800|" + EscapedU10000 + "}]", "v", "\uD800", "match 0,1"),
+            (@"[\q{\uD800|" + EscapedU10000 + "}]", "v", "\U00010000", "match 0,2"),  // one escape of a lead and a trail: U+10000
+            ("[\\q{\\uD800|\U00010000}]", "v", "\uD800", "match 0,1"),                // the pair written raw
+            ("[\\q{\\uD800|\U00010000}]", "v", "\U00010000", "match 0,2"),
             (@"[\q{\uD800x|\u{10000}}]", "v", "\uD800x", "match 0,2"),
             (@"[\q{\uDC00\uD800}]", "v", "\uDC00\uD800", "match 0,2"),       // a trail, then a lead: two code points in the subject too
             (@"[\q{\uDC00\uD800}]", "v", "𐀀", "nomatch"),
             (@"[\q{a\uD800}]", "v", "a\uD800", "match 0,2"),
             (@"[\q{a\uD800}]", "v", "a𐀀", "nomatch"),             // the subject's lead is half of a pair
-            (@"[\q{😀}]", "v", "😀", "match 0,2"),       // one escape: U+1F600
+            (@"[\q{" + EscapedU1F600 + "}]", "v", "\U0001F600", "match 0,2"),        // one escape: U+1F600
+            (@"[\q{x" + EscapedU1F600 + "|y}]", "v", "x\U0001F600", "match 0,3"),
+            (@"[^\q{" + EscapedU1F600 + "}]", "v", "\U0001F600", "nomatch"),         // one ClassSetCharacter may be complemented
+            (@"[^\q{" + EscapedU1F600 + "}]", "v", "a", "match 0,1"),
+            ("[\\q{\U0001F600}]", "v", "\U0001F600", "match 0,2"),                     // the pair written raw
         ]);
 
     [Fact]
@@ -111,6 +127,11 @@ public class ClassStringCodePointTests
             (@"[\q{\u{1F600}}--\q{\uD83D\u{DE00}}]", "v", "😀", "match 0,2"),
             (@"[\q{x\uD83D\u{DE00}}&&\q{x\u{1F600}}]", "v", "x😀", "nomatch"),
             (@"[\q{x\u{1F600}}--\q{x\uD83D\u{DE00}}]", "v", "x😀", "match 0,3"),
+            // One escape of a lead and a trail is the one code point U+1F600, as \u{1F600} is.
+            (@"[\q{" + EscapedU1F600 + @"}&&\q{\u{1F600}}]", "v", "\U0001F600", "match 0,2"),
+            (@"[\q{" + EscapedU1F600 + @"}--\q{\u{1F600}}]", "v", "\U0001F600", "nomatch"),
+            (@"[\q{x" + EscapedU1F600 + @"}&&\q{x\u{1F600}}]", "v", "x\U0001F600", "match 0,3"),
+            (@"[\q{x" + EscapedU1F600 + @"}--\q{x\u{1F600}}]", "v", "x\U0001F600", "nomatch"),
         ]);
 
     [Fact]
@@ -123,6 +144,7 @@ public class ClassStringCodePointTests
             (@"[\q{a\uD800}]", "vi", "A𐀀", "nomatch"),
             (@"[\q{\uD800}&&\uD800]", "vi", "\uD800", "match 0,1"),
             (@"[\q{\uD800|K}--k]", "vi", "\uD800", "match 0,1"),
+            (@"[\q{" + EscapedU1F600 + "}]", "vi", "\U0001F600", "match 0,2"),
         ]);
 
     [Fact]
