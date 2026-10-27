@@ -228,7 +228,8 @@ public class ChargingTests
     /// every kind of character, class and back-reference right to left, and v-mode classes holding strings, the empty
     /// one among them; and task 2.4c's runs, lazy and greedy, and atom runs, both ways, classes of strings from a table,
     /// and the start-position scan, over a character, over a class of weight, stepping over surrogate pairs from a start
-    /// inside one, and stopped by a step ceiling.
+    /// inside one, and stopped by a step ceiling; and task 2.6's references to a name several groups share, forward
+    /// under i and right to left in a look-behind.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -266,6 +267,8 @@ public class ChargingTests
         { "[\\p{Nd}\\p{No}]+x", "u", new string('a', 700) + "12x", 0, false, null },
         { "\\u{1F600}b", "u", string.Concat(Enumerable.Repeat("\U0001F600a", 300)) + "\U0001F600b", 1, false, null },
         { "q", "", new string('p', 2000), 0, false, 1_500UL },
+        { "(?:(?<a>x)|(?<a>y)|z)+\\k<a>!", "i", string.Concat(Enumerable.Repeat("zYyx", 100)) + "yY!", 0, false, null },
+        { "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", "", string.Concat(Enumerable.Repeat("xyz", 150)) + "yyz", 0, false, null },
     };
 
     [Theory]

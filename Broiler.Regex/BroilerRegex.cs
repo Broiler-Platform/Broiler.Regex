@@ -135,12 +135,25 @@ public sealed class BroilerRegex
     // Broiler-Human:        PENDING
     public int SlotCount => _program.SlotCount;
 
-    /// <summary>Group name → 1-based capture index.</summary>
+    /// <summary>
+    /// The pattern's group names: each name with the groups that carry it, each group with its name, and the group of a
+    /// name that participated in a match the offset entry wrote (requirement R6; ECMA-262 §22.2.1.4, §22.2.7.2).
+    /// </summary>
     /// <remarks>
-    /// Read-only all the way down: the map the matcher reads on every match, behind a view that admits no write through
-    /// a cast to <c>IDictionary</c>, so the compiled pattern cannot be changed through it (convention 10).
+    /// <para>
+    /// ES2025 lets a name be declared by several groups when no two of them can both participate, so a name maps to a
+    /// list of groups (<see cref="RegexGroupNames.GroupsNamed"/>), and a match to the one that participated
+    /// (<see cref="RegexGroupNames.ParticipatingGroup"/>, from the offset entry's slots; <see cref="RegexMatch.NamedGroups"/>
+    /// for <see cref="Match(string, int)"/>'s result).
+    /// </para>
+    /// <para>
+    /// <b>Reshaped, and provisional.</b> Until task 2.6 of SJL-11.2 this was an <c>IReadOnlyDictionary&lt;string, int&gt;</c>
+    /// of each name to its one group, which a name of several groups does not fit (a break of <c>0.1.0-preview.4</c>'s
+    /// surface, suppressed and listed with requirement R6); task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.
+    /// It cannot be changed: the compiled pattern and its concurrent matches share it (convention 10).
+    /// </para>
     /// </remarks>
-    public IReadOnlyDictionary<string, int> GroupNames { get; }
+    public RegexGroupNames GroupNames { get; }
 
     /// <summary>Compiles <paramref name="pattern"/> under the flags string <paramref name="flags"/>.</summary>
     /// <param name="pattern">The pattern's source text.</param>
@@ -486,7 +499,7 @@ public sealed class BroilerRegex
     /// reports <paramref name="start"/> as its index (row M4), and an empty one the pair's start (decision D41,
     /// <see cref="Match(string, int)"/>'s remarks); null for no match or a ceiling, which <paramref name="limit"/> names.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=0E6946
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=1C23DC
     // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
     // Broiler-Human:        PENDING
     private RegexMatch? Run(RegexProgram program, string input, int start, out RegexLimit limit)
@@ -506,20 +519,24 @@ public sealed class BroilerRegex
         var index = slots[0] == from && end >= start ? start : slots[0];
         var value = input[index..end];
         var groups = new RegexGroup[CaptureCount + 1];
-        groups[0] = new RegexGroup(true, index, end - index, value, null);
-        var names = new string?[CaptureCount + 1];
-        foreach (var (name, number) in GroupNames)
-            names[number] = name;
-
-        var named = new Dictionary<string, RegexGroup>(StringComparer.Ordinal);
+        groups[0] = new RegexGroup(0, true, index, end - index, value, null);
         for (var group = 1; group <= CaptureCount; group++)
         {
             var (first, last) = (slots[2 * group], slots[(2 * group) + 1]);
+            var name = GroupNames.NameOfGroup(group);
             groups[group] = first >= 0 && last >= first
-                ? new RegexGroup(true, first, last - first, input[first..last], names[group])
-                : RegexGroup.Unmatched(names[group]);
-            if (names[group] is { } name)
-                named[name] = groups[group];
+                ? new RegexGroup(group, true, first, last - first, input[first..last], name)
+                : RegexGroup.Unmatched(group, name);
+        }
+
+        // Each name once, in the order of its first group, as RegExpBuiltinExec creates the groups object's properties
+        // (step 34.e), with the group of it that participated, at most one; or its first group, unmatched, when none did.
+        var named = new Dictionary<string, RegexGroup>(GroupNames.Count, StringComparer.Ordinal);
+        for (var at = 0; at < GroupNames.Count; at++)
+        {
+            var name = GroupNames.NameAt(at);
+            var participating = GroupNames.ParticipatingGroup(name, slots);
+            named.Add(name, groups[participating > 0 ? participating : GroupNames.GroupsNamed(name)[0]]);
         }
 
         return new RegexMatch(true, index, end - index, value, groups, named);

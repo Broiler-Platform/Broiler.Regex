@@ -185,9 +185,9 @@ internal enum RegexOp : byte
     /// <summary>
     /// BackreferenceMatcher (§22.2.2.7.2): the characters the group captured must come next, compared exactly. The group is
     /// read from the program's list of referenced groups, <c>B</c> entries from entry <c>A</c>: the first whose capture is
-    /// defined is the one compared, and when none is, the reference matches the empty string. Today a list holds one
-    /// group; a name ES2025 lets several groups share (task 2.6) becomes a list of them, the one that participated
-    /// being compared, with no change to the instruction.
+    /// defined is the one compared, and when none is, the reference matches the empty string. A numbered reference's list
+    /// holds its group; a named one's holds every group of the name, which ES2025 lets alternatives that cannot both
+    /// participate share (requirement R6, task 2.6), at most one of them defined, the one that participated.
     /// </summary>
     Backreference = 21,
 

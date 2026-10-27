@@ -217,8 +217,8 @@ public class ProgramCompilerTests
     [Fact]
     public void A_back_reference_reads_a_list_of_its_group_from_the_program_s_referenced_groups()
     {
-        // Each reference holds a run of entries of the program's list, one group long today; task 2.6's duplicate names
-        // make a run of the groups that share a name, with no change to the instruction.
+        // Each reference holds a run of entries of the program's list, one group long for a number and for a name one
+        // group declares; a name several groups share is a run of all of them (DuplicateNamedGroupTests).
         var program = TestProgram.Compile("(?<a>x)(y)\\2\\k<a>(?i:\\1)");
         Assert.Equal(["Backreference 0,1", "Backreference 1,1", "BackreferenceIgnoringCase 2,1"],
             Listing(program).Where(static l => l.StartsWith("Backreference", StringComparison.Ordinal)));

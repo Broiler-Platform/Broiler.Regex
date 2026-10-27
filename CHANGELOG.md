@@ -95,7 +95,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   the provider's case folding (a class by the case orbit of the character, inverted after); `^ $` with and without `m`
   and `\b \B` with the word characters the flags give; numbered and named back-references, forward and backward, by
   Canonicalize under `i`, by code point under `u` and `v`, a group that did not participate matching the empty string,
-  each reading a list of groups that task 2.6's duplicate names will lengthen; the four look-arounds, each a barrier
+  each reading a list of groups, which task 2.6's duplicate names lengthen (below); the four look-arounds, each a barrier
   frame on the machine's one stack, cut back to when its body matches, with a look-behind's body compiled right to
   left and its captures in source order; modifier groups, their flags in force for their body alone; and `v`-mode
   classes of strings, longest first, then the single characters, then the empty string. No method of the machine
@@ -187,6 +187,25 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     `built-ins/RegExp/escape` and `staging/sm/RegExp/escape.js` cases ported as data, test-only, with test262's
     licence beside them ([`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)); and the Native AOT probe's population
     `text-1`, whose report CI holds to the JIT's.
+- **Duplicate named groups (R6; task 2.6, check A-6; decisions D9, D12 and D36).** ES2025's rule: a group name may be
+  declared by several groups when no two of them can both participate, that is, when some Disjunction holds each two of
+  them in different Alternatives (ECMA-262 §22.2.1.1, MightBothParticipate §22.2.1.4), the names compared as decoded.
+  `(?<a>x)|(?<a>y)`, `(?:(?<a>x)|(?<a>y))\k<a>`, `((?<a>x)|(?<a>y))*` and `(?<a>x)|(?:y|(?<a>z))` compile;
+  `(?<a>x)(?<a>y)`, `(?:(?<a>x)|(?<a>y))(?<a>z)` and `(?<a>x|(?<a>y))` stay a `RegexSyntaxException` at the later
+  group. `\k<a>` reads every group of the name and compares the one that participated, at most one (§22.2.2.7.2), forward,
+  right to left in a look-behind and under `i`, at the unit a back-reference always cost: one for the instruction and its
+  capture's length. The results map a name to its participating group:
+  - `RegexGroupNames`, which `BroilerRegex.GroupNames` and `RegexParser.GroupNames` now answer (Changed): `Count` and
+    `NameAt(i)`, the names in the order of their first groups, which is the order RegExpBuiltinExec creates the `groups`
+    object's properties in (§22.2.7.2, step 34.e); `GroupsNamed(name)`, a name's groups as a read-only span, ascending;
+    `NameOfGroup(k)`, a group's name or null; and `ParticipatingGroup(name, slots)`, the group of the name whose start and
+    end the offset entry wrote into the caller's slots, or 0 when none did, allocating nothing.
+  - `RegexGroup.Number`, a group's number, so `RegexMatch.NamedGroups[name].Number` is the participating group's.
+  **All provisional**, marked in `PublicAPI.txt`, until task 2.9 fixes the surface of `0.2.0-preview.1`. test262's files
+  whose features list `regexp-duplicate-named-groups` are judged by a host-free test where the library alone answers their
+  assertions (15 of the 19 at the pin), the four whose assertions read a host's substitution or splitter waiting for task
+  2.10's host job; the adversarial corpus's O07 and O08 answer their declared statuses, in a child process and in the
+  Native AOT probe.
 
 ### Changed
 
@@ -237,8 +256,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 - **A compiled pattern's group names cannot be changed (R10: convention 10; task 2.3).** `BroilerRegex.GroupNames`
   and `RegexParser.GroupNames` were the parser's own `Dictionary` behind `IReadOnlyDictionary`, and the matcher read the
   same instance on every match, so a cast changed the names every later match of that pattern reports, on any thread.
-  Both are now a `ReadOnlyDictionary` view of a map nothing else holds: a cast to `IDictionary` reports `IsReadOnly`, and
-  a write throws `NotSupportedException`. No signature changes.
+  Task 2.3 made both a `ReadOnlyDictionary` view of a map nothing else holds, with no signature change: a cast to
+  `IDictionary` reported `IsReadOnly`, and a write threw `NotSupportedException`. Since task 2.6 both answer the
+  immutable `RegexGroupNames` instead (R6, below), which implements no interface, so no cast reaches the names.
 - **The old backend is deleted, and with it `RegexOverflowException` (R1, R4; task 2.4c, decision D20).** Every member
   matches through the new backend; `Matching/` (the continuation-passing matcher, its per-start `Budget` under
   `StepLimit`, and the greedy fast path's early exit) and the public `RegexOverflowException`, which reported that
@@ -270,9 +290,29 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   made about 187 million comparisons. Each string is now hashed once per addition or lookup, O(its code units). The
   program compiler finds the table an earlier occurrence of the same strings built by a hash of them, where it compared
   every earlier table string by string. Internal; no signature changes.
+- **`GroupNames` answers `RegexGroupNames` (R6; task 2.6, decision D12).** `BroilerRegex.GroupNames` and
+  `RegexParser.GroupNames` were an `IReadOnlyDictionary<string, int>` of each name to one group, which cannot hold a name
+  ES2025 lets several groups share; both now answer the library's own `RegexGroupNames` (Added). The two breaks, CP0002
+  for `BroilerRegex.get_GroupNames` and `RegexParser.get_GroupNames`, are suppressed in
+  `Broiler.Regex/CompatibilitySuppressions.xml` and listed in [`docs/suppressions.md`](docs/suppressions.md); no shim keeps
+  the dictionary, which would answer a shared name wrongly. Convention 1 kept the dictionary out of a public signature, so
+  the two C1 rows of the starting violation list close with it. A caller that read `GroupNames[name]` reads
+  `GroupNames.GroupsNamed(name)`, and one that enumerated it reads `NameAt` to `Count`; `RegexMatch.NamedGroups` keeps its
+  type. An instance made by `RegexParser`'s public constructor, which does not parse, held no name and holds none.
 
 ### Observable changes
 
+- **A group name repeated only across alternatives that cannot both participate is admitted (R6; task 2.6).** Every
+  repeated name was a `RegexSyntaxException` until this task; `(?<x>a)|(?<x>b)` compiles and matches `bab` at 0 with
+  group 1 unmatched and group 2 `b`, and `(?:(?<x>a)|(?<x>b))\k<x>` matches `bb` and not `ab`. `RegexMatch.NamedGroups`
+  maps a shared name to its participating group, or, when none of its groups participated, to the first of them,
+  unmatched, and lists each name once, in the order of its first group; for a name declared once nothing changes. Every
+  other repetition stays a `RegexSyntaxException` with the same message, which names the refused group's name, and its
+  position is the `(` of the first group that might both participate with an earlier group of its name. Where an
+  earlier repetition of a name is now admitted, that group comes later than the one `0.1.0-preview.4` refused, so the
+  position moves, and the message can name another name: `(?:(?<a>x)|(?<a>y))(?<a>z)` is refused at 19, where it was
+  refused at 11, and `(?<a>x)|(?<b>y)(?<a>z)(?<b>w)` at 22 for `b`, where it was refused at 15 for `a`. A pattern whose
+  first repetition is refused, such as `(?<a>x)(?<a>y)` at 7, keeps its position.
 - **Compilation is charged (R2; task 2.5).** `Compile` charges the caller's meter for the compilation and answers the
   compile budget as `LimitExceeded` naming `Compile` (Added). No compiled pattern answers a match differently: the
   sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as every
@@ -339,7 +379,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `(?<\uD800>x)` under `u`, is a `RegexSyntaxException` rather than that exception.
 - **A duplicate group name is found as decoded (R5).** `(?<\u0061>x)(?<a>y)` repeats the name `a` and is refused,
   as `(?<a>x)(?<a>y)` always was; `0.1.0-preview.4` compared names as written and accepted it. A name repeated only
-  across alternatives stays refused until requirement R6.
+  across alternatives that cannot both participate was refused too until requirement R6, which task 2.6 brought (above).
 - **A braced escape never joins a surrogate pair (R5; row S10 of Broiler.VM's correspondence).** Under `u` and `v`
   only two four-digit escapes form a pair, so `\uD83D\u{DC38}` is a lone lead surrogate and a lone trail surrogate,
   two characters, and `\uD83D\u{41}` is accepted; `0.1.0-preview.4` refused every four-digit lead escape followed by
