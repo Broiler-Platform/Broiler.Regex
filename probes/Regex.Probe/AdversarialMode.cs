@@ -36,9 +36,12 @@ namespace Broiler.Regex.Probe;
 /// <para>
 /// <b>The report</b> is deterministic: the corpus's SHA-256, its header, one line per row in ordinal order of the ids
 /// with the child's exit, its status line and units, and the verdict, and the counts; no time, path or machine, and no
-/// text of a child's standard error, which differs between the JIT and Native AOT when a child crashes. So the JIT's
-/// report and the Native AOT image's compare byte for byte per platform, part C's comparison. The mode exits 0 when no
-/// row differs and no child ended abnormally, 1 otherwise, and 2 on arguments or a corpus it cannot read.
+/// text of a child's standard error, which differs between the JIT and Native AOT when a child crashes. So when no
+/// child ends abnormally, the JIT's report and the Native AOT image's compare byte for byte per platform, part C's
+/// comparison. A child that crashes still makes them differ, by its exit code, which the report keeps as part C asks
+/// (134 under the JIT and 139 under Native AOT for a stack overflow on linux-x64); such a run fails already, and part C
+/// cannot be met by it. The mode exits 0 when no row differs and no child ended abnormally, 1 otherwise, and 2 on
+/// arguments or a corpus it cannot read.
 /// </para>
 /// <para>
 /// <b>The controls</b> of part C are scratch builds of the probe that compile the library's sources into it with one

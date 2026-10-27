@@ -46,8 +46,10 @@ the smallest stack the corpus's header declares", with "each child's exit and st
 - **The report** is deterministic: a header with the corpus's SHA-256, then one line per row with the child's exit
   code, its status line, the units it wrote, and the verdict; then the counts, the rows waiting and the rows
   reported (those that differ or end abnormally). It holds no time, path or machine and no text of a child's
-  standard error, which differs between the JIT and Native AOT when a child crashes. So the JIT's report and the
-  Native AOT image's compare byte for byte on one platform, which is part C's comparison.
+  standard error, which differs between the JIT and Native AOT when a child crashes. So when no child ends
+  abnormally, the JIT's report and the Native AOT image's compare byte for byte on one platform, which is part C's
+  comparison. A child that crashes still makes them differ, by the exit code the report keeps (134 under the JIT and
+  139 under Native AOT for a stack overflow on linux-x64); such a run fails already, and part C cannot be met by it.
 
 CI's `native-aot-probe` job runs the mode under Native AOT and under the JIT on ubuntu-latest (linux-x64) and
 windows-latest (win-x64) and compares the two reports with `cmp`; a row that differs or a child that ends abnormally
