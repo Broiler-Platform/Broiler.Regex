@@ -830,10 +830,11 @@ and the position its current Alternative began at, and holds the latest group of
 decoded, after their escapes are read (decision D36's check of task 2.2). A named group whose name an earlier group
 declared is admitted exactly when that earlier group's `(` lies in a closed Alternative of an open Disjunction: the
 innermost open Disjunction that began at or before it, found by a binary search over the stack, whose depth the nesting
-limit bounds. Otherwise the later group is refused as before, a `RegexSyntaxException` at its `(` with the message of a
-repeated name. Reading the latest earlier group alone is enough: if every earlier pair of the name passed and the new
-group cannot participate with the latest, it cannot with any earlier one, which the remarks of `MightBothParticipate`
-prove from the nesting of Disjunctions. So each named group costs one test, paid for by task 2.5's `Pattern` units.
+limit bounds. Otherwise the later group is refused, a `RegexSyntaxException` at its `(` with the message of a
+repeated name; where an earlier repetition is now admitted, that is a later group than `0.1.0-preview.4` refused
+(below). Reading the latest earlier group alone is enough: if every earlier pair of the name passed and the new group
+cannot participate with the latest, it cannot with any earlier one, which the remarks of `MightBothParticipate` prove
+from the nesting of Disjunctions. So each named group costs one test, paid for by task 2.5's `Pattern` units.
 `(?<a>x)|(?<a>y)`, `((?<a>x)|(?<a>y))*` and `(?<a>x)|(?:y|(?<a>z))` compile; `(?<a>x)(?<a>y)`,
 `(?:(?<a>x)|(?<a>y))(?<a>z)` and `(?<a>x|(?<a>y))` are refused at the later group. `DuplicateNamedGroupTests` holds
 admitted and refused tables in every mode, each refusal with its position, and a seeded population of 20,000 generated
@@ -911,8 +912,12 @@ one that participated. The probe's report under Native AOT is the JIT's, byte fo
   wait. D14's library job names only the literal syntax tests, `property-escapes/generated` and
   `unicodeSets/generated`, so this test reads more than that job will: the matching assertions, transcribed.
 - **The brief and plan row 2.6 refuse "with the syntax status (D9)".** That status is task 2.8's, and the parser still
-  throws, so the refusal keeps its exception, position and message, now at the later group of a pair that might both
-  participate.
+  throws, so the refusal keeps its exception and its message, at the `(` of the first group that might both participate
+  with an earlier group of its name. Where an earlier repetition of the name is now admitted, that group comes later
+  than the one `0.1.0-preview.4` refused, so the position moves, and the message can name another name:
+  `(?:(?<a>x)|(?<a>y))(?<a>z)` is refused at 19, where it was refused at 11, and `(?<a>x)|(?<b>y)(?<a>z)(?<b>w)` at 22
+  for `b`, where it was refused at 15 for `a`. *Amended at the review of task 2.6:* this record first said the refusal
+  keeps its position.
 - **D8's units for a back-reference are unchanged,** as the plan asks. The instruction's work also scans the name's
   groups, at most the pattern's capture count, uncharged as `ClearCaptures`' width is.
 - **Check A-6's "a result maps the name to the participating index"** holds where a group participated. Where none

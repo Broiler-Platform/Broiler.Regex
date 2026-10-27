@@ -306,7 +306,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   group 1 unmatched and group 2 `b`, and `(?:(?<x>a)|(?<x>b))\k<x>` matches `bb` and not `ab`. `RegexMatch.NamedGroups`
   maps a shared name to its participating group, or, when none of its groups participated, to the first of them,
   unmatched, and lists each name once, in the order of its first group; for a name declared once nothing changes. Every
-  other repetition stays refused at the same group as before, the error's position and message unchanged.
+  other repetition stays a `RegexSyntaxException` with the same message, which names the refused group's name, and its
+  position is the `(` of the first group that might both participate with an earlier group of its name. Where an
+  earlier repetition of a name is now admitted, that group comes later than the one `0.1.0-preview.4` refused, so the
+  position moves, and the message can name another name: `(?:(?<a>x)|(?<a>y))(?<a>z)` is refused at 19, where it was
+  refused at 11, and `(?<a>x)|(?<b>y)(?<a>z)(?<b>w)` at 22 for `b`, where it was refused at 15 for `a`. A pattern whose
+  first repetition is refused, such as `(?<a>x)(?<a>y)` at 7, keeps its position.
 - **Compilation is charged (R2; task 2.5).** `Compile` charges the caller's meter for the compilation and answers the
   compile budget as `LimitExceeded` naming `Compile` (Added). No compiled pattern answers a match differently: the
   sets, the folds and the strings a class holds, and the order it tries them in, are those of task 2.4c, as every
