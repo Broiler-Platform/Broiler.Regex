@@ -142,14 +142,15 @@ internal static class ProgramCompiler
     /// <param name="program">The program, or null when the nesting limit or the compile budget refused the pattern.</param>
     /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
     /// <param name="charge">The compilation's account, with the caller's meter and compile budget (task 2.5), or null for none.</param>
+    /// <param name="stringComparer">The comparer an occurrence of a class of strings finds an earlier table of its strings by, as the tree's overload takes it: ordinal when null, as the library always leaves it.</param>
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=382899
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=57DD1B
     // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, one of 511 answers NestingLimitExceeded, or a compilation past its budget answers Compiled
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true,
-        CompileCharge? charge = null)
+        CompileCharge? charge = null, IEqualityComparer<string>? stringComparer = null)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
@@ -163,7 +164,7 @@ internal static class ProgramCompiler
         try
         {
             tree = RegexParser.Parse(pattern, flags, data, nesting, out captureCount, out groupNames);
-            return Compile(tree, captureCount, groupNames, flags, data, nesting, out program, fastPaths);
+            return Compile(tree, captureCount, groupNames, flags, data, nesting, out program, fastPaths, stringComparer);
         }
         catch (NestingLimitExceeded)
         {
@@ -186,19 +187,26 @@ internal static class ProgramCompiler
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
     /// <param name="program">The program, or null when the nesting limit refused the tree.</param>
     /// <param name="fastPaths">Whether the program takes the fast paths (the remarks), as every program the library builds does.</param>
+    /// <param name="stringComparer">
+    /// The comparer an occurrence of a class of strings finds an earlier table of its strings by, its hash and its
+    /// equality alike, ordinal when null, as the library always leaves it: it alone decides which table an occurrence
+    /// shares, so a test's comparer that counts its calls counts every comparison the lookup makes, the work and not
+    /// only its charge.
+    /// </param>
     /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
     /// <exception cref="CompileBudgetSpent">The lowering would take the compilation past the caller's compile budget.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=DD0361
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=44896C
     // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(RegexNode tree, int captureCount, IReadOnlyDictionary<string, int> groupNames,
-        RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program, bool fastPaths = true)
+        RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program, bool fastPaths = true,
+        IEqualityComparer<string>? stringComparer = null)
     {
         program = null;
         try
         {
             var groups = Survey(tree, nesting);
-            program = new ProgramWriter(captureCount, groupNames, flags, data, groups, fastPaths).Emit(tree);
+            program = new ProgramWriter(captureCount, groupNames, flags, data, groups, fastPaths, stringComparer ?? StringComparer.Ordinal).Emit(tree);
             return ProgramCompilation.Compiled;
         }
         catch (NestingLimitExceeded)
@@ -396,11 +404,11 @@ internal static class ProgramCompiler
     private readonly record struct StringTableKey(bool RightToLeft, bool Folded, int Count, int Hash);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=06D39B
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=CEBF50
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
     private sealed class ProgramWriter(int captureCount, IReadOnlyDictionary<string, int> groupNames, RegexFlags flags, RegexUnicode data,
-        Dictionary<QuantifierNode, (int First, int Last)> groups, bool fastPaths)
+        Dictionary<QuantifierNode, (int First, int Last)> groups, bool fastPaths, IEqualityComparer<string> stringComparer)
     {
         private readonly List<RegexInstruction> _code = [];
         private readonly List<int[]> _classes = [];
@@ -750,13 +758,14 @@ internal static class ProgramCompiler
         /// </summary>
         /// <remarks>
         /// An earlier table is found by a hash of the strings, charged their code units before they are read, and compared
-        /// string by string only with the tables of the same hash, charged again; a new table's text is charged the
+        /// string by string only with the tables of the same hash, charged again, both through the compilation's comparer
+        /// of strings, the ordinal one but for a test's that counts the comparisons; a new table's text is charged the
         /// strings' code units, and its order, the strings grouped by the character they begin with, a sort's
         /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>). Task 2.4c compared each
         /// occurrence's strings with every table built before it, string by string.
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=041A74
-        // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=5A680C
+        // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, a folded class's table holds a code point other than its Canonicalize, or an occurrence compares its strings with a table of another hash
         // Broiler-Human:        PENDING
         private int StringTableOf(CharSet set, bool rightToLeft)
         {
@@ -774,7 +783,7 @@ internal static class ProgramCompiler
             _account.Charge(CompileSite.Program, units + 1);
             var hash = new HashCode();
             foreach (var member in strings)
-                hash.Add(member, StringComparer.Ordinal);
+                hash.Add(member, stringComparer);
             var found = new StringTableKey(rightToLeft, set.CaseFolded, strings.Count, hash.ToHashCode());
             if (_stringTables.TryGetValue(found, out var candidates))
             {
@@ -839,16 +848,16 @@ internal static class ProgramCompiler
             return _strings.Count - 1;
         }
 
-        /// <summary>Whether two lists hold the same strings in the same order, compared by code unit.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=6AAC00
+        /// <summary>Whether two lists hold the same strings in the same order, compared by the compilation's comparer of strings, by code unit but for a test's.</summary>
+        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=52FB22
         // Broiler-Human:        PENDING
-        private static bool SameStrings(IReadOnlyList<string> a, IReadOnlyList<string> b)
+        private bool SameStrings(IReadOnlyList<string> a, IReadOnlyList<string> b)
         {
             if (a.Count != b.Count)
                 return false;
             for (var i = 0; i < a.Count; i++)
             {
-                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                if (!stringComparer.Equals(a[i], b[i]))
                     return false;
             }
 

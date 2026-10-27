@@ -638,7 +638,17 @@ or a test's, and with a comparer that counts its calls a union, an intersection,
 strings make at most 8n comparisons, where the list search makes about n², some 250,000 at n = 500
 (`A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n`); a comparer that
 equates strings of different case holds the membership to the comparer, so a search by any other means is refused as
-well (`A_class_s_strings_are_members_by_the_comparer_they_are_made_with_and_by_no_other`).
+well (`A_class_s_strings_are_members_by_the_comparer_they_are_made_with_and_by_no_other`). *Amended at the integration
+of tasks 2.5 and 2.7:* the bound on the program compiler's tables read the account too, so the verifier of this task
+could make each occurrence compare its strings with every earlier table, its charges unchanged, and pass every test,
+`Each_occurrence_of_a_class_of_strings_finds_its_table_by_a_hash_of_its_strings` among them. The lookup is now read on
+the work as well: the program compiler finds an earlier table through a comparer of strings, for the hash and for the
+comparison alike, ordinal but for a test's, and that comparer alone decides which table an occurrence shares (one that
+equates strings of different case gives `[\q{ab|cd}]` and `[\q{AB|CD}]` one table). With a comparer that counts its
+calls, two hundred classes of the same 500 strings and one string of each class's own, which the class's order puts
+last, make 100,200 calls, one hash per string, where at most four times that are admitted; the verifier's mutant makes
+10,070,100 and fails `An_occurrence_of_a_class_of_strings_compares_its_strings_with_the_tables_of_its_hash_alone`, the
+one test of the suite it fails.
 
 **Class V (check A-2's second half).** The corpus's five V rows answer their declared `limit:compile` under the JIT
 (`AdversarialCorpusTests`, each in a child process through the probe's `--engine-row`) and in the probe's report

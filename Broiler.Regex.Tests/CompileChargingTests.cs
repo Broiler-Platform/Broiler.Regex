@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Compiling;
+using Broiler.Regex.Engine;
 using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 using Broiler.Unicode.Algorithms;
@@ -641,8 +642,10 @@ public class CompileChargingTests
     public void Each_occurrence_of_a_class_of_strings_finds_its_table_by_a_hash_of_its_strings()
     {
         // Two hundred classes of the same 500 strings but the last, each its own table: an occurrence that compared its
-        // strings with every earlier table's would read about 200²/2 × 500 strings; found by a hash, each occurrence
-        // reads its own strings a bounded number of times.
+        // strings with every earlier table's, charging each comparison, would read about 200²/2 × 500 strings; found by a
+        // hash, each occurrence reads its own strings a bounded number of times. This reads the account; a lookup that
+        // compares with every earlier table but charges only its own strings passes it, so the work itself is counted by
+        // An_occurrence_of_a_class_of_strings_compares_its_strings_with_the_tables_of_its_hash_alone.
         var strings = ThreeLetterStrings(500);
         var classes = Enumerable.Range(0, 200).Select(k => "[\\q{" + string.Join('|', strings) + "|z" + k.ToString(System.Globalization.CultureInfo.InvariantCulture) + "q}]").ToArray();
         var (bySite, _) = Charged(string.Concat(classes), "v");
@@ -652,5 +655,42 @@ public class CompileChargingTests
         // The same class twice shares one table, compared string by string once.
         Assert.Equal(1, TestProgram.Compile(classes[0] + classes[0], "v").StringTableCount);
         Assert.Equal(2, TestProgram.Compile(classes[0] + classes[1], "v").StringTableCount);
+    }
+
+    /// <summary>The program of <paramref name="pattern"/> under <c>v</c>, whose classes of strings find their earlier tables through <paramref name="comparer"/>.</summary>
+    private static RegexProgram CompiledFindingTablesBy(string pattern, IEqualityComparer<string> comparer)
+    {
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse("v"), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program,
+            stringComparer: comparer));
+        return program!;
+    }
+
+    [Fact]
+    public void An_occurrence_of_a_class_of_strings_compares_its_strings_with_the_tables_of_its_hash_alone()
+    {
+        // The table lookup read on the work, not on the account: the comparer the program compiler finds an earlier table
+        // by counts its calls, hashing and equality alike. Two hundred classes of the same 500 three-letter strings and a
+        // two-letter string of each class's own, which the class's order, longest first, puts last, so that comparing two
+        // of the tables string by string reads all 501 strings before they differ. Found by a hash, each occurrence
+        // hashes its 501 strings once and compares them with no earlier table, some 100,000 calls in all, where at most
+        // four times that are admitted; compared with every earlier table, as task 2.4c's lookup did, its charges
+        // unchanged or not, the occurrences make 200 × 199 / 2 × 501 comparisons more, some ten million.
+        var strings = ThreeLetterStrings(500);
+        var classes = Enumerable.Range(0, 200).Select(k => "[\\q{" + string.Join('|', strings) + "|" + (char)('a' + (k / 26)) + (char)('a' + (k % 26)) + "}]").ToArray();
+        var read = 200L * 501;
+        var comparer = new CountingComparer(StringComparer.Ordinal);
+        Assert.Equal(200, CompiledFindingTablesBy(string.Concat(classes), comparer).StringTableCount);
+        Assert.True(comparer.Calls <= 4 * read, comparer.Calls + " comparisons to find the tables of " + read + " strings in 200 classes");
+
+        // An occurrence of a class met before compares its strings with that one table, once.
+        comparer.Calls = 0;
+        Assert.Equal(1, CompiledFindingTablesBy(classes[0] + classes[0], comparer).StringTableCount);
+        Assert.True(comparer.Calls <= 4 * 2 * 501, comparer.Calls + " comparisons to find the tables of one class of 501 strings met twice");
+
+        // The comparer alone decides which table an occurrence shares, so its calls are every comparison the lookup makes:
+        // one that equates strings of different case gives two classes of the same letters in different case one table,
+        // which the ordinal comparer, the library's, never does.
+        Assert.Equal(1, CompiledFindingTablesBy("[\\q{ab|cd}][\\q{AB|CD}]", StringComparer.OrdinalIgnoreCase).StringTableCount);
+        Assert.Equal(2, CompiledFindingTablesBy("[\\q{ab|cd}][\\q{AB|CD}]", StringComparer.Ordinal).StringTableCount);
     }
 }
