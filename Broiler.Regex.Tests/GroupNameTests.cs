@@ -70,8 +70,8 @@ public class GroupNameTests
             var spelling = (string)row[0];
             var name = (string)row[1];
             var regex = TestRegex.Compile("(?<" + spelling + ">x)", flags);
-            Assert.Equal(1, regex.GroupNames[name]);
-            Assert.Single(regex.GroupNames);
+            Assert.Equal([1], regex.GroupNames.GroupsNamed(name).ToArray());
+            Assert.Equal((1, name, name), (regex.GroupNames.Count, regex.GroupNames.NameAt(0), regex.GroupNames.NameOfGroup(1)));
 
             var match = regex.Match("x");
             Assert.True(match.Success);

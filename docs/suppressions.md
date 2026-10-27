@@ -124,3 +124,25 @@ Broiler.JS moves its pin, at SJL-11.5 (decision D12), and a ceiling reaches it t
 
 A caller that names the types recompiles with `using Broiler.Regex;` in place of `using Broiler.Regex.Matching;`; one
 that reads them through `var`, as the feed check's consumer does, compiles unchanged.
+
+### R6: duplicate named groups (task 2.6 of SJL-11.2, 2026-10-27)
+
+ES2025 lets a group name be declared by several groups when no two of them can both participate (ECMA-262 §22.2.1.1,
+MightBothParticipate §22.2.1.4), so a name no longer maps to one group. `0.1.0-preview.4`'s `GroupNames`, on
+`BroilerRegex` and on `RegexParser`, was an `IReadOnlyDictionary<string, int>` of each name to its one group, which
+cannot hold a name of two groups, and which convention 1 keeps out of a public signature (check C1; both were rows of
+the starting violation list). Both now answer the library's own `RegexGroupNames`: each name with its groups, in the
+order of its first group, each group with its name, and the group of a name that participated in a match the offset
+entry wrote. No shim keeps the dictionary, since a dictionary of one group per name would answer a name of several
+groups wrongly. Each break is suppressed by `Broiler.Regex/CompatibilitySuppressions.xml` as package validation
+generated it, and nothing else is.
+
+| Suppression | Target | What replaces it |
+|---|---|---|
+| CP0002 | `M:Broiler.Regex.BroilerRegex.get_GroupNames` | `BroilerRegex.GroupNames`, answering `RegexGroupNames`: `GroupsNamed(name)` for the groups of a name, `NameAt(i)` and `Count` for the names in order, `NameOfGroup(k)` for a group's name, and `ParticipatingGroup(name, slots)` for the group of a name that participated. The string-bearing `RegexMatch.NamedGroups` keeps its type and maps each name to its participating group, whose new `RegexGroup.Number` says which. |
+| CP0002 | `M:Broiler.Regex.Parsing.RegexParser.get_GroupNames` | `RegexParser.GroupNames`, answering `RegexGroupNames`, as above. An instance made by the public constructor does not parse, so it held no name in `0.1.0-preview.4` and holds none now. |
+
+The consumer that reads the dictionary today is Broiler.JS, pinning `0.1.0-preview.4`, which inverts
+`BroilerRegex.GroupNames` into its capture map (`JSRegExp.Broiler.cs`, `BuildCaptureMapFromBroiler`); it moves its pin
+only at SJL-11.5 (decision D12), where its adapter reads `RegexGroupNames` instead, the shape its own capture map
+already has: each name, in the order of its first group, with its list of groups.

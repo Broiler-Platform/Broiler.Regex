@@ -16,15 +16,15 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Files scanned | 24 |
+| Files scanned | 25 |
 | Files not covered | 0 |
-| Files carrying an annotation | 24 |
-| Code units | 620 |
-| Relevant | 349 |
-| Exempt by predicate | 271 |
-| Annotated | 349 of 349 (100%) |
-| Human reviewed | 0 of 349 (0%) |
-| Unverified | 349 |
+| Files carrying an annotation | 25 |
+| Code units | 633 |
+| Relevant | 355 |
+| Exempt by predicate | 278 |
+| Annotated | 355 of 355 (100%) |
+| Human reviewed | 0 of 355 (0%) |
+| Unverified | 355 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 349 |
+| HUMAN_PENDING | 355 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 271 |
+| EXEMPT | 278 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 262 |
+| None | 268 |
 | Low | 104 |
 | Medium | 0 |
 | High | 0 |
@@ -54,8 +54,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 114 |
-| Medium | 103 |
+| Low | 118 |
+| Medium | 105 |
 | High | 136 |
 | Critical | 0 |
 | *not annotated* | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.6 / 10 |
-| Units scored | 349 |
+| Units scored | 355 |
 
 ## High-security review areas
 
@@ -89,7 +89,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.CompileCharge.Charge(CompileSite, ulong)` in `Broiler.Regex/CompileCharge.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.Compile(string, RegexFlags, IUnicodeTables, int, out RegexProgram?, bool, CompileCharge?, IEqualityComparer<string>?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, IReadOnlyDictionary<string, int>, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?, bool, IEqualityComparer<string>?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Compiling.ProgramCompiler.Compile(RegexNode, int, RegexGroupNames, RegexFlags, RegexUnicode, RegexNesting, out RegexProgram?, bool, IEqualityComparer<string>?)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.Survey(RegexNode, RegexNesting)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Compiling.ProgramCompiler.ProgramWriter.Emit(RegexNode)` in `Broiler.Regex/Compiling/ProgramCompiler.cs` - Security=High, human line PENDING
@@ -131,7 +131,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Parsing.RegexNesting.Descend(int, int)` in `Broiler.Regex/Parsing/RegexNesting.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, IUnicodeTables, out int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, RegexUnicode, RegexNesting, out int, out IReadOnlyDictionary<string, int>)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, RegexUnicode, RegexNesting, out int, out RegexGroupNames)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.PreScan()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ParseDisjunction()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
@@ -211,7 +211,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 199 |
+| Units carrying a criterion | 204 |
 | Units required to carry one | 136 |
 | Required and missing | 0 |
 
@@ -232,13 +232,13 @@ that the rule is reviewable in one place rather than in several hundred.
 
 | Case | Units |
 |---|---:|
-| TrivialPropertyOrAccessor | 49 |
+| TrivialPropertyOrAccessor | 52 |
 | ParameterAssigningConstructor | 7 |
 | TrivialExpressionBodiedMember | 0 |
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 127 |
+| FieldDeclaringStorage | 131 |
 | EnumMemberOfADeclaredVocabulary | 88 |
 | DeclaredInSource | 0 |
 
@@ -263,14 +263,14 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-620 of them, exempt and relevant alike - with the fingerprint of its declaration.
+633 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as
 trivial is no longer invisible: a semantic change to one moves a value in a generated file
 the check compares byte for byte. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx` holds the manifest to the tree.
 
-Beside the units it lists **every covered file** - 24 of them - with a
+Beside the units it lists **every covered file** - 25 of them - with a
 fingerprint over the complete token stream of its compilation unit. A unit entry exists only
 for a declaration kind the scanner enumerates, and an enumeration is a whitelist: an
 `[assembly: ...]` attribute is a member of nothing and can be in no unit at all.

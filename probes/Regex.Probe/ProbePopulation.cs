@@ -338,9 +338,25 @@ internal static class ProbePopulation
             group += run;
         }
 
+        // Each name with its group, as name=k; a name ES2025 lets several groups share (requirement R6, task 2.6) with all
+        // of them joined by '+', and after ':' the one that participated, as the match's NamedGroups gives it, or '-'.
         var names = new List<string>();
-        foreach (var (name, index) in regex.GroupNames)
-            names.Add(Escape(name) + "=" + Decimal(index));
+        for (var at = 0; at < regex.GroupNames.Count; at++)
+        {
+            var name = regex.GroupNames.NameAt(at);
+            var groups = regex.GroupNames.GroupsNamed(name);
+            var shown = new StringBuilder(Escape(name)).Append('=');
+            for (var i = 0; i < groups.Length; i++)
+                shown.Append(i == 0 ? "" : "+").Append(Decimal(groups[i]));
+            if (groups.Length > 1)
+            {
+                var participating = match.NamedGroups[name];
+                shown.Append(':').Append(participating.Success ? Decimal(participating.Number) : "-");
+            }
+
+            names.Add(shown.ToString());
+        }
+
         names.Sort(StringComparer.Ordinal);
         if (names.Count > 0)
             text.Append(" names ").Append(string.Join(",", names));

@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   9
 // Annotated:        9/9
-// Exempt:           14
+// Exempt:           15
 // Human-reviewed:   0/9
 // IP risk:          None
 // Security risk:    Low
@@ -36,8 +36,17 @@ public sealed class RegexGroup
     public string Value { get; }
     public string? Name { get; }
 
-    internal RegexGroup(bool success, int index, int length, string value, string? name)
+    /// <summary>
+    /// The group's number: 0 for the whole match, and the capturing group's in source order otherwise (ECMA-262
+    /// §22.2.1.3, CountLeftCapturingParensBefore). Through <see cref="RegexMatch.NamedGroups"/> it is the number of the
+    /// group of a name that participated, where ES2025 lets several groups share the name (requirement R6).
+    /// </summary>
+    /// <remarks>Provisional, new in task 2.6 of SJL-11.2; task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.</remarks>
+    public int Number { get; }
+
+    internal RegexGroup(int number, bool success, int index, int length, string value, string? name)
     {
+        Number = number;
         Success = success;
         Index = index;
         Length = length;
@@ -45,10 +54,10 @@ public sealed class RegexGroup
         Name = name;
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=7EA521
-    // Broiler-Falsified-If: an unmatched group reports Success as true, an Index other than -1, or a non-empty Value
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=247722
+    // Broiler-Falsified-If: an unmatched group reports Success as true, an Index other than -1, a non-empty Value, or a Number other than its own
     // Broiler-Human:        PENDING
-    internal static RegexGroup Unmatched(string? name) => new(false, -1, 0, "", name);
+    internal static RegexGroup Unmatched(int number, string? name) => new(number, false, -1, 0, "", name);
 }
 
 /// <summary>
@@ -65,6 +74,15 @@ public sealed class RegexMatch
     public int Length { get; }
     public string Value { get; }
     public IReadOnlyList<RegexGroup> Groups { get; }
+
+    /// <summary>
+    /// Each name the pattern declares, with its group: the one of the name's groups that participated, or, when none of
+    /// them did, the first of them, unmatched. A name is listed once, in the order its first group appears in the pattern,
+    /// as RegExpBuiltinExec creates the <c>groups</c> object's properties (ECMA-262 §22.2.7.2, step 33); ES2025 lets
+    /// several groups share a name when no two of them can both participate (requirement R6), and the entry is then the
+    /// participating one, the same instance as its element of <see cref="Groups"/>, whose <see cref="RegexGroup.Number"/>
+    /// says which.
+    /// </summary>
     public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }
 
     /// <summary>

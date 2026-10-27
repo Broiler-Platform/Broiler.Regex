@@ -3,20 +3,20 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   65
-// Annotated:        65/65
-// Exempt:           21
-// Human-reviewed:   0/65
+// Relevant units:   64
+// Annotated:        64/64
+// Exempt:           22
+// Human-reviewed:   0/64
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         61/52
+// Criteria:         60/52
 // Resource impact:  7/10 max
-// Unverified:       65
+// Unverified:       64
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
@@ -65,19 +65,24 @@ public sealed class RegexParser
     /// <summary>Total number of capturing groups, available after parsing.</summary>
     public int CaptureCount { get; private set; }
 
-    /// <summary>Map of group name → 1-based capture index, available after parsing.</summary>
+    /// <summary>
+    /// The pattern's group names, available after parsing: each name with its groups, in the order of its first group
+    /// (requirement R6; ECMA-262 §22.2.1.9, GroupSpecifiersThatMatch). Before a parse, and for an instance made by the
+    /// public constructor, which does not parse, it holds no name.
+    /// </summary>
     /// <remarks>
-    /// A read-only view of the parser's own map, which nothing else holds: a cast to <c>IDictionary</c> admits no
-    /// write, so the compiled pattern that keeps it, and its matcher, which reads it on every match, cannot be changed
-    /// through it (convention 10).
+    /// Made once, when the pattern has been read, and never changed: the compiled pattern that keeps it, and its matches,
+    /// share it (convention 10). Provisional in its shape since task 2.6 of SJL-11.2, which reshaped it from a map of each
+    /// name to one group; task 2.9 fixes the public surface.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=3C8667
-    // Broiler-Falsified-If: a cast of GroupNames to IDictionary admits a write, so Clear empties the names a compiled pattern's later matches report
-    // Broiler-Human:        PENDING
-    public IReadOnlyDictionary<string, int> GroupNames => _groupNamesView;
+    public RegexGroupNames GroupNames { get; private set; }
 
-    private readonly Dictionary<string, int> _groupNames = [];
-    private readonly ReadOnlyDictionary<string, int> _groupNamesView;
+    /// <summary>Each name's groups, ascending, as the parse declares them.</summary>
+    private readonly Dictionary<string, List<int>> _groupsByName = new(StringComparer.Ordinal);
+
+    /// <summary>The names, in the order of their first groups.</summary>
+    private readonly List<string> _namesInOrder = [];
+
     private int _totalCaptureGroups;
 
     /// <summary>
@@ -106,7 +111,7 @@ public sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=EAFE62
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=B7C4E7
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
@@ -118,7 +123,7 @@ public sealed class RegexParser
         _account = data.Account;
         _nesting = nesting;
         _ignoreCase.Push((flags & RegexFlags.IgnoreCase) != 0);
-        _groupNamesView = new ReadOnlyDictionary<string, int>(_groupNames);
+        GroupNames = new RegexGroupNames([], [], 0);
     }
 
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2
@@ -159,11 +164,11 @@ public sealed class RegexParser
     }
 
     /// <exception cref="NestingLimitExceeded">The pattern nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=47A0F9
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=9F8916
     // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
     // Broiler-Human:        PENDING
     internal static RegexNode Parse(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
-        out int captureCount, out IReadOnlyDictionary<string, int> groupNames)
+        out int captureCount, out RegexGroupNames groupNames)
     {
         var parser = new RegexParser(pattern, flags, data, nesting);
         var node = parser.ParsePattern();
@@ -172,7 +177,7 @@ public sealed class RegexParser
         return node;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=4C16E2
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=5B34B2
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
@@ -196,11 +201,15 @@ public sealed class RegexParser
         // \k<b>(?<a>x) as a compilation does.
         foreach (var (name, position) in _namedReferences)
         {
-            if (!_groupNames.ContainsKey(name))
+            if (!_groupsByName.ContainsKey(name))
                 throw new RegexSyntaxException("Reference to the undeclared group name '" + name + "'", position);
         }
 
         CaptureCount = _captureCount;
+        var groups = new int[_namesInOrder.Count][];
+        for (var at = 0; at < groups.Length; at++)
+            groups[at] = [.. _groupsByName[_namesInOrder[at]]];
+        GroupNames = new RegexGroupNames([.. _namesInOrder], groups, _captureCount);
         return node;
     }
 
@@ -513,7 +522,7 @@ public sealed class RegexParser
         return new CharNode(cp);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1B81BA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=262D46
     // Broiler-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
     // Broiler-Human:        PENDING
     private RegexNode ParseGroup()
@@ -546,8 +555,15 @@ public sealed class RegexParser
                 // §22.2.1.1: two GroupSpecifiers may not share a name — compared as decoded, so
                 // (?<a>x)(?<\u0061>y) repeats the name a. ES2025's exception for alternatives that
                 // cannot both participate is requirement R6's, which this parser does not yet admit.
-                if (!_groupNames.TryAdd(name, index))
+                if (_groupsByName.ContainsKey(name))
                     throw new RegexSyntaxException("Duplicate capture group name '" + name + "'", open);
+                if (!_groupsByName.TryGetValue(name, out var named))
+                {
+                    _groupsByName.Add(name, named = []);
+                    _namesInOrder.Add(name);
+                }
+
+                named.Add(index);
                 Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
