@@ -256,8 +256,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 - **A compiled pattern's group names cannot be changed (R10: convention 10; task 2.3).** `BroilerRegex.GroupNames`
   and `RegexParser.GroupNames` were the parser's own `Dictionary` behind `IReadOnlyDictionary`, and the matcher read the
   same instance on every match, so a cast changed the names every later match of that pattern reports, on any thread.
-  Both are now a `ReadOnlyDictionary` view of a map nothing else holds: a cast to `IDictionary` reports `IsReadOnly`, and
-  a write throws `NotSupportedException`. No signature changes.
+  Task 2.3 made both a `ReadOnlyDictionary` view of a map nothing else holds, with no signature change: a cast to
+  `IDictionary` reported `IsReadOnly`, and a write threw `NotSupportedException`. Since task 2.6 both answer the
+  immutable `RegexGroupNames` instead (R6, below), which implements no interface, so no cast reaches the names.
 - **The old backend is deleted, and with it `RegexOverflowException` (R1, R4; task 2.4c, decision D20).** Every member
   matches through the new backend; `Matching/` (the continuation-passing matcher, its per-start `Budget` under
   `StepLimit`, and the greedy fast path's early exit) and the public `RegexOverflowException`, which reported that
