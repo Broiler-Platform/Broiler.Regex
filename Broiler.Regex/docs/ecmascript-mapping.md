@@ -82,6 +82,20 @@ reads one character an iteration, so it never meets the case.
 `d g i m s u v y` parse to `RegexFlags`; `i`/`m`/`s` are the only flags an inline
 modifier group may toggle (`ModifierGroupNode`).
 
+Since task 2.7 of SJL-11.2 the grammar of a flags string is `Text/RegexFlagsText.cs`:
+RegExpInitialize's checks (§22.2.3.3) and ParsePattern's refusal of `u` with `v` (§22.2.3.4) answered as a
+`RegexFlagsStatus` with a position, and the `flags` getter's order (§22.2.6.4) by `RegexFlagsText.Format`.
+`RegexFlagsParser.Parse` reads the same grammar and throws.
+
+## §22.2.5.1 RegExp.escape and §22.2.6.13.1 EscapeRegExpPattern → `Text/RegexEscaper.cs`
+
+| Spec concept | Code |
+|--------------|------|
+| §22.2.5.1 RegExp.escape(S), the loop and the leading-character rule | `RegexEscaper.EscapeString` |
+| §22.2.5.1.1 EncodeForRegExpEscape(cp) | `RegexEscaper.EncodeCodePoint` and the writer's `Hex` |
+| §12.2 WhiteSpace, §12.3 LineTerminator | the provider's `EcmaScriptLexical.IsWhiteSpace` and `IsLineTerminator` |
+| §22.2.6.13.1 EscapeRegExpPattern(P, F) | `RegexEscaper.EscapePattern`, a class read as §12.9.5 RegularExpressionClass reads it |
+
 ### Why the fold order matters (`v` mode)
 
 §22.2.2.9.5 folds each class-set operand through `scf` **before** §22.2.2.9.6 complements

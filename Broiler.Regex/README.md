@@ -121,6 +121,15 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
 * **`Unicode/UnicodeCharSets.cs`** — the parts of the class escapes that are not Unicode
   data: `\d`, the basic `\w` set and the code space, and the public members of `0.1` that
   read no table (`IsDigit`, `PositiveEscape`, `IsComplementEscape`, `PropertyMatch`).
+* **`Text/`** — the text helpers both engines' `RegExp` objects call (requirement R9, task 2.7; provisional until
+  task 2.9 fixes the surface). `RegexFlagsText.Parse` reads a flags string as a `RegexFlagsStatus` with the position of
+  the code unit it refuses (an unknown flag, a repeated flag, `u` with `v`) and `RegexFlagsText.Format` writes a flags
+  value in the `flags` getter's order, `dgimsuvy`. `RegexEscaper.EscapeString` is `RegExp.escape`'s text, over the
+  provider's `EcmaScriptLexical` white space (so U+0085 is not escaped), and `RegexEscaper.EscapePattern` the
+  `source` getter's text (EscapeRegExpPattern: `/` outside a class and the line terminators escaped, the empty pattern
+  `(?:)`). Both take the caller's maximum length, answered as `LimitExceeded`, and its meter, charged one unit per code
+  unit read and written, in blocks of 512 before each pass. An engine keeps its own argument checks, receivers,
+  property reads and message text (conventions 2 and 3).
 
 ## What works today
 
@@ -140,6 +149,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
 - `v`-mode class-set expressions: nesting, `&&`, `--`, `\q{…}` string alternatives,
   and the fold-then-complement ordering that makes `\P{Lu}` mean something
   different under `vi` than under `ui`
+- The text helpers of requirement R9: flags read as a status with a position and written in canonical order,
+  `RegExp.escape`'s text and the `source` text (`Text/`)
 - The Annex B / Unicode-mode grammar split: `\u{…}`, a bare `]`/`{`/`}`, a class escape
   as a range endpoint, a quantified look-ahead, and `\k<n>` in a pattern that declares no
   group name are each a literal or a legal term in one mode and a syntax error in the
