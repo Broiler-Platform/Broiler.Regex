@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   10
 // Annotated:        10/10
-// Exempt:           10
+// Exempt:           19
 // Human-reviewed:   0/10
 // IP risk:          None
 // Security risk:    High
@@ -25,7 +25,7 @@ namespace Broiler.Regex;
 /// same units whatever the place; the place is named for the tests of check A-2, which read what each place charged
 /// through <see cref="CompileCharge.Observer"/>.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=F8F116
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=6F7846
 // Broiler-Human:        PENDING
 internal enum CompileSite
 {
@@ -39,12 +39,52 @@ internal enum CompileSite
     /// </summary>
     Property = 1,
 
+    /// <summary>Ranges gathered in any order made into a set: one unit per range, and ⌊log₂ n⌋ more per range for the sort when they arrive out of order.</summary>
+    Normalize = 2,
+
+    /// <summary>A union of two sets: one unit per range of each.</summary>
+    Union = 3,
+
+    /// <summary>An intersection of two sets: one unit per range of each.</summary>
+    Intersection = 4,
+
+    /// <summary>A difference of two sets: one unit per range of each, and one more.</summary>
+    Difference = 5,
+
+    /// <summary>A complement: one unit per range, and one more.</summary>
+    Complement = 6,
+
+    /// <summary>
+    /// MaybeSimpleCaseFolding of a <c>v</c>-mode operand under <c>i</c> (ECMA-262 §22.2.2.9.5): one unit per range of
+    /// the set read, one per code point mapped one at a time, and a string's code units, at least one, for each string
+    /// folded.
+    /// </summary>
+    CaseFold = 7,
+
+    /// <summary>
+    /// A class's strings: a string's code units, at least one, each time a class takes it, and each time a union, an
+    /// intersection, a difference or a <c>\q{…}</c> disjunction looks it up in a class's strings, once for each string it
+    /// is compared with and once more.
+    /// </summary>
+    Strings = 8,
+
+    /// <summary>A class's strings ordered longest first: each string's code units, at least one, 1 + ⌊log₂ n⌋ times for n strings.</summary>
+    StringOrder = 9,
+
+    /// <summary>
+    /// The sets a compilation builds from the provider rather than from the pattern, each once and only when the pattern
+    /// needs it: <c>Cased</c> and <c>\s</c>'s Space_Separator (one unit per range copied), the folded <c>\w</c> (one per
+    /// code point whose orbit it reads), and <c>AllCharacters</c> under <c>v</c> with <c>i</c> (one per <c>Cased</c> code
+    /// point it folds).
+    /// </summary>
+    Universe = 10,
+
     /// <summary>
     /// The program compiler: one unit per range a class instruction copies, and for a class of strings each string's code
     /// units, at least one, to read it, for each earlier table it is compared with and for its text, and 1 + ⌊log₂ n⌋ per
     /// string for the table's order, or for its lowering to an alternation when the fast paths are off.
     /// </summary>
-    Program = 2,
+    Program = 11,
 }
 
 /// <summary>A test's observer of a compilation's charges: the place, the units it charged, and the units spent through them.</summary>

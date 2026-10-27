@@ -838,7 +838,7 @@ internal static class ProgramCompiler
         /// inverts (§22.2.2.7.1); a <c>v</c>-mode class the parser folded is its canonical members, tested against a
         /// character's Canonicalize.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=5A9104
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=3DE6EB
         // Broiler-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
         // Broiler-Human:        PENDING
         private void AddClass(CharSet set, Scope scope)
@@ -858,7 +858,7 @@ internal static class ProgramCompiler
             }
             else
             {
-                var ranges = AddRanges(set.Negated ? set.CodePoints.Complement() : set.CodePoints);
+                var ranges = AddRanges(set.Negated ? set.CodePoints.Complement(_charge) : set.CodePoints);
                 Add(RegexOp.Class, _classes.Count - 1, 0, 0, RegexProgram.ClassCost(ranges, 1), scope.RightToLeft);
             }
         }

@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 21 |
 | Files not covered | 0 |
 | Files carrying an annotation | 21 |
-| Code units | 539 |
-| Relevant | 292 |
-| Exempt by predicate | 247 |
-| Annotated | 292 of 292 (100%) |
-| Human reviewed | 0 of 292 (0%) |
-| Unverified | 292 |
+| Code units | 563 |
+| Relevant | 305 |
+| Exempt by predicate | 258 |
+| Annotated | 305 of 305 (100%) |
+| Human reviewed | 0 of 305 (0%) |
+| Unverified | 305 |
 
 ## Review states
 
@@ -32,18 +32,18 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 292 |
+| HUMAN_PENDING | 305 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 247 |
+| EXEMPT | 258 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 204 |
-| Low | 103 |
+| None | 216 |
+| Low | 104 |
 | Medium | 0 |
 | High | 0 |
 | Unknown | 0 |
@@ -54,9 +54,9 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 97 |
-| Medium | 78 |
-| High | 119 |
+| Low | 100 |
+| Medium | 86 |
+| High | 121 |
 | Critical | 0 |
 | *not annotated* | 0 |
 
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.8 / 10 |
-| Units scored | 292 |
+| Units scored | 305 |
 
 ## High-security review areas
 
@@ -167,7 +167,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Parsing.RegexParser.ReadHexEscape(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.HasHexDigits(int, int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ReadUnicodeEscape(bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
-- `Broiler.Regex.Parsing.RegexParser.AddPropertyEscape(CharSet, bool, out bool, bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Parsing.RegexParser.ReadPropertyEscapeSet()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Parsing.RegexParser.ResolvePropertyEscape(bool, out bool)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.ReadGroupName()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.Descend(int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Parsing.RegexParser.AtEnd` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, human line PENDING
@@ -187,6 +188,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 - `Broiler.Regex.Unicode.RegexUnicode.EscapeSet(ClassEscape, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Unicode.RegexUnicode.IsWord(int, bool, bool)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Unicode.RegexUnicode.BuildCanonicalCharacters()` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
+- `Broiler.Regex.Unicode.RegexUnicode.SimpleCaseFold(CodePointSet)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Unicode.RegexUnicode.ResolveProperty(string, string?)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
 - `Broiler.Regex.Unicode.RegexUnicode.ResolveStringProperty(StringProperty)` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, human line PENDING
 
@@ -194,8 +196,8 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 174 |
-| Units required to carry one | 119 |
+| Units carrying a criterion | 180 |
+| Units required to carry one | 121 |
 | Required and missing | 0 |
 
 A `Broiler-Falsified-If:` line states, at the declaration, the observation that would make
@@ -221,8 +223,8 @@ that the rule is reviewable in one place rather than in several hundred.
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 118 |
-| EnumMemberOfADeclaredVocabulary | 75 |
+| FieldDeclaringStorage | 120 |
+| EnumMemberOfADeclaredVocabulary | 84 |
 | DeclaredInSource | 0 |
 
 ## Per-unit exemptions
@@ -246,7 +248,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-539 of them, exempt and relevant alike - with the fingerprint of its declaration.
+563 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

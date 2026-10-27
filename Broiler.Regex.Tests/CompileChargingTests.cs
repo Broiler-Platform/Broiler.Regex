@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Broiler.Regex.Ast;
 using Broiler.Regex.Compiling;
+using Broiler.Regex.Unicode;
 using Broiler.Unicode.Algorithms;
 using Broiler.Unicode.Tables;
 using Xunit;
+using CodePointSet = Broiler.Regex.Ast.CodePointSet;
 
 namespace Broiler.Regex.Tests;
 
@@ -56,6 +59,15 @@ public class CompileChargingTests
     {
         Assert.True(Properties.TryResolve(name, value, out var set), name + "=" + value);
         return set.RangeCount;
+    }
+
+    private static long CodePoints(string name)
+    {
+        Assert.True(Properties.TryResolve(name, out var set), name);
+        var count = 0L;
+        for (var range = 0; range < set.RangeCount; range++)
+            count += set.Last(range) - set.First(range) + 1;
+        return count;
     }
 
     /// <summary>The ranges of single code points and the sequences of a property of strings, <c>RGI_Emoji</c> the sum of the others'.</summary>
@@ -253,6 +265,39 @@ public class CompileChargingTests
                 { "\\p{RGI_Emoji}", "v", nameof(CompileSite.Property), emoji.Ranges + emoji.Sequences },
                 { "\\p{RGI_Emoji_Flag_Sequence}", "v", nameof(CompileSite.Property), Strings("RGI_Emoji_Flag_Sequence").Sequences },
 
+                // The set algebra: a unit per range of each operand.
+                { "[\\p{L}\\p{N}]", "u", nameof(CompileSite.Union), Ranges("L") + Ranges("N") },
+                { "[\\p{L}\\p{N}]", "v", nameof(CompileSite.Union), Ranges("L") + Ranges("N") },
+                { "[\\p{L}\\p{N}\\p{M}\\p{P}]", "iv", nameof(CompileSite.Union), Ranges("L") + Ranges("N") + Ranges("M") + Ranges("P") },
+                { "[\\p{L}&&\\p{Lu}]", "v", nameof(CompileSite.Intersection), Ranges("L") + Ranges("Lu") },
+                { "[\\p{L}--\\p{Lu}]", "v", nameof(CompileSite.Difference), Ranges("L") + Ranges("Lu") },
+                { "[^\\p{L}]", "v", nameof(CompileSite.Difference), Ranges("L") + 1 },
+                { "\\P{L}", "u", nameof(CompileSite.Complement), Ranges("L") + 1 },
+                { "[\\P{L}a]", "u", nameof(CompileSite.Complement), Ranges("L") + 1 },
+                { "\\D\\W\\S", "", nameof(CompileSite.Complement), 3 },
+
+                // Ranges gathered out of order: a unit per range for the merge, and the sort.
+                { "[zyxwvutsrqponmlkjihgfedcba]", "", nameof(CompileSite.Normalize), 26 },
+                { "[\\p{L}]", "u", nameof(CompileSite.Normalize), Ranges("L") },
+
+                // MaybeSimpleCaseFolding under vi: a unit per range of each operand folded, and per string.
+                { "\\p{L}", "vi", nameof(CompileSite.CaseFold), Ranges("L") },
+                { "[\\p{Lu}\\p{Ll}]", "vi", nameof(CompileSite.CaseFold), Ranges("Lu") + Ranges("Ll") },
+                { "\\p{RGI_Emoji}", "vi", nameof(CompileSite.CaseFold), emoji.Sequences },
+                { "[\\q{AB|cD|Ef}]", "vi", nameof(CompileSite.CaseFold), 3 },
+
+                // A class's strings: a unit per string a union, an intersection or a difference adds or looks up.
+                { "[\\q{ab|cd|ef|gh}]", "v", nameof(CompileSite.Strings), 4 },
+                { "[\\p{RGI_Emoji}\\q{ab}]", "v", nameof(CompileSite.Strings), emoji.Sequences + 1 },
+                { "[\\p{RGI_Emoji}&&\\p{RGI_Emoji}]", "v", nameof(CompileSite.Strings), 2L * emoji.Sequences },
+                { "[\\p{RGI_Emoji}--\\q{ab}]", "v", nameof(CompileSite.Strings), emoji.Sequences + 1 },
+                { "\\p{RGI_Emoji}", "v", nameof(CompileSite.StringOrder), emoji.Sequences },
+
+                // The sets built from the provider for the pattern: AllCharacters under vi, \s, the folded \w.
+                { "[^a]", "vi", nameof(CompileSite.Universe), CodePoints("Cased") },
+                { "\\s", "", nameof(CompileSite.Universe), Properties.SpaceSeparator.RangeCount + 3 },
+                { "\\w", "iu", nameof(CompileSite.Universe), 63 },
+
                 // The program compiler: a unit per range a class copies, and per string a table holds.
                 { "\\p{L}", "u", nameof(CompileSite.Program), Ranges("L") },
                 { "\\p{RGI_Emoji}", "v", nameof(CompileSite.Program), emoji.Sequences },
@@ -277,5 +322,72 @@ public class CompileChargingTests
         // The general lowering of task 2.4a, an alternation of a class's strings: a unit per code unit of each string.
         var (bySite, _) = Charged("[\\q{abc|de}x]", "v", fastPaths: false);
         Assert.True(bySite.GetValueOrDefault(CompileSite.Program) >= 5);
+    }
+
+    [Fact]
+    public void Folding_a_large_set_under_vi_is_charged_in_proportion_to_its_ranges_not_its_code_points()
+    {
+        // \p{L} holds 145,672 code points in 684 ranges at UCD 17.0.0. Task 2.5 folds a set of more than 4,096 code points
+        // through Cased, so its fold costs a few thousand units, where a unit per code point mapped would be 145,672.
+        Assert.True(CodePoints("L") > 100_000);
+        var (bySite, total) = Charged("\\p{L}", "vi");
+        Assert.True(bySite[CompileSite.CaseFold] < 10_000, bySite[CompileSite.CaseFold] + " units to fold \\p{L}");
+        Assert.True(total < 30_000, total + " units to compile /\\p{L}/vi");
+    }
+
+    // ----- MaybeSimpleCaseFolding in proportion to ranges answers as a fold of every code point -----------------------
+
+    public static IEnumerable<object[]> FoldedSets()
+    {
+        string[] lone = ["L", "Lu", "Ll", "Lt", "Lm", "Lo", "M", "N", "P", "S", "Z", "C", "Cased", "Any", "ASCII", "Assigned", "Alphabetic", "Changes_When_Casefolded"];
+        foreach (var name in lone)
+            yield return [name, ""];
+        foreach (var script in (string[])["Latin", "Greek", "Cyrillic", "Armenian", "Georgian", "Cherokee", "Deseret", "Adlam", "Glagolitic", "Han"])
+            yield return ["Script", script];
+    }
+
+    [Theory]
+    [MemberData(nameof(FoldedSets))]
+    public void Folding_through_Cased_answers_the_fold_of_every_code_point(string name, string value)
+    {
+        Assert.True(value.Length == 0 ? Properties.TryResolve(name, out var provided) : Properties.TryResolve(name, value, out provided));
+        var ranges = new List<(int Lo, int Hi)>();
+        for (var range = 0; range < provided.RangeCount; range++)
+            ranges.Add((provided.First(range), provided.Last(range)));
+        var set = CodePointSet.FromRanges(ranges);
+
+        var data = new RegexUnicode(UnicodeTables.Instance);
+        var expected = set.Map(cp => data.Canonicalize(cp, unicode: true));
+        Assert.Equal(expected.Ranges, data.SimpleCaseFold(set).Ranges);
+        var complement = set.Complement();
+        Assert.Equal(complement.Map(cp => data.Canonicalize(cp, unicode: true)).Ranges, data.SimpleCaseFold(complement).Ranges);
+    }
+
+    [Fact]
+    public void Folding_answers_the_fold_of_every_code_point_on_either_side_of_the_one_by_one_limit()
+    {
+        // Sets drawn with a fixed seed around RegexUnicode.FoldedOneByOne, so that both ways of folding meet each shape:
+        // runs across case pairs, single code points, the astral cased scripts, and the whole code space.
+        var data = new RegexUnicode(UnicodeTables.Instance);
+        var random = new Random(0x2_5);
+        for (var round = 0; round < 200; round++)
+        {
+            var ranges = new List<(int Lo, int Hi)>();
+            var target = round % 2 == 0 ? RegexUnicode.FoldedOneByOne - 64 + random.Next(128) : random.Next(1, 40_000);
+            var count = 0L;
+            while (count < target)
+            {
+                var lo = random.Next(4) switch { 0 => random.Next(0x80, 0x600), 1 => random.Next(0x1E00, 0x2200), 2 => random.Next(0x10400, 0x1E950), _ => random.Next(0, 0x110000) };
+                var hi = Math.Min(0x10FFFF, lo + random.Next(0, 300));
+                ranges.Add((lo, hi));
+                count += hi - lo + 1;
+            }
+
+            var set = CodePointSet.FromRanges(ranges);
+            Assert.Equal(set.Map(cp => data.Canonicalize(cp, unicode: true)).Ranges, data.SimpleCaseFold(set).Ranges);
+        }
+
+        var all = CodePointSet.Of(0, CodePointSet.MaxCodePoint);
+        Assert.Equal(all.Map(cp => data.Canonicalize(cp, unicode: true)).Ranges, data.SimpleCaseFold(all).Ranges);
     }
 }
