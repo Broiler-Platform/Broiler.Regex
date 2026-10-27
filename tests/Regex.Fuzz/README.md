@@ -47,11 +47,14 @@ answering, is a finding at the iteration it was in), and each known finding's re
   40 seconds beside other builds.
 - **Its transcript digest** at the commit that added it was
   `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`, the same over five runs, over three and four
-  worker processes and under `tr-TR`. At the review's fixes, whose `Matches` comparisons the records note, it is
-  `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, again the same over five runs, over three and
-  four worker processes and under `tr-TR`, the session taking 21 to 33 seconds on four cores beside other builds. The
-  digest is a record, not a pin: the records hold the units the meter was charged and the library's answers, so it
-  moves with any change of the library's behaviour or units, and CI prints it without comparing it.
+  worker processes and under `tr-TR`. At the review's fixes, whose `Matches` comparisons the records note, it was
+  `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, again the same over five runs, over three and four
+  worker processes and under `tr-TR`, the session taking 21 to 33 seconds on four cores beside other builds. At the
+  integration of tasks 2.6 and 2.11, whose fixes of the two library defects the target found change the library's
+  answers to the patterns they touch, it is `2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, the same
+  over two runs with four worker processes, over one and three, and under `tr-TR`. The digest is a record, not a pin:
+  the records hold the units the meter was charged and the library's answers, so it moves with any change of the
+  library's behaviour or units, and CI prints it without comparing it.
 
 ## What one iteration does
 
@@ -158,8 +161,10 @@ A row leaves the file in the change that fixes its defect. The library code is n
 A row is a finding's only when the kind, the exception's type, the innermost library frame on its stack and a text
 its message holds all agree, so that another exception of the type thrown from the same method, or from a method it
 calls, is reported as a finding while the listed one still fires
-(`FuzzTargetTests.A_known_finding_absorbs_its_own_exception_alone`). The row of `/[\q{\uD800}]/v` holds
-`surrogate char without a`, which the runtime's messages for a lone high and a lone low surrogate share.
+(`FuzzTargetTests.A_known_finding_absorbs_its_own_exception_alone`). The list is empty since the integration of tasks
+2.6 and 2.11, which fixed the defect of its one row, `/[\q{\uD800}]/v`'s, whose message text was
+`surrogate char without a`, which the runtime's messages for a lone high and a lone low surrogate share; the long run's
+finding, `/[a--bc/v` compiling, was never listed (the declared session does not reach it) and is fixed there too.
 
 ## Reproducing a finding
 

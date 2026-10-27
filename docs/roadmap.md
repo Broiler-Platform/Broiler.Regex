@@ -973,10 +973,21 @@ subtraction (`Set = accumulated.Set.Subtract(operand.Set, _account),`), replaced
 unless the anchor occurs exactly once. The declared seed reports the plant at iteration 52 with one worker process
 (with four, the worker that reaches a plant first reports it: iteration 6,008 in one run and 12,010 in another, each
 within a second), and CI's `fuzz-control` job
-requires it reported; without the plant the declared session reports nothing. The library is unchanged by this task:
-`Broiler.Regex.dll` built at `de0e7cc` and at this record's commit without the commit stamped
+requires it reported; without the plant the declared session reports nothing. The library is unchanged by this task,
+and the plant never reaches `Broiler.Regex.dll`, which three readings taken in one session, in one directory, show:
+the DLL the library project builds alone and the one the whole solution builds, the fuzz target included, are the same
+file; the control's build (`-p:RegexFuzzPlant=true`) builds no library project and leaves that file as it was; and
+neither it nor the DLL the package carries holds the plant's text (`planted defect`) or the switch's name
+(`RegexFuzzPlant`), in UTF-16 or UTF-8, where the control's `Regex.Fuzz.dll` holds the text, so the search finds it
+where it is. *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:* this record first said "`Broiler.Regex.dll`
+built at `de0e7cc` and at this record's commit without the commit stamped
 (`-p:ContinuousIntegrationBuild=true -p:EnableSourceLink=false -p:IncludeSourceRevisionInInformationalVersion=false`)
-is the same file, SHA-256 `13405060980e2b76fc6bbe548b4f231c21bdb216fc7643fdb17868b4d2cc240b`.
+is the same file, SHA-256 `13405060980e2b76fc6bbe548b4f231c21bdb216fc7643fdb17868b4d2cc240b`". No other build
+reproduces that hash: the DLL holds the full path of its PDB, so its bytes depend on the directory it is built in. The
+task's verifier built both commits in one directory with the same flags and got
+`1cc16b88bc21623122b18d0c257bae20cf5de19b9a6ed4cb9e68d0631db5196e` for both, the same file at both commits but not
+that one, and the integration built `de0e7cc` in two directories and got two other hashes. A hash is compared within
+one session, never recorded as the check; the integration's note below gives the readings at its head.
 
 **The finding.** A lone surrogate written alone as one alternative of a `v`-mode `\q{…}`, raw or escaped, as in
 `/[\q{\uD800}]/v` or `/[\q{a|\uDE00}]/v`, escapes `Compile` and the constructor as an `ArgumentException` from
@@ -988,7 +999,9 @@ reaches it at iteration 280, and 83 times in the declared session. It is library
 [`tests/Regex.Fuzz/known-findings.tsv`](../tests/Regex.Fuzz/known-findings.tsv) lists it, so the session prints it as
 known and goes on judging everything else, and its row leaves the file with the fix
 (`FuzzTargetTests.Each_known_finding_still_reproduces` and the declared session's stale check fail until it does).
-**Check E-5 does not hold while the list has a row.**
+**Check E-5 does not hold while the list has a row.** *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:*
+the defect is fixed there and its row has left the list, which is empty, so E-5 holds at the declared seed (the
+integration's note below).
 
 **The long run.** On 2026-10-27, iterations 24,000 to 1,023,999 of the declared seed, a million iterations past the
 declared session's, in four worker processes: 22 minutes on four cores of a machine other builds kept loaded (load
@@ -1006,7 +1019,8 @@ by the stray `]` the swallowed `c` leaves.) The target saw it through `EscapePat
 
 **What the later tasks owe.**
 - **The library's owner:** the fixes of both defects above, the first with its row removed from `known-findings.tsv`
-  in the same change.
+  in the same change. *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:* both are fixed there, the
+  first with its row removed in the same commit (the integration's note below).
 - **Task 2.8:** the validate entry, which the target then calls beside `Compile` (a pattern the entry accepts compiles,
   under the same limit, or meets a limit; a refusal is the same refusal).
 - **Task 2.9:** when `Compile`'s syntax error becomes a status and `IsMatch`'s exception at a ceiling is admitted or
@@ -1047,6 +1061,86 @@ runs, over three and four worker processes and under `tr-TR`; the session took 2
 other builds, and the control still reports the plant at iteration 52 with one worker process. The comment of
 `Directory.Build.props` now names the fuzz target as the test project its `.Tests` rule does not reach, and the
 CHANGELOG says that the library, not the package, is unchanged: the packed README names the target.
+
+*Dated note, 2026-10-27 (the integration of tasks 2.6 and 2.11 of SJL-11.2; R5, R6 and R10, check E-5 of bundle
+`sjl-11-001`; decision D32).*
+
+**The merge.** Branch `sjl-11-2-integrate-b` starts from the merge of pull request #13 (`15bffa7`, whose tree is
+`de0e7cc`'s, the commit both tasks branched from). Task 2.6 (`34c53e4`) merged with no conflict, then task 2.11
+(`cab6252`), whose one conflict was this file: both dated records are kept whole, task 2.6's then task 2.11's.
+`assurance generate` over the merged tree wrote nothing, as its configuration covers the library's project alone,
+which task 2.11 did not change. At the merge 1,879 library tests, 49 architecture tests and the fuzz target's 11 passed,
+and the declared session reported only its known finding.
+
+**The fuzz target's two findings, fixed.**
+- `/[\q{\uD800}]/v` and `/[\q{a|\uDE00}]/v` threw an `ArgumentException` out of `Compile` and the constructor (the
+  declared session, first at iteration 280; the one row of `known-findings.tsv`). ECMA-262 compiles a ClassString to
+  the characters its ClassSetCharacters denote (CompileClassSetString, §22.2.2.10), and under `v` a lone surrogate is a
+  code point as any other, so the class holds that code point and matches it, as `/[\uD800]/v` does; test262 at
+  `ccaac100` has no file with a lone surrogate in a `\q{…}`, and V8 agrees. The cause was
+  `ParseClassStringDisjunction`'s reading of an alternative's code points back from its UTF-16 text, where
+  `char.ConvertToUtf32` refuses a one-unit lone surrogate. Reading the related paths (a lone surrogate under `vi`,
+  beside pairs, in intersections and subtractions, read right to left, complemented) found three more defects of the
+  same loop: a lead surrogate written before a trail one, two ClassSetCharacters as in `\q{\uD83D\u{DE00}}`, read as
+  the one code point U+1F600, so the class matched U+1F600 and set operations took it for `\q{\u{1F600}}`; and the
+  loop read its characters by a grammar of its own, which refused `\b` and read a reserved double punctuator
+  (`\q{a&&b}`) as two characters. An alternative now reads its characters through `ReadClassSetCharacter`, the
+  class-set operand's own reading, as code points: one character is a member of the code-point set, a lone surrogate
+  included, and an alternative that holds a lead followed by a trail is not kept, as a subject read by code point
+  (§22.2.7.2) never holds that pair of code points in a row. `ClassStringCodePointTests`' six tests failed at the merge
+  and pass (`28835d1`).
+- `/[a--bc/v` and `/[a&&ac/v` compiled and matched `a` (task 2.11's long run, iterations 215,039 and 814,524).
+  `ParseClassIntersection` and `ParseClassSubtraction` ended with `RejectMixedOperator`, which refuses only an operator,
+  and `ParseNestedClass` then took the next character for the `]` without reading it. They now end with
+  `RejectAfterLastOperand`, which admits only the `]` or the pattern's end, so any operand there is the refusal of a
+  mixed class-set expression, at the expression's first operand, and a class the pattern ends inside stays unterminated
+  at its `[`, as V8 also answers. `ClassSetExpressionEndTests`' 347 cases (each operator, each kind of trailing operand,
+  nesting depths 0 to 3, closed and unclosed, `^`, `v` and `vi`, both entries) had 333 failing before and all pass
+  (`0c468d2`).
+
+**`known-findings.tsv` is empty.** Its one row left with the first fix, in the same commit, and no row remains. Check
+E-5 holds at the declared seed: the session's only answers are the statuses, the meter's exception and the answers
+task 2.11's record lists as documented (`Compile`'s `RegexSyntaxException` until tasks 2.8 and 2.9, `IsMatch`'s
+exception at a ceiling, an argument exception for an argument broken on purpose), with no listed finding to absorb a
+library exception; a listed finding the session no longer reached would fail it as stale.
+
+**The oracle reads `RegexGroup.Number`** (`6b74e50`), which task 2.6 added and task 2.11's oracle, written beside it,
+never read: each group's number is its own index; a named entry's is the participating group's, whose slots in the
+offset entry's answer are its offsets, and `RegexGroupNames.ParticipatingGroup` reads the same group from those slots;
+where none of the name's groups participated, the entry is unmatched and numbered as the name's first group. Three
+mutants of the library's numbers each passed the declared session under the oracle before and fail it now: a
+participating group of a shared name numbered as the name's first (first found at iteration 119), a name with no
+participating group given its last group instead of its first (iteration 1,211), and the `NamedGroups` entry alone
+numbered as the name's first group (iteration 119).
+
+**The declared session at the integration's head.** Seed 20261027, iterations 0 to 23,999: no finding, exit 0, every one
+of the 122 construct classes the generator writes and every outcome the session requires reached. Transcript digest
+`2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, the same over two runs with four worker processes,
+over one and three, and under `tr-TR`; the session took 17 to 24 seconds with four worker processes, 19 with three and
+45 with one, on four cores beside other builds (load average 10 to 15). The control (`-p:RegexFuzzPlant=true`) still
+reports the plant: with one worker process at iteration 52, as at task 2.11's review, and with four at iteration 6,008
+or 18,005, whichever worker reaches it first, within a second, the session exiting 1.
+
+**The long run.** On 2026-10-27, at `6b74e50`, iterations 24,000 to 1,023,999 of the declared seed, the range of task
+2.11's long run, with the two iterations of its finding, 215,039 and 814,524, among them, in four worker processes:
+818.5 seconds of session, 13 minutes 40 seconds of wall time, on four cores beside other builds (load average 6 at the
+start and 22 at the end). Every construct class and outcome was reached, no process ended or hung, and there was no
+finding; transcript digest `731c698b6d876679190b2afaa6b5e6d9579d953ee176bffc926e4f56f9122d1b`.
+
+**The plant never reaches the shipped DLL** (the method task 2.11's record now states, read at the integration's head):
+built from a `git archive` of `6b74e50`, whose code the records' commit does not change, into one scratch directory with
+the flags task 2.11's record names, `Broiler.Regex.dll` from the library project alone and from the whole solution, the
+fuzz target included, is one file (SHA-256 `978ad39895c56eba809843af6060fa5b0bc7247a84f1c9d9fee550851b88318d`, a value
+of that directory alone); the control's build afterwards built no library project and left the file byte for byte; the
+package packed from it carries the same file; and neither DLL holds `planted defect`, in UTF-16 or UTF-8, or
+`RegexFuzzPlant`, where the control's `Regex.Fuzz.dll` holds the text once.
+
+*Where ECMA-262, V8 and this repository differ, read at this note.* For `/[\q{\uD83D\u{DE00}}]/v` V8 matches U+1F600,
+while it keeps the alternative apart from `\q{\u{1F600}}` in an intersection or a subtraction; this library follows
+ECMA-262 and matches nothing. test262 has no file on it, and the fuzz target judges agreement between the library's
+entries, not the specification, so the vectors (task 2.12) and the reference arms (task 2.13) are where it is read
+next. What task 2.11's record says the later tasks owe stands, except the library owner's fixes, which this integration
+made.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

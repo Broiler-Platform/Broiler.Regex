@@ -50,11 +50,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     documentation rules out, or a child process that ends or stops answering. CI's `fuzz` job runs the declared seed,
     20261027, for 24,000 iterations on ubuntu-latest and windows-latest; its `fuzz-control` job builds the target with
     a throw planted in a declared parser path, the `v`-mode class-set subtraction, compiled into the target only, and
-    requires the declared seed to report it. `tests/Regex.Fuzz/known-findings.tsv` lists the finding in library code
-    the declared session reaches and that is not fixed yet (`/[\q{\uD800}]/v` escapes as an `ArgumentException`); the
-    row leaves the file with its fix. A long local run found a second, recorded in `docs/roadmap.md` (`/[a--bc/v`
-    compiles, as `/[a--b]/v`). The library, `Broiler.Regex.dll` and its API, is unchanged; of the package only the
-    packed README changes, whose testing paragraph now names the fuzz target.
+    requires the declared seed to report it. `tests/Regex.Fuzz/known-findings.tsv` lists the findings in library code
+    the declared session reaches that are not fixed yet. Task 2.11 listed one there (`/[\q{\uD800}]/v` escaped as an
+    `ArgumentException`), and its long local run found a second (`/[a--bc/v` compiled, as `/[a--b]/v`); the
+    integration of tasks 2.6 and 2.11 fixed both (Observable changes), and the list is empty. The oracle also reads
+    each `RegexGroup.Number` since that integration. Task 2.11 left the library, `Broiler.Regex.dll` and its API,
+    unchanged; of the package only the packed README changed, whose testing paragraph now names the fuzz target.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
@@ -316,6 +317,27 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 ### Observable changes
 
+- **A `v`-mode `\q{…}` alternative is the code points of its ClassSetCharacters (R5; the fuzz target's finding, R10;
+  the integration of tasks 2.6 and 2.11).** ECMA-262 compiles a ClassString to the sequence of the characters its
+  ClassSetCharacters denote (§22.2.2.10), a lone surrogate among them, matched code point by code point against a
+  subject read by code point. An alternative of one lone surrogate, as in `/[\q{\uD800}]/v` and `/[\q{a|\uDE00}]/v`,
+  now compiles and matches that code point, as `/[\uD800]/v` does; `0.1.0-preview.4` and the SJL-11.2 work before this
+  change threw an `ArgumentException` from `char.ConvertToUtf32` out of the constructor and `Compile`. A lead
+  surrogate written before a trail one, two ClassSetCharacters as in `\q{\uD83D\u{DE00}}`, is a sequence of two code
+  points that no subject holds in a row, so it matches nothing, an intersection with `\q{\u{1F600}}` is empty and a
+  subtraction of it leaves `\q{\u{1F600}}`; `0.1.0-preview.4` refused it as an invalid hexadecimal escape (the S10
+  entry below), and since task 2.2 it had matched U+1F600. V8 matches U+1F600 for `/[\q{\uD83D\u{DE00}}]/v` and keeps
+  the two apart in set operations; this library follows ECMA-262. An alternative now reads its characters as a class's
+  operand does: `\q{\b}` is U+0008, which `0.1.0-preview.4` refused, and a reserved double punctuator, as in
+  `\q{a&&b}`, `\q{!!}` or `\q{a^^}`, is a `RegexSyntaxException`, which `0.1.0-preview.4` read as two characters.
+- **An operand after an intersection's or a subtraction's last operand is a syntax error (R5; found by the fuzz
+  target's long run, R10; the integration of tasks 2.6 and 2.11).** ECMA-262 §22.2.1 ends a ClassIntersection and a
+  ClassSubtraction at their last ClassSetOperand, which only the class's `]` follows. `0.1.0-preview.4` took the
+  character after it for the `]`, so `/[a--bc/v` and `/[a&&ac/v` compiled and matched `a`, and `/[a--bc]/v` was
+  refused for the stray `]`. Each is now the `RegexSyntaxException` of a mixed class-set expression at the
+  expression's first operand, whatever follows the last operand (a character, an escape, a nested class, a `\q{…}`, a
+  property, a lone `-` or `&`) and at any nesting depth; a class the pattern ends inside after the last operand, as
+  `/[a--b/v` or `/[a&&[b]/v`, stays "Unterminated character class" at its `[`.
 - **A group name repeated only across alternatives that cannot both participate is admitted (R6; task 2.6).** Every
   repeated name was a `RegexSyntaxException` until this task; `(?<x>a)|(?<x>b)` compiles and matches `bab` at 0 with
   group 1 unmatched and group 2 `b`, and `(?:(?<x>a)|(?<x>b))\k<x>` matches `bb` and not `ab`. `RegexMatch.NamedGroups`
