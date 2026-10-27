@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 312 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 314 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -50,12 +50,12 @@ did, which is the narrower and the more useful of the two.
 | Metric | Value |
 |---|---:|
 | Files scanned | 22 |
-| Code units | 574 |
-| Relevant | 312 |
+| Code units | 576 |
+| Relevant | 314 |
 | Exempt | 262 |
-| Assessed | 312 of 312 (100%) |
-| Human reviewed | 0 of 312 (0%) |
-| Unverified | 312 |
+| Assessed | 314 of 314 (100%) |
+| Human reviewed | 0 of 314 (0%) |
+| Unverified | 314 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,7 +67,7 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 312 |
+| HUMAN_PENDING | 314 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -86,7 +86,7 @@ relevant units in a state that blocks a release.
 | File | Units | Relevant | Exempt | Unverified | IP risk | Security risk | Criteria |
 |---|---:|---:|---:|---:|---|---|---:|
 | `Broiler.Regex/Ast/CharSet.cs` | 28 | 15 | 13 | 15 | Low | High | 7/3 |
-| `Broiler.Regex/Ast/ClassStrings.cs` | 10 | 7 | 3 | 7 | None | High | 5/1 |
+| `Broiler.Regex/Ast/ClassStrings.cs` | 12 | 9 | 3 | 9 | None | High | 6/1 |
 | `Broiler.Regex/Ast/CodePointSet.cs` | 31 | 26 | 5 | 26 | Low | Medium | 11/0 |
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
 | `Broiler.Regex/BroilerRegex.cs` | 18 | 12 | 6 | 12 | Low | High | 11/11 |
@@ -383,5 +383,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-312 of the 312 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+314 of the 314 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

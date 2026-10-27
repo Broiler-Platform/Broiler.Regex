@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   7
-// Annotated:        7/7
+// Relevant units:   9
+// Annotated:        9/9
 // Exempt:           3
-// Human-reviewed:   0/7
+// Human-reviewed:   0/9
 // IP risk:          None
 // Security risk:    High
-// Criteria:         5/1
+// Criteria:         6/1
 // Resource impact:  3/10 max
-// Unverified:       7
+// Unverified:       9
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -51,7 +51,7 @@ internal sealed class ClassStrings
     private readonly HashSet<string> _members;
 
     /// <summary>An empty set whose strings are compared by code unit, as the parser's always are.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=TBF
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=770416
     // Broiler-Human:        PENDING
     internal ClassStrings()
         : this(StringComparer.Ordinal)
@@ -63,7 +63,7 @@ internal sealed class ClassStrings
     /// differences answer: a test's comparer that counts its calls counts every comparison the set makes, so it bounds the
     /// work and not only the charge.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=TBF
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E372E1
     // Broiler-Falsified-If: a set made with a comparer that equates "ab" and "AB" adds both, or answers that it does not hold "AB" once it holds "ab"
     // Broiler-Human:        PENDING
     internal ClassStrings(IEqualityComparer<string> comparer) => _members = new HashSet<string>(comparer);
@@ -115,7 +115,7 @@ internal sealed class ClassStrings
     }
 
     /// <summary>The strings of this set that <paramref name="other"/> holds, in this set's order: the strings of an intersection.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=FB2F29
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=421C32
     // Broiler-Falsified-If: the intersection of {ab, cd} and {cd, ef} is anything but cd
     // Broiler-Human:        PENDING
     internal ClassStrings Intersect(ClassStrings other, CompileCharge charge)
@@ -131,7 +131,7 @@ internal sealed class ClassStrings
     }
 
     /// <summary>The strings of this set that <paramref name="other"/> does not hold, in this set's order: the strings of a difference.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=C7E9CE
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=50C8B0
     // Broiler-Falsified-If: the difference of {ab, cd} and {cd, ef} is anything but ab
     // Broiler-Human:        PENDING
     internal ClassStrings Except(ClassStrings other, CompileCharge charge)
