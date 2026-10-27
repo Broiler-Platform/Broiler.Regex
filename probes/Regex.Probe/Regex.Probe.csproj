@@ -32,4 +32,8 @@
     <PackageReference Include="Broiler.Unicode.Tables" />
   </ItemGroup>
 
+  <!-- Part C's two controls, scratch builds of this probe under -p:RegexAdversarialControl=steps or =nesting (task 2.14);
+       without the switch, which is every build but the controls', it changes nothing. After the library's reference above. -->
+  <Import Project="AdversarialControls.targets" />
+
 </Project>
