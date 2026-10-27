@@ -115,10 +115,15 @@ is anything else:
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
   decision D41, groups from the slots, each `Value` (the match's, group 0's and every group's) the subject's text at
   the offsets reported, `NamedGroups` from a participating group of each name, a failed match with no index, text or
-  groups, `Matches`' iteration of §22.2.6.9,
-  a ceiling reached as `RegexMatch.Limit` and as `IsMatch`'s exception), compared wherever the wide call completed or
-  met the frame or trail ceiling the string-bearing members also pass; `EscapePattern`'s text compiling or matching
-  otherwise than its pattern; `EscapeString`'s text, compiled under any flags, failing to match its subject whole;
+  groups, `Matches`' iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
+  as `Matches`' last element), compared wherever the wide call completed or met the frame or trail ceiling the
+  string-bearing members also pass. `Matches` is emulated through the wide calls: those the case made already, from
+  its starts, are always taken, so its first element is compared on every subject, a ceiling there included (only
+  subjects of about 500,000 units and more reach one, the corpus's class M now and then); a new call is made only on a
+  subject of at most 4,096 units, within 2^20 units spent and 4,096 elements. An emulation that reaches the
+  enumeration's end is compared element for element and in its count, one cut short over the elements it has;
+  `EscapePattern`'s text compiling or matching otherwise than its pattern; `EscapeString`'s text, compiled under any
+  flags, failing to match its subject whole;
 - **contract**: an answer the documentation rules out: a status with the wrong limit, slots written past
   `SlotCount`, slots other than -1 after any answer but a match or after the meter's exception, a match's offsets
   outside the subject, before an unanchored start or off an anchored one, a group's offsets out of order,

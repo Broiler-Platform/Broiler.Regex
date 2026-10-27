@@ -517,27 +517,38 @@ internal static class Verdicts
     /// <summary>
     /// <see cref="BroilerRegex.Matches"/> against its documentation: each element <c>Match(input, k)</c>'s from where the
     /// last ended, an empty match advancing one code point, a ceiling the last element. Emulated through the offset
-    /// entry's wide calls, and compared only when every call completed within <see cref="MatchesAllowance"/> units.
+    /// entry's wide calls. A call the case already made (its starts, anchored as the <c>y</c> flag says, 0 among them) is
+    /// always taken, so the first element is compared on every subject, a ceiling there included, which only subjects of
+    /// about 500,000 units and more reach; a new call is made only on a subject of at most 4,096 units, while the calls
+    /// taken have spent less than <see cref="MatchesAllowance"/> units, for at most 4,096 elements. An emulation that
+    /// reaches the enumeration's end (no match, a ceiling, or past the subject's end) is compared element for element and
+    /// in its count; one those bounds, or a call that met the step ceiling or the meter, cut short is compared over the
+    /// elements it has, as the enumeration's first.
     /// </summary>
     private static void Matches(FuzzCase c, BroilerRegex regex, Dictionary<(int, bool), Matched> wide, Outcome outcome)
     {
         var subject = c.Subject;
-        if (subject.Length > 4096)
-            return;
         var sticky = (c.Flags & RegexFlags.Sticky) != 0;
         var unicode = (regex.Flags & (RegexFlags.Unicode | RegexFlags.UnicodeSets)) != 0;
         var expected = new List<(bool Success, int Index, int Length, RegexLimit Limit, int[] Slots)>();
         var spent = 0UL;
         var position = 0;
+        var whole = true;
         while (position <= subject.Length)
         {
             var from = StepBack(regex.Flags, subject, position);
+            if (expected.Count >= 4096 || !wide.ContainsKey((from, sticky)) && (subject.Length > 4096 || spent >= MatchesAllowance))
+            {
+                whole = false;
+                break;
+            }
+
             var reference = Wide(c, regex, wide, from, sticky, outcome);
             spent += reference.Units;
-            if (spent > MatchesAllowance || expected.Count > 4096 || reference.Answer is not ("match" or "nomatch" or "limit:frames" or "limit:trail"))
+            if (reference.Answer is not ("match" or "nomatch" or "limit:frames" or "limit:trail"))
             {
-                outcome.Note("matches", "skipped");
-                return;
+                whole = false;
+                break;
             }
 
             if (reference.Answer == "nomatch")
@@ -557,10 +568,16 @@ internal static class Verdicts
             position = next;
         }
 
+        if (!whole && expected.Count == 0)
+        {
+            outcome.Note("matches", "skipped");
+            return;
+        }
+
         List<RegexMatch> actual;
         try
         {
-            actual = regex.Matches(subject).Take(expected.Count + 1).ToList();
+            actual = regex.Matches(subject).Take(whole ? expected.Count + 1 : expected.Count).ToList();
         }
         catch (Exception failure)
         {
@@ -568,11 +585,15 @@ internal static class Verdicts
             return;
         }
 
-        outcome.Note("matches", expected.Count.ToString(CultureInfo.InvariantCulture));
-        outcome.Reach("matches:compared");
+        outcome.Note("matches", expected.Count.ToString(CultureInfo.InvariantCulture) + (whole ? "" : "+"));
+        outcome.Reach(whole ? "matches:compared" : "matches:prefix");
+        if (expected.Count > 0 && expected[^1].Limit != RegexLimit.None)
+            outcome.Reach("matches:limit");
         if (actual.Count != expected.Count)
         {
-            outcome.Find("disagreement", "matches", Invariant($"Matches gave {(actual.Count > expected.Count ? "more than " : "")}{actual.Count} elements; the offset entry's iteration gives {expected.Count}"));
+            outcome.Find("disagreement", "matches", whole
+                ? Invariant($"Matches gave {(actual.Count > expected.Count ? "more than " : "")}{actual.Count} elements; the offset entry's iteration gives {expected.Count}")
+                : Invariant($"Matches ended after {actual.Count} elements; the offset entry's iteration gives {expected.Count} before it was cut short"));
             return;
         }
 
