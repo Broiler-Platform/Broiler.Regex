@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   29
-// Annotated:        29/29
-// Exempt:           26
-// Human-reviewed:   0/29
+// Relevant units:   42
+// Annotated:        42/42
+// Exempt:           28
+// Human-reviewed:   0/42
 // IP risk:          None
 // Security risk:    High
-// Criteria:         19/7
+// Criteria:         30/17
 // Resource impact:  8/10 max
-// Unverified:       29
+// Unverified:       42
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -34,13 +34,22 @@ namespace Broiler.Regex.Engine;
 /// matcher's half of requirement R4), so the CLR stack a match uses does not grow with the pattern or the subject.
 /// </para>
 /// <para>
-/// <b>A frame</b> is three integers: the address to resume at, the position to resume from, and the trail's height when
-/// the frame was pushed. <b>A trail cell</b> is two: the register a write changed and the value it held. Backtracking
-/// pops the newest frame and undoes every write above its trail height, so the registers are what they were when the
-/// choice was made; a write that does not change its register records nothing, and one that does records a cell even
-/// with no frame pending, where the cell serves only the reset below (so the trail ceiling bounds a loop that holds no
-/// choice too, <see cref="RegexMatchCeilings"/>'s remarks). When an attempt at one start position fails, every write of
+/// <b>A frame</b> is four integers: the address to resume at, the position to resume from, the trail's height when the
+/// frame was pushed, and a mark. <b>A trail cell</b> is two: the register a write changed and the value it held.
+/// Backtracking pops the newest frame and undoes every write above its trail height, so the registers are what they were
+/// when the choice was made; a write that does not change its register records nothing, and one that does records a cell
+/// even with no frame pending, where the cell serves only the reset below (so the trail ceiling bounds a loop that holds
+/// no choice too, <see cref="RegexMatchCeilings"/>'s remarks). When an attempt at one start position fails, every write of
 /// the attempt has been undone, so the next position starts from registers that all read -1, with no reset of its own.
+/// </para>
+/// <para>
+/// <b>A marked frame</b> is the one backtrack frame of a fast path that has more than one way left (task 2.4c): its
+/// address is its instruction's, not a place to resume, and its mark, never negative, says which way comes next. A greedy
+/// run's mark is the position its required characters end at, which it gives characters back down to; a lazy run's the
+/// characters it may still take; a class of strings' the next string, or its single characters, or its empty string, to
+/// try. Popping a marked frame takes that way, and the frame stays, with its position or its mark moved on, while another
+/// is left; it is the same frame, at the same trail height, so a run of any length holds one frame and writes no trail
+/// cell. Every other frame's mark is <see cref="Unmarked"/>.
 /// </para>
 /// <para>
 /// <b>A look-around</b> runs its body on the same stack, with no second loop and no call: it pushes a <i>barrier</i>, a
@@ -57,22 +66,47 @@ namespace Broiler.Regex.Engine;
 /// When that passes the step ceiling, the instruction is not dispatched and the call answers
 /// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Steps"/>; when it passes what the meter has
 /// been charged, the meter is charged the whole blocks of <see cref="Block"/> units that cover it, and only then is the
-/// instruction dispatched. So before the k-th unit of work, at least k units have been charged, and the meter is never
-/// more than <see cref="Block"/> - 1 units ahead of the work; the tests of check A-1 read both at every dispatch
-/// through <see cref="DispatchObserver"/>, which the library never sets. The units of one call run on across all its
-/// start positions, with no reset. Undoing a write costs nothing of its own: the instruction that made the write paid
-/// for it.
+/// instruction dispatched. A fast path charges each character it examines the same way, before it reads it: a run's
+/// character and a folded atom cost what the atom's dispatch would, and a string's character one unit (task 2.4c); the
+/// start-position scan charges each position's test before it makes it, and the attempt at the position it admits takes
+/// that test's answer as its own first test, neither made nor charged again. So before the k-th unit of work, at least
+/// k units have been charged, and the meter is never more than <see cref="Block"/> - 1 units ahead of the work; the
+/// tests of check A-1 read both at every unit charged through <see cref="DispatchObserver"/>, which the library never
+/// sets, and the order inside a fast path and the scan at each read of the caller's tables. The units of one call run
+/// on across all its start positions, with no reset. Undoing a write costs nothing of its own: the instruction that
+/// made the write paid for it; nor does giving back a run's character, which the instructions that run after it pay
+/// for.
 /// </para>
 /// <para>
 /// <b>Memory.</b> The registers, the frames and the trail are arrays rented from the shared array pool and returned
-/// when the call ends (<see cref="Release"/>), its exceptions included, so after the pool holds arrays of the sizes a
-/// pattern needs, a call allocates nothing at all, whatever its capture count (requirement R8, bundle
-/// <c>sjl-11-001</c>'s check A-8). The frames and the trail start small and double as a match needs them, never past
-/// their ceilings; past <see cref="PooledLength"/> integers they are allocated for the call alone and left to the
-/// collector, so a call that held many frames or cells leaves none of them pooled (a pooled array stays with the thread
-/// that returned it, or in the pool's per-processor stores, until the pool trims it). While an array doubles, the one
+/// when the call ends (<see cref="Release"/>), its exceptions included. The frames and the trail start small and double
+/// as a match needs them, never past their ceilings; past <see cref="PooledLength"/> integers they are allocated for the
+/// call alone and left to the collector, so a call that held many frames or cells leaves none of them pooled (a pooled
+/// array stays with the thread that returned it, or in the pool's per-processor stores, until the pool trims it). So
+/// after the pool holds arrays of the sizes a pattern needs, a call that holds at most 16,384 frames and 32,768 trail
+/// cells allocates nothing at all, whatever its capture count (requirement R8, bundle <c>sjl-11-001</c>'s check A-8);
+/// a group that participates writes two cells, so past about 16,384 such groups every call allocates its own trail,
+/// which grows with them. While an array doubles, the one
 /// it replaces is held too. An array holds whatever its last user left in it; the machine reads only the registers it
 /// fills when it starts and the frames and cells it has written.
+/// </para>
+/// <para>
+/// <b>The fast paths read what the instructions they replace would read</b>: a run's atom, a folded atom and a class of
+/// strings' single characters are tested by <see cref="AtomHolds"/>, the test a dispatched character or class instruction
+/// makes, and a string's characters through <see cref="NextCharacter"/> as a <see cref="RegexOp.Literal"/> reads them, so a
+/// surrogate pair, the split pair of a start inside one and the direction are read alike.
+/// </para>
+/// <para>
+/// <b>The start-position scan</b> is the literal-prefix prefilter of task 2.4c. When every attempt of a program reads one
+/// character first, before any choice (<see cref="RegexProgram.FirstTest"/>), a search that is not anchored tests each
+/// position with that instruction's test alone and starts an attempt only where it holds, the next position by
+/// AdvanceStringIndex as the search's own. Each position's test costs the test's dispatch, one unit and the class's
+/// weight, charged as a dispatch is, before the test is made; at the position admitted, the attempt takes the scan's
+/// answer as its first test (<see cref="TakeScanned"/>) and neither makes nor charges that test again, so a skipped
+/// position costs its test and an admitted one what the attempt alone would; the subject's end, which holds no
+/// character to admit, ends the search with no attempt and no unit. The answer is the search's without the scan, since
+/// an attempt at a position the test refuses fails at its first test with nothing to undo but the group starts before
+/// it.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
@@ -80,10 +114,15 @@ namespace Broiler.Regex.Engine;
 // Broiler-Human:        PENDING
 internal ref struct RegexMachine
 {
-    /// <summary>The integers of one frame: the address to resume at, the position, the trail's height.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=08197A
+    /// <summary>The integers of one frame: the address to resume at, the position, the trail's height, the mark.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9E9389
     // Broiler-Human:        PENDING
-    private const int FrameSize = 3;
+    private const int FrameSize = 4;
+
+    /// <summary>The mark of a frame that is no fast path's: a choice's, or a look-around's barrier.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4295E0
+    // Broiler-Human:        PENDING
+    private const int Unmarked = -1;
 
     /// <summary>The integers of one trail cell: the register and the value it held.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=3A53FC
@@ -97,7 +136,7 @@ internal ref struct RegexMachine
 
     /// <summary>
     /// The longest frame or trail array a call takes from the shared array pool and gives back to it: 65,536 integers,
-    /// 256 KiB. A longer one, which only a call holding more than 21,845 frames or 32,768 trail cells needs, is allocated
+    /// 256 KiB. A longer one, which only a call holding more than 16,384 frames or 32,768 trail cells needs, is allocated
     /// for the call alone and left to the collector when it ends, so that one call's peak does not stay pooled after it.
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=357418
@@ -148,6 +187,15 @@ internal ref struct RegexMachine
     private int _end;
 
     /// <summary>
+    /// The address of the attempt's first test while the start-position scan has made and charged it at the attempt's
+    /// start and the attempt has not reached it, and -1 otherwise (<see cref="TakeScanned"/>).
+    /// </summary>
+    private int _scanned;
+
+    /// <summary>Where the character the scan admitted ends, which the attempt's first test then moves to.</summary>
+    private int _scannedEnd;
+
+    /// <summary>
     /// The call's start when, under <c>u</c> and <c>v</c>, it falls inside a surrogate pair, and -1 otherwise: every read
     /// of the call then takes the pair's two halves as lone units, so that the characters a read meets are the same
     /// whichever way it reads and wherever it starts (<see cref="Run"/>'s remarks).
@@ -155,7 +203,7 @@ internal ref struct RegexMachine
     private int _splitAt;
 
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=5CA4C9
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=FBFF16
     // Broiler-Human:        PENDING
     internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
@@ -175,6 +223,7 @@ internal ref struct RegexMachine
         _frames = ArrayPool<int>.Shared.Rent(16 * FrameSize);
         _trail = ArrayPool<int>.Shared.Rent(16 * CellSize);
         _orbit = program.OrbitLength > 0 ? ArrayPool<int>.Shared.Rent(program.OrbitLength) : [];
+        _scanned = -1;
     }
 
     /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
@@ -196,9 +245,11 @@ internal ref struct RegexMachine
 
     /// <summary>
     /// A test's observer of the loop, or null, as the library always leaves it: called before each instruction is
-    /// dispatched and after its units are charged, with the units of the call through that instruction, so that a test
-    /// reads what its own meter holds at that moment (bundle <c>sjl-11-001</c>'s check A-1). It is a
-    /// <see cref="RegexWorkCharge"/> only so that the loop invokes no delegate type but the meter's.
+    /// dispatched and after its units are charged, and likewise before each character a fast path examines, each
+    /// back-reference's comparison and each test the start-position scan makes, with the units of the call through
+    /// that work, so that a test reads what its own meter holds at that moment (bundle <c>sjl-11-001</c>'s check A-1).
+    /// An attempt's first test that the scan made is not charged again, and not observed again. It
+    /// is a <see cref="RegexWorkCharge"/> only so that the loop invokes no delegate type but the meter's.
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=62AB7A
     // Broiler-Human:        PENDING
@@ -221,20 +272,33 @@ internal ref struct RegexMachine
     /// position by AdvanceStringIndex, so that under <c>u</c> and <c>v</c> a search does not start inside a surrogate
     /// pair it stepped over; the position after the last character is tried too. The start is the caller's: under
     /// <c>u</c> and <c>v</c> a start inside a pair splits it for the whole call, so a read forward from the start meets
-    /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c></c>, <c>^</c> under
+    /// the pair's low half as a lone unit, and a read backward from it (a look-behind, <c>\b</c>, <c>^</c> under
     /// <c>m</c>) its high half as another. RegExpBuiltinExec's step 13.b starts the matcher at the pair instead, and that
-    /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>).
+    /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>). A program with a first test
+    /// skips, before each attempt, the positions that test refuses (the remarks' start-position scan).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=016F4F
-    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character, under u a search starts inside a surrogate pair it stepped over, or a read of a call that starts inside a pair takes the pair as one character
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=0C72DD
+    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character when the program has no first test, under u a search starts inside a surrogate pair it stepped over, a read of a call that starts inside a pair takes the pair as one character, or an anchored call scans
     // Broiler-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
     {
         _splitAt = _unicode && start > 0 && start < _subject.Length
             && char.IsHighSurrogate(_subject[start - 1]) && char.IsLowSurrogate(_subject[start]) ? start : -1;
         var at = start;
+        var first = anchored ? -1 : _program.FirstTest;
         while (true)
         {
+            if (first >= 0)
+            {
+                switch (Scan(first, ref at))
+                {
+                    case Outcome.Failed:
+                        return RegexStatus.NoMatch;
+                    case Outcome.Exceeded:
+                        return RegexStatus.LimitExceeded;
+                }
+            }
+
             switch (MatchFrom(at))
             {
                 case Outcome.Matched:
@@ -249,6 +313,61 @@ internal ref struct RegexMachine
 
             at = NextStart(at);
         }
+    }
+
+    /// <summary>
+    /// The start-position scan of the literal-prefix prefilter: from <paramref name="at"/>, the first position whose
+    /// character the program's first test, the instruction at <paramref name="test"/>, admits. Each position's test is
+    /// charged that instruction's cost, one unit and the class's weight, before it is made; a position the test refuses
+    /// is skipped, and at the one it admits the attempt takes the scan's answer as its first test, which it neither makes
+    /// nor charges again (<see cref="TakeScanned"/>); the position after the last character, which holds no character to
+    /// admit, ends the scan with no attempt and no unit. An attempt anywhere the test refuses would fail at its first
+    /// test, so the positions skipped are those RegExpBuiltinExec's loop would try and fail at, and the answer is the
+    /// loop's.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/> with <paramref name="at"/> the position admitted; <see cref="Outcome.Failed"/> when
+    /// no position before the subject's end is; <see cref="Outcome.Exceeded"/> at the step ceiling.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=2AA4B0
+    // Broiler-Falsified-If: a position is tested before its units are charged, a position whose character the first test admits is skipped, the scan passes the step ceiling, or under u it starts a test inside a surrogate pair it stepped over
+    // Broiler-Human:        PENDING
+    private Outcome Scan(int test, ref int at)
+    {
+        var instruction = _code[test];
+        while (at < _subject.Length)
+        {
+            if (!Afford(instruction.Cost))
+                return Outcome.Exceeded;
+            var end = at;
+            if (AtomHolds(instruction, ref end))
+            {
+                (_scanned, _scannedEnd) = (test, end);
+                return Outcome.Matched;
+            }
+
+            at = NextStart(at);
+        }
+
+        return Outcome.Failed;
+    }
+
+    /// <summary>
+    /// Whether the test at <paramref name="address"/> is the attempt's first, which the start-position scan made at the
+    /// attempt's start and charged: if so, <paramref name="position"/> moves past the character the scan admitted, and
+    /// the test is neither made nor charged again. The instructions an attempt dispatches before its first test only
+    /// write registers, so the attempt reaches that test at its start, once.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=0; Fingerprint=ACAF56
+    // Broiler-Falsified-If: an attempt the scan admitted makes or charges its first test again, or takes the scan's answer for a test other than its first
+    // Broiler-Human:        PENDING
+    private bool TakeScanned(int address, ref int position)
+    {
+        if (address != _scanned)
+            return false;
+        _scanned = -1;
+        position = _scannedEnd;
+        return true;
     }
 
     /// <summary>How one attempt ended.</summary>
@@ -269,10 +388,11 @@ internal ref struct RegexMachine
     /// <summary>
     /// One attempt from <paramref name="origin"/>: the loop that charges and dispatches instructions until the program
     /// accepts, every frame of the attempt is spent, or a ceiling is reached. A failed instruction resumes at the newest
-    /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed.
+    /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed; a marked
+    /// frame takes its fast path's next way, or, with none left, fails in its turn too.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=5A0B3A
-    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, or a frame a look-around's body pushed is resumed after the look-around's close
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=BADA73
+    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, the attempt's first test the scan made is charged again, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, a frame a look-around's body pushed is resumed after the look-around's close, or a marked frame resumes at its own instruction rather than after the instructions it owns
     // Broiler-Human:        PENDING
     private Outcome MatchFrom(int origin)
     {
@@ -280,75 +400,24 @@ internal ref struct RegexMachine
         var position = origin;
         while (true)
         {
+            // The attempt's first test, when the scan made and charged it, is not charged again: a one-character
+            // instruction's dispatch is that test, and an atom run's dispatch pays for its first atom.
             var instruction = _code[pc];
-            _spent += (ulong)instruction.Cost;
-            if (_spent > _threshold && !Pay())
-            {
-                _spent -= (ulong)instruction.Cost;
+            var scanned = _scanned >= 0 && (pc == _scanned || (instruction.Op == RegexOp.AtomRun && pc + 1 == _scanned));
+            if (!scanned && !Afford(instruction.Cost))
                 return Outcome.Exceeded;
-            }
 
-            DispatchObserver?.Invoke(_spent);
             switch (instruction.Op)
             {
                 case RegexOp.Literal:
-                    if (NextCharacter(position, instruction.RightToLeft, out var character, out var step) && character == instruction.A)
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.Class:
-                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClass(instruction.A, character))
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.AnyButLineTerminator:
-                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && !EndsLine(character))
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.Any:
-                    if (NextCharacter(position, instruction.RightToLeft, out _, out step))
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.LiteralIgnoringCase:
-                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && Canonical(character) == instruction.A)
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.ClassIgnoringCase:
-                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClassIgnoringCase(instruction.A, character) != (instruction.B != 0))
-                    {
-                        position += step;
-                        pc++;
-                        continue;
-                    }
-
-                    break;
                 case RegexOp.CanonicalClass:
-                    if (NextCharacter(position, instruction.RightToLeft, out character, out step) && InClass(instruction.A, Canonical(character)))
+                    if (TakeScanned(pc, ref position) || AtomHolds(instruction, ref position))
                     {
-                        position += step;
                         pc++;
                         continue;
                     }
@@ -398,6 +467,48 @@ internal ref struct RegexMachine
                     }
 
                     break;
+                case RegexOp.GreedyRun:
+                case RegexOp.LazyRun:
+                    switch (EnterRun(instruction, pc, ref position))
+                    {
+                        case Outcome.Matched:
+                            pc += 2;
+                            continue;
+                        case Outcome.Exceeded:
+                            return Outcome.Exceeded;
+                    }
+
+                    break;
+                case RegexOp.AtomRun:
+                    switch (Atoms(instruction, pc, ref position))
+                    {
+                        case Outcome.Matched:
+                            pc += 1 + instruction.A;
+                            continue;
+                        case Outcome.Exceeded:
+                            return Outcome.Exceeded;
+                    }
+
+                    break;
+                case RegexOp.StringClass:
+                {
+                    var table = _program.Strings(instruction.A);
+                    var member = table.Count;
+                    if (NextCharacter(position, table.RightToLeft, out var key, out _))
+                        member = table.FirstMember(table.Folded ? Canonical(key) : key);
+                    switch (NextWayOfStrings(pc, position, member, out var end))
+                    {
+                        case Outcome.Matched:
+                            position = end;
+                            pc += 2;
+                            continue;
+                        case Outcome.Exceeded:
+                            return Outcome.Exceeded;
+                    }
+
+                    break;
+                }
+
                 case RegexOp.Choice:
                     if (!PushChoicePoint(instruction.B, position))
                         return Outcome.Exceeded;
@@ -463,7 +574,8 @@ internal ref struct RegexMachine
 
             // The instruction failed: resume at the newest frame, with every write made since it undone. A positive
             // look-around's barrier fails in its turn, as its body found no match; a negative one's resumes after the
-            // look-around, which holds.
+            // look-around, which holds. A marked frame takes its fast path's next way, from where its own instructions
+            // end, and fails in its turn when it has none.
             while (true)
             {
                 if (_framesHeld == 0)
@@ -476,6 +588,18 @@ internal ref struct RegexMachine
                 var frame = _framesHeld * FrameSize;
                 UndoAbove(_frames[frame + 2]);
                 var resume = _frames[frame];
+                if (_frames[frame + 3] != Unmarked)
+                {
+                    var next = NextWay(frame, out var at);
+                    if (next == Outcome.Exceeded)
+                        return Outcome.Exceeded;
+                    if (next == Outcome.Failed)
+                        continue;
+                    pc = resume + 2;
+                    position = at;
+                    break;
+                }
+
                 if (resume == PositiveBarrier)
                     continue;
                 pc = resume >= 0 ? resume : NegativeBarrier(resume);
@@ -483,6 +607,278 @@ internal ref struct RegexMachine
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// Charges <paramref name="cost"/> units for the work about to be done, as <see cref="MatchFrom"/> charges a dispatch:
+    /// the units are spent, and when they pass what the meter has been paid, it is paid, before the work.
+    /// </summary>
+    /// <returns>False, with nothing spent and <see cref="Exceeded"/> naming the steps, when the step ceiling refuses them; the meter's exception, if it throws, propagates.</returns>
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=417A4A
+    // Broiler-Falsified-If: the work is done before its units are charged, a refused cost stays spent, or a cost the meter has already been paid for charges it again
+    // Broiler-Human:        PENDING
+    private bool Afford(int cost)
+    {
+        _spent += (ulong)cost;
+        if (_spent > _threshold && !Pay())
+        {
+            _spent -= (ulong)cost;
+            return false;
+        }
+
+        DispatchObserver?.Invoke(_spent);
+        return true;
+    }
+
+    /// <summary>
+    /// Whether the one-character instruction <paramref name="atom"/> holds at <paramref name="position"/>: the test a
+    /// <see cref="RegexOp.Literal"/>, <see cref="RegexOp.Class"/>, <see cref="RegexOp.AnyButLineTerminator"/>,
+    /// <see cref="RegexOp.Any"/>, <see cref="RegexOp.LiteralIgnoringCase"/>, <see cref="RegexOp.ClassIgnoringCase"/> or
+    /// <see cref="RegexOp.CanonicalClass"/> makes of the character it reads next in its direction (CharacterSetMatcher,
+    /// ECMA-262 §22.2.2.7.1), whether dispatched or read by a fast path; when it holds, <paramref name="position"/> moves
+    /// past the character.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=1; Fingerprint=83A9CE
+    // Broiler-Falsified-If: a character instruction read by a run, an atom run or a class of strings answers other than the same instruction dispatched, or the position moves when the test fails
+    // Broiler-Human:        PENDING
+    private readonly bool AtomHolds(in RegexInstruction atom, ref int position)
+    {
+        if (!NextCharacter(position, atom.RightToLeft, out var character, out var step))
+            return false;
+
+        var holds = atom.Op switch
+        {
+            RegexOp.Literal => character == atom.A,
+            RegexOp.Class => InClass(atom.A, character),
+            RegexOp.AnyButLineTerminator => !EndsLine(character),
+            RegexOp.Any => true,
+            RegexOp.LiteralIgnoringCase => Canonical(character) == atom.A,
+            RegexOp.ClassIgnoringCase => InClassIgnoringCase(atom.A, character) != (atom.B != 0),
+            RegexOp.CanonicalClass => InClass(atom.A, Canonical(character)),
+            _ => false,
+        };
+        if (holds)
+            position += step;
+        return holds;
+    }
+
+    /// <summary>
+    /// A run's dispatch (<see cref="RegexOp.GreedyRun"/>, <see cref="RegexOp.LazyRun"/>) at <paramref name="address"/>:
+    /// its required characters, then, greedy, as many more as its atom admits up to its maximum, or, lazy, none; and its
+    /// one marked frame when it has another way: a greedy run that took more than it required, or a lazy one that may take
+    /// more. Each character the run examines is charged the atom's cost before it is read, but for its first when the
+    /// start-position scan made that test (<see cref="TakeScanned"/>).
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> after the characters taken; <see cref="Outcome.Failed"/>
+    /// when a required character is missing; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=9C7EB7
+    // Broiler-Falsified-If: a greedy run that reaches the step ceiling while it takes its extra characters answers a match of fewer, a run examines a character it has not charged, a greedy run's frame gives a character back below its required ones, or a lazy run takes a character before it tries its continuation
+    // Broiler-Human:        PENDING
+    private Outcome EnterRun(in RegexInstruction run, int address, ref int position)
+    {
+        var atom = _code[address + 1];
+        var count = 0;
+        for (; count < run.A; count++)
+        {
+            if (TakeScanned(address + 1, ref position))
+                continue;
+            if (!Afford(atom.Cost))
+                return Outcome.Exceeded;
+            if (!AtomHolds(atom, ref position))
+                return Outcome.Failed;
+        }
+
+        if (run.Op == RegexOp.LazyRun)
+        {
+            if (run.B > run.A && !PushMarkedFrame(address, position, run.B == int.MaxValue ? int.MaxValue : run.B - run.A))
+                return Outcome.Exceeded;
+            return Outcome.Matched;
+        }
+
+        var least = position;
+        for (; count < run.B; count++)
+        {
+            if (!Afford(atom.Cost))
+                return Outcome.Exceeded;
+            if (!AtomHolds(atom, ref position))
+                break;
+        }
+
+        return position == least || PushMarkedFrame(address, position, least) ? Outcome.Matched : Outcome.Exceeded;
+    }
+
+    /// <summary>
+    /// An atom run's dispatch (<see cref="RegexOp.AtomRun"/>) at <paramref name="address"/>: its atoms in order, each in
+    /// its own direction, the first paid for by the dispatch, or made and paid for by the start-position scan
+    /// (<see cref="TakeScanned"/>), and each later one charged its cost before it is read.
+    /// </summary>
+    /// <returns><see cref="Outcome.Matched"/> past the last atom, <see cref="Outcome.Failed"/> at the first that fails, or <see cref="Outcome.Exceeded"/>.</returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=High; Resources=2; Fingerprint=A6E8E4
+    // Broiler-Falsified-If: an atom run charges units other than its atoms dispatched one by one would, reads an atom after one has failed, or reads a later atom before charging it
+    // Broiler-Human:        PENDING
+    private Outcome Atoms(in RegexInstruction run, int address, ref int position)
+    {
+        for (var index = 1; index <= run.A; index++)
+        {
+            var atom = _code[address + index];
+            if (TakeScanned(address + index, ref position))
+                continue;
+            if (index > 1 && !Afford(atom.Cost))
+                return Outcome.Exceeded;
+            if (!AtomHolds(atom, ref position))
+                return Outcome.Failed;
+        }
+
+        return Outcome.Matched;
+    }
+
+    /// <summary>
+    /// The way a class of strings (<see cref="RegexOp.StringClass"/>) at <paramref name="address"/>, starting at
+    /// <paramref name="from"/>, takes next, trying from <paramref name="member"/>: a string of the members kept under the
+    /// character there, in their order; at <see cref="RegexStrings.Count"/>, the class test of its single characters; one
+    /// past it, the empty string, when the class holds it. The first way that matches is taken, and a marked frame keeps
+    /// the way after it when one is left.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/>, with <paramref name="end"/> where the way taken ends; <see cref="Outcome.Failed"/>
+    /// when no way is left; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=A53F2C
+    // Broiler-Falsified-If: the class tries its single characters before a string that matches, the empty string before its single characters, a string kept under another character than the one at the index, or leaves no frame for a way after the one it takes
+    // Broiler-Human:        PENDING
+    private Outcome NextWayOfStrings(int address, int from, int member, out int end)
+    {
+        var table = _program.Strings(_code[address].A);
+        var single = table.Count;
+        end = from;
+        while (member < single)
+        {
+            var text = table.Text(member);
+            member = table.NextMember(member);
+            switch (StringHolds(table, text, from, out end))
+            {
+                case Outcome.Matched:
+                    return PushMarkedFrame(address, from, member) ? Outcome.Matched : Outcome.Exceeded;
+                case Outcome.Exceeded:
+                    return Outcome.Exceeded;
+            }
+        }
+
+        var empty = _code[address].B != 0;
+        if (member == single)
+        {
+            var characters = _code[address + 1];
+            if (!Afford(characters.Cost))
+                return Outcome.Exceeded;
+            end = from;
+            if (AtomHolds(characters, ref end))
+                return !empty || PushMarkedFrame(address, from, single + 1) ? Outcome.Matched : Outcome.Exceeded;
+        }
+
+        end = from;
+        return empty ? Outcome.Matched : Outcome.Failed;
+    }
+
+    /// <summary>
+    /// Whether <paramref name="text"/>, a string of <paramref name="table"/>, comes next from <paramref name="from"/> in the
+    /// table's direction: each of its characters compared with the one the subject holds there, exactly or, folded, by
+    /// Canonicalize, as the alternation's <see cref="RegexOp.Literal"/> and <see cref="RegexOp.LiteralIgnoringCase"/> would
+    /// compare them; right to left, from its last character. Each character compared costs one unit, charged before it
+    /// is read.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=4030D9
+    // Broiler-Falsified-If: right to left a string is compared from its first character, a character is read before it is charged, or under u a string's code point is compared with one unit of a surrogate pair
+    // Broiler-Human:        PENDING
+    private Outcome StringHolds(RegexStrings table, ReadOnlySpan<int> text, int from, out int end)
+    {
+        end = from;
+        for (var index = 0; index < text.Length; index++)
+        {
+            if (!Afford(1))
+                return Outcome.Exceeded;
+            var wanted = table.RightToLeft ? text[text.Length - 1 - index] : text[index];
+            if (!NextCharacter(end, table.RightToLeft, out var found, out var step) || (table.Folded ? Canonical(found) : found) != wanted)
+                return Outcome.Failed;
+            end += step;
+        }
+
+        return Outcome.Matched;
+    }
+
+    /// <summary>
+    /// The next way of the marked frame at <paramref name="frame"/>, just popped, with every write since it was pushed
+    /// undone: a greedy run's end one character shorter, a lazy run's one character longer, a class of strings' next way.
+    /// The frame is kept, at its place, with its position or its mark moved on, while its fast path has a way after this
+    /// one.
+    /// </summary>
+    /// <returns>
+    /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> where matching goes on, after the frame's own
+    /// instructions; <see cref="Outcome.Failed"/> when it has no way left, which fails in its turn; or
+    /// <see cref="Outcome.Exceeded"/>.
+    /// </returns>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=B7EB27
+    // Broiler-Falsified-If: a greedy run gives back two characters at one resumption, or one below its required characters, a lazy run takes more characters than its maximum, or a frame kept for a later way holds the position of the way taken
+    // Broiler-Human:        PENDING
+    private Outcome NextWay(int frame, out int position)
+    {
+        var address = _frames[frame];
+        var at = _frames[frame + 1];
+        var mark = _frames[frame + 3];
+        var op = _code[address].Op;
+        if (op == RegexOp.StringClass)
+            return NextWayOfStrings(address, at, mark, out position);
+
+        var atom = _code[address + 1];
+        if (op == RegexOp.GreedyRun)
+        {
+            position = Shorter(at, mark, atom.RightToLeft);
+            if (position != mark)
+                KeepFrame(frame, position, mark);
+            return Outcome.Matched;
+        }
+
+        position = at;
+        if (!Afford(atom.Cost))
+            return Outcome.Exceeded;
+        if (!AtomHolds(atom, ref position))
+            return Outcome.Failed;
+        if (mark != int.MaxValue)
+            mark--;
+        if (mark > 0)
+            KeepFrame(frame, position, mark);
+        return Outcome.Matched;
+    }
+
+    /// <summary>
+    /// A greedy run's end, <paramref name="end"/>, less the character it took last: the one that ends there, or, right to
+    /// left, the one that starts there, read as the run read it, and never past <paramref name="least"/>, where its required
+    /// characters end.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=Medium; Resources=0; Fingerprint=4EAF6D
+    // Broiler-Falsified-If: under u a run of surrogate pairs gives back one unit of a pair, or a run that began inside a pair the call's start splits gives back past that start
+    // Broiler-Human:        PENDING
+    private readonly int Shorter(int end, int least, bool rightToLeft)
+    {
+        if (rightToLeft)
+        {
+            CharacterAt(end, out var width);
+            return Math.Min(end + width, least);
+        }
+
+        CharacterBefore(end, out var before);
+        return Math.Max(end - before, least);
+    }
+
+    /// <summary>Puts the marked frame at <paramref name="frame"/>, just popped, back at its place, from <paramref name="position"/> with <paramref name="mark"/>.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=AED4CB
+    // Broiler-Human:        PENDING
+    private void KeepFrame(int frame, int position, int mark)
+    {
+        _frames[frame + 1] = position;
+        _frames[frame + 3] = mark;
+        _framesHeld++;
     }
 
     /// <summary>
@@ -538,7 +934,7 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> past the characters matched, in the instruction's direction;
     /// <see cref="Outcome.Failed"/>; or <see cref="Outcome.Exceeded"/>, when the length passes the step ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=5AB1B1
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=6AA99F
     // Broiler-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, under u a captured lone high surrogate matches the pair it would begin, or right to left the reference moves the index other than to where the characters it matched start
     // Broiler-Human:        PENDING
     private Outcome MatchReference(in RegexInstruction instruction, ref int position)
@@ -556,15 +952,9 @@ internal ref struct RegexMachine
         if (to <= from)
             return Outcome.Matched;
 
-        var length = (ulong)(to - from);
-        _spent += length;
-        if (_spent > _threshold && !Pay())
-        {
-            _spent -= length;
+        if (!Afford(to - from))
             return Outcome.Exceeded;
-        }
 
-        DispatchObserver?.Invoke(_spent);
         var ignoreCase = instruction.Op == RegexOp.BackreferenceIgnoringCase;
         var rightToLeft = instruction.RightToLeft;
         var at = position;
@@ -743,10 +1133,21 @@ internal ref struct RegexMachine
 
     /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>, unless the frame ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=E0F13C
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=7464A8
     // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
     // Broiler-Human:        PENDING
-    private bool PushChoicePoint(int resume, int position)
+    private bool PushChoicePoint(int resume, int position) => PushMarkedFrame(resume, position, Unmarked);
+
+    /// <summary>
+    /// Pushes a frame for <paramref name="address"/> from <paramref name="position"/> with <paramref name="mark"/>: a
+    /// fast path's marked frame, or, with <see cref="Unmarked"/>, a choice's or a barrier's, unless the frame ceiling is
+    /// reached.
+    /// </summary>
+    /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=55BDD9
+    // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, answers LimitExceeded holding fewer, or a choice's frame is pushed with a mark
+    // Broiler-Human:        PENDING
+    private bool PushMarkedFrame(int address, int position, int mark)
     {
         if (_framesHeld == _frameCeiling)
         {
@@ -757,9 +1158,10 @@ internal ref struct RegexMachine
         var frame = _framesHeld * FrameSize;
         if (frame + FrameSize > _frames.Length)
             _frames = Grow(_frames, frame, (int)Math.Min((long)_frames.Length * 2, (long)_frameCeiling * FrameSize));
-        _frames[frame] = resume;
+        _frames[frame] = address;
         _frames[frame + 1] = position;
         _frames[frame + 2] = _cellsHeld;
+        _frames[frame + 3] = mark;
         _framesHeld++;
         return true;
     }

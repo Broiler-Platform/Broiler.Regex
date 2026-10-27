@@ -26,9 +26,8 @@ namespace Broiler.Regex;
 /// <b>What is here today.</b> SJL-11.2 builds the status contract step by step, and this enum holds what its steps
 /// have needed so far: <see cref="Success"/> and <see cref="LimitExceeded"/>, which task 2.3 introduced for the caller's
 /// nesting limit (<see cref="BroilerRegex.Compile"/>), and <see cref="Match"/> and <see cref="NoMatch"/>, which task 2.4a
-/// added for the new backend's match entry. That entry is internal until task 2.4c routes <see cref="BroilerRegex"/>
-/// through it; the two members are public now because an enum's members have the enum's accessibility, and the entry
-/// answers this enum rather than one of its own. The later steps add members and keep these: the syntax status with
+/// added for the new backend's match entry, which task 2.4c made public as <see cref="BroilerRegex"/>'s offset entry
+/// (<c>BroilerRegex.Match</c> over a span), answering this enum. The later steps add members and keep these: the syntax status with
 /// its code, message identifier and position (the validate entry of task 2.8). A syntax error from
 /// <see cref="BroilerRegex.Compile"/> is still a <see cref="RegexSyntaxException"/>, and the signature of
 /// <see cref="BroilerRegex.Compile"/> is provisional: task 2.5 replaces it to take the caller's meter, and a syntax
@@ -81,8 +80,8 @@ public enum RegexStatus
 /// <remarks>
 /// Task 2.3 of SJL-11.2 introduced <see cref="Nesting"/>, and task 2.4a the new backend's three ceilings,
 /// <see cref="Steps"/>, <see cref="Frames"/> and <see cref="Trail"/> (requirements R1 and R3, decisions D8 to D10), public
-/// for the reason <see cref="RegexStatus"/>'s remarks give although the entry that answers them is internal until task
-/// 2.4c. The compile budget (task 2.5) joins them as a member of its own; none changes the members here.
+/// with the status, and answered since task 2.4c by the offset entry and, as <c>RegexMatch.Limit</c>, by the
+/// string-bearing <c>Match</c>. The compile budget (task 2.5) joins them as a member of its own; none changes the members here.
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=094E76
 // Broiler-Human:        PENDING

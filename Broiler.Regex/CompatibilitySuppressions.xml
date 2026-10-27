@@ -3,6 +3,27 @@
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Matching.RegexGroup</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Matching.RegexMatch</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.RegexOverflowException</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
     <Target>T:Broiler.Regex.Unicode.CaseFolding</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
@@ -53,6 +74,20 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Broiler.Regex.BroilerRegex.#ctor(System.String,System.String)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.BroilerRegex.Match(System.String,System.Int32)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.BroilerRegex.Matches(System.String)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>

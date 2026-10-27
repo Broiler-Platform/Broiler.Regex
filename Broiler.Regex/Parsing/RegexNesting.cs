@@ -44,11 +44,10 @@ namespace Broiler.Regex.Parsing;
 /// <see cref="RegexSyntaxException"/> by which they refuse every pattern they do not compile.
 /// </para>
 /// <para>
-/// <b>The seam for the program compiler.</b> The walks after parsing are the closure compiler of <c>Matching/</c> and
-/// its collection of a quantifier's captures, which the public members use until task 2.4c deletes them, and task 2.4a's
-/// compiler from this tree to an instruction program (<c>Compiling/ProgramCompiler.cs</c>). That compiler walks the
-/// tree on the heap, with no recursion, and still enters each group's body through <see cref="Descend"/> before it
-/// lowers the tree, so a tree built under another limit is held to the caller's.
+/// <b>The seam for the program compiler.</b> The walk after parsing is task 2.4a's compiler from this tree to an
+/// instruction program (<c>Compiling/ProgramCompiler.cs</c>), the only one since task 2.4c deleted the old backend's
+/// closure compiler. It walks the tree on the heap, with no recursion, and still enters each group's body through
+/// <see cref="Descend"/> before it lowers the tree, so a tree built under another limit is held to the caller's.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=E3A9A6

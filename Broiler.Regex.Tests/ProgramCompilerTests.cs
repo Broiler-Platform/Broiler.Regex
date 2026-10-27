@@ -36,8 +36,9 @@ public class ProgramCompilerTests
             or RegexOp.WordEdge or RegexOp.NotWordEdge
             => i.Op + " " + Decimal(i.A),
         RegexOp.Choice or RegexOp.ClearCaptures or RegexOp.ClassIgnoringCase or RegexOp.Backreference or RegexOp.BackreferenceIgnoringCase
-            or RegexOp.CloseLookaround
+            or RegexOp.CloseLookaround or RegexOp.GreedyRun or RegexOp.LazyRun or RegexOp.StringClass
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B),
+        RegexOp.AtomRun => i.Op + " " + Decimal(i.A),
         RegexOp.ExitAtMaximum or RegexOp.EnterBelowMinimum or RegexOp.RejectEmptyIteration or RegexOp.OpenLookaround
             => i.Op + " " + Decimal(i.A) + "," + Decimal(i.B) + "," + Decimal(i.C),
         _ => i.Op.ToString(),
@@ -70,7 +71,88 @@ public class ProgramCompilerTests
     [InlineData("(a)*", "", new[] { "Choice 1,8", "SavePosition 4", "ClearCaptures 2,3", "SavePosition 2", "Literal 97", "SavePosition 3", "RejectEmptyIteration 4,-1,0", "Goto 0", "Succeed" })]
     public void Each_construct_lowers_to_the_instructions_of_the_remarks(string pattern, string flags, string[] expected)
     {
+        // The general lowering, which the fast paths of task 2.4c replace for three shapes (the theory after this one).
+        Assert.Equal(expected, Listing(TestProgram.General(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("a*", "", new[] { "GreedyRun 0,2147483647", "Literal 97", "Succeed" })]
+    [InlineData("a*?", "", new[] { "LazyRun 0,2147483647", "Literal 97", "Succeed" })]
+    [InlineData("a+", "", new[] { "GreedyRun 1,2147483647", "Literal 97", "Succeed" })]
+    [InlineData("a??", "", new[] { "LazyRun 0,1", "Literal 97", "Succeed" })]
+    [InlineData("[a-c]{2,3}", "", new[] { "GreedyRun 2,3", "Class 0", "Succeed" })]
+    [InlineData(".{2}?", "s", new[] { "LazyRun 2,2", "Any", "Succeed" })]
+    [InlineData("\\p{L}*", "iu", new[] { "GreedyRun 0,2147483647", "ClassIgnoringCase 0,0", "Succeed" })]
+    [InlineData("a{0}b", "", new[] { "Literal 98", "Succeed" })]
+    [InlineData("abc", "", new[] { "AtomRun 3", "Literal 97", "Literal 98", "Literal 99", "Succeed" })]
+    [InlineData("ab*c.d", "", new[] { "Literal 97", "GreedyRun 0,2147483647", "Literal 98", "AtomRun 3", "Literal 99", "AnyButLineTerminator", "Literal 100", "Succeed" })]
+    [InlineData("a|bc", "", new[] { "Choice 1,3", "Literal 97", "Goto 6", "AtomRun 2", "Literal 98", "Literal 99", "Succeed" })]
+    [InlineData("(a)b", "", new[] { "SavePosition 2", "Literal 97", "SavePosition 3", "Literal 98", "Succeed" })]
+    [InlineData("(?:a)*", "", new[] { "Choice 1,5", "SavePosition 2", "Literal 97", "RejectEmptyIteration 2,-1,0", "Goto 0", "Succeed" })]
+    [InlineData("(a)*", "", new[] { "Choice 1,8", "SavePosition 4", "ClearCaptures 2,3", "SavePosition 2", "Literal 97", "SavePosition 3", "RejectEmptyIteration 4,-1,0", "Goto 0", "Succeed" })]
+    [InlineData("(?<=ab)c", "", new[] { "OpenLookaround 2,0,5", "AtomRun 2 rtl", "Literal 98 rtl", "Literal 97 rtl", "CloseLookaround 2,0", "Literal 99", "Succeed" })]
+    [InlineData("(?<=a*)", "", new[] { "OpenLookaround 2,0,4", "GreedyRun 0,2147483647 rtl", "Literal 97 rtl", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("(?<=[a-c].?)", "", new[] { "OpenLookaround 2,0,5", "GreedyRun 0,1 rtl", "AnyButLineTerminator rtl", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    [InlineData("[\\q{abc|ab}]", "v", new[] { "StringClass 0,0", "Class 0", "Succeed" })]
+    [InlineData("[\\q{ab|}c]", "v", new[] { "StringClass 0,1", "Class 0", "Succeed" })]
+    [InlineData("[\\q{AB}]", "vi", new[] { "StringClass 0,0", "CanonicalClass 0", "Succeed" })]
+    [InlineData("(?<=[\\q{ab}])", "v", new[] { "OpenLookaround 2,0,4", "StringClass 0,0 rtl", "Class 0 rtl", "CloseLookaround 2,0", "Succeed" })]
+    public void Each_fast_path_lowers_to_its_instruction_and_the_ones_it_owns(string pattern, string flags, string[] expected)
+    {
+        // Task 2.4c: a quantifier over one character or class is a run followed by its atom, two or more atoms in a row of
+        // one sequence an atom run followed by them in the order they are matched (right to left the last first), a class
+        // of strings its table's instruction followed by the class of its single characters. A group, a character alone and
+        // a quantified group keep the general lowering.
         Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+    }
+
+    [Theory]
+    [InlineData("a", "", 0)]
+    [InlineData("(a)b", "", 1)]
+    [InlineData("((a))", "", 2)]
+    [InlineData("abc", "", 1)]
+    [InlineData("[a-c]+x", "", 1)]
+    [InlineData("a{2}b", "", 1)]
+    [InlineData("a+?b", "", 1)]
+    [InlineData(".x", "", 1)]
+    [InlineData("\\p{L}", "u", 0)]
+    [InlineData("k", "iu", 0)]
+    [InlineData("(?:(a)b)*?", "", -1)]
+    [InlineData("a*b", "", -1)]
+    [InlineData("a?b", "", -1)]
+    [InlineData("a|b", "", -1)]
+    [InlineData("(?:a|b)c", "", -1)]
+    [InlineData("^a", "", -1)]
+    [InlineData("\\ba", "", -1)]
+    [InlineData("(?=a)a", "", -1)]
+    [InlineData("(?<=a)b", "", -1)]
+    [InlineData("\\1(a)", "", -1)]
+    [InlineData("(?:ab){2}", "", -1)]
+    [InlineData("[\\q{ab}c]", "v", -1)]
+    [InlineData("", "", -1)]
+    public void The_first_test_is_the_one_character_test_every_attempt_makes_before_any_choice(string pattern, string flags, int address)
+    {
+        // Task 2.4c's literal-prefix prefilter: past the group starts at the front, a character or class instruction, the
+        // first atom of an atom run, or the atom of a run that requires a character. A choice, an assertion, a look-around,
+        // a reference, a counted loop's bound, a class of strings, a run that may take nothing or nothing at all leaves it
+        // -1, and so does every program of the general lowering.
+        var program = TestProgram.Compile(pattern, flags);
+        Assert.Equal(address, program.FirstTest);
+        if (address >= 0)
+            Assert.Contains(program.Code[address].Op, (RegexOp[])[RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass, RegexOp.Any, RegexOp.AnyButLineTerminator]);
+        Assert.Equal(-1, TestProgram.General(pattern, flags).FirstTest);
+    }
+
+    [Fact]
+    public void A_run_and_an_atom_run_cost_their_dispatch_and_the_atom_its_own()
+    {
+        // A run's dispatch is one unit, its characters the atom's cost each; an atom run costs its first atom's cost, so
+        // that folding moves no unit.
+        var run = TestProgram.Compile("\\p{L}*", "u");
+        Assert.Equal((1, 10), (run.Code[0].Cost, run.Code[1].Cost));
+        var folded = TestProgram.Compile("\\p{L}ab", "u");
+        Assert.Equal((RegexOp.AtomRun, 10, 10, 1, 1), (folded.Code[0].Op, folded.Code[0].Cost, folded.Code[1].Cost, folded.Code[2].Cost, folded.Code[3].Cost));
+        Assert.Equal(TestProgram.General("\\p{L}ab", "u").Code.ToArray().Sum(static i => i.Cost), folded.Code.ToArray().Skip(1).Sum(static i => i.Cost));
     }
 
     [Theory]
@@ -129,7 +211,7 @@ public class ProgramCompilerTests
         // A look-around's register is its own, taken when it is lowered; its start's third operand is the address after
         // its close. Backward, a sequence's terms are emitted last first and a group's end register is written first;
         // assertions, choices and loops read no direction.
-        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+        Assert.Equal(expected, Listing(TestProgram.General(pattern, flags)));
     }
 
     [Fact]
@@ -193,7 +275,7 @@ public class ProgramCompilerTests
     [Fact]
     public void A_class_is_its_code_points_with_its_negation_applied_and_costs_one_plus_its_weight()
     {
-        var program = TestProgram.Compile("[a-c][^a-c]\\d");
+        var program = TestProgram.General("[a-c][^a-c]\\d");
         Assert.Equal([97, 99], program.ClassRanges(0).ToArray());
         Assert.Equal([0, 96, 100, CodePointSet.MaxCodePoint], program.ClassRanges(1).ToArray());
         Assert.Equal([48, 57], program.ClassRanges(2).ToArray());
@@ -238,13 +320,15 @@ public class ProgramCompilerTests
     [Fact]
     public void The_registers_are_the_capture_registers_then_one_or_two_per_quantifier()
     {
-        // Two groups: registers 0 to 5. a* takes one (its mark), b+ two (its mark and its count).
-        var program = TestProgram.Compile("(a*)(b+)");
+        // Two groups: registers 0 to 5. In the general lowering a* takes one (its mark), b+ two (its mark and its count); as
+        // runs they take none.
+        var program = TestProgram.General("(a*)(b+)");
         Assert.Equal(2, program.CaptureCount);
         Assert.Equal(6, program.SlotCount);
         Assert.Equal(9, program.RegisterCount);
         Assert.False(program.Unicode);
         Assert.True(TestProgram.Compile("a", "v").Unicode);
+        Assert.Equal(6, TestProgram.Compile("(a*)(b+)").RegisterCount);
     }
 
     [Theory]
@@ -259,7 +343,7 @@ public class ProgramCompilerTests
     {
         // §22.2.2.7, Atom :: CharacterClass, steps 3 to 8. The class of single characters is always an alternative, even
         // empty, as the specification appends its CharacterSetMatcher; the empty string, when held, is an empty last one.
-        Assert.Equal(expected, Listing(TestProgram.Compile(pattern, flags)));
+        Assert.Equal(expected, Listing(TestProgram.General(pattern, flags)));
     }
 
     [Fact]
@@ -315,19 +399,75 @@ public class ProgramCompilerTests
     }
 
     [Fact]
-    public void A_class_of_strings_is_lowered_in_full_at_each_of_its_occurrences()
+    public void A_class_of_strings_is_lowered_in_full_at_each_of_its_occurrences_in_the_general_lowering()
     {
-        // The compile-time expansion that task 2.5's compile meter must charge (the roadmap's record of task 2.4b):
-        // each occurrence of a class of strings becomes a Choice and a Goto for each string, a Literal for each of its
-        // characters, the class of its single characters and nothing shared, so \p{RGI_Emoji}'s 2,760 strings are
-        // 16,717 instructions, and a second occurrence as many again.
+        // The compile-time expansion the roadmap's record of task 2.4b handed task 2.4c and task 2.5: without the fast
+        // paths each occurrence of a class of strings becomes a Choice and a Goto for each string, a Literal for each of its
+        // characters, the class of its single characters and nothing shared, so \p{RGI_Emoji}'s 2,760 strings are 16,717
+        // instructions, and a second occurrence as many again.
         const string Emoji = "\\p{RGI_Emoji}";
         var strings = ((CharClassNode)RegexParser.Parse(Emoji, RegexFlags.UnicodeSets, UnicodeTables.Instance, out _)).Set.Strings;
         var characters = strings.Sum(static text => text.EnumerateRunes().Count());
-        var once = TestProgram.Compile(Emoji, "v").Code.Length - 1;
+        var once = TestProgram.General(Emoji, "v").Code.Length - 1;
         Assert.Equal((2_760, 16_717), (strings.Count, once));
         Assert.Equal((2 * strings.Count) + characters + 1, once);
-        Assert.Equal((2 * once) + 1, TestProgram.Compile(Emoji + Emoji, "v").Code.Length);
+        Assert.Equal((2 * once) + 1, TestProgram.General(Emoji + Emoji, "v").Code.Length);
+    }
+
+    [Fact]
+    public void A_class_of_strings_is_two_instructions_at_each_occurrence_and_one_table_its_occurrences_share()
+    {
+        // Task 2.4c's remedy: the strings are a table of the program's, built once for each distinct class, direction and
+        // folding, and each occurrence is its StringClass and its class of single characters. Two occurrences of
+        // \p{RGI_Emoji} share one table; read right to left in a look-behind, or under i, they are other tables.
+        const string Emoji = "\\p{RGI_Emoji}";
+        var once = TestProgram.Compile(Emoji, "v");
+        Assert.Equal((3, 1), (once.Code.Length, once.StringTableCount));
+        Assert.Equal(2_760, once.Strings(0).Count);
+        var twice = TestProgram.Compile(Emoji + Emoji, "v");
+        Assert.Equal((5, 1), (twice.Code.Length, twice.StringTableCount));
+        Assert.Equal((0, 0), (twice.Code[0].A, twice.Code[2].A));
+        Assert.Equal(2, TestProgram.Compile("(?<=" + Emoji + ")" + Emoji, "v").StringTableCount);
+        Assert.Equal(2, TestProgram.Compile(Emoji + "(?i:" + Emoji + ")", "v").StringTableCount);
+        Assert.Equal(1, TestProgram.Compile("[\\q{ab|cd}x][\\q{ab|cd}y]", "v").StringTableCount);
+        Assert.Equal(2, TestProgram.Compile("[\\q{ab|cd}][\\q{ab|ce}]", "v").StringTableCount);
+
+        // A dispatch costs one and the weight of the characters strings begin with; the class's own test follows.
+        var table = once.Strings(0);
+        Assert.Equal(1 + RegexProgram.ClassWeight(table.KeyCount), once.Code[0].Cost);
+        Assert.Equal(RegexOp.Class, once.Code[1].Op);
+    }
+
+    [Fact]
+    public void A_table_keeps_each_string_under_the_character_a_match_of_it_begins_with_in_the_class_s_order()
+    {
+        // Longest first, as the parser sorts them: abc, ab and ba begin with a, a and b; under b, ba alone; no string begins
+        // with x. Right to left a string begins with its last character: abc under c, ab and ba under b and a.
+        static string[] Under(RegexStrings table, int key)
+        {
+            var found = new System.Collections.Generic.List<string>();
+            for (var member = table.FirstMember(key); member < table.Count; member = table.NextMember(member))
+                found.Add(string.Concat(table.Text(member).ToArray().Select(char.ConvertFromUtf32)));
+            return [.. found];
+        }
+
+        var forward = TestProgram.Compile("[\\q{ab|abc|ba}x]", "v").Strings(0);
+        Assert.Equal((3, 2), (forward.Count, forward.KeyCount));
+        Assert.Equal(["abc", "ab"], Under(forward, 'a'));
+        Assert.Equal(["ba"], Under(forward, 'b'));
+        Assert.Empty(Under(forward, 'x'));
+        var backward = TestProgram.Compile("(?<=[\\q{ab|abc|ba}x])", "v").Strings(0);
+        Assert.True(backward.RightToLeft);
+        Assert.Equal(["abc"], Under(backward, 'c'));
+        Assert.Equal(["ab"], Under(backward, 'b'));
+        Assert.Equal(["ba"], Under(backward, 'a'));
+
+        // Folded under i, a table holds each code point's Canonicalize, as the alternation's instructions compare them;
+        // a surrogate pair is one code point.
+        var folded = TestProgram.Compile("[\\q{AB|\\u{1F600}x}]", "vi").Strings(0);
+        Assert.True(folded.Folded);
+        Assert.Equal(["ab"], Under(folded, 'a'));
+        Assert.Equal(["\U0001F600x"], Under(folded, 0x1F600));
     }
 
     [Fact]
@@ -414,9 +554,19 @@ public class ProgramCompilerTests
 /// <summary>Compiles a pattern to the new backend's program against the Unicode owner's tables, under the library's maximum nesting limit.</summary>
 internal static class TestProgram
 {
-    internal static RegexProgram Compile(string pattern, string flags = "")
+    /// <summary>The program the library builds of <paramref name="pattern"/> under <paramref name="flags"/>, its fast paths on.</summary>
+    internal static RegexProgram Compile(string pattern, string flags = "") => Compile(pattern, flags, fastPaths: true);
+
+    /// <summary>
+    /// The program of <paramref name="pattern"/> with the fast paths off (task 2.4c): the general lowering of the program
+    /// compiler's remarks, which the tests that read that lowering, its loops' units and its loops' frames and trail cells
+    /// read, and which the fast paths' differential compares with.
+    /// </summary>
+    internal static RegexProgram General(string pattern, string flags = "") => Compile(pattern, flags, fastPaths: false);
+
+    private static RegexProgram Compile(string pattern, string flags, bool fastPaths)
     {
-        var answer = ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program);
+        var answer = ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var program, fastPaths);
         Assert.True(answer == ProgramCompilation.Compiled, "/" + pattern + "/" + flags + " compiled to " + answer);
         return program!;
     }

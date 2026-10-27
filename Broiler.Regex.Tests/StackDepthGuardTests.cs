@@ -1,29 +1,32 @@
+using System;
+using System.Linq;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
 
 /// <summary>
-/// Quantifier repetition is iterative for every body shape: a single-code-point body (`a*`,
-/// `.*`, `[ab]+`) through the linear fast path, and any other body — a capturing group, an
-/// alternation of sequences — through the explicit-stack RepeatMatcher. So a repeat over a
-/// subject of any length matches natively, without recursing once per iteration. The
-/// remaining native recursion is bounded by the pattern's nesting depth (like the parser
-/// that accepted the pattern), never by the subject length, so the `RegexOverflowException`
-/// backstop is no longer reachable by input size; it stays only to degrade a pathologically
-/// nested pattern to a signal rather than a crash. A short subject always matches.
+/// The string-bearing members over long subjects. Since task 2.4c they run the new backend, which keeps its choices
+/// and register writes on the heap, so no subject length reaches the CLR stack (check A-4); what bounds a match is the
+/// engines' frame and trail ceilings, decision D10's, which the string-bearing members pass. A quantifier over one
+/// character is a run, one frame however long; any other body holds a frame per iteration and writes its group starts
+/// and captures to the trail, so a long enough subject reaches a ceiling, and the members answer it as a ceiling,
+/// never as no match: <see cref="BroilerRegex.Match(string, int)"/> with <see cref="RegexMatch.Limit"/>,
+/// <see cref="BroilerRegex.Matches"/> with that failed match as its last element, and <see cref="BroilerRegex.IsMatch"/>,
+/// whose <see langword="bool"/> cannot carry it, with an <see cref="InvalidOperationException"/> (requirement R1; a
+/// breach of convention 3 that docs/conventions.md tracks for task 2.9).
 /// </summary>
 public class StackDepthGuardTests
 {
     [Fact(Timeout = 600000)]
-    public void GreedyStarOverALongSubject_MatchesViaTheFastPath()
+    public void GreedyStarOverALongSubject_MatchesAsOneRun()
     {
         var re = TestRegex.Compile("a*");
-        var subject = new string('a', 500_000);
-        Assert.Equal(subject, re.Match(subject).Value);
+        var subject = new string('a', 5_000_000);
+        Assert.Equal(subject.Length, re.Match(subject).Length);
     }
 
     [Fact(Timeout = 600000)]
-    public void PlusClassOverALongSubject_MatchesViaTheFastPath()
+    public void PlusClassOverALongSubject_MatchesAsOneRun()
     {
         var re = TestRegex.Compile("[ab]+", "u");
         var subject = new string('b', 500_000);
@@ -31,23 +34,58 @@ public class StackDepthGuardTests
     }
 
     [Fact(Timeout = 600000)]
-    public void CapturingGroupBodyOverALongSubject_MatchesViaTheIterativeDriver()
+    public void CapturingGroupBodyOverALongSubject_MatchesWithinTheEnginesCeilings()
     {
-        // A capturing-group body is not eligible for the fast path, so it exercises the
-        // explicit-stack RepeatMatcher. It used to overflow; now it matches natively.
+        // A capturing group's iteration holds a frame and writes five trail cells (its start, its capture reset, the
+        // capture's two ends): 400,000 iterations are 2,000,000 cells, under the engines' 2,097,152.
         var re = TestRegex.Compile("(a)*");
-        var subject = new string('a', 500_000);
+        var subject = new string('a', 400_000);
         var m = re.Match(subject);
         Assert.Equal(subject, m.Value);
         Assert.Equal("a", m.Groups[1].Value); // last iteration's capture
     }
 
     [Fact(Timeout = 600000)]
-    public void AlternationBodyOverALongSubject_MatchesViaTheIterativeDriver()
+    public void A_match_past_the_engines_trail_ceiling_answers_the_ceiling_not_no_match()
     {
-        // A (non-capturing) alternation of sequences is also a general body.
+        // 500,000 iterations write 2,500,000 cells: Match answers a failed match naming the trail ceiling, which no match
+        // never does, and Matches ends with that failed match as data (convention 3), rather than ending quietly. IsMatch,
+        // whose bool cannot carry it, throws rather than answer false.
+        var re = TestRegex.Compile("(a)*");
+        var subject = new string('a', 500_000);
+        var m = re.Match(subject);
+        Assert.False(m.Success);
+        Assert.Equal(RegexLimit.Trail, m.Limit);
+        Assert.Equal(RegexLimit.None, re.Match("b").Limit);
+        Assert.Contains("trail", Assert.Throws<InvalidOperationException>(() => re.IsMatch(subject)).Message, StringComparison.Ordinal);
+        var all = re.Matches(subject).ToList();
+        Assert.Equal((false, RegexLimit.Trail), (Assert.Single(all).Success, all[0].Limit));
+    }
+
+    [Fact(Timeout = 600000)]
+    public void A_match_past_the_engines_frame_ceiling_answers_the_ceiling_after_the_matches_before_it()
+    {
+        // An alternation's iteration holds two frames, its loop's and its own: 600,000 iterations pass the engines'
+        // 1,048,576 frames. Matches yields the match before the long run, then a failed match naming the frame ceiling,
+        // and ends.
+        var re = TestRegex.Compile("(?:a|b)*c");
+        var subject = "abc-" + new string('a', 600_000);
+        Assert.Equal(RegexLimit.Frames, re.Match(subject, 4).Limit);
+        Assert.Equal("abc", re.Match(subject).Value);
+        using var matches = re.Matches(subject).GetEnumerator();
+        Assert.True(matches.MoveNext());
+        Assert.Equal(("abc", RegexLimit.None), (matches.Current.Value, matches.Current.Limit));
+        Assert.True(matches.MoveNext());
+        Assert.Equal((false, RegexLimit.Frames, -1), (matches.Current.Success, matches.Current.Limit, matches.Current.Index));
+        Assert.False(matches.MoveNext());
+    }
+
+    [Fact(Timeout = 600000)]
+    public void AlternationBodyOverALongSubject_MatchesWithinTheEnginesCeilings()
+    {
+        // A (non-capturing) alternation of sequences is a general body: 250,000 iterations hold 500,000 frames.
         var re = TestRegex.Compile("(?:ab|a)+");
-        var subject = string.Concat(System.Linq.Enumerable.Repeat("ab", 250_000));
+        var subject = string.Concat(Enumerable.Repeat("ab", 250_000));
         Assert.Equal(subject, re.Match(subject).Value);
     }
 
@@ -61,6 +99,23 @@ public class StackDepthGuardTests
     }
 
     [Fact(Timeout = 600000)]
+    public void A_flat_sequence_of_capturing_groups_matches_on_a_1_MiB_thread()
+    {
+        // The old matcher's continuations recursed once per term: 5,000 capturing groups in a row ended the process on a
+        // 1 MiB thread, where 2,000 matched. The new backend's loop recurses for none, at 5,000 or at 50,000.
+        foreach (var count in new[] { 5_000, 50_000 })
+        {
+            var re = TestRegex.Compile(string.Concat(Enumerable.Repeat("(a)", count)));
+            var subject = new string('a', count);
+            RegexMatch? m = null;
+            ProgramCompilerTests.OnASmallStack(() => m = re.Match(subject));
+            Assert.Equal(subject, m!.Value);
+            Assert.Equal(count + 1, m.Groups.Count);
+            Assert.Equal(count - 1, m.Groups[count].Index);
+        }
+    }
+
+    [Fact(Timeout = 600000)]
     public void ShortSubjects_StillMatch()
     {
         var re = TestRegex.Compile("a*b");
@@ -68,7 +123,7 @@ public class StackDepthGuardTests
         Assert.Equal("b", re.Match("b").Value);
 
         var captured = TestRegex.Compile("(ab)*");
-        var abs = string.Concat(System.Linq.Enumerable.Repeat("ab", 2_000));
+        var abs = string.Concat(Enumerable.Repeat("ab", 2_000));
         Assert.Equal(abs, captured.Match(abs).Value);
     }
 }

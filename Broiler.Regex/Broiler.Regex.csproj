@@ -37,9 +37,9 @@
   </ItemGroup>
 
   <!--
-    The new backend's match entry (Broiler.Regex.Engine, task 2.4a of SJL-11.2) is internal until task 2.4c routes
-    BroilerRegex through it and makes it public. Until then the tests and the Native AOT probe reach it, and nothing
-    else does.
+    The tests and the Native AOT probe reach the library's internals: the program, the machine and its observer, and
+    the internal entry that reports the units a call did, which BroilerRegex's public offset entry (task 2.4c of
+    SJL-11.2) leaves to the meter.
   -->
   <ItemGroup>
     <InternalsVisibleTo Include="Broiler.Regex.Tests" />

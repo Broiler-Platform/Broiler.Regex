@@ -102,27 +102,25 @@ Broiler.Regex.BroilerRegex..ctor(System.String, Broiler.Regex.RegexFlags, Broile
 Broiler.Regex.BroilerRegex..ctor(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
 Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.IsMatch(System.String, System.Int32) method System.Boolean
-Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.Matching.RegexMatch
-Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.Matching.RegexMatch>
+Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
+Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.RegexMatch
+Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>
 Broiler.Regex.BroilerRegex.MaximumNestingLimit field static const System.Int32 = 512
 Broiler.Regex.BroilerRegex.get_CaptureCount() method System.Int32
 Broiler.Regex.BroilerRegex.get_Flags() method Broiler.Regex.RegexFlags
 Broiler.Regex.BroilerRegex.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>
 Broiler.Regex.BroilerRegex.get_Pattern() method System.String
-Broiler.Regex.Matching.RegexGroup sealed class
-Broiler.Regex.Matching.RegexGroup.get_Index() method System.Int32
-Broiler.Regex.Matching.RegexGroup.get_Length() method System.Int32
-Broiler.Regex.Matching.RegexGroup.get_Name() method System.String
-Broiler.Regex.Matching.RegexGroup.get_Success() method System.Boolean
-Broiler.Regex.Matching.RegexGroup.get_Value() method System.String
-Broiler.Regex.Matching.RegexMatch sealed class
-Broiler.Regex.Matching.RegexMatch.Empty field static readonly Broiler.Regex.Matching.RegexMatch
-Broiler.Regex.Matching.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.Matching.RegexGroup>
-Broiler.Regex.Matching.RegexMatch.get_Index() method System.Int32
-Broiler.Regex.Matching.RegexMatch.get_Length() method System.Int32
-Broiler.Regex.Matching.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.Matching.RegexGroup>
-Broiler.Regex.Matching.RegexMatch.get_Success() method System.Boolean
-Broiler.Regex.Matching.RegexMatch.get_Value() method System.String
+Broiler.Regex.BroilerRegex.get_SlotCount() method System.Int32
+Broiler.Regex.Engine.RegexMatchCeilings struct
+Broiler.Regex.Engine.RegexMatchCeilings..ctor(System.Nullable`1<System.UInt64>, System.Int32, System.Int32) method System.Void
+Broiler.Regex.Engine.RegexMatchCeilings.EngineFrames field static const System.Int32 = 1048576
+Broiler.Regex.Engine.RegexMatchCeilings.EngineTrail field static const System.Int32 = 2097152
+Broiler.Regex.Engine.RegexMatchCeilings.FrameCeilingMaximum field static const System.Int32 = 16777216
+Broiler.Regex.Engine.RegexMatchCeilings.TrailCeilingMaximum field static const System.Int32 = 33554432
+Broiler.Regex.Engine.RegexMatchCeilings.get_Engines() method static Broiler.Regex.Engine.RegexMatchCeilings
+Broiler.Regex.Engine.RegexMatchCeilings.get_Frames() method System.Int32
+Broiler.Regex.Engine.RegexMatchCeilings.get_Steps() method System.Nullable`1<System.UInt64>
+Broiler.Regex.Engine.RegexMatchCeilings.get_Trail() method System.Int32
 Broiler.Regex.Parsing.RegexParser sealed class
 Broiler.Regex.Parsing.RegexParser..ctor(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
 Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32&) method static Broiler.Regex.Ast.RegexNode
@@ -142,6 +140,12 @@ Broiler.Regex.RegexFlags.value__ field System.Int32
 Broiler.Regex.RegexFlagsParser static class
 Broiler.Regex.RegexFlagsParser.IsUnicodeMode(Broiler.Regex.RegexFlags) method static System.Boolean
 Broiler.Regex.RegexFlagsParser.Parse(System.String) method static Broiler.Regex.RegexFlags
+Broiler.Regex.RegexGroup sealed class
+Broiler.Regex.RegexGroup.get_Index() method System.Int32
+Broiler.Regex.RegexGroup.get_Length() method System.Int32
+Broiler.Regex.RegexGroup.get_Name() method System.String
+Broiler.Regex.RegexGroup.get_Success() method System.Boolean
+Broiler.Regex.RegexGroup.get_Value() method System.String
 Broiler.Regex.RegexLimit enum
 Broiler.Regex.RegexLimit.Frames = 3
 Broiler.Regex.RegexLimit.Nesting = 1
@@ -149,8 +153,15 @@ Broiler.Regex.RegexLimit.None = 0
 Broiler.Regex.RegexLimit.Steps = 2
 Broiler.Regex.RegexLimit.Trail = 4
 Broiler.Regex.RegexLimit.value__ field System.Int32
-Broiler.Regex.RegexOverflowException sealed class : System.Exception
-Broiler.Regex.RegexOverflowException..ctor() method System.Void
+Broiler.Regex.RegexMatch sealed class
+Broiler.Regex.RegexMatch.Empty field static readonly Broiler.Regex.RegexMatch
+Broiler.Regex.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.RegexGroup>
+Broiler.Regex.RegexMatch.get_Index() method System.Int32
+Broiler.Regex.RegexMatch.get_Length() method System.Int32
+Broiler.Regex.RegexMatch.get_Limit() method Broiler.Regex.RegexLimit
+Broiler.Regex.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.RegexGroup>
+Broiler.Regex.RegexMatch.get_Success() method System.Boolean
+Broiler.Regex.RegexMatch.get_Value() method System.String
 Broiler.Regex.RegexStatus enum
 Broiler.Regex.RegexStatus.LimitExceeded = 1
 Broiler.Regex.RegexStatus.Match = 2
@@ -160,6 +171,11 @@ Broiler.Regex.RegexStatus.value__ field System.Int32
 Broiler.Regex.RegexSyntaxException sealed class : System.Exception
 Broiler.Regex.RegexSyntaxException..ctor(System.String, System.Int32) method System.Void
 Broiler.Regex.RegexSyntaxException.get_Position() method System.Int32
+Broiler.Regex.RegexWorkCharge delegate
+Broiler.Regex.RegexWorkCharge..ctor(System.Object, System.IntPtr) method System.Void
+Broiler.Regex.RegexWorkCharge.BeginInvoke(System.UInt64, System.AsyncCallback, System.Object) method virtual System.IAsyncResult
+Broiler.Regex.RegexWorkCharge.EndInvoke(System.IAsyncResult) method virtual System.Void
+Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64) method virtual System.Void
 Broiler.Regex.Unicode.UnicodeCharSets static class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch sealed class
 Broiler.Regex.Unicode.UnicodeCharSets+PropertyMatch..ctor(Broiler.Regex.Ast.CodePointSet, System.Collections.Generic.IReadOnlyList`1<System.String>) method System.Void

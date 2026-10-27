@@ -91,8 +91,125 @@ public class ChargingTests
         // group's end and the failed Literal; at 1 the same three with the Literal matching, the group's start and the
         // reference to one character (1 + 1), which finds no character before index 0; at 2 those six, the close, the
         // Literal and Succeed. [\q{ab}c] on "c": the choice, the string's failed first Literal, the class and Succeed.
-        var program = TestProgram.Compile(pattern, flags);
+        // The general lowering, whose loops these units count; the fast paths' are the theory after this one.
+        var program = TestProgram.General(pattern, flags);
         Assert.Equal(units, Run(program, subject, null).Units);
+    }
+
+    [Theory]
+    [InlineData("a*", "aa", "", 5)]
+    [InlineData("a*", "", "", 3)]
+    [InlineData("[a-cx-z]*", "ay", "", 8)]
+    [InlineData("a*?b", "aab", "", 7)]
+    [InlineData("a{2}b", "aab", "", 5)]
+    [InlineData("abc", "abc", "", 4)]
+    [InlineData("abc", "abd", "", 5)]
+    [InlineData("[\\q{ab}c]", "c", "v", 3)]
+    [InlineData("[\\q{ab}c]", "ab", "v", 4)]
+    [InlineData("[\\q{abc|ab}]x", "abx", "v", 8)]
+    [InlineData("(?<=a+)b", "aab", "", 17)]
+    public void A_fast_path_charges_its_dispatch_and_each_character_it_examines(string pattern, string subject, string flags, ulong units)
+    {
+        // Task 2.4c. a* on "aa": the run's dispatch, the two a's and the read that finds the end, each the Literal's one
+        // unit, then Succeed: five, where the loop of the theory above costs fourteen. [a-cx-z]* reads three times at the
+        // class's cost, two. a*?b on "aab": the lazy run takes nothing, b fails at 0, the run's frame takes an a, b fails at
+        // 1, the frame takes the second a, b matches, Succeed. a{2}b: two required a's, no frame. An atom run costs what
+        // its atoms dispatched one by one cost: abc on "abc" four, as in the general lowering, and on "abd" five, the
+        // failed attempt's three and the start-position scan's skips of 1 and 2, with no attempt at the end. [\q{ab}c]
+        // on "c": the table's dispatch, one unit (one key, weight none), finds no string under c and the class test, one,
+        // matches; on "ab" the string's two characters, a unit each. [\q{abc|ab}]x on "abx": abc fails at its third
+        // character, ab matches, then x and Succeed. (?<=a+)b on "aab": at 0 the look-behind's start, the run's dispatch
+        // and its first read, which finds nothing before index 0; at 1 those with one a read, the read that finds the start,
+        // the close and the failed b; at 2 two a's and the start, the close, b and Succeed.
+        Assert.Equal(units, Run(TestProgram.Compile(pattern, flags), subject, null).Units);
+    }
+
+    [Fact]
+    public void An_atom_run_moves_no_unit()
+    {
+        // Folding replaces dispatches with reads of the same cost: over every subject and start, a pattern whose only fast
+        // path is an atom run charges what its general lowering does, in an attempt at that start alone (a search's scan
+        // is the prefilter's, whose units are the theory after this one's).
+        foreach (var (pattern, flags) in (ValueTuple<string, string>[])[("abc", ""), ("a\\p{L}.", "u"), ("(?<=ab)c", ""), ("x[a-c]y|z", "i")])
+        {
+            var folded = TestProgram.Compile(pattern, flags);
+            var general = TestProgram.General(pattern, flags);
+            Assert.Contains(folded.Code.ToArray(), static i => i.Op == RegexOp.AtomRun);
+            foreach (var subject in (string[])["", "abc", "xabcx", "zzab", "aBcXbY", "\U0001F600abc"])
+            {
+                for (var start = 0; start <= subject.Length; start++)
+                    Assert.Equal(Run(general, subject, null, start: start, anchored: true).Units, Run(folded, subject, null, start: start, anchored: true).Units);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("b", "", "aab", "match 2,3", 4, 4)]
+    [InlineData("b", "", "aaa", "nomatch", 3, 4)]
+    [InlineData("[a-cx-z]", "", "mmy", "match 2,3", 7, 7)]
+    [InlineData("(a)b", "", "xab", "match 1,3 1,2", 6, 7)]
+    [InlineData("a+b", "", "xxaab", "match 2,5", 8, 28)]
+    [InlineData("abc", "", "xxabc", "match 2,5", 6, 6)]
+    [InlineData("\\u{1F600}", "u", "x\U0001F600", "match 1,3", 3, 3)]
+    public void The_start_position_scan_charges_each_position_it_skips_and_nothing_else(
+        string pattern, string flags, string subject, string answer, ulong units, ulong general)
+    {
+        // Task 2.4c's literal-prefix prefilter: a search tests each position with the one-character test every attempt
+        // makes first, and enters the program only where it holds. Each test costs that test's dispatch, one unit and
+        // the class's weight, charged before it is made; the attempt at the position admitted takes the scan's test as
+        // its own first test and does not pay for it again, so the scan adds the skips alone; the subject's end, where no
+        // character is, ends the search with no attempt. b on "aab": two skips, then the test that admits the b, which is
+        // the attempt's Literal, and Succeed. [a-cx-z], of weight one, skips at two units. (a)b on "xab": one skip and no group start
+        // written at 0. a+b and abc: the run's atom and the atom run's first atom are the test. Under u the scan steps over
+        // a surrogate pair as the search does. The general lowering, with no fast path and no scan, gives the same answer
+        // at the cost after the units: an attempt at every position, the end included, each failing at its first test
+        // after the group starts before it, and a loop where a+b has a run.
+        var fast = Run(TestProgram.Compile(pattern, flags), subject, null);
+        var slow = Run(TestProgram.General(pattern, flags), subject, null);
+        Assert.Equal((answer, units), (MachineTests.Render(fast.Status, fast.Slots), fast.Units));
+        Assert.Equal((answer, general), (MachineTests.Render(slow.Status, slow.Slots), slow.Units));
+    }
+
+    [Fact]
+    public void An_anchored_call_makes_no_scan_and_a_scan_stops_at_the_step_ceiling()
+    {
+        // An anchored call is one attempt at its start, which b fails on "ab" at one unit, where a scan would have found
+        // the b at 1. b on "aaaa" skips four positions at a unit each: every step ceiling below four stops the scan with
+        // its units at the ceiling, and four lets it reach the end with no match.
+        var program = TestProgram.Compile("b");
+        Assert.Equal((RegexStatus.NoMatch, 1UL), Head(Run(program, "ab", null, anchored: true)));
+        Assert.Equal((RegexStatus.Match, 3UL), Head(Run(program, "ab", null)));
+        for (ulong k = 1; k < 4; k++)
+            Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Steps, k), (Run(program, "aaaa", null, k).Status, Run(program, "aaaa", null, k).Limit, Run(program, "aaaa", null, k).Units));
+        Assert.Equal((RegexStatus.NoMatch, 4UL), Head(Run(program, "aaaa", null, 4)));
+
+        static (RegexStatus, ulong) Head((RegexStatus Status, RegexLimit Limit, ulong Units, int[] Slots) run) => (run.Status, run.Units);
+    }
+
+    [Fact]
+    public void Under_u_the_scan_steps_over_a_surrogate_pair_as_the_search_does()
+    {
+        // \uDE00 under u over a pair and a lone low half: the scan skips the pair at 0 in one step, as AdvanceStringIndex
+        // does, and finds the lone half at 2, not the pair's low half at 1; from a start inside the pair, which splits it,
+        // the low half at 1 is a lone unit and is found there.
+        var program = TestProgram.Compile("\\uDE00", "u");
+        var subject = "\U0001F600" + "\uDE00";
+        var run = Run(program, subject, null);
+        Assert.Equal(("match 2,3", 3UL), (MachineTests.Render(run.Status, run.Slots), run.Units));
+        run = Run(program, subject, null, start: 1);
+        Assert.Equal(("match 1,2", 2UL), (MachineTests.Render(run.Status, run.Slots), run.Units));
+    }
+
+    [Fact]
+    public void A_class_of_strings_costs_its_lookup_and_the_strings_under_the_character_at_the_index()
+    {
+        // \p{RGI_Emoji} at a position no emoji begins at: the general lowering tries each of its 2,760 strings, about two
+        // units each, where the table's dispatch looks the character up and tries none.
+        const string Emoji = "\\p{RGI_Emoji}";
+        var general = Run(TestProgram.General(Emoji, "v"), "x", null).Units;
+        var fast = Run(TestProgram.Compile(Emoji, "v"), "x", null).Units;
+        Assert.True(general > 5_000, general + " units in the general lowering");
+        Assert.True(fast < 60, fast + " units with the table");
     }
 
     /// <summary>
@@ -103,11 +220,15 @@ public class ChargingTests
     /// v-mode class folded when parsed, and the assertions ^ $ \b \B, with m and under iu, modifier groups nested and
     /// undone, back-references, under i and under a step ceiling, whose length is charged after the dispatch and before
     /// the comparison (an order the read at each dispatch cannot see, which
-    /// <see cref="A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared"/> reads), and
+    /// <see cref="A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared"/> reads, as
+    /// <see cref="Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read"/> reads the fast paths'
+    /// and the scan's), and
     /// look-arounds of the four kinds, a look-behind's back-reference read right to left, one started inside a
     /// surrogate pair, a negative look-behind whose body backtracks to a step ceiling, look-behinds whose bodies read
     /// every kind of character, class and back-reference right to left, and v-mode classes holding strings, the empty
-    /// one among them.
+    /// one among them; and task 2.4c's runs, lazy and greedy, and atom runs, both ways, classes of strings from a table,
+    /// and the start-position scan, over a character, over a class of weight, stepping over surrogate pairs from a start
+    /// inside one, and stopped by a step ceiling.
     /// </summary>
     public static TheoryData<string, string, string, int, bool, ulong?> DeclaredInputs => new()
     {
@@ -139,6 +260,12 @@ public class ChargingTests
         { "(?:(a)|b){2,4}c", "", string.Concat(Enumerable.Repeat("abab", 150)) + "x", 0, false, null },
         { "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", "", string.Concat(Enumerable.Repeat("\naBKazx1", 80)), 0, false, null },
         { "(?<=[\\p{Ll}--[q]]{2})\\d", "iv", string.Concat(Enumerable.Repeat("aB1Q2", 120)) + "!", 0, false, null },
+        { "[a-z]+?\\d", "", string.Concat(Enumerable.Repeat("abcdefghij", 60)) + "!", 0, false, null },
+        { "(?<=[\\d]{2,}?x|ab)\\w*cd", "", string.Concat(Enumerable.Repeat("12xyzcdabq", 60)), 0, false, null },
+        { "\\w*?[\\q{xyz|xy|x}]{2}", "v", string.Concat(Enumerable.Repeat("axbxyc", 90)), 0, false, 3_000UL },
+        { "[\\p{Nd}\\p{No}]+x", "u", new string('a', 700) + "12x", 0, false, null },
+        { "\\u{1F600}b", "u", string.Concat(Enumerable.Repeat("\U0001F600a", 300)) + "\U0001F600b", 1, false, null },
+        { "q", "", new string('p', 2000), 0, false, 1_500UL },
     };
 
     [Theory]
@@ -148,7 +275,9 @@ public class ChargingTests
     {
         // Check A-1, read at every dispatch: the loop's observer is called after an instruction's units are charged and
         // before it runs, with the units through it, k; the recording meter's total at that moment is what was charged
-        // before the k-th unit of work. It is at least k, and less than a block more.
+        // before the k-th unit of work. It is at least k, and less than a block more. A charge made just after the work
+        // it pays for, inside one dispatch or in the scan, leaves every reading here as it was: the order check of each
+        // such place is Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read.
         var program = TestProgram.Compile(pattern, flags);
         var meter = new RecordingMeter();
         var through = new List<ulong>();
@@ -241,6 +370,106 @@ public class ChargingTests
         Assert.True(charged >= through[observed - 1], charged + " charged when the reference's first character was compared, through unit " + through[observed - 1]);
     }
 
+    /// <summary>
+    /// The inputs of <see cref="Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read"/>: a
+    /// pattern under <c>i</c>, a subject, whether the call is anchored at 0, and the units the call has charged when it
+    /// makes each read of the caller's tables, in order.
+    /// </summary>
+    public static TheoryData<string, string, string, bool, string> ChargeBeforeReadInputs => new()
+    {
+        // A greedy run's required characters, then its extra ones: the run's dispatch (1), then a unit before each of
+        // the four characters it reads, the b that ends it included, then Succeed.
+        { "a{2,}", "i", "AAAb", true, "2 3 4 5" },
+
+        // A lazy run's required character (2); b fails at A (3); the run's frame takes the second A (4); b holds (5).
+        { "a+?b", "i", "AAB", true, "2 3 4 5" },
+
+        // An atom run: its dispatch pays for the first atom (1), and each later atom is charged before it is read.
+        { "abc", "i", "ABC", true, "1 2 3" },
+
+        // A folded class of strings: the dispatch (1) reads the character a string begins with to find the strings
+        // kept under it; abc is compared to its third character, which fails (2, 3, 4), and ab matches (5, 6), then x (7).
+        { "[\\q{abc|ab}]x", "vi", "ABX", true, "1 2 3 4 5 6 7" },
+
+        // A class of strings with no string under the character: the dispatch (1) reads it, and the class test of the
+        // single characters is charged before it reads it again (2).
+        { "[\\q{ab}c]", "vi", "C", true, "1 2" },
+
+        // The start-position scan: each position's test is charged before it is made, the a's at 0 and 1 (1, 2) and the
+        // b at 2 (3), which the attempt there takes as its first test, made and paid for once.
+        { "b", "i", "aab", false, "1 2 3" },
+
+        // The scan's test is a run's atom: x refused (1), A admitted (2) and taken as the run's first character; the
+        // run's dispatch (3), its second A (4) and the B that ends it (5), then b (6).
+        { "a+b", "i", "xAAB", false, "1 2 4 5 6" },
+
+        // The scan's test is an atom run's first atom: x refused (1), A admitted (2), which pays for the atom run's
+        // dispatch; then B (3) and C (4).
+        { "abc", "i", "xABC", false, "1 2 3 4" },
+
+        // The scan's test after a group's start: x refused (1), A admitted (2); the group's start and end (3, 4) read no
+        // table, and b (5) does.
+        { "(a)b", "i", "xAB", false, "1 2 5" },
+    };
+
+    [Theory]
+    [MemberData(nameof(ChargeBeforeReadInputs))]
+    public void Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(
+        string pattern, string flags, string subject, bool anchored, string expected)
+    {
+        // Decision D8 inside a fast path's dispatch and in the start-position scan, which check A-1's read at each charge
+        // cannot see: a read made before its own charge and charged just after it leaves every charge, every total and
+        // every answer as they were. Under i a character test reads the caller's tables through the case folding, once a
+        // character here, so the tables' reads are the moments the characters are read, and the units charged by each
+        // read are the work through it: each read's own charge included.
+        var tables = new WatchedTables(UnicodeTables.Instance);
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(flags), tables, BroilerRegex.MaximumNestingLimit, out var program));
+        var meter = new RecordingMeter();
+        ulong through = 0;
+        var reads = new List<ulong>();
+        var uncovered = new List<string>();
+        tables.Read = () =>
+        {
+            reads.Add(through);
+            if (meter.Charged < through)
+                uncovered.Add("read " + reads.Count + ": " + meter.Charged + " charged for " + through + " units");
+        };
+
+        var slots = new int[program!.SlotCount];
+        var machine = new RegexMachine(program, subject, meter.Charge, MachineTests.Ample) { DispatchObserver = k => through = k };
+        RegexStatus status;
+        try
+        {
+            status = machine.Run(0, anchored, slots);
+        }
+        finally
+        {
+            machine.Release();
+            tables.Read = null;
+        }
+
+        Assert.Equal(RegexStatus.Match, status);
+        Assert.Equal(expected, string.Join(' ', reads));
+        Assert.Empty(uncovered);
+    }
+
+    [Fact]
+    public void A_scan_stopped_by_its_step_ceiling_has_tested_only_the_positions_it_paid_for()
+    {
+        // b under i over "aaaa": a step ceiling of k units lets the scan pay for and test k positions, each read once, and
+        // refuses the next position's unit before its test is made.
+        var tables = new WatchedTables(UnicodeTables.Instance);
+        Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile("b", RegexFlagsParser.Parse("i"), tables, BroilerRegex.MaximumNestingLimit, out var program));
+        for (ulong k = 1; k <= 3; k++)
+        {
+            var reads = 0;
+            tables.Read = () => reads++;
+            var run = Run(program!, "aaaa", null, steps: k);
+            tables.Read = null;
+            Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Steps, k, (int)k), (run.Status, run.Limit, run.Units, reads));
+        }
+    }
+
     [Fact]
     public void The_declared_inputs_reach_every_instruction_in_both_directions()
     {
@@ -256,9 +485,23 @@ public class ChargingTests
         [
             RegexOp.Literal, RegexOp.LiteralIgnoringCase, RegexOp.Class, RegexOp.ClassIgnoringCase, RegexOp.CanonicalClass,
             RegexOp.Any, RegexOp.AnyButLineTerminator, RegexOp.Backreference, RegexOp.BackreferenceIgnoringCase,
+            RegexOp.GreedyRun, RegexOp.LazyRun, RegexOp.AtomRun, RegexOp.StringClass,
         ];
         Assert.Empty(read.Where(op => !backward.Contains(op)));
         Assert.Empty(backward.Where(op => !read.Contains(op)));
+    }
+
+    [Fact]
+    public void The_declared_inputs_run_the_start_position_scan_over_a_character_and_a_class_and_into_a_step_ceiling()
+    {
+        // The scan charges outside any instruction's dispatch, so check A-1 reads it only in a search whose program has a
+        // first test: one over a character, one over a class, and one stopped by its step ceiling in the scan.
+        var scanned = DeclaredInputs.Where(static row => !(bool)row[4])
+            .Select(static row => (Program: TestProgram.Compile((string)row[0], (string)row[1]), Steps: (ulong?)row[5]))
+            .Where(static row => row.Program.FirstTest >= 0).ToList();
+        Assert.Contains(scanned, static row => row.Program.Code[row.Program.FirstTest].Op == RegexOp.Literal);
+        Assert.Contains(scanned, static row => row.Program.Code[row.Program.FirstTest].Op == RegexOp.Class);
+        Assert.Contains(scanned, static row => row.Steps is not null && row.Program.Code[row.Program.FirstTest].Op == RegexOp.Literal);
     }
 
     /// <summary>Inputs whose every step ceiling, from one unit to their whole cost, is tried.</summary>
@@ -323,14 +566,25 @@ public class ChargingTests
     }
 
     [Fact]
-    public void A_non_matching_subject_of_n_positions_charges_at_least_n_units()
+    public void A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan()
     {
+        // Check A-1's "a non-matching subject of n positions charges at least n units", read with n the subject's
+        // characters: a search tries n + 1 positions, 0 to n, and every one that holds a character costs at least a
+        // unit, an attempt's or a skip's. The end holds none: without a first test it is an attempt, a unit at least;
+        // under the start-position scan it is neither tested nor charged, as Broiler.VM's scan charges it nothing, so
+        // b over n a's costs n units exactly, one a skip, and over the empty subject none, with no charge to the meter.
         const int n = 10_000;
         var meter = new RecordingMeter();
         var run = Run(TestProgram.Compile("b"), new string('a', n), meter.Charge);
-        Assert.Equal(RegexStatus.NoMatch, run.Status);
-        Assert.True(run.Units >= n + 1);
+        Assert.Equal((RegexStatus.NoMatch, (ulong)n), (run.Status, run.Units));
         Assert.True(meter.Charged >= run.Units);
+        Assert.True(Run(TestProgram.General("b"), new string('a', n), null).Units >= n + 1);
+
+        var empty = new RecordingMeter();
+        var nothing = Run(TestProgram.Compile("b"), "", empty.Charge, steps: 1);
+        Assert.Equal((RegexStatus.NoMatch, 0UL), (nothing.Status, nothing.Units));
+        Assert.Empty(empty.Charges);
+        Assert.Equal(1UL, Run(TestProgram.General("b"), "", null).Units);
     }
 
     [Fact]
