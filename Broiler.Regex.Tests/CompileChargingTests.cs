@@ -390,4 +390,50 @@ public class CompileChargingTests
         var all = CodePointSet.Of(0, CodePointSet.MaxCodePoint);
         Assert.Equal(all.Map(cp => data.Canonicalize(cp, unicode: true)).Ranges, data.SimpleCaseFold(all).Ranges);
     }
+
+    // ----- The union structure: each string touched once ---------------------------------------------------------------
+
+    /// <summary>n distinct strings of three letters, the k-th as written in a pattern.</summary>
+    private static string[] ThreeLetterStrings(int n) =>
+        [.. Enumerable.Range(0, n).Select(static k => new string([(char)('a' + (k / 26 % 26)), (char)('a' + (k % 26)), (char)('A' + (k / 676 % 26))]))];
+
+    [Theory]
+    [InlineData(500)]
+    [InlineData(4_000)]
+    public void A_union_an_intersection_and_a_difference_of_strings_touch_each_string_a_bounded_number_of_times(int n)
+    {
+        // Plan row 2.5's O(n²) List.Contains: a union of operands holding n strings in all, or an intersection or a
+        // difference of two such operands, read each string of its operands a bounded number of times, so its units are in
+        // proportion to the strings' code units. A list searched before each addition reads them n²/2 times.
+        var strings = ThreeLetterStrings(n);
+        var units = 3L * n;
+        var oneDisjunction = "[\\q{" + string.Join('|', strings) + "}]";
+        var manyOperands = "[" + string.Concat(strings.Select(static s => "\\q{" + s + "}")) + "]";
+        var repeated = "[" + string.Concat(Enumerable.Repeat("\\q{" + string.Join('|', strings) + "}", 4)) + "]";
+        var intersection = "[\\q{" + string.Join('|', strings) + "}&&\\q{" + string.Join('|', strings.Reverse()) + "}]";
+        var difference = "[\\q{" + string.Join('|', strings) + "}--\\q{" + string.Join('|', strings.Reverse()) + "}]";
+        foreach (var (pattern, operands) in (ValueTuple<string, int>[])[(oneDisjunction, 1), (manyOperands, 1), (repeated, 4), (intersection, 2), (difference, 2)])
+        {
+            var (bySite, _) = Charged(pattern, "v");
+            var touched = bySite.GetValueOrDefault(CompileSite.Strings);
+            Assert.True(touched <= (ulong)(8 * operands * units), pattern[..20] + "... touched " + touched + " units of strings for " + operands * units);
+        }
+    }
+
+    [Fact]
+    public void Each_occurrence_of_a_class_of_strings_finds_its_table_by_a_hash_of_its_strings()
+    {
+        // Two hundred classes of the same 500 strings but the last, each its own table: an occurrence that compared its
+        // strings with every earlier table's would read about 200²/2 × 500 strings; found by a hash, each occurrence
+        // reads its own strings a bounded number of times.
+        var strings = ThreeLetterStrings(500);
+        var classes = Enumerable.Range(0, 200).Select(k => "[\\q{" + string.Join('|', strings) + "|z" + k.ToString(System.Globalization.CultureInfo.InvariantCulture) + "q}]").ToArray();
+        var (bySite, _) = Charged(string.Concat(classes), "v");
+        var perClass = (3L * strings.Length) + 6;
+        Assert.True(bySite[CompileSite.Program] <= (ulong)(200 * 16 * perClass), bySite[CompileSite.Program] + " units of the program compiler for " + 200 * perClass);
+
+        // The same class twice shares one table, compared string by string once.
+        Assert.Equal(1, TestProgram.Compile(classes[0] + classes[0], "v").StringTableCount);
+        Assert.Equal(2, TestProgram.Compile(classes[0] + classes[1], "v").StringTableCount);
+    }
 }

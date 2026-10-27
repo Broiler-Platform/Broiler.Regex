@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   33
-// Annotated:        33/33
-// Exempt:           29
-// Human-reviewed:   0/33
+// Relevant units:   34
+// Annotated:        34/34
+// Exempt:           30
+// Human-reviewed:   0/34
 // IP risk:          None
 // Security risk:    High
 // Criteria:         21/18
 // Resource impact:  5/10 max
-// Unverified:       33
+// Unverified:       34
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -122,8 +122,8 @@ internal enum ProgramCompilation
 /// <b>Charged (requirement R2, task 2.5).</b> The walks cost a constant amount per node of the tree, which the pattern's
 /// units pay for (<see cref="CompileSite.Pattern"/>); what the expansions decide is charged to the compilation's account
 /// before it is done (<see cref="CompileSite.Program"/>): each range a class instruction copies, and for a class of strings
-/// each string's code units to read it, again for each earlier table it is compared with and for its text, and the
-/// table's order; or, with the fast paths off, each string's code units for its lowering.
+/// each string's code units for its table's key and again for its text, and the table's order; or, with the fast paths
+/// off, each string's code units for its lowering.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
@@ -387,6 +387,14 @@ internal static class ProgramCompiler
     // Broiler-Human:        PENDING
     private readonly record struct StringTable(IReadOnlyList<string> Strings, bool RightToLeft, bool Folded, RegexStrings Table);
 
+    /// <summary>
+    /// What a table of strings is found by: its direction, its folding, how many strings it holds and a hash of them in
+    /// their order. Tables of one key are compared string by string, so two tables that only share a key stay two.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=6E55F2
+    // Broiler-Human:        PENDING
+    private readonly record struct StringTableKey(bool RightToLeft, bool Folded, int Count, int Hash);
+
     /// <summary>The lowering of one tree into one program.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=06D39B
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
@@ -402,6 +410,12 @@ internal static class ProgramCompiler
 
         /// <summary>The tables of strings built so far, each shared by every occurrence of its strings in its direction and folding.</summary>
         private readonly List<StringTable> _strings = [];
+
+        /// <summary>
+        /// The tables built so far by their key, so that an occurrence finds the table of its strings by one hash of them
+        /// rather than by comparing them with every table's.
+        /// </summary>
+        private readonly Dictionary<StringTableKey, List<int>> _stringTables = [];
 
         /// <summary>The compilation's account, which the lowering charges before what the expansions decide (task 2.5).</summary>
         private readonly CompileCharge _charge = data.Charge;
@@ -735,12 +749,13 @@ internal static class ProgramCompiler
         /// alternation's instructions would compare them.
         /// </summary>
         /// <remarks>
-        /// The strings are charged their code units before they are read, and again for each earlier table of the same
-        /// direction and folding they are compared with, string by string, before the comparison; a new table's text is
-        /// charged the strings' code units, and its order, the strings grouped by the character they begin with, a sort's
-        /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>).
+        /// An earlier table is found by a hash of the strings, charged their code units before they are read, and compared
+        /// string by string only with the tables of the same hash, charged again; a new table's text is charged the
+        /// strings' code units, and its order, the strings grouped by the character they begin with, a sort's
+        /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>). Task 2.4c compared each
+        /// occurrence's strings with every table built before it, string by string.
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=909E2C
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=E02670
         // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, or a folded class's table holds a code point other than its Canonicalize
         // Broiler-Human:        PENDING
         private int StringTableOf(CharSet set, bool rightToLeft)
@@ -757,17 +772,25 @@ internal static class ProgramCompiler
             }
 
             _charge.Charge(CompileSite.Program, units + 1);
-            for (var i = 0; i < _strings.Count; i++)
+            var hash = new HashCode();
+            foreach (var member in strings)
+                hash.Add(member, StringComparer.Ordinal);
+            var found = new StringTableKey(rightToLeft, set.CaseFolded, strings.Count, hash.ToHashCode());
+            if (_stringTables.TryGetValue(found, out var candidates))
             {
-                var known = _strings[i];
-                if (known.RightToLeft != rightToLeft || known.Folded != set.CaseFolded)
-                    continue;
-
-                _charge.Charge(CompileSite.Program, units + 1);
-                if (SameStrings(known.Strings, strings))
-                    return i;
+                foreach (var candidate in candidates)
+                {
+                    _charge.Charge(CompileSite.Program, units + 1);
+                    if (SameStrings(_strings[candidate].Strings, strings))
+                        return candidate;
+                }
+            }
+            else
+            {
+                _stringTables.Add(found, candidates = []);
             }
 
+            candidates.Add(_strings.Count);
             _charge.Charge(CompileSite.Program, units + ((long)strings.Count * CompileCharge.SortFactor(strings.Count)));
             if (set.CaseFolded)
                 _folds = true;

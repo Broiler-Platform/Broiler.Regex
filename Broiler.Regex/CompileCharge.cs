@@ -62,9 +62,8 @@ internal enum CompileSite
     CaseFold = 7,
 
     /// <summary>
-    /// A class's strings: a string's code units, at least one, each time a class takes it, and each time a union, an
-    /// intersection, a difference or a <c>\q{…}</c> disjunction looks it up in a class's strings, once for each string it
-    /// is compared with and once more.
+    /// A class's strings: a string's code units, at least one, each time a union, an intersection, a difference or a
+    /// <c>\q{…}</c> disjunction adds it to a class's strings or looks it up there.
     /// </summary>
     Strings = 8,
 
@@ -81,8 +80,8 @@ internal enum CompileSite
 
     /// <summary>
     /// The program compiler: one unit per range a class instruction copies, and for a class of strings each string's code
-    /// units, at least one, to read it, for each earlier table it is compared with and for its text, and 1 + ⌊log₂ n⌋ per
-    /// string for the table's order, or for its lowering to an alternation when the fast paths are off.
+    /// units, at least one, for its table's key and its text, and 1 + ⌊log₂ n⌋ per string for the table's order, or for
+    /// its lowering to an alternation when the fast paths are off.
     /// </summary>
     Program = 11,
 }
