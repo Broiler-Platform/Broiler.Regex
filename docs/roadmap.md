@@ -822,8 +822,11 @@ and D36).*
 **What it builds.** ES2025's duplicate named groups. A group name may be declared by several groups when no two of
 them can both participate (ECMA-262 §22.2.1.1, MightBothParticipate §22.2.1.4); `\k<name>` reads every group of the
 name and matches the one that participated (§22.2.2.7.2); and a result maps the name to that group (§22.2.7.2,
-RegExpBuiltinExec, step 34.e). Requirement R6 and JSD-0081's condition (i), which wants this before Broiler.JS retires its
-translator, are met on this branch; the package that carries them is task 2.9's `0.2.0-preview.1`.
+RegExpBuiltinExec, step 34.e). Requirement R6 is implemented here, so JSD-0081's condition (i), that duplicate named
+groups are implemented in Broiler.Regex before Broiler.JS retires its translator, holds on this branch; the package
+that carries them is task 2.9's `0.2.0-preview.1`. R6's exit criterion, as decision D14 reads it, is met when task
+2.10's host and library jobs run green at a reading's commit, the host job passing all 19 of test262's files of
+duplicate named groups (below). *Amended at the review of task 2.6:* this record first said R6 is met on this branch.
 
 **The parser's rule.** The parser keeps a stack of the Disjunctions it is inside, each with the position it began at
 and the position its current Alternative began at, and holds the latest group of each name, the names compared as
