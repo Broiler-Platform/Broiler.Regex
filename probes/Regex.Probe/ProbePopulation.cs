@@ -139,6 +139,18 @@ internal static class ProbePopulation
         new("R09", "(?<\\u{1D400}>x)", "", "x", 0),
         new("R10", "a**", "", "", 0),
         new("R11", "(?<\\uD835\\uDC00>x)", "", "x", 0),
+        new("R12", "(?:(?<a>x)|(?<a>y))(?<a>z)", "", "", 0),
+        new("R13", "(?<a>x|(?<a>y))", "", "", 0),
+
+        // A group name alternatives share (requirement R6, task 2.6): the participating group, a reference to it forward,
+        // under i and in a look-behind, a name none of whose groups participated, and two names in source order.
+        new("D01", "(?<a>x)|(?<a>y)", "", "y", 0),
+        new("D02", "(?:(?<a>x)|(?<a>y))\\k<a>", "", "xyy", 0),
+        new("D03", "(?:(?<a>x)|(?<a>y))\\k<a>", "iu", "Yy", 0),
+        new("D04", "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", "", "yyz", 0),
+        new("D05", "^(?:(?<a>x)|(?<a>y)|z){2}\\k<a>$", "", "xz", 0),
+        new("D06", "(?:(?<x>a)|(?<y>a)(?<x>b))(?:(?<z>c)|(?<z>d))", "", "abc", 0),
+        new("D07", "(?<\\u0061>x)|(?<a>y)", "", "x", 0, All: true),
 
         // Nesting (R4, decision D6): at BroilerRegex.MaximumNestingLimit, one level past it and far past it, compiled
         // under a nesting limit and matched, on a thread of StackBytes. Depth counts as Broiler.VM's does: the pattern
