@@ -157,6 +157,36 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   rule SL6 refuses once its member is gone. The adversarial corpus's class V, fifty `\p{L}` in a class under `v`,
   `vi` and `iu` at a budget of 300 units and fifty `\p{RGI_Emoji}` under `v` and `vi` at 1,000, answers its declared
   `limit:compile` under the JIT and through the probe.
+- **The text helpers (R9; task 2.7, check A-9; decisions D9, D11, D20), all provisional**: task 2.9 fixes the public
+  surface of `0.2.0-preview.1`, and `PublicAPI.txt`, which rule SL6 generates, marks each with a `# provisional:`
+  line. The new namespace `Broiler.Regex.Text` holds what both engines' flag parsers, `RegExp.escape` helpers and
+  `source` writers move onto at their cut-overs (decision D20):
+  - `RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out int position)` reads a flags string as a
+    `RegexFlagsStatus`, `Success`, `UnknownFlag`, `DuplicateFlag` or `UnicodeWithUnicodeSets`, never an exception:
+    RegExpInitialize's checks over the whole string first (ECMA-262 §22.2.3.3), the refusal at the first unknown or
+    repeated code unit, then ParsePattern's `u` with `v` (§22.2.3.4) at the later of the two. It decides by the ninth
+    code unit, so it takes no meter. `RegexFlagsText.Format(RegexFlags)` writes the letters in the `flags` getter's
+    order, `d g i m s u v y` (§22.2.6.4). `RegexFlagsParser.Parse` reads the same grammar and answers as before, with
+    the same messages, so nothing it answers changes.
+  - `new RegexEscaper(IUnicodeTables)` and its `EscapeString(string, int maxLength, RegexWorkCharge?, out string?)`:
+    `RegExp.escape`'s text (§22.2.5.1, EncodeForRegExpEscape §22.2.5.1.1), a first ASCII digit or letter as `\xHH`,
+    a SyntaxCharacter or `/` after a backslash, U+0009 to U+000D as `\t \n \v \f \r`, the punctuators
+    `` ,-=<>#&!%:;@~'`" ``, WhiteSpace, LineTerminator and a lone surrogate in lower-case hexadecimal, every other code
+    point as itself. WhiteSpace is the provider's `EcmaScriptLexical` over the caller's tables (decision D11), so
+    U+0085 and U+180E are not escaped.
+  - `RegexEscaper.EscapePattern(string, int maxLength, RegexWorkCharge?, out string?)`: the `source` getter's text
+    (EscapeRegExpPattern, §22.2.6.13.1): `(?:)` for the empty pattern, `\/` for a `/` outside a class, `\n`, `\r`,
+    `\u2028` and `\u2029` for a line terminator, raw or after a backslash, every other code unit as itself; a class is
+    read as a RegularExpressionLiteral reads one, so a `/` in it is kept, the text test262's
+    `staging/sm/RegExp/escape.js` asks for. The text holds under every mode, so it takes no flags.
+  - Both answer `RegexStatus.Success`, or `RegexStatus.LimitExceeded` when the result would pass the caller's maximum
+    length, their only limit; both charge the meter one unit per code unit read before reading and one per code unit
+    written before writing, in whole blocks of 512 on one account (decision D8's blocks, convention 4), and answer a
+    text that needs no change as itself, at the cost of its reading.
+  - Tests over the specification's sets, every code point or code unit enumerated, U+0085 among them; test262's
+    `built-ins/RegExp/escape` and `staging/sm/RegExp/escape.js` cases ported as data, test-only, with test262's
+    licence beside them ([`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)); and the Native AOT probe's population
+    `text-1`, whose report CI holds to the JIT's.
 
 ### Changed
 

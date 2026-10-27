@@ -732,6 +732,86 @@ fold to charge. Plan row 2.8 gives the validate entry "a nullable meter"; JSD-00
 "no expansion, no meter", and JSD-0081 is read: task 2.8's entry takes no meter (above). Broiler.VM's realm charges a
 compilation `source.Length + 32`; this library's units are its own, in proportion to the expansion, as D8 reads.
 
+*Dated record, 2026-10-27 (task 2.7 of SJL-11.2; R9, check A-9; decisions D9, D11 and D20, and D5's rule).*
+
+**What it builds.** The namespace `Broiler.Regex.Text` (`Text/`), every member provisional until task 2.9:
+`RegexFlagsText.Parse` reads a flags string as a `RegexFlagsStatus` (`Success`, `UnknownFlag`, `DuplicateFlag`,
+`UnicodeWithUnicodeSets`) with the position of the code unit refused, RegExpInitialize's checks over the whole string
+first and ParsePattern's `u` with `v` after (ECMA-262 §22.2.3.3, §22.2.3.4), and `RegexFlagsText.Format` writes a
+flags value in the `flags` getter's order (§22.2.6.4); `new RegexEscaper(IUnicodeTables)` holds the provider's
+`EcmaScriptLexical` (D11), and its `EscapeString` is `RegExp.escape`'s text (§22.2.5.1, EncodeForRegExpEscape) and the
+static `EscapePattern` the `source` text (EscapeRegExpPattern, §22.2.6.13.1). `RegexFlagsParser.Parse` reads the same
+grammar and throws as before, so the starting violation list's SL4 row loses its two places in `RegexFlags.cs`.
+
+**The shapes, and why.**
+- **The flags' status is an enum of its own.** D9's syntax status, with a code, a message identifier and a position,
+  is the validate entry's (task 2.8); the three refusals of a flags string are its codes here, the member's name its
+  message identifier (SJL-D-11: each engine renders its own text), with the position beside it. Task 2.9 may fold
+  them into task 2.8's status. The reader decides by the ninth code unit, so it takes no meter (convention 4).
+- **The escapes answer `RegexStatus.Success` or `LimitExceeded`** past the caller's maximum length, their only limit,
+  as the Unicode owner's case mapping answers `UnicodeStatus`. D9's dimensions are steps, frames, trail, nesting and
+  compile, so no `RegexLimit` member names a length; one was not added beside task 2.5's compile member, and task 2.9
+  decides whether the surface needs it.
+- **The meter.** One unit per code unit read before the measuring pass and one per code unit written before the
+  writing pass, paid in whole blocks of 512 on one account, never a block more than the work: `RegexWorkCharge`'s
+  documented blocks (D8). A text that needs no change is answered as itself and costs its reading only. Broiler.VM's
+  realm charges `RegExp.escape` its input's length and then its output's today (`StringCharge` at
+  `JsRealm.RegExp.cs:1462` and `:1491`), and `source` nothing. For a text that changes, the two totals agree up to the
+  block. For a text of n code units that needs no change they do not: Broiler.VM charges 2n, and the helper charges
+  its reading only, n rounded up to the block, about half (10,000 underscores: 20,000 today, 10,240 here). That is a
+  fuel difference SJL-11.4 must read at its cut-over under decision D8, where an exhaustion verdict it moves is class
+  C2 of Broiler.VM's rule. The meter is nullable for an engine that charges nothing. *Amended at the review of task
+  2.7:* this record first said the totals agree up to the block for every text.
+- **`EscapePattern` takes no flags**: each rewrite holds in all three modes (its remarks), so one pattern gives one
+  text whatever its flags.
+
+**How the engines' members map (D20; read as the specification of what each needs, nothing copied, and
+`TextNamingTests` holds the namespace to none of their names).**
+- Broiler.VM: `RegExpNormalizeFlags` onto `Parse` and `Format`, every refusal its "Invalid regular expression flags"
+  `SyntaxError`; the binder's `CheckRegExp` flag checks onto `Parse`, `UnicodeWithUnicodeSets` its "u and v may not be
+  combined" message; `RegExpHasFlag` onto the `RegexFlags` bits; `RegExpEscapeText`, `RegExpEscapeCodePoint` and
+  `RegExpEscapeHex` onto `EscapeString` with `StringLengthCeiling` as the maximum (`LimitExceeded` its `RangeError`)
+  and `engine.Charge` as the meter; `RegExpSourceText` onto `EscapePattern`.
+- Broiler.JS: `ParseFlags` onto `Parse` and the bits, its messages naming the code unit at the position;
+  `BuildFlagsString` onto `Format`; `Escape` and `TryAppendEscape`, with the helpers they call, onto `EscapeString`
+  with no meter; `EscapePatternSource` and `TryAppendLineTerminatorEscape` onto `EscapePattern`, whose text is
+  Broiler.JS's for every pattern.
+- What stays the engines': `RegExp.escape`'s TypeError for a non-String, the `flags` getter's property reads and
+  `toString` (rows F2, T4), the prototype's `(?:)` receiver rule, every message's text, a literal's flags position in
+  its own source, and Broiler.JS's `RegexOptions`, which retire with its translator. One answer moves in Broiler.JS: a
+  flags string with `u`, `v` and a later unknown or repeated flag (`uvx`, `uvu`) is refused for the later code unit,
+  in the specification's order, where `ParseFlags` names `u` with `v`; both are a `SyntaxError`.
+
+**The evidence.** `FlagsTextTests` (every ordering of every set of the eight flags, every code unit alone, every
+string of up to three code units over the flags and twelve strangers, against the specification's steps as an
+oracle); `EscapeStringTests` (every code point first and after the first, against §22.2.5.1 with the sets written
+out and UCD 17.0.0's Space_Separators held equal to the provider's; U+0085; test262's `built-ins/RegExp/escape`,
+313 cases ported as data; correspondence row T5; the round trip under no flag, `u` and `v`; the meter and the limit);
+`PatternSourceTests` (every code unit in five shapes, under three modes: a text that is not a literal's body only
+from a pattern that does not compile, and a rewritten pattern answering as its text; every string literal of the
+test project the same; `staging/sm/RegExp/escape.js`'s 49 cases; rows T1 to T4); `TextNamingTests`. Each test was
+watched failing against a stub. The Native AOT probe's population `text-1` answers as the JIT does, byte for byte.
+A-4 and A-8 are unchanged and pass.
+
+**What the later tasks owe.** Task 2.8: the syntax status, which `RegexFlagsStatus` may join. Task 2.9: the surface
+of these members, a length dimension or not, and `RegexFlagsParser.Parse`'s exception (convention 3). Task 2.12: the
+vectors' flag, escape and `source` operations mapped onto these helpers. SJL-11.4 and SJL-11.5: the adapters above.
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.* JSD-0081 classes row T2, a `/` in a
+class, implementation-defined; the library keeps it, Broiler.JS's text, because test262's
+`staging/sm/RegExp/escape.js`, the file row T3's correction of Broiler.VM names, asks for `[/]` too, so Broiler.VM's
+`source` for such a pattern changes at SJL-11.4 with T3 and is listed there. Plan row 2.7 and the brief ask for every
+new member provisional "in `PublicAPI.txt`"; that file is SL6's generated listing and holds no marks, so the
+CHANGELOG, the remarks and this record say it. The edition is not a difference: `RegExp.escape` is ES2025's, added by
+the 16th edition (as the ES2026 text's own introduction says), so the clause numbers the mapping gives it
+(§22.2.5.1, §22.2.5.1.1, §22.2.6.13.1) agree with the mapping's ES2025 header. The text read is Broiler.VM's archived
+ES2026 (`tc39/ecma262` `0248456c`), whose numbers for those clauses are the same, with test262 at the pin `ccaac100`
+as its executable form; the one clause the helpers cite whose number moved, UnicodeEscape (§25.5.2.4 in ES2025,
+§25.5.4.4 in ES2026), is cited with both. *Amended at the review of task 2.7:* this record first said `RegExp.escape`
+is ES2026's. *Amended at the integration of tasks 2.5 and 2.7:* task 2.5, written beside this one, gave
+`PublicAPI.txt` its `# provisional:` marks, which the listing's rewrite keeps; the integration marks the thirteen
+lines of `Broiler.Regex.Text` with them, so the file now says what the brief asked.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
