@@ -53,7 +53,8 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     requires the declared seed to report it. `tests/Regex.Fuzz/known-findings.tsv` lists the finding in library code
     the declared session reaches and that is not fixed yet (`/[\q{\uD800}]/v` escapes as an `ArgumentException`); the
     row leaves the file with its fix. A long local run found a second, recorded in `docs/roadmap.md` (`/[a--bc/v`
-    compiles, as `/[a--b]/v`). The package is unchanged.
+    compiles, as `/[a--b]/v`). The library, `Broiler.Regex.dll` and its API, is unchanged; of the package only the
+    packed README changes, whose testing paragraph now names the fuzz target.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
