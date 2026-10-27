@@ -182,7 +182,7 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   when it holds no choice: a counted loop writes two cells an iteration, a capturing group's
   iteration five. A quantifier over one character is a run since task 2.4c, which writes none, so
   `a{1048576}` and `[a]*` over 10,000,001 characters match; but under the engines' ceilings
-  `(?:ab){1100000}` over as many repetitions and `(a)*` over 500,000 characters answer the trail
+  `(?:ab){1048576}` over as many repetitions and `(a)*` over 500,000 characters answer the trail
   ceiling, and `(?:){2147483647}` on an empty subject does too, where the specification answers an
   empty match (`CeilingTests` and `StackDepthGuardTests` pin each). The old matcher matched the first
   two and answered no match for the third.

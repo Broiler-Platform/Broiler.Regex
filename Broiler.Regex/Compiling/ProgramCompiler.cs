@@ -50,8 +50,8 @@ internal enum ProgramCompilation
 /// <remarks>
 /// <para>
 /// <b>No recursion, and the nesting limit still checked.</b> The tree is walked twice on work lists of the heap, as the
-/// closure compiler of <c>Matching/</c> walks it, so compiling uses the same CLR stack at every depth; decision D6 would
-/// admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which finds each
+/// closure compiler of <c>Matching/</c>, deleted at task 2.4c, walked it, so compiling uses the same CLR stack at every
+/// depth; decision D6 would admit recursion under the caller's nesting limit, and the walks do not need it. The first walk, which finds each
 /// quantifier's groups, calls <see cref="RegexNesting.Descend"/> before it enters a group's, a modifier's or a
 /// look-around's body, as the parser did, so a tree the parser did not build cannot be deeper than the limit either;
 /// the second, which emits the instructions, walks the same tree after it.

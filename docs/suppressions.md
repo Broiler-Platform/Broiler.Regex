@@ -109,7 +109,10 @@ reported that recursion's stack guard and has nothing left to report: a ceiling 
 string-bearing `RegexMatch` and `RegexGroup` stay, as requirement R8 allows and decision D12 keeps them, but not in the
 deleted backend's namespace: they move from `Broiler.Regex.Matching` to `Broiler.Regex`, unchanged but for
 `RegexMatch.Limit`, and the two members that answer them keep their names and parameters. Each break is suppressed by
-`Broiler.Regex/CompatibilitySuppressions.xml` as package validation generated it, and nothing else is.
+`Broiler.Regex/CompatibilitySuppressions.xml` as package validation generated it, and nothing else is. One consumer
+names the removed type today: Broiler.JS, pinning `0.1.0-preview.4`, catches `RegexOverflowException` around
+`BroilerRegex.Match(string, int)` to fall back to .NET's engine (`JSRegExp.Broiler.cs`); that fallback goes when
+Broiler.JS moves its pin, at SJL-11.5 (decision D12), and a ceiling reaches it then as `RegexMatch.Limit`.
 
 | Suppression | Target | What replaces it |
 |---|---|---|

@@ -546,8 +546,13 @@ base-2 logarithm of its ranges (task 2.4a's record), not Broiler.VM's per-table 
 tests a position and charges its skip after, and its attempt makes the admitted position's test again and pays for it
 then; this library charges each test before it makes it, and the attempt takes the admitted position's test from the
 scan, as D8's "prepaid ... before the work" reads, the totals the same. D10's policy gives the string-bearing
-members, which no engine calls, no step ceiling, so a catastrophic pattern there is bounded by the caller's patience
-alone, where the old budget answered no match; the offset entry is the bounded form. D12 keeps `RegexMatch`, and plan
+members no meter and no step ceiling, so a catastrophic pattern there is bounded by the caller's patience alone, where
+the old budget answered no match; the offset entry is the bounded form. *Amended at the review of task 2.4c:* this
+record first said no engine calls those members. Broiler.JS calls them today (`JSRegExp.Broiler.cs`,
+`broiler.Match(input, start)`, pinning `0.1.0-preview.4`) and catches `RegexOverflowException` to fall back to .NET's
+engine; no engine calls them at `0.2` before its cut-over, as Broiler.JS moves its pin only at SJL-11.5 (decision
+D12), and D10 already sets Broiler.JS's no-meter policy. At that pin move its fallback no longer compiles and has
+nothing to catch, as the exception is gone and a ceiling is answered as `RegexMatch.Limit`: SJL-11.5 removes it. D12 keeps `RegexMatch`, and plan
 row 2.9 names it kept; it is kept, in another namespace, which is a break package validation needs suppressed. Plan
 section 4.3's A-1 names "the per-start reset" as a metadata fact; it is read as no member named `Reset`, the reset
 having been `Budget.Reset`, and an iterator's compiler-made `IEnumerator.Reset` is not it.

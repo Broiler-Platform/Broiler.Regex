@@ -196,7 +196,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   break is suppressed in `Broiler.Regex/CompatibilitySuppressions.xml` and listed in
   [`docs/suppressions.md`](docs/suppressions.md): the removed `RegexOverflowException` (CP0001, R1 and R4), the two
   moved types (CP0001, kept under R8 out of the namespace R1 and R4 delete) and the two members that answer them
-  (CP0002). A caller that names the types recompiles with `using Broiler.Regex;`.
+  (CP0002). A caller that names the types recompiles with `using Broiler.Regex;`. A caller that catches
+  `RegexOverflowException` reads `RegexMatch.Limit` instead: Broiler.JS's fallback to .NET's engine on that exception
+  goes at its pin move, SJL-11.5.
 - **The string-bearing members run the new backend under decision D10's policy (task 2.4c; R1, R3, D12).**
   `Match(string, int)`, `IsMatch` and `Matches` pass no meter and no step ceiling, as an engine that passes no meter
   does, and the engines' frame and trail ceilings. A match that reaches one is answered as that ceiling, never as no
@@ -214,11 +216,15 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   three defects the differential comparison found are corrected: a start inside a surrogate pair under `u` and `v` runs
   the matcher from the pair, and a non-empty match found there reports the caller's start as its index and its
   substring from there (row M4, decision D23; the old matcher's greedy run stepped back and its loop did not, defect
-  D1, so `/(?:[\s\S])*\u{1F600}/u` from 1 of `"😀ba"` now matches at 1); a `v`-mode class tries its empty string after
-  its single characters (D2: `/[\q{}a]/v` on `a` matches `a`); and under `u` and `v` a back-reference in a look-behind
-  compares code points (M7: `/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` does not match). An empty match found at the
-  pair, decision D41's implementation-defined case, is reported at the pair's start, Broiler.VM's realm's answer, where
-  the old matcher reported the caller's start.
+  D1). The answers that change from such a start are rows 2 and 4 of `SurrogateStartTests`:
+  `/(?:[\s\S])*\u{1F600}/u` from 1 of `"😀ba"`, no match before, now matches at 1, ending at 2; and
+  `/(.{2})?\u{1F600}|()/u` from 1 of `"😀bcx"`, before an empty match at 1 with group 2 empty there, now matches the
+  pair, reported at 1 and ending at 2, with neither group. A `v`-mode class tries its empty string after its single
+  characters (D2: `/[\q{}a]/v` on `a` matches `a`); and under `u` and `v` a back-reference in a look-behind compares
+  code points (M7: `/(?<=\1(.))x/u` on `"\uD83D\uDE00\uDE00x"` does not match). An empty match found at the pair,
+  decision D41's implementation-defined case, is reported at the pair's start, Broiler.VM's realm's answer, where the
+  old matcher reported the caller's start, or, for `/^/u` from 1 of `"😀"`, which it read from the low half as a lone
+  unit, where `^` fails, no match.
 - **Exhaustion is a ceiling, never no match (R1, R3; task 2.4c).** The old matcher gave each start position 10,000,000
   steps and answered no match, or a shorter match from its greedy fast path, when they ran out, and charged no step for
   an alternative tried. The string-bearing members now run a catastrophic pattern to its answer, which can take time
