@@ -12,7 +12,7 @@ namespace Broiler.Regex.Tests;
 /// early error is ECMA-262 §22.2.1.1's, over MightBothParticipate (§22.2.1.4): two GroupSpecifiers may share a name only
 /// when a Disjunction holds them in different Alternatives. <c>\k</c> reads every group of its name (§22.2.2.7, over
 /// GroupSpecifiersThatMatch §22.2.1.9) and compares the one whose capture is defined (BackreferenceMatcher, §22.2.2.7.2),
-/// and RegExpBuiltinExec gives the name that group's value (§22.2.7.2, step 33).
+/// and RegExpBuiltinExec gives the name that group's value (§22.2.7.2, step 34.e).
 /// </summary>
 public class DuplicateNamedGroupTests
 {

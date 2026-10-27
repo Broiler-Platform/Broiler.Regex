@@ -78,7 +78,7 @@ public sealed class RegexMatch
     /// <summary>
     /// Each name the pattern declares, with its group: the one of the name's groups that participated, or, when none of
     /// them did, the first of them, unmatched. A name is listed once, in the order its first group appears in the pattern,
-    /// as RegExpBuiltinExec creates the <c>groups</c> object's properties (ECMA-262 §22.2.7.2, step 33); ES2025 lets
+    /// as RegExpBuiltinExec creates the <c>groups</c> object's properties (ECMA-262 §22.2.7.2, step 34.e); ES2025 lets
     /// several groups share a name when no two of them can both participate (requirement R6), and the entry is then the
     /// participating one, the same instance as its element of <see cref="Groups"/>, whose <see cref="RegexGroup.Number"/>
     /// says which.

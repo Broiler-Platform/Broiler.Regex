@@ -530,7 +530,7 @@ public sealed class BroilerRegex
         }
 
         // Each name once, in the order of its first group, as RegExpBuiltinExec creates the groups object's properties
-        // (step 33), with the group of it that participated, at most one; or its first group, unmatched, when none did.
+        // (step 34.e), with the group of it that participated, at most one; or its first group, unmatched, when none did.
         var named = new Dictionary<string, RegexGroup>(GroupNames.Count, StringComparer.Ordinal);
         for (var at = 0; at < GroupNames.Count; at++)
         {

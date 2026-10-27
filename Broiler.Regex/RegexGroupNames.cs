@@ -25,14 +25,15 @@ namespace Broiler.Regex;
 /// that carry it, each group with its name, and, for a match the offset entry wrote, the group of a name that
 /// participated. ES2025 lets one name be declared by several groups when no two of them can both participate
 /// (§22.2.1.1, MightBothParticipate §22.2.1.4), so a name maps to a list of groups, and a match to the one of them that
-/// participated, at most one (§22.2.2.7.2 BackreferenceMatcher's assertion; §22.2.7.2 RegExpBuiltinExec, step 33).
+/// participated, at most one (§22.2.2.7.2 BackreferenceMatcher's assertion; §22.2.7.2 RegExpBuiltinExec, step 34.e).
 /// </summary>
 /// <remarks>
 /// <para>
 /// <b>Order.</b> The names are in the order their first group appears in the pattern, which is the order
-/// RegExpBuiltinExec creates the <c>groups</c> object's properties in (its step 33 creates a name's property at its first
-/// group and writes it again at later ones), so <see cref="NameAt"/> from 0 to <see cref="Count"/> - 1 is the
-/// property order an engine gives <c>groups</c> and <c>indices.groups</c>. A name's groups are in ascending order.
+/// RegExpBuiltinExec creates the <c>groups</c> object's properties in (its step 34.e creates a name's property at its
+/// first group and writes it again at each later one up to the one that participated), so <see cref="NameAt"/> from 0
+/// to <see cref="Count"/> - 1 is the property order an engine gives <c>groups</c> and <c>indices.groups</c>. A name's
+/// groups are in ascending order.
 /// </para>
 /// <para>
 /// <b>Immutable.</b> Made once by the parser for the pattern and never changed, so a compiled pattern and its concurrent
@@ -96,7 +97,7 @@ public sealed class RegexGroupNames
 
     /// <summary>
     /// The name at <paramref name="index"/>, from 0 to <see cref="Count"/> - 1, in the order the names' first groups appear
-    /// in the pattern: the order of the <c>groups</c> object's properties (§22.2.7.2, step 33).
+    /// in the pattern: the order of the <c>groups</c> object's properties (§22.2.7.2, step 34.e).
     /// </summary>
     /// <param name="index">The name's position, from 0 to <see cref="Count"/> - 1.</param>
     /// <returns>The name, decoded: the code points its GroupSpecifier spells, escapes read (§22.2.1.10 CapturingGroupName).</returns>
@@ -148,7 +149,7 @@ public sealed class RegexGroupNames
     /// <paramref name="slots"/>: the one whose start and end are set, at most one of the name's groups (§22.2.2.7.2,
     /// BackreferenceMatcher's assertion); 0 when none did, or when the pattern declares no such name. RegExpBuiltinExec
     /// gives the name's property of <c>groups</c> that group's substring, and <c>indices.groups</c> its offsets, or
-    /// undefined for 0 (§22.2.7.2, step 33).
+    /// undefined for 0 (§22.2.7.2, steps 34.e and 35).
     /// </summary>
     /// <param name="name">A name, decoded, compared by code unit.</param>
     /// <param name="slots">The slots of a match, as the offset entry writes them: two for each group, group 0 first, -1 for a group that did not participate.</param>

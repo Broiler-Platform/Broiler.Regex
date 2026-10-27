@@ -197,7 +197,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   capture's length. The results map a name to its participating group:
   - `RegexGroupNames`, which `BroilerRegex.GroupNames` and `RegexParser.GroupNames` now answer (Changed): `Count` and
     `NameAt(i)`, the names in the order of their first groups, which is the order RegExpBuiltinExec creates the `groups`
-    object's properties in (§22.2.7.2, step 33); `GroupsNamed(name)`, a name's groups as a read-only span, ascending;
+    object's properties in (§22.2.7.2, step 34.e); `GroupsNamed(name)`, a name's groups as a read-only span, ascending;
     `NameOfGroup(k)`, a group's name or null; and `ParticipatingGroup(name, slots)`, the group of the name whose start and
     end the offset entry wrote into the caller's slots, or 0 when none did, allocating nothing.
   - `RegexGroup.Number`, a group's number, so `RegexMatch.NamedGroups[name].Number` is the participating group's.
