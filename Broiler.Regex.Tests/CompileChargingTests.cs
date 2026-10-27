@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Compiling;
+using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 using Broiler.Unicode.Algorithms;
 using Broiler.Unicode.Tables;
@@ -156,11 +157,14 @@ public class CompileChargingTests
 
     [Theory]
     [MemberData(nameof(Patterns))]
-    public void The_meter_is_charged_whole_blocks_before_the_work_and_never_a_block_more(string pattern, string flags)
+    public void The_meter_holds_whole_blocks_covering_every_unit_charged_and_never_a_block_more(string pattern, string flags)
     {
         // Check A-2's prepaid half, read at every charge: the observer is called after a charge is admitted and paid for,
-        // before its work, with the units spent through it; the recording meter's total is then at least that, and less
-        // than a block more. The meter receives whole blocks only, and the public member charges what the internal one does.
+        // with the units spent through it; the recording meter's total is then at least that, and less than a block more.
+        // The meter receives whole blocks only, and the public member charges what the internal one does. This test reads
+        // the account, not the work: that a charge comes before the work it pays for is read where the work can be seen,
+        // the provider's ranges (Each_range_copied_from_the_provider_is_charged_before_it_is_read) and the comparisons of a
+        // class's strings (A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n).
         var meter = new CountingMeter();
         var faults = new List<string>();
         var charge = new CompileCharge(meter.Charge, null)
@@ -359,6 +363,75 @@ public class CompileChargingTests
         Assert.True(charged >= (ulong)declared, "/" + pattern + "/" + flags + ": " + site + " charged " + charged + ", fewer than the " + declared + " declared");
     }
 
+    /// <summary>The caller's tables, reporting each read of a table of ranges to <see cref="Read"/> while it is set.</summary>
+    private sealed class WatchedRanges(IUnicodeTables inner) : IUnicodeTables
+    {
+        internal Action? Read { get; set; }
+
+        public string UnicodeVersion => inner.UnicodeVersion;
+
+        public ReadOnlySpan<byte> Table(UnicodeTable table)
+        {
+            if (table is UnicodeTable.PropertyRanges or UnicodeTable.StringPropertyRanges)
+                Read?.Invoke();
+            return inner.Table(table);
+        }
+    }
+
+    [Theory]
+    [InlineData("\\p{L}", "u")]
+    [InlineData("[\\p{L}\\p{N}\\p{M}]", "v")]
+    [InlineData("\\p{Script=Greek}\\P{Lu}", "u")]
+    [InlineData("[\\p{L}--\\p{Lu}]", "vi")]
+    [InlineData("[^a]", "vi")]
+    [InlineData("\\s\\S", "")]
+    [InlineData("\\p{Basic_Emoji}", "v")]
+    [InlineData("[\\p{Basic_Emoji}--\\p{Emoji_Keycap_Sequence}]\\p{RGI_Emoji_Flag_Sequence}", "v")]
+    public void Each_range_copied_from_the_provider_is_charged_before_it_is_read(string pattern, string flags)
+    {
+        // Decision D8's order, read on the work itself: the provider's sets are read through the caller's tables, and a
+        // copy reads each range's two bounds from the table of ranges, one read each. A property escape and the sets a
+        // compilation builds from the provider charge a unit per range before the copy reads it (CompileSite.Property and
+        // Universe), so at each read of a table of ranges the units charged at those places are at least half the reads
+        // made so far. A charge made after its copy, a charge check A-2's per-unit test reads the same either way, fails
+        // here at the copy's first read. The pattern charges its own units first, so the comparison counts only the two
+        // places' units, and each pattern reads a table of ranges at least once. The provider's constructors, which read
+        // each table of ranges once to check its size before the compilation starts, are made before the watch begins.
+        var tables = new WatchedRanges(UnicodeTables.Instance);
+        var (reads, charged) = (0L, 0UL);
+        var faults = new List<string>();
+        var charge = new CompileCharge(null, null)
+        {
+            Observer = (site, units, _) =>
+            {
+                if (site is CompileSite.Property or CompileSite.Universe)
+                    charged += units;
+            },
+        };
+        var parsed = RegexFlagsParser.Parse(flags);
+        var nesting = new RegexNesting(BroilerRegex.MaximumNestingLimit);
+        var data = new RegexUnicode(tables, charge);
+        tables.Read = () =>
+        {
+            reads++;
+            if (faults.Count < 5 && (ulong)reads > 2 * charged)
+                faults.Add("read " + reads + " of a table of ranges with " + charged + " units charged for ranges");
+        };
+
+        try
+        {
+            var tree = RegexParser.Parse(pattern, parsed, data, nesting, out var captureCount, out var groupNames);
+            Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(tree, captureCount, groupNames, parsed, data, nesting, out _));
+        }
+        finally
+        {
+            tables.Read = null;
+        }
+
+        Assert.True(reads > 0, "/" + pattern + "/" + flags + " read no table of ranges");
+        Assert.Empty(faults);
+    }
+
     [Fact]
     public void A_class_of_strings_lowered_with_the_fast_paths_off_charges_its_strings_too()
     {
@@ -445,9 +518,11 @@ public class CompileChargingTests
     [InlineData(4_000)]
     public void A_union_an_intersection_and_a_difference_of_strings_touch_each_string_a_bounded_number_of_times(int n)
     {
-        // Plan row 2.5's O(n²) List.Contains: a union of operands holding n strings in all, or an intersection or a
-        // difference of two such operands, read each string of its operands a bounded number of times, so its units are in
-        // proportion to the strings' code units. A list searched before each addition reads them n²/2 times.
+        // Plan row 2.5's O(n²) List.Contains, read on the account: a union of operands holding n strings in all, or an
+        // intersection or a difference of two such operands, charges each string of its operands a bounded number of times,
+        // so its units are in proportion to the strings' code units. A list charged per comparison would charge them n²/2
+        // times; one that charges per lookup charges the same either way, so the work itself is counted by
+        // A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n.
         var strings = ThreeLetterStrings(n);
         var units = 3L * n;
         var oneDisjunction = "[\\q{" + string.Join('|', strings) + "}]";
@@ -461,6 +536,105 @@ public class CompileChargingTests
             var touched = bySite.GetValueOrDefault(CompileSite.Strings);
             Assert.True(touched <= (ulong)(8 * operands * units), pattern[..20] + "... touched " + touched + " units of strings for " + operands * units);
         }
+    }
+
+    /// <summary>A comparer of strings that counts every call made of it, equality and hashing alike.</summary>
+    private sealed class CountingComparer(IEqualityComparer<string> inner) : IEqualityComparer<string>
+    {
+        internal long Calls { get; set; }
+
+        public bool Equals(string? x, string? y)
+        {
+            Calls++;
+            return inner.Equals(x, y);
+        }
+
+        public int GetHashCode(string obj)
+        {
+            Calls++;
+            return inner.GetHashCode(obj);
+        }
+    }
+
+    private static ClassStrings StringsOf(IEqualityComparer<string> comparer, IEnumerable<string> strings)
+    {
+        var set = new ClassStrings(comparer);
+        var charge = new CompileCharge(null, null);
+        foreach (var text in strings)
+            set.Add(text, charge);
+        return set;
+    }
+
+    [Fact]
+    public void A_class_s_strings_are_members_by_the_comparer_they_are_made_with_and_by_no_other()
+    {
+        // The counting test below counts the comparer's calls; it counts the set's work only if the comparer is all the set
+        // compares strings with. A comparer that equates strings of different case decides here what the parser's
+        // ordinal comparer never would, so a membership test made by any other means (a search of the list in order,
+        // say) answers differently. Intersections and differences answer sets of the same comparer.
+        var charge = new CompileCharge(null, null);
+        var set = StringsOf(StringComparer.OrdinalIgnoreCase, ["ab", "cd"]);
+        Assert.False(set.Add("AB", charge));
+        Assert.True(set.Contains("Cd", charge));
+        Assert.False(set.Contains("ef", charge));
+        set.UnionWith(StringsOf(StringComparer.Ordinal, ["CD", "ef"]), charge);
+        Assert.Equal(new[] { "ab", "cd", "ef" }, set.InOrder);
+
+        var other = StringsOf(StringComparer.OrdinalIgnoreCase, ["AB", "EF"]);
+        var meet = set.Intersect(other, charge);
+        Assert.Equal(new[] { "ab", "ef" }, meet.InOrder);
+        Assert.True(meet.Contains("EF", charge));
+        var rest = set.Except(other, charge);
+        Assert.Equal(new[] { "cd" }, rest.InOrder);
+        Assert.False(rest.Add("CD", charge));
+
+        // The parser's sets compare by code unit.
+        var ordinal = new ClassStrings();
+        Assert.True(ordinal.Add("ab", charge));
+        Assert.True(ordinal.Add("AB", charge));
+        Assert.False(ordinal.Contains("Ab", charge));
+    }
+
+    [Theory]
+    [InlineData(500)]
+    [InlineData(4_000)]
+    public void A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n(int n)
+    {
+        // Plan row 2.5's O(n²) List.Contains, read on the work: the comparer's calls, hashing and equality alike, while a
+        // union adds n strings to n others of which half are new, an intersection keeps the half of n strings the other
+        // operand holds and a difference the other half, and a \q{…} disjunction's n alternatives, a quarter repeated, are
+        // added in turn. A hashed set makes a few calls per string read; a list searched before each addition makes about
+        // n² for the union, some 250,000 at n = 500, where at most 8n, 4,000, are admitted.
+        var strings = ThreeLetterStrings(2 * n);
+        var first = strings[..n];
+        var second = strings[(n / 2)..(n + (n / 2))];
+        var charge = new CompileCharge(null, null);
+        var comparer = new CountingComparer(StringComparer.Ordinal);
+
+        var union = StringsOf(comparer, first);
+        comparer.Calls = 0;
+        union.UnionWith(StringsOf(StringComparer.Ordinal, second), charge);
+        Assert.Equal(n + (n / 2), union.Count);
+        Assert.True(comparer.Calls <= 8L * n, "a union of " + n + " strings into " + n + " made " + comparer.Calls + " comparisons");
+
+        var left = StringsOf(comparer, first);
+        var right = StringsOf(comparer, second);
+        comparer.Calls = 0;
+        var meet = left.Intersect(right, charge);
+        Assert.Equal(n - (n / 2), meet.Count);
+        Assert.True(comparer.Calls <= 8L * n, "an intersection of " + n + " strings with " + n + " made " + comparer.Calls + " comparisons");
+
+        comparer.Calls = 0;
+        var rest = left.Except(right, charge);
+        Assert.Equal(n / 2, rest.Count);
+        Assert.True(comparer.Calls <= 8L * n, "a difference of " + n + " strings and " + n + " made " + comparer.Calls + " comparisons");
+
+        var alternatives = new ClassStrings(comparer);
+        comparer.Calls = 0;
+        foreach (var text in first.Concat(first[..(n / 4)]))
+            alternatives.Add(text, charge);
+        Assert.Equal(n, alternatives.Count);
+        Assert.True(comparer.Calls <= 8L * n, "a disjunction of " + (n + (n / 4)) + " alternatives made " + comparer.Calls + " comparisons");
     }
 
     [Fact]

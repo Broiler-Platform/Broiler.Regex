@@ -630,7 +630,15 @@ and a hash of the strings in order, and compares string by string only those. A 
 kept whole in `CodePointSet.Builder` and joined two by two, a level at a time, each range read at most
 ⌈log₂ (k + 1)⌉ times for k sets. `CompileChargingTests` bounds the touches: a union of 4,000 strings touched
 24,018,000 units of strings before the replacement and touches at most eight times their code units now; two hundred
-classes of 500 strings cost the program compiler 31,468,185 units before the hash and at most 4,819,200 now.
+classes of 500 strings cost the program compiler 31,468,185 units before the hash and at most 4,819,200 now. Those
+bounds read the account, which `ClassStrings` charges once per addition or lookup whatever the lookup costs, so the
+review of this task could put the list search back with the charges unchanged and pass every test. Since the review
+the work is read too: a `ClassStrings` takes the comparer that alone decides its membership, the parser's ordinal one
+or a test's, and with a comparer that counts its calls a union, an intersection, a difference and a disjunction of n
+strings make at most 8n comparisons, where the list search makes about n², some 250,000 at n = 500
+(`A_union_an_intersection_and_a_difference_of_n_strings_make_comparisons_in_proportion_to_n`); a comparer that
+equates strings of different case holds the membership to the comparer, so a search by any other means is refused as
+well (`A_class_s_strings_are_members_by_the_comparer_they_are_made_with_and_by_no_other`).
 
 **Class V (check A-2's second half).** The corpus's five V rows answer their declared `limit:compile` under the JIT
 (`AdversarialCorpusTests`, each in a child process through the probe's `--engine-row`) and in the probe's report
@@ -652,12 +660,22 @@ budget, as the constructors do. Before this task's fourth commit the probe answe
 reads, through an observer the library never sets, what each place charged over a declared set of 35 expansions,
 the `v`-mode and case-insensitive ones among them, each row's declared units computed from the provider's data or
 written out in its comment: at least one unit per range and per string, and where a place's unit says more, that unit. The blocks are
-read at every charge (`The_meter_is_charged_whole_blocks_before_the_work_and_never_a_block_more`): before the k-th
-unit at least k units have been charged, never a block more. The control removed each of the library's 25 charge
-statements in turn, its expression still evaluated and its charge not made, rebuilt, and ran the compile-charging
-tests: every removal fails at least one row (24 of them a row of the per-unit test, the general lowering's charge the
-test of the fast paths off). Its first run found eleven statements no row needed, because another charge at the same
-place paid the floor; the rows were tightened to the places' own units before the fifth commit. Each behaviour change
+read at every charge (`The_meter_holds_whole_blocks_covering_every_unit_charged_and_never_a_block_more`): before the
+k-th unit at least k units have been charged, never a block more. That test reads the account, not the work; the order
+of a charge and the work it pays for is read on the work, where a test can see it:
+`Each_range_copied_from_the_provider_is_charged_before_it_is_read` watches the caller's tables and holds every read of
+a table of ranges, two for each range a copy reads, to a unit charged at `Property` or `Universe` before it, over
+eight patterns of property escapes, properties of strings, `\s` and `AllCharacters` under `vi`. The control removed
+each of the library's 25 charge statements in turn, its expression still evaluated and its charge not made, rebuilt,
+and ran the compile-charging tests: every removal fails at least one row (24 of them a row of the per-unit test, the
+general lowering's charge the test of the fast paths off). Its first run found eleven statements no row needed,
+because another charge at the same place paid the floor; the rows were tightened to the places' own units before the
+fifth commit. The review of this task found two regressions every test passed: the quadratic list search back in
+`ClassStrings` with its charges unchanged, and `ToCodePointSet`'s charge moved after its copy. Each now fails a test
+that reads the work: the list search by the default comparison fails the membership test of the union structure
+(above), the same search through the set's own comparer its count of comparisons, and each charge moved after its copy
+(`ToCodePointSet`'s, `\s`'s and a property of strings') the reads of the tables; five mutants, the whole suite run for
+each, each failing those tests alone. Each behaviour change
 was watched failing first: the first commit's tests against a charge that charges nothing (24 of 35), the set
 algebra's rows against the first commit (23 rows and the fold test), the bounds of the union structure against the
 second, the V rows against the third.

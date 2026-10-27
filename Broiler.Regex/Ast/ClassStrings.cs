@@ -48,7 +48,25 @@ namespace Broiler.Regex.Ast;
 internal sealed class ClassStrings
 {
     private readonly List<string> _order = [];
-    private readonly HashSet<string> _members = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _members;
+
+    /// <summary>An empty set whose strings are compared by code unit, as the parser's always are.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=TBF
+    // Broiler-Human:        PENDING
+    internal ClassStrings()
+        : this(StringComparer.Ordinal)
+    {
+    }
+
+    /// <summary>
+    /// An empty set whose membership <paramref name="comparer"/> alone decides, as do the sets its intersections and
+    /// differences answer: a test's comparer that counts its calls counts every comparison the set makes, so it bounds the
+    /// work and not only the charge.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=TBF
+    // Broiler-Falsified-If: a set made with a comparer that equates "ab" and "AB" adds both, or answers that it does not hold "AB" once it holds "ab"
+    // Broiler-Human:        PENDING
+    internal ClassStrings(IEqualityComparer<string> comparer) => _members = new HashSet<string>(comparer);
 
     /// <summary>How many strings are held.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1630F6
@@ -102,7 +120,7 @@ internal sealed class ClassStrings
     // Broiler-Human:        PENDING
     internal ClassStrings Intersect(ClassStrings other, CompileCharge charge)
     {
-        var result = new ClassStrings();
+        var result = new ClassStrings(_members.Comparer);
         foreach (var text in _order)
         {
             if (other.Contains(text, charge))
@@ -118,7 +136,7 @@ internal sealed class ClassStrings
     // Broiler-Human:        PENDING
     internal ClassStrings Except(ClassStrings other, CompileCharge charge)
     {
-        var result = new ClassStrings();
+        var result = new ClassStrings(_members.Comparer);
         foreach (var text in _order)
         {
             if (!other.Contains(text, charge))
