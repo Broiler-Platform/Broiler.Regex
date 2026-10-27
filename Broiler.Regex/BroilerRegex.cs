@@ -194,7 +194,8 @@ public sealed class BroilerRegex
         Pattern = pattern;
         Flags = flags;
 
-        // One view of the provider serves the parse and every later match of this instance.
+        // One compilation's view of the provider, charged to its account, serves the parse and the lowering; the program
+        // keeps only the provider's case folding from it, for its matches.
         try
         {
             var ast = RegexParser.Parse(Pattern, flags, data, nesting, out var captureCount, out var groupNames);
