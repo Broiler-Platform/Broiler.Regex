@@ -404,7 +404,8 @@ public class SharedRuleTests
         foreach (var project in SharedTree.Projects.Where(static p => p.Kind != SharedProjectKind.Test))
             Assert.Contains(project.Path, files);
         Assert.Contains(files, static p => p.EndsWith("RegexParser.cs", StringComparison.Ordinal));
-        foreach (var buildFile in (string[])["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props"])
+        // The build files docs/suppressions.md names as read today, the probe's control targets among them.
+        foreach (var buildFile in (string[])["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props", "probes/Regex.Probe/AdversarialControls.targets"])
             Assert.Contains(files, p => SharedTree.Relative(p) == buildFile);
     }
 
