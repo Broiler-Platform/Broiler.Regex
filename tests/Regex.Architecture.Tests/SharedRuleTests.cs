@@ -50,7 +50,7 @@ public class SharedRuleTests
         Assert.Equal([(Library, SharedProjectKind.Library)], SharedTree.Libraries.Select(static p => (p.Name, p.Kind)));
         Assert.Equal("Broiler.Regex.Probe", Probe.Name);
         Assert.Equal(
-            ["Broiler.Regex.Tests", "Regex.Architecture.Tests"],
+            ["Broiler.Regex.Tests", "Regex.Architecture.Tests", "Regex.Fuzz"],
             SharedTree.Projects.Where(static p => p.Kind == SharedProjectKind.Test).Select(static p => p.Name));
         Assert.All(Assemblies.Values, static a => Assert.NotEmpty(a.TypeReferences));
 

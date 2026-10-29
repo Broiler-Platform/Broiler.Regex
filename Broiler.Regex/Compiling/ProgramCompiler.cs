@@ -73,8 +73,10 @@ internal enum ProgramCompilation
 /// alternative when the class holds the empty string (§22.2.2.7, Atom :: CharacterClass, steps 3 to 8);</item>
 /// <item><c>^</c> and <c>$</c>: <c>LineStart m</c> and <c>LineEnd m</c>, <c>m</c> one when the flag is in force; <c>\b</c>
 /// and <c>\B</c>: <c>WordEdge w</c> and <c>NotWordEdge w</c>, <c>w</c> the class of the word characters the
-/// flags give; a back-reference: <c>Backreference r, 1</c>, or <c>BackreferenceIgnoringCase r, 1</c> under <c>i</c>,
-/// <c>r</c> the entry of the program's list of referenced groups that holds its group;</item>
+/// flags give; a back-reference: <c>Backreference r, k</c>, or <c>BackreferenceIgnoringCase r, k</c> under <c>i</c>,
+/// <c>r</c> the first of the <c>k</c> entries of the program's list of referenced groups that hold its groups: one for a
+/// number, and for a name every group that carries it (§22.2.2.7, AtomEscape :: <c>k</c> GroupName, over
+/// GroupSpecifiersThatMatch), at most one of which participates;</item>
 /// <item><c>X₁|X₂|…|Xₙ</c>: <c>Choice +1, next</c> before each alternative but the last, and a <c>Goto L</c> after it;</item>
 /// <item>group <c>k</c>: <c>SavePosition 2k; X; SavePosition 2k+1</c>; a non-capturing group: <c>X</c>; a modifier group:
 /// <c>X</c>, lowered under the flags it sets, which every instruction reading <c>i</c>, <c>m</c> or <c>s</c> takes from where
@@ -146,7 +148,7 @@ internal static class ProgramCompiler
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=57DD1B
+    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=EE8FC4
     // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, one of 511 answers NestingLimitExceeded, or a compilation past its budget answers Compiled
     // Broiler-Human:        PENDING
     internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true,
@@ -160,7 +162,7 @@ internal static class ProgramCompiler
         var data = new RegexUnicode(tables, charge);
         RegexNode tree;
         int captureCount;
-        IReadOnlyDictionary<string, int> groupNames;
+        RegexGroupNames groupNames;
         try
         {
             tree = RegexParser.Parse(pattern, flags, data, nesting, out captureCount, out groupNames);
@@ -181,7 +183,7 @@ internal static class ProgramCompiler
     /// <summary>Compiles a tree the parser built under <paramref name="flags"/> to a program.</summary>
     /// <param name="tree">The parser's tree.</param>
     /// <param name="captureCount">The pattern's capturing groups, as the parser counted them.</param>
-    /// <param name="groupNames">The parser's map of group names to group numbers, which a named back-reference reads.</param>
+    /// <param name="groupNames">The parser's group names, each with its groups, which a named back-reference reads.</param>
     /// <param name="flags">The flags the tree was parsed under.</param>
     /// <param name="data">The Unicode answers of the compilation the parser read, whose case folding the program keeps and whose account the lowering charges.</param>
     /// <param name="nesting">The caller's nesting limit, checked again, by the first walk, before each group's body is entered.</param>
@@ -195,10 +197,10 @@ internal static class ProgramCompiler
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
     /// <exception cref="CompileBudgetSpent">The lowering would take the compilation past the caller's compile budget.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=44896C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=518442
     // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
     // Broiler-Human:        PENDING
-    internal static ProgramCompilation Compile(RegexNode tree, int captureCount, IReadOnlyDictionary<string, int> groupNames,
+    internal static ProgramCompilation Compile(RegexNode tree, int captureCount, RegexGroupNames groupNames,
         RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program, bool fastPaths = true,
         IEqualityComparer<string>? stringComparer = null)
     {
@@ -404,10 +406,10 @@ internal static class ProgramCompiler
     private readonly record struct StringTableKey(bool RightToLeft, bool Folded, int Count, int Hash);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=CEBF50
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=7A6583
     // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
     // Broiler-Human:        PENDING
-    private sealed class ProgramWriter(int captureCount, IReadOnlyDictionary<string, int> groupNames, RegexFlags flags, RegexUnicode data,
+    private sealed class ProgramWriter(int captureCount, RegexGroupNames groupNames, RegexFlags flags, RegexUnicode data,
         Dictionary<QuantifierNode, (int First, int Last)> groups, bool fastPaths, IEqualityComparer<string> stringComparer)
     {
         private readonly List<RegexInstruction> _code = [];
@@ -1012,24 +1014,41 @@ internal static class ProgramCompiler
         }
 
         /// <summary>
-        /// Adds a back-reference (§22.2.2.7.2): its group, by number or by name, as a list of one entry in the program's
-        /// list of referenced groups, compared exactly or, with <c>i</c> in force, by Canonicalize. A number past the
-        /// pattern's groups, or a name no group declares, which the parser never answers with, matches the empty string,
-        /// as a reference to a group that has not participated does.
+        /// Adds a back-reference (§22.2.2.7.2): its groups, as a run of entries in the program's list of referenced groups,
+        /// compared exactly or, with <c>i</c> in force, by Canonicalize. A number names one group; a name every group that
+        /// carries it, in ascending order (§22.2.2.7, AtomEscape :: <c>k</c> GroupName, over GroupSpecifiersThatMatch,
+        /// §22.2.1.9), of which at most one participates, the one the instruction compares (requirement R6). A number past
+        /// the pattern's groups, or a name no group declares, which the parser never answers with, matches the empty
+        /// string, as a reference to a group that has not participated does.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=D6ABF6
-        // Broiler-Falsified-If: \k<n> is given another group than the one the parser named n, or a reference under the i flag in force compares exactly
+        /// <remarks>
+        /// The instruction costs one unit whatever its run's length, as a capture reset of any width does (decision D8's
+        /// unit, an instruction dispatched), and its capture's length when it runs: a name of several groups reads their
+        /// registers until it finds the defined one, work the pattern's own groups bound.
+        /// </remarks>
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=E689D9
+        // Broiler-Falsified-If: \k<n> is given another group than the ones the parser named n, a name of two groups is given one of them, or a reference under the i flag in force compares exactly
         // Broiler-Human:        PENDING
         private void AddReference(BackreferenceNode reference, Scope scope)
         {
-            var group = reference.Name is null ? reference.Index : groupNames.TryGetValue(reference.Name, out var named) ? named : 0;
-            if (group < 1 || group > captureCount)
-                return;
+            var first = _referenced.Count;
+            if (reference.Name is null)
+            {
+                if (reference.Index < 1 || reference.Index > captureCount)
+                    return;
+                _referenced.Add(reference.Index);
+            }
+            else
+            {
+                foreach (var group in groupNames.GroupsNamed(reference.Name))
+                    _referenced.Add(group);
+                if (_referenced.Count == first)
+                    return;
+            }
 
-            _referenced.Add(group);
             if (scope.IgnoreCase)
                 _folds = true;
-            Add(scope.IgnoreCase ? RegexOp.BackreferenceIgnoringCase : RegexOp.Backreference, _referenced.Count - 1, 1, rightToLeft: scope.RightToLeft);
+            Add(scope.IgnoreCase ? RegexOp.BackreferenceIgnoringCase : RegexOp.Backreference, first, _referenced.Count - first, rightToLeft: scope.RightToLeft);
         }
 
         /// <summary>

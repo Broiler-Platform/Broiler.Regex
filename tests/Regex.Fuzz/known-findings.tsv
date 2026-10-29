@@ -1,0 +1,9 @@
+# Findings of the fuzz target in library code that are reported and not fixed yet (tests/Regex.Fuzz/README.md,
+# "Known findings"). A session prints a finding listed here as known and does not fail on it; a declared session that
+# no longer reaches a listed finding fails, as stale; FuzzTargetTests runs each reproduction and fails once it no longer
+# reproduces. So the row leaves this file in the change that fixes its defect, and in no other.
+# Columns, tab-separated: kind, exception type, the innermost library method on its stack, a text its message holds,
+# the reproduction as a JSON string and its flags (letters, or - for none), and who reported it when, with the seed and
+# the iteration that first found it. A finding is the row's only when all of the first four agree, so that another
+# exception of the type from the same method is reported.
+# kind	type	method	message	pattern	flags	reported

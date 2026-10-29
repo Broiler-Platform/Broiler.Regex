@@ -10,7 +10,7 @@ namespace Broiler.Regex.Probe;
 /// of <see cref="ProbePopulation.StackBytes"/>, so that the Native AOT run proves under its own stack what the JIT run
 /// proves: the flat sequences of 100,000 terms (the adversarial corpus's F03 and F04) and the nesting cases at the maximum
 /// (N01, N07, N13) complete through the new entry, and the new backend answers its ceilings, its meter, its anchored
-/// argument, task 2.4b's constructs and task 2.4c's fast paths as the JIT does. Each case is written in the corpus's terms
+/// argument, task 2.4b's constructs, task 2.4c's fast paths and task 2.6's names shared by alternatives as the JIT does. Each case is written in the corpus's terms
 /// (<see cref="EngineRun"/>), and the report gives each its answer and the units the match did.
 /// </summary>
 internal static class EnginePopulation
@@ -103,6 +103,15 @@ internal static class EnginePopulation
         ("E50", "-", "compile", "\"[\" + \"\\\\p{L}\" * 50 + \"]\"", "iu", "-", Ordinary),
         ("E51", "-", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "v", "-", Ordinary),
         ("E52", "-", "compile", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "iv", "-", Ordinary),
+
+        // The corpus's rows task 2.6 brings to the new backend (requirement R6): a group name two alternatives share, the
+        // second participating, and a reference to it; and the same reference under i and read right to left in a
+        // look-behind, and a name a thousand alternatives share, the last participating.
+        ("E53", "O07", "match@0", "\"(?<a>x)|(?<a>y)\"", "-", "\"y\"", Ordinary),
+        ("E54", "O08", "match@0", "\"(?:(?<a>x)|(?<a>y))\\\\k<a>\"", "-", "\"yy\"", Ordinary),
+        ("E55", "-", "match@0", "\"(?:(?<a>x)|(?<a>y))\\\\k<a>\"", "i", "\"zyY\"", Ordinary),
+        ("E56", "-", "match@0", "\"(?<=\\\\k<a>(?:(?<a>x)|(?<a>y)))z\"", "-", "\"xyyz\"", Ordinary),
+        ("E57", "-", "match@0", "\"(?:\" + \"(?<n>x)|\" * 999 + \"(?<n>y))\\\\k<n>\"", "-", "\"yy\"", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>

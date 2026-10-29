@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
@@ -11,27 +12,30 @@ namespace Broiler.Regex.Tests;
 public class ImmutablePatternTests
 {
     [Fact]
-    public void A_compiled_patterns_group_names_cannot_be_changed_through_their_interface()
+    public void A_compiled_patterns_group_names_cannot_be_changed_through_their_members()
     {
         // Until task 2.3's review, GroupNames was the parser's own Dictionary behind IReadOnlyDictionary, and the matcher
-        // read the same instance on every match, so a cast cleared the names every later match reports.
-        var regex = TestRegex.Compile("(?<y>a)");
-        var names = Assert.IsAssignableFrom<IDictionary<string, int>>(regex.GroupNames);
-        Assert.True(names.IsReadOnly);
-        Assert.Throws<NotSupportedException>(names.Clear);
-        Assert.Throws<NotSupportedException>(() => names["z"] = 2);
-        Assert.Throws<NotSupportedException>(() => names.Remove("y"));
+        // read the same instance on every match, so a cast cleared the names every later match reports. Since task 2.6 it
+        // is RegexGroupNames, whose members answer values and read-only spans: no member or field of it writes, and no
+        // interface of it is a collection a cast could reach.
+        var type = typeof(RegexGroupNames);
+        Assert.Empty(type.GetInterfaces());
+        Assert.Empty(type.GetProperties().Where(static p => p.SetMethod is { IsPublic: true }));
+        Assert.All(type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), static f => Assert.True(f.IsInitOnly, f.Name + " is not readonly"));
+        Assert.All(type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly), static m => Assert.NotEqual(typeof(void), m.ReturnType));
 
-        Assert.Equal(1, regex.GroupNames["y"]);
+        var regex = TestRegex.Compile("(?<y>a)");
+        Assert.Equal([1], regex.GroupNames.GroupsNamed("y").ToArray());
         Assert.Equal("a", regex.Match("a").NamedGroups["y"].Value);
+        Assert.Equal([1], regex.GroupNames.GroupsNamed("y").ToArray());
     }
 
     [Fact]
-    public void A_parsers_group_names_cannot_be_changed_through_their_interface()
+    public void A_parsers_group_names_before_a_parse_hold_no_name()
     {
+        // The public constructor does not parse, so the parser's names are empty until the internal parse sets them.
         var parser = new Parsing.RegexParser("(?<y>a)", RegexFlags.None, Broiler.Unicode.Tables.UnicodeTables.Instance);
-        var names = Assert.IsAssignableFrom<IDictionary<string, int>>(parser.GroupNames);
-        Assert.True(names.IsReadOnly);
-        Assert.Throws<NotSupportedException>(() => names["z"] = 2);
+        Assert.Equal(0, parser.GroupNames.Count);
+        Assert.True(parser.GroupNames.GroupsNamed("y").IsEmpty);
     }
 }

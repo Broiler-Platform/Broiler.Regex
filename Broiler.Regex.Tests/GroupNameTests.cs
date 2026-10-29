@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Broiler.Regex.Tests;
@@ -6,8 +7,9 @@ namespace Broiler.Regex.Tests;
 /// <summary>
 /// Requirement R5's group names (bundle sjl-11-001's check A-5): a GroupName is a <c>RegExpIdentifierName</c>
 /// (ECMA-262 §22.2.1), read the same way in every mode, its code points held to IdentifierStartChar and
-/// IdentifierPartChar by the provider's <c>EcmaScriptLexical</c> (§22.2.1.1); and two GroupSpecifiers may not share
-/// a name, compared as decoded. Also row S10 of Broiler.VM's correspondence: only two four-digit escapes form a
+/// IdentifierPartChar by the provider's <c>EcmaScriptLexical</c> (§22.2.1.1); and two GroupSpecifiers that might both
+/// participate may not share a name, compared as decoded (requirement R6's rule is <see cref="DuplicateNamedGroupTests"/>'s).
+/// Also row S10 of Broiler.VM's correspondence: only two four-digit escapes form a
 /// surrogate pair, never a braced one.
 /// </summary>
 public class GroupNameTests
@@ -70,8 +72,8 @@ public class GroupNameTests
             var spelling = (string)row[0];
             var name = (string)row[1];
             var regex = TestRegex.Compile("(?<" + spelling + ">x)", flags);
-            Assert.Equal(1, regex.GroupNames[name]);
-            Assert.Single(regex.GroupNames);
+            Assert.Equal([1], regex.GroupNames.GroupsNamed(name).ToArray());
+            Assert.Equal((1, name, name), (regex.GroupNames.Count, regex.GroupNames.NameAt(0), regex.GroupNames.NameOfGroup(1)));
 
             var match = regex.Match("x");
             Assert.True(match.Success);
@@ -136,23 +138,20 @@ public class GroupNameTests
     }
 
     /// <summary>
-    /// The duplicate in two alternatives that cannot both participate: ES2025 admits it, and requirement R6 (task
-    /// 2.6) brings it. Until then it is refused as every duplicate is, and an escape no longer hides it: it was
-    /// accepted in 0.1.0-preview.4 only when spelled with one (the survey's
-    /// <c>(?&lt;\u0061&gt;x)|(?&lt;a&gt;y)</c>; the unescaped <c>(?&lt;a&gt;x)|(?&lt;a&gt;y)</c> it refused).
+    /// The duplicate in two alternatives that cannot both participate, which ES2025 admits (§22.2.1.1, MightBothParticipate
+    /// §22.2.1.4) and requirement R6 brought with task 2.6, which deleted this class's test that it was refused until then.
+    /// An escape no longer hides a duplicate either way: 0.1.0-preview.4 accepted the survey's
+    /// <c>(?&lt;\u0061&gt;x)|(?&lt;a&gt;y)</c> only because it compared the names as written, and refused the unescaped
+    /// <c>(?&lt;a&gt;x)|(?&lt;a&gt;y)</c>; both are now one name of two groups. <see cref="DuplicateNamedGroupTests"/> holds
+    /// the rule.
     /// </summary>
-    /// <remarks>
-    /// These answers are not ECMA-262 2025's, which admits every row (§22.2.1.1, MightBothParticipate,
-    /// §22.2.1.4). Task 2.6 turns each row into an accepted pattern, with its name resolving to the participating
-    /// group, and deletes this test; it is not to stay as a guard against the specification.
-    /// </remarks>
     [Theory]
     [InlineData("(?<a>x)|(?<a>y)", "")]
     [InlineData("(?<a>x)|(?<a>y)", "u")]
     [InlineData(@"(?<\u0061>x)|(?<a>y)", "")]
     [InlineData(@"(?:(?<a>x)|(?<a>y))\k<a>", "")]
-    public void A_duplicate_across_alternatives_is_refused_until_R6(string pattern, string flags)
-        => Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, flags));
+    public void A_duplicate_across_alternatives_is_one_name_of_two_groups(string pattern, string flags)
+        => Assert.Equal([1, 2], TestRegex.Compile(pattern, flags).GroupNames.GroupsNamed("a").ToArray());
 
     [Theory]
     [MemberData(nameof(Modes))]

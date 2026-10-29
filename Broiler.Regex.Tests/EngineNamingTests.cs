@@ -24,7 +24,9 @@ public class EngineNamingTests
     /// prefilter and its step counting that task 2.4c's fast paths could have taken, with <c>Repeat</c>, a node kind of
     /// the VM's parser that task 2.4c's first name for a run's entry took, now <c>EnterRun</c>; and <c>charge</c>, the
     /// field of the VM's runner that holds its meter, which task 2.5's first name for the program compiler's account of a
-    /// compilation took, now <c>_account</c> (the machine's meter has been <c>_meter</c> since task 2.4a).
+    /// compilation took, now <c>_account</c> (the machine's meter has been <c>_meter</c> since task 2.4a); and
+    /// <c>names</c>, the field of the VM's parser that holds each group's name, which task 2.6's first name for
+    /// <see cref="RegexGroupNames"/>' list of names took, now <c>_nameList</c>.
     /// </summary>
     private static readonly string[] Copied =
     [
@@ -35,14 +37,18 @@ public class EngineNamingTests
         "assertionTop", "Backward", "Fold", "Lines", "BackRef", "Bol", "Eol", "EmitLook", "EmitCapture",
         "TakeRun", "TakeSet", "TakeChar", "Floor", "RunForward", "RunBackward", "EmitRepeat", "EmitIteration",
         "PrefilterAdmits", "prefilterKind", "prefilterValue", "prefilterFold", "perSkip", "Tick", "Spend", "Settle",
-        "StepsPerCharge", "Backtrack", "Repeat", "charge",
+        "StepsPerCharge", "Backtrack", "Repeat", "charge", "names",
     ];
 
-    /// <summary>Every member the new backend's namespace and its program compiler declare, by name, compiler-generated ones left out.</summary>
+    /// <summary>
+    /// Every member the new backend's namespace, its program compiler and the group names it reads (task 2.6) declare, by
+    /// name, compiler-generated ones left out.
+    /// </summary>
     private static string[] DeclaredNames()
     {
         var types = typeof(RegexProgram).Assembly.GetTypes()
-            .Where(static t => t.Namespace == "Broiler.Regex.Engine" || t == typeof(ProgramCompiler) || t.DeclaringType == typeof(ProgramCompiler));
+            .Where(static t => t.Namespace == "Broiler.Regex.Engine" || t == typeof(ProgramCompiler) || t.DeclaringType == typeof(ProgramCompiler)
+                || t == typeof(RegexGroupNames));
         const BindingFlags all = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
         return types.SelectMany(static t => t.GetMembers(all).Select(static m => m.Name).Append(t.Name))
             .Where(static n => !n.Contains('<', StringComparison.Ordinal))

@@ -18,7 +18,8 @@ namespace Broiler.Regex.Tests;
 /// classes and a <c>v</c>-mode class of strings), and task 2.4c's O05 and O06, the greedy run of <c>[a]</c> over
 /// 10,000,001 characters that the run instruction matches with one frame (the corpus's presumption 3), where the loop it
 /// replaces passed the frame ceiling, and task 2.5's class V, fifty property escapes in one class under <c>v</c>,
-/// <c>vi</c> and <c>iu</c>, each refused at its compile budget (requirement R2; check A-2's second half); each run through
+/// <c>vi</c> and <c>iu</c>, each refused at its compile budget (requirement R2; check A-2's second half), and task 2.6's
+/// O07 and O08, a group name two alternatives share and a reference to it (requirement R6); each run through
 /// the new backend's entry with the row's policy in a child process of its own, the probe under its hidden argument
 /// <c>--engine-row</c>, on a thread of the corpus's declared stack: a crash is observed as the child's exit, not suffered
 /// by the test host, and each row answers its declared status. Every other row is named with the reason it waits. Task
@@ -26,7 +27,7 @@ namespace Broiler.Regex.Tests;
 /// </summary>
 public class AdversarialCorpusTests
 {
-    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's, then task 2.4c's, then task 2.5's.</summary>
+    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's, 2.4c's, 2.5's and 2.6's.</summary>
     private static readonly string[] RowIds =
     [
         "K01", "K02", "K03", "K04", "A01", "A02", "W01", "W02", "G01", "G02", "M01", "M02",
@@ -35,6 +36,7 @@ public class AdversarialCorpusTests
         "K05", "G03", "L01", "L02", "L03", "L04", "L05", "F01", "F02", "O02", "O03", "O16", "O17",
         "O05", "O06",
         "V01", "V02", "V03", "V04", "V05",
+        "O07", "O08",
     ];
 
     public static TheoryData<string> Rows
@@ -53,8 +55,6 @@ public class AdversarialCorpusTests
     {
         ["N03"] = "the validate entry: task 2.8", ["N06"] = "the validate entry: task 2.8", ["N09"] = "the validate entry: task 2.8",
         ["N12"] = "the validate entry: task 2.8", ["N15"] = "the validate entry: task 2.8", ["N18"] = "the validate entry: task 2.8",
-        ["O07"] = "a group name repeated across alternatives: task 2.6",
-        ["O08"] = "a group name repeated across alternatives, with a back-reference to it: task 2.6 (the parser refuses it until then)",
         ["O19"] = "the validate entry: task 2.8",
     };
 

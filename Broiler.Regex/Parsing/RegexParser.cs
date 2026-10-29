@@ -3,20 +3,20 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   65
-// Annotated:        65/65
-// Exempt:           21
-// Human-reviewed:   0/65
+// Relevant units:   67
+// Annotated:        67/67
+// Exempt:           24
+// Human-reviewed:   0/67
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         61/52
+// Criteria:         63/55
 // Resource impact:  7/10 max
-// Unverified:       65
+// Unverified:       67
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using Broiler.Regex.Ast;
 using Broiler.Regex.Unicode;
@@ -65,19 +65,34 @@ public sealed class RegexParser
     /// <summary>Total number of capturing groups, available after parsing.</summary>
     public int CaptureCount { get; private set; }
 
-    /// <summary>Map of group name → 1-based capture index, available after parsing.</summary>
+    /// <summary>
+    /// The pattern's group names, available after parsing: each name with its groups, in the order of its first group
+    /// (requirement R6; ECMA-262 §22.2.1.9, GroupSpecifiersThatMatch). Before a parse, and for an instance made by the
+    /// public constructor, which does not parse, it holds no name.
+    /// </summary>
     /// <remarks>
-    /// A read-only view of the parser's own map, which nothing else holds: a cast to <c>IDictionary</c> admits no
-    /// write, so the compiled pattern that keeps it, and its matcher, which reads it on every match, cannot be changed
-    /// through it (convention 10).
+    /// Made once, when the pattern has been read, and never changed: the compiled pattern that keeps it, and its matches,
+    /// share it (convention 10). Provisional in its shape since task 2.6 of SJL-11.2, which reshaped it from a map of each
+    /// name to one group; task 2.9 fixes the public surface.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=3C8667
-    // Broiler-Falsified-If: a cast of GroupNames to IDictionary admits a write, so Clear empties the names a compiled pattern's later matches report
-    // Broiler-Human:        PENDING
-    public IReadOnlyDictionary<string, int> GroupNames => _groupNamesView;
+    public RegexGroupNames GroupNames { get; private set; }
 
-    private readonly Dictionary<string, int> _groupNames = [];
-    private readonly ReadOnlyDictionary<string, int> _groupNamesView;
+    /// <summary>Each name's groups, ascending, as the parse declares them.</summary>
+    private readonly Dictionary<string, List<int>> _groupsByName = new(StringComparer.Ordinal);
+
+    /// <summary>The names, in the order of their first groups.</summary>
+    private readonly List<string> _namesInOrder = [];
+
+    /// <summary>The position of the <c>(</c> of each name's latest group, which a later group of the name is checked against.</summary>
+    private readonly Dictionary<string, int> _latestGroupOf = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// The Disjunctions the cursor is inside, outermost first: where each began and where its current Alternative began,
+    /// both source positions. A group of a name repeated later is in a closed Alternative of one of them exactly when the
+    /// two cannot both participate (<see cref="MightBothParticipate"/>).
+    /// </summary>
+    private readonly List<(int Start, int AlternativeStart)> _disjunctions = [];
+
     private int _totalCaptureGroups;
 
     /// <summary>
@@ -106,7 +121,7 @@ public sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=EAFE62
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=B7C4E7
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
@@ -118,7 +133,7 @@ public sealed class RegexParser
         _account = data.Account;
         _nesting = nesting;
         _ignoreCase.Push((flags & RegexFlags.IgnoreCase) != 0);
-        _groupNamesView = new ReadOnlyDictionary<string, int>(_groupNames);
+        GroupNames = new RegexGroupNames([], [], 0);
     }
 
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2
@@ -159,11 +174,11 @@ public sealed class RegexParser
     }
 
     /// <exception cref="NestingLimitExceeded">The pattern nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=47A0F9
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=9F8916
     // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
     // Broiler-Human:        PENDING
     internal static RegexNode Parse(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
-        out int captureCount, out IReadOnlyDictionary<string, int> groupNames)
+        out int captureCount, out RegexGroupNames groupNames)
     {
         var parser = new RegexParser(pattern, flags, data, nesting);
         var node = parser.ParsePattern();
@@ -172,7 +187,7 @@ public sealed class RegexParser
         return node;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=4C16E2
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=5B34B2
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
@@ -196,11 +211,15 @@ public sealed class RegexParser
         // \k<b>(?<a>x) as a compilation does.
         foreach (var (name, position) in _namedReferences)
         {
-            if (!_groupNames.ContainsKey(name))
+            if (!_groupsByName.ContainsKey(name))
                 throw new RegexSyntaxException("Reference to the undeclared group name '" + name + "'", position);
         }
 
         CaptureCount = _captureCount;
+        var groups = new int[_namesInOrder.Count][];
+        for (var at = 0; at < groups.Length; at++)
+            groups[at] = [.. _groupsByName[_namesInOrder[at]]];
+        GroupNames = new RegexGroupNames([.. _namesInOrder], groups, _captureCount);
         return node;
     }
 
@@ -252,18 +271,23 @@ public sealed class RegexParser
 
     // ----- Disjunction / Alternative -----------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=598B1F
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3B256C
     // Broiler-Falsified-If: a pattern of 100,000 nested '(?:' groups exhausts the native stack in this recursion instead of raising a catchable exception
     // Broiler-Human:        PENDING
     private RegexNode ParseDisjunction()
     {
+        // Disjunction :: Alternative | Disjunction: each Alternative after a '|' begins a new region of this Disjunction,
+        // which a group of a name repeated in it is checked against (MightBothParticipate, §22.2.1.4).
+        _disjunctions.Add((_pos, _pos));
         var alternatives = new List<RegexNode> { ParseAlternative() };
         while (Peek() == '|')
         {
             _pos++;
+            _disjunctions[^1] = (_disjunctions[^1].Start, _pos);
             alternatives.Add(ParseAlternative());
         }
 
+        _disjunctions.RemoveAt(_disjunctions.Count - 1);
         return alternatives.Count == 1 ? alternatives[0] : new DisjunctionNode(alternatives);
     }
 
@@ -513,7 +537,7 @@ public sealed class RegexParser
         return new CharNode(cp);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1B81BA
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=4D8F24
     // Broiler-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
     // Broiler-Human:        PENDING
     private RegexNode ParseGroup()
@@ -543,11 +567,19 @@ public sealed class RegexParser
                 var name = ReadGroupName();
                 var index = ++_captureCount;
 
-                // §22.2.1.1: two GroupSpecifiers may not share a name — compared as decoded, so
-                // (?<a>x)(?<\u0061>y) repeats the name a. ES2025's exception for alternatives that
-                // cannot both participate is requirement R6's, which this parser does not yet admit.
-                if (!_groupNames.TryAdd(name, index))
+                // §22.2.1.1: two GroupSpecifiers may share a name only when MightBothParticipate is false for them
+                // (§22.2.1.4), the names compared as decoded, so (?<a>x)(?<\u0061>y) repeats the name a and is refused,
+                // and (?<a>x)|(?<\u0061>y) is admitted (requirement R6).
+                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier))
                     throw new RegexSyntaxException("Duplicate capture group name '" + name + "'", open);
+                _latestGroupOf[name] = open;
+                if (!_groupsByName.TryGetValue(name, out var named))
+                {
+                    _groupsByName.Add(name, named = []);
+                    _namesInOrder.Add(name);
+                }
+
+                named.Add(index);
                 Descend(open);
                 var body = ParseDisjunction();
                 Expect(')');
@@ -951,6 +983,8 @@ public sealed class RegexParser
             _pos++;
         }
 
+        // The expression returns at the class's ']' or at the pattern's end, never before another character: a union
+        // reads operands up to either, and an intersection or a subtraction refuses whatever else follows its last one.
         var value = ParseClassSetExpression();
 
         if (AtEnd)
@@ -971,7 +1005,7 @@ public sealed class RegexParser
         return new ClassSetValue { Set = ComplementOperand(value.Set) };
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=314DFD
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=3CE8A7
     // Broiler-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetExpression()
@@ -980,11 +1014,14 @@ public sealed class RegexParser
             return new ClassSetValue();
 
         var start = _pos;
-        var accumulated = ParseClassSetRangeOrOperand();
+        var accumulated = ParseClassSetRangeOrOperand(out var range);
 
-        if (Peek() == '&' && PeekAt(1) == '&')
+        // A ClassIntersection and a ClassSubtraction begin with a ClassSetOperand (§22.2.1); a ClassSetRange is a
+        // ClassUnion's alone. After a range, '--' and '&&' are no operator, and the union's first RejectMixedOperator
+        // refuses them, so [a-z--b] and [a-a&&c] are the refusal of a mixed expression, at the range.
+        if (!range && Peek() == '&' && PeekAt(1) == '&')
             return ParseClassIntersection(accumulated, start);
-        if (Peek() == '-' && PeekAt(1) == '-')
+        if (!range && Peek() == '-' && PeekAt(1) == '-')
             return ParseClassSubtraction(accumulated, start);
 
         // A union's operands are gathered and its set is built once, at the end, joined two by two; its strings are
@@ -995,7 +1032,7 @@ public sealed class RegexParser
         while (!AtEnd && Peek() != ']')
         {
             RejectMixedOperator(start);
-            var operand = ParseClassSetRangeOrOperand();
+            var operand = ParseClassSetRangeOrOperand(out _);
             union.AddAll(operand.Set);
             accumulated.MayContainStrings |= operand.MayContainStrings;
             accumulated.Strings.UnionWith(operand.Strings, _account);
@@ -1005,7 +1042,7 @@ public sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=D08118
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=747DAC
     // Broiler-Falsified-If: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassIntersection(ClassSetValue first, int start)
@@ -1027,11 +1064,11 @@ public sealed class RegexParser
             };
         }
 
-        RejectMixedOperator(start);
+        RejectAfterLastOperand(start);
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=79DAB5
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=354D21
     // Broiler-Falsified-If: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSubtraction(ClassSetValue first, int start)
@@ -1051,17 +1088,17 @@ public sealed class RegexParser
             };
         }
 
-        RejectMixedOperator(start);
+        RejectAfterLastOperand(start);
         return accumulated;
     }
 
     /// <summary>
     /// A class-set expression is a union, an intersection or a subtraction — never a
-    /// mixture, so an operator (or trailing operand) left over after one of them is a
-    /// syntax error rather than a silently reassociated expression.
+    /// mixture, so an operator met between a union's operands is a syntax error rather
+    /// than a silently reassociated expression.
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=9001F0
-    // Broiler-Falsified-If: [a--b&&c] or [a&&b--c] under v is accepted instead of throwing
+    // Broiler-Falsified-If: [ab--c], [ab&&c] or [a-z--b] under v is accepted instead of throwing
     // Broiler-Human:        PENDING
     private void RejectMixedOperator(int start)
     {
@@ -1072,11 +1109,29 @@ public sealed class RegexParser
                 "A class-set expression may not mix union, '&&' and '--' without nesting", start);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=4A932C
+    /// <summary>
+    /// A ClassIntersection or a ClassSubtraction ends at its last operand (§22.2.1), which only the class's <c>]</c> may
+    /// follow, or the pattern's end, which <see cref="ParseNestedClass"/> then refuses as an unterminated class. An
+    /// operator of the other kind, or any operand, would mix the expression with another, so it is refused here, before
+    /// the class consumes its <c>]</c>.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=962FE3
+    // Broiler-Falsified-If: [a--bc or [a&&ac under v compiles, or [a--b&&c], [a&&b--c] or [a--b[c]] is accepted instead of throwing
+    // Broiler-Human:        PENDING
+    private void RejectAfterLastOperand(int start)
+    {
+        if (!AtEnd && Peek() != ']')
+            throw new RegexSyntaxException(
+                "A class-set expression may not mix union, '&&' and '--' without nesting", start);
+    }
+
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=8C19B5
     // Broiler-Falsified-If: a range endpoint that is a class escape or \q{...}, as in [a-\d] under v, is accepted instead of throwing
     // Broiler-Human:        PENDING
-    private ClassSetValue ParseClassSetRangeOrOperand()
+    private ClassSetValue ParseClassSetRangeOrOperand(out bool range)
     {
+        // range says whether a ClassSetRange was read, which only a ClassUnion may hold.
+        range = false;
         var start = _pos;
         var operand = ParseClassSetOperand(out var single);
 
@@ -1093,6 +1148,7 @@ public sealed class RegexParser
             throw new RegexSyntaxException(
                 $"Range out of order in character class: U+{single.Value:X}-U+{highSingle.Value:X}", start);
 
+        range = true;
         return Fold(new ClassSetValue { Set = CodePointSet.Of(single.Value, highSingle.Value) });
     }
 
@@ -1101,7 +1157,7 @@ public sealed class RegexParser
     /// point when the operand was a lone character, which is the only shape a range end
     /// may take.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=D908B6
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=213D68
     // Broiler-Falsified-If: an unescaped '(' or a doubled punctuator such as '!!' is accepted as a literal inside a v-mode class
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassSetOperand(out int? single)
@@ -1133,38 +1189,51 @@ public sealed class RegexParser
                 return ReadPropertyOperand(allowStrings: true);
             }
 
+            single = ReadClassSetCharacter(escaped: true, "a 'v'-mode class");
+            return Fold(SingleCodePoint(single.Value));
+        }
+
+        single = ReadClassSetCharacter(escaped: false, "a 'v'-mode class");
+        return Fold(SingleCodePoint(single.Value));
+    }
+
+    /// <summary>
+    /// Reads one ClassSetCharacter (§22.2.1) and answers the code point it denotes, a lone surrogate as well as any other
+    /// (§22.2.2.9 CompileToCharSet): a source character that is neither a class-set syntax character nor the first of a
+    /// reserved double punctuator, or, when <paramref name="escaped"/> says its <c>\</c> is read, <c>\b</c>, a reserved
+    /// punctuator, or a CharacterEscape. A class-set operand and a <c>\q{…}</c> alternative read their characters here
+    /// alike; <paramref name="inside"/> names which in a refusal.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=BC9181
+    // Broiler-Falsified-If: \b is refused, a reserved double punctuator such as && is read as two characters, or an unescaped ( or | is read as a character, inside a v-mode class or a \q{...} alternative
+    // Broiler-Human:        PENDING
+    private int ReadClassSetCharacter(bool escaped, string inside)
+    {
+        if (escaped)
+        {
             if (Peek() == 'b')
             {
                 _pos++;
-                single = '\b';
-                return Fold(SingleCodePoint('\b'));
+                return '\b';
             }
 
             // `\` followed by one of the reserved punctuators is that punctuator; every
             // other escape is an ordinary CharacterEscape.
             if (IsClassSetReservedPunctuator(Peek()))
-            {
-                single = _src[_pos++];
-                return Fold(SingleCodePoint(single.Value));
-            }
-
-            single = ReadCharacterEscape();
-            return Fold(SingleCodePoint(single.Value));
+                return _src[_pos++];
+            return ReadCharacterEscape();
         }
 
-        // ClassSetCharacter: a source character that is neither a syntax character nor
-        // half of a reserved double punctuator.
+        var c = Peek();
         if (IsClassSetSyntaxCharacter(c))
-            throw new RegexSyntaxException($"'{c}' must be escaped inside a 'v'-mode class", _pos);
+            throw new RegexSyntaxException("'" + c + "' must be escaped inside " + inside, _pos);
         if (IsClassSetReservedDoublePunctuator(c) && PeekAt(1) == c)
-            throw new RegexSyntaxException($"'{c}{c}' is reserved inside a 'v'-mode class", _pos);
-
-        single = ReadSourceCodePoint();
-        return Fold(SingleCodePoint(single.Value));
+            throw new RegexSyntaxException("'" + c + c + "' is reserved inside " + inside, _pos);
+        return ReadSourceCodePoint();
     }
 
     /// <summary>Parses <c>\q{ ClassString (| ClassString)* }</c>, the cursor on the <c>'q'</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=29D105
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=BD7040
     // Broiler-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
     // Broiler-Human:        PENDING
     private ClassSetValue ParseClassStringDisjunction()
@@ -1180,23 +1249,31 @@ public sealed class RegexParser
         var singles = new CodePointSet.Builder();
         var current = new StringBuilder();
         var characters = 0;
+        var last = 0;
+        var leadThenTrail = false;
 
+        // §22.2.2.10 CompileClassSetString: an alternative is the sequence of the code points its ClassSetCharacters
+        // denote, one each, read as code points here and never inferred from the alternative's UTF-16 text.
         void Flush()
         {
             // §22.2.1.8: a ClassString may contain strings unless it is exactly one ClassSetCharacter,
             // counted as written, so an empty one or \uD83D\u{DE00} (a lead escape, then a trail) may.
             if (characters != 1)
                 value.MayContainStrings = true;
-            characters = 0;
 
-            var text = current.ToString();
+            // One character is an ordinary member of the code-point set, a lone surrogate as well as any other; a longer
+            // (or empty) alternative needs string matching, added once, by its hash, as its UTF-16 text, which reads back
+            // as its code points. Except where a lead surrogate is followed by a trail one, as \uD83D\u{DE00} writes them:
+            // the text would read as the one astral code point they are not, and the alternative matches nothing, as a
+            // subject read by code point (§22.2.7.2) never holds a lead followed by a trail, so it is not kept.
+            if (characters == 1)
+                singles.Add(last);
+            else if (!leadThenTrail)
+                value.Strings.Add(current.ToString(), _account);
+
+            characters = 0;
+            leadThenTrail = false;
             current.Clear();
-            // A one-character alternative is an ordinary member of the code-point set;
-            // only longer (and empty) alternatives need string matching, each added once, by its hash.
-            if (text.Length == 1 || (text.Length == 2 && char.IsSurrogatePair(text, 0)))
-                singles.Add(char.ConvertToUtf32(text, 0));
-            else
-                value.Strings.Add(text, _account);
         }
 
         while (true)
@@ -1218,23 +1295,14 @@ public sealed class RegexParser
                 continue;
             }
 
-            characters++;
             if (c == '\\')
-            {
                 _pos++;
-                if (IsClassSetReservedPunctuator(Peek()))
-                {
-                    current.Append(_src[_pos++]);
-                    continue;
-                }
-                current.Append(FromCodePoint(ReadCharacterEscape()));
-                continue;
-            }
-
-            if (IsClassSetSyntaxCharacter(c))
-                throw new RegexSyntaxException($"'{c}' must be escaped inside \\q{{…}}", _pos);
-
-            current.Append(FromCodePoint(ReadSourceCodePoint()));
+            var codePoint = ReadClassSetCharacter(escaped: c == '\\', "\\q{…}");
+            if (characters > 0 && last is >= 0xD800 and <= 0xDBFF && codePoint is >= 0xDC00 and <= 0xDFFF)
+                leadThenTrail = true;
+            characters++;
+            last = codePoint;
+            current.Append(FromCodePoint(codePoint));
         }
 
         value.Set = singles.ToSet(_account);
@@ -1672,6 +1740,46 @@ public sealed class RegexParser
             throw new RegexSyntaxException("Empty group name", _pos);
         _pos++; // consume '>'
         return name.ToString();
+    }
+
+    /// <summary>
+    /// MightBothParticipate (ECMA-262 §22.2.1.4) of the group whose <c>(</c> is at <paramref name="earlier"/> and the
+    /// group the cursor is declaring: true unless some Disjunction holds the two in different Alternatives.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The pattern is read left to right, so such a Disjunction is one the cursor is still inside, and the earlier group is
+    /// in one of its Alternatives that has closed: between where the Disjunction began and where its current Alternative
+    /// began. Those regions of the open Disjunctions are disjoint and in source order (each Disjunction begins inside the
+    /// current Alternative of the one around it), so the one to test is that of the innermost open Disjunction that began
+    /// at or before the group, found by a binary search over at most the nesting limit's levels.
+    /// </para>
+    /// <para>
+    /// <b>The latest group of a name is enough.</b> The parser checks a group against the latest earlier group of its name
+    /// only. If that one cannot participate with it, neither can any group of the name before it: the two earlier groups
+    /// were themselves admitted, so a Disjunction holds them in different Alternatives; while it is open the older one is
+    /// in a closed Alternative of it too, and once it has closed it lies inside the closed Alternative of an open
+    /// Disjunction that holds the latest one, and so does the older one. So every name costs one test per group, a
+    /// constant amount of the work the pattern's units pay for (<see cref="CompileSite.Pattern"/>).
+    /// </para>
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4; IP=None; Security=High; Resources=1; Fingerprint=DD9C39
+    // Broiler-Falsified-If: (?<a>x)|(?<a>y), (?:(?<a>x)|(?<a>y))|(?<a>z) or ((?<a>x)|(?<a>y))* is refused, or (?<a>x)(?<a>y), (?:(?<a>x)|(?<a>y))(?<a>z), (?<a>x|(?<a>y)) or (?:(?<a>x)|b)(?:(?<a>y)|c) is accepted
+    // Broiler-Human:        PENDING
+    private bool MightBothParticipate(int earlier)
+    {
+        int low = 0, high = _disjunctions.Count - 1;
+        while (low < high)
+        {
+            var middle = (low + high + 1) / 2;
+            if (_disjunctions[middle].Start <= earlier)
+                low = middle;
+            else
+                high = middle - 1;
+        }
+
+        var (start, alternativeStart) = _disjunctions[low];
+        return !(start <= earlier && earlier < alternativeStart);
     }
 
     // ----- Nesting (convention 5, decision D6) ---------------------------------

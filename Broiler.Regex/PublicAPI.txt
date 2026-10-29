@@ -4,6 +4,7 @@
 # Members that may still change before the version that ships them (CHANGELOG.md), kept by a rewrite:
 # provisional: Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, System.Nullable`1<System.UInt64>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
+# provisional: Broiler.Regex.BroilerRegex.get_GroupNames() method Broiler.Regex.RegexGroupNames
 # provisional: Broiler.Regex.BroilerRegex.get_SlotCount() method System.Int32
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings struct
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings..ctor(System.Nullable`1<System.UInt64>, System.Int32, System.Int32) method System.Void
@@ -15,6 +16,14 @@
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings.get_Frames() method System.Int32
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings.get_Steps() method System.Nullable`1<System.UInt64>
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings.get_Trail() method System.Int32
+# provisional: Broiler.Regex.Parsing.RegexParser.get_GroupNames() method Broiler.Regex.RegexGroupNames
+# provisional: Broiler.Regex.RegexGroup.get_Number() method System.Int32
+# provisional: Broiler.Regex.RegexGroupNames sealed class
+# provisional: Broiler.Regex.RegexGroupNames.GroupsNamed(System.String) method System.ReadOnlySpan`1<System.Int32>
+# provisional: Broiler.Regex.RegexGroupNames.NameAt(System.Int32) method System.String
+# provisional: Broiler.Regex.RegexGroupNames.NameOfGroup(System.Int32) method System.String
+# provisional: Broiler.Regex.RegexGroupNames.ParticipatingGroup(System.String, System.ReadOnlySpan`1<System.Int32>) method System.Int32
+# provisional: Broiler.Regex.RegexGroupNames.get_Count() method System.Int32
 # provisional: Broiler.Regex.RegexLimit.Compile = 5
 # provisional: Broiler.Regex.RegexLimit.Frames = 3
 # provisional: Broiler.Regex.RegexLimit.Steps = 2
@@ -147,7 +156,7 @@ Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Gene
 Broiler.Regex.BroilerRegex.MaximumNestingLimit field static const System.Int32 = 512
 Broiler.Regex.BroilerRegex.get_CaptureCount() method System.Int32
 Broiler.Regex.BroilerRegex.get_Flags() method Broiler.Regex.RegexFlags
-Broiler.Regex.BroilerRegex.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>
+Broiler.Regex.BroilerRegex.get_GroupNames() method Broiler.Regex.RegexGroupNames
 Broiler.Regex.BroilerRegex.get_Pattern() method System.String
 Broiler.Regex.BroilerRegex.get_SlotCount() method System.Int32
 Broiler.Regex.Engine.RegexMatchCeilings struct
@@ -164,7 +173,7 @@ Broiler.Regex.Parsing.RegexParser sealed class
 Broiler.Regex.Parsing.RegexParser..ctor(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
 Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32&) method static Broiler.Regex.Ast.RegexNode
 Broiler.Regex.Parsing.RegexParser.get_CaptureCount() method System.Int32
-Broiler.Regex.Parsing.RegexParser.get_GroupNames() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,System.Int32>
+Broiler.Regex.Parsing.RegexParser.get_GroupNames() method Broiler.Regex.RegexGroupNames
 Broiler.Regex.RegexFlags enum
 Broiler.Regex.RegexFlags.DotAll = 16
 Broiler.Regex.RegexFlags.Global = 2
@@ -183,8 +192,15 @@ Broiler.Regex.RegexGroup sealed class
 Broiler.Regex.RegexGroup.get_Index() method System.Int32
 Broiler.Regex.RegexGroup.get_Length() method System.Int32
 Broiler.Regex.RegexGroup.get_Name() method System.String
+Broiler.Regex.RegexGroup.get_Number() method System.Int32
 Broiler.Regex.RegexGroup.get_Success() method System.Boolean
 Broiler.Regex.RegexGroup.get_Value() method System.String
+Broiler.Regex.RegexGroupNames sealed class
+Broiler.Regex.RegexGroupNames.GroupsNamed(System.String) method System.ReadOnlySpan`1<System.Int32>
+Broiler.Regex.RegexGroupNames.NameAt(System.Int32) method System.String
+Broiler.Regex.RegexGroupNames.NameOfGroup(System.Int32) method System.String
+Broiler.Regex.RegexGroupNames.ParticipatingGroup(System.String, System.ReadOnlySpan`1<System.Int32>) method System.Int32
+Broiler.Regex.RegexGroupNames.get_Count() method System.Int32
 Broiler.Regex.RegexLimit enum
 Broiler.Regex.RegexLimit.Compile = 5
 Broiler.Regex.RegexLimit.Frames = 3

@@ -816,6 +816,355 @@ is ES2026's. *Amended at the integration of tasks 2.5 and 2.7:* task 2.5, writte
 `PublicAPI.txt` its `# provisional:` marks, which the listing's rewrite keeps; the integration marks the thirteen
 lines of `Broiler.Regex.Text` with them, so the file now says what the brief asked.
 
+*Dated record, 2026-10-27 (task 2.6 of SJL-11.2; R6, check A-6 of bundle `sjl-11-001`; decisions D8, D9, D12, D14
+and D36).*
+
+**What it builds.** ES2025's duplicate named groups. A group name may be declared by several groups when no two of
+them can both participate (ECMA-262 §22.2.1.1, MightBothParticipate §22.2.1.4); `\k<name>` reads every group of the
+name and matches the one that participated (§22.2.2.7.2); and a result maps the name to that group (§22.2.7.2,
+RegExpBuiltinExec, step 34.e). Requirement R6 is implemented here, so JSD-0081's condition (i), that duplicate named
+groups are implemented in Broiler.Regex before Broiler.JS retires its translator, holds on this branch; the package
+that carries them is task 2.9's `0.2.0-preview.1`. R6's exit criterion, as decision D14 reads it, is met when task
+2.10's host and library jobs run green at a reading's commit, the host job passing all 19 of test262's files of
+duplicate named groups (below). *Amended at the review of task 2.6:* this record first said R6 is met on this branch.
+
+**The parser's rule.** The parser keeps a stack of the Disjunctions it is inside, each with the position it began at
+and the position its current Alternative began at, and holds the latest group of each name, the names compared as
+decoded, after their escapes are read (decision D36's check of task 2.2). A named group whose name an earlier group
+declared is admitted exactly when that earlier group's `(` lies in a closed Alternative of an open Disjunction: the
+innermost open Disjunction that began at or before it, found by a binary search over the stack, whose depth the nesting
+limit bounds. Otherwise the later group is refused, a `RegexSyntaxException` at its `(` with the message of a
+repeated name; where an earlier repetition is now admitted, that is a later group than `0.1.0-preview.4` refused
+(below). Reading the latest earlier group alone is enough: if every earlier pair of the name passed and the new group
+cannot participate with the latest, it cannot with any earlier one, which the remarks of `MightBothParticipate` prove
+from the nesting of Disjunctions. So each named group costs one test, paid for by task 2.5's `Pattern` units.
+`(?<a>x)|(?<a>y)`, `((?<a>x)|(?<a>y))*` and `(?<a>x)|(?:y|(?<a>z))` compile; `(?<a>x)(?<a>y)`,
+`(?:(?<a>x)|(?<a>y))(?<a>z)` and `(?<a>x|(?<a>y))` are refused at the later group. `DuplicateNamedGroupTests` holds
+admitted and refused tables in every mode, each refusal with its position, and a seeded population of 20,000 generated
+trees (seed 20261027). For each tree the test reads MightBothParticipate from the tree itself, over every pair of groups
+of a name, and compares it with the parser's verdict. Four mutants of the check each fail the tests: the innermost
+open Disjunction only, the outermost only, always and never fail 8, 38, 42 and 17 of their 98 cases. The new tests were
+watched failing against the parser of the task's first commit, which refused every repeated name: 39 of 40.
+
+**`\k` (check A-6; D8).** A named back-reference compiles to one `Backreference` instruction over the list of the
+name's groups, ascending, which task 2.4a's machine already read. The machine compares the first group in that list
+whose capture is defined, and at most one is defined: groups in different Alternatives, and a quantifier's body clears
+its captures at each iteration. This holds forward, right to left in a look-behind, under `i` by Canonicalize, and by
+code point under `u` and `v`. A reference to a name none of whose groups participated matches the empty string. The
+instruction costs what a back-reference always cost, one unit and its capture's length (D8). Reading the list is not
+charged, as `ClearCaptures` of any width costs one unit; the list is fixed when the pattern compiles, at most its
+capture count. A name shared by 1,000 alternatives is read by its reference (`Every_group_of_a_name_in_one_thousand_alternatives_is_read_by_its_reference`).
+Check A-8 holds: a match through a name of 1, 10 and 1,000 groups, and the reading of its participating group,
+allocate nothing per call.
+
+**The results' shape (D12, R8).** The library's own type, not a collection of the base class library (convention 1):
+- **`RegexGroupNames`**, which `BroilerRegex.GroupNames` and `RegexParser.GroupNames` answer, immutable and shared by a
+  compiled pattern's matches. `Count` and `NameAt(i)` give the names in the order of their first groups, which is the
+  order of the `groups` object's properties. `GroupsNamed(name)` gives a name's groups, ascending, as a `ReadOnlySpan<int>`,
+  empty for an undeclared name. `NameOfGroup(k)` gives a group's name or null. `ParticipatingGroup(name, slots)` gives
+  the group of the name whose start and end the offset entry wrote into the caller's slots, or 0. It allocates nothing,
+  and a span shorter than the pattern's slots is a broken precondition.
+- **`RegexGroup.Number`**, so the string-bearing `RegexMatch.NamedGroups[name]` (decision D12 keeps it, R8 allows it) is
+  the participating group, whose number says which. When none of a name's groups participated, the entry is the first
+  of them, unmatched. Each name is listed once, in the order of its first group.
+
+Every new member is provisional, marked in `PublicAPI.txt`. The two breaks are CP0002 for `BroilerRegex.get_GroupNames`
+and `RegexParser.get_GroupNames`, each a dictionary of each name to one group until now. Both are suppressed in
+`CompatibilitySuppressions.xml` and listed in `docs/suppressions.md`. No shim keeps the dictionary, which would answer a
+shared name wrongly. The two C1 rows of the starting violation list for `GroupNames` close with it.
+`EngineNamingTests` gains `names`, the field of Broiler.VM's parser that holds each group's name. Task 2.6's first name
+for the list of names took it, and the test was watched failing on it; the field is now `_nameList`, and the test reads
+`RegexGroupNames`' members as well as the backend's.
+
+**test262 (decision D14's reading of R6).** `Test262DuplicateNamedGroupsTests` ports as data, at the pin `ccaac100`,
+every file whose front matter lists `regexp-duplicate-named-groups`: 19 files, each assertion transcribed to the
+library's API where the library alone answers it. **Fifteen are judged here:** the two syntax files (the Annex B one
+through `compile`, whose own steps are the host's), `named-groups/duplicate-names-{exec, group-property-enumeration-order,
+match-indices, match, matchall, search, test}.js`, `prototype/exec/duplicate-named-{groups, indices-groups}-properties.js`,
+`String/prototype/match/duplicate-named-{groups, indices-groups}-properties.js`, and staging's
+`duplicate-named-groups.js` and `duplicate-named-groups-search.js`. **Four wait for task 2.10's host job**, because their
+assertions read a host's algorithm over the matches, GetSubstitution or split's splitter: `duplicate-names-replace.js`,
+`duplicate-names-replaceall.js`, `duplicate-names-split.js` and staging's `duplicate-named-groups-replace.js`. The test
+checks each match those four read. The test also covers the syntax tests of `language/literals/regexp/named-groups/`
+(the 56 files' literals) and `built-ins/RegExp/named-groups/`' two `property-names-invalid` files. Six of its nine tests
+failed against the task's first commit.
+
+**O07 and O08.** The adversarial corpus's two rows that waited for this task answer their declared statuses in a child
+process (`AdversarialCorpusTests`) and in the Native AOT probe (E53: `match 0,1 - 0,1 units 7`; E54:
+`match 0,2 - 0,1 units 9`). E55 to E57 add a reference under `i`, one read right to left and a name 1,000
+alternatives share. The smoke population gains shared names, two refusals and a rendering of a name's groups and the
+one that participated. The probe's report under Native AOT is the JIT's, byte for byte.
+
+**What the later tasks still owe.**
+- **Task 2.8.** The validate entry reads the same parse: the duplicate check needs no expansion and no meter beyond the
+  pattern's, so it moves with the parser. The refusal of a repeated name becomes D9's syntax status, with a code, a
+  message identifier and the later group's position; until then it is the `RegexSyntaxException` it was.
+- **Task 2.9.** The provisional surface of this task: `RegexGroupNames` and its five members, `RegexGroup.Number`, and
+  the two reshaped `GroupNames`. It also owes `RegexMatch.NamedGroups` and `Groups`, whose C1 rows stay, and the
+  unmatched entry of a name no group of which participated: the first group, or none.
+- **Task 2.10.** The host job judges all 19 files, the plan's check of row 2.6, the four above whole. The library
+  job runs the literal syntax tests under the JIT and through the probe, where this task's test runs under the JIT
+  alone.
+- **SJL-11.4 and SJL-11.5.** Broiler.VM's admission commit (D15), and its `NameOf`, `NumberOf` and groups object onto
+  `NameOfGroup` and `ParticipatingGroup`. Broiler.JS's `BuildCaptureMapFromBroiler` reads the old dictionary and moves at
+  SJL-11.5 (`docs/suppressions.md`).
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.*
+- **Plan row 2.6's check** is that "test262's files tagged `regexp-duplicate-named-groups` pass in 2.10's host job".
+  That job does not exist yet. Until it does, this task's host-free test judges 15 of the 19 and names the four that
+  wait. D14's library job names only the literal syntax tests, `property-escapes/generated` and
+  `unicodeSets/generated`, so this test reads more than that job will: the matching assertions, transcribed.
+- **The brief and plan row 2.6 refuse "with the syntax status (D9)".** That status is task 2.8's, and the parser still
+  throws, so the refusal keeps its exception and its message, at the `(` of the first group that might both participate
+  with an earlier group of its name. Where an earlier repetition of the name is now admitted, that group comes later
+  than the one `0.1.0-preview.4` refused, so the position moves, and the message can name another name:
+  `(?:(?<a>x)|(?<a>y))(?<a>z)` is refused at 19, where it was refused at 11, and `(?<a>x)|(?<b>y)(?<a>z)(?<b>w)` at 22
+  for `b`, where it was refused at 15 for `a`. *Amended at the review of task 2.6:* this record first said the refusal
+  keeps its position.
+- **D8's units for a back-reference are unchanged,** as the plan asks. The instruction's work also scans the name's
+  groups, at most the pattern's capture count, uncharged as `ClearCaptures`' width is.
+- **Check A-6's "a result maps the name to the participating index"** holds where a group participated. Where none
+  did, ECMA-262 gives `groups` undefined for the name; `NamedGroups` gives the first group of the name, unmatched,
+  whose `Success` is false. Its `Number` is that group's, not a participating one.
+- **JSD-0081's row R6** describes `0.1.0-preview.4`: every duplicate refused (S1), and an escaped duplicate in one
+  alternative accepted (S2a). Task 2.2 corrected S2a and this task S1, so this repository and JSD-0081 agree. The 19
+  files that D15 admits at Broiler.VM's admission commit are the 19 this test reads at the same pin.
+
+*Dated record, 2026-10-27 (task 2.11 of SJL-11.2; R10, check E-5; decision D32; the programme's risks S1 and S2).*
+
+**What it builds.** `tests/Regex.Fuzz` ([its README](../tests/Regex.Fuzz/README.md)), a test project and an executable.
+Each iteration of a session draws its case from a generator seeded by the session's seed and the iteration's index
+(SplitMix64), so an iteration is the same case however a session's range is split: a pattern from ECMA-262's Pattern
+grammar with Annex B's additions (every construct the parser accepts: characters astral, lone and case-folding, every
+escape, property escapes and properties of strings, classes, `v`-mode class sets with nesting, `&&`, `--`, ranges and
+`\q{…}`, every kind of group, named groups spelled raw, escaped and as surrogate pairs, look-arounds, modifiers,
+back-references, every quantifier with bounds past `int.MaxValue`; every flag combination, `u` with `v` among them), or
+one of the adversarial corpus's classes K, A, L, G, W, N, F, M, V and O with random sizes, or a grammar pattern with one
+near-miss edit that reaches a refusal; and a subject built around the pattern's sample, with lone surrogates, pairs and
+long runs. Every case is compiled by `Compile` under a full and a tight policy, each with a nesting limit, a compile
+budget and a meter, and by the constructor beside them; matched through the offset entry from every start (a start
+inside a surrogate pair among them), anchored and not, under wide ceilings (a step ceiling and the engines' frames and
+trail) and once under narrow ones; matched through the string-bearing `Match(string, int)`, `IsMatch` and `Matches`;
+and passed to `RegexEscaper.EscapePattern` and `EscapeString` with a maximum length and a meter.
+
+**What counts as a finding.** An exception no entry documents (the answers are the statuses, `Compile`'s
+`RegexSyntaxException`, the session's own meter exception, the argument exceptions for arguments broken on purpose and
+`IsMatch`'s exception at a ceiling); a disagreement between two answers to one question (`Compile`'s tight and full
+policies, the constructor and `Compile`, narrow and wide ceilings, the meter's exception and a fresh call on the same
+instance, the string-bearing members and the offset entry through the mapping their documentation states, the text
+helpers and the matcher); an answer the documentation rules out (slots, limits, `SlotCount`); and a child process that
+ends, by a stack overflow or the runtime's fail-fast, or writes nothing for 120 seconds, which the supervisor reports
+at the iteration it was in, with its case. Each child runs on a 1 MiB thread, the corpus's smallest stack. The target
+does not judge that a match is the specification's: the vectors and the reference arms do (tasks 2.12 and 2.13).
+
+**The declared session.** Seed `20261027`, iterations 0 to 23,999. CI's `fuzz` job runs it on ubuntu-latest and
+windows-latest, bounded by the job's 20 minutes, the step's 10 and the watchdog; locally, on four cores (linux-x64),
+it took 26 to 28 seconds on a quiet machine and 37 to 40 seconds beside other builds. It reached every one of the 122
+construct classes the generator writes and every outcome the session requires (each status of each entry, each limit,
+the meter's exception at compile and at match, a string-bearing member at the engines' ceiling, `IsMatch`'s exception),
+and no finding but the one below. Its transcript digest, `56985dcac551a7abe7ecb627c415ec9e68e141b9cae2fb565a93bbe0139fe85e`
+at this record's commit, was the same over five runs, over three and four worker processes and under `tr-TR`; it is
+recorded, not pinned, because the records hold the library's answers and units and move with them.
+
+**The control (D32).** `dotnet build tests/Regex.Fuzz -c Release -p:RegexFuzzPlant=true` compiles the library's
+sources into the target, with the declared line of `RegexParser.ParseClassSubtraction`, the `v`-mode class-set
+subtraction (`Set = accumulated.Set.Subtract(operand.Set, _account),`), replaced in a copy under `obj/` by a throw of an
+`InvalidOperationException` no entry documents; the library project is not built in that mode, and the build fails
+unless the anchor occurs exactly once. The declared seed reports the plant at iteration 52 with one worker process
+(with four, the worker that reaches a plant first reports it: iteration 6,008 in one run and 12,010 in another, each
+within a second), and CI's `fuzz-control` job
+requires it reported; without the plant the declared session reports nothing. The library is unchanged by this task,
+and the plant never reaches `Broiler.Regex.dll`, which three readings taken in one session, in one directory, show:
+the DLL the library project builds alone and the one the whole solution builds, the fuzz target included, are the same
+file; the control's build (`-p:RegexFuzzPlant=true`) builds no library project and leaves that file as it was; and
+neither it nor the DLL the package carries holds the plant's text (`planted defect`) or the switch's name
+(`RegexFuzzPlant`), in UTF-16 or UTF-8, where the control's `Regex.Fuzz.dll` holds the text, so the search finds it
+where it is. *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:* this record first said "`Broiler.Regex.dll`
+built at `de0e7cc` and at this record's commit without the commit stamped
+(`-p:ContinuousIntegrationBuild=true -p:EnableSourceLink=false -p:IncludeSourceRevisionInInformationalVersion=false`)
+is the same file, SHA-256 `13405060980e2b76fc6bbe548b4f231c21bdb216fc7643fdb17868b4d2cc240b`". No other build
+reproduces that hash: the DLL holds the full path of its PDB, so its bytes depend on the directory it is built in. The
+task's verifier built both commits in one directory with the same flags and got
+`1cc16b88bc21623122b18d0c257bae20cf5de19b9a6ed4cb9e68d0631db5196e` for both, the same file at both commits but not
+that one, and the integration built `de0e7cc` in two directories and got two other hashes. A hash is compared within
+one session, never recorded as the check; the integration's note below gives the readings at its head.
+
+**The finding.** A lone surrogate written alone as one alternative of a `v`-mode `\q{…}`, raw or escaped, as in
+`/[\q{\uD800}]/v` or `/[\q{a|\uDE00}]/v`, escapes `Compile` and the constructor as an `ArgumentException` from
+`char.ConvertToUtf32`, which `ParseClassStringDisjunction`'s `Flush` calls for a one-unit alternative
+(`Parsing/RegexParser.cs`, line 1197 at `de0e7cc`). ECMA-262 compiles a ClassString of one ClassSetCharacter to that
+one character of the class (CompileToCharSet, §22.2.2.9), as this parser compiles `/[\uD800]/v` and
+`/[\q{\uD800\uDC00}]/v`, so the pattern is valid and the exception is a defect of the parser's. The declared seed first
+reaches it at iteration 280, and 83 times in the declared session. It is library code, which this task does not change:
+[`tests/Regex.Fuzz/known-findings.tsv`](../tests/Regex.Fuzz/known-findings.tsv) lists it, so the session prints it as
+known and goes on judging everything else, and its row leaves the file with the fix
+(`FuzzTargetTests.Each_known_finding_still_reproduces` and the declared session's stale check fail until it does).
+**Check E-5 does not hold while the list has a row.** *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:*
+the defect is fixed there and its row has left the list, which is empty, so E-5 holds at the declared seed (the
+integration's note below).
+
+**The long run.** On 2026-10-27, iterations 24,000 to 1,023,999 of the declared seed, a million iterations past the
+declared session's, in four worker processes: 22 minutes on four cores of a machine other builds kept loaded (load
+average 25 to 28), transcript digest `ee73e0f1e208102f4050aa84b0633507a6194ab8df543853808983f6c5ae097d`. Every
+construct class and outcome was reached; no process ended and none hung; no exception escaped but the known finding
+(3,226 times); and two disagreements, at iterations 215,039 and 814,524, were one second defect of the parser's. In a
+`v`-mode class whose expression is an intersection or a subtraction, `RejectMixedOperator` lets any character that is
+not an operator follow the last operand, and `ParseNestedClass` then consumes that character as the closing `]`
+without reading it, so `/[a--bc/v` and `/[a&&ac/v` compile and match `a`, as `/[a--b]/v` and `/[a&&a]/v` would, where
+ECMA-262 refuses both: ClassSubtraction and ClassIntersection are followed by `]` (§22.2.1). (`/[a--bc]/v` is refused,
+by the stray `]` the swallowed `c` leaves.) The target saw it through `EscapePattern`: the reduced case is the pattern
+`[[a]--B` and a raw carriage return under `v`, matched against `a`; its source text writes the carriage return as
+`\r`, whose backslash the parser takes for the `]`, so the two patterns match differently. It is not listed in
+`known-findings.tsv`, which lists what the declared session reaches, and is reported for the library's owner.
+
+**What the later tasks owe.**
+- **The library's owner:** the fixes of both defects above, the first with its row removed from `known-findings.tsv`
+  in the same change. *Amended at the integration of tasks 2.6 and 2.11, 2026-10-27:* both are fixed there, the
+  first with its row removed in the same commit (the integration's note below).
+- **Task 2.8:** the validate entry, which the target then calls beside `Compile` (a pattern the entry accepts compiles,
+  under the same limit, or meets a limit; a refusal is the same refusal).
+- **Task 2.9:** when `Compile`'s syntax error becomes a status and `IsMatch`'s exception at a ceiling is admitted or
+  replaced, the answers the oracle admits narrow with them (`Verdicts.Compile`, `Verdicts.IsMatch`).
+- **Task 2.14:** the probe's `--adversarial` mode: the corpus's rows with their declared statuses, each in a child
+  process on the 1 MiB stack, under the JIT and through Native AOT, and part C's two controls. The target reaches every
+  class of the corpus but judges no declared status, and runs under the JIT only.
+- **SJL-11.4:** D32's second half, Broiler.VM's `broiler-js-regexp-fuzz` session re-pointed to the adapter with its
+  controls kept (decision D20).
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.* D32 asks for an "in-process" fuzzer: each
+case runs in process, in child processes a supervisor reads, because E-5's "no process end" cannot be observed by the
+process that ends. E-5 admits "no exception but statuses and the meter's"; at this commit the library also documents
+`Compile`'s `RegexSyntaxException` (until tasks 2.8 and 2.9) and `IsMatch`'s exception at a ceiling (the dated note of
+2026-10-26 in [`conventions.md`](conventions.md)), which the oracle admits as documented answers. The brief asked for
+the plant as "a define or an internal hook compiled only into the fuzz build": convention 17 admits no preprocessor
+directive and this task changes no library code, so the plant is a build-time copy of the parser. Plan row 2.11's
+"every limit and a meter set" cannot hold for the string-bearing members or the constructor, which take none (decisions
+D10 and D12): they are called only where a call with every limit set answered first, so their work is bounded by it.
+Neither the plan nor JSD-0081 declares a seed or a count: this record does. The brief named assurance annotations "if
+the assurance config covers `tests/`"; `assurance.config.json` lists the library's project alone, so the target carries
+none.
+
+*Amended at the review of task 2.11, 2026-10-27.* The review's five findings were the target's and its records'; the
+library is unchanged. The string-bearing members' `Value`, the match's, group 0's and every group's, is now read against the
+subject at the offsets they report, each `NamedGroups` entry against a participating group of its name, and a failed
+match against the shape `RegexMatch.Empty` documents: a review's plant of a wrong substring in `BroilerRegex.Run` had
+passed the declared session, which now reports it. `Matches` is now compared at the engines' ceilings: its emulation
+always takes the wide calls the case made, so its first element is compared on every subject, and its ceiling element
+8 times at the declared seed, which the session now requires (`matches:limit`), where any subject over 4,096 units had
+been skipped and only subjects of about 500,000 units reach a ceiling; past its first element `Matches` is compared on
+subjects up to 4,096 units within 2^20 units, as before, a cut-short emulation over the elements it has. A row of
+`known-findings.tsv` now names a text of the exception's message and matches only with its method the innermost
+library frame, so that another exception on the same path is a finding: the review's plant of an `ArgumentException`
+for a three-unit `\q{…}` string, absorbed before as the listed row, is reported, and the row still counts 83. The
+declared session's digest is now `a380747ca05586a1489ffa6ebe7aabd605ca5b4091345f0df6ef56c4b3447b12`, the same over five
+runs, over three and four worker processes and under `tr-TR`; the session took 21 to 33 seconds on four cores beside
+other builds, and the control still reports the plant at iteration 52 with one worker process. The comment of
+`Directory.Build.props` now names the fuzz target as the test project its `.Tests` rule does not reach, and the
+CHANGELOG says that the library, not the package, is unchanged: the packed README names the target.
+
+*Dated note, 2026-10-27 (the integration of tasks 2.6 and 2.11 of SJL-11.2; R5, R6 and R10, check E-5 of bundle
+`sjl-11-001`; decision D32).*
+
+**The merge.** Branch `sjl-11-2-integrate-b` starts from the merge of pull request #13 (`15bffa7`, whose tree is
+`de0e7cc`'s, the commit both tasks branched from). Task 2.6 (`34c53e4`) merged with no conflict, then task 2.11
+(`cab6252`), whose one conflict was this file: both dated records are kept whole, task 2.6's then task 2.11's.
+`assurance generate` over the merged tree wrote nothing, as its configuration covers the library's project alone,
+which task 2.11 did not change. At the merge 1,879 library tests, 49 architecture tests and the fuzz target's 11 passed,
+and the declared session reported only its known finding.
+
+**The fuzz target's two findings, fixed.**
+- `/[\q{\uD800}]/v` and `/[\q{a|\uDE00}]/v` threw an `ArgumentException` out of `Compile` and the constructor (the
+  declared session, first at iteration 280; the one row of `known-findings.tsv`). ECMA-262 compiles a ClassString to
+  the characters its ClassSetCharacters denote (CompileClassSetString, §22.2.2.10), and under `v` a lone surrogate is a
+  code point as any other, so the class holds that code point and matches it, as `/[\uD800]/v` does; test262 at
+  `ccaac100` has no file with a lone surrogate in a `\q{…}`, and V8 agrees. The cause was
+  `ParseClassStringDisjunction`'s reading of an alternative's code points back from its UTF-16 text, where
+  `char.ConvertToUtf32` refuses a one-unit lone surrogate. Reading the related paths (a lone surrogate under `vi`,
+  beside pairs, in intersections and subtractions, read right to left, complemented) found three more defects of the
+  same loop: a lead surrogate written before a trail one, two ClassSetCharacters as in `\q{\uD83D\u{DE00}}`, read as
+  the one code point U+1F600, so the class matched U+1F600 and set operations took it for `\q{\u{1F600}}`; and the
+  loop read its characters by a grammar of its own, which refused `\b` and read a reserved double punctuator
+  (`\q{a&&b}`) as two characters. An alternative now reads its characters through `ReadClassSetCharacter`, the
+  class-set operand's own reading, as code points: one character is a member of the code-point set, a lone surrogate
+  included, and an alternative that holds a lead followed by a trail is not kept, as a subject read by code point
+  (§22.2.7.2) never holds that pair of code points in a row. `ClassStringCodePointTests`' six tests failed at the merge
+  and pass (`28835d1`).
+- `/[a--bc/v` and `/[a&&ac/v` compiled and matched `a` (task 2.11's long run, iterations 215,039 and 814,524).
+  `ParseClassIntersection` and `ParseClassSubtraction` ended with `RejectMixedOperator`, which refuses only an operator,
+  and `ParseNestedClass` then took the next character for the `]` without reading it. They now end with
+  `RejectAfterLastOperand`, which admits only the `]` or the pattern's end, so any operand there is the refusal of a
+  mixed class-set expression, at the expression's first operand, and a class the pattern ends inside stays unterminated
+  at its `[`, as V8 also answers. `ClassSetExpressionEndTests`' 347 cases (each operator, each kind of trailing operand,
+  nesting depths 0 to 3, closed and unclosed, `^`, `v` and `vi`, both entries) had 333 failing before and all pass
+  (`0c468d2`).
+
+**`known-findings.tsv` is empty.** Its one row left with the first fix, in the same commit, and no row remains. Check
+E-5 holds at the declared seed: the session's only answers are the statuses, the meter's exception and the answers
+task 2.11's record lists as documented (`Compile`'s `RegexSyntaxException` until tasks 2.8 and 2.9, `IsMatch`'s
+exception at a ceiling, an argument exception for an argument broken on purpose), with no listed finding to absorb a
+library exception; a listed finding the session no longer reached would fail it as stale.
+
+**The oracle reads `RegexGroup.Number`** (`6b74e50`), which task 2.6 added and task 2.11's oracle, written beside it,
+never read: each group's number is its own index; a named entry's is the participating group's, whose slots in the
+offset entry's answer are its offsets, and `RegexGroupNames.ParticipatingGroup` reads the same group from those slots;
+where none of the name's groups participated, the entry is unmatched and numbered as the name's first group. Three
+mutants of the library's numbers each passed the declared session under the oracle before and fail it now: a
+participating group of a shared name numbered as the name's first (first found at iteration 119), a name with no
+participating group given its last group instead of its first (iteration 1,211), and the `NamedGroups` entry alone
+numbered as the name's first group (iteration 119).
+
+**The declared session at the integration's head.** Seed 20261027, iterations 0 to 23,999: no finding, exit 0, every one
+of the 122 construct classes the generator writes and every outcome the session requires reached. Transcript digest
+`2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, the same over two runs with four worker processes,
+over one and three, and under `tr-TR`; the session took 17 to 24 seconds with four worker processes, 19 with three and
+45 with one, on four cores beside other builds (load average 10 to 15). The control (`-p:RegexFuzzPlant=true`) still
+reports the plant: with one worker process at iteration 52, as at task 2.11's review, and with four at iteration 6,008
+or 18,005, whichever worker reaches it first, within a second, the session exiting 1.
+
+**The long run.** On 2026-10-27, at `6b74e50`, iterations 24,000 to 1,023,999 of the declared seed, the range of task
+2.11's long run, with the two iterations of its finding, 215,039 and 814,524, among them, in four worker processes:
+818.5 seconds of session, 13 minutes 40 seconds of wall time, on four cores beside other builds (load average 6 at the
+start and 22 at the end). Every construct class and outcome was reached, no process ended or hung, and there was no
+finding; transcript digest `731c698b6d876679190b2afaa6b5e6d9579d953ee176bffc926e4f56f9122d1b`.
+
+**The plant never reaches the shipped DLL** (the method task 2.11's record now states, read at the integration's head):
+built from a `git archive` of `6b74e50`, whose code the records' commit does not change, into one scratch directory with
+the flags task 2.11's record names, `Broiler.Regex.dll` from the library project alone and from the whole solution, the
+fuzz target included, is one file (SHA-256 `978ad39895c56eba809843af6060fa5b0bc7247a84f1c9d9fee550851b88318d`, a value
+of that directory alone); the control's build afterwards built no library project and left the file byte for byte; the
+package packed from it carries the same file; and neither DLL holds `planted defect`, in UTF-16 or UTF-8, or
+`RegexFuzzPlant`, where the control's `Regex.Fuzz.dll` holds the text once.
+
+*Where ECMA-262, V8 and this repository differ, read at this note.* For `/[\q{\uD83D\u{DE00}}]/v` V8 matches U+1F600,
+while it keeps the alternative apart from `\q{\u{1F600}}` in an intersection or a subtraction; this library follows
+ECMA-262 and matches nothing. test262 has no file on it, and the fuzz target judges agreement between the library's
+entries, not the specification, so the vectors (task 2.12) and the reference arms (task 2.13) are where it is read
+next. What task 2.11's record says the later tasks owe stands, except the library owner's fixes, which this integration
+made.
+
+*Added at the integration's review, 2026-10-27.* **A range before `&&` or `--`, refused** (`379c6b6`). The review
+read 1,482,230 generated `v` and `vi` class sets against V8 (node 22.22.0) at `cd8a464`: 206 compiled here and were
+refused there, each with a ClassSetRange before `&&` or `--`, as `/[a-z--b]/v`, which compiled as `a-z` minus `b`.
+ECMA-262 §22.2.1 begins a ClassIntersection and a ClassSubtraction with a ClassSetOperand; a ClassSetRange belongs to a
+ClassUnion alone, and after one neither `--` nor `&&` can be read. `ParseClassSetExpression` passed a range read first
+to `ParseClassIntersection` or `ParseClassSubtraction` as their first operand: the beginning of the expressions whose
+end the second fix above closed. `0.1.0-preview.4` and the merge compiled the same forms, test262 at `ccaac100` has no
+file with one, and the fuzz target's grammar writes ranges only in unions, so the declared session could not reach it.
+`ParseClassSetRangeOrOperand` now says whether it read a range, and after one the expression is a union, whose
+`RejectMixedOperator` refuses the operator as a mixed class-set expression at the expression's first operand. All 206
+forms are now that refusal, and V8 refuses each as an invalid set operation. `ClassSetExpressionEndTests`' 47 new
+cases (five range-first expressions at depths 0 to 2, with and without `^`, under `v` and `vi`, the review's forms, and
+controls) had 38 failing before and all pass. The declared session's digest stays
+`2eb41e236a4a5f08e976bd1f7b7bc0e11db1af16e98261772905b2f61296c846`, no answer of it changing. The review also read the
+digest at each step of the integration: the merge alone made it
+`835849920282be8d19042f8be6f22b2328c25f6c032b45586933f8d5d341bb6c`, task 2.6's admission of a repeated group name
+answering 228 iterations otherwise, each a pattern that repeats a name and no other changing; the first fix made it
+`62a3783a517aab85df291cb733c8aacf91e0d5773cfce6e86d60fa4c306f250d`; and the second `2eb41e…`. The fuzz target's README
+now names both causes. And two cases of `ClassStringCodePointTests`, commented as one escape of a lead and a trail,
+held the raw pair in their patterns, so no case asserted the answer of an escaped pair in a `\q{…}`; they now write the
+escape, with its answers in set operations, complemented and under `vi`, and the raw pairs stay as cases of their own
+(`0320c78`).
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

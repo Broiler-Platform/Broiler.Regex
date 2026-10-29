@@ -164,6 +164,84 @@ jobs:
             probe-jit.txt
           if-no-files-found: warn
 
+  # The fuzz target (R10 of docs/roadmap.md section 6; decision D32 of Broiler.VM's JSD-0081; bundle sjl-11-001's
+  # check E-5): tests/Regex.Fuzz runs its declared seed, 20261027, for its declared 24,000 iterations, every case
+  # compiled with a nesting limit, a compile budget and a meter and matched through the offset entry and the
+  # string-bearing members with every ceiling set, each child process on a 1 MiB stack. It fails on any finding its
+  # known-findings.tsv does not list (an exception no entry documents, a disagreement between entries, a broken
+  # contract, a process that ends or stops answering), on a listed finding the session no longer reaches, and on a
+  # construct or outcome it did not reach (tests/Regex.Fuzz/README.md). About 30 s of the session on four cores.
+  fuzz:
+    name: Fuzz target (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build
+        run: dotnet build tests/Regex.Fuzz -c Release --nologo
+      - name: The declared session
+        timeout-minutes: 10
+        run: |
+          set -o pipefail
+          dotnet tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll 2>&1 | tee fuzz.log
+      - name: Keep the log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fuzz-${{ matrix.os }}
+          path: fuzz.log
+          if-no-files-found: warn
+
+  # D32's planted-defect control: a build in which one declared line of the parser, the v-mode class-set subtraction
+  # of RegexParser.ParseClassSubtraction, throws an exception no entry documents. The build compiles the library's
+  # sources into the fuzz target with that line replaced, under obj/, and never builds or changes Broiler.Regex.dll
+  # (tests/Regex.Fuzz/Regex.Fuzz.csproj). The declared seed must report the plant as a finding within the declared
+  # iterations; locally it does at iteration 52, in under a second.
+  fuzz-control:
+    name: Fuzz target, planted-defect control
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build with the declared defect planted
+        run: dotnet build tests/Regex.Fuzz -c Release --nologo -p:RegexFuzzPlant=true
+      - name: The declared seed finds it
+        timeout-minutes: 10
+        run: |
+          set +e
+          dotnet tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll --stop-when-found "planted defect (D32 control)" > fuzz-control.log 2>&1
+          code=$?
+          set -e
+          cat fuzz-control.log
+          if [ "$code" -ne 1 ] || ! grep -q "FINDING at iteration .* planted defect (D32 control)" fuzz-control.log; then
+            echo "::error::the declared seed did not report the planted defect (exit $code)"
+            exit 1
+          fi
+      - name: Keep the log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: fuzz-control
+          path: fuzz-control.log
+          if-no-files-found: warn
+
   # The programme's convention 18 (rule SL8; bundle sjl-11-001's check E-6): every relevant unit of the
   # library carries its Broiler Code Assurance annotation and the generated artefacts at the repository
   # root are current. A source change that leaves them behind fails here.

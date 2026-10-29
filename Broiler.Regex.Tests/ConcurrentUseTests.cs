@@ -18,7 +18,7 @@ namespace Broiler.Regex.Tests;
 /// <remarks>
 /// The cases reach every part of a compiled pattern a match reads: classes and their sets, case folding in both
 /// modes, <c>\w</c> and <c>\b</c> under <c>iu</c>, <c>v</c>-mode set operations over properties and strings,
-/// look-behind, captures and named groups, and a nested pattern.
+/// look-behind, captures and named groups, a name two groups share (requirement R6), and a nested pattern.
 /// </remarks>
 public class ConcurrentUseTests
 {
@@ -37,6 +37,7 @@ public class ConcurrentUseTests
         (@"[\d\s]+", "", "x1 2 3"),
         (@"(?<=(\d+)(\d+))$", "", "1053"),
         (@"(?<year>\d{4})-(?<month>\d{2})", "", "on 2026-10"),
+        (@"(?:(?<a>x)|(?<a>y))\k<a>(?<b>z)?", "", "xyyz"),
         (@"(a|ab)(c|bcd)(d*)", "", "abcd"),
         (@"(?:(a)|b)+", "", "ab"),
         (@"(?i:[a-z]+)\d", "", "ABC1"),
@@ -49,14 +50,21 @@ public class ConcurrentUseTests
     ];
 
     /// <summary>A match as the tests compare it: the span of the match and of every group, and the group names.</summary>
-    internal static string Render(RegexMatch match, IReadOnlyDictionary<string, int> names)
+    internal static string Render(RegexMatch match, RegexGroupNames names)
     {
         if (!match.Success)
             return "nomatch";
         var text = new StringBuilder();
         foreach (var group in match.Groups)
             text.Append(group.Success ? group.Index + "," + (group.Index + group.Length) : "-").Append(' ');
-        foreach (var (name, index) in names.OrderBy(static n => n.Key, StringComparer.Ordinal))
+        var named = Enumerable.Range(1, match.Groups.Count - 1).Select(g => (Name: names.NameOfGroup(g), Group: g)).Where(static n => n.Name is not null);
+        return Named(text, named.Select(static n => (n.Name!, n.Group)));
+    }
+
+    /// <summary>Each name and group pair, by name and then by group, after <paramref name="text"/>.</summary>
+    private static string Named(StringBuilder text, IEnumerable<(string Name, int Group)> named)
+    {
+        foreach (var (name, index) in named.OrderBy(static n => n.Name, StringComparer.Ordinal).ThenBy(static n => n.Group))
             text.Append(name).Append('=').Append(index).Append(' ');
         return text.ToString();
     }
@@ -165,8 +173,9 @@ public class ConcurrentUseTests
                 var regexType = library.GetType("Broiler.Regex.BroilerRegex", throwOnError: true)!;
                 var match = regexType.GetMethod("Match", [typeof(string), typeof(int)])!;
                 var names = regexType.GetProperty("GroupNames")!;
+                var nameOfGroup = names.PropertyType.GetMethod("NameOfGroup")!;
                 object Compile(int k) => Activator.CreateInstance(regexType, Cases[k].Pattern, Cases[k].Flags, UnicodeTables.Instance)!;
-                string Answer(object regex, int k) => RenderByReflection(match.Invoke(regex, [Cases[k].Subject, 0])!, (IReadOnlyDictionary<string, int>)names.GetValue(regex)!);
+                string Answer(object regex, int k) => RenderByReflection(match.Invoke(regex, [Cases[k].Subject, 0])!, names.GetValue(regex)!, nameOfGroup);
 
                 // The shared instances are compiled before the threads start, so that their first matches meet.
                 var shared = Enumerable.Range(0, Cases.Length).Select(Compile).ToArray();
@@ -206,21 +215,22 @@ public class ConcurrentUseTests
     }
 
     /// <summary><see cref="Render"/> over a <c>RegexMatch</c> of a fresh copy of the library, read by reflection.</summary>
-    private static string RenderByReflection(object match, IReadOnlyDictionary<string, int> names)
+    private static string RenderByReflection(object match, object names, MethodInfo nameOfGroup)
     {
         var type = match.GetType();
         if (!(bool)type.GetProperty("Success")!.GetValue(match)!)
             return "nomatch";
         var text = new StringBuilder();
+        var count = 0;
         foreach (var group in (System.Collections.IEnumerable)type.GetProperty("Groups")!.GetValue(match)!)
         {
             var groupType = group.GetType();
             var index = (int)groupType.GetProperty("Index")!.GetValue(group)!;
             var length = (int)groupType.GetProperty("Length")!.GetValue(group)!;
             text.Append((bool)groupType.GetProperty("Success")!.GetValue(group)! ? index + "," + (index + length) : "-").Append(' ');
+            count++;
         }
-        foreach (var (name, index) in names.OrderBy(static n => n.Key, StringComparer.Ordinal))
-            text.Append(name).Append('=').Append(index).Append(' ');
-        return text.ToString();
+        var named = Enumerable.Range(1, count - 1).Select(g => (Name: (string?)nameOfGroup.Invoke(names, [g]), Group: g)).Where(static n => n.Name is not null);
+        return Named(text, named.Select(static n => (n.Name!, n.Group)));
     }
 }
