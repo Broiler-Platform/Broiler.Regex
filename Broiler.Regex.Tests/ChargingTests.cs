@@ -479,10 +479,10 @@ public class ChargingTests
         // Check A-1 covers each instruction the compiler emits: every operation of RegexOp appears in the program of at
         // least one declared input, and every operation that reads the subject, each character, class and back-reference
         // test, appears read right to left in a look-behind's body; no other operation is given a direction.
-        var code = DeclaredInputs.Select(static row => TestProgram.Compile((string)row[0], (string)row[1]))
+        var code = DeclaredInputs.Select(static row => TestProgram.Compile(row.Data.Item1, row.Data.Item2))
             .SelectMany(static program => program.Code.ToArray()).ToList();
         var forward = code.Select(static i => i.Op).ToHashSet();
-        Assert.Empty(Enum.GetValues<RegexOp>().Where(op => !forward.Contains(op)));
+        Assert.DoesNotContain(Enum.GetValues<RegexOp>(), op => !forward.Contains(op));
         var backward = code.Where(static i => i.RightToLeft).Select(static i => i.Op).ToHashSet();
         RegexOp[] read =
         [
@@ -490,8 +490,8 @@ public class ChargingTests
             RegexOp.Any, RegexOp.AnyButLineTerminator, RegexOp.Backreference, RegexOp.BackreferenceIgnoringCase,
             RegexOp.GreedyRun, RegexOp.LazyRun, RegexOp.AtomRun, RegexOp.StringClass,
         ];
-        Assert.Empty(read.Where(op => !backward.Contains(op)));
-        Assert.Empty(backward.Where(op => !read.Contains(op)));
+        Assert.DoesNotContain(read, op => !backward.Contains(op));
+        Assert.DoesNotContain(backward, op => !read.Contains(op));
     }
 
     [Fact]
@@ -499,8 +499,8 @@ public class ChargingTests
     {
         // The scan charges outside any instruction's dispatch, so check A-1 reads it only in a search whose program has a
         // first test: one over a character, one over a class, and one stopped by its step ceiling in the scan.
-        var scanned = DeclaredInputs.Where(static row => !(bool)row[4])
-            .Select(static row => (Program: TestProgram.Compile((string)row[0], (string)row[1]), Steps: (ulong?)row[5]))
+        var scanned = DeclaredInputs.Where(static row => !row.Data.Item5)
+            .Select(static row => (Program: TestProgram.Compile(row.Data.Item1, row.Data.Item2), Steps: row.Data.Item6))
             .Where(static row => row.Program.FirstTest >= 0).ToList();
         Assert.Contains(scanned, static row => row.Program.Code[row.Program.FirstTest].Op == RegexOp.Literal);
         Assert.Contains(scanned, static row => row.Program.Code[row.Program.FirstTest].Op == RegexOp.Class);

@@ -28,6 +28,13 @@ internal static class Program
 {
     internal static int Main(string[] args)
     {
+        if (args.Length > 0 && (args[0].StartsWith('@') || args[0] is "-automated" or "-list" or "--server" or "--internal-msbuild-node"))
+        {
+            if (Array.Exists(args, static arg => arg is "--server" or "--internal-msbuild-node"))
+                return Xunit.MicrosoftTestingPlatform.TestPlatformTestFramework.RunAsync(args, SelfRegisteredExtensions.AddSelfRegisteredExtensions).GetAwaiter().GetResult();
+            return Xunit.Runner.InProc.SystemConsole.ConsoleRunner.Run(args).GetAwaiter().GetResult();
+        }
+
         try
         {
             return Run(Read(args));

@@ -8,7 +8,6 @@ using Broiler.Regex.Parsing;
 using Broiler.Regex.Unicode;
 using Broiler.Unicode.Tables;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Broiler.Regex.Tests;
 

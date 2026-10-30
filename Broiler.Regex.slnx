@@ -1,11 +1,7 @@
 <Solution>
   <Project Path="Broiler.Regex.Tests/Broiler.Regex.Tests.csproj" />
   <Project Path="Broiler.Regex/Broiler.Regex.csproj" />
-  <Folder Name="/probes/">
-    <Project Path="probes/Regex.Probe/Regex.Probe.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Regex.Architecture.Tests/Regex.Architecture.Tests.csproj" />
-    <Project Path="tests/Regex.Fuzz/Regex.Fuzz.csproj" />
-  </Folder>
+  <Project Path="probes/Regex.Probe/Regex.Probe.csproj" />
+  <Project Path="tests/Regex.Architecture.Tests/Regex.Architecture.Tests.csproj" />
+  <Project Path="tests/Regex.Fuzz/Regex.Fuzz.csproj" />
 </Solution>

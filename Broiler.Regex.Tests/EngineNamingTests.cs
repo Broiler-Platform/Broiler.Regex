@@ -61,7 +61,7 @@ public class EngineNamingTests
     {
         var declared = DeclaredNames();
         Assert.Contains(nameof(RegexProgram.Match), declared);
-        Assert.Empty(declared.Where(n => Copied.Any(c => string.Equals(n.TrimStart('_'), c, StringComparison.OrdinalIgnoreCase))));
+        Assert.DoesNotContain(declared, n => Copied.Any(c => string.Equals(n.TrimStart('_'), c, StringComparison.OrdinalIgnoreCase)));
     }
 
     [Fact]

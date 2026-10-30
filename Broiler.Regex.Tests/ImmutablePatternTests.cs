@@ -20,7 +20,7 @@ public class ImmutablePatternTests
         // interface of it is a collection a cast could reach.
         var type = typeof(RegexGroupNames);
         Assert.Empty(type.GetInterfaces());
-        Assert.Empty(type.GetProperties().Where(static p => p.SetMethod is { IsPublic: true }));
+        Assert.DoesNotContain(type.GetProperties(), static p => p.SetMethod is { IsPublic: true });
         Assert.All(type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public), static f => Assert.True(f.IsInitOnly, f.Name + " is not readonly"));
         Assert.All(type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly), static m => Assert.NotEqual(typeof(void), m.ReturnType));
 
