@@ -141,7 +141,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   the grammar and fixed once published; its message identifier, the shared frontend's early-error
   catalogue's where it has a row (EE0184 to EE0213, and EX0026 for the nesting limit); its argument;
   and its position, in the pattern or in the flags text. The validate entry answers one, and every
-  `RegexSyntaxException` the library throws carries the same one as its `Diagnostic`.
+  `RegexSyntaxException` the parser and the flags parser throw carries the same one as its `Diagnostic`;
+  the public `CharSet.AddRange`'s, which no compilation reaches, carries none until task 2.9.
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
   difference and complement, immutable once built, so a set is shared between threads. Every class member kind reduces to one of these, so
   `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand. A compilation

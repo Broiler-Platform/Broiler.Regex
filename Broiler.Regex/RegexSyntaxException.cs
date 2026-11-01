@@ -24,12 +24,14 @@ namespace Broiler.Regex;
 /// expression. The JavaScript layer maps this to a <c>SyntaxError</c>.
 /// </summary>
 /// <remarks>
-/// Since task 2.8 of SJL-11.2 every refusal the library throws carries its <see cref="Diagnostic"/>, the code, message
-/// identifier, argument and position that the validate entry,
+/// Since task 2.8 of SJL-11.2 every refusal the parser and the flags parser throw carries its <see cref="Diagnostic"/>, the
+/// code, message identifier, argument and position that the validate entry,
 /// <see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>,
 /// answers as a status for the same pattern. The exception stays the answer of <see cref="BroilerRegex.Compile"/>, the
 /// constructors, <see cref="Parsing.RegexParser.Parse(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, out int)"/> and <see cref="RegexFlagsParser.Parse"/> until task 2.9 fixes the
 /// public surface (convention 3 makes an expected failure a status; the record of task 2.8 in <c>docs/roadmap.md</c>).
+/// One refusal carries none: the public <see cref="Ast.CharSet.AddRange"/>'s of a range written high to low, which no
+/// compilation reaches (the parser refuses such a range first) and which task 2.9 owns with the public <c>Ast</c> surface.
 /// </remarks>
 // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=B41B30
 // Broiler-Human:        PENDING

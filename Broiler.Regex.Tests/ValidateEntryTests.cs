@@ -411,6 +411,13 @@ public class ValidateEntryTests
 
         // An exception made through the public constructor carries no diagnostic.
         Assert.Equal(RegexDiagnosticCode.None, new RegexSyntaxException("made by a caller", 3).Diagnostic.Code);
+
+        // Nor, until task 2.9, does the public CharSet.AddRange's refusal of a range written high to low, the one refusal of
+        // the library made that way: no compilation reaches it, since the parser refuses such a range with its diagnostic
+        // first.
+        var thrown = Assert.Throws<RegexSyntaxException>(() => new Ast.CharSet().AddRange('z', 'a'));
+        Assert.Equal(RegexDiagnosticCode.None, thrown.Diagnostic.Code);
+        Assert.Equal(RegexDiagnosticCode.ClassRangeOutOfOrder, Assert.Throws<RegexSyntaxException>(() => new BroilerRegex("[z-a]", "", UnicodeTables.Instance)).Diagnostic.Code);
     }
 
     /// <summary>

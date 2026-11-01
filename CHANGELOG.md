@@ -244,10 +244,12 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   `RegexDiagnosticCode` names 49 conditions and `None`, numbered by the part of the grammar (the flags 1 to 3, groups
   and quantifiers 10 to 17, escapes 20 to 25, references 30 to 33, group names 40 to 45, modifiers 50 to 52, classes 60
   to 63, class sets 70 to 76, property escapes 80 to 86, the nesting limit 90), each number fixed once published. Every
-  `RegexSyntaxException` the library throws now carries the same diagnostic as `RegexSyntaxException.Diagnostic` (the
-  default value for one made through its public constructor), so `Compile`, the constructors, `RegexParser.Parse` and
-  `RegexFlagsParser.Parse`, which still throw (task 2.9 decides their shape), refuse with the code, identifier, argument
-  and position the validate entry answers. **All provisional**, marked in `PublicAPI.txt`, until task 2.9 fixes the
+  `RegexSyntaxException` the parser and the flags parser throw now carries the same diagnostic as
+  `RegexSyntaxException.Diagnostic` (the default value for one made through its public constructor), so `Compile`, the
+  constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse`, which still throw (task 2.9 decides their shape),
+  refuse with the code, identifier, argument and position the validate entry answers. The public `CharSet.AddRange`'s
+  refusal of a range written high to low, which no compilation reaches, carries none; task 2.9 owns it with the public
+  `Ast` surface. **All provisional**, marked in `PublicAPI.txt`, until task 2.9 fixes the
   surface of `0.2.0-preview.1`. A test over the suite's and the seeded populations, at the maximum limit and at 2,
   finds every syntax error `Compile` refuses answered with the same diagnostic and every pattern it compiles accepted;
   the fuzz target's oracle compares the two at every iteration; the engines' own tests of literal syntax errors, 126

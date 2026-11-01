@@ -1179,9 +1179,11 @@ takes none), `Position` (a code-unit offset into the pattern, into the flags tex
 refusal) and `Message` (a default English rendering, which is no contract; an engine renders its own from the identifier
 and the argument, SJL-D-11). A refusal is never an exception: the entry catches the parser's internal ones at its
 boundary, and only a broken argument throws (a null pattern or tables, a limit outside 1 to 512, tables of another
-Unicode version). Every `RegexSyntaxException` the library throws now carries the same diagnostic as its new
+Unicode version). Every `RegexSyntaxException` the parser and the flags parser throw, so every one `Compile`, the
+constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse` throw, now carries the same diagnostic as its new
 `Diagnostic` property, built by the same call in the parser (`RegexParser.Refuse`), so a pattern's refusal is one
-value whichever entry meets it. All of it is provisional, marked in `PublicAPI.txt` (63 marks).
+value whichever entry meets it. One refusal of the library carries none: the public `CharSet.AddRange`'s of a range
+written high to low (`CharSet.cs:118`), which no compilation reaches and task 2.9 owns (below). All of it is provisional, marked in `PublicAPI.txt` (63 marks).
 
 **The code table.** Numbered by the part of the grammar, each number fixed once published and never reused: the flags
 1 to 3 (`UnknownFlag`, `DuplicateFlag`, `UnicodeWithUnicodeSets`); groups and quantifiers 10 to 17
