@@ -11,7 +11,9 @@ Convention 12 suppresses no trim, AOT or single-file warning, and convention 17 
 inventory, in the shape of Broiler.VM's rule N36, lists by file every warning suppression in a source or project
 file of the library (`Broiler.Regex/`) and the Native AOT probe (`probes/Regex.Probe`), and in every build file of
 the repository that MSBuild's evaluation of either imports (today `Directory.Build.props`, `Directory.Packages.props`
-and `eng/Broiler.Packaging.props`): a `#pragma warning disable`, a `SuppressMessage` or
+and `eng/Broiler.Packaging.props`, and for the probe `probes/Regex.Probe/AdversarialControls.targets`; *dated note,
+2026-10-27, task 2.14 of SJL-11.2:* the probe imports that file, which builds part C's controls, in every build, so
+the scan reads it, and it suppresses nothing): a `#pragma warning disable`, a `SuppressMessage` or
 `UnconditionalSuppressMessage` attribute, a non-empty `NoWarn`, a `WarningsNotAsErrors` or a
 `SuppressTrimAnalysisWarnings` element. Rule SL5 of
 [`tests/Regex.Architecture.Tests`](../tests/Regex.Architecture.Tests) scans those files and holds the section below

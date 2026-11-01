@@ -1,0 +1,86 @@
+<Project>
+
+  <!--
+    Part C's two controls (bundle sjl-11-001's decision rule; task 2.14 of SJL-11.2), as scratch builds of this probe:
+
+      dotnet build probes/Regex.Probe -c Release -p:RegexAdversarialControl=steps
+        control (1): LimitExceeded naming steps is answered NoMatch. Every K, A, L, W and G row must be reported.
+      dotnet build probes/Regex.Probe -c Release -p:RegexAdversarialControl=nesting
+        control (2): the nesting check removed. Every N row past the limit must end abnormally or differ, and be reported.
+
+    With the switch set, this project does not reference the library: it compiles the library's sources into itself,
+    with one declared file replaced by a copy under obj/ in which one declared line is changed. The line keeps a string
+    of its own ("adversarial control 1 (part C)" or "... 2 ..."), so the control's text can be searched for in a build:
+    it is in this probe's assembly, and never in Broiler.Regex.dll, because the library project is not built in either
+    mode and the library's source is not changed. The anchor must occur exactly once in its file, or the build fails: a
+    control that changed nothing would control nothing. The probe's adversarial mode is the same in both builds, and
+    eng/adversarial-controls.py reads their reports. A build without the switch, the next one, is the revert.
+    No preprocessor directive is involved (convention 17); the switch is MSBuild's alone, as the fuzz target's plant is.
+  -->
+  <PropertyGroup Condition="'$(RegexAdversarialControl)' == 'steps'">
+    <RegexAdversarialControlFolder>Engine</RegexAdversarialControlFolder>
+    <RegexAdversarialControlFile>RegexProgram.cs</RegexAdversarialControlFile>
+    <RegexAdversarialControlAnchor>limit = machine.Exceeded;</RegexAdversarialControlAnchor>
+    <RegexAdversarialControlLine>limit = machine.Exceeded; if (limit == RegexLimit.Steps &amp;&amp; "adversarial control 1 (part C): LimitExceeded naming steps is answered NoMatch".Length > 0) { status = RegexStatus.NoMatch; limit = RegexLimit.None; }</RegexAdversarialControlLine>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RegexAdversarialControl)' == 'nesting'">
+    <RegexAdversarialControlFolder>Parsing</RegexAdversarialControlFolder>
+    <RegexAdversarialControlFile>RegexNesting.cs</RegexAdversarialControlFile>
+    <RegexAdversarialControlAnchor>if (depth &gt;= Limit)</RegexAdversarialControlAnchor>
+    <RegexAdversarialControlLine>if (depth &gt;= Limit &amp;&amp; "adversarial control 2 (part C): the nesting check removed".Length &lt; 0)</RegexAdversarialControlLine>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RegexAdversarialControl)' != ''">
+    <ProjectReference Remove="..\..\Broiler.Regex\Broiler.Regex.csproj" />
+    <PackageReference Include="Broiler.Unicode.Algorithms" />
+    <Compile Include="..\..\Broiler.Regex\**\*.cs"
+             Exclude="..\..\Broiler.Regex\bin\**;..\..\Broiler.Regex\obj\**;..\..\Broiler.Regex\$(RegexAdversarialControlFolder)\$(RegexAdversarialControlFile)"
+             Link="Control\Library\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Copies the declared file with its anchor replaced, byte for byte otherwise; refuses an anchor that is not there exactly once. -->
+  <UsingTask TaskName="RegexAdversarialControlCopy" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Source ParameterType="System.String" Required="true" />
+      <Destination ParameterType="System.String" Required="true" />
+      <Anchor ParameterType="System.String" Required="true" />
+      <Replacement ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var text = System.IO.File.ReadAllText(Source);
+        var first = text.IndexOf(Anchor, System.StringComparison.Ordinal);
+        if (first < 0 || text.IndexOf(Anchor, first + 1, System.StringComparison.Ordinal) >= 0)
+        {
+            Log.LogError("The adversarial control's anchor occurs other than exactly once in " + Source + ": declare the control again in probes/Regex.Probe/AdversarialControls.targets and the probe's README.");
+            return false;
+        }
+
+        var changed = text.Substring(0, first) + Replacement + text.Substring(first + Anchor.Length);
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Destination));
+        if (!System.IO.File.Exists(Destination) || System.IO.File.ReadAllText(Destination) != changed)
+            System.IO.File.WriteAllText(Destination, changed);
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="RegexAdversarialControlRefusesAnUnknownName" BeforeTargets="CollectPackageReferences;CoreCompile"
+          Condition="'$(RegexAdversarialControl)' != '' and '$(RegexAdversarialControlFile)' == ''">
+    <Error Text="RegexAdversarialControl is '$(RegexAdversarialControl)'; part C's controls are 'steps' and 'nesting' (probes/Regex.Probe/AdversarialControls.targets)." />
+  </Target>
+
+  <Target Name="RegexAdversarialControlPlant" BeforeTargets="CoreCompile" Condition="'$(RegexAdversarialControlFile)' != ''">
+    <PropertyGroup>
+      <_RegexAdversarialControlSource>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', '..', 'Broiler.Regex', '$(RegexAdversarialControlFolder)', '$(RegexAdversarialControlFile)'))</_RegexAdversarialControlSource>
+      <_RegexAdversarialControlCopy>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'adversarial-control', '$(RegexAdversarialControlFile)'))</_RegexAdversarialControlCopy>
+    </PropertyGroup>
+    <RegexAdversarialControlCopy Source="$(_RegexAdversarialControlSource)" Destination="$(_RegexAdversarialControlCopy)"
+                                 Anchor="$(RegexAdversarialControlAnchor)" Replacement="$(RegexAdversarialControlLine)" />
+    <ItemGroup>
+      <Compile Include="$(_RegexAdversarialControlCopy)" />
+    </ItemGroup>
+    <Message Importance="high" Text="Regex.Probe: adversarial control '$(RegexAdversarialControl)' is built from the library's sources with $(RegexAdversarialControlFolder)/$(RegexAdversarialControlFile) changed in a copy ($(_RegexAdversarialControlCopy)); this build tests that copy, not Broiler.Regex.dll." />
+  </Target>
+
+</Project>

@@ -56,6 +56,20 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     integration of tasks 2.6 and 2.11 fixed both (Observable changes), and the list is empty. The oracle also reads
     each `RegexGroup.Number` since that integration. Task 2.11 left the library, `Broiler.Regex.dll` and its API,
     unchanged; of the package only the packed README changed, whose testing paragraph now names the fuzz target.
+  - The probe's `--adversarial` mode (task 2.14; bundle `sjl-11-001`'s part C, the milestone's component clause 3):
+    every row of `tests/Adversarial/corpus.tsv` run in a child process of the probe, on a thread of the 1 MiB stack
+    the corpus's header declares, and reported against its declared status in a deterministic report (the corpus's
+    SHA-256, each child's exit code, status line and units, in id order); the mode fails on a row that differs or a
+    child that ends abnormally. CI's `native-aot-probe` job runs it under Native AOT and under the JIT on
+    ubuntu-latest and windows-latest and compares the two reports byte for byte. Part C's two controls are scratch
+    builds of the probe (`-p:RegexAdversarialControl=steps`, `LimitExceeded` naming steps answered as no match, and
+    `=nesting`, the nesting check removed), which compile the library's sources into the probe with one line changed
+    and never build `Broiler.Regex.dll`; CI's `adversarial-controls` job requires the first to report exactly the K,
+    A, L, W and G rows and the second exactly the N rows past the limit that run, 9 of the 15 (the six `validate` rows
+    past the limit wait for task 2.8 and are not required yet), through `eng/adversarial-controls.py`, and the revert
+    none. The corpus has one reader, `probes/Regex.Probe/AdversarialCorpus.cs`, which the tests link, and rule
+    SL3 admits the probe's child processes as it admits its file I/O. The rows whose operation is `validate` wait for
+    task 2.8 and are reported by name. The library, `Broiler.Regex.dll` and its API, and the package are unchanged.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

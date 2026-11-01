@@ -1165,6 +1165,110 @@ held the raw pair in their patterns, so no case asserted the answer of an escape
 escape, with its answers in set operations, complemented and under `vi`, and the raw pairs stay as cases of their own
 (`0320c78`).
 
+*Dated record, 2026-10-27 (task 2.14 of SJL-11.2; bundle `sjl-11-001`'s part C, the milestone's component clause 3;
+decisions D6, D8, D9, D10 and D32).*
+
+**What it builds.** The probe's `--adversarial corpus [--report path]` mode (`probes/Regex.Probe/AdversarialMode.cs`;
+[the probe's README](../probes/Regex.Probe/README.md), new with this task, describes every mode of the probe). The probe
+starts itself once per row of the corpus, one at a time, in ordinal order of the ids, with its hidden argument
+`--engine-row`: under the JIT as `dotnet` and the probe's assembly, under Native AOT as the image itself. The child reads
+the corpus, builds the row's pattern and subject from their expressions and runs its operation under its policy through
+the new backend's entry, all on a thread of the header's `stack-bytes`, 1 MiB, and writes `id status` and its units. The
+parent keeps each child's exit code, status line and units, and judges the row: it **gives its declared status** (the
+status with the corpus's `x^k` written out equals the declared one), it **differs**, or the child **ended abnormally**
+(an exit other than 0, anything but one line naming the row, or no exit within 120 seconds, when it is stopped). A row
+whose operation is `validate` **waits for task 2.8** and is not run, while `EngineRun.Answer` answers that operation
+`unsupported`; it is named and counted. The report is deterministic: the corpus's SHA-256 and header, one line per row,
+the counts, the rows waiting and the rows reported; no time, path or machine, and no child's standard error, which
+differs between the JIT and Native AOT when a child crashes. The mode exits 1 when a row differs or a child ends
+abnormally, 0 otherwise, and 2 on a corpus it cannot read. The corpus has one reader now, `AdversarialCorpus.cs`: the
+child mode reads it, where it scanned the file for its row, and `Broiler.Regex.Tests` links it with `EngineRun.cs`, so
+that `AdversarialCorpusTests` reads the rows, expands the statuses and evaluates the expressions as the probe does, where
+it had a reader, an expansion and an evaluator (through `System.Text.Json`) of its own. `AdversarialModeTests` runs the
+mode over scratch corpora: a row given, one that differs, a child that ends abnormally (a start past the subject's end,
+a broken precondition the run does not answer as a status) and a `validate` row, reported in id order with the corpus's
+SHA-256 and exit 1; a passing corpus, its report the same twice; corpora it cannot read, exit 2; and the judgement of a
+child directly. Four mutants of the mode (a status not compared, the rows in file order, a non-zero exit with a right
+line judged given, the exit always 0) each fail one of its tests.
+
+**The reading at this commit**, on linux-x64 locally, the corpus's SHA-256 `1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5`
+(the one both engines' manifests name): of the 65 rows, **58 give their declared status** under the JIT and under Native
+AOT, none differs and no child ends abnormally; **7 wait for task 2.8**, the `validate` rows N03, N06, N09, N12, N15,
+N18 and O19. The two reports are the same file (SHA-256 `0028536f72e4ef6915a2d5cc940c4f84e36863ef0198ffbb2ac38a035193454e`),
+the Native AOT run in about 2 seconds and the JIT's in about 6. Given: K01 to K05, A01, A02, L01 to L05, W01, W02 and G01
+to G03 `limit:steps`; M01 `limit:frames` and M02 `limit:trail`; N01, N07 and N13, at the limit, their matches; N02, N04,
+N05, N08, N10, N11, N14, N16 and N17 `limit:nesting`; F01 to F04 their matches; V01 to V05 `limit:compile`; O01 to O18
+their statuses (O12 the meter's exception, O18 `syntax`). The win-x64 reading is CI's.
+
+**Part C's controls**, each a scratch build of the probe (`probes/Regex.Probe/AdversarialControls.targets`): with
+`-p:RegexAdversarialControl=steps` or `=nesting` the probe does not reference the library project but compiles the
+library's sources into itself, one declared line changed in a copy under `obj/`, the build failing unless the line is
+in its file exactly once; the line keeps a text of its own, `adversarial control 1 (part C)` or `... 2 ...`, by which a
+search finds it. `eng/adversarial-controls.py` reads the corpus itself and holds a report to exactly the rows its
+control must report, every other row to its declared status or, for a `validate` row, to waiting, and the exit code to
+the rows reported.
+
+| Control | The line changed | Reported, under the JIT and under Native AOT |
+|---|---|---|
+| (1) `LimitExceeded` naming steps answered `NoMatch` | `RegexProgram.Match`, after the machine runs | Exactly the 17 K, A, L, W and G rows, each `nomatch` where it declares `limit:steps`: differs. 41 rows give their declared status, 7 wait |
+| (2) The nesting check removed | `RegexNesting.Descend`'s test of the caller's limit | Exactly the 9 N rows past the limit that run: N02, N08 and N14 compile (`ok`) and differ; N04, N05, N10, N11, N16 and N17 overflow the 1 MiB stack in the parser and end abnormally (exit 134 under the JIT, 139 under Native AOT). N01, N07 and N13 give their declared statuses; the six `validate` rows past the limit wait and are not reached |
+
+Each was reverted, the probe built without the switch, and the revert checked: its report gives every row run its
+declared status and reports none. **The controls never reach the shipped DLL**, read as task 2.11's record reads its
+plant: from one scratch directory holding this record's code, `Broiler.Regex.dll` built from the library project alone
+and by the whole solution is one file (SHA-256 `062788e853b92c296c661c8ef7a41a831e752939f0fcf018f8e8f7ee42b49aa4`, a
+value of that directory alone); each control's build afterwards built no library project and left that file byte for
+byte and its time unchanged; the package packed from it carries the same file; and neither DLL holds `adversarial
+control`, `part C` or `RegexAdversarialControl`, in UTF-16 or UTF-8, where each control's probe assembly holds its text.
+
+**CI.** The `native-aot-probe` job runs the mode under Native AOT and under the JIT on ubuntu-latest and windows-latest
+and compares the two reports with `cmp`, a step failing on a row that differs or a child that ends abnormally, each
+step bounded by 10 minutes. The new `adversarial-controls` job, on ubuntu-latest within 20 minutes, builds and checks
+each control, shows that no control built `Broiler.Regex/bin`, then builds the probe as usual, checks the revert and
+searches the library's DLL for the controls' text; its steps took 35 and 36 seconds on two fresh copies of the tree at
+`57002e0` locally, every build without build servers (11 to 13 seconds for each of the three builds and runs). Two
+earlier local measurements of the same steps took 42 seconds, the figure commit `13bda4a`'s message gives, of a copy
+taken before two small edits of that commit's code, and 30; so about 30 to 45 seconds. The reports are kept as
+artifacts of the runs, which the bundle's README now names as part C's evidence at a reading.
+
+**Rule SL3 and the probe.** Rule SL3 refused `System.Diagnostics.Process` for the probe, which may do file I/O
+only, so the mode, which starts processes, failed it (the probe named `Process` and `ProcessStartInfo`). The probe's
+exemption now covers a process, as the register's own wording, "file, network or process I/O", already counted it among
+the I/O the probe is exempt from; the witness starts a process, refused for a library and admitted for the probe, and
+both SL3 tests were watched failing without the admission. `docs/conventions.md`, "Scope", carries a dated note.
+
+**The library is unchanged**: no library file changed, and the probe's default report is the same file at `bdcf39d`
+and at this record's commit, under the JIT and Native AOT (SHA-256
+`3fb73580c649682cc99e7ec3a43352f309a8c43c2fef85f6123bf6a840c5d798`).
+
+**What remains.**
+- **Task 2.8.** The seven `validate` rows run once `EngineRun.Answer` answers the operation, with no change to the mode;
+  `AdversarialCorpusTests`' list of rows that wait is that task's. Control (2) reaches the six `validate` rows past the
+  limit only if the validate entry checks nesting through `RegexNesting.Descend`, the control's line; an entry that
+  checks it elsewhere needs its line declared in the control too.
+- **Part C's judgement.** MET needs every row's declared status in both modes on both RIDs, so it cannot be judged
+  before task 2.8; it is judged at the candidate reading, from CI's runs at the commit `0.2.0-preview.1` is packed from,
+  win-x64's among them.
+- **The margin.** The corpus's README (section 3) asks that `regexpref`'s counts be recorded before the candidate
+  reading; that is SJL-11.3's reference, not this task's.
+
+*Where the plan, the filed rule and this repository differ, read at this record.*
+- Part C reads the same in the plan's section 4.3 and in the filed rule. The rule's "the smallest stack the corpus's
+  header declares" is its one `stack-bytes`, 1 MiB.
+- Plan row 2.14 names the probe as its files. The mode also needed rule SL3's admission of the probe's processes (above),
+  the test project's links, `eng/adversarial-controls.py` and a CI job; no library file.
+- The brief asked for each control as "a build-time switch compiled only into a control build of the library or the
+  probe". Convention 17 admits no preprocessor directive, so the switch is an MSBuild property of the probe's build, and
+  the library's code reaches the control only as a copy compiled into the probe, as task 2.11's plant does.
+- Control (1) changes the answer at `RegexProgram.Match`, the entry every public member and the probe call, as the rule
+  words it ("LimitExceeded naming steps is answered NoMatch"). The old backend's form of the defect, a path's exhaustion
+  read as that path's failure, is a different change, and the corpus's README describes it per row.
+- The rule asks "each child's exit and status line retained". The report keeps both, and the units a child wrote alone
+  on its standard error; it keeps no other standard error, whose text differs between the modes when a child crashes.
+- The corpus's README (section 1) says three header lines are read. The probe reads two, the format and the stack; the
+  third, the wall-clock limit, is Broiler.JS's programs'.
+- The brief names the probe's README, which did not exist: it is new with this task.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

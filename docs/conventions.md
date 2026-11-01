@@ -58,6 +58,14 @@ review: a failed `RegexMatch` naming it, as its last element.
 - **The Native AOT probe**, `probes/Regex.Probe`, is an executable. It writes its report to a file, so
   convention 8's I/O clause does not hold for it; every other clause of convention 8 does, and so do
   conventions 12 and 17.
+  *Dated note, 2026-10-27 (task 2.14 of SJL-11.2):* the probe also starts itself, once for each row of the
+  adversarial corpus, so that a row that ends its process is observed and not suffered (its `--adversarial`
+  mode, bundle `sjl-11-001`'s part C). Rule SL3, which names a process among the I/O it refuses, now admits for
+  the probe the types of `System.Diagnostics.Process` with its file, console and environment I/O, and still holds
+  it to every other clause; its witness starts a process, refused for a library and admitted for the probe. Part
+  C's controls are scratch builds of the probe that compile the library's sources into it with one line changed
+  (`probes/Regex.Probe/AdversarialControls.targets`): an MSBuild switch, with no preprocessor directive, which
+  never builds the library project.
 - **The test projects**, `Broiler.Regex.Tests`, `tests/Regex.Architecture.Tests` and `tests/Regex.Fuzz`, are
   held to convention 17, and to nothing that would stop xunit discovering them. They are not Native AOT code and
   declare neither flag of convention 12. `tests/Regex.Fuzz`, the fuzz target (task 2.11 of SJL-11.2), is an
