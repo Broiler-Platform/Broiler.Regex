@@ -2,7 +2,6 @@
 # Regenerate with BROILER_REGEX_UPDATE_API=1 dotnet test tests/Regex.Architecture.Tests;
 # a change here is an API change, versioned under convention 16.
 # Members that may still change before the version that ships them (CHANGELOG.md), kept by a rewrite:
-# provisional: Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, System.Nullable`1<System.UInt64>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.Validate(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.Validate(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
@@ -211,7 +210,7 @@ Broiler.Regex.Ast.SequenceNode.Terms field readonly System.Collections.Generic.I
 Broiler.Regex.BroilerRegex sealed class
 Broiler.Regex.BroilerRegex..ctor(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
 Broiler.Regex.BroilerRegex..ctor(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables) method System.Void
-Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, System.Nullable`1<System.UInt64>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
+Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, System.Nullable`1<System.UInt64>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&, Broiler.Regex.RegexDiagnostic&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.IsMatch(System.String, System.Int32) method System.Boolean
 Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.RegexMatch

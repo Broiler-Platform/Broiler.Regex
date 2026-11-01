@@ -292,6 +292,15 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
   `0.1.0-preview.4`: every break listed below that `0.1.0-preview.5` already shipped (tasks 2.2, 2.3, 2.4c and 2.6) has
   left `Broiler.Regex/CompatibilitySuppressions.xml`, which holds only the breaks a consumer of `0.1.0-preview.5` meets
   (task 2.9's, below), and each stays listed here and in [`docs/suppressions.md`](docs/suppressions.md) as history.
+- **The surface of `0.1.0-preview.6` (task 2.9; R10's conventions and R8).** Each break of `0.1.0-preview.5` below is
+  suppressed in `Broiler.Regex/CompatibilitySuppressions.xml` and listed in [`docs/suppressions.md`](docs/suppressions.md)
+  with its R item:
+  - **`Compile` answers a syntax error as a status (R10, convention 3; decision D9).** `BroilerRegex.Compile` gains a
+    last `out RegexDiagnostic diagnostic`: a pattern the grammar or an early error refuses answers
+    `RegexStatus.SyntaxError` with the diagnostic the validate entry answers for it (its code, message identifier,
+    argument and position), where `0.1.0-preview.5` threw a `RegexSyntaxException`; past the nesting limit it answers
+    `LimitExceeded` naming `Nesting` with the `NestingLimit` diagnostic, as the validate entry does. CP0002 for the
+    signature of task 2.5. The compile budget stays a parameter beside the nesting limit, and the meter after them.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

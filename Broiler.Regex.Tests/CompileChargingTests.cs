@@ -147,11 +147,11 @@ public class CompileChargingTests
         Assert.True(total >= (ulong)pattern.Length);
         var parsed = RegexFlagsParser.Parse(flags);
 
-        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, parsed, UnicodeTables.Instance, 512, total, null, out var regex, out var limit));
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, parsed, UnicodeTables.Instance, 512, total, null, out var regex, out var limit, out _));
         Assert.NotNull(regex);
         Assert.Equal(RegexLimit.None, limit);
 
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, parsed, UnicodeTables.Instance, 512, total - 1, null, out regex, out limit));
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, parsed, UnicodeTables.Instance, 512, total - 1, null, out regex, out limit, out _));
         Assert.Null(regex);
         Assert.Equal(RegexLimit.Compile, limit);
     }
@@ -183,7 +183,7 @@ public class CompileChargingTests
         Assert.True(meter.Charged >= charge.Spent && meter.Charged - charge.Spent < CompileCharge.Block, meter.Charged + " charged for " + charge.Spent);
 
         var publicMeter = new CountingMeter();
-        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, 512, null, publicMeter.Charge, out _, out _));
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance, 512, null, publicMeter.Charge, out _, out _, out _));
         Assert.Equal(meter.Charges, publicMeter.Charges);
     }
 
@@ -195,20 +195,20 @@ public class CompileChargingTests
         // instance that answers as one compiled before any meter threw, and charges the same blocks.
         const string Pattern = "[\\p{L}--\\p{Lu}]([\\p{RGI_Emoji}\\q{ab|cd}])+\\b[^\\p{N}]";
         const RegexFlags Flags = RegexFlags.UnicodeSets | RegexFlags.IgnoreCase;
-        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, null, out var before, out _));
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, null, out var before, out _, out _));
         var calls = new CountingMeter();
-        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, calls.Charge, out _, out _));
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, calls.Charge, out _, out _, out _));
         Assert.True(calls.Charges.Count >= 3, calls.Charges.Count + " charges");
 
         string[] subjects = ["xAB\U0001F600!", "bcd x", "b\U0001F44D\U0001F3FDab?"];
         for (var failAt = 1; failAt <= calls.Charges.Count; failAt++)
         {
             var meter = new CountingMeter(failAt);
-            Assert.Throws<ChargingTests.MeterSpent>(() => BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, meter.Charge, out _, out _));
+            Assert.Throws<ChargingTests.MeterSpent>(() => BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, meter.Charge, out _, out _, out _));
             Assert.Equal(failAt - 1, meter.Charges.Count);
 
             var again = new CountingMeter();
-            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, again.Charge, out var after, out _));
+            Assert.Equal(RegexStatus.Success, BroilerRegex.Compile(Pattern, Flags, UnicodeTables.Instance, 512, null, again.Charge, out var after, out _, out _));
             Assert.Equal(calls.Charges, again.Charges);
             foreach (var subject in subjects)
                 Assert.Equal(TestRegex.Answer(before!, subject, 0), TestRegex.Answer(after!, subject, 0));
@@ -221,28 +221,30 @@ public class CompileChargingTests
         var nested = string.Concat(Enumerable.Repeat("(", 600)) + "a" + string.Concat(Enumerable.Repeat(")", 600));
 
         // The pattern's units are charged before the parse reads it: a budget below its length refuses it first.
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, 512, 1_000, null, out _, out var limit));
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, 512, 1_000, null, out _, out var limit, out _));
         Assert.Equal(RegexLimit.Compile, limit);
 
         // With room for its units, the parse meets the nesting limit at the 512th group.
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, 512, 1_201, null, out _, out limit));
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, 512, 1_201, null, out _, out limit, out _));
         Assert.Equal(RegexLimit.Nesting, limit);
 
-        // A syntax error the parse meets before the budget is spent is the parser's, as before.
-        Assert.Throws<RegexSyntaxException>(() => BroilerRegex.Compile("[\\p{L}--", RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, 1_000_000, null, out _, out _));
+        // A syntax error the parse meets before the budget is spent is the parser's, as before, answered as its status.
+        Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Compile("[\\p{L}--", RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, 1_000_000, null, out _, out limit, out var refusal));
+        Assert.Equal(RegexLimit.None, limit);
+        Assert.Equal(RegexDiagnosticCode.UnterminatedClass, refusal.Code);
     }
 
     [Fact]
     public void A_compile_budget_of_zero_is_a_broken_precondition_and_the_constructors_take_neither_budget_nor_meter()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => BroilerRegex.Compile("a", RegexFlags.None, UnicodeTables.Instance, 512, 0UL, null, out _, out _));
-        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile("a", RegexFlags.None, UnicodeTables.Instance, 512, 1UL, null, out _, out _));
+        Assert.Throws<ArgumentOutOfRangeException>(() => BroilerRegex.Compile("a", RegexFlags.None, UnicodeTables.Instance, 512, 0UL, null, out _, out _, out _));
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Compile("a", RegexFlags.None, UnicodeTables.Instance, 512, 1UL, null, out _, out _, out _));
         Assert.Equal(5, (int)RegexLimit.Compile);
 
         // The members that take no budget compile what Compile refuses at the corpus's budgets (decision D10's policy for
         // an engine that passes no meter).
         var v01 = "[" + string.Concat(Enumerable.Repeat("\\p{L}", 50)) + "]";
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(v01, RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, 300UL, null, out _, out var limit));
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(v01, RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, 300UL, null, out _, out var limit, out _));
         Assert.Equal(RegexLimit.Compile, limit);
         Assert.True(new BroilerRegex(v01, "v", UnicodeTables.Instance).IsMatch("é"));
     }
@@ -263,7 +265,7 @@ public class CompileChargingTests
         string Run((string Pattern, RegexFlags Flags, ulong? Budget) item)
         {
             var meter = new CountingMeter();
-            var status = BroilerRegex.Compile(item.Pattern, item.Flags, UnicodeTables.Instance, 512, item.Budget, meter.Charge, out _, out var limit);
+            var status = BroilerRegex.Compile(item.Pattern, item.Flags, UnicodeTables.Instance, 512, item.Budget, meter.Charge, out _, out var limit, out _);
             return status + " " + limit + " " + string.Join(',', meter.Charges);
         }
 

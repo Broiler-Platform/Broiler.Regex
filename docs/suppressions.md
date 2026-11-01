@@ -159,3 +159,16 @@ The consumer that reads the dictionary today is Broiler.JS, pinning `0.1.0-previ
 `BroilerRegex.GroupNames` into its capture map (`JSRegExp.Broiler.cs`, `BuildCaptureMapFromBroiler`); it moves its pin
 only at SJL-11.5 (decision D12), where its adapter reads `RegexGroupNames` instead, the shape its own capture map
 already has: each name, in the order of its first group, with its list of groups.
+
+### R10 and R8: the surface of `0.1.0-preview.6` (task 2.9 of SJL-11.2, 2026-11-01)
+
+Task 2.9 fixes the public surface the SJL-11 work ships, as `0.1.0-preview.6` (the owner's decision of 2026-11-01; the
+dated note above). Each break below is one of `0.1.0-preview.5`, the baseline, which a consumer of that version meets;
+each is suppressed by `Broiler.Regex/CompatibilitySuppressions.xml` as package validation generated it
+(`ApiCompatGenerateSuppressionFile`), and nothing else is. The R item is the requirement that forces it: R10's
+conventions (3, failure is data; 1, neutral types; 4, work charged by the caller's meter) and R8 (an offset-only
+interface beside the string-bearing one D12 keeps).
+
+| Suppression | Target | R item | What replaces it |
+|---|---|---|---|
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Compile(System.String,Broiler.Regex.RegexFlags,Broiler.Unicode.Algorithms.IUnicodeTables,System.Int32,System.Nullable{System.UInt64},Broiler.Regex.RegexWorkCharge,Broiler.Regex.BroilerRegex@,Broiler.Regex.RegexLimit@)` | R10 (convention 3; decision D9) | The same member with an `out RegexDiagnostic` last: a syntax error is `RegexStatus.SyntaxError` with the validate entry's diagnostic, where it was a `RegexSyntaxException`, and the nesting limit carries its `NestingLimit` diagnostic. |

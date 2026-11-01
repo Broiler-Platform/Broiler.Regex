@@ -24,7 +24,12 @@ internal static class TestRegex
 
     /// <summary><see cref="BroilerRegex.Compile"/> with no compile budget and no meter.</summary>
     internal static RegexStatus TryCompile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out BroilerRegex? regex, out RegexLimit limit) =>
-        BroilerRegex.Compile(pattern, flags, tables, nestingLimit, null, null, out regex, out limit);
+        BroilerRegex.Compile(pattern, flags, tables, nestingLimit, null, null, out regex, out limit, out _);
+
+    /// <summary><see cref="BroilerRegex.Compile"/> with no compile budget and no meter, with the refusal's diagnostic.</summary>
+    internal static RegexStatus TryCompile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out BroilerRegex? regex, out RegexLimit limit,
+        out RegexDiagnostic diagnostic) =>
+        BroilerRegex.Compile(pattern, flags, tables, nestingLimit, null, null, out regex, out limit, out diagnostic);
 
     /// <summary>
     /// The string-bearing <see cref="BroilerRegex.Match(string, int)"/>'s answer in the form <see cref="MachineTests.Render"/>

@@ -121,16 +121,19 @@ public class ValidateEntryTests
         Assert.Equal(argument, diagnostic.Argument);
         Assert.NotEqual("", diagnostic.Message);
 
-        // The constructor over the flags text, and Compile over parsed flags, refuse with the same diagnostic.
+        // The constructor over the flags text refuses with the same diagnostic, and Compile over parsed flags answers it as
+        // the same status, with no exception (task 2.9 of SJL-11.2; convention 3).
         var thrown = Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, flags, UnicodeTables.Instance));
         AssertSame(diagnostic, thrown.Diagnostic);
         Assert.Equal(diagnostic.Message, thrown.Message);
         Assert.Equal(IsOfFlags(code) ? -1 : position, thrown.Position);
         if (!IsOfFlags(code))
         {
-            var compiled = Assert.Throws<RegexSyntaxException>(() => BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance,
-                BroilerRegex.MaximumNestingLimit, null, null, out _, out _));
-            AssertSame(diagnostic, compiled.Diagnostic);
+            var compiled = BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance,
+                BroilerRegex.MaximumNestingLimit, null, null, out var regex, out var compiledLimit, out var compiledDiagnostic);
+            Assert.Equal((RegexStatus.SyntaxError, RegexLimit.None), (compiled, compiledLimit));
+            Assert.Null(regex);
+            AssertSame(diagnostic, compiledDiagnostic);
         }
     }
 
@@ -348,9 +351,10 @@ public class ValidateEntryTests
         Assert.Equal(511, diagnostic.Position);
         Assert.Equal("512", diagnostic.Argument);
 
-        // Compile answers the same status; the constructors, under the maximum, throw the same diagnostic.
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(past, RegexFlags.None, UnicodeTables.Instance, 512, null, null, out _, out var compiled));
+        // Compile answers the same status and diagnostic; the constructors, under the maximum, throw the same diagnostic.
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(past, RegexFlags.None, UnicodeTables.Instance, 512, null, null, out _, out var compiled, out var compiledDiagnostic));
         Assert.Equal(RegexLimit.Nesting, compiled);
+        AssertSame(diagnostic, compiledDiagnostic);
         var thrown = Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(past, RegexFlags.None, UnicodeTables.Instance));
         Assert.Equal(RegexDiagnosticCode.NestingLimit, thrown.Diagnostic.Code);
         Assert.Equal(511, thrown.Diagnostic.Position);
@@ -468,7 +472,7 @@ public class ValidateEntryTests
             var account = new CompileCharge(null, null);
             Assert.Equal(RegexStatus.Success, BroilerRegex.Validate(pattern, flags, new RegexUnicode(UnicodeTables.Instance, account), new RegexNesting(512), out _, out _));
             Assert.Equal((ulong)pattern.Length, account.Spent);
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 512, budget, null, out _, out var limit));
+            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 512, budget, null, out _, out var limit, out _));
             Assert.Equal(RegexLimit.Compile, limit);
         }
     }
@@ -531,27 +535,29 @@ public class ValidateEntryTests
     internal static string Agreement(string pattern, RegexFlags flags, int nesting)
     {
         var validated = BroilerRegex.Validate(pattern, flags, UnicodeTables.Instance, nesting, out var diagnostic, out var limit);
-        try
+        var compiled = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, nesting, null, null, out var regex, out var compiledLimit, out var refusal);
+        if (compiled == RegexStatus.Success)
         {
-            var compiled = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, nesting, null, null, out var regex, out var compiledLimit);
-            if (compiled == RegexStatus.Success)
-            {
-                Assert.True(validated == RegexStatus.Success, Show(pattern, flags) + " compiles and is answered " + validated + " " + diagnostic.MessageId);
-                return "compiled";
-            }
-
-            Assert.Equal(RegexLimit.Nesting, compiledLimit);
-            Assert.True(validated == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit,
-                Show(pattern, flags) + " meets the nesting limit in Compile and is answered " + validated + " " + diagnostic.MessageId);
-            return "nesting";
+            Assert.True(validated == RegexStatus.Success, Show(pattern, flags) + " compiles and is answered " + validated + " " + diagnostic.MessageId);
+            Assert.NotNull(regex);
+            Assert.Equal(RegexDiagnosticCode.None, refusal.Code);
+            return "compiled";
         }
-        catch (RegexSyntaxException refusal)
+
+        Assert.Null(regex);
+        if (compiled == RegexStatus.SyntaxError)
         {
             Assert.True(validated == RegexStatus.SyntaxError, Show(pattern, flags) + " is refused by Compile (" + refusal.Message + ") and answered " + validated);
-            AssertSame(refusal.Diagnostic, diagnostic);
-            Assert.Equal(refusal.Position, diagnostic.Position);
+            Assert.Equal(RegexLimit.None, compiledLimit);
+            AssertSame(refusal, diagnostic);
             return "syntax";
         }
+
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Nesting), (compiled, compiledLimit));
+        Assert.True(validated == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit,
+            Show(pattern, flags) + " meets the nesting limit in Compile and is answered " + validated + " " + diagnostic.MessageId);
+        AssertSame(diagnostic, refusal);
+        return "nesting";
     }
 
     private static string Show(string pattern, RegexFlags flags) => "/" + TestPopulations.Escape(pattern) + "/ under " + flags;

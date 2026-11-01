@@ -100,8 +100,10 @@ internal sealed class FuzzMeter
 /// <remarks>
 /// <para>
 /// <b>Compilation</b>: <see cref="BroilerRegex.Compile"/> under the case's full policy and under its tight one, both
-/// with a nesting limit, a compile budget and a meter; each answers <c>Success</c>, <c>LimitExceeded</c> naming nesting or
-/// compile, a <see cref="RegexSyntaxException"/> or the meter's exception. Limits are monotone: a tight compilation that
+/// with a nesting limit, a compile budget and a meter; each answers <c>Success</c>, <c>LimitExceeded</c> naming nesting
+/// (with the nesting limit's diagnostic) or compile, <c>SyntaxError</c> with a diagnostic of a syntax code, or the
+/// meter's exception, and nothing else: since task 2.9 of SJL-11.2 a syntax error is a status, so an exception of any
+/// other kind, a <c>RegexSyntaxException</c> included, is a finding. Limits are monotone: a tight compilation that
 /// succeeds or refuses a syntax error answers as the full one does. The constructor, which takes no limit, answers as
 /// the full compilation at <see cref="BroilerRegex.MaximumNestingLimit"/> does.
 /// </para>
@@ -109,7 +111,7 @@ internal sealed class FuzzMeter
 /// <b>Validation</b> (task 2.8): the validate entry under each policy's nesting limit, which takes no meter and no budget,
 /// answers as that compilation does wherever the compilation met neither its budget nor its meter: <c>Success</c> for a
 /// pattern it compiled, <c>SyntaxError</c> with the code, identifier, argument, position and message of the
-/// <see cref="RegexSyntaxException"/>'s diagnostic for one it refused, and <c>LimitExceeded</c> naming the nesting limit,
+/// compilation's diagnostic for one it refused, and <c>LimitExceeded</c> naming the nesting limit,
 /// with that diagnostic, where it met the limit. Where the budget or the meter stopped the compilation, the entry's
 /// answer is held to its own contract alone.
 /// </para>
@@ -224,17 +226,23 @@ internal static class Verdicts
         var meter = new FuzzMeter(policy.Meter);
         try
         {
-            var status = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, policy.Nesting, policy.Budget, meter.Charge, out var regex, out var limit);
-            if (status == RegexStatus.Success && regex is not null && limit == RegexLimit.None)
+            var status = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, policy.Nesting, policy.Budget, meter.Charge, out var regex, out var limit,
+                out var diagnostic);
+            if (status == RegexStatus.Success && regex is not null && limit == RegexLimit.None && diagnostic.Code == RegexDiagnosticCode.None)
                 return new("ok", regex, -1, "", meter.Charged);
-            if (status == RegexStatus.LimitExceeded && regex is null && limit is RegexLimit.Nesting or RegexLimit.Compile)
-                return new(limit == RegexLimit.Nesting ? "limit:nesting" : "limit:compile", null, -1, "", meter.Charged);
-            outcome.Find("contract", site, Invariant($"Compile answered {status} with limit {limit} and {(regex is null ? "no" : "a")} compiled pattern"));
+            if (status == RegexStatus.LimitExceeded && regex is null && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit
+                && diagnostic.Argument == policy.Nesting.ToString(CultureInfo.InvariantCulture))
+                return new("limit:nesting", null, -1, "", meter.Charged);
+            if (status == RegexStatus.LimitExceeded && regex is null && limit == RegexLimit.Compile && diagnostic.Code == RegexDiagnosticCode.None)
+                return new("limit:compile", null, -1, "", meter.Charged);
+
+            // A syntax error is a status since task 2.9 of SJL-11.2, with a diagnostic of a syntax code at a place in the pattern.
+            if (status == RegexStatus.SyntaxError && regex is null && limit == RegexLimit.None
+                && diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit)
+                && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= pattern.Length)
+                return new("syntax", null, diagnostic.Position, diagnostic.Message, meter.Charged) { Diagnostic = diagnostic };
+            outcome.Find("contract", site, Invariant($"Compile answered {status} with limit {limit}, diagnostic {diagnostic.Code} at {diagnostic.Position} and {(regex is null ? "no" : "a")} compiled pattern"));
             return new("contract", null, -1, "", meter.Charged);
-        }
-        catch (RegexSyntaxException refusal)
-        {
-            return new("syntax", null, refusal.Position, refusal.Message, meter.Charged) { Diagnostic = refusal.Diagnostic };
         }
         catch (AllowanceSpent)
         {
@@ -784,10 +792,10 @@ internal static class Verdicts
         var slots = new int[count];
         var ceilings = c.Wide.Ceilings;
         var subject = c.Subject;
-        Expect<ArgumentOutOfRangeException>("probe/nesting-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 0, null, null, out _, out _), outcome);
-        Expect<ArgumentOutOfRangeException>("probe/nesting-past-maximum", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit + 1, null, null, out _, out _), outcome);
-        Expect<ArgumentOutOfRangeException>("probe/budget-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 1, 0, null, out _, out _), outcome);
-        Expect<ArgumentNullException>("probe/pattern-null", () => BroilerRegex.Compile(null!, c.Flags, UnicodeTables.Instance, 1, null, null, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/nesting-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 0, null, null, out _, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/nesting-past-maximum", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit + 1, null, null, out _, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/budget-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 1, 0, null, out _, out _, out _), outcome);
+        Expect<ArgumentNullException>("probe/pattern-null", () => BroilerRegex.Compile(null!, c.Flags, UnicodeTables.Instance, 1, null, null, out _, out _, out _), outcome);
         Expect<ArgumentOutOfRangeException>("probe/start-negative", () => regex.Match(subject.AsSpan(), -1, false, slots, null, ceilings, out _), outcome);
         Expect<ArgumentOutOfRangeException>("probe/start-past-end", () => regex.Match(subject.AsSpan(), subject.Length + 1, false, slots, null, ceilings, out _), outcome);
         Expect<ArgumentException>("probe/slots-short", () => regex.Match(subject.AsSpan(), 0, false, slots.AsSpan(0, count - 1), null, ceilings, out _), outcome);

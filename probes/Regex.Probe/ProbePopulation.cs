@@ -254,10 +254,14 @@ internal static class ProbePopulation
             {
                 if (probeCase.NestingLimit is { } limit)
                 {
-                    var status = BroilerRegex.Compile(probeCase.Pattern, RegexFlagsParser.Parse(probeCase.Flags), UnicodeTables.Instance, limit, null, null, out var regex, out var exceeded);
-                    compiled[i] = status == RegexStatus.Success
-                        ? new CompiledCase(probeCase, regex, null)
-                        : new CompiledCase(probeCase, null, exceeded == RegexLimit.Nesting ? "limit:nesting" : "limit:another");
+                    var status = BroilerRegex.Compile(probeCase.Pattern, RegexFlagsParser.Parse(probeCase.Flags), UnicodeTables.Instance, limit, null, null, out var regex, out var exceeded, out var refusal);
+                    compiled[i] = status switch
+                    {
+                        RegexStatus.Success => new CompiledCase(probeCase, regex, null),
+                        // A syntax error is Compile's status since task 2.9 of SJL-11.2, reported as the exception was.
+                        RegexStatus.SyntaxError => new CompiledCase(probeCase, null, "syntax @" + Decimal(refusal.Position)),
+                        _ => new CompiledCase(probeCase, null, exceeded == RegexLimit.Nesting ? "limit:nesting" : "limit:another"),
+                    };
                     continue;
                 }
 
