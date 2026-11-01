@@ -20,11 +20,11 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files not covered | 0 |
 | Files carrying an annotation | 26 |
 | Code units | 714 |
-| Relevant | 379 |
-| Exempt by predicate | 335 |
-| Annotated | 379 of 379 (100%) |
-| Human reviewed | 0 of 379 (0%) |
-| Unverified | 379 |
+| Relevant | 382 |
+| Exempt by predicate | 332 |
+| Annotated | 382 of 382 (100%) |
+| Human reviewed | 0 of 382 (0%) |
+| Unverified | 382 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 379 |
+| HUMAN_PENDING | 382 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 335 |
+| EXEMPT | 332 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 291 |
+| None | 294 |
 | Low | 105 |
 | Medium | 0 |
 | High | 0 |
@@ -54,7 +54,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 134 |
+| Low | 137 |
 | Medium | 106 |
 | High | 143 |
 | Critical | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.5 / 10 |
-| Units scored | 379 |
+| Units scored | 382 |
 
 ## High-security review areas
 
@@ -218,7 +218,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 221 |
+| Units carrying a criterion | 224 |
 | Units required to carry one | 143 |
 | Required and missing | 0 |
 
@@ -245,7 +245,7 @@ that the rule is reviewable in one place rather than in several hundred.
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 137 |
+| FieldDeclaringStorage | 134 |
 | EnumMemberOfADeclaredVocabulary | 138 |
 | DeclaredInSource | 0 |
 

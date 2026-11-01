@@ -24,8 +24,6 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL8	assurance.config.json does not forbid preprocessor directives	"exemptionPredicate"	assurance.config.json:7
-SL8	assurance.config.json does not use the strict exemption predicate	"owning-component"	assurance.config.json:7
 # Task 2.4c (2026-10-26) re-words three C1 rows, which adds no violation: RegexMatch and RegexGroup moved from
 # Broiler.Regex.Matching to Broiler.Regex when the old backend's namespace was deleted (decision D12, requirement R8;
 # a break docs/suppressions.md lists), so the rows of Matches, RegexMatch.Groups and RegexMatch.NamedGroups name the
@@ -59,3 +57,7 @@ SL8	assurance.config.json does not use the strict exemption predicate	"owning-co
 # Task 2.9 (2026-11-01) removes the seven SL5 rows: Broiler.Regex/Broiler.Regex.csproj resets NoWarn to the SDK's own
 # codes, so the packaging props' XML-documentation codes no longer reach the library, and every public member is
 # documented (convention 15), a missing comment a build error.
+# Task 2.9 (2026-11-01) removes the two SL8 rows: assurance.config.json uses the strict exemption predicate and forbids
+# preprocessor directives, Broiler.VM's own settings as Broiler.Unicode's configuration holds them; the three fields the
+# strict predicate newly counts as relevant carry their annotations. The list holds no row: row 2.9's check, the
+# violation list is empty, holds.

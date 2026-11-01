@@ -342,6 +342,11 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
   2.9 fixed the surface, is resolved: the members marked are this version's surface as listed above, and their
   documentation no longer calls them provisional. The escape helpers keep the shape task 2.7 gave them; `RegexLimit`
   gains no length dimension for them, since an escape's length is bounded by its input's.
+- **The assurance scheme is strict (convention 18; rule SL8).** `assurance.config.json` uses the strict exemption
+  predicate and forbids preprocessor directives, Broiler.VM's settings as Broiler.Unicode's configuration holds them;
+  three fields whose initializers run code, which the owning component's predicate exempted as storage, now carry their
+  annotations (382 relevant units). Rule SL8's two starting violations close, and with them the starting violation
+  list: row 2.9's check, that the list is empty, holds. No compiled code changes.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

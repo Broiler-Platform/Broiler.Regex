@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   34
-// Annotated:        34/34
-// Exempt:           30
-// Human-reviewed:   0/34
+// Relevant units:   35
+// Annotated:        35/35
+// Exempt:           29
+// Human-reviewed:   0/35
 // IP risk:          None
 // Security risk:    High
-// Criteria:         21/18
+// Criteria:         22/18
 // Resource impact:  5/10 max
-// Unverified:       34
+// Unverified:       35
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -429,6 +429,9 @@ internal static class ProgramCompiler
 
         /// <summary>The compilation's account, which the lowering charges before what the expansions decide (task 2.5).</summary>
         private readonly CompileCharge _account = data.Account;
+        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Low; Resources=0; Fingerprint=2F0133
+        // Broiler-Falsified-If: a pattern compiled under v alone is lowered outside Unicode mode, so /./v matches one half of a surrogate pair
+        // Broiler-Human:        PENDING
         private readonly bool _unicode = flags.IsUnicodeMode();
 
         /// <summary>The class of the word characters compared exactly, then under <c>i</c>, once it is added; -1 before.</summary>

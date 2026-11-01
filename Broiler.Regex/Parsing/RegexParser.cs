@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   70
-// Annotated:        70/70
-// Exempt:           25
-// Human-reviewed:   0/70
+// Relevant units:   72
+// Annotated:        72/72
+// Exempt:           23
+// Human-reviewed:   0/72
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         65/56
+// Criteria:         67/56
 // Resource impact:  7/10 max
-// Unverified:       70
+// Unverified:       72
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -91,12 +91,18 @@ internal sealed class RegexParser
     public RegexGroupNames GroupNames { get; private set; }
 
     /// <summary>Each name's groups, ascending, as the parse declares them.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1769F7
+    // Broiler-Falsified-If: two group names that differ only in case, such as (?<a>x)(?<A>y), are read as one name
+    // Broiler-Human:        PENDING
     private readonly Dictionary<string, List<int>> _groupsByName = new(StringComparer.Ordinal);
 
     /// <summary>The names, in the order of their first groups.</summary>
     private readonly List<string> _namesInOrder = [];
 
     /// <summary>The position of the <c>(</c> of each name's latest group, which a later group of the name is checked against.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9FF007
+    // Broiler-Falsified-If: (?<a>x)|(?<A>y) is refused as a duplicate name because the names are compared without regard to case
+    // Broiler-Human:        PENDING
     private readonly Dictionary<string, int> _latestGroupOf = new(StringComparer.Ordinal);
 
     /// <summary>
