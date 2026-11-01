@@ -77,7 +77,7 @@ public class GroupNameTests
 
             var match = regex.Match("x");
             Assert.True(match.Success);
-            Assert.Equal("x", match.NamedGroups[name].Value);
+            Assert.Equal("x", match.GroupNamed(name)!.Value);
         }
     }
 

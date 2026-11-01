@@ -41,9 +41,6 @@ SL8	assurance.config.json does not use the strict exemption predicate	"owning-co
 # Task 2.6 (2026-10-27) removes the two C1 rows of BroilerRegex.GroupNames and RegexParser.GroupNames: requirement R6
 # reshapes both from a dictionary of each name to one group into the library's own RegexGroupNames, since ES2025 lets
 # several groups share a name (a break docs/suppressions.md lists), so neither names a collection in a public signature.
-C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>	public IEnumerable<RegexMatch> Matches(string input)	Broiler.Regex/BroilerRegex.cs:636
-C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.RegexGroup>	public IReadOnlyList<RegexGroup> Groups { get; }	Broiler.Regex/RegexMatch.cs:76
-C1	Broiler.Regex names a base class library collection, delegate, object or Type in a public signature: Broiler.Regex.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.RegexGroup>	public IReadOnlyDictionary<string, RegexGroup> NamedGroups { get; }	Broiler.Regex/RegexMatch.cs:86
 # Task 2.7 (2026-10-27) removes two places of the SL4 row, Broiler.Regex/RegexFlags.cs:90 and :94: RegexFlagsParser.Parse
 # now reads the grammar of Text/RegexFlagsText.cs and builds its two messages, unchanged, by concatenating a code unit,
 # which reads no culture. The row's other places are the parser's and CharSet's.
@@ -62,3 +59,7 @@ C1	Broiler.Regex names a base class library collection, delegate, object or Type
 # no meter (convention 4); neither engine's adapter reads them (plan rows 5.2 and 6.1), and the members that do, Compile
 # and the validate entry, answer statuses. CharSet.CheckRange, the SL4 row's one place, builds its message through
 # NumberFormatInfo.InvariantInfo.
+# Task 2.9 (2026-11-01) removes the last three C1 rows, those of the string-bearing result decision D12 keeps:
+# RegexMatch.Groups is a ReadOnlySpan<RegexGroup>, RegexMatch.GroupNamed(name) answers a name's group where the
+# NamedGroups dictionary did, and BroilerRegex.NextMatch(match) answers the global iteration's next match where Matches'
+# IEnumerable did. No C1 row remains.

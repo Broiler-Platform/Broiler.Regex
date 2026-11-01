@@ -1,3 +1,6 @@
+using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using Broiler.Unicode.Algorithms;
 using Broiler.Unicode.Tables;
@@ -38,6 +41,32 @@ internal static class TestRegex
     /// </summary>
     internal static string Answer(BroilerRegex regex, string subject, int start) => Render(regex.Match(subject, start));
 
+    /// <summary>
+    /// Every match of the global iteration, through <see cref="BroilerRegex.NextMatch"/> from <see cref="BroilerRegex.Match(string, int)"/>
+    /// at 0, as <c>BroilerRegex.Matches</c> enumerated them until task 2.9 of SJL-11.2: each match, and a last failed one
+    /// when a match reached a ceiling, which names it.
+    /// </summary>
+    internal static List<RegexMatch> Matches(this BroilerRegex regex, string input)
+    {
+        var matches = new List<RegexMatch>();
+        for (var match = regex.Match(input, 0); ; match = regex.NextMatch(match))
+        {
+            if (match.Success || match.Limit != RegexLimit.None)
+                matches.Add(match);
+            if (!match.Success)
+                return matches;
+        }
+    }
+
+    /// <summary>
+    /// The names a match's groups carry, each once, in the order of its first group, which is the order
+    /// <see cref="BroilerRegex.GroupNames"/> lists them and RegExpBuiltinExec creates the <c>groups</c> object's properties
+    /// in (§22.2.7.2, step 34.e): what <c>RegexMatch.NamedKeys()</c> answered until task 2.9 of SJL-11.2. None for a
+    /// failed match.
+    /// </summary>
+    internal static string[] NamedKeys(this RegexMatch match) =>
+        [.. match.Groups.ToArray().Select(static g => g.Name).OfType<string>().Distinct(StringComparer.Ordinal)];
+
     /// <summary>A public match in the form <see cref="MachineTests.Render"/> gives the offset entry's answer.</summary>
     internal static string Render(RegexMatch match)
     {
@@ -47,7 +76,7 @@ internal static class TestRegex
             return "nomatch";
 
         var text = new StringBuilder("match ").Append(match.Index).Append(',').Append(match.Index + match.Length);
-        for (var group = 1; group < match.Groups.Count; group++)
+        for (var group = 1; group < match.Groups.Length; group++)
             text.Append(' ').Append(match.Groups[group].Success ? match.Groups[group].Index + "," + (match.Groups[group].Index + match.Groups[group].Length) : "-");
         return text.ToString();
     }

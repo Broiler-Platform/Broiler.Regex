@@ -320,7 +320,7 @@ internal static class ProbePopulation
                 return Render(item.Regex, item.Regex.Match(item.Case.Subject, item.Case.Start));
 
             var matches = new List<string>();
-            foreach (var match in item.Regex.Matches(item.Case.Subject))
+            foreach (var match in Iteration(item.Regex, item.Case.Subject))
             {
                 matches.Add(Render(item.Regex, match));
                 if (matches.Count == 16)
@@ -344,12 +344,12 @@ internal static class ProbePopulation
 
         // A run of eight or more equal groups is written once with its count, as x^k (the adversarial corpus's notation).
         var text = new StringBuilder("match ").Append(Span(match.Index, match.Length));
-        for (var group = 1; group < match.Groups.Count;)
+        for (var group = 1; group < match.Groups.Length;)
         {
             var captured = match.Groups[group];
             var shown = captured.Success ? Span(captured.Index, captured.Length) : "-";
             var run = 1;
-            while (group + run < match.Groups.Count && Shown(match.Groups[group + run]) == shown)
+            while (group + run < match.Groups.Length && Shown(match.Groups[group + run]) == shown)
                 run++;
             text.Append(' ').Append(shown);
             if (run >= 8)
@@ -363,7 +363,7 @@ internal static class ProbePopulation
         }
 
         // Each name with its group, as name=k; a name ES2025 lets several groups share (requirement R6, task 2.6) with all
-        // of them joined by '+', and after ':' the one that participated, as the match's NamedGroups gives it, or '-'.
+        // of them joined by '+', and after ':' the one that participated, as the match's GroupNamed gives it, or '-'.
         var names = new List<string>();
         for (var at = 0; at < regex.GroupNames.Count; at++)
         {
@@ -374,7 +374,7 @@ internal static class ProbePopulation
                 shown.Append(i == 0 ? "" : "+").Append(Decimal(groups[i]));
             if (groups.Length > 1)
             {
-                var participating = match.NamedGroups[name];
+                var participating = match.GroupNamed(name)!;
                 shown.Append(':').Append(participating.Success ? Decimal(participating.Number) : "-");
             }
 
@@ -390,6 +390,21 @@ internal static class ProbePopulation
     private static string Span(int index, int length) => Decimal(index) + "," + Decimal(index + length);
 
     private static string Shown(RegexGroup group) => group.Success ? Span(group.Index, group.Length) : "-";
+
+    /// <summary>
+    /// The global iteration, as <c>BroilerRegex.Matches</c> enumerated it until task 2.9 of SJL-11.2: each match through
+    /// <see cref="BroilerRegex.NextMatch"/>, and a last failed one that names the ceiling a match reached.
+    /// </summary>
+    private static IEnumerable<RegexMatch> Iteration(BroilerRegex regex, string subject)
+    {
+        for (var match = regex.Match(subject, 0); ; match = regex.NextMatch(match))
+        {
+            if (match.Success || match.Limit != RegexLimit.None)
+                yield return match;
+            if (!match.Success)
+                yield break;
+        }
+    }
 
     /// <summary>
     /// An exception as the probe reports it, by its type, which no message or resource text enters. A syntax error is no

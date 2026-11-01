@@ -9,7 +9,7 @@ namespace Broiler.Regex.Tests;
 /// The shape of a pattern's group names since requirement R6 reshaped <c>GroupNames</c> (task 2.6 of SJL-11.2):
 /// <see cref="RegexGroupNames"/> gives each name with its groups, in the order of the names' first groups, each group
 /// with its name, and the group of a name that participated in a match the offset entry wrote; the string-bearing
-/// <see cref="RegexMatch.NamedGroups"/> gives each name its participating group, whose <see cref="RegexGroup.Number"/>
+/// <see cref="RegexMatch.GroupNamed"/> gives each name its participating group, whose <see cref="RegexGroup.Number"/>
 /// says which (bundle <c>sjl-11-001</c>'s check A-6, "a result maps the name to the participating index").
 /// </summary>
 public class RegexGroupNamesTests
@@ -74,12 +74,12 @@ public class RegexGroupNamesTests
     public void A_string_bearing_match_maps_each_name_to_its_group_and_each_group_knows_its_number()
     {
         var match = TestRegex.Compile("(?<y>a)(?<x>b)?(c)").Match("ac");
-        Assert.Equal(new[] { 0, 1, 2, 3 }, match.Groups.Select(static g => g.Number));
-        Assert.Equal(new[] { "y", "x" }, match.NamedGroups.Keys);
-        Assert.Same(match.Groups[1], match.NamedGroups["y"]);
-        Assert.Same(match.Groups[2], match.NamedGroups["x"]);
-        Assert.Equal((1, true, "a"), (match.NamedGroups["y"].Number, match.NamedGroups["y"].Success, match.NamedGroups["y"].Value));
-        Assert.Equal((2, false, -1), (match.NamedGroups["x"].Number, match.NamedGroups["x"].Success, match.NamedGroups["x"].Index));
+        Assert.Equal(new[] { 0, 1, 2, 3 }, match.Groups.ToArray().Select(static g => g.Number));
+        Assert.Equal(new[] { "y", "x" }, match.NamedKeys());
+        Assert.Same(match.Groups[1], match.GroupNamed("y")!);
+        Assert.Same(match.Groups[2], match.GroupNamed("x")!);
+        Assert.Equal((1, true, "a"), (match.GroupNamed("y")!.Number, match.GroupNamed("y")!.Success, match.GroupNamed("y")!.Value));
+        Assert.Equal((2, false, -1), (match.GroupNamed("x")!.Number, match.GroupNamed("x")!.Success, match.GroupNamed("x")!.Index));
         Assert.Equal((3, (string?)null), (match.Groups[3].Number, match.Groups[3].Name));
     }
 }

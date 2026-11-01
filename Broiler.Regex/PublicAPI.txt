@@ -109,8 +109,8 @@ Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broi
 Broiler.Regex.BroilerRegex.IsMatch(System.String, System.Int32) method System.Boolean
 Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.RegexMatch
-Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>
 Broiler.Regex.BroilerRegex.MaximumNestingLimit field static const System.Int32 = 512
+Broiler.Regex.BroilerRegex.NextMatch(Broiler.Regex.RegexMatch) method Broiler.Regex.RegexMatch
 Broiler.Regex.BroilerRegex.Validate(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.Validate(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.get_CaptureCount() method System.Int32
@@ -223,11 +223,11 @@ Broiler.Regex.RegexLimit.Trail = 4
 Broiler.Regex.RegexLimit.value__ field System.Int32
 Broiler.Regex.RegexMatch sealed class
 Broiler.Regex.RegexMatch.Empty field static readonly Broiler.Regex.RegexMatch
-Broiler.Regex.RegexMatch.get_Groups() method System.Collections.Generic.IReadOnlyList`1<Broiler.Regex.RegexGroup>
+Broiler.Regex.RegexMatch.GroupNamed(System.String) method Broiler.Regex.RegexGroup
+Broiler.Regex.RegexMatch.get_Groups() method System.ReadOnlySpan`1<Broiler.Regex.RegexGroup>
 Broiler.Regex.RegexMatch.get_Index() method System.Int32
 Broiler.Regex.RegexMatch.get_Length() method System.Int32
 Broiler.Regex.RegexMatch.get_Limit() method Broiler.Regex.RegexLimit
-Broiler.Regex.RegexMatch.get_NamedGroups() method System.Collections.Generic.IReadOnlyDictionary`2<System.String,Broiler.Regex.RegexGroup>
 Broiler.Regex.RegexMatch.get_Success() method System.Boolean
 Broiler.Regex.RegexMatch.get_Value() method System.String
 Broiler.Regex.RegexStatus enum

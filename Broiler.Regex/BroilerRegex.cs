@@ -16,7 +16,6 @@
 // GENERATED - DO NOT EDIT MANUALLY
 
 using System;
-using System.Collections.Generic;
 using Broiler.Regex.Compiling;
 using Broiler.Regex.Engine;
 using Broiler.Regex.Parsing;
@@ -40,7 +39,7 @@ namespace Broiler.Regex;
 /// the continuations of <c>Matching/</c> with their per-start step budget, is deleted: the offset entry,
 /// <see cref="Match(ReadOnlySpan{char}, int, bool, Span{int}, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)"/>,
 /// with the caller's meter and ceilings, and the string-bearing members, <see cref="Match(string, int)"/>,
-/// <see cref="IsMatch"/> and <see cref="Matches"/>, which decision D12 keeps for their existing consumers, under the
+/// <see cref="IsMatch"/> and <see cref="NextMatch"/>, which decision D12 keeps for their existing consumers, under the
 /// policy decision D10 sets for an engine that passes no meter: no meter, no step ceiling, and the engines' frame and
 /// trail ceilings (<see cref="RegexMatchCeilings.Engines"/>). A pattern that backtracks catastrophically runs to its
 /// answer there; a caller that needs a bound on the work passes a meter or a step ceiling to the offset entry.
@@ -143,7 +142,7 @@ public sealed class BroilerRegex
     /// <para>
     /// ES2025 lets a name be declared by several groups when no two of them can both participate, so a name maps to a
     /// list of groups (<see cref="RegexGroupNames.GroupsNamed"/>), and a match to the one that participated
-    /// (<see cref="RegexGroupNames.ParticipatingGroup"/>, from the offset entry's slots; <see cref="RegexMatch.NamedGroups"/>
+    /// (<see cref="RegexGroupNames.ParticipatingGroup"/>, from the offset entry's slots; <see cref="RegexMatch.GroupNamed"/>
     /// for <see cref="Match(string, int)"/>'s result).
     /// </para>
     /// <para>
@@ -620,45 +619,44 @@ public sealed class BroilerRegex
     }
 
     /// <summary>
-    /// Enumerates all non-overlapping matches, advancing past empty matches by one
-    /// code point (the <c>g</c>-flag iteration of §22.2.6.9 / §22.2.6.13).
+    /// The next match of the global iteration after <paramref name="match"/>, a match of this pattern (ECMA-262 §22.2.6.9,
+    /// <c>RegExp.prototype[@@match]</c> with <c>g</c>, and §22.2.6.13): <see cref="Match(string, int)"/> in the same
+    /// subject from where <paramref name="match"/> ended, or, after an empty match, from one code point past it, a
+    /// surrogate pair whole under <c>u</c> and <c>v</c> (AdvanceStringIndex, §22.2.7.3). A failed match answers itself, so a
+    /// loop from <see cref="Match(string, int)"/> at 0 that calls this until <see cref="RegexMatch.Success"/> is false finds
+    /// every match, and ends with <see cref="RegexMatch.Empty"/> when there is no more and with a failed match whose
+    /// <see cref="RegexMatch.Limit"/> names the ceiling when the next one reached it.
     /// </summary>
+    /// <param name="match">A match this pattern's <see cref="Match(string, int)"/> or this member answered.</param>
+    /// <returns>The next match, a failed match, or <paramref name="match"/> itself when it failed.</returns>
     /// <remarks>
-    /// Each match is <see cref="Match(string, int)"/>'s from where the last ended, and every element but the last is a
-    /// match. A match that reaches a frame or trail ceiling is answered as data, as <see cref="Match(string, int)"/>
-    /// answers it (convention 3; requirement R1): after the matches before it, the enumeration yields a failed
-    /// <see cref="RegexMatch"/> whose <see cref="RegexMatch.Limit"/> names the ceiling, and ends. An enumeration that
-    /// ends with no such element found every match there is.
+    /// <b>New in <c>0.1.0-preview.6</c></b> (task 2.9 of SJL-11.2), in place of <c>Matches</c>, whose
+    /// <c>IEnumerable&lt;RegexMatch&gt;</c> convention 1 keeps out of a public signature (check C1): the same matches, in
+    /// the same order, the one that reached a ceiling last. The work is <see cref="Match(string, int)"/>'s: no meter, no step
+    /// ceiling, the engines' frame and trail ceilings. The match keeps its subject for this; the flags are this pattern's,
+    /// so a match another pattern found steps over a pair as this one's flags say.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=46F375
-    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling ends the enumeration with no element naming it, or the enumeration goes on after it
+    /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex; IP=None; Security=High; Resources=8; Fingerprint=46F375
+    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling answers other than itself, or the matches it walks differ from the global iteration's
     // Broiler-Human:        PENDING
-    public IEnumerable<RegexMatch> Matches(string input)
+    public RegexMatch NextMatch(RegexMatch match)
     {
-        var pos = 0;
-        while (pos <= input.Length)
+        ArgumentNullException.ThrowIfNull(match);
+        if (!match.Success || match.Input is not { } input)
+            return match;
+
+        var next = match.Index + match.Length;
+        if (match.Length == 0)
         {
-            var m = Run(_program, input, pos, out var limit);
-            if (m == null)
-            {
-                if (limit != RegexLimit.None)
-                    yield return RegexMatch.Exceeded(limit);
-                yield break;
-            }
-
-            yield return m;
-
-            var next = m.Index + m.Length;
-            if (m.Length == 0)
-            {
-                next = m.Index + 1;
-                if (Flags.IsUnicodeMode() && m.Index < input.Length
-                    && char.IsHighSurrogate(input[m.Index])
-                    && m.Index + 1 < input.Length && char.IsLowSurrogate(input[m.Index + 1]))
-                    next++;
-            }
-            pos = next;
+            next = match.Index + 1;
+            if (Flags.IsUnicodeMode() && match.Index < input.Length
+                && char.IsHighSurrogate(input[match.Index])
+                && match.Index + 1 < input.Length && char.IsLowSurrogate(input[match.Index + 1]))
+                next++;
         }
+
+        return Match(input, next);
     }
 
     /// <summary>The exception <see cref="IsMatch"/> throws for a match that reached <paramref name="limit"/>.</summary>
@@ -704,16 +702,8 @@ public sealed class BroilerRegex
                 : RegexGroup.Unmatched(group, name);
         }
 
-        // Each name once, in the order of its first group, as RegExpBuiltinExec creates the groups object's properties
-        // (step 34.e), with the group of it that participated, at most one; or its first group, unmatched, when none did.
-        var named = new Dictionary<string, RegexGroup>(GroupNames.Count, StringComparer.Ordinal);
-        for (var at = 0; at < GroupNames.Count; at++)
-        {
-            var name = GroupNames.NameAt(at);
-            var participating = GroupNames.ParticipatingGroup(name, slots);
-            named.Add(name, groups[participating > 0 ? participating : GroupNames.GroupsNamed(name)[0]]);
-        }
-
-        return new RegexMatch(true, index, end - index, value, groups, named);
+        // A name's group, the one that participated or its first (RegExpBuiltinExec, step 34.e), is read from the groups
+        // by RegexMatch.GroupNamed; the match keeps its subject for NextMatch.
+        return new RegexMatch(true, index, end - index, value, groups, input);
     }
 }

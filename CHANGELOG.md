@@ -323,6 +323,13 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
     refusal. Neither engine's adapter reads them (plan rows 5.2 and 6.1); `Compile`, the validate entry and the offset
     entry are the public compilation, validation and match. Broiler.JS at `main` reads `RegexParser.Parse` and the tree
     to route a pattern (`JSRegExp.Broiler.cs`, `TryRouteToBroiler` and `GapScan`), which its cut-over, SJL-11.5, deletes.
+  - **The string-bearing result names no collection (R10, convention 1; check C1).** `RegexMatch.Groups` is a
+    `ReadOnlySpan<RegexGroup>` (CP0002 for the `IReadOnlyList<RegexGroup>` getter; `Count` is `Length`, indexing and
+    `foreach` as before); `RegexMatch.GroupNamed(string)` answers a name's group, the participating one or the name's
+    first unmatched, null for an undeclared name (CP0002 for `NamedGroups`, the dictionary); and `BroilerRegex.NextMatch(RegexMatch)`
+    answers the global iteration's next match, a failed match answering itself, the one that names a ceiling last
+    (CP0002 for `Matches`, the enumerable). The matches, groups and names are those the removed members gave. Broiler.JS
+    at `main` reads `Groups.Count`, which becomes `Groups.Length` when it takes this version.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

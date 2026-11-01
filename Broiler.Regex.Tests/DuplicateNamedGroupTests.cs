@@ -272,23 +272,23 @@ public class DuplicateNamedGroupTests
         Assert.Equal(new[] { "x", "y", "z" }, Enumerable.Range(0, regex.GroupNames.Count).Select(regex.GroupNames.NameAt));
 
         var abc = regex.Match("abc");
-        Assert.Equal(new[] { "x", "y", "z" }, abc.NamedGroups.Keys);
-        Assert.Equal((3, "b"), (abc.NamedGroups["x"].Number, abc.NamedGroups["x"].Value));
-        Assert.Equal((2, "a"), (abc.NamedGroups["y"].Number, abc.NamedGroups["y"].Value));
-        Assert.Equal((4, "c"), (abc.NamedGroups["z"].Number, abc.NamedGroups["z"].Value));
-        Assert.Same(abc.Groups[3], abc.NamedGroups["x"]);
+        Assert.Equal(new[] { "x", "y", "z" }, abc.NamedKeys());
+        Assert.Equal((3, "b"), (abc.GroupNamed("x")!.Number, abc.GroupNamed("x")!.Value));
+        Assert.Equal((2, "a"), (abc.GroupNamed("y")!.Number, abc.GroupNamed("y")!.Value));
+        Assert.Equal((4, "c"), (abc.GroupNamed("z")!.Number, abc.GroupNamed("z")!.Value));
+        Assert.Same(abc.Groups[3], abc.GroupNamed("x")!);
 
         var ad = regex.Match("ad");
-        Assert.Equal(new[] { "x", "y", "z" }, ad.NamedGroups.Keys);
-        Assert.Equal((1, "a"), (ad.NamedGroups["x"].Number, ad.NamedGroups["x"].Value));
-        Assert.False(ad.NamedGroups["y"].Success);
-        Assert.Equal((5, "d"), (ad.NamedGroups["z"].Number, ad.NamedGroups["z"].Value));
+        Assert.Equal(new[] { "x", "y", "z" }, ad.NamedKeys());
+        Assert.Equal((1, "a"), (ad.GroupNamed("x")!.Number, ad.GroupNamed("x")!.Value));
+        Assert.False(ad.GroupNamed("y")!.Success);
+        Assert.Equal((5, "d"), (ad.GroupNamed("z")!.Number, ad.GroupNamed("z")!.Value));
 
         // A name none of whose groups participated maps to its first group, unmatched: the groups object's undefined.
         var none = TestRegex.Compile("(?:(?:(?<x>a)|(?<x>b)|c)\\k<x>){2}").Match("aac");
         Assert.True(none.Success);
-        Assert.Equal((1, false), (none.NamedGroups["x"].Number, none.NamedGroups["x"].Success));
-        Assert.All(none.Groups.Skip(1), static g => Assert.False(g.Success));
+        Assert.Equal((1, false), (none.GroupNamed("x")!.Number, none.GroupNamed("x")!.Success));
+        Assert.All(none.Groups.ToArray().Skip(1), static g => Assert.False(g.Success));
     }
 
     [Fact]
@@ -333,7 +333,7 @@ public class DuplicateNamedGroupTests
         var last = new string((char)('\u4E00' + 999), 2);
         var match = regex.Match(last);
         Assert.True(match.Success);
-        Assert.Equal((1000, last[..1]), (match.NamedGroups["n"].Number, match.NamedGroups["n"].Value));
+        Assert.Equal((1000, last[..1]), (match.GroupNamed("n")!.Number, match.GroupNamed("n")!.Value));
     }
 }
 

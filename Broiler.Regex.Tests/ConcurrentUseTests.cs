@@ -57,7 +57,7 @@ public class ConcurrentUseTests
         var text = new StringBuilder();
         foreach (var group in match.Groups)
             text.Append(group.Success ? group.Index + "," + (group.Index + group.Length) : "-").Append(' ');
-        var named = Enumerable.Range(1, match.Groups.Count - 1).Select(g => (Name: names.NameOfGroup(g), Group: g)).Where(static n => n.Name is not null);
+        var named = Enumerable.Range(1, match.Groups.Length - 1).Select(g => (Name: names.NameOfGroup(g), Group: g)).Where(static n => n.Name is not null);
         return Named(text, named.Select(static n => (n.Name!, n.Group)));
     }
 
@@ -222,7 +222,10 @@ public class ConcurrentUseTests
             return "nomatch";
         var text = new StringBuilder();
         var count = 0;
-        foreach (var group in (System.Collections.IEnumerable)type.GetProperty("Groups")!.GetValue(match)!)
+        // Groups is a span since task 2.9 of SJL-11.2, which reflection cannot invoke; the match keeps the groups in its
+        // immutable array, which it can read and enumerate.
+        var groups = type.GetField("_groups", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(match)!;
+        foreach (var group in (System.Collections.IEnumerable)groups)
         {
             var groupType = group.GetType();
             var index = (int)groupType.GetProperty("Index")!.GetValue(group)!;

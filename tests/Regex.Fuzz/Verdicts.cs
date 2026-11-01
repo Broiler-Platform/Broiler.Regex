@@ -119,7 +119,7 @@ internal sealed class FuzzMeter
 /// <b>Matching</b>: the offset entry from every start of the case, anchored and not, under the wide ceilings (a step
 /// ceiling and the engines' frames and trail) and once under narrow ones; its slots are held to their contract, and a
 /// narrow call that completes answers as the wide one does. The string-bearing <see cref="BroilerRegex.Match(string, int)"/>,
-/// <see cref="BroilerRegex.IsMatch"/> and <see cref="BroilerRegex.Matches"/> are compared with the offset entry's
+/// <see cref="BroilerRegex.IsMatch"/> and the global iteration through <see cref="BroilerRegex.NextMatch"/> are compared with the offset entry's
 /// answers through the mapping their documentation states (RegExpBuiltinExec's step back into a surrogate pair, the
 /// <c>y</c> flag as the anchored argument, the reported index of decision D41, the iteration of §22.2.6.9), each
 /// <c>Value</c> they report read against the subject at the offsets they report, wherever the wide call completed or
@@ -135,7 +135,7 @@ internal static class Verdicts
 {
     private const int Untouched = 0x5EED5EED;
 
-    /// <summary>The units the emulation of <see cref="BroilerRegex.Matches"/> may spend before the comparison is skipped.</summary>
+    /// <summary>The units the emulation of the global iteration (<see cref="BroilerRegex.NextMatch"/>) may spend before the comparison is skipped.</summary>
     private const ulong MatchesAllowance = 1UL << 20;
 
     private readonly record struct Compiled(string Answer, BroilerRegex? Regex, int Position, string Message, ulong Units)
@@ -505,7 +505,7 @@ internal static class Verdicts
     /// for a match its index, length and <see cref="RegexMatch.Value"/>, the subject's text there; group 0 as the whole
     /// match; each group's offsets and <see cref="RegexGroup.Value"/> from the slots, the empty text and index -1 for a
     /// group that did not participate, and each group's <see cref="RegexGroup.Number"/> its own; and each
-    /// <see cref="RegexMatch.NamedGroups"/> entry as the participating group of its name where one participated, its
+    /// name's <see cref="RegexMatch.GroupNamed"/> as the participating group of the name where one participated, its
     /// <see cref="RegexGroup.Number"/> that group's, whose slots it reports, and <see cref="RegexGroupNames.ParticipatingGroup"/>
     /// reading the same group from the slots; or, where none did, as no match, numbered as the name's first group.
     /// </summary>
@@ -516,8 +516,9 @@ internal static class Verdicts
             return Invariant($"the string-bearing match answered success {match.Success}, limit {match.Limit}; expected success {expected.Success}, limit {expected.Limit}");
         if (!expected.Success)
         {
-            if (match.Index != -1 || match.Length != 0 || match.Value.Length != 0 || match.Groups.Count != 0 || match.NamedGroups.Count != 0)
-                return Invariant($"the failed string-bearing match has index {match.Index}, length {match.Length}, value {FuzzCase.Quote(match.Value)}, {match.Groups.Count} groups and {match.NamedGroups.Count} names; a failed match has index -1, length 0, the empty value and none of the others");
+            var namedOnFailure = regex.GroupNames.Count > 0 && match.GroupNamed(regex.GroupNames.NameAt(0)) is not null;
+            if (match.Index != -1 || match.Length != 0 || match.Value.Length != 0 || match.Groups.Length != 0 || namedOnFailure)
+                return Invariant($"the failed string-bearing match has index {match.Index}, length {match.Length}, value {FuzzCase.Quote(match.Value)}, {match.Groups.Length} groups and {(namedOnFailure ? "a" : "no")} group for a name; a failed match has index -1, length 0, the empty value and none of the others");
             return null;
         }
 
@@ -529,8 +530,8 @@ internal static class Verdicts
         var value = subject.Substring(expected.Index, expected.Length);
         if (match.Value != value)
             return Invariant($"the string-bearing match {expected.Index},{expected.Length} has the value {FuzzCase.Quote(match.Value)}; the subject there is {FuzzCase.Quote(value)}");
-        if (match.Groups.Count != captureCount + 1)
-            return Invariant($"the string-bearing match has {match.Groups.Count} groups for {captureCount} captures");
+        if (match.Groups.Length != captureCount + 1)
+            return Invariant($"the string-bearing match has {match.Groups.Length} groups for {captureCount} captures");
         var whole = match.Groups[0];
         if (!whole.Success || whole.Index != expected.Index || whole.Length != expected.Length || whole.Value != value || whole.Name is not null || whole.Number != 0)
             return Invariant($"group 0 is {whole.Success} {whole.Index},{whole.Length} {FuzzCase.Quote(whole.Value)}{(whole.Name is null ? "" : " named " + whole.Name)}, number {whole.Number}; the match is {expected.Index},{expected.Length} {FuzzCase.Quote(value)}, group 0");
@@ -559,25 +560,25 @@ internal static class Verdicts
 
         foreach (var (name, (first, participating)) in names)
         {
-            if (!match.NamedGroups.TryGetValue(name, out var named))
-                return "the named group " + name + " is not in NamedGroups";
+            if (match.GroupNamed(name) is not { } named)
+                return "GroupNamed answers no group for the name " + name;
             var shown = Invariant($"{named.Success} {named.Index},{named.Length} {FuzzCase.Quote(named.Value)}, number {named.Number}");
             if (named.Name != name)
-                return "NamedGroups gives under the name " + name + " a group named " + (named.Name ?? "nothing");
+                return "GroupNamed gives under the name " + name + " a group named " + (named.Name ?? "nothing");
             // The entry's number is the participating group's, and its offsets that group's slots: R6 lets at most one
             // group of a name participate, and RegexGroupNames.ParticipatingGroup reads the same one from the slots.
             if (participating.Count > 0)
             {
                 var number = named.Number;
                 if (!participating.Contains(number))
-                    return "NamedGroups gives the name " + name + " as " + shown + ", which is no participating group of that name (" + string.Join(", ", participating.Select(static n => n.ToString(CultureInfo.InvariantCulture))) + ")";
+                    return "GroupNamed gives the name " + name + " as " + shown + ", which is no participating group of that name (" + string.Join(", ", participating.Select(static n => n.ToString(CultureInfo.InvariantCulture))) + ")";
                 var (from, to) = (expected.Slots[2 * number], expected.Slots[(2 * number) + 1]);
                 if (!named.Success || named.Index != from || named.Length != to - from || named.Value != subject[from..to])
-                    return Invariant($"NamedGroups gives the name {name} as {shown}; the slots of group {number} say {from},{to}");
+                    return Invariant($"GroupNamed gives the name {name} as {shown}; the slots of group {number} say {from},{to}");
             }
             else if (named.Success || named.Index != -1 || named.Length != 0 || named.Value.Length != 0 || named.Number != first)
             {
-                return Invariant($"NamedGroups gives the name {name} as {shown}, where no group of that name participated; the name's first group is {first}");
+                return Invariant($"GroupNamed gives the name {name} as {shown}, where no group of that name participated; the name's first group is {first}");
             }
 
             var read = regex.GroupNames.ParticipatingGroup(name, expected.Slots);
@@ -585,12 +586,30 @@ internal static class Verdicts
                 return Invariant($"RegexGroupNames.ParticipatingGroup reads group {read} of the name {name} from the slots; the string-bearing match gives {shown}");
         }
 
-        if (match.NamedGroups.Count != names.Count)
-            return Invariant($"NamedGroups holds {match.NamedGroups.Count} names; the groups name {names.Count}");
+        // Every name the pattern declares is one of the groups', and a name it does not declare has no group.
+        if (regex.GroupNames.Count != names.Count)
+            return Invariant($"the pattern declares {regex.GroupNames.Count} names; the groups name {names.Count}");
+        if (match.GroupNamed("") is not null)
+            return "GroupNamed gives a group for the empty name, which no pattern declares";
         return null;
     }
 
     private static bool Within(string subject, int from, int to) => from >= 0 && from <= to && to <= subject.Length;
+
+    /// <summary>
+    /// The global iteration, as <c>BroilerRegex.Matches</c> enumerated it until task 2.9 of SJL-11.2: each match through
+    /// <see cref="BroilerRegex.NextMatch"/> from the match at 0, and a last failed one that names the ceiling a match reached.
+    /// </summary>
+    private static IEnumerable<RegexMatch> Iteration(BroilerRegex regex, string subject)
+    {
+        for (var match = regex.Match(subject, 0); ; match = regex.NextMatch(match))
+        {
+            if (match.Success || match.Limit != RegexLimit.None)
+                yield return match;
+            if (!match.Success)
+                yield break;
+        }
+    }
 
     private static void IsMatch(BroilerRegex regex, string subject, int start, Matched reference, Outcome outcome)
     {
@@ -613,7 +632,7 @@ internal static class Verdicts
     }
 
     /// <summary>
-    /// <see cref="BroilerRegex.Matches"/> against its documentation: each element <c>Match(input, k)</c>'s from where the
+    /// the global iteration through <see cref="BroilerRegex.NextMatch"/> (<c>BroilerRegex.Matches</c> until task 2.9) against its documentation: each element <c>Match(input, k)</c>'s from where the
     /// last ended, an empty match advancing one code point, a ceiling the last element. Emulated through the offset
     /// entry's wide calls. A call the case already made (its starts, anchored as the <c>y</c> flag says, 0 among them) is
     /// always taken, so the first element is compared on every subject, a ceiling there included, which only subjects of
@@ -675,7 +694,7 @@ internal static class Verdicts
         List<RegexMatch> actual;
         try
         {
-            actual = regex.Matches(subject).Take(whole ? expected.Count + 1 : expected.Count).ToList();
+            actual = Iteration(regex, subject).Take(whole ? expected.Count + 1 : expected.Count).ToList();
         }
         catch (Exception failure)
         {

@@ -157,7 +157,28 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.BroilerRegex.Matches(System.String)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Broiler.Regex.RegexFlagsParser.Parse(System.String)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.RegexMatch.get_Groups</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.RegexMatch.get_NamedGroups</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
