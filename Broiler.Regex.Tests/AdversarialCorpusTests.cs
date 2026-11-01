@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Broiler.Regex.Compiling;
+using Broiler.Regex.Probe;
 using Broiler.Unicode.Tables;
 using Xunit;
 
@@ -19,15 +19,18 @@ namespace Broiler.Regex.Tests;
 /// 10,000,001 characters that the run instruction matches with one frame (the corpus's presumption 3), where the loop it
 /// replaces passed the frame ceiling, and task 2.5's class V, fifty property escapes in one class under <c>v</c>,
 /// <c>vi</c> and <c>iu</c>, each refused at its compile budget (requirement R2; check A-2's second half), and task 2.6's
-/// O07 and O08, a group name two alternatives share and a reference to it (requirement R6); each run through
-/// the new backend's entry with the row's policy in a child process of its own, the probe under its hidden argument
-/// <c>--engine-row</c>, on a thread of the corpus's declared stack: a crash is observed as the child's exit, not suffered
-/// by the test host, and each row answers its declared status. Every other row is named with the reason it waits. Task
-/// 2.14's <c>--adversarial</c> mode later runs the whole corpus with both controls of the rule's part C.
+/// O07 and O08, a group name two alternatives share and a reference to it (requirement R6), and task 2.8's
+/// validate rows, N03, N06, N09, N12, N15 and N18, nesting one past the limit and a million levels past it in groups,
+/// non-capturing groups and <c>v</c>-mode classes, refused with the nesting status, and O19, the critic's <c>\k</c> case,
+/// refused as a syntax error, by the validate entry; each run through the library's entries with the row's policy in a
+/// child process of its own, the probe under its hidden argument <c>--engine-row</c>, on a thread of the corpus's
+/// declared stack: a crash is observed as the child's exit, not suffered by the test host, and each row answers its
+/// declared status. Since task 2.8 no row waits. Task 2.14's <c>--adversarial</c> mode runs the whole corpus with both
+/// controls of the rule's part C.
 /// </summary>
 public class AdversarialCorpusTests
 {
-    /// <summary>The rows whose declared status the new backend answers: task 2.4a's, then task 2.4b's, 2.4c's, 2.5's and 2.6's.</summary>
+    /// <summary>The rows whose declared status the library answers: task 2.4a's, then task 2.4b's, 2.4c's, 2.5's, 2.6's and 2.8's.</summary>
     private static readonly string[] RowIds =
     [
         "K01", "K02", "K03", "K04", "A01", "A02", "W01", "W02", "G01", "G02", "M01", "M02",
@@ -37,6 +40,7 @@ public class AdversarialCorpusTests
         "O05", "O06",
         "V01", "V02", "V03", "V04", "V05",
         "O07", "O08",
+        "N03", "N06", "N09", "N12", "N15", "N18", "O19",
     ];
 
     public static TheoryData<string> Rows
@@ -50,13 +54,8 @@ public class AdversarialCorpusTests
         }
     }
 
-    /// <summary>The rows that wait for a later task, and why.</summary>
-    private static readonly Dictionary<string, string> Waiting = new(StringComparer.Ordinal)
-    {
-        ["N03"] = "the validate entry: task 2.8", ["N06"] = "the validate entry: task 2.8", ["N09"] = "the validate entry: task 2.8",
-        ["N12"] = "the validate entry: task 2.8", ["N15"] = "the validate entry: task 2.8", ["N18"] = "the validate entry: task 2.8",
-        ["O19"] = "the validate entry: task 2.8",
-    };
+    /// <summary>The rows that wait for a later task, and why: none since task 2.8 brought the validate rows to the validate entry.</summary>
+    private static readonly Dictionary<string, string> Waiting = new(StringComparer.Ordinal);
 
     [Theory]
     [MemberData(nameof(Rows))]
@@ -65,7 +64,47 @@ public class AdversarialCorpusTests
         var declared = Corpus().Single(row => row[0] == id)[7];
         var (exit, output, error) = RunProbe("--engine-row", CorpusPath, id);
         Assert.True(exit == 0, $"the probe for {id} exited {exit}: {error}");
-        Assert.Equal(Expand(id + " " + declared), Expand(output.TrimEnd('\n')));
+        Assert.Equal(AdversarialCorpus.Expand(id + " " + declared), AdversarialCorpus.Expand(output.TrimEnd('\n')));
+    }
+
+    /// <summary>
+    /// A <c>validate</c> row is answered by the validate entry, which takes the row's nesting limit and neither its meter nor
+    /// its compile budget (decision D18 of Broiler.VM's JSD-0081, task 2.8): the corpus's seven validate rows under a meter
+    /// of one unit and a compile budget of one unit still answer their declared status, and class V's V05 pattern, which a
+    /// compilation refuses at its budget, is admitted. A compilation answers each of these otherwise (the meter's
+    /// exception, or <c>limit:compile</c>), so the declared statuses alone, which a compilation also answers, do not show
+    /// which entry the probe's runner called; these do. The rows are written, under their own ids, to a corpus file of this
+    /// test's own, after the corpus's header lines and its column line (<see cref="AdversarialCorpus.Columns"/>), which the
+    /// corpus's one reader requires.
+    /// </summary>
+    [Fact]
+    public void A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget()
+    {
+        const string Tight = "meter=1 steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=1";
+        var validate = Corpus().Where(static row => row[2] == "validate").ToArray();
+        Assert.Equal(["N03", "N06", "N09", "N12", "N15", "N18", "O19"], validate.Select(static row => row[0]).Order(StringComparer.Ordinal));
+        var v05 = Corpus().Single(static row => row[0] == "V05");
+        var rows = validate.Select(static row => (Id: row[0], Row: row, Declared: row[7]))
+            .Append((Id: "V05", Row: v05, Declared: "ok")).ToArray();
+
+        var path = Path.Combine(Path.GetTempPath(), "broiler-regex-validate-rows-" + Environment.ProcessId.ToString(CultureInfo.InvariantCulture) + ".tsv");
+        var lines = File.ReadAllLines(CorpusPath).Where(static line => line.StartsWith("# ", StringComparison.Ordinal) && line.Contains(": ", StringComparison.Ordinal)).ToList();
+        lines.Add(string.Join('\t', AdversarialCorpus.Columns));
+        lines.AddRange(rows.Select(static r => string.Join('\t', [r.Id, r.Row[1], "validate", r.Row[3], r.Row[4], "-", Tight, r.Declared, .. r.Row[8..]])));
+        File.WriteAllLines(path, lines);
+        try
+        {
+            foreach (var (id, _, declared) in rows)
+            {
+                var (exit, output, error) = RunProbe("--engine-row", path, id);
+                Assert.True(exit == 0, $"the probe for {id} exited {exit}: {error}");
+                Assert.Equal(id + " " + declared, output.TrimEnd('\n'));
+            }
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Fact]
@@ -79,7 +118,7 @@ public class AdversarialCorpusTests
         Assert.Equal(5, rows.Length);
         foreach (var row in rows)
         {
-            var pattern = Expression(row[3]);
+            var pattern = EngineRun.Expression(row[3]);
             var budget = ulong.Parse(row[6].Split(' ').Single(static key => key.StartsWith("compile=", StringComparison.Ordinal))["compile=".Length..], CultureInfo.InvariantCulture);
             Assert.True(budget > (ulong)pattern.Length, row[0] + ": a budget of " + budget + " for " + pattern.Length + " code units");
 
@@ -87,23 +126,6 @@ public class AdversarialCorpusTests
             Assert.Equal(ProgramCompilation.Compiled, ProgramCompiler.Compile(pattern, RegexFlagsParser.Parse(row[4]), UnicodeTables.Instance, 512, out _, charge: charge));
             Assert.True(charge.Spent >= 100 * budget, row[0] + ": " + charge.Spent + " units for a budget of " + budget);
         }
-    }
-
-    /// <summary>An expression of the corpus (its README, section 1): JSON string literals, each optionally followed by <c>* n</c>, joined by <c>+</c>.</summary>
-    private static string Expression(string text)
-    {
-        var built = new StringBuilder();
-        foreach (var term in text.Split(" + "))
-        {
-            var star = term.LastIndexOf("\" * ", StringComparison.Ordinal);
-            var literal = star < 0 ? term : term[..(star + 1)];
-            var count = star < 0 ? 1 : int.Parse(term[(star + 4)..], CultureInfo.InvariantCulture);
-            var value = System.Text.Json.JsonSerializer.Deserialize<string>(literal)!;
-            for (var i = 0; i < count; i++)
-                built.Append(value);
-        }
-
-        return built.ToString();
     }
 
     [Fact]
@@ -116,17 +138,7 @@ public class AdversarialCorpusTests
         Assert.Empty(run.Concat(Waiting.Keys).Except(ids));
     }
 
-    /// <summary>A status with every <c>x^k</c> written out as <c>k</c> copies of <c>x</c>.</summary>
-    private static string Expand(string status) =>
-        string.Join(' ', status.Split(' ').SelectMany(static token =>
-        {
-            var caret = token.LastIndexOf('^');
-            return caret > 0 && int.TryParse(token.AsSpan(caret + 1), out var count)
-                ? Enumerable.Repeat(token[..caret], count)
-                : [token];
-        }));
-
-    private static string Root
+    internal static string Root
     {
         get
         {
@@ -138,18 +150,16 @@ public class AdversarialCorpusTests
         }
     }
 
-    private static string CorpusPath => Path.Combine(Root, "tests", "Adversarial", "corpus.tsv");
+    internal static string CorpusPath => Path.Combine(Root, "tests", "Adversarial", "corpus.tsv");
 
-    /// <summary>The corpus's rows, each split at its tabs.</summary>
-    private static IEnumerable<string[]> Corpus() =>
-        File.ReadAllLines(CorpusPath).Where(static line => !line.StartsWith('#') && !line.StartsWith("id\t", StringComparison.Ordinal) && line.Length > 0)
-            .Select(static line => line.Split('\t'));
+    /// <summary>The corpus's rows, each its fields in column order, read by the reader the probe runs on.</summary>
+    private static IEnumerable<string[]> Corpus() => AdversarialCorpus.Read(CorpusPath).Rows.Select(static row => row.Fields);
 
     /// <summary>
     /// The probe of this build's configuration (built first: the test project references it without its assembly), run
     /// by the host that runs this test.
     /// </summary>
-    private static (int Exit, string Output, string Error) RunProbe(params string[] arguments)
+    internal static (int Exit, string Output, string Error) RunProbe(params string[] arguments)
     {
         var output = new DirectoryInfo(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar));
         var probe = Path.Combine(Root, "probes", "Regex.Probe", "bin", output.Parent!.Name, output.Name, "Broiler.Regex.Probe.dll");

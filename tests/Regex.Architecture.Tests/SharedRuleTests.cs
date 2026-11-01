@@ -266,10 +266,12 @@ public class SharedRuleTests
     {
         var violations = AssembliesHeldBy("SL3").SelectMany(static a => SharedRules.SL3Findings(a)).ToList();
 
-        // The probe is an executable that writes its report to a file; SL3 holds it all the same but for I/O,
-        // since it is the code that runs under Native AOT (docs/conventions.md, "Scope").
+        // The probe is an executable that writes its report to a file and starts itself once per adversarial row (task
+        // 2.14); SL3 holds it all the same but for I/O, since it is the code that runs under Native AOT
+        // (docs/conventions.md, "Scope").
         var probe = ProbeAssembly;
         Assert.Contains("System.IO.File", probe.TypeReferences);
+        Assert.Contains("System.Diagnostics.Process", probe.TypeReferences);
         violations.AddRange(SharedRules.SL3Findings(probe, allowIo: true));
         StartingViolations.AssertExactly("SL3", violations);
     }
@@ -284,14 +286,15 @@ public class SharedRuleTests
             "calls System.Type.MakeGenericType(System.Type[])", "calls System.Enum.GetValues(System.Type)",
             "calls System.Reflection.MethodBase.Invoke(System.Object,System.Object[])", "names System.IO.File",
             "calls System.Environment.GetEnvironmentVariable(System.String): an environment read", "applies a module initializer",
-            "declares the platform invoke libc!getpid", "names System.Reflection.MethodInfo: reflection",
+            "declares the platform invoke libc!getpid", "names System.Reflection.MethodInfo: reflection", "names System.Diagnostics.Process",
         ];
         foreach (var fragment in expected)
             Assert.Contains(violations, v => v.Contains(fragment, StringComparison.Ordinal));
 
-        // The probe's exemption is for I/O only: the same witness under it still fails on the rest.
+        // The probe's exemption is for I/O only, a child process's among it: the same witness under it still fails on the rest.
         var asProbe = SharedRules.SL3(Witness.Compile("SL3-dynamic-code-and-io.cs.witness"), allowIo: true).ToList();
         Assert.DoesNotContain(asProbe, static v => v.Contains("System.IO.File", StringComparison.Ordinal));
+        Assert.DoesNotContain(asProbe, static v => v.Contains("System.Diagnostics.Process", StringComparison.Ordinal));
         Assert.Contains(asProbe, static v => v.Contains("applies a module initializer", StringComparison.Ordinal));
     }
 
@@ -401,7 +404,8 @@ public class SharedRuleTests
         foreach (var project in SharedTree.Projects.Where(static p => p.Kind != SharedProjectKind.Test))
             Assert.Contains(project.Path, files);
         Assert.Contains(files, static p => p.EndsWith("RegexParser.cs", StringComparison.Ordinal));
-        foreach (var buildFile in (string[])["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props"])
+        // The build files docs/suppressions.md names as read today, the probe's control targets among them.
+        foreach (var buildFile in (string[])["Directory.Build.props", "Directory.Packages.props", "eng/Broiler.Packaging.props", "probes/Regex.Probe/AdversarialControls.targets"])
             Assert.Contains(files, p => SharedTree.Relative(p) == buildFile);
     }
 

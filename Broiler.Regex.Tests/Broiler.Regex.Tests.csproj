@@ -25,4 +25,11 @@
          probe. An executable is not referenced as an assembly. -->
     <ProjectReference Include="..\probes\Regex.Probe\Regex.Probe.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- The adversarial corpus's one reader and its expressions' one evaluator, which the probe's child processes and its
+         adversarial mode run on, and the mode's judgement of a child, read here by the tests of the corpus (task 2.14). -->
+    <Compile Include="..\probes\Regex.Probe\AdversarialCorpus.cs" Link="Probe\AdversarialCorpus.cs" />
+    <Compile Include="..\probes\Regex.Probe\EngineRun.cs" Link="Probe\EngineRun.cs" />
+    <Compile Include="..\probes\Regex.Probe\AdversarialMode.cs" Link="Probe\AdversarialMode.cs" />
+  </ItemGroup>
 </Project>

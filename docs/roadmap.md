@@ -1165,6 +1165,353 @@ held the raw pair in their patterns, so no case asserted the answer of an escape
 escape, with its answers in set operations, complemented and under `vi`, and the raw pairs stay as cases of their own
 (`0320c78`).
 
+*Dated record, 2026-10-27 (task 2.8 of SJL-11.2; R10's conventions 3 and 4 for the validate entry, check A-5's "refused
+by the parser and by the validate entry"; decisions D9 and D18 of JSD-0081, and the programme's SJL-D-11).*
+
+**What it builds.** The validate entry, `BroilerRegex.Validate(string pattern, RegexFlags flags, IUnicodeTables tables,
+int nestingLimit, out RegexDiagnostic diagnostic, out RegexLimit limit)`, and its overload over a flags text,
+`Validate(string, string? flags, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)`, which reads the flags
+first, as IsValidRegularExpressionLiteral does (§13.2.7.2). The status is `RegexStatus`: `Success`; `SyntaxError` (4,
+new) with the first refusal the parser meets, in its reading order; or `LimitExceeded` with `RegexLimit.Nesting` when
+the pattern nests past the caller's limit before any refusal. The diagnostic is `RegexDiagnostic`, a struct of five
+members: `Code` (a `RegexDiagnosticCode`), `MessageId` (`RegexDiagnostic.MessageIdOf(Code)`), `Argument` (a string, or
+null where the code takes none), `Position` (a code-unit offset into the pattern, into the flags text for the flags'
+three codes, -1 for no refusal) and `Message` (a default English rendering, which is no contract; an engine renders its
+own from the identifier and the argument, SJL-D-11). A refusal is never an exception: the entry catches the parser's
+internal ones at its boundary, and only a broken argument throws (a null pattern or tables, a limit outside 1 to 512,
+tables of another Unicode version). Every `RegexSyntaxException` the parser and the flags parser throw, so every one
+`Compile`, the constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse` throw, now carries the same diagnostic as
+its new `Diagnostic` property, built by the same call in the parser (`RegexParser.Refuse`), so a pattern's refusal is
+one value whichever entry meets it. One refusal of the library carries none: the public `CharSet.AddRange`'s of a range
+written high to low (`CharSet.cs:118`), which no compilation reaches and task 2.9 owns (below). All of it is
+provisional, marked in `PublicAPI.txt` (63 marks).
+
+**The code table.** Numbered by the part of the grammar, each number fixed once published and never reused: the flags 1
+to 3 (`UnknownFlag`, `DuplicateFlag`, `UnicodeWithUnicodeSets`); groups and quantifiers 10 to 17
+(`UnmatchedParenthesis`, `UnterminatedGroup`, `InvalidGroup`, `NothingToRepeat`, `QuantifiedAssertion`,
+`QuantifierOutOfOrder`, `BracedQuantifierWithoutAtom`, `LoneSyntaxCharacter`); escapes 20 to 25 (`TrailingBackslash`,
+`InvalidIdentityEscape`, `InvalidControlEscape`, `InvalidHexEscape`, `InvalidBracedEscape`, `CodePointOutOfRange`);
+references 30 to 33 (`BackreferenceOutOfRange`, `UndefinedGroupName`, `NamedReferenceWithoutName`,
+`NamedReferenceInClass`); group names 40 to 45 (`UnterminatedGroupName`, `GroupNameInvalidEscape`,
+`GroupNameInvalidStart`, `GroupNameInvalidPart`, `EmptyGroupName`, `DuplicateGroupName`); modifiers 50 to 52
+(`ModifierRepeated`, `ModifiersEmpty`, `ModifierAddedAndRemoved`); classes 60 to 63 (`UnterminatedClass`,
+`ClassRangeOutOfOrder`, `ClassRangeEndpointIsClass`, `NegatedClassMayContainStrings`); class sets 70 to 76
+(`ClassSetMixedOperators`, `ClassSetAmpersandAfterIntersection`, `ClassSetRangeEndpointNotCharacter`,
+`ClassSetUnescapedSyntaxCharacter`, `ClassSetReservedDoublePunctuator`, `ClassStringDisjunctionWithoutBrace`,
+`UnterminatedClassStringDisjunction`); property escapes 80 to 86 (`PropertyEscapeWithoutBrace`,
+`UnterminatedPropertyEscape`, `UnknownPropertyName`, `UnknownPropertyValue`, `UnknownLonePropertyName`,
+`PropertyOfStringsOutsideUnicodeSets`, `NegatedPropertyOfStrings`); and the nesting limit, 90 (`NestingLimit`). 49
+conditions and `None` (0). Each code has one identifier, dotted and lower case in the form of the shared frontend's
+early-error catalogue (Broiler.JS's `Broiler.ECMAScript/docs/frontend/early-errors.tsv` at `238069ab`), whose rows are
+early errors (EE), Annex B's (EG) and limits and grammar (EX): where the catalogue has a row for the condition, the
+identifier is the catalogue's (EE0184 to EE0213: `regexp.group-name.duplicate`, `regexp.quantifier.out-of-order`,
+`regexp.modifiers.repeated-flag` for EE0186, EE0188 and EE0189, and so on; and EX0026, the limit on a pattern's nesting
+of groups and classes, `limit.regexp.too-deep`, for `NestingLimit`; a test pinning each row). The library coins an
+identifier, in the catalogue's `regexp` namespace and form, only for a condition the catalogue has no row for, the
+grammar's own refusals and the flags', which the catalogue folds into EE0019 (`regexp.group.unterminated`,
+`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`); and for the conditions of row EG0002, which it splits
+(the differences, below). EE0183, 2^32 - 1 or more capturing groups, has no code: no string the platform holds reaches
+it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an unescaped
+class-set syntax character; the flag for a repeated flag or modifier; the quantifier's code unit for nothing to repeat;
+the digits of an out-of-range back-reference; the decoded name of an undefined or duplicate group name; the range as
+written, out of order; the two code units of a reserved double punctuator; the text between a property escape's braces;
+and the limit, in decimal, for the nesting limit. `ValidateEntryTests.The_code_table_is_pinned` pins every number and
+identifier.
+
+**What each early error needs, with no expansion (D18).** The entry runs the compilation's parser with expansion off:
+no property escape's set is copied, nothing is folded or complemented, no class's code points or strings are gathered,
+no set algebra is done and no universe is built. The early errors need none of it. A property escape's name and kind,
+code points or strings, come from the provider's `TryResolve`, which answers a view of its tables and copies nothing
+(`RegexUnicode.ClassifyProperty`); a group name's code points from the provider's identifier classes; MayContainStrings
+of a negated `v`-mode class from its syntax (§22.2.1.8), never from the strings its operations would leave; a range's
+order from its two characters, and a `v`-mode range endpoint's from its operand's syntax; task 2.6's rule for repeated
+names, `\k<name>` and `\n` from the names and the count of groups the pattern declares. A validation therefore charges
+its account the pattern's read alone, which `A_validation_expands_nothing` reads over eleven patterns whose compilation
+charges expansions, and its work is in proportion to the pattern's length.
+
+**The meter (D18).** None. JSD-0081 files D18 as "no expansion, no meter", the plan's own D18 agrees, and plan row 2.8's
+"a nullable meter" is not taken, as task 2.5's record said it would not be. The entry takes no compile budget either.
+
+**`Compile`'s error shape: unchanged, owned by task 2.9.** `Compile`, the constructors, `RegexParser.Parse` and
+`RegexFlagsParser.Parse` still throw `RegexSyntaxException` for a syntax error, which now carries the diagnostic, so a
+caller can read the code without the validate entry. The status form would replace `Compile`'s provisional signature a
+third time, with the corpus runner of the probe, which task 2.14 changes beside this task, the fuzz target's oracle and
+both engines' adapters moving with it, before task 2.9 fixes the surface of `0.2.0-preview.1` in one change; and C3's
+starting violation, `RegexSyntaxException` itself, stays until then. Task 2.9 owns the decision.
+
+**The validate entry and `Compile`.** Every syntax error `Compile` and the constructors refuse a pattern with, the entry
+answers with the same diagnostic, and a pattern it accepts `Compile` compiles, under the same nesting limit. They part
+only where `Compile` meets a limit the entry does not have: its compile budget, which can stop a compilation before a
+later syntax error or the end of a valid pattern (class V's patterns are admitted by their read and refused by
+`Compile` at their budget), and its meter, whose exception does the same. Past the caller's nesting limit both answer
+`LimitExceeded` naming `Nesting`, and the constructors, which parse under 512, throw the same `NestingLimit` diagnostic.
+
+**The evidence.** `ValidateEntryTests` (152): a table of 80 refusals, at least one for each of the 49 codes, each with
+its code, identifier, argument and position, checked through the entry, the constructor and `Compile`; the code table
+and its catalogue rows (EE0184 to EE0213 and EX0026); the fourteen patterns of EG0002's split; the critic's
+`\k<b>(?<a>x)` under `u`, `v`, none and `i`, with its controls; the nesting limit at 511 and 512, the caller's limit
+under `v`, a syntax error met before the limit, and a million levels of groups, non-capturing groups and `v`-mode
+classes refused on a 1 MiB thread; the arguments; the default diagnostic, which `CharSet.AddRange`'s refusal still
+carries; no expansion; class V; a property escape its mode refuses, refused before it is expanded; and the agreement
+with `Compile` over the suite's and task 2.4b's seeded populations at the maximum limit and at 2, more than 10,000
+compiled, 1,000 refused and 100 past the limit. `EngineLiteralTests` (127) transcribes the engines' literal tests as
+data: Broiler.VM at `58b0c84`, `BinderChecks.cs` lines 119 to 121, `regexp-pattern-modifiers.js` line 20,
+`the-v-flag.js` lines 11 and 14 and `the-unicode-property-escapes.js` cases 34 to 61 (48 cases); Broiler.JS at
+`238069ab`, every case of `RegExpLiteralEarlyErrorTests` and the literals of `ParserTests.cs` lines 420 and 977 (78
+cases); 81 refusals, each with the code this library answers, and 45 admissions, and one case where the test and the
+specification differ (below). The adversarial corpus's N03, N06, N09, N12, N15, N18 and O19 answer their declared
+statuses through the probe's corpus runner in a child process, which gains a `validate` operation
+(`probes/Regex.Probe/EngineRun.cs`, the one edit of `probes/` this task makes beside its own cases), and
+`A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget` runs the seven under a meter of one unit
+and a compile budget of one unit, and V05's pattern as a validation, where a compilation answers otherwise: before this
+task the runner answered a `validate` row through its compilation, whose statuses for the seven rows are the declared
+ones, so the rows alone would not show which entry ran. The probe's population gains E58 to E68: the seven rows, 511
+levels admitted, V05's pattern admitted under a budget that refuses its compilation, the `\k` case without flags, and
+`(` under the flags `gg`, refused at the flags. Each behaviour's test failed first against a stub of it, the logs kept
+with the task's notes: the entry answering `Success` for every pattern (173 of 264 failing), the parser's refusals
+without a diagnostic (172 of 264), a range out of order outside `v` at -1 (3), the entry expanding (12 of 12), a
+property expanded before its early error (4 of 4), the caller's limit ignored (2 of 2), and the probe's runner without
+the operation (the new corpus test). The fuzz target's oracle compares the entry with each compilation (below): a stub
+answering `Success` past the nesting limit is reported, first at iteration 18,000 with four worker processes.
+
+**What it changes, observably.** A class range out of order outside `v` is refused at the range's first character, where
+its position was -1 (the check was `CharSet.CheckRange`'s, which knows no position; `v` already gave it); and a property
+of strings negated or outside `v` is refused before it is expanded, so `Compile` charges the pattern's read alone where it
+charged the expansion first. Messages are unchanged. The parser's 46 refusals are built by `RegexParser.Refuse`, their
+numbers formatted through `NumberFormatInfo.InvariantInfo`, so the starting violation list loses the parser's seven
+places of the SL4 row and keeps `CharSet.cs:118`, the public `CharSet.AddRange`'s check, which no compilation reaches with
+a range out of order; two citations moved with their lines. `ParseAtom`'s two refusals of an atom at the end or at `)`
+or `|`, which no pattern reaches (`ParseAlternative` ends an alternative there first), are removed.
+
+**The fuzz target.** The oracle (`Verdicts.Validate`) calls the entry under each compilation's nesting limit and
+requires the same status and, for a syntax error, the same code, identifier, argument, position and message wherever that
+compilation met neither its budget nor its meter; a diagnostic its status rules out is a contract finding. The session
+must reach `validate:ok`, `validate:syntax` and `validate:limit:nesting`: at the declared seed 31,506, 10,826 and 5,668
+of the 48,000 validations. The declared session (seed 20261027, iterations 0 to 23,999, as CI runs it): no finding, exit
+0, every construct class and outcome reached. Its digest moved twice: the library change alone made it
+`d2c0d2e09805b037b8abe4cd562a1c888c68f72f61d998fb14698fe33e4e0246` (353 iterations answered otherwise, 294 of them a
+range's position and 59 a property's units, 19 of whose tight compilations now answer the syntax error where they met
+their budget or meter), and the validate comparison, which adds its answers to each record, made it
+`1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`, the same over two runs with four worker processes and
+over three under `tr-TR`, 34 seconds on four cores beside other builds. The control still reports the plant: at
+iteration 52 with one worker process, at 6,008 with four.
+
+**The review (2026-10-27).** Four findings, each fixed in its own commit. `NestingLimit` answered an identifier of
+this library's, `regexp.pattern.nesting-limit`, for a condition the catalogue names, EX0026; it answers EX0026's
+`limit.regexp.too-deep`, and the records no longer say the catalogue names early errors only (blocking: before the
+identifiers count as published). The codes that split EG0002 were not recorded as a split; they are, below. The records
+said every `RegexSyntaxException` the library throws carries its diagnostic; `CharSet.AddRange`'s does not, and they now
+say so and leave it to task 2.9. RegExpInitialize was cited as §22.2.3.4, ParsePattern's section; it is §22.2.3.3. The
+declared fuzz session after them: no finding, its digest unchanged
+(`1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`; the transcript records codes by number, not
+identifiers); the AOT probe's report byte-identical to the JIT's.
+
+**What task 2.9 still owes from this task.** The shape of `Compile`'s, the constructors', `RegexParser.Parse`'s and
+`RegexFlagsParser.Parse`'s syntax error, a status or an exception admitted by the owner, with C3's row; the provisional
+marks of this task's surface (both `Validate` overloads, `RegexDiagnostic` and its members, `RegexDiagnosticCode` and
+its 50 members, `RegexStatus.SyntaxError`, `RegexSyntaxException.Diagnostic`); whether `RegexFlagsStatus` stays beside
+the three codes of the flags; the SL4 place left in `CharSet.CheckRange`, with the public `Ast` surface, and the
+diagnostic its refusal lacks; and, when `Compile`'s refusal becomes a status, the fuzz oracle's admitted answers
+(`Verdicts.Compile`) and its comparison of the two entries, which then reads the status. **SJL-11.4 and SJL-11.5** call
+the entry for a literal's early errors (Broiler.VM's binder `CheckRegExp`, Broiler.JS's `RegExpValidator`) and map its
+identifiers under JSD-0083's D7. **Task 2.14** runs the corpus's validate rows through the operation added here. **The
+shared catalogue** (Broiler.JS's `early-errors.tsv`) owes the adoption of EG0002's split (below).
+
+*Where the plan, JSD-0081 and this repository differ, read at this record.*
+- **The meter.** Plan row 2.8 gives the entry "a nullable meter"; D18 as JSD-0081 files it gives it none, which this
+  task follows (above).
+- **The engines' identifiers.** JSD-0083's D7 has the provider answer "the failing condition's message identifier", and
+  otherwise EE0019's `regexp.literal.invalid` with the validator's message as its argument. The catalogue names early
+  errors (EE), Annex B's (EG) and limits and grammar (EX), and where it has a row for a condition the code uses its
+  identifier, EX0026's `limit.regexp.too-deep` for the nesting limit among them, but for EG0002's (next). It has no row
+  of their own for the grammar's refusals and the flags', which it folds into EE0019, so those have identifiers of this
+  library's, which an adapter maps to EE0019 with the message, or the catalogue adopts.
+- **Catalogue row EG0002** (`annexb.regexp.unicode-mode`, JSE8107) is one condition for every Annex B extension of the
+  pattern grammar refused under `u` or `v`; Broiler.VM's correspondence (`58b0c84`, row B25) hands it to the provider with
+  EE0019 and EX0026. The validator tells the extensions apart, and D7 asks for the failing condition's identifier where
+  the validator can tell it, so the codes split EG0002 and keep their own identifiers: wholly `LoneSyntaxCharacter` (17,
+  a lone `]`, `{` or `}`), `InvalidIdentityEscape` (21, a legacy octal escape and `\8` in a class among them),
+  `InvalidControlEscape` (22) and `PropertyEscapeWithoutBrace` (80, `\p` or `\P` without `{`); in part
+  `QuantifiedAssertion` (14, a quantified look-ahead), `InvalidHexEscape` (23, `\x` or `\u` without its digits) and
+  `NamedReferenceWithoutName` (32, `\k` without `<`). The row's other examples, `\8` without an eighth group and a class range ending in a class escape,
+  are EE0192, EE0193 and EE0195's and take their identifiers. **The catalogue is to adopt the split** (rows of its own
+  for the seven, or EG0002 noted as split), with the identifiers this library publishes; until it does, an adapter that
+  knows only the catalogue's identifiers maps a refusal of one of the seven under `u` or `v` to EG0002 where what it
+  refuses is an Annex B extension (the pattern parses past that place without `u` and `v`), and to EE0019 where it is
+  not (`^*`, or a `\u` escape short of its digits in a group name).
+  `ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002` pins each with a pattern
+  Annex B admits without `u` and `v`.
+  *Dated note, 2026-11-01 (the integration of tasks 2.8 and 2.14 of SJL-11.2): the list read "wholly
+  `LoneSyntaxCharacter` (17, …), `InvalidIdentityEscape` (21, …) and `InvalidControlEscape` (22); in part
+  `QuantifiedAssertion` (14, …), `InvalidHexEscape` (23, …), `NamedReferenceWithoutName` (32, `\k` without `<`) and
+  `PropertyEscapeWithoutBrace` (80, `\p` without `{`)". Code 80 is wholly EG0002's: the parser refuses `\p` or `\P`
+  not followed by `{` only under `u` or `v`, and without them the same text is an identity escape wherever it stands,
+  in a class or out of one, so every refusal with code 80 is of an Annex B extension. It is now listed with the codes
+  wholly EG0002's, and the test's comment says the same.*
+- **Broiler.JS's `ParserTests.cs:420`** admits `/[\q{/}--[a]]/v`, which ECMA-262 refuses (under `v` a `/` is a
+  ClassSetSyntaxCharacter, which a `\q{…}` may not hold unescaped) and V8 (node 22.22.0) refuses too; this library
+  refuses it with `ClassSetUnescapedSyntaxCharacter` at 4, and admits `/[\q{\/}--[a]]/v`. The engine's test owes the
+  correction, at SJL-11.5 at the latest; `EngineLiteralTests` keeps the case apart.
+- **Broiler.VM's `the-unicode-property-escapes.js`** says in a comment that the `v` flag "stays refused", while its
+  case 60, `[\p{L}]` under `v`, is admitted since that realm's phase F2, as its expected output says and this library
+  answers.
+- **Task 2.5's record** said the probe answers `unsupported` for a `validate` row. It answered one through its
+  compilation, which gives the seven rows' declared statuses; `unsupported` was the answer only after a compilation
+  that succeeds.
+- **The package README** listed two class-set defects of task 2.2's review as open (`\b` in `\q{…}`, and an escaped
+  lead and trail surrogate in `\q{…}` read as one code point); the integration of tasks 2.6 and 2.11 fixed both
+  (`28835d1`), and this task removes the item.
+- **Check A-5** asks for `\k<name>` to an undeclared name "refused by the parser and by the validate entry": both
+  refuse it, with `UndefinedGroupName` at the `\k`, under every mode where `\k` is a reference.
+
+*Dated record, 2026-10-27 (task 2.14 of SJL-11.2; bundle `sjl-11-001`'s part C, the milestone's component clause 3;
+decisions D6, D8, D9, D10 and D32).*
+
+**What it builds.** The probe's `--adversarial corpus [--report path]` mode (`probes/Regex.Probe/AdversarialMode.cs`;
+[the probe's README](../probes/Regex.Probe/README.md), new with this task, describes every mode of the probe). The probe
+starts itself once per row of the corpus, one at a time, in ordinal order of the ids, with its hidden argument
+`--engine-row`: under the JIT as `dotnet` and the probe's assembly, under Native AOT as the image itself. The child reads
+the corpus, builds the row's pattern and subject from their expressions and runs its operation under its policy through
+the new backend's entry, all on a thread of the header's `stack-bytes`, 1 MiB, and writes `id status` and its units. The
+parent keeps each child's exit code, status line and units, and judges the row: it **gives its declared status** (the
+status with the corpus's `x^k` written out equals the declared one), it **differs**, or the child **ended abnormally**
+(an exit other than 0, anything but one line naming the row, or no exit within 120 seconds, when it is stopped). A row
+whose operation is `validate` **waits for task 2.8** and is not run, while `EngineRun.Answer` answers that operation
+`unsupported`; it is named and counted. The report is deterministic: the corpus's SHA-256 and header, one line per row,
+the counts, the rows waiting and the rows reported; no time, path or machine, and no child's standard error, which
+differs between the JIT and Native AOT when a child crashes. The mode exits 1 when a row differs or a child ends
+abnormally, 0 otherwise, and 2 on a corpus it cannot read. The corpus has one reader now, `AdversarialCorpus.cs`: the
+child mode reads it, where it scanned the file for its row, and `Broiler.Regex.Tests` links it with `EngineRun.cs`, so
+that `AdversarialCorpusTests` reads the rows, expands the statuses and evaluates the expressions as the probe does, where
+it had a reader, an expansion and an evaluator (through `System.Text.Json`) of its own. `AdversarialModeTests` runs the
+mode over scratch corpora: a row given, one that differs, a child that ends abnormally (a start past the subject's end,
+a broken precondition the run does not answer as a status) and a `validate` row, reported in id order with the corpus's
+SHA-256 and exit 1; a passing corpus, its report the same twice; corpora it cannot read, exit 2; and the judgement of a
+child directly. Four mutants of the mode (a status not compared, the rows in file order, a non-zero exit with a right
+line judged given, the exit always 0) each fail one of its tests.
+
+**The reading at this commit**, on linux-x64 locally, the corpus's SHA-256 `1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5`
+(the one both engines' manifests name): of the 65 rows, **58 give their declared status** under the JIT and under Native
+AOT, none differs and no child ends abnormally; **7 wait for task 2.8**, the `validate` rows N03, N06, N09, N12, N15,
+N18 and O19. The two reports are the same file (SHA-256 `0028536f72e4ef6915a2d5cc940c4f84e36863ef0198ffbb2ac38a035193454e`),
+the Native AOT run in about 2 seconds and the JIT's in about 6. Given: K01 to K05, A01, A02, L01 to L05, W01, W02 and G01
+to G03 `limit:steps`; M01 `limit:frames` and M02 `limit:trail`; N01, N07 and N13, at the limit, their matches; N02, N04,
+N05, N08, N10, N11, N14, N16 and N17 `limit:nesting`; F01 to F04 their matches; V01 to V05 `limit:compile`; O01 to O18
+their statuses (O12 the meter's exception, O18 `syntax`). The win-x64 reading is CI's.
+
+**Part C's controls**, each a scratch build of the probe (`probes/Regex.Probe/AdversarialControls.targets`): with
+`-p:RegexAdversarialControl=steps` or `=nesting` the probe does not reference the library project but compiles the
+library's sources into itself, one declared line changed in a copy under `obj/`, the build failing unless the line is
+in its file exactly once; the line keeps a text of its own, `adversarial control 1 (part C)` or `... 2 ...`, by which a
+search finds it. `eng/adversarial-controls.py` reads the corpus itself and holds a report to exactly the rows its
+control must report, every other row to its declared status or, for a `validate` row, to waiting, and the exit code to
+the rows reported.
+
+| Control | The line changed | Reported, under the JIT and under Native AOT |
+|---|---|---|
+| (1) `LimitExceeded` naming steps answered `NoMatch` | `RegexProgram.Match`, after the machine runs | Exactly the 17 K, A, L, W and G rows, each `nomatch` where it declares `limit:steps`: differs. 41 rows give their declared status, 7 wait |
+| (2) The nesting check removed | `RegexNesting.Descend`'s test of the caller's limit | Exactly the 9 N rows past the limit that run: N02, N08 and N14 compile (`ok`) and differ; N04, N05, N10, N11, N16 and N17 overflow the 1 MiB stack in the parser and end abnormally (exit 134 under the JIT, 139 under Native AOT). N01, N07 and N13 give their declared statuses; the six `validate` rows past the limit wait and are not reached |
+
+Each was reverted, the probe built without the switch, and the revert checked: its report gives every row run its
+declared status and reports none. **The controls never reach the shipped DLL**, read as task 2.11's record reads its
+plant: from one scratch directory holding this record's code, `Broiler.Regex.dll` built from the library project alone
+and by the whole solution is one file (SHA-256 `062788e853b92c296c661c8ef7a41a831e752939f0fcf018f8e8f7ee42b49aa4`, a
+value of that directory alone); each control's build afterwards built no library project and left that file byte for
+byte and its time unchanged; the package packed from it carries the same file; and neither DLL holds `adversarial
+control`, `part C` or `RegexAdversarialControl`, in UTF-16 or UTF-8, where each control's probe assembly holds its text.
+
+**CI.** The `native-aot-probe` job runs the mode under Native AOT and under the JIT on ubuntu-latest and windows-latest
+and compares the two reports with `cmp`, a step failing on a row that differs or a child that ends abnormally, each
+step bounded by 10 minutes. The new `adversarial-controls` job, on ubuntu-latest within 20 minutes, builds and checks
+each control, shows that no control built `Broiler.Regex/bin`, then builds the probe as usual, checks the revert and
+searches the library's DLL for the controls' text; its steps took 35 and 36 seconds on two fresh copies of the tree at
+`57002e0` locally, every build without build servers (11 to 13 seconds for each of the three builds and runs). Two
+earlier local measurements of the same steps took 42 seconds, the figure commit `13bda4a`'s message gives, of a copy
+taken before two small edits of that commit's code, and 30; so about 30 to 45 seconds. The reports are kept as
+artifacts of the runs, which the bundle's README now names as part C's evidence at a reading.
+
+**Rule SL3 and the probe.** Rule SL3 refused `System.Diagnostics.Process` for the probe, which may do file I/O
+only, so the mode, which starts processes, failed it (the probe named `Process` and `ProcessStartInfo`). The probe's
+exemption now covers a process, as the register's own wording, "file, network or process I/O", already counted it among
+the I/O the probe is exempt from; the witness starts a process, refused for a library and admitted for the probe, and
+both SL3 tests were watched failing without the admission. `docs/conventions.md`, "Scope", carries a dated note.
+
+**The library is unchanged**: no library file changed, and the probe's default report is the same file at `bdcf39d`
+and at this record's commit, under the JIT and Native AOT (SHA-256
+`3fb73580c649682cc99e7ec3a43352f309a8c43c2fef85f6123bf6a840c5d798`).
+
+**What remains.**
+- **Task 2.8.** The seven `validate` rows run once `EngineRun.Answer` answers the operation, with no change to the mode;
+  `AdversarialCorpusTests`' list of rows that wait is that task's. Control (2) reaches the six `validate` rows past the
+  limit only if the validate entry checks nesting through `RegexNesting.Descend`, the control's line; an entry that
+  checks it elsewhere needs its line declared in the control too.
+- **Part C's judgement.** MET needs every row's declared status in both modes on both RIDs, so it cannot be judged
+  before task 2.8; it is judged at the candidate reading, from CI's runs at the commit `0.2.0-preview.1` is packed from,
+  win-x64's among them.
+- **The margin.** The corpus's README (section 3) asks that `regexpref`'s counts be recorded before the candidate
+  reading; that is SJL-11.3's reference, not this task's.
+
+*Where the plan, the filed rule and this repository differ, read at this record.*
+- Part C reads the same in the plan's section 4.3 and in the filed rule. The rule's "the smallest stack the corpus's
+  header declares" is its one `stack-bytes`, 1 MiB.
+- Plan row 2.14 names the probe as its files. The mode also needed rule SL3's admission of the probe's processes (above),
+  the test project's links, `eng/adversarial-controls.py` and a CI job; no library file.
+- The brief asked for each control as "a build-time switch compiled only into a control build of the library or the
+  probe". Convention 17 admits no preprocessor directive, so the switch is an MSBuild property of the probe's build, and
+  the library's code reaches the control only as a copy compiled into the probe, as task 2.11's plant does.
+- Control (1) changes the answer at `RegexProgram.Match`, the entry every public member and the probe call, as the rule
+  words it ("LimitExceeded naming steps is answered NoMatch"). The old backend's form of the defect, a path's exhaustion
+  read as that path's failure, is a different change, and the corpus's README describes it per row.
+- The rule asks "each child's exit and status line retained". The report keeps both, and the units a child wrote alone
+  on its standard error; it keeps no other standard error, whose text differs between the modes when a child crashes.
+- The corpus's README (section 1) says three header lines are read. The probe reads two, the format and the stack; the
+  third, the wall-clock limit, is Broiler.JS's programs'.
+- The brief names the probe's README, which did not exist: it is new with this task.
+
+*Dated note, 2026-11-01 (the integration of tasks 2.8 and 2.14 of SJL-11.2, branch `sjl-11-2-integrate-c`, task 2.14
+merged first and task 2.8 onto it): task 2.8's validate entry runs the seven `validate` rows, so the reading above,
+part C's control (2) and what remains are no longer the head's, and the record is kept as written.*
+
+- *The reading.* The record read "of the 65 rows, **58 give their declared status** under the JIT and under Native
+  AOT, none differs and no child ends abnormally; **7 wait for task 2.8**, the `validate` rows N03, N06, N09, N12,
+  N15, N18 and O19". At the integration, on linux-x64 locally, all **65 rows give their declared status** under the
+  JIT and under Native AOT, none differs, no child ends abnormally and **none waits**; the two reports are the same
+  file (SHA-256 `3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75`), the Native AOT run in about 2
+  seconds and the JIT's in about 7. N03, N06, N09, N12, N15 and N18 answer `limit:nesting` and O19 `syntax`.
+- *Control (2).* The table read "Exactly the 9 N rows past the limit that run" and "the six `validate` rows past the
+  limit wait and are not reached". The control now reports **all 15 N rows past the limit**, under the JIT and under
+  Native AOT: beside the nine the table names, N03, N09 and N15, one level past the limit, answer `ok` through the
+  validate entry and differ, and N06, N12 and N18 overflow the 1 MiB stack in the parser and end abnormally (exit 134
+  under the JIT, 139 under Native AOT); N01, N07 and N13 and the 47 rows of the other classes give their declared
+  statuses. The validate entry checks nesting through `RegexNesting.Descend`, the control's line, so the control
+  reaches its rows with no line of its own. Control (1) reports the same 17 rows, the other 48 giving their declared
+  statuses, where the table's cell for it read "41 rows give their declared status, 7 wait". Each was reverted and
+  the revert checked, its report the one above; the control builds left `Broiler.Regex.dll` byte for byte and its
+  time unchanged, and the DLL holds neither control's text.
+- *The script.* The record above described it as holding "every other row to its declared status or, for a
+  `validate` row, to waiting". `eng/adversarial-controls.py` held control (2) to "every N row past the limit (declared
+  limit:nesting) that runs" and admitted "a row whose operation is validate, which may wait for task 2.8"; it took the
+  rows that wait out of those a control must report. It now holds control (2) to all 15 and refuses a report with a
+  row that waits, under any control. Shown on a scratch copy of the tree with the probe's `validate` operation planted
+  out (`EngineRun.Answer` answering it `unsupported`, so the seven rows wait): task 2.14's script passed the nesting
+  control's report (9 rows reported, 7 waiting) and the revert's (58 given, 7 waiting); this one fails both, naming
+  N03, N06, N09, N12, N15 and N18 as not reported and the seven rows as waiting.
+- *CI.* The `adversarial-controls` job's steps took 46 and 50 seconds on two fresh copies of the tree at the
+  integration, without build servers, on a busier machine than the record's (load average about 8).
+- *What remains.* The record's first item, "**Task 2.8.** The seven `validate` rows run once `EngineRun.Answer`
+  answers the operation, with no change to the mode", is done, with no change to the mode, and
+  `AdversarialCorpusTests` lists no row that waits. Its second read "MET needs every row's declared status in both
+  modes on both RIDs, so it cannot be judged before task 2.8"; part C is now judged at the candidate reading alone,
+  from CI's runs at the commit `0.2.0-preview.1` is packed from, win-x64's among them. The margin is unchanged.
+- *The exit.* The record read "The mode exits 1 when a row differs or a child ends abnormally, 0 otherwise", so a run
+  with rows waiting passed: with the probe's `validate` operation planted out of `EngineRun.Answer` (and the plant
+  reverted after), the mode reported the seven rows waiting and exited 0. It now exits 1 when a row waits too (`AdversarialMode.Exit`),
+  as no row may since task 2.8; under the same plant it exits 1. `AdversarialModeTests.A_row_that_waits_fails_the_run`
+  was watched failing before the change (the exit over a waiting verdict was 0) and, under the plant, failing before
+  and after it; `eng/adversarial-controls.py` holds the exit code to 1 when a row is reported or waits, where it read
+  "1 if reported else 0". The report's format, `adversarial-1`, is unchanged, and `AdversarialModeTests` asserts the
+  `validate` rows' lines with no branch for a runner that does not answer the operation.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

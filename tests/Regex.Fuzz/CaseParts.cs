@@ -439,6 +439,7 @@ internal static class Coverage
     internal static readonly string[] Outcomes =
     [
         "compile:ok", "compile:syntax", "compile:limit:nesting", "compile:limit:compile", "compile:meter",
+        "validate:ok", "validate:syntax", "validate:limit:nesting",
         "offset:match", "offset:nomatch", "offset:limit:steps", "offset:limit:frames", "offset:limit:trail", "offset:meter",
         "string:match", "string:nomatch", "string:limit", "is-match:throws", "matches:compared", "matches:prefix", "matches:limit",
         "escape-pattern:ok", "escape-pattern:limit", "escape-string:ok", "escape-string:limit", "probes",

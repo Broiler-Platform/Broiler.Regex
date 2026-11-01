@@ -56,6 +56,22 @@ in [`docs/suppressions.md`](docs/suppressions.md).
     integration of tasks 2.6 and 2.11 fixed both (Observable changes), and the list is empty. The oracle also reads
     each `RegexGroup.Number` since that integration. Task 2.11 left the library, `Broiler.Regex.dll` and its API,
     unchanged; of the package only the packed README changed, whose testing paragraph now names the fuzz target.
+  - The probe's `--adversarial` mode (task 2.14; bundle `sjl-11-001`'s part C, the milestone's component clause 3):
+    every row of `tests/Adversarial/corpus.tsv` run in a child process of the probe, on a thread of the 1 MiB stack
+    the corpus's header declares, and reported against its declared status in a deterministic report (the corpus's
+    SHA-256, each child's exit code, status line and units, in id order); the mode fails on a row that differs, a
+    child that ends abnormally or, since the integration of tasks 2.8 and 2.14, a row that waits, which none may now
+    (it exited 0 with rows waiting before). CI's `native-aot-probe` job runs it under Native AOT and under the JIT on
+    ubuntu-latest and windows-latest and compares the two reports byte for byte. Part C's two controls are scratch
+    builds of the probe (`-p:RegexAdversarialControl=steps`, `LimitExceeded` naming steps answered as no match, and
+    `=nesting`, the nesting check removed), which compile the library's sources into the probe with one line changed
+    and never build `Broiler.Regex.dll`; CI's `adversarial-controls` job requires the first to report exactly the 17 K,
+    A, L, W and G rows and the second exactly the 15 N rows past the limit, through `eng/adversarial-controls.py`, which
+    refuses a report with a row that waits, and the revert none. The corpus has one reader,
+    `probes/Regex.Probe/AdversarialCorpus.cs`, which the tests link, and rule SL3 admits the probe's child processes as
+    it admits its file I/O. The rows whose operation is `validate` run through task 2.8's validate entry, so all 65 rows
+    give their declared statuses under the JIT and under Native AOT, and none waits (the integration of tasks 2.8 and
+    2.14). Task 2.14 left the library, `Broiler.Regex.dll` and its API, and the package unchanged.
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
@@ -221,6 +237,40 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   assertions (15 of the 19 at the pin), the four whose assertions read a host's substitution or splitter waiting for task
   2.10's host job; the adversarial corpus's O07 and O08 answer their declared statuses, in a child process and in the
   Native AOT probe.
+- **The validate entry and the syntax status (task 2.8; check A-5; decisions D9 and D18 of Broiler.VM's JSD-0081, the
+  programme's SJL-D-11).** `BroilerRegex.Validate(string pattern, RegexFlags flags, IUnicodeTables tables, int
+  nestingLimit, out RegexDiagnostic diagnostic, out RegexLimit limit)` answers whether a pattern is valid by the grammar
+  and every early error the parser knows (§22.2.1, §22.2.1.1, Annex B §B.1.2), task 2.6's rule for repeated group names
+  and the resolution of `\k<name>` among them, under the caller's nesting limit: `Success`; the new
+  `RegexStatus.SyntaxError` (4) with the first refusal the parser meets; or `LimitExceeded` naming `Nesting`. A refusal
+  is never an exception; only a broken argument throws (a null pattern or tables, a limit outside 1 to 512). The
+  overload over a flags text, `Validate(string, string?, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)`,
+  reads the flags first, as IsValidRegularExpressionLiteral does (§13.2.7.2), and answers their refusal at its position
+  in the flags text. The entry parses as a compilation does with every set expansion left out: a property escape's name
+  and kind are looked up in the provider's tables, which copies nothing, and nothing is folded, gathered or combined, so
+  its work is in proportion to the pattern and it takes no meter and no compile budget (D18 as JSD-0081 files it: "no
+  expansion, no meter"). `RegexDiagnostic`, a struct, carries `Code`, a `RegexDiagnosticCode`; `MessageId`, a dotted
+  identifier of the form of the shared frontend's early-error catalogue, the catalogue's own where it has a row for the
+  condition (EE0184 to EE0213, and EX0026's `limit.regexp.too-deep` for the nesting limit), and one of this library's in
+  the catalogue's `regexp` namespace only for a condition it has no row for, the grammar's and the flags' own refusals,
+  which it folds into EE0019, and for the Annex B extensions refused under `u` or `v`, which its row EG0002 gathers and
+  seven codes tell apart (a split the catalogue is to adopt); `Argument`, the name, flag, digits, range or property
+  text the code names, or null; `Position`, a code-unit offset into the pattern, or into the flags text for the flags' three codes; and
+  `Message`, a default English rendering that is no contract. `RegexDiagnostic.MessageIdOf(code)` reads the table.
+  `RegexDiagnosticCode` names 49 conditions and `None`, numbered by the part of the grammar (the flags 1 to 3, groups
+  and quantifiers 10 to 17, escapes 20 to 25, references 30 to 33, group names 40 to 45, modifiers 50 to 52, classes 60
+  to 63, class sets 70 to 76, property escapes 80 to 86, the nesting limit 90), each number fixed once published. Every
+  `RegexSyntaxException` the parser and the flags parser throw now carries the same diagnostic as
+  `RegexSyntaxException.Diagnostic` (the default value for one made through its public constructor), so `Compile`, the
+  constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse`, which still throw (task 2.9 decides their shape),
+  refuse with the code, identifier, argument and position the validate entry answers. The public `CharSet.AddRange`'s
+  refusal of a range written high to low, which no compilation reaches, carries none; task 2.9 owns it with the public
+  `Ast` surface. **All provisional**, marked in `PublicAPI.txt`, until task 2.9 fixes the
+  surface of `0.2.0-preview.1`. A test over the suite's and the seeded populations, at the maximum limit and at 2,
+  finds every syntax error `Compile` refuses answered with the same diagnostic and every pattern it compiles accepted;
+  the fuzz target's oracle compares the two at every iteration; the engines' own tests of literal syntax errors, 126
+  cases of Broiler.VM's and Broiler.JS's, are read as data; and the adversarial corpus's validate rows, N03, N06, N09,
+  N12, N15, N18 and O19, answer their declared statuses in a child process and in the Native AOT probe.
 
 ### Changed
 
@@ -317,6 +367,18 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 ### Observable changes
 
+- **A class range out of order is refused at its position in every mode (task 2.8).** Outside `v`, `/[z-a]/` and
+  `/x[\u0062-\u0061]/u` were a `RegexSyntaxException` whose `Position` was -1, the check being
+  `CharSet.CheckRange`'s, which knows no position; it is now the range's first character, 1 and 2, as it already was
+  under `v`. The message is unchanged.
+- **A property escape its mode refuses is refused before it is expanded (R2; task 2.8).** A property of strings
+  negated, as `\P{RGI_Emoji}` or `[\P{RGI_Emoji}]` under `v`, or outside `v`, as `\p{RGI_Emoji}` under `u`, was expanded,
+  and the compilation charged for the expansion, before its early error refused it. The early error now reads the
+  property's kind from the provider's lookups first, as the validate entry does, so the compilation charges the
+  pattern's read alone: the fuzz target's iteration 256, `\p{RGI_Emoji}…` under `iu`, charged its meter 20,992 units and
+  now charges the first block of 512. The refusal's message and position are unchanged; a compile budget or a meter's
+  allowance the expansion alone exceeded is now answered with the syntax error, where it was `LimitExceeded` naming
+  `Compile` or the meter's exception (19 answers of the fuzz target's tight policy in its declared session).
 - **A `v`-mode `\q{…}` alternative is the code points of its ClassSetCharacters (R5; the fuzz target's finding, R10;
   the integration of tasks 2.6 and 2.11).** ECMA-262 compiles a ClassString to the sequence of the characters its
   ClassSetCharacters denote (§22.2.2.10), a lone surrogate among them, matched code point by code point against a

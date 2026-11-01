@@ -76,21 +76,16 @@ public static class RegexFlagsParser
     /// <returns>The flags.</returns>
     /// <exception cref="RegexSyntaxException">
     /// A code unit outside <c>d g i m s u v y</c>, a flag written twice, or <c>u</c> with <c>v</c>, with the message
-    /// <c>0.1.0-preview.4</c> gave each and no position.
+    /// <c>0.1.0-preview.4</c> gave each and no position in the pattern; since task 2.8 of SJL-11.2 its
+    /// <see cref="RegexSyntaxException.Diagnostic"/> names the refusal and its place in the flags text.
     /// </exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=D31393
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=2217E0
     // Broiler-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     public static RegexFlags Parse(string? flags)
     {
         var status = Text.RegexFlagsText.Parse(flags, out var result, out var position);
-        return status switch
-        {
-            Text.RegexFlagsStatus.Success => result,
-            Text.RegexFlagsStatus.UnknownFlag => throw new RegexSyntaxException("Invalid regular expression flags: '" + flags![position] + "'"),
-            Text.RegexFlagsStatus.DuplicateFlag => throw new RegexSyntaxException("Duplicate regular expression flag: '" + flags![position] + "'"),
-            _ => throw new RegexSyntaxException("The 'u' and 'v' regular expression flags cannot be combined"),
-        };
+        return status == Text.RegexFlagsStatus.Success ? result : throw new RegexSyntaxException(RegexDiagnostic.OfFlags(status, flags!, position));
     }
 
     /// <summary>True when either <c>u</c> or <c>v</c> is set (both imply code-point semantics).</summary>

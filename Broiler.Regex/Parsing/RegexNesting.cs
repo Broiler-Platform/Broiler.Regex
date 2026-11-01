@@ -84,12 +84,14 @@ internal readonly struct RegexNesting
     /// <summary>
     /// The refusal the members that take no limit report for a pattern nested deeper than
     /// <see cref="BroilerRegex.MaximumNestingLimit"/>: they refuse every pattern they do not compile with a
-    /// <see cref="RegexSyntaxException"/>, as they refuse every pattern they do not compile.
+    /// <see cref="RegexSyntaxException"/>, as they refuse every pattern they do not compile, whose diagnostic is the
+    /// validate entry's for the same refusal (<see cref="RegexDiagnosticCode.NestingLimit"/>, task 2.8 of SJL-11.2).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=67B805
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0F06C5
     // Broiler-Human:        PENDING
     internal static RegexSyntaxException AsSyntaxError(NestingLimitExceeded refusal)
-        => new("The pattern nests deeper than the library's maximum nesting limit", refusal.Position);
+        => new(RegexDiagnostic.Nesting(refusal.Position, BroilerRegex.MaximumNestingLimit,
+            "The pattern nests deeper than the library's maximum nesting limit"));
 }
 
 /// <summary>
