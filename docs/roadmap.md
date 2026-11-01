@@ -1170,23 +1170,24 @@ by the parser and by the validate entry"; decisions D9 and D18 of JSD-0081, and 
 
 **What it builds.** The validate entry, `BroilerRegex.Validate(string pattern, RegexFlags flags, IUnicodeTables tables,
 int nestingLimit, out RegexDiagnostic diagnostic, out RegexLimit limit)`, and its overload over a flags text,
-`Validate(string, string? flags, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)`, which reads the flags first,
-as IsValidRegularExpressionLiteral does (§13.2.7.2). The status is `RegexStatus`: `Success`; `SyntaxError` (4, new) with
-the first refusal the parser meets, in its reading order; or `LimitExceeded` with `RegexLimit.Nesting` when the pattern
-nests past the caller's limit before any refusal. The diagnostic is `RegexDiagnostic`, a struct of five members: `Code`
-(a `RegexDiagnosticCode`), `MessageId` (`RegexDiagnostic.MessageIdOf(Code)`), `Argument` (a string, or null where the code
-takes none), `Position` (a code-unit offset into the pattern, into the flags text for the flags' three codes, -1 for no
-refusal) and `Message` (a default English rendering, which is no contract; an engine renders its own from the identifier
-and the argument, SJL-D-11). A refusal is never an exception: the entry catches the parser's internal ones at its
-boundary, and only a broken argument throws (a null pattern or tables, a limit outside 1 to 512, tables of another
-Unicode version). Every `RegexSyntaxException` the parser and the flags parser throw, so every one `Compile`, the
-constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse` throw, now carries the same diagnostic as its new
-`Diagnostic` property, built by the same call in the parser (`RegexParser.Refuse`), so a pattern's refusal is one
-value whichever entry meets it. One refusal of the library carries none: the public `CharSet.AddRange`'s of a range
-written high to low (`CharSet.cs:118`), which no compilation reaches and task 2.9 owns (below). All of it is provisional, marked in `PublicAPI.txt` (63 marks).
+`Validate(string, string? flags, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)`, which reads the flags
+first, as IsValidRegularExpressionLiteral does (§13.2.7.2). The status is `RegexStatus`: `Success`; `SyntaxError` (4,
+new) with the first refusal the parser meets, in its reading order; or `LimitExceeded` with `RegexLimit.Nesting` when
+the pattern nests past the caller's limit before any refusal. The diagnostic is `RegexDiagnostic`, a struct of five
+members: `Code` (a `RegexDiagnosticCode`), `MessageId` (`RegexDiagnostic.MessageIdOf(Code)`), `Argument` (a string, or
+null where the code takes none), `Position` (a code-unit offset into the pattern, into the flags text for the flags'
+three codes, -1 for no refusal) and `Message` (a default English rendering, which is no contract; an engine renders its
+own from the identifier and the argument, SJL-D-11). A refusal is never an exception: the entry catches the parser's
+internal ones at its boundary, and only a broken argument throws (a null pattern or tables, a limit outside 1 to 512,
+tables of another Unicode version). Every `RegexSyntaxException` the parser and the flags parser throw, so every one
+`Compile`, the constructors, `RegexParser.Parse` and `RegexFlagsParser.Parse` throw, now carries the same diagnostic as
+its new `Diagnostic` property, built by the same call in the parser (`RegexParser.Refuse`), so a pattern's refusal is
+one value whichever entry meets it. One refusal of the library carries none: the public `CharSet.AddRange`'s of a range
+written high to low (`CharSet.cs:118`), which no compilation reaches and task 2.9 owns (below). All of it is
+provisional, marked in `PublicAPI.txt` (63 marks).
 
-**The code table.** Numbered by the part of the grammar, each number fixed once published and never reused: the flags
-1 to 3 (`UnknownFlag`, `DuplicateFlag`, `UnicodeWithUnicodeSets`); groups and quantifiers 10 to 17
+**The code table.** Numbered by the part of the grammar, each number fixed once published and never reused: the flags 1
+to 3 (`UnknownFlag`, `DuplicateFlag`, `UnicodeWithUnicodeSets`); groups and quantifiers 10 to 17
 (`UnmatchedParenthesis`, `UnterminatedGroup`, `InvalidGroup`, `NothingToRepeat`, `QuantifiedAssertion`,
 `QuantifierOutOfOrder`, `BracedQuantifierWithoutAtom`, `LoneSyntaxCharacter`); escapes 20 to 25 (`TrailingBackslash`,
 `InvalidIdentityEscape`, `InvalidControlEscape`, `InvalidHexEscape`, `InvalidBracedEscape`, `CodePointOutOfRange`);
@@ -1208,14 +1209,14 @@ identifier is the catalogue's (EE0184 to EE0213: `regexp.group-name.duplicate`, 
 of groups and classes, `limit.regexp.too-deep`, for `NestingLimit`; a test pinning each row). The library coins an
 identifier, in the catalogue's `regexp` namespace and form, only for a condition the catalogue has no row for, the
 grammar's own refusals and the flags', which the catalogue folds into EE0019 (`regexp.group.unterminated`,
-`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`); and for the conditions of row EG0002, which it splits (the
-differences, below). EE0183, 2^32 - 1 or more capturing groups, has no code:
-no string the platform holds reaches it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an
-unescaped class-set syntax character; the flag for a repeated flag or modifier; the quantifier's code unit for nothing
-to repeat; the digits of an out-of-range back-reference; the decoded name of an undefined or duplicate group name; the
-range as written, out of order; the two code units of a reserved double punctuator; the text between a property
-escape's braces; and the limit, in decimal, for the nesting limit. `ValidateEntryTests.The_code_table_is_pinned` pins
-every number and identifier.
+`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`); and for the conditions of row EG0002, which it splits
+(the differences, below). EE0183, 2^32 - 1 or more capturing groups, has no code: no string the platform holds reaches
+it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an unescaped
+class-set syntax character; the flag for a repeated flag or modifier; the quantifier's code unit for nothing to repeat;
+the digits of an out-of-range back-reference; the decoded name of an undefined or duplicate group name; the range as
+written, out of order; the two code units of a reserved double punctuator; the text between a property escape's braces;
+and the limit, in decimal, for the nesting limit. `ValidateEntryTests.The_code_table_is_pinned` pins every number and
+identifier.
 
 **What each early error needs, with no expansion (D18).** The entry runs the compilation's parser with expansion off:
 no property escape's set is copied, nothing is folded or complemented, no class's code points or strings are gathered,
@@ -1245,32 +1246,33 @@ later syntax error or the end of a valid pattern (class V's patterns are admitte
 `Compile` at their budget), and its meter, whose exception does the same. Past the caller's nesting limit both answer
 `LimitExceeded` naming `Nesting`, and the constructors, which parse under 512, throw the same `NestingLimit` diagnostic.
 
-**The evidence.** `ValidateEntryTests` (137): a table of 80 refusals, at least one for each of the 49 codes, each with its
-code, identifier, argument and position, checked through the entry, the constructor and `Compile`; the code table and
-its catalogue rows; the critic's `\k<b>(?<a>x)` under `u`, `v`, none and `i`, with its controls; the nesting limit at
-511 and 512, the caller's limit under `v`, a syntax error met before the limit, and a million levels of groups,
-non-capturing groups and `v`-mode classes refused on a 1 MiB thread; the arguments; the default diagnostic; no
-expansion; class V; a property escape its mode refuses, refused before it is expanded; and the agreement with `Compile`
-over the suite's and task 2.4b's seeded populations at the maximum limit and at 2, more than 10,000 compiled, 1,000
-refused and 100 past the limit. `EngineLiteralTests` (127) transcribes the engines' literal tests as data: Broiler.VM at
-`58b0c84`, `BinderChecks.cs` lines 119 to 121, `regexp-pattern-modifiers.js` line 20, `the-v-flag.js` lines 11 and 14
-and `the-unicode-property-escapes.js` cases 34 to 61 (48 cases); Broiler.JS at `238069ab`, every case of
-`RegExpLiteralEarlyErrorTests` and the literals of `ParserTests.cs` lines 420 and 977 (78 cases); 81 refusals, each with
-the code this library answers, and 45 admissions, and one case where the test and the specification differ (below). The
-adversarial corpus's N03, N06, N09, N12, N15, N18 and O19 answer their declared statuses through the probe's corpus
-runner in a child process, which gains a `validate` operation (`probes/Regex.Probe/EngineRun.cs`, the one edit of
-`probes/` this task makes beside its own cases), and `A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget`
-runs the seven under a meter of one unit and a compile budget of one unit, and V05's pattern as a validation, where a
-compilation answers otherwise: before this task the runner answered a `validate` row through its compilation, whose
-statuses for the seven rows are the declared ones, so the rows alone would not show which entry ran. The probe's
-population gains E58 to E68: the seven rows, 511 levels admitted, V05's pattern admitted under a budget that refuses its
-compilation, the `\k` case without flags, and `(` under the flags `gg`, refused at the flags. Each behaviour's test
-failed first against a stub of it, the logs kept with the task's notes: the entry answering `Success` for every pattern
-(173 of 264 failing), the parser's refusals without a diagnostic (172 of 264), a range out of order outside `v` at -1
-(3), the entry expanding (12 of 12), a property expanded before its early error (4 of 4), the caller's limit ignored
-(2 of 2), and the probe's runner without the operation (the new corpus test). The fuzz target's oracle compares the
-entry with each compilation (below): a stub answering `Success` past the nesting limit is reported, first at iteration
-18,000 with four worker processes.
+**The evidence.** `ValidateEntryTests` (152): a table of 80 refusals, at least one for each of the 49 codes, each with
+its code, identifier, argument and position, checked through the entry, the constructor and `Compile`; the code table
+and its catalogue rows (EE0184 to EE0213 and EX0026); the fourteen patterns of EG0002's split; the critic's
+`\k<b>(?<a>x)` under `u`, `v`, none and `i`, with its controls; the nesting limit at 511 and 512, the caller's limit
+under `v`, a syntax error met before the limit, and a million levels of groups, non-capturing groups and `v`-mode
+classes refused on a 1 MiB thread; the arguments; the default diagnostic, which `CharSet.AddRange`'s refusal still
+carries; no expansion; class V; a property escape its mode refuses, refused before it is expanded; and the agreement
+with `Compile` over the suite's and task 2.4b's seeded populations at the maximum limit and at 2, more than 10,000
+compiled, 1,000 refused and 100 past the limit. `EngineLiteralTests` (127) transcribes the engines' literal tests as
+data: Broiler.VM at `58b0c84`, `BinderChecks.cs` lines 119 to 121, `regexp-pattern-modifiers.js` line 20,
+`the-v-flag.js` lines 11 and 14 and `the-unicode-property-escapes.js` cases 34 to 61 (48 cases); Broiler.JS at
+`238069ab`, every case of `RegExpLiteralEarlyErrorTests` and the literals of `ParserTests.cs` lines 420 and 977 (78
+cases); 81 refusals, each with the code this library answers, and 45 admissions, and one case where the test and the
+specification differ (below). The adversarial corpus's N03, N06, N09, N12, N15, N18 and O19 answer their declared
+statuses through the probe's corpus runner in a child process, which gains a `validate` operation
+(`probes/Regex.Probe/EngineRun.cs`, the one edit of `probes/` this task makes beside its own cases), and
+`A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget` runs the seven under a meter of one unit
+and a compile budget of one unit, and V05's pattern as a validation, where a compilation answers otherwise: before this
+task the runner answered a `validate` row through its compilation, whose statuses for the seven rows are the declared
+ones, so the rows alone would not show which entry ran. The probe's population gains E58 to E68: the seven rows, 511
+levels admitted, V05's pattern admitted under a budget that refuses its compilation, the `\k` case without flags, and
+`(` under the flags `gg`, refused at the flags. Each behaviour's test failed first against a stub of it, the logs kept
+with the task's notes: the entry answering `Success` for every pattern (173 of 264 failing), the parser's refusals
+without a diagnostic (172 of 264), a range out of order outside `v` at -1 (3), the entry expanding (12 of 12), a
+property expanded before its early error (4 of 4), the caller's limit ignored (2 of 2), and the probe's runner without
+the operation (the new corpus test). The fuzz target's oracle compares the entry with each compilation (below): a stub
+answering `Success` past the nesting limit is reported, first at iteration 18,000 with four worker processes.
 
 **What it changes, observably.** A class range out of order outside `v` is refused at the range's first character, where
 its position was -1 (the check was `CharSet.CheckRange`'s, which knows no position; `v` already gave it); and a property
@@ -1294,15 +1296,26 @@ their budget or meter), and the validate comparison, which adds its answers to e
 over three under `tr-TR`, 34 seconds on four cores beside other builds. The control still reports the plant: at
 iteration 52 with one worker process, at 6,008 with four.
 
+**The review (2026-10-27).** Four findings, each fixed in its own commit. `NestingLimit` answered an identifier of
+this library's, `regexp.pattern.nesting-limit`, for a condition the catalogue names, EX0026; it answers EX0026's
+`limit.regexp.too-deep`, and the records no longer say the catalogue names early errors only (blocking: before the
+identifiers count as published). The codes that split EG0002 were not recorded as a split; they are, below. The records
+said every `RegexSyntaxException` the library throws carries its diagnostic; `CharSet.AddRange`'s does not, and they now
+say so and leave it to task 2.9. RegExpInitialize was cited as §22.2.3.4, ParsePattern's section; it is §22.2.3.3. The
+declared fuzz session after them: no finding, its digest unchanged
+(`1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`; the transcript records codes by number, not
+identifiers); the AOT probe's report byte-identical to the JIT's.
+
 **What task 2.9 still owes from this task.** The shape of `Compile`'s, the constructors', `RegexParser.Parse`'s and
 `RegexFlagsParser.Parse`'s syntax error, a status or an exception admitted by the owner, with C3's row; the provisional
-marks of this task's surface (both `Validate` overloads, `RegexDiagnostic` and its members, `RegexDiagnosticCode` and its
-50 members, `RegexStatus.SyntaxError`, `RegexSyntaxException.Diagnostic`); whether `RegexFlagsStatus` stays beside the
-three codes of the flags; the SL4 place left in `CharSet.CheckRange`, with the public `Ast` surface; and, when
-`Compile`'s refusal becomes a status, the fuzz oracle's admitted answers (`Verdicts.Compile`) and its comparison of the
-two entries, which then reads the status. **SJL-11.4 and SJL-11.5** call the entry for a literal's early errors
-(Broiler.VM's binder `CheckRegExp`, Broiler.JS's `RegExpValidator`) and map its identifiers under JSD-0083's D7.
-**Task 2.14** runs the corpus's validate rows through the operation added here.
+marks of this task's surface (both `Validate` overloads, `RegexDiagnostic` and its members, `RegexDiagnosticCode` and
+its 50 members, `RegexStatus.SyntaxError`, `RegexSyntaxException.Diagnostic`); whether `RegexFlagsStatus` stays beside
+the three codes of the flags; the SL4 place left in `CharSet.CheckRange`, with the public `Ast` surface, and the
+diagnostic its refusal lacks; and, when `Compile`'s refusal becomes a status, the fuzz oracle's admitted answers
+(`Verdicts.Compile`) and its comparison of the two entries, which then reads the status. **SJL-11.4 and SJL-11.5** call
+the entry for a literal's early errors (Broiler.VM's binder `CheckRegExp`, Broiler.JS's `RegExpValidator`) and map its
+identifiers under JSD-0083's D7. **Task 2.14** runs the corpus's validate rows through the operation added here. **The
+shared catalogue** (Broiler.JS's `early-errors.tsv`) owes the adoption of EG0002's split (below).
 
 *Where the plan, JSD-0081 and this repository differ, read at this record.*
 - **The meter.** Plan row 2.8 gives the entry "a nullable meter"; D18 as JSD-0081 files it gives it none, which this
