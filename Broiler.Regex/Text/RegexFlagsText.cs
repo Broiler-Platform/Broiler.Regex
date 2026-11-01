@@ -20,41 +20,6 @@ using System;
 namespace Broiler.Regex.Text;
 
 /// <summary>
-/// How reading a flags string ended (<see cref="RegexFlagsText.Parse"/>): the flags, or which of the three refusals
-/// ECMA-262 makes of a flags string. Each refusal is a <c>SyntaxError</c> in both engines, and the member names it, so
-/// that an engine renders its own message from it (decision D9 of Broiler.VM's JSD-0081, a status with a code and a
-/// position in place of an exception; decision SJL-D-11, each engine's text its own).
-/// </summary>
-/// <remarks>
-/// <b>Provisional</b> (task 2.7 of SJL-11.2): since task 2.8 the validate entry over a flags text answers each of these
-/// three refusals as decision D9's syntax status, <see cref="RegexStatus.SyntaxError"/> with the
-/// <see cref="RegexDiagnosticCode"/> of the same name at the same position; task 2.9, which fixes the public surface of
-/// <c>0.2.0-preview.1</c>, may fold this status into that one.
-/// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=Low; Resources=0; Fingerprint=645656
-// Broiler-Human:        PENDING
-public enum RegexFlagsStatus
-{
-    /// <summary>Every code unit is one of <c>d g i m s u v y</c>, none twice, and not <c>u</c> with <c>v</c>: the flags are set.</summary>
-    Success = 0,
-
-    /// <summary>
-    /// A code unit that is not one of <c>d g i m s u v y</c> (RegExpInitialize, ECMA-262 §22.2.3.3, its first refusal;
-    /// for a literal, IsValidRegularExpressionLiteral, §13.2.7.2). The position is that code unit's.
-    /// </summary>
-    UnknownFlag = 1,
-
-    /// <summary>A flag written a second time (the same step's second refusal). The position is the second occurrence's.</summary>
-    DuplicateFlag = 2,
-
-    /// <summary>
-    /// <c>u</c> and <c>v</c> together, each once and nothing else wrong (ParsePattern, §22.2.3.4, which refuses the pair
-    /// after every other flag is read). The position is the later of the two.
-    /// </summary>
-    UnicodeWithUnicodeSets = 3,
-}
-
-/// <summary>
 /// A flags string read as a status, and the canonical flags text of a flags value: the flag half of requirement R9
 /// (task 2.7 of SJL-11.2), which both engines' flag parsers move onto at their cut-overs (decision D20 of Broiler.VM's
 /// JSD-0081).
@@ -66,7 +31,13 @@ public enum RegexFlagsStatus
 /// no <see cref="RegexWorkCharge"/> (convention 4 asks one of an operation whose work does).
 /// </para>
 /// <para>
-/// <b>Provisional</b>, with every member of <c>Broiler.Regex.Text</c>: task 2.9 fixes the public surface.
+/// <b>The status</b> is decision D9's syntax status, the validate entry's: <see cref="RegexStatus.Success"/>, or
+/// <see cref="RegexStatus.SyntaxError"/> with a <see cref="RegexDiagnostic"/> of one of the three codes of the flags,
+/// <see cref="RegexDiagnosticCode.UnknownFlag"/> (1), <see cref="RegexDiagnosticCode.DuplicateFlag"/> (2) and
+/// <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/> (3), its argument the code unit refused and its position in the
+/// flags text. Until task 2.9 of SJL-11.2 it was an enum of its own, <c>RegexFlagsStatus</c>, with the same three members
+/// at the same numbers; task 2.9 folded it into the codes, so a refusal of a flags text is one value whichever entry
+/// meets it (a break of <c>0.1.0-preview.5</c>, listed with requirement R9 in <c>docs/suppressions.md</c>).
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=High; Resources=0; Fingerprint=C217B9
@@ -97,13 +68,16 @@ public static class RegexFlagsText
     /// A literal's flags are checked the same way (IsValidRegularExpressionLiteral, §13.2.7.2).
     /// </summary>
     /// <param name="text">The flags string, read by UTF-16 code units; an empty text sets no flag.</param>
-    /// <param name="flags">The flags when the status is <see cref="RegexFlagsStatus.Success"/>; <see cref="RegexFlags.None"/> otherwise.</param>
-    /// <param name="position">
-    /// The offset of the code unit the refusal names, in code units of <paramref name="text"/>; -1 on success. The code
+    /// <param name="flags">The flags when the status is <see cref="RegexStatus.Success"/>; <see cref="RegexFlags.None"/> otherwise.</param>
+    /// <param name="diagnostic">
+    /// The refusal when the status is <see cref="RegexStatus.SyntaxError"/>, the default value otherwise: its code
+    /// (<see cref="RegexDiagnosticCode.UnknownFlag"/>, <see cref="RegexDiagnosticCode.DuplicateFlag"/> or
+    /// <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>), its argument (the code unit refused, for the first two)
+    /// and its position, the offset of the code unit the refusal names in code units of <paramref name="text"/>. The code
     /// units are read from the first: an unknown code unit or the second occurrence of a flag, whichever comes first, is
     /// refused there, and <c>u</c> with <c>v</c> only when neither occurs anywhere, at the later of the two.
     /// </param>
-    /// <returns><see cref="RegexFlagsStatus.Success"/>, or the refusal; never an exception.</returns>
+    /// <returns><see cref="RegexStatus.Success"/>, or <see cref="RegexStatus.SyntaxError"/>; never an exception.</returns>
     /// <remarks>
     /// A literal's flags are code points and a constructor's code units; a code point outside <c>d g i m s u v y</c> is
     /// unknown either way, and no flag is a surrogate, so the answer is the same in both readings, and the position is
@@ -112,7 +86,7 @@ public static class RegexFlagsText
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=High; Resources=0; Fingerprint=E771AD
     // Broiler-Falsified-If: "gg", "x", "G", "uv" or "uvx" answers Success, "uvx" answers UnicodeWithUnicodeSets rather than UnknownFlag at 2, or a refusal's position is not the code unit it names
     // Broiler-Human:        PENDING
-    public static RegexFlagsStatus Parse(ReadOnlySpan<char> text, out RegexFlags flags, out int position)
+    public static RegexStatus Parse(ReadOnlySpan<char> text, out RegexFlags flags, out RegexDiagnostic diagnostic)
     {
         var seen = RegexFlags.None;
         var lastMode = -1;
@@ -120,9 +94,9 @@ public static class RegexFlagsText
         {
             var flag = FlagOf(text[at]);
             if (flag == RegexFlags.None)
-                return Refuse(RegexFlagsStatus.UnknownFlag, at, out flags, out position);
+                return Refuse(RegexDiagnosticCode.UnknownFlag, text, at, out flags, out diagnostic);
             if ((seen & flag) != 0)
-                return Refuse(RegexFlagsStatus.DuplicateFlag, at, out flags, out position);
+                return Refuse(RegexDiagnosticCode.DuplicateFlag, text, at, out flags, out diagnostic);
 
             seen |= flag;
             if ((flag & BothModes) != 0)
@@ -130,11 +104,11 @@ public static class RegexFlagsText
         }
 
         if ((seen & BothModes) == BothModes)
-            return Refuse(RegexFlagsStatus.UnicodeWithUnicodeSets, lastMode, out flags, out position);
+            return Refuse(RegexDiagnosticCode.UnicodeWithUnicodeSets, text, lastMode, out flags, out diagnostic);
 
         flags = seen;
-        position = -1;
-        return RegexFlagsStatus.Success;
+        diagnostic = default;
+        return RegexStatus.Success;
     }
 
     /// <summary>
@@ -183,13 +157,13 @@ public static class RegexFlagsText
         _ => RegexFlags.None,
     };
 
-    /// <summary>A refusal: no flags, and the position it names.</summary>
+    /// <summary>A refusal of kind <paramref name="code"/>: no flags, and the diagnostic of the code unit at <paramref name="at"/>.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=05A3FD
     // Broiler-Human:        PENDING
-    private static RegexFlagsStatus Refuse(RegexFlagsStatus status, int at, out RegexFlags flags, out int position)
+    private static RegexStatus Refuse(RegexDiagnosticCode code, ReadOnlySpan<char> text, int at, out RegexFlags flags, out RegexDiagnostic diagnostic)
     {
         flags = RegexFlags.None;
-        position = at;
-        return status;
+        diagnostic = RegexDiagnostic.OfFlags(code, text[at], at);
+        return RegexStatus.SyntaxError;
     }
 }

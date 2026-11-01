@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using Broiler.Regex.Text;
 using Broiler.Unicode.Tables;
 
 namespace Broiler.Regex.Probe;
@@ -252,20 +253,27 @@ internal static class ProbePopulation
             var probeCase = cases[i];
             try
             {
-                if (probeCase.NestingLimit is { } limit)
+                // Since task 2.9 of SJL-11.2 a refusal is a status with its diagnostic, through the public members alone
+                // (the architecture tests compile this file too): the flags through the flags reader, the pattern through
+                // Compile, under the case's nesting limit or, for a case that names none, under the maximum, which is what
+                // the constructors parse under, with no budget and no meter, as they compile. Each refusal is reported as
+                // the constructors' exception was: a flags refusal at -1, a syntax error or the maximum nesting limit at
+                // the diagnostic's position.
+                if (RegexFlagsText.Parse(probeCase.Flags, out var flags, out _) != RegexStatus.Success)
                 {
-                    var status = BroilerRegex.Compile(probeCase.Pattern, RegexFlagsParser.Parse(probeCase.Flags), UnicodeTables.Instance, limit, null, null, out var regex, out var exceeded, out var refusal);
-                    compiled[i] = status switch
-                    {
-                        RegexStatus.Success => new CompiledCase(probeCase, regex, null),
-                        // A syntax error is Compile's status since task 2.9 of SJL-11.2, reported as the exception was.
-                        RegexStatus.SyntaxError => new CompiledCase(probeCase, null, "syntax @" + Decimal(refusal.Position)),
-                        _ => new CompiledCase(probeCase, null, exceeded == RegexLimit.Nesting ? "limit:nesting" : "limit:another"),
-                    };
+                    compiled[i] = new CompiledCase(probeCase, null, "syntax @-1");
                     continue;
                 }
 
-                compiled[i] = new CompiledCase(probeCase, new BroilerRegex(probeCase.Pattern, probeCase.Flags, UnicodeTables.Instance), null);
+                var status = BroilerRegex.Compile(probeCase.Pattern, flags, UnicodeTables.Instance, probeCase.NestingLimit ?? BroilerRegex.MaximumNestingLimit,
+                    null, null, out var regex, out var exceeded, out var refusal);
+                compiled[i] = status switch
+                {
+                    RegexStatus.Success => new CompiledCase(probeCase, regex, null),
+                    RegexStatus.SyntaxError => new CompiledCase(probeCase, null, "syntax @" + Decimal(refusal.Position)),
+                    _ when probeCase.NestingLimit is null => new CompiledCase(probeCase, null, "syntax @" + Decimal(refusal.Position)),
+                    _ => new CompiledCase(probeCase, null, exceeded == RegexLimit.Nesting ? "limit:nesting" : "limit:another"),
+                };
             }
             catch (Exception exception)
             {

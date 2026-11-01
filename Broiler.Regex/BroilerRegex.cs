@@ -432,10 +432,8 @@ public sealed class BroilerRegex
         ArgumentNullException.ThrowIfNull(tables);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);
-        var status = Text.RegexFlagsText.Parse(flags, out var parsed, out var position);
-        if (status != Text.RegexFlagsStatus.Success)
+        if (Text.RegexFlagsText.Parse(flags, out var parsed, out diagnostic) != RegexStatus.Success)
         {
-            diagnostic = RegexDiagnostic.OfFlags(status, flags!, position);
             limit = RegexLimit.None;
             return RegexStatus.SyntaxError;
         }

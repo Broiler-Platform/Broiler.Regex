@@ -62,16 +62,21 @@ public enum RegexFlags
 /// <c>v</c> are mutually exclusive; an unknown letter is a syntax error.
 /// </summary>
 /// <remarks>
-/// The reader of <c>0.1.0-preview.4</c>, kept with its answers and its messages. Since task 2.7 of SJL-11.2 it reads the
-/// grammar of <see cref="Text.RegexFlagsText.Parse"/>, which answers the same refusals as a status with a position and no
-/// exception (convention 3); task 2.9, which fixes the public surface, decides this member's future.
+/// <see cref="Parse"/> is the reader of <c>0.1.0-preview.4</c>, kept with its answers and its messages; since task 2.7 of
+/// SJL-11.2 it reads the grammar of <see cref="Text.RegexFlagsText.Parse"/>, and since task 2.9 it is internal: it throws
+/// for a flags string the specification refuses, an expected failure that convention 3 makes a status, which
+/// <see cref="Text.RegexFlagsText.Parse"/> answers with the diagnostic. <see cref="IsUnicodeMode"/>, which reads a flags
+/// value and can fail for none, stays public.
 /// </remarks>
 // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=8E3CEF
 // Broiler-Falsified-If: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
 // Broiler-Human:        PENDING
 public static class RegexFlagsParser
 {
-    /// <summary>The flags <paramref name="flags"/> sets, or a <see cref="RegexSyntaxException"/> for a string ECMA-262 refuses.</summary>
+    /// <summary>
+    /// The flags <paramref name="flags"/> sets, or a <see cref="RegexSyntaxException"/> for a string ECMA-262 refuses: the
+    /// reader the constructor over a flags text calls, internal since task 2.9 of SJL-11.2 (the type's remarks).
+    /// </summary>
     /// <param name="flags">The flags string; null or empty sets no flag.</param>
     /// <returns>The flags.</returns>
     /// <exception cref="RegexSyntaxException">
@@ -82,13 +87,18 @@ public static class RegexFlagsParser
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=2217E0
     // Broiler-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
-    public static RegexFlags Parse(string? flags)
+    internal static RegexFlags Parse(string? flags)
     {
-        var status = Text.RegexFlagsText.Parse(flags, out var result, out var position);
-        return status == Text.RegexFlagsStatus.Success ? result : throw new RegexSyntaxException(RegexDiagnostic.OfFlags(status, flags!, position));
+        return Text.RegexFlagsText.Parse(flags, out var result, out var diagnostic) == RegexStatus.Success ? result : throw new RegexSyntaxException(diagnostic);
     }
 
-    /// <summary>True when either <c>u</c> or <c>v</c> is set (both imply code-point semantics).</summary>
+    /// <summary>
+    /// True when either <c>u</c> or <c>v</c> is set (both imply code-point semantics): the pattern's Unicode mode, in which
+    /// AdvanceStringIndex steps over a surrogate pair (ECMA-262 §22.2.7.3) and the pattern is read by code points
+    /// (§22.2.3.4, ParsePattern).
+    /// </summary>
+    /// <param name="flags">The flags.</param>
+    /// <returns>Whether <see cref="RegexFlags.Unicode"/> or <see cref="RegexFlags.UnicodeSets"/> is set.</returns>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B0612A
     // Broiler-Falsified-If: IsUnicodeMode(RegexFlags.UnicodeSets) returns false, so a v-mode pattern is parsed and matched per UTF-16 code unit
     // Broiler-Human:        PENDING

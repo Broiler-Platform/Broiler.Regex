@@ -301,6 +301,13 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
     argument and position), where `0.1.0-preview.5` threw a `RegexSyntaxException`; past the nesting limit it answers
     `LimitExceeded` naming `Nesting` with the `NestingLimit` diagnostic, as the validate entry does. CP0002 for the
     signature of task 2.5. The compile budget stays a parameter beside the nesting limit, and the meter after them.
+  - **The flags' status is the syntax status (R9; decision D9).** `RegexFlagsText.Parse(ReadOnlySpan<char>, out
+    RegexFlags, out RegexDiagnostic)` answers `RegexStatus.Success` or `SyntaxError` with the diagnostic the validate
+    entry answers for the same flags text: `RegexDiagnosticCode.UnknownFlag`, `DuplicateFlag` or `UnicodeWithUnicodeSets`,
+    the code unit refused as its argument and its position in the text. `RegexFlagsStatus`, whose three members bore the
+    same names at the same numbers, is removed (CP0001), and the old `Parse` with its `out int` position (CP0002).
+  - **`RegexFlagsParser.Parse` is internal (R10, convention 3).** It throws for a flags string the specification refuses;
+    `RegexFlagsText.Parse` is the status form (CP0002). `RegexFlagsParser.IsUnicodeMode` stays public.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

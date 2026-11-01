@@ -474,18 +474,19 @@ public readonly struct RegexDiagnostic
         new(RegexDiagnosticCode.NestingLimit, position, limit.ToString(NumberFormatInfo.InvariantInfo), message);
 
     /// <summary>
-    /// The refusal of a flags text <see cref="Text.RegexFlagsText.Parse"/> answered <paramref name="status"/> for, at
-    /// <paramref name="position"/>, with the message <c>0.1.0-preview.4</c> gave each.
+    /// The refusal <paramref name="code"/>, one of the three codes of the flags, of the code unit <paramref name="unit"/> at
+    /// <paramref name="position"/> of a flags text (<see cref="Text.RegexFlagsText.Parse"/>), with the message
+    /// <c>0.1.0-preview.4</c> gave each.
     /// </summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=92AC82
     // Broiler-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
     // Broiler-Human:        PENDING
-    internal static RegexDiagnostic OfFlags(Text.RegexFlagsStatus status, string flags, int position) => status switch
+    internal static RegexDiagnostic OfFlags(RegexDiagnosticCode code, char unit, int position) => code switch
     {
-        Text.RegexFlagsStatus.UnknownFlag => new(RegexDiagnosticCode.UnknownFlag, position, flags[position].ToString(),
-            "Invalid regular expression flags: '" + flags[position] + "'"),
-        Text.RegexFlagsStatus.DuplicateFlag => new(RegexDiagnosticCode.DuplicateFlag, position, flags[position].ToString(),
-            "Duplicate regular expression flag: '" + flags[position] + "'"),
+        RegexDiagnosticCode.UnknownFlag => new(RegexDiagnosticCode.UnknownFlag, position, unit.ToString(),
+            "Invalid regular expression flags: '" + unit + "'"),
+        RegexDiagnosticCode.DuplicateFlag => new(RegexDiagnosticCode.DuplicateFlag, position, unit.ToString(),
+            "Duplicate regular expression flag: '" + unit + "'"),
         _ => new(RegexDiagnosticCode.UnicodeWithUnicodeSets, position, null, "The 'u' and 'v' regular expression flags cannot be combined"),
     };
 }

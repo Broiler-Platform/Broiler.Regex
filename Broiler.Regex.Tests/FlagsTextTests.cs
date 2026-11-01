@@ -33,31 +33,62 @@ public class FlagsTextTests
     /// code unit (an unknown one, or one that occurred before it), else <c>u</c> with <c>v</c> at the later of the two,
     /// else the flags.
     /// </summary>
-    private static (RegexFlagsStatus Status, RegexFlags Flags, int Position) Specification(string text)
+    private static (RegexDiagnosticCode Status, RegexFlags Flags, int Position) Specification(string text)
     {
         for (var at = 0; at < text.Length; at++)
         {
             if (Letters.IndexOf(text[at], StringComparison.Ordinal) < 0)
-                return (RegexFlagsStatus.UnknownFlag, RegexFlags.None, at);
+                return (RegexDiagnosticCode.UnknownFlag, RegexFlags.None, at);
             if (text.IndexOf(text[at], StringComparison.Ordinal) < at)
-                return (RegexFlagsStatus.DuplicateFlag, RegexFlags.None, at);
+                return (RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, at);
         }
 
         var u = text.IndexOf('u', StringComparison.Ordinal);
         var v = text.IndexOf('v', StringComparison.Ordinal);
         if (u >= 0 && v >= 0)
-            return (RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, Math.Max(u, v));
+            return (RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, Math.Max(u, v));
 
         var flags = RegexFlags.None;
         foreach (var letter in text)
             flags |= FlagOfLetter[Letters.IndexOf(letter, StringComparison.Ordinal)];
-        return (RegexFlagsStatus.Success, flags, -1);
+        return (RegexDiagnosticCode.None, flags, -1);
     }
 
-    private static (RegexFlagsStatus Status, RegexFlags Flags, int Position) Read(string text)
+    /// <summary>
+    /// The reader's answer as the specification's is written: the refusal's code, <see cref="RegexDiagnosticCode.None"/>
+    /// for none, the flags and the position. Since task 2.9 of SJL-11.2 the status is the syntax status and the refusal a
+    /// diagnostic, so the status is held to the code here, every time.
+    /// </summary>
+    private static (RegexDiagnosticCode Status, RegexFlags Flags, int Position) Read(string text)
     {
-        var status = RegexFlagsText.Parse(text, out var flags, out var position);
-        return (status, flags, position);
+        var status = RegexFlagsText.Parse(text, out var flags, out var diagnostic);
+        if (status != (diagnostic.Code == RegexDiagnosticCode.None ? RegexStatus.Success : RegexStatus.SyntaxError))
+            Assert.Fail(Show(text) + " answered " + status + " with the diagnostic " + diagnostic.Code);
+        return (diagnostic.Code, flags, diagnostic.Position);
+    }
+
+    /// <summary>
+    /// A refusal is the validate entry's diagnostic for the same flags text: the code, its message identifier, the code
+    /// unit refused as the argument (none for <c>u</c> with <c>v</c>) and the position, and the message the throwing reader
+    /// gives (task 2.9 of SJL-11.2 folded the flags' own status, <c>RegexFlagsStatus</c>, into the codes 1 to 3).
+    /// </summary>
+    [Theory]
+    [InlineData("gx", RegexDiagnosticCode.UnknownFlag, 1, "x", "regexp.flags.unknown")]
+    [InlineData("gig", RegexDiagnosticCode.DuplicateFlag, 2, "g", "regexp.flags.duplicate")]
+    [InlineData("vu", RegexDiagnosticCode.UnicodeWithUnicodeSets, 1, null, "regexp.flags.unicode-with-unicode-sets")]
+    [InlineData("uvx", RegexDiagnosticCode.UnknownFlag, 2, "x", "regexp.flags.unknown")]
+    public void A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic(string text, RegexDiagnosticCode code, int position, string? argument, string messageId)
+    {
+        Assert.Equal(RegexStatus.SyntaxError, RegexFlagsText.Parse(text, out var flags, out var diagnostic));
+        Assert.Equal(RegexFlags.None, flags);
+        Assert.Equal((code, position, argument, messageId), (diagnostic.Code, diagnostic.Position, diagnostic.Argument, diagnostic.MessageId));
+        Assert.Equal(Assert.Throws<RegexSyntaxException>(() => RegexFlagsParser.Parse(text)).Message, diagnostic.Message);
+
+        Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate("a", text, Broiler.Unicode.Tables.UnicodeTables.Instance, 512, out var validated, out _));
+        Assert.Equal((validated.Code, validated.Position, validated.Argument, validated.Message), (diagnostic.Code, diagnostic.Position, diagnostic.Argument, diagnostic.Message));
+
+        Assert.Equal(RegexStatus.Success, RegexFlagsText.Parse("dgimsuy", out _, out var none));
+        Assert.Equal((RegexDiagnosticCode.None, -1), (none.Code, none.Position));
     }
 
     /// <summary>Every ordering of every subset of <paramref name="letters"/>: 109,601 strings for the eight flags.</summary>
@@ -86,7 +117,7 @@ public class FlagsTextTests
         {
             var expected = Specification(text);
             Assert.True(expected == Read(text), text + ": " + Read(text) + " where the specification reads " + expected);
-            if (expected.Status == RegexFlagsStatus.Success)
+            if (expected.Status == RegexDiagnosticCode.None)
                 Assert.Equal(new string(Letters.Where(text.Contains).ToArray()), RegexFlagsText.Format(expected.Flags));
             else
                 refusedForBothModes++;
@@ -107,8 +138,8 @@ public class FlagsTextTests
             var text = ((char)unit).ToString();
             var letter = Letters.IndexOf((char)unit, StringComparison.Ordinal);
             var expected = letter >= 0
-                ? (RegexFlagsStatus.Success, FlagOfLetter[letter], -1)
-                : (RegexFlagsStatus.UnknownFlag, RegexFlags.None, 0);
+                ? (RegexDiagnosticCode.None, FlagOfLetter[letter], -1)
+                : (RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 0);
             Assert.True(expected == Read(text), "U+" + unit.ToString("X4", System.Globalization.CultureInfo.InvariantCulture));
         }
     }
@@ -134,26 +165,26 @@ public class FlagsTextTests
     }
 
     [Theory]
-    [InlineData("", RegexFlagsStatus.Success, RegexFlags.None, -1)]
-    [InlineData("g", RegexFlagsStatus.Success, RegexFlags.Global, -1)]
-    [InlineData("yg", RegexFlagsStatus.Success, RegexFlags.Global | RegexFlags.Sticky, -1)]
-    [InlineData("v", RegexFlagsStatus.Success, RegexFlags.UnicodeSets, -1)]
-    [InlineData("gg", RegexFlagsStatus.DuplicateFlag, RegexFlags.None, 1)]
-    [InlineData("gimg", RegexFlagsStatus.DuplicateFlag, RegexFlags.None, 3)]
-    [InlineData("x", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 0)]
-    [InlineData("gx", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 1)]
-    [InlineData("G", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 0)]
-    [InlineData("g ", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 1)]
-    [InlineData("\0", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 0)]
-    [InlineData("uv", RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, 1)]
-    [InlineData("vu", RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, 1)]
-    [InlineData("ugv", RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, 2)]
-    [InlineData("dgimsuvy", RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, 6)]
+    [InlineData("", RegexDiagnosticCode.None, RegexFlags.None, -1)]
+    [InlineData("g", RegexDiagnosticCode.None, RegexFlags.Global, -1)]
+    [InlineData("yg", RegexDiagnosticCode.None, RegexFlags.Global | RegexFlags.Sticky, -1)]
+    [InlineData("v", RegexDiagnosticCode.None, RegexFlags.UnicodeSets, -1)]
+    [InlineData("gg", RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, 1)]
+    [InlineData("gimg", RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, 3)]
+    [InlineData("x", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 0)]
+    [InlineData("gx", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 1)]
+    [InlineData("G", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 0)]
+    [InlineData("g ", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 1)]
+    [InlineData("\0", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 0)]
+    [InlineData("uv", RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, 1)]
+    [InlineData("vu", RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, 1)]
+    [InlineData("ugv", RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, 2)]
+    [InlineData("dgimsuvy", RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, 6)]
     // An unknown or repeated code unit anywhere is refused before u with v, which ParsePattern refuses only after.
-    [InlineData("uvx", RegexFlagsStatus.UnknownFlag, RegexFlags.None, 2)]
-    [InlineData("uvu", RegexFlagsStatus.DuplicateFlag, RegexFlags.None, 2)]
-    [InlineData("vuv", RegexFlagsStatus.DuplicateFlag, RegexFlags.None, 2)]
-    public void A_refusal_names_its_kind_and_the_code_unit(string text, RegexFlagsStatus status, RegexFlags flags, int position) =>
+    [InlineData("uvx", RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 2)]
+    [InlineData("uvu", RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, 2)]
+    [InlineData("vuv", RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, 2)]
+    public void A_refusal_names_its_kind_and_the_code_unit(string text, RegexDiagnosticCode status, RegexFlags flags, int position) =>
         Assert.Equal((status, flags, position), Read(text));
 
     [Fact]
@@ -161,9 +192,9 @@ public class FlagsTextTests
     {
         // Eight distinct flags exist, so the ninth code unit is unknown or a repeat: the work does not grow with the text,
         // which is why the reader takes no meter.
-        Assert.Equal((RegexFlagsStatus.DuplicateFlag, RegexFlags.None, 8), Read("dgimsuyv" + new string('g', 1_000_000)));
-        Assert.Equal((RegexFlagsStatus.UnknownFlag, RegexFlags.None, 8), Read("dgimsuyv" + new string('x', 1_000_000)));
-        Assert.Equal((RegexFlagsStatus.UnknownFlag, RegexFlags.None, 0), Read(new string('x', 1_000_000)));
+        Assert.Equal((RegexDiagnosticCode.DuplicateFlag, RegexFlags.None, 8), Read("dgimsuyv" + new string('g', 1_000_000)));
+        Assert.Equal((RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 8), Read("dgimsuyv" + new string('x', 1_000_000)));
+        Assert.Equal((RegexDiagnosticCode.UnknownFlag, RegexFlags.None, 0), Read(new string('x', 1_000_000)));
     }
 
     [Fact]
@@ -188,7 +219,7 @@ public class FlagsTextTests
 
             // The text reads back as the flags, but u with v, which the reader refuses at the later of the two.
             var both = (flags & (RegexFlags.Unicode | RegexFlags.UnicodeSets)) == (RegexFlags.Unicode | RegexFlags.UnicodeSets);
-            Assert.Equal(both ? (RegexFlagsStatus.UnicodeWithUnicodeSets, RegexFlags.None, text.IndexOf('v', StringComparison.Ordinal)) : (RegexFlagsStatus.Success, flags, -1), Read(text));
+            Assert.Equal(both ? (RegexDiagnosticCode.UnicodeWithUnicodeSets, RegexFlags.None, text.IndexOf('v', StringComparison.Ordinal)) : (RegexDiagnosticCode.None, flags, -1), Read(text));
         }
 
         // ECMA-262's own example of the order (§22.2.6.4): new RegExp("x", "yg").flags is "gy".
