@@ -21,28 +21,45 @@ to what it finds: each suppression is listed there, and when the scan finds none
 files are read from the evaluation's import list, not named in the test, so one a later change adds (a
 `Directory.Build.targets`, another `eng/*.props`) is scanned the day it is imported.
 
-The probe's project file sets `NoWarn` to `1701;1702`, the compiler's informational codes the SDK puts in every
-project. That **replaces** the XML-documentation codes the packaging file appends; it resets the property rather than
+The probe's project file, and since task 2.9 the library's, sets `NoWarn` to `1701;1702`, the compiler's informational
+codes the SDK puts in every project. That **replaces** the XML-documentation codes the packaging file appends; it resets the property rather than
 suppressing anything, and is not listed. The test projects, whose sources are the rules' own and name every marker
 the scan looks for, and the witnesses of the rules, which exist to break them, are not scanned.
 
 ### Inventory
 
-- `eng/Broiler.Packaging.props`: `NoWarn` appends `CS1570`, `CS1572`, `CS1573`, `CS1574`, `CS1587`, `CS1591` and
-  `CS1734`, the XML-documentation warnings, for every project of the repository. The file is the vendored copy of the
-  platform's packaging props and is not edited here. It reaches the library, whose project file does not reset it,
-  so a public member without its documentation compiles there today. Rule SL5 refuses the library's evaluated
-  `NoWarn` for each of the seven codes, and the starting violation list holds the seven rows until the library resets
-  the property and documents every public member (convention 15).
+None.
 
-None of these is a trim, AOT or single-file warning.
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2).* The inventory read: "`eng/Broiler.Packaging.props`: `NoWarn` appends
+`CS1570`, `CS1572`, `CS1573`, `CS1574`, `CS1587`, `CS1591` and `CS1734`, the XML-documentation warnings, for every
+project of the repository. The file is the vendored copy of the platform's packaging props and is not edited here. It
+reaches the library, whose project file does not reset it, so a public member without its documentation compiles
+there today. Rule SL5 refuses the library's evaluated `NoWarn` for each of the seven codes, and the starting violation
+list holds the seven rows until the library resets the property and documents every public member (convention 15)."
+The library's project file now resets `NoWarn` to the SDK's own codes, `1701;1702`, as the probe's does, so the seven
+codes no longer reach it, every public member is documented (three were not: `BroilerRegex.Pattern`, `Flags` and
+`RegexFlags.None`), and a missing comment or an unresolved reference is a build error; the seven rows have left the
+starting violation list. The packaging props still append the codes for the test projects, which SL5 does not scan.
+
 
 ## Accepted breaks of the published API
 
-Package validation compares every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.4`
-(convention 16). A break that the SJL-11 work makes on purpose (decision D12 of Broiler.VM's JSD-0081) is suppressed
-in `Broiler.Regex/CompatibilitySuppressions.xml`, listed here with its R item, and recorded in
+Package validation compares every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.5` since
+task 2.9 of SJL-11.2 (convention 16). A break that the SJL-11 work makes on purpose (decision D12 of Broiler.VM's
+JSD-0081) is suppressed in `Broiler.Regex/CompatibilitySuppressions.xml`, listed here with its R item, and recorded in
 [`CHANGELOG.md`](../CHANGELOG.md) under **Changed**.
+
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2): the baseline moved.* This paragraph read "Package validation compares
+every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.4` (convention 16)". The owner published
+`0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main`, which carries tasks 2.1 to 2.7 and 2.11 (not
+2.8, 2.14 or 2.9), and wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!", so the SJL-11 surface ships as
+`0.1.0-preview.6` (decision D12 named `0.2.0-preview.1`), and package validation reads `0.1.0-preview.5`, the version a
+consumer can have.
+Every break the four sections that follow list, those of tasks 2.2, 2.3, 2.4c and 2.6, is a break of
+`0.1.0-preview.4` that `0.1.0-preview.5` shipped: a pack compared with `0.1.0-preview.5` no longer reports it, so its
+suppression has left `CompatibilitySuppressions.xml` (23 suppressions, which package validation generated against
+`0.1.0-preview.4`), and the sections stay, as written, as the history of what `0.1.0-preview.5` broke. The breaks of
+`0.1.0-preview.5` are task 2.9's, in the last section.
 
 ### R11: Unicode data through the Unicode owner's provider (task 2.2 of SJL-11.2, 2026-10-26)
 
@@ -148,3 +165,28 @@ The consumer that reads the dictionary today is Broiler.JS, pinning `0.1.0-previ
 `BroilerRegex.GroupNames` into its capture map (`JSRegExp.Broiler.cs`, `BuildCaptureMapFromBroiler`); it moves its pin
 only at SJL-11.5 (decision D12), where its adapter reads `RegexGroupNames` instead, the shape its own capture map
 already has: each name, in the order of its first group, with its list of groups.
+
+### R10 and R8: the surface of `0.1.0-preview.6` (task 2.9 of SJL-11.2, 2026-11-01)
+
+Task 2.9 fixes the public surface the SJL-11 work ships, as `0.1.0-preview.6` (the owner's decision of 2026-11-01; the
+dated note above). Each break below is one of `0.1.0-preview.5`, the baseline, which a consumer of that version meets;
+each is suppressed by `Broiler.Regex/CompatibilitySuppressions.xml` as package validation generated it
+(`ApiCompatGenerateSuppressionFile`), and nothing else is. The R item is the requirement that forces it: R10's
+conventions (3, failure is data; 1, neutral types; 4, work charged by the caller's meter) and R8 (an offset-only
+interface beside the string-bearing one D12 keeps).
+
+| Suppression | Target | R item | What replaces it |
+|---|---|---|---|
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Compile(System.String,Broiler.Regex.RegexFlags,Broiler.Unicode.Algorithms.IUnicodeTables,System.Int32,System.Nullable{System.UInt64},Broiler.Regex.RegexWorkCharge,Broiler.Regex.BroilerRegex@,Broiler.Regex.RegexLimit@)` | R10 (convention 3; decision D9) | The same member with an `out RegexDiagnostic` last: a syntax error is `RegexStatus.SyntaxError` with the validate entry's diagnostic, where it was a `RegexSyntaxException`, and the nesting limit carries its `NestingLimit` diagnostic. |
+| CP0001 | `T:Broiler.Regex.Text.RegexFlagsStatus` | R9 (decision D9) | `RegexDiagnosticCode`'s three codes of the flags, `UnknownFlag` (1), `DuplicateFlag` (2) and `UnicodeWithUnicodeSets` (3), the same names at the same numbers; `Success` (0) is `RegexDiagnosticCode.None` with `RegexStatus.Success`. Two public types named one refusal; now the flags reader and the validate entry answer one value. |
+| CP0002 | `M:Broiler.Regex.Text.RegexFlagsText.Parse(System.ReadOnlySpan{System.Char},Broiler.Regex.RegexFlags@,System.Int32@)` | R9 (decision D9) | `RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out RegexDiagnostic)`, answering `RegexStatus.Success` or `SyntaxError` with the diagnostic: its code, the code unit refused as its argument, its position in the flags text (the old `out int`) and its message identifier. |
+| CP0002 | `M:Broiler.Regex.RegexFlagsParser.Parse(System.String)` | R10 (convention 3) | Internal: it throws for a flags string the specification refuses, an expected failure; `RegexFlagsText.Parse` answers the same refusal as a status. `RegexFlagsParser.IsUnicodeMode` stays public. |
+| CP0001 | `T:Broiler.Regex.RegexSyntaxException` | R10 (convention 3; check C3) | Internal, deriving from `ArgumentException`. `Compile`, the validate entry and `RegexFlagsText.Parse` answer a refusal as the syntax status with its `RegexDiagnostic`; the string-bearing constructors, which decision D12 keeps and which answer no status, document a pattern or flags text the specification refuses as their broken precondition and throw an `ArgumentException` with the diagnostic's message. `Position` and `Diagnostic` were its public members: the validate entry answers both for the same pattern. |
+| CP0001 (17) | `T:Broiler.Regex.Ast.AnchorKind`, `AnchorNode`, `AnyCharNode`, `BackreferenceNode`, `CharClassNode`, `CharNode`, `CharSet`, `ClassEscape`, `CodePointSet`, `DisjunctionNode`, `EmptyNode`, `GroupNode`, `LookaroundNode`, `ModifierGroupNode`, `QuantifierNode`, `RegexNode`, `SequenceNode` (each `T:Broiler.Regex.Ast.<name>`) | R10 (conventions 1, 3 and 4; check C1) | Internal. The syntax tree and the code-point set algebra named collections and a delegate in their public signatures (seven C1 rows of the starting violation list), their operations, whose work grows with the pattern or the sets, took no meter (convention 4, which check A-1 reads over every public member), and `CharSet.AddRange` threw for a range out of order. The tree survives as the library's internal model (decision D5: "the parser, the public tree, the `CodePointSet` algebra and the flag parser stay"), and no engine's adapter reads it (plan rows 5.2 and 6.1): `Compile` and the offset entry are the compilation and the match, `RegexGroupNames` the names. |
+| CP0001 | `T:Broiler.Regex.Parsing.RegexParser` | R10 (conventions 3 and 4) | Internal. Its `Parse` threw for a pattern it refuses and took no meter or nesting limit; `Compile` and the validate entry are the public parses, under the caller's nesting limit (and `Compile`'s budget and meter), each answering a status with the diagnostic. |
+| CP0001 | `T:Broiler.Regex.Unicode.UnicodeCharSets` | R10 (convention 1; check C1) | Internal, with the tree it serves. `PropertyMatch` named a collection in its public signature (two C1 rows); `IsDigit`, `PositiveEscape` and `IsComplementEscape` read the specification's sets, which the compiled pattern holds. |
+| CP0002 | `M:Broiler.Regex.RegexMatch.get_Groups` | R10 (convention 1; check C1) | `RegexMatch.Groups`, answering `ReadOnlySpan<RegexGroup>` where it answered `IReadOnlyList<RegexGroup>`: `Groups[i]` and `foreach` read as before, and `Count` is `Length`. |
+| CP0002 | `M:Broiler.Regex.RegexMatch.get_NamedGroups` | R10 (convention 1; check C1), R6 | `RegexMatch.GroupNamed(name)`: the name's participating group, or its first group unmatched when none participated, or null for a name the pattern does not declare and for a failed match, the answer the dictionary's entry gave; `BroilerRegex.GroupNames` lists the names in order. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Matches(System.String)` | R10 (convention 1; check C1) | `BroilerRegex.NextMatch(match)`, from `Match(input, 0)`: the same matches in the same order, after an empty match a code point on (a pair whole under `u` and `v`), and a last failed match naming the ceiling a match reached. |
+| CP0001 | `T:Broiler.Regex.Engine.RegexMatchCeilings` | R8 (task 2.4c's offset entry) | `Broiler.Regex.RegexMatchCeilings`, the same type in the package's root namespace beside the offset entry that takes it: its members and their meaning are unchanged. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan{System.Char},System.Int32,System.Boolean,System.Span{System.Int32},Broiler.Regex.RegexWorkCharge,Broiler.Regex.Engine.RegexMatchCeilings,Broiler.Regex.RegexLimit@)` | R8 (task 2.4c's offset entry) | The same offset entry over `Broiler.Regex.RegexMatchCeilings`, its behaviour unchanged. |

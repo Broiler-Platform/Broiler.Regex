@@ -74,8 +74,8 @@ public class CoreTests
         var re = TestRegex.Compile("(?<year>\\d{4})-(?<month>\\d{2})");
         var m = re.Match("2026-06");
         Assert.True(m.Success);
-        Assert.Equal("2026", m.NamedGroups["year"].Value);
-        Assert.Equal("06", m.NamedGroups["month"].Value);
+        Assert.Equal("2026", m.GroupNamed("year")!.Value);
+        Assert.Equal("06", m.GroupNamed("month")!.Value);
         Assert.Equal(2, re.CaptureCount);
     }
 

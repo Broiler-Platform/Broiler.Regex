@@ -24,9 +24,10 @@ public class SharedRuleTests
 
     /// <summary>
     /// The last version of the package published to nuget.org, which package validation reads as its baseline
-    /// (convention 16). It moves when a later version is published.
+    /// (convention 16). It moves when a later version is published: the owner published 0.1.0-preview.5 on 2026-10-29,
+    /// and task 2.9 of SJL-11.2 moved it from 0.1.0-preview.4.
     /// </summary>
-    private const string LastPublishedVersion = "0.1.0-preview.4";
+    private const string LastPublishedVersion = "0.1.0-preview.5";
 
     private static IReadOnlyDictionary<string, AssemblyFacts> Assemblies { get; } =
         SharedTree.Libraries.ToDictionary(static p => p.Name, static p => AssemblyFacts.Read(SharedTree.AssemblyPath(p.Name)), StringComparer.Ordinal);
@@ -135,12 +136,14 @@ public class SharedRuleTests
         Assert.Contains(library.StaticFields, static f => f.Type == "Broiler.Regex.Ast.EmptyNode" && f.Name == "Instance" && f.IsReadOnly);
         Assert.DoesNotContain(SharedRules.SL2(library), static v => v.Contains("EmptyNode.Instance", StringComparison.Ordinal));
 
-        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result holds the empty
-        // read-only dictionary that ReadOnlyDictionary.Empty returns behind its NamedGroups interface, which SL2 reads
-        // and passes (the type is the getter's return type as its signature names it, over the class's own type
-        // parameters). Until task 2.3 it held a new Dictionary there, and SL2 refused the field.
+        // And it reads what the static constructor creates: RegexMatch.Empty's no-match result holds its groups as the
+        // immutable array ImmutableCollectionsMarshal.AsImmutableArray answers over the empty array, which SL2 reads and
+        // passes (the type is the method's return type as its signature names it, over the method's own type parameter).
+        // Until task 2.3 it held a new Dictionary behind its NamedGroups interface, and SL2 refused the field; from task
+        // 2.3 to task 2.9 the empty read-only dictionary ReadOnlyDictionary.Empty returns, until NamedGroups left the
+        // public surface (convention 1).
         Assert.Equal(
-            ["System.Collections.ObjectModel.ReadOnlyDictionary`2<!0,!1>"],
+            ["System.Collections.Immutable.ImmutableArray`1<!!0>"],
             library.StaticInitializerCreations["Broiler.Regex.RegexMatch.Empty"]);
     }
 

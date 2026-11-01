@@ -73,10 +73,12 @@ internal static class TextPopulation
 
     private static string Flags(string text)
     {
-        var status = RegexFlagsText.Parse(text, out var flags, out var position);
-        return status == RegexFlagsStatus.Success
+        // Since task 2.9 of SJL-11.2 a refusal is the syntax status with its diagnostic, whose code bears the name the
+        // flags' own status bore, so the report reads as it did.
+        var status = RegexFlagsText.Parse(text, out var flags, out var diagnostic);
+        return status == RegexStatus.Success
             ? "Success " + Show(RegexFlagsText.Format(flags))
-            : status + " at " + position.ToString(CultureInfo.InvariantCulture);
+            : diagnostic.Code + " at " + diagnostic.Position.ToString(CultureInfo.InvariantCulture);
     }
 
     private static string Escaped(RegexEscaper escaper, string text)

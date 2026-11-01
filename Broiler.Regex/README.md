@@ -115,23 +115,24 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   is added, looked up or taken, and the class's order; the sets built from the provider (`Cased`,
   `\s`, the folded `\w`, `AllCharacters` under `vi`); and the program compiler's copies of class
   ranges and string tables.
-* **`RegexGroupNames.cs`** — a pattern's group names (task 2.6, requirement R6; provisional until
-  task 2.9): the names in the order of their first groups, the order of the `groups` object's
+* **`RegexGroupNames.cs`** — a pattern's group names (task 2.6, requirement R6): the names in the order of their first groups, the order of the `groups` object's
   properties; each name's groups, several for a name alternatives share; each group's name; and the
   group of a name that participated in a match, read from the offset entry's slots with no allocation.
-  `BroilerRegex.GroupNames` and `RegexParser.GroupNames` answer it; `RegexMatch.NamedGroups` maps each
-  name to its participating group, whose `RegexGroup.Number` says which.
+  `BroilerRegex.GroupNames` answers it; `RegexMatch.GroupNamed(name)` answers a name's participating
+  group, or its first group, unmatched, when none participated, and `RegexGroup.Number` says which.
 * **`BroilerRegex.cs`** — the public façade. The **offset entry**,
   `Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)`,
   takes a start, an anchored argument independent of `y`, the caller's slots, meter and ceilings, and
-  answers a status, allocating nothing once the pool is warm (provisional until task 2.9). The
-  string-bearing `Match` / `IsMatch` / `Matches`, which mirror the shape `JSRegExp` needs
-  (`Success`, `Index`, `Length`, indexed and named groups), run the same program as RegExpBuiltinExec,
+  answers a status, allocating nothing once the pool is warm; its ceilings are `RegexMatchCeilings`. The
+  string-bearing `Match` / `IsMatch` / `NextMatch`, which mirror the shape `JSRegExp` needs
+  (`Success`, `Index`, `Length`, the groups as a span and a name's group), run the same program as RegExpBuiltinExec,
   with no meter and the engines' frame and trail ceilings (decision D10). `Compile(string, RegexFlags,
   IUnicodeTables, int nestingLimit, ulong? compileBudget, RegexWorkCharge?, out BroilerRegex?, out
-  RegexLimit)` compiles under the caller's nesting limit, compile budget and meter and answers
-  `Success` or `LimitExceeded` naming `Nesting` or `Compile` (provisional until task 2.9); the
-  constructors take neither budget nor meter. The **validate entry** (task 2.8; provisional until task 2.9),
+  RegexLimit, out RegexDiagnostic)` compiles under the caller's nesting limit, compile budget and meter and
+  answers `Success`, `SyntaxError` with the refusal's diagnostic, or `LimitExceeded` naming `Nesting` or
+  `Compile`; the constructors take neither budget nor meter, and refuse a pattern or flags text the
+  specification refuses with an `ArgumentException`, their documented precondition (task 2.9). The
+  **validate entry** (task 2.8),
   `Validate(string, RegexFlags or string? flags, IUnicodeTables, int nestingLimit, out RegexDiagnostic, out
   RegexLimit)`, runs the same parse with every set expansion left out (a property's name and kind are looked up in
   the provider's tables, nothing is folded or combined) and answers `Success`, `SyntaxError` or `LimitExceeded`
@@ -140,14 +141,12 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   condition of the grammar, the early errors, the flags and the nesting limit, numbered by the part of
   the grammar and fixed once published; its message identifier, the shared frontend's early-error
   catalogue's where it has a row (EE0184 to EE0213, and EX0026 for the nesting limit); its argument;
-  and its position, in the pattern or in the flags text. The validate entry answers one, and every
-  `RegexSyntaxException` the parser and the flags parser throw carries the same one as its `Diagnostic`;
-  the public `CharSet.AddRange`'s, which no compilation reaches, carries none until task 2.9.
+  and its position, in the pattern or in the flags text. The validate entry, `Compile` and
+  `RegexFlagsText.Parse` answer one, and the constructors' `ArgumentException` carries its message.
 * **`Ast/CodePointSet.cs`** — sorted code-point ranges with union, intersection,
   difference and complement, immutable once built, so a set is shared between threads. Every class member kind reduces to one of these, so
-  `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand. A compilation
-  calls internal overloads that charge its account a unit per range read; the public members charge
-  nothing.
+  `v`-mode `&&` / `--` / nesting is plain set algebra rather than a case per operand. Internal since
+  task 2.9, with the rest of the syntax tree; a compilation charges its account a unit per range read.
 * **`Ast/ClassStrings.cs`** — the strings of a `v`-mode class operand while the parser builds it: an
   insertion-ordered hash set (task 2.5), so a union, an intersection, a difference or a `\q{…}` reads
   each string a bounded number of times, where the list it replaces was searched before each
@@ -162,11 +161,10 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   moves, so its work is in proportion to the set's ranges. The package declares no Unicode version of
   its own.
 * **`Unicode/UnicodeCharSets.cs`** — the parts of the class escapes that are not Unicode
-  data: `\d`, the basic `\w` set and the code space, and the public members of `0.1` that
-  read no table (`IsDigit`, `PositiveEscape`, `IsComplementEscape`, `PropertyMatch`).
-* **`Text/`** — the text helpers both engines' `RegExp` objects call (requirement R9, task 2.7; provisional until
-  task 2.9 fixes the surface). `RegexFlagsText.Parse` reads a flags string as a `RegexFlagsStatus` with the position of
-  the code unit it refuses (an unknown flag, a repeated flag, `u` with `v`) and `RegexFlagsText.Format` writes a flags
+  data: `\d`, the basic `\w` set and the code space; internal since task 2.9.
+* **`Text/`** — the text helpers both engines' `RegExp` objects call (requirement R9, task 2.7). `RegexFlagsText.Parse`
+  answers a flags string as `RegexStatus.Success`, or `SyntaxError` with a `RegexDiagnostic` naming the code unit it
+  refuses and its position (an unknown flag, a repeated flag, `u` with `v`) and `RegexFlagsText.Format` writes a flags
   value in the `flags` getter's order, `dgimsuvy`. `RegexEscaper.EscapeString` is `RegExp.escape`'s text, over the
   provider's `EcmaScriptLexical` white space (so U+0085 is not escaped), and `RegexEscaper.EscapePattern` the
   `source` getter's text (EscapeRegExpPattern: `/` outside a class and the line terminators escaped, the empty pattern
@@ -194,7 +192,7 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
 - `v`-mode class-set expressions: nesting, `&&`, `--`, `\q{…}` string alternatives,
   and the fold-then-complement ordering that makes `\P{Lu}` mean something
   different under `vi` than under `ui`
-- The text helpers of requirement R9: flags read as a status with a position and written in canonical order,
+- The text helpers of requirement R9: flags read as a status with a diagnostic and written in canonical order,
   `RegExp.escape`'s text and the `source` text (`Text/`)
 - The Annex B / Unicode-mode grammar split: `\u{…}`, a bare `]`/`{`/`}`, a class escape
   as a range endpoint, a quantified look-ahead, and `\k<n>` in a pattern that declares no
@@ -208,8 +206,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   which walks the tree on the heap, checks it again; a pattern nested deeper is refused before the
   level past the limit is read. `BroilerRegex.Compile` takes the caller's limit, up to
   `BroilerRegex.MaximumNestingLimit` (512, the limit both engines pass), and answers
-  `RegexStatus.LimitExceeded` with `RegexLimit.Nesting`; the constructors and `RegexParser.Parse`
-  parse under the maximum and refuse a deeper pattern with a `RegexSyntaxException`. The parser
+  `RegexStatus.LimitExceeded` with `RegexLimit.Nesting`; the constructors parse under the maximum and
+  refuse a deeper pattern with an `ArgumentException`. The parser
   still recurses a few frames per level, under that limit: on linux-x64, a pattern of every shape
   measured, nested to the maximum, parses and compiles on a 1 MiB stack under the JIT and Native AOT
   (the measurement and its margins are in the constant's documentation); win-x64 was not measured,
@@ -223,16 +221,16 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   process or throwing `RegexOverflowException`, and at 5,000 capturing groups in a row; the type
   and the failures are gone.
 - **The string-bearing members bound memory, not time** (decision D10). `Match(string, int)`,
-  `IsMatch` and `Matches` pass no meter and no step ceiling, as an engine that passes no meter does,
+  `IsMatch` and `NextMatch` pass no meter and no step ceiling, as an engine that passes no meter does,
   and the engines' ceilings of 1,048,576 frames and 2,097,152 trail cells. A pattern that backtracks
   catastrophically, such as `(a+)+b` on a long run of `a`, runs to its answer, which can take time
   exponential in the subject's length; the old matcher's per-start step budget answered no match
   instead, which requirement R1 forbids. A caller that matches untrusted patterns uses the offset
   entry with a meter or a step ceiling. A match that reaches a frame or trail ceiling is answered as
   that ceiling, never as no match: `Match` with a failed `RegexMatch` whose `Limit` names it,
-  `Matches` with that failed match as its last element, and `IsMatch`, whose `bool` has no room for
-  it, with an `InvalidOperationException`, which departs from convention 3 until task 2.9 decides
-  the member's form.
+  `NextMatch` with that failed match as the iteration's last, and `IsMatch`, whose `bool` has no room
+  for it, with an `InvalidOperationException`, the member's one documented throw, which the owner
+  admitted on 2026-11-01 (task 2.9; `docs/conventions.md`, "Where Broiler.Regex stands").
 - **A loop over a body of more than one character fills the trail** (task 2.4a's bound). The trail
   keeps every register write of an attempt until it ends, as Broiler.VM's does, a loop's included
   when it holds no choice: a counted loop writes two cells an iteration, a capturing group's
@@ -258,9 +256,8 @@ pattern ──▶ RegexParser ──▶ AST ──▶ ProgramCompiler ──▶ 
   1 + ⌊log₂ n⌋ units per code unit) and a class of fifty `\p{RGI_Emoji}` under `vi` about 4.9
   million. The constructors take neither meter nor budget, as an engine that passes no meter
   compiles, so their compilation is bounded only by the pattern; a caller that compiles untrusted
-  patterns calls `Compile` with a budget. The public `RegexParser` and the public `CodePointSet`
-  operations charge nothing either: their work is done in the caller's name (task 2.9 decides their
-  surface). The units count work, not memory: a compilation's allocation follows the same
+  patterns calls `Compile` with a budget. The parser and the `CodePointSet` operations are internal
+  since task 2.9, so no public member compiles uncharged but the constructors. The units count work, not memory: a compilation's allocation follows the same
   expansions, about 1.3 MiB for `\p{RGI_Emoji}` at task 2.4c's measurement, of which the parse was
   about 0.95 MiB.
 - Two deliberate divergences from V8, both under `vi` and both pinned by a test:

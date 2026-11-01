@@ -3,91 +3,168 @@
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:Broiler.Regex.Matching.RegexGroup</Target>
+    <Target>T:Broiler.Regex.Ast.AnchorKind</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:Broiler.Regex.Matching.RegexMatch</Target>
+    <Target>T:Broiler.Regex.Ast.AnchorNode</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:Broiler.Regex.RegexOverflowException</Target>
+    <Target>T:Broiler.Regex.Ast.AnyCharNode</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
-    <Target>T:Broiler.Regex.Unicode.CaseFolding</Target>
+    <Target>T:Broiler.Regex.Ast.BackreferenceNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.CharClassNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.CharNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.CharSet</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.ClassEscape</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.CodePointSet</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.DisjunctionNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.EmptyNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.GroupNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.LookaroundNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.ModifierGroupNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.QuantifierNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.RegexNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Ast.SequenceNode</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Engine.RegexMatchCeilings</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Parsing.RegexParser</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.RegexSyntaxException</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Text.RegexFlagsStatus</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Unicode.UnicodeCharSets</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Ast.CharSet.AddEscape(Broiler.Regex.Ast.ClassEscape,System.Boolean,System.Boolean)</Target>
+    <Target>M:Broiler.Regex.BroilerRegex.Compile(System.String,Broiler.Regex.RegexFlags,Broiler.Unicode.Algorithms.IUnicodeTables,System.Int32,System.Nullable{System.UInt64},Broiler.Regex.RegexWorkCharge,Broiler.Regex.BroilerRegex@,Broiler.Regex.RegexLimit@)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Ast.CharSet.Contains(System.Int32,System.Boolean,System.Boolean)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Ast.CodePointSet.AddAll(Broiler.Regex.Ast.CodePointSet)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Ast.CodePointSet.AddCodePoint(System.Int32)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Ast.CodePointSet.AddRange(System.Int32,System.Int32)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.BroilerRegex.#ctor(System.String,Broiler.Regex.RegexFlags)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.BroilerRegex.#ctor(System.String,System.String)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.BroilerRegex.get_GroupNames</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.BroilerRegex.Match(System.String,System.Int32)</Target>
+    <Target>M:Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan{System.Char},System.Int32,System.Boolean,System.Span{System.Int32},Broiler.Regex.RegexWorkCharge,Broiler.Regex.Engine.RegexMatchCeilings,Broiler.Regex.RegexLimit@)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
@@ -101,63 +178,28 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Parsing.RegexParser.#ctor(System.String,Broiler.Regex.RegexFlags)</Target>
+    <Target>M:Broiler.Regex.RegexFlagsParser.Parse(System.String)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Parsing.RegexParser.get_GroupNames</Target>
+    <Target>M:Broiler.Regex.RegexMatch.get_Groups</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Parsing.RegexParser.Parse(System.String,Broiler.Regex.RegexFlags,System.Int32@,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int32}@)</Target>
+    <Target>M:Broiler.Regex.RegexMatch.get_NamedGroups</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.AllCharacters(System.Boolean,System.Boolean)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.EscapeSet(Broiler.Regex.Ast.ClassEscape,System.Boolean,System.Boolean)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.IsSpace(System.Int32)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.IsWord(System.Int32,System.Boolean,System.Boolean)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.ResolveProperty(System.String,System.String)</Target>
-    <Left>lib/net10.0/Broiler.Regex.dll</Left>
-    <Right>lib/net10.0/Broiler.Regex.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Broiler.Regex.Unicode.UnicodeCharSets.WordSet(System.Boolean,System.Boolean)</Target>
+    <Target>M:Broiler.Regex.Text.RegexFlagsText.Parse(System.ReadOnlySpan{System.Char},Broiler.Regex.RegexFlags@,System.Int32@)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>

@@ -110,7 +110,7 @@ public class StackDepthGuardTests
             RegexMatch? m = null;
             ProgramCompilerTests.OnASmallStack(() => m = re.Match(subject));
             Assert.Equal(subject, m!.Value);
-            Assert.Equal(count + 1, m.Groups.Count);
+            Assert.Equal(count + 1, m.Groups.Length);
             Assert.Equal(count - 1, m.Groups[count].Index);
         }
     }

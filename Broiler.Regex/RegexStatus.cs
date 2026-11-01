@@ -29,11 +29,9 @@ namespace Broiler.Regex;
 /// added for the new backend's match entry, which task 2.4c made public as <see cref="BroilerRegex"/>'s offset entry
 /// (<c>BroilerRegex.Match</c> over a span), answering this enum, and <see cref="SyntaxError"/>, which task 2.8 added for
 /// the validate entry, <see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>,
-/// with its code, message identifier and position in a <see cref="RegexDiagnostic"/>. A syntax error from
-/// <see cref="BroilerRegex.Compile"/> is still a <see cref="RegexSyntaxException"/>, which carries the same diagnostic, and the signature of
-/// <see cref="BroilerRegex.Compile"/> is provisional: task 2.5 replaced it to take the caller's compile budget and meter,
-/// and a syntax status needs room for its code, message identifier and position (its remarks). The members here are kept
-/// whatever replaces it, and their numbers are fixed.
+/// with its code, message identifier and position in a <see cref="RegexDiagnostic"/>, which <see cref="BroilerRegex.Compile"/>
+/// and <see cref="Text.RegexFlagsText.Parse"/> answer too since task 2.9 of SJL-11.2. The members are fixed for
+/// <c>0.1.0-preview.6</c>, and their numbers are never reused.
 /// </para>
 /// <para>
 /// <b>A member D9 does not list.</b> Decision D9's statuses are a match, no match, a limit exceeded naming its
@@ -77,7 +75,8 @@ public enum RegexStatus
     /// <summary>
     /// The pattern or its flags break the grammar or an early error (ECMA-262 §22.2.1, §22.2.1.1, §22.2.3.3, §22.2.3.4): the syntax
     /// status of decision D9, its code, message identifier, argument and position in a <see cref="RegexDiagnostic"/> beside
-    /// it. The validate entry answers it (task 2.8 of SJL-11.2); provisional, with the entry.
+    /// it. The validate entry answers it (task 2.8 of SJL-11.2), and <see cref="BroilerRegex.Compile"/> and
+    /// <see cref="Text.RegexFlagsText.Parse"/> since task 2.9.
     /// </summary>
     SyntaxError = 4,
 }
@@ -127,8 +126,7 @@ public enum RegexLimit
     /// <summary>
     /// The caller's compile budget: compiling the pattern would do more units of work than it admits, counted in the
     /// units the meter is charged in, in proportion to the ranges and strings its expansions touch (requirement R2,
-    /// decisions D8 and D9). Provisional, with <see cref="BroilerRegex.Compile"/>'s signature (task 2.9 fixes the public
-    /// surface).
+    /// decisions D8 and D9).
     /// </summary>
     Compile = 5,
 }

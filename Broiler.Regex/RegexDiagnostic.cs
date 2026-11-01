@@ -24,8 +24,8 @@ namespace Broiler.Regex;
 /// (ECMA-262 §22.2.1 and §22.2.1.1, Annex B §B.1.2, and the flags of RegExpInitialize, §22.2.3.3, and ParsePattern,
 /// §22.2.3.4), and one for the caller's nesting limit. The code of a <see cref="RegexDiagnostic"/>, which the validate entry
 /// (<see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>)
-/// answers and a <see cref="RegexSyntaxException"/> carries (decision D9 of Broiler.VM's JSD-0081: a syntax status with a
-/// code, a message identifier and a position).
+/// answers, as <see cref="BroilerRegex.Compile"/> and <see cref="Text.RegexFlagsText.Parse"/> do (decision D9 of
+/// Broiler.VM's JSD-0081: a syntax status with a code, a message identifier and a position).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -55,7 +55,7 @@ namespace Broiler.Regex;
 /// <b>Not reachable, so not a code:</b> EE0183, a pattern of 2³² − 1 or more capturing groups, which no string the
 /// platform can hold reaches.
 /// </para>
-/// <para><b>Provisional</b> with the validate entry (task 2.8 of SJL-11.2); task 2.9 fixes the public surface.</para>
+/// <para><b>New in task 2.8 of SJL-11.2</b>, with the validate entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.</para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9 and ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=7C239A
 // Broiler-Falsified-If: two members share a number or a message identifier, or a member's number changes once published
@@ -78,7 +78,8 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.flags.unicode-with-unicode-sets</c>: <c>u</c> with <c>v</c> (§22.2.3.4 ParsePattern). Position: the later of the
-    /// two in the flags text.
+    /// two in the flags text, or -1 for a <see cref="RegexFlags"/> value that sets both, which has no text (task 2.9 of
+    /// SJL-11.2).
     /// </summary>
     UnicodeWithUnicodeSets = 3,
 
@@ -352,14 +353,15 @@ public enum RegexDiagnosticCode
 /// <summary>
 /// One refusal of a pattern or a flags string, as data (decision D9 of Broiler.VM's JSD-0081; decision SJL-D-11): its
 /// <see cref="Code"/>, its <see cref="MessageId"/> and <see cref="Argument"/>, its <see cref="Position"/>, and a default
-/// English <see cref="Message"/>. The validate entry answers it with <see cref="RegexStatus.SyntaxError"/>, or with
-/// <see cref="RegexStatus.LimitExceeded"/> for the nesting limit, and a <see cref="RegexSyntaxException"/> carries it as
-/// <see cref="RegexSyntaxException.Diagnostic"/>.
+/// English <see cref="Message"/>. The validate entry and <see cref="BroilerRegex.Compile"/> answer it with
+/// <see cref="RegexStatus.SyntaxError"/>, or with <see cref="RegexStatus.LimitExceeded"/> for the nesting limit, and
+/// <see cref="Text.RegexFlagsText.Parse"/> with <see cref="RegexStatus.SyntaxError"/> for a flags text; the string-bearing
+/// constructors throw an <see cref="System.ArgumentException"/> with its <see cref="Message"/>.
 /// </summary>
 /// <remarks>
 /// The default value is no refusal: <see cref="RegexDiagnosticCode.None"/>, an empty identifier and message, no argument
-/// and position -1 being its fields' defaults read through these members. Provisional with the validate entry (task 2.8 of
-/// SJL-11.2); task 2.9 fixes the public surface.
+/// and position -1 being its fields' defaults read through these members. New in task 2.8 of SJL-11.2, with the validate
+/// entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=D31024
 // Broiler-Falsified-If: a diagnostic's MessageId is not its code's identifier, or the default value reports a code, an identifier or a position other than None, the empty string and -1
@@ -474,18 +476,19 @@ public readonly struct RegexDiagnostic
         new(RegexDiagnosticCode.NestingLimit, position, limit.ToString(NumberFormatInfo.InvariantInfo), message);
 
     /// <summary>
-    /// The refusal of a flags text <see cref="Text.RegexFlagsText.Parse"/> answered <paramref name="status"/> for, at
-    /// <paramref name="position"/>, with the message <c>0.1.0-preview.4</c> gave each.
+    /// The refusal <paramref name="code"/>, one of the three codes of the flags, of the code unit <paramref name="unit"/> at
+    /// <paramref name="position"/> of a flags text (<see cref="Text.RegexFlagsText.Parse"/>), with the message
+    /// <c>0.1.0-preview.4</c> gave each.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=92AC82
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=BE9012
     // Broiler-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
     // Broiler-Human:        PENDING
-    internal static RegexDiagnostic OfFlags(Text.RegexFlagsStatus status, string flags, int position) => status switch
+    internal static RegexDiagnostic OfFlags(RegexDiagnosticCode code, char unit, int position) => code switch
     {
-        Text.RegexFlagsStatus.UnknownFlag => new(RegexDiagnosticCode.UnknownFlag, position, flags[position].ToString(),
-            "Invalid regular expression flags: '" + flags[position] + "'"),
-        Text.RegexFlagsStatus.DuplicateFlag => new(RegexDiagnosticCode.DuplicateFlag, position, flags[position].ToString(),
-            "Duplicate regular expression flag: '" + flags[position] + "'"),
+        RegexDiagnosticCode.UnknownFlag => new(RegexDiagnosticCode.UnknownFlag, position, unit.ToString(),
+            "Invalid regular expression flags: '" + unit + "'"),
+        RegexDiagnosticCode.DuplicateFlag => new(RegexDiagnosticCode.DuplicateFlag, position, unit.ToString(),
+            "Duplicate regular expression flag: '" + unit + "'"),
         _ => new(RegexDiagnosticCode.UnicodeWithUnicodeSets, position, null, "The 'u' and 'v' regular expression flags cannot be combined"),
     };
 }

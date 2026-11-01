@@ -46,7 +46,7 @@ namespace Broiler.Regex.Tests;
 /// 2.10's host job"; until that job runs, this test runs every assertion of those files that the library answers, and
 /// names the files whose assertions need the host (the comment above). The answers are the library's terms for what a
 /// host builds: <c>exec</c>'s array is the match and each group's substring or undefined; <c>groups.x</c> is
-/// <see cref="RegexMatch.NamedGroups"/>' entry for x, its substring when it participated and undefined when not;
+/// <see cref="RegexMatch.GroupNamed"/>'s answer for x, its substring when it participated and undefined when not;
 /// <c>Object.keys(groups)</c> is the order of <see cref="RegexGroupNames"/>' names; <c>indices.groups.x</c> the
 /// participating group's offsets; <c>test</c> whether there is a match; <c>search</c> the first match's index;
 /// <c>matchAll</c> the global iteration, <see cref="BroilerRegex.Matches"/>; <c>source</c> the helper's EscapePattern.
@@ -205,12 +205,12 @@ public class Test262DuplicateNamedGroupsTests
     {
         var match = regex.Match(subject);
         Assert.Equal(RegexLimit.None, match.Limit);
-        return match.Success ? [.. match.Groups.Select(static g => g.Success ? g.Value : null)] : null;
+        return match.Success ? [.. match.Groups.ToArray().Select(static g => g.Success ? g.Value : null)] : null;
     }
 
     /// <summary>The groups object of a match: each name, in its properties' order, with its value or null for undefined.</summary>
     private static (string Name, string? Value)[] Groups(RegexMatch match) =>
-        [.. match.NamedGroups.Select(static e => (e.Key, e.Value.Success ? e.Value.Value : null))];
+        [.. match.NamedKeys().Select(name => (name, match.GroupNamed(name)!.Success ? match.GroupNamed(name)!.Value : null))];
 
     [Fact]
     public void Every_tagged_file_is_judged_here_or_named_as_waiting_for_the_host_job()
@@ -256,8 +256,8 @@ public class Test262DuplicateNamedGroupsTests
         // duplicate-names-group-property-enumeration-order.js: source order, not match order.
         var order = TestRegex.Compile("(?<y>a)(?<x>a)|(?<x>b)(?<y>b)");
         Assert.Equal(["y", "x"], Enumerable.Range(0, order.GroupNames.Count).Select(order.GroupNames.NameAt));
-        Assert.Equal(["y", "x"], order.Match("aa").NamedGroups.Keys);
-        Assert.Equal(["y", "x"], order.Match("bb").NamedGroups.Keys);
+        Assert.Equal(["y", "x"], order.Match("aa").NamedKeys());
+        Assert.Equal(["y", "x"], order.Match("bb").NamedKeys());
 
         // exec/duplicate-named-groups-properties.js and String/prototype/match/duplicate-named-groups-properties.js.
         var matcher = TestRegex.Compile("(?:(?<x>a)|(?<y>a)(?<x>b))(?:(?<z>c)|(?<z>d))");
@@ -319,7 +319,7 @@ public class Test262DuplicateNamedGroupsTests
     }
 
     private static string[] All(string pattern, string subject) =>
-        [.. TestRegex.Compile(pattern, "g").Matches(subject).Select(static m => string.Join('|', m.Groups.Select(static g => g.Success ? g.Value : "-")))];
+        [.. TestRegex.Compile(pattern, "g").Matches(subject).Select(static m => string.Join('|', m.Groups.ToArray().Select(static g => g.Success ? g.Value : "-")))];
 
     [Fact]
     public void The_matches_the_host_files_read()
@@ -328,7 +328,7 @@ public class Test262DuplicateNamedGroupsTests
         // the substitution and the splitter being the host's.
         // duplicate-names-replace.js and duplicate-names-replaceall.js: $<x> is the participating group's value.
         foreach (var (subject, expected) in new[] { ("ab", new[] { "0:a|a|-", "1:b|-|b" }), ("ba", new[] { "0:b|-|b", "1:a|a|-" }), ("abxab", new[] { "0:a|a|-", "1:b|-|b", "3:a|a|-", "4:b|-|b" }), ("baxba", new[] { "0:b|-|b", "1:a|a|-", "3:b|-|b", "4:a|a|-" }) })
-            Assert.Equal(expected, TestRegex.Compile("(?<x>a)|(?<x>b)", "g").Matches(subject).Select(static m => m.Index + ":" + m.Value + "|" + string.Join('|', m.Groups.Skip(1).Select(static g => g.Success ? g.Value : "-"))));
+            Assert.Equal(expected, TestRegex.Compile("(?<x>a)|(?<x>b)", "g").Matches(subject).Select(static m => m.Index + ":" + m.Value + "|" + string.Join('|', m.Groups.ToArray().Skip(1).Select(static g => g.Success ? g.Value : "-"))));
 
         // duplicate-names-split.js: "xab" and "xba" split at the matches at 1 and 2.
         var split = TestRegex.Compile("(?<x>a)|(?<x>b)");
@@ -339,13 +339,13 @@ public class Test262DuplicateNamedGroupsTests
 
         // staging's duplicate-named-groups-replace.js: the match each replacement reads, and $<a>.
         var two = TestRegex.Compile(@"(?:(?:(?<a>x)|(?<a>y))\k<a>)");
-        Assert.Equal(("xx", "x"), (two.Match("xxyy").Value, two.Match("xxyy").NamedGroups["a"].Value));
-        Assert.Equal(new[] { "0:xx:x", "2:yy:y" }, TestRegex.Compile(@"(?:(?:(?<a>x)|(?<a>y))\k<a>)", "g").Matches("xxyy").Select(static m => m.Index + ":" + m.Value + ":" + m.NamedGroups["a"].Value));
+        Assert.Equal(("xx", "x"), (two.Match("xxyy").Value, two.Match("xxyy").GroupNamed("a")!.Value));
+        Assert.Equal(new[] { "0:xx:x", "2:yy:y" }, TestRegex.Compile(@"(?:(?:(?<a>x)|(?<a>y))\k<a>)", "g").Matches("xxyy").Select(static m => m.Index + ":" + m.Value + ":" + m.GroupNamed("a")!.Value));
         var five = TestRegex.Compile(@"(?:(?:(?<a>x)|(?<a>y)|(a)|(?<b>b)|(?<a>z))\k<a>)");
         var first = five.Match("xzzyyxxy");
-        Assert.Equal((1, "zz", "z"), (first.Index, first.Value, first.NamedGroups["a"].Value));
-        Assert.Equal([null, null, null, null, "z"], first.Groups.Skip(1).Select(static g => g.Success ? g.Value : null));
-        Assert.Equal(new[] { "1:zz:z", "3:yy:y", "5:xx:x" }, TestRegex.Compile(five.Pattern, "g").Matches("xzzyyxxy").Select(static m => m.Index + ":" + m.Value + ":" + m.NamedGroups["a"].Value));
+        Assert.Equal((1, "zz", "z"), (first.Index, first.Value, first.GroupNamed("a")!.Value));
+        Assert.Equal([null, null, null, null, "z"], first.Groups.ToArray().Skip(1).Select(static g => g.Success ? g.Value : null));
+        Assert.Equal(new[] { "1:zz:z", "3:yy:y", "5:xx:x" }, TestRegex.Compile(five.Pattern, "g").Matches("xzzyyxxy").Select(static m => m.Index + ":" + m.Value + ":" + m.GroupNamed("a")!.Value));
     }
 
     /// <summary>The captures of a sticky match at <paramref name="at"/>, as split's splitter reads them, each null for undefined.</summary>
@@ -354,7 +354,7 @@ public class Test262DuplicateNamedGroupsTests
         var sticky = TestRegex.Compile(regex.Pattern, "y");
         var match = sticky.Match(subject, at);
         Assert.True(match.Success);
-        return [.. match.Groups.Skip(1).Select(static g => g.Success ? g.Value : null)];
+        return [.. match.Groups.ToArray().Skip(1).Select(static g => g.Success ? g.Value : null)];
     }
 
     [Fact]

@@ -52,6 +52,21 @@ JSD-0081 or here, or by a status-returning form with the `bool` member deprecate
 change. `Matches`, which threw for the same reason during task 2.4c, answers the ceiling as data since its
 review: a failed `RegexMatch` naming it, as its last element.
 
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2): where Broiler.Regex stands at `0.1.0-preview.6`.* The starting
+violation list is empty: task 2.9 closed its last rows (C3's `RegexSyntaxException`, the last SL4 place, the C1 rows of
+the syntax tree, the set algebra and the string-bearing result, SL5's seven `NoWarn` rows and SL8's two settings), and
+each rule's test now refuses any violation. The breach of the note above is closed by the owner's admission, decided on
+2026-11-01 as recommended under the owner's direction of 2026-10-18 ("Please do all recommended decisions and skip
+waiting for review"): `BroilerRegex.IsMatch` keeps its `InvalidOperationException` at a frame or trail ceiling as the
+string-bearing member's one documented throw, since decision D12 keeps the member and requirement R8 does not require
+its removal, and the status forms are `Match(string, int)`, whose `RegexMatch.Limit` names the ceiling, and the offset
+entry, which answers `RegexStatus.LimitExceeded` with the `RegexLimit`. No member that answers a status throws for an
+expected failure: `Compile`, the validate entry and `RegexFlagsText.Parse` answer a refusal as `RegexStatus.SyntaxError`
+with its `RegexDiagnostic`, and the string-bearing constructors document a pattern or flags text the specification
+refuses as their broken precondition, an `ArgumentException`. The note above stays as the record of the breach. One
+departure from convention 16's reading is recorded too: its breaks of `0.1.0-preview.5` ship inside `0.1`, as
+`0.1.0-preview.6`, by the owner's decision of 2026-11-01, "Please keep using version 0.1.0-x scheme!".
+
 ## Scope
 
 - **The library**, `Broiler.Regex/` (the package `Broiler.Regex`), is held to every convention.
@@ -98,7 +113,7 @@ test and a witness in [`rules.register.json`](../tests/Regex.Architecture.Tests/
 | 13 | **Data versions are public.** The library declares no data version of its own: it reads the provider's (decision D11). It holds no generated data, because every table it reads is the Unicode owner's. | SL7 |
 | 14 | **Names that do not collide with engine scans.** No public member named `Normalize`, `IsNormalized` or `NormalizationForm` (Broiler.VM's rule N23), and no `System.Text.RegularExpressions` type and no `new Regex(` (rule N18). | SL4; SL6's baseline lists every name; review |
 | 15 | **Every public member cites what it implements**: the ECMA-262 clause, at the edition the library pins, in its XML documentation. A missing documentation comment is a build error once the library resets the packaging props' `NoWarn`, which SL5 asks of it. | The build (CS1591 as an error); review for the citation |
-| 16 | **Versioning and compatibility.** Semantic versioning on this repository's preview stream; the API baseline, `Broiler.Regex/PublicAPI.txt`, compared in both directions; package validation against the last published version, `0.1.0-preview.4`, with every accepted break suppressed, listed in [`suppressions.md`](suppressions.md) and in the changelog under **Changed** with its R item; a changelog entry for every observable behaviour change and every data change. For a `0.x` preview, "inside a major version" is read as inside a `0.y` minor version (decision D12). | SL6; [`CHANGELOG.md`](../CHANGELOG.md) |
+| 16 | **Versioning and compatibility.** Semantic versioning on this repository's preview stream; the API baseline, `Broiler.Regex/PublicAPI.txt`, compared in both directions; package validation against the last published version, `0.1.0-preview.5`, with every accepted break suppressed, listed in [`suppressions.md`](suppressions.md) and in the changelog under **Changed** with its R item; a changelog entry for every observable behaviour change and every data change. For a `0.x` preview, "inside a major version" is read as inside a `0.y` minor version (decision D12). *Dated revision, 2026-11-01 (task 2.9 of SJL-11.2): this read "the last published version, `0.1.0-preview.4`"; the owner published `0.1.0-preview.5` on 2026-10-29. The owner's decision of 2026-11-01, "Please keep using version 0.1.0-x scheme!", ships the SJL-11 surface's breaks as `0.1.0-preview.6`, inside `0.1`: "Where Broiler.Regex stands" records that departure from the reading above, which stays the programme's.* | SL6; [`CHANGELOG.md`](../CHANGELOG.md) |
 | 17 | **Frameworks and code style.** `net10.0`; nullable enabled; implicit usings disabled; warnings as errors; no preprocessor directives; LF line endings under `.gitattributes`. | The build (`Directory.Build.props`); SL5; SL10 |
 | 18 | **Assurance.** Every relevant declaration carries the Broiler Code Assurance annotation, the generated artefacts at the repository root are current, and CI fails on drift (decision SJL-D-5 (a)). | SL8; the `assurance` CI job |
 | 19 | **Licensing and provenance.** Apache-2.0. Ported code records its origin (`Origin=Ported`); the new backend ports nothing (decision D5). No share-alike or unclear-licence code enters. Data notices travel with data: [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) is packed with the library. | Review |

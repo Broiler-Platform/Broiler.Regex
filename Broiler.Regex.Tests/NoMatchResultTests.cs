@@ -13,16 +13,15 @@ public class NoMatchResultTests
     public void The_shared_no_match_result_cannot_be_changed_through_its_interfaces()
     {
         // 0.1.0-preview.4 built NamedGroups as a new Dictionary behind IReadOnlyDictionary, which a cast changed for
-        // every later no-match of the process.
-        var empty = TestRegex.Compile("a").Match("b");
+        // every later no-match of the process. Since task 2.9 of SJL-11.2 the groups are a span of the match's own array,
+        // which no caller can write, and a name's group is read through GroupNamed, which answers none for a failed match.
+        var regex = TestRegex.Compile("(?<a>a)");
+        var empty = regex.Match("b");
         Assert.Same(RegexMatch.Empty, empty);
         Assert.False(empty.Success);
-
-        var named = Assert.IsAssignableFrom<IDictionary<string, RegexGroup>>(empty.NamedGroups);
-        Assert.True(named.IsReadOnly);
-        var groups = Assert.IsAssignableFrom<ICollection<RegexGroup>>(empty.Groups);
-        Assert.True(groups.IsReadOnly);
-        Assert.Empty(empty.NamedGroups);
-        Assert.Empty(empty.Groups);
+        Assert.True(empty.Groups.IsEmpty);
+        Assert.Null(empty.GroupNamed("a"));
+        Assert.Same(empty, regex.NextMatch(empty));
+        Assert.DoesNotContain(typeof(RegexMatch).GetProperties(), static p => p.CanWrite);
     }
 }

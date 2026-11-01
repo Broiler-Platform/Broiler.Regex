@@ -130,11 +130,12 @@ public class NestingLimitTests
     public void The_parser_answers_what_it_reads_first()
     {
         // A syntax error before the level past the limit is reported; a level past the limit before a syntax error is.
+        // Since task 2.9 of SJL-11.2 a syntax error is Compile's status too, never an exception.
         var (deep, _, _) = Nested("(?:", 600);
-        Assert.Throws<RegexSyntaxException>(() => Compile("a**" + deep, RegexFlags.None, 512, out _, out _));
+        Assert.Equal(RegexStatus.SyntaxError, Compile("a**" + deep, RegexFlags.None, 512, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile(deep + "a**", RegexFlags.None, 512, out _, out _));
         Assert.Equal(RegexStatus.LimitExceeded, Compile(new string('(', 600), RegexFlags.None, 512, out _, out _));
-        Assert.Throws<RegexSyntaxException>(() => Compile(new string('(', 100), RegexFlags.None, 512, out _, out _));
+        Assert.Equal(RegexStatus.SyntaxError, Compile(new string('(', 100), RegexFlags.None, 512, out _, out _));
     }
 
     [Fact]

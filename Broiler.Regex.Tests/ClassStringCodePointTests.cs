@@ -162,7 +162,7 @@ public class ClassStringCodePointTests
         foreach (var pattern in new[] { @"[\q{a&&b}]", @"[\q{!!}]", @"[\q{a^^}]", @"[\q{a~~}]", @"[\q{$$|a}]" })
         {
             Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, "v"));
-            Assert.Throws<RegexSyntaxException>(() => TestRegex.TryCompile(pattern, RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, out _, out _));
+            Assert.Equal(RegexStatus.SyntaxError, TestRegex.TryCompile(pattern, RegexFlags.UnicodeSets, UnicodeTables.Instance, 512, out _, out _));
         }
     }
 }

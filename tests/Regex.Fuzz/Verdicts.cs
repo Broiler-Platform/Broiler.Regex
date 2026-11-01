@@ -100,8 +100,10 @@ internal sealed class FuzzMeter
 /// <remarks>
 /// <para>
 /// <b>Compilation</b>: <see cref="BroilerRegex.Compile"/> under the case's full policy and under its tight one, both
-/// with a nesting limit, a compile budget and a meter; each answers <c>Success</c>, <c>LimitExceeded</c> naming nesting or
-/// compile, a <see cref="RegexSyntaxException"/> or the meter's exception. Limits are monotone: a tight compilation that
+/// with a nesting limit, a compile budget and a meter; each answers <c>Success</c>, <c>LimitExceeded</c> naming nesting
+/// (with the nesting limit's diagnostic) or compile, <c>SyntaxError</c> with a diagnostic of a syntax code, or the
+/// meter's exception, and nothing else: since task 2.9 of SJL-11.2 a syntax error is a status, so an exception of any
+/// other kind, a <c>RegexSyntaxException</c> included, is a finding. Limits are monotone: a tight compilation that
 /// succeeds or refuses a syntax error answers as the full one does. The constructor, which takes no limit, answers as
 /// the full compilation at <see cref="BroilerRegex.MaximumNestingLimit"/> does.
 /// </para>
@@ -109,7 +111,7 @@ internal sealed class FuzzMeter
 /// <b>Validation</b> (task 2.8): the validate entry under each policy's nesting limit, which takes no meter and no budget,
 /// answers as that compilation does wherever the compilation met neither its budget nor its meter: <c>Success</c> for a
 /// pattern it compiled, <c>SyntaxError</c> with the code, identifier, argument, position and message of the
-/// <see cref="RegexSyntaxException"/>'s diagnostic for one it refused, and <c>LimitExceeded</c> naming the nesting limit,
+/// compilation's diagnostic for one it refused, and <c>LimitExceeded</c> naming the nesting limit,
 /// with that diagnostic, where it met the limit. Where the budget or the meter stopped the compilation, the entry's
 /// answer is held to its own contract alone.
 /// </para>
@@ -117,7 +119,7 @@ internal sealed class FuzzMeter
 /// <b>Matching</b>: the offset entry from every start of the case, anchored and not, under the wide ceilings (a step
 /// ceiling and the engines' frames and trail) and once under narrow ones; its slots are held to their contract, and a
 /// narrow call that completes answers as the wide one does. The string-bearing <see cref="BroilerRegex.Match(string, int)"/>,
-/// <see cref="BroilerRegex.IsMatch"/> and <see cref="BroilerRegex.Matches"/> are compared with the offset entry's
+/// <see cref="BroilerRegex.IsMatch"/> and the global iteration through <see cref="BroilerRegex.NextMatch"/> are compared with the offset entry's
 /// answers through the mapping their documentation states (RegExpBuiltinExec's step back into a surrogate pair, the
 /// <c>y</c> flag as the anchored argument, the reported index of decision D41, the iteration of §22.2.6.9), each
 /// <c>Value</c> they report read against the subject at the offsets they report, wherever the wide call completed or
@@ -133,7 +135,7 @@ internal static class Verdicts
 {
     private const int Untouched = 0x5EED5EED;
 
-    /// <summary>The units the emulation of <see cref="BroilerRegex.Matches"/> may spend before the comparison is skipped.</summary>
+    /// <summary>The units the emulation of the global iteration (<see cref="BroilerRegex.NextMatch"/>) may spend before the comparison is skipped.</summary>
     private const ulong MatchesAllowance = 1UL << 20;
 
     private readonly record struct Compiled(string Answer, BroilerRegex? Regex, int Position, string Message, ulong Units)
@@ -224,17 +226,23 @@ internal static class Verdicts
         var meter = new FuzzMeter(policy.Meter);
         try
         {
-            var status = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, policy.Nesting, policy.Budget, meter.Charge, out var regex, out var limit);
-            if (status == RegexStatus.Success && regex is not null && limit == RegexLimit.None)
+            var status = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, policy.Nesting, policy.Budget, meter.Charge, out var regex, out var limit,
+                out var diagnostic);
+            if (status == RegexStatus.Success && regex is not null && limit == RegexLimit.None && diagnostic.Code == RegexDiagnosticCode.None)
                 return new("ok", regex, -1, "", meter.Charged);
-            if (status == RegexStatus.LimitExceeded && regex is null && limit is RegexLimit.Nesting or RegexLimit.Compile)
-                return new(limit == RegexLimit.Nesting ? "limit:nesting" : "limit:compile", null, -1, "", meter.Charged);
-            outcome.Find("contract", site, Invariant($"Compile answered {status} with limit {limit} and {(regex is null ? "no" : "a")} compiled pattern"));
+            if (status == RegexStatus.LimitExceeded && regex is null && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit
+                && diagnostic.Argument == policy.Nesting.ToString(CultureInfo.InvariantCulture))
+                return new("limit:nesting", null, -1, diagnostic.Message, meter.Charged);
+            if (status == RegexStatus.LimitExceeded && regex is null && limit == RegexLimit.Compile && diagnostic.Code == RegexDiagnosticCode.None)
+                return new("limit:compile", null, -1, "", meter.Charged);
+
+            // A syntax error is a status since task 2.9 of SJL-11.2, with a diagnostic of a syntax code at a place in the pattern,
+            // or, for flags carrying u with v, ParsePattern's first refusal at no place, before any unit is charged.
+            if (status == RegexStatus.SyntaxError && regex is null && limit == RegexLimit.None && IsSyntaxRefusal(pattern, flags, diagnostic)
+                && (!BothModes(flags) || meter.Charged == 0))
+                return new("syntax", null, diagnostic.Position, diagnostic.Message, meter.Charged) { Diagnostic = diagnostic };
+            outcome.Find("contract", site, Invariant($"Compile answered {status} with limit {limit}, diagnostic {diagnostic.Code} at {diagnostic.Position} and {(regex is null ? "no" : "a")} compiled pattern"));
             return new("contract", null, -1, "", meter.Charged);
-        }
-        catch (RegexSyntaxException refusal)
-        {
-            return new("syntax", null, refusal.Position, refusal.Message, meter.Charged) { Diagnostic = refusal.Diagnostic };
         }
         catch (AllowanceSpent)
         {
@@ -246,6 +254,21 @@ internal static class Verdicts
             return new("escaped", null, -1, "", meter.Charged);
         }
     }
+
+    /// <summary>Whether the flags carry <c>u</c> and <c>v</c> both, which ParsePattern (ECMA-262 §22.2.3.4) refuses first.</summary>
+    private static bool BothModes(RegexFlags flags) => (flags & (RegexFlags.Unicode | RegexFlags.UnicodeSets)) == (RegexFlags.Unicode | RegexFlags.UnicodeSets);
+
+    /// <summary>
+    /// A syntax refusal as the documentation states it: under <c>u</c> with <c>v</c>, <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>
+    /// at -1 and nothing else (task 2.9 of SJL-11.2); otherwise a code of the pattern's syntax, its identifier, at a place in
+    /// the pattern.
+    /// </summary>
+    private static bool IsSyntaxRefusal(string pattern, RegexFlags flags, RegexDiagnostic diagnostic) => BothModes(flags)
+        ? diagnostic.Code == RegexDiagnosticCode.UnicodeWithUnicodeSets && diagnostic.Position == -1
+            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code)
+        : diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit or RegexDiagnosticCode.UnknownFlag
+            or RegexDiagnosticCode.DuplicateFlag or RegexDiagnosticCode.UnicodeWithUnicodeSets)
+            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= pattern.Length;
 
     /// <summary>A tight compilation that completes, or meets a syntax error, met no limit first: the full one answers alike.</summary>
     private static void CompareCompilations(Compiled full, Compiled tight, Outcome outcome)
@@ -279,8 +302,7 @@ internal static class Verdicts
         string answer;
         if (status == RegexStatus.Success && limit == RegexLimit.None && diagnostic.Code == RegexDiagnosticCode.None)
             answer = "ok";
-        else if (status == RegexStatus.SyntaxError && limit == RegexLimit.None && diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit)
-            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= c.Pattern.Length)
+        else if (status == RegexStatus.SyntaxError && limit == RegexLimit.None && IsSyntaxRefusal(c.Pattern, c.Flags, diagnostic))
             answer = "syntax";
         else if (status == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit
             && diagnostic.Argument == policy.Nesting.ToString(CultureInfo.InvariantCulture))
@@ -307,7 +329,13 @@ internal static class Verdicts
             outcome.Find("disagreement", site, Invariant($"the validate entry refused with {diagnostic.Code} at {diagnostic.Position} where Compile refused with {expected.Code} at {expected.Position}"));
     }
 
-    /// <summary>The constructor takes no limit and parses under the maximum: it answers as the full compilation does.</summary>
+    /// <summary>
+    /// The constructor takes no limit and parses under the maximum: it answers as the full compilation does. A refusal is
+    /// the <see cref="ArgumentException"/> it documents for a broken precondition since task 2.9 of SJL-11.2, carrying the
+    /// refusal's message, which is compared with the compilation's diagnostic, a syntax error's or, the full policy's
+    /// nesting limit being the maximum, the nesting limit's; its position is no longer public, so the transcript notes the
+    /// refusal without one.
+    /// </summary>
     private static void CompareConstructor(FuzzCase c, Compiled full, Outcome outcome)
     {
         if (full.Answer is not ("ok" or "syntax" or "limit:nesting"))
@@ -319,11 +347,11 @@ internal static class Verdicts
             if (full.Regex is not { } regex || regex.CaptureCount != built.CaptureCount || regex.SlotCount != built.SlotCount)
                 outcome.Find("disagreement", "constructor", "the constructor compiled a pattern Compile answered " + full.Text);
         }
-        catch (RegexSyntaxException refusal)
+        catch (ArgumentException refusal) when (refusal is not (ArgumentNullException or ArgumentOutOfRangeException))
         {
-            outcome.Note("ctor", Invariant($"syntax@{refusal.Position}"));
-            if (full.Answer == "ok" || full.Answer == "syntax" && (refusal.Position != full.Position || refusal.Message != full.Message))
-                outcome.Find("disagreement", "constructor", Invariant($"the constructor refused a syntax error at {refusal.Position} ({refusal.Message}) where Compile answered {full.Text} {full.Message}"));
+            outcome.Note("ctor", "syntax");
+            if (full.Answer == "ok" || refusal.Message != full.Message)
+                outcome.Find("disagreement", "constructor", Invariant($"the constructor refused the pattern ({refusal.Message}) where Compile answered {full.Text} {full.Message}"));
         }
         catch (Exception failure)
         {
@@ -492,7 +520,7 @@ internal static class Verdicts
     /// for a match its index, length and <see cref="RegexMatch.Value"/>, the subject's text there; group 0 as the whole
     /// match; each group's offsets and <see cref="RegexGroup.Value"/> from the slots, the empty text and index -1 for a
     /// group that did not participate, and each group's <see cref="RegexGroup.Number"/> its own; and each
-    /// <see cref="RegexMatch.NamedGroups"/> entry as the participating group of its name where one participated, its
+    /// name's <see cref="RegexMatch.GroupNamed"/> as the participating group of the name where one participated, its
     /// <see cref="RegexGroup.Number"/> that group's, whose slots it reports, and <see cref="RegexGroupNames.ParticipatingGroup"/>
     /// reading the same group from the slots; or, where none did, as no match, numbered as the name's first group.
     /// </summary>
@@ -503,8 +531,9 @@ internal static class Verdicts
             return Invariant($"the string-bearing match answered success {match.Success}, limit {match.Limit}; expected success {expected.Success}, limit {expected.Limit}");
         if (!expected.Success)
         {
-            if (match.Index != -1 || match.Length != 0 || match.Value.Length != 0 || match.Groups.Count != 0 || match.NamedGroups.Count != 0)
-                return Invariant($"the failed string-bearing match has index {match.Index}, length {match.Length}, value {FuzzCase.Quote(match.Value)}, {match.Groups.Count} groups and {match.NamedGroups.Count} names; a failed match has index -1, length 0, the empty value and none of the others");
+            var namedOnFailure = regex.GroupNames.Count > 0 && match.GroupNamed(regex.GroupNames.NameAt(0)) is not null;
+            if (match.Index != -1 || match.Length != 0 || match.Value.Length != 0 || match.Groups.Length != 0 || namedOnFailure)
+                return Invariant($"the failed string-bearing match has index {match.Index}, length {match.Length}, value {FuzzCase.Quote(match.Value)}, {match.Groups.Length} groups and {(namedOnFailure ? "a" : "no")} group for a name; a failed match has index -1, length 0, the empty value and none of the others");
             return null;
         }
 
@@ -516,8 +545,8 @@ internal static class Verdicts
         var value = subject.Substring(expected.Index, expected.Length);
         if (match.Value != value)
             return Invariant($"the string-bearing match {expected.Index},{expected.Length} has the value {FuzzCase.Quote(match.Value)}; the subject there is {FuzzCase.Quote(value)}");
-        if (match.Groups.Count != captureCount + 1)
-            return Invariant($"the string-bearing match has {match.Groups.Count} groups for {captureCount} captures");
+        if (match.Groups.Length != captureCount + 1)
+            return Invariant($"the string-bearing match has {match.Groups.Length} groups for {captureCount} captures");
         var whole = match.Groups[0];
         if (!whole.Success || whole.Index != expected.Index || whole.Length != expected.Length || whole.Value != value || whole.Name is not null || whole.Number != 0)
             return Invariant($"group 0 is {whole.Success} {whole.Index},{whole.Length} {FuzzCase.Quote(whole.Value)}{(whole.Name is null ? "" : " named " + whole.Name)}, number {whole.Number}; the match is {expected.Index},{expected.Length} {FuzzCase.Quote(value)}, group 0");
@@ -546,25 +575,25 @@ internal static class Verdicts
 
         foreach (var (name, (first, participating)) in names)
         {
-            if (!match.NamedGroups.TryGetValue(name, out var named))
-                return "the named group " + name + " is not in NamedGroups";
+            if (match.GroupNamed(name) is not { } named)
+                return "GroupNamed answers no group for the name " + name;
             var shown = Invariant($"{named.Success} {named.Index},{named.Length} {FuzzCase.Quote(named.Value)}, number {named.Number}");
             if (named.Name != name)
-                return "NamedGroups gives under the name " + name + " a group named " + (named.Name ?? "nothing");
+                return "GroupNamed gives under the name " + name + " a group named " + (named.Name ?? "nothing");
             // The entry's number is the participating group's, and its offsets that group's slots: R6 lets at most one
             // group of a name participate, and RegexGroupNames.ParticipatingGroup reads the same one from the slots.
             if (participating.Count > 0)
             {
                 var number = named.Number;
                 if (!participating.Contains(number))
-                    return "NamedGroups gives the name " + name + " as " + shown + ", which is no participating group of that name (" + string.Join(", ", participating.Select(static n => n.ToString(CultureInfo.InvariantCulture))) + ")";
+                    return "GroupNamed gives the name " + name + " as " + shown + ", which is no participating group of that name (" + string.Join(", ", participating.Select(static n => n.ToString(CultureInfo.InvariantCulture))) + ")";
                 var (from, to) = (expected.Slots[2 * number], expected.Slots[(2 * number) + 1]);
                 if (!named.Success || named.Index != from || named.Length != to - from || named.Value != subject[from..to])
-                    return Invariant($"NamedGroups gives the name {name} as {shown}; the slots of group {number} say {from},{to}");
+                    return Invariant($"GroupNamed gives the name {name} as {shown}; the slots of group {number} say {from},{to}");
             }
             else if (named.Success || named.Index != -1 || named.Length != 0 || named.Value.Length != 0 || named.Number != first)
             {
-                return Invariant($"NamedGroups gives the name {name} as {shown}, where no group of that name participated; the name's first group is {first}");
+                return Invariant($"GroupNamed gives the name {name} as {shown}, where no group of that name participated; the name's first group is {first}");
             }
 
             var read = regex.GroupNames.ParticipatingGroup(name, expected.Slots);
@@ -572,12 +601,30 @@ internal static class Verdicts
                 return Invariant($"RegexGroupNames.ParticipatingGroup reads group {read} of the name {name} from the slots; the string-bearing match gives {shown}");
         }
 
-        if (match.NamedGroups.Count != names.Count)
-            return Invariant($"NamedGroups holds {match.NamedGroups.Count} names; the groups name {names.Count}");
+        // Every name the pattern declares is one of the groups', and a name it does not declare has no group.
+        if (regex.GroupNames.Count != names.Count)
+            return Invariant($"the pattern declares {regex.GroupNames.Count} names; the groups name {names.Count}");
+        if (match.GroupNamed("") is not null)
+            return "GroupNamed gives a group for the empty name, which no pattern declares";
         return null;
     }
 
     private static bool Within(string subject, int from, int to) => from >= 0 && from <= to && to <= subject.Length;
+
+    /// <summary>
+    /// The global iteration, as <c>BroilerRegex.Matches</c> enumerated it until task 2.9 of SJL-11.2: each match through
+    /// <see cref="BroilerRegex.NextMatch"/> from the match at 0, and a last failed one that names the ceiling a match reached.
+    /// </summary>
+    private static IEnumerable<RegexMatch> Iteration(BroilerRegex regex, string subject)
+    {
+        for (var match = regex.Match(subject, 0); ; match = regex.NextMatch(match))
+        {
+            if (match.Success || match.Limit != RegexLimit.None)
+                yield return match;
+            if (!match.Success)
+                yield break;
+        }
+    }
 
     private static void IsMatch(BroilerRegex regex, string subject, int start, Matched reference, Outcome outcome)
     {
@@ -600,7 +647,7 @@ internal static class Verdicts
     }
 
     /// <summary>
-    /// <see cref="BroilerRegex.Matches"/> against its documentation: each element <c>Match(input, k)</c>'s from where the
+    /// the global iteration through <see cref="BroilerRegex.NextMatch"/> (<c>BroilerRegex.Matches</c> until task 2.9) against its documentation: each element <c>Match(input, k)</c>'s from where the
     /// last ended, an empty match advancing one code point, a ceiling the last element. Emulated through the offset
     /// entry's wide calls. A call the case already made (its starts, anchored as the <c>y</c> flag says, 0 among them) is
     /// always taken, so the first element is compared on every subject, a ceiling there included, which only subjects of
@@ -662,7 +709,7 @@ internal static class Verdicts
         List<RegexMatch> actual;
         try
         {
-            actual = regex.Matches(subject).Take(whole ? expected.Count + 1 : expected.Count).ToList();
+            actual = Iteration(regex, subject).Take(whole ? expected.Count + 1 : expected.Count).ToList();
         }
         catch (Exception failure)
         {
@@ -784,10 +831,10 @@ internal static class Verdicts
         var slots = new int[count];
         var ceilings = c.Wide.Ceilings;
         var subject = c.Subject;
-        Expect<ArgumentOutOfRangeException>("probe/nesting-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 0, null, null, out _, out _), outcome);
-        Expect<ArgumentOutOfRangeException>("probe/nesting-past-maximum", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit + 1, null, null, out _, out _), outcome);
-        Expect<ArgumentOutOfRangeException>("probe/budget-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 1, 0, null, out _, out _), outcome);
-        Expect<ArgumentNullException>("probe/pattern-null", () => BroilerRegex.Compile(null!, c.Flags, UnicodeTables.Instance, 1, null, null, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/nesting-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 0, null, null, out _, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/nesting-past-maximum", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit + 1, null, null, out _, out _, out _), outcome);
+        Expect<ArgumentOutOfRangeException>("probe/budget-zero", () => BroilerRegex.Compile(c.Pattern, c.Flags, UnicodeTables.Instance, 1, 0, null, out _, out _, out _), outcome);
+        Expect<ArgumentNullException>("probe/pattern-null", () => BroilerRegex.Compile(null!, c.Flags, UnicodeTables.Instance, 1, null, null, out _, out _, out _), outcome);
         Expect<ArgumentOutOfRangeException>("probe/start-negative", () => regex.Match(subject.AsSpan(), -1, false, slots, null, ceilings, out _), outcome);
         Expect<ArgumentOutOfRangeException>("probe/start-past-end", () => regex.Match(subject.AsSpan(), subject.Length + 1, false, slots, null, ceilings, out _), outcome);
         Expect<ArgumentException>("probe/slots-short", () => regex.Match(subject.AsSpan(), 0, false, slots.AsSpan(0, count - 1), null, ceilings, out _), outcome);

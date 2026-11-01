@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Broiler.Regex.Unicode;
 
 namespace Broiler.Regex.Ast;
@@ -28,10 +29,10 @@ namespace Broiler.Regex.Ast;
 /// reduces to one <see cref="CodePointSet"/>, optionally negated as a whole
 /// (ECMA-262 §22.2.1 CharacterClass / ClassSetExpression).
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=BD9DC9
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=A2DE0A
 // Broiler-Falsified-If: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
 // Broiler-Human:        PENDING
-public sealed class CharSet
+internal sealed class CharSet
 {
     /// <summary>The code points added so far: an immutable set, replaced by each addition.</summary>
     private CodePointSet _set = new();
@@ -107,15 +108,22 @@ public sealed class CharSet
         _set = _set.Union(CodePointSet.Of(lo, hi));
     }
 
-    /// <summary>The early error of a class range written high to low (ECMA-262 §22.2.1.1, ClassAtom - ClassAtom).</summary>
+    /// <summary>
+    /// The early error of a class range written high to low (ECMA-262 §22.2.1.1, ClassAtom - ClassAtom), kept as this
+    /// type's own guard. No compilation reaches it: the parser refuses such a range itself, with its diagnostic and the
+    /// range's position, before it adds one. Since task 2.9 of SJL-11.2 the type is internal, so no caller outside the
+    /// library reaches it either, and the refusal carries a message alone, built without the current culture (convention
+    /// 9; the starting violation list's last SL4 row, which interpolated the two code points).
+    /// </summary>
     /// <exception cref="RegexSyntaxException"><paramref name="lo"/> is greater than <paramref name="hi"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=0; Fingerprint=64DF54
-    // Broiler-Falsified-If: [z-a] is accepted, or [a-a] refused
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=0; Fingerprint=C72FB5
+    // Broiler-Falsified-If: [z-a] is accepted, or [a-a] refused, or the message's code points read the current culture
     // Broiler-Human:        PENDING
     internal static void CheckRange(int lo, int hi)
     {
         if (lo > hi)
-            throw new RegexSyntaxException($"Range out of order in character class: U+{lo:X}-U+{hi:X}");
+            throw new RegexSyntaxException("Range out of order in character class: U+" + lo.ToString("X", NumberFormatInfo.InvariantInfo)
+                + "-U+" + hi.ToString("X", NumberFormatInfo.InvariantInfo));
     }
 
     /// <summary>
@@ -206,9 +214,9 @@ public sealed class CharSet
 }
 
 /// <summary>A built-in character-class escape usable inside or outside a class.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=C35DA6
+// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=CA00CD
 // Broiler-Human:        PENDING
-public enum ClassEscape
+internal enum ClassEscape
 {
     /// <summary><c>\d</c></summary>
     Digit,

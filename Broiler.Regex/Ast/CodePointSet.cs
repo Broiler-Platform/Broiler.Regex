@@ -45,10 +45,10 @@ namespace Broiler.Regex.Ast;
 /// sorted ranges, so its work is in proportion to the units it charges.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=5EBADC
+// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=9A9575
 // Broiler-Falsified-If: a set built from the ranges (5, 9), (0, 4) and (7, 12), in that order, reports Ranges other than the single range 0..12, or a read of a set writes a field of it
 // Broiler-Human:        PENDING
-public sealed class CodePointSet
+internal sealed class CodePointSet
 {
     /// <summary>The highest Unicode code point; the universe complements are taken against.</summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=F4973F

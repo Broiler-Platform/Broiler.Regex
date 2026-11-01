@@ -121,16 +121,19 @@ public class ValidateEntryTests
         Assert.Equal(argument, diagnostic.Argument);
         Assert.NotEqual("", diagnostic.Message);
 
-        // The constructor over the flags text, and Compile over parsed flags, refuse with the same diagnostic.
+        // The constructor over the flags text refuses with the same diagnostic, and Compile over parsed flags answers it as
+        // the same status, with no exception (task 2.9 of SJL-11.2; convention 3).
         var thrown = Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(pattern, flags, UnicodeTables.Instance));
         AssertSame(diagnostic, thrown.Diagnostic);
         Assert.Equal(diagnostic.Message, thrown.Message);
         Assert.Equal(IsOfFlags(code) ? -1 : position, thrown.Position);
         if (!IsOfFlags(code))
         {
-            var compiled = Assert.Throws<RegexSyntaxException>(() => BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance,
-                BroilerRegex.MaximumNestingLimit, null, null, out _, out _));
-            AssertSame(diagnostic, compiled.Diagnostic);
+            var compiled = BroilerRegex.Compile(pattern, RegexFlagsParser.Parse(flags), UnicodeTables.Instance,
+                BroilerRegex.MaximumNestingLimit, null, null, out var regex, out var compiledLimit, out var compiledDiagnostic);
+            Assert.Equal((RegexStatus.SyntaxError, RegexLimit.None), (compiled, compiledLimit));
+            Assert.Null(regex);
+            AssertSame(diagnostic, compiledDiagnostic);
         }
     }
 
@@ -348,9 +351,10 @@ public class ValidateEntryTests
         Assert.Equal(511, diagnostic.Position);
         Assert.Equal("512", diagnostic.Argument);
 
-        // Compile answers the same status; the constructors, under the maximum, throw the same diagnostic.
-        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(past, RegexFlags.None, UnicodeTables.Instance, 512, null, null, out _, out var compiled));
+        // Compile answers the same status and diagnostic; the constructors, under the maximum, throw the same diagnostic.
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(past, RegexFlags.None, UnicodeTables.Instance, 512, null, null, out _, out var compiled, out var compiledDiagnostic));
         Assert.Equal(RegexLimit.Nesting, compiled);
+        AssertSame(diagnostic, compiledDiagnostic);
         var thrown = Assert.Throws<RegexSyntaxException>(() => new BroilerRegex(past, RegexFlags.None, UnicodeTables.Instance));
         Assert.Equal(RegexDiagnosticCode.NestingLimit, thrown.Diagnostic.Code);
         Assert.Equal(511, thrown.Diagnostic.Position);
@@ -399,6 +403,91 @@ public class ValidateEntryTests
         Assert.Equal(RegexStatus.Success, BroilerRegex.Validate("", "dgimsvy", UnicodeTables.Instance, 512, out _, out _));
     }
 
+    /// <summary>
+    /// Task 2.9 of SJL-11.2 (convention 3; check C3): the library declares no public exception type. A refusal is a status
+    /// with its diagnostic wherever a member answers one; the string-bearing constructors, which decision D12 keeps and
+    /// which answer none, document a pattern or flags text the specification refuses as their broken precondition and
+    /// throw an <see cref="ArgumentException"/> with the diagnostic's message, the internal type of the refusal.
+    /// </summary>
+    [Fact]
+    public void No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException()
+    {
+        Assert.DoesNotContain(typeof(BroilerRegex).Assembly.GetExportedTypes(), static type => typeof(Exception).IsAssignableFrom(type));
+        Assert.False(typeof(RegexSyntaxException).IsPublic);
+
+        foreach (var (pattern, flags) in new[] { ("a)", ""), ("(?<a>x)(?<a>y)", "u"), ("a", "gg") })
+        {
+            var refusal = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(pattern, flags, UnicodeTables.Instance)));
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var diagnostic, out _));
+            Assert.Equal(diagnostic.Message, refusal.Message);
+            Assert.Null(refusal.ParamName);
+        }
+
+        // Past the maximum both constructors refuse with the message the validate entry's diagnostic carries at
+        // MaximumNestingLimit, as their documentation promises.
+        var nested = new string('(', 600) + new string(')', 600);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Validate(nested, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var nesting, out var limit));
+        Assert.Equal(RegexLimit.Nesting, limit);
+        Assert.Equal(RegexDiagnosticCode.NestingLimit, nesting.Code);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Validate(nested, "", UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var nestingOfText, out _));
+        Assert.Equal(nesting.Message, nestingOfText.Message);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, null, null, out _, out _, out var compiled));
+        Assert.Equal(nesting.Message, compiled.Message);
+
+        var deep = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(nested, "", UnicodeTables.Instance)));
+        Assert.Equal(nesting.Message, deep.Message);
+        var deepOfFlags = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(nested, RegexFlags.None, UnicodeTables.Instance)));
+        Assert.Equal(nesting.Message, deepOfFlags.Message);
+    }
+
+    /// <summary>
+    /// ParsePattern (ECMA-262 §22.2.3.4) refuses <c>u</c> with <c>v</c> as its first step, so the members over a flags
+    /// value refuse <c>Unicode | UnicodeSets</c> as the members over a flags text refuse <c>uv</c>: the syntax status with
+    /// <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>, at no place in a flags text (-1), before the pattern is
+    /// read; the constructor with that diagnostic's message. A bit no member of <see cref="RegexFlags"/> defines is a
+    /// broken precondition, as <see cref="Text.RegexFlagsText.Format"/> reads it.
+    /// </summary>
+    [Fact]
+    public void A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition()
+    {
+        const RegexFlags both = RegexFlags.Unicode | RegexFlags.UnicodeSets;
+        foreach (var pattern in new[] { "a", "a)", "[a--b]" })
+        {
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Compile(pattern, both | RegexFlags.Global, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit,
+                null, null, out var regex, out var limit, out var diagnostic));
+            Assert.Null(regex);
+            Assert.Equal(RegexLimit.None, limit);
+            Assert.Equal(RegexDiagnosticCode.UnicodeWithUnicodeSets, diagnostic.Code);
+            Assert.Equal("regexp.flags.unicode-with-unicode-sets", diagnostic.MessageId);
+            Assert.Equal(-1, diagnostic.Position);
+            Assert.Null(diagnostic.Argument);
+
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, both, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var validated, out var validatedLimit));
+            Assert.Equal(RegexLimit.None, validatedLimit);
+            Assert.Equal(diagnostic, validated);
+
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, "uv", UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var ofText, out _));
+            Assert.Equal(diagnostic.Code, ofText.Code);
+            Assert.Equal(diagnostic.Message, ofText.Message);
+
+            var refusal = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(pattern, both, UnicodeTables.Instance)));
+            Assert.Equal(diagnostic.Message, refusal.Message);
+        }
+
+        // No unit of the pattern is charged: the refusal comes before ParsePattern reads it.
+        ulong charged = 0;
+        Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Compile("abc", both, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, null,
+            units => charged += units, out _, out _, out _));
+        Assert.Equal(0UL, charged);
+
+        var undefined = (RegexFlags)(1 << 8);
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => BroilerRegex.Compile("a", undefined, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit,
+            null, null, out _, out _, out _));
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => BroilerRegex.Validate("a", undefined | RegexFlags.Global, UnicodeTables.Instance,
+            BroilerRegex.MaximumNestingLimit, out _, out _));
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => new BroilerRegex("a", undefined, UnicodeTables.Instance));
+    }
+
     [Fact]
     public void The_default_diagnostic_is_no_refusal()
     {
@@ -409,8 +498,8 @@ public class ValidateEntryTests
         Assert.Null(none.Argument);
         Assert.Equal("", none.Message);
 
-        // An exception made through the public constructor carries no diagnostic.
-        Assert.Equal(RegexDiagnosticCode.None, new RegexSyntaxException("made by a caller", 3).Diagnostic.Code);
+        // An exception made from a message alone carries no diagnostic.
+        Assert.Equal(RegexDiagnosticCode.None, new RegexSyntaxException("made from a message", 3).Diagnostic.Code);
 
         // Nor, until task 2.9, does the public CharSet.AddRange's refusal of a range written high to low, the one refusal of
         // the library made that way: no compilation reaches it, since the parser refuses such a range with its diagnostic
@@ -468,7 +557,7 @@ public class ValidateEntryTests
             var account = new CompileCharge(null, null);
             Assert.Equal(RegexStatus.Success, BroilerRegex.Validate(pattern, flags, new RegexUnicode(UnicodeTables.Instance, account), new RegexNesting(512), out _, out _));
             Assert.Equal((ulong)pattern.Length, account.Spent);
-            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 512, budget, null, out _, out var limit));
+            Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, 512, budget, null, out _, out var limit, out _));
             Assert.Equal(RegexLimit.Compile, limit);
         }
     }
@@ -531,27 +620,29 @@ public class ValidateEntryTests
     internal static string Agreement(string pattern, RegexFlags flags, int nesting)
     {
         var validated = BroilerRegex.Validate(pattern, flags, UnicodeTables.Instance, nesting, out var diagnostic, out var limit);
-        try
+        var compiled = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, nesting, null, null, out var regex, out var compiledLimit, out var refusal);
+        if (compiled == RegexStatus.Success)
         {
-            var compiled = BroilerRegex.Compile(pattern, flags, UnicodeTables.Instance, nesting, null, null, out var regex, out var compiledLimit);
-            if (compiled == RegexStatus.Success)
-            {
-                Assert.True(validated == RegexStatus.Success, Show(pattern, flags) + " compiles and is answered " + validated + " " + diagnostic.MessageId);
-                return "compiled";
-            }
-
-            Assert.Equal(RegexLimit.Nesting, compiledLimit);
-            Assert.True(validated == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit,
-                Show(pattern, flags) + " meets the nesting limit in Compile and is answered " + validated + " " + diagnostic.MessageId);
-            return "nesting";
+            Assert.True(validated == RegexStatus.Success, Show(pattern, flags) + " compiles and is answered " + validated + " " + diagnostic.MessageId);
+            Assert.NotNull(regex);
+            Assert.Equal(RegexDiagnosticCode.None, refusal.Code);
+            return "compiled";
         }
-        catch (RegexSyntaxException refusal)
+
+        Assert.Null(regex);
+        if (compiled == RegexStatus.SyntaxError)
         {
             Assert.True(validated == RegexStatus.SyntaxError, Show(pattern, flags) + " is refused by Compile (" + refusal.Message + ") and answered " + validated);
-            AssertSame(refusal.Diagnostic, diagnostic);
-            Assert.Equal(refusal.Position, diagnostic.Position);
+            Assert.Equal(RegexLimit.None, compiledLimit);
+            AssertSame(refusal, diagnostic);
             return "syntax";
         }
+
+        Assert.Equal((RegexStatus.LimitExceeded, RegexLimit.Nesting), (compiled, compiledLimit));
+        Assert.True(validated == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit,
+            Show(pattern, flags) + " meets the nesting limit in Compile and is answered " + validated + " " + diagnostic.MessageId);
+        AssertSame(diagnostic, refusal);
+        return "nesting";
     }
 
     private static string Show(string pattern, RegexFlags flags) => "/" + TestPopulations.Escape(pattern) + "/ under " + flags;

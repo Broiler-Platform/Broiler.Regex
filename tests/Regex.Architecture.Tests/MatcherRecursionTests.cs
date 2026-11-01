@@ -107,10 +107,20 @@ public class MatcherRecursionTests
         Assert.Contains("Broiler.Regex.Engine.RegexMachine.PushChoicePoint(System.Int32,System.Int32)", graph.Callees(Loop));
         Assert.True(graph.Reaches(graph.Methods.Single(static m => m.StartsWith("Broiler.Regex.Engine.RegexProgram.Match(", StringComparison.Ordinal)), Loop));
 
-        // The only method outside the namespace that it reaches is the meter's invocation, the caller's code; the calls
-        // into other assemblies are those reviewed, the case folding among them, which reads the caller's provider, the
-        // caller's code too, as no type of the library implements its interface (Refusals).
-        Assert.Equal(["Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64)"], graph.ReachedFrom(MatcherNamespace).Where(static m => !m.StartsWith(MatcherNamespace + ".", StringComparison.Ordinal)));
+        // The methods outside the namespace that it reaches are the meter's invocation, the caller's code, and the four
+        // getters of the caller's ceilings, whose type task 2.9 of SJL-11.2 moved from this namespace to Broiler.Regex:
+        // each reads a field, IsSet through Frames, and none reaches back into the namespace, so none can close a cycle. The calls into other assemblies are those
+        // reviewed, the case folding among them, which reads the caller's provider, the caller's code too, as no type of
+        // the library implements its interface (Refusals).
+        Assert.Equal(
+            [
+                "Broiler.Regex.RegexMatchCeilings.get_Frames()", "Broiler.Regex.RegexMatchCeilings.get_IsSet()",
+                "Broiler.Regex.RegexMatchCeilings.get_Steps()", "Broiler.Regex.RegexMatchCeilings.get_Trail()",
+                "Broiler.Regex.RegexWorkCharge.Invoke(System.UInt64)",
+            ],
+            graph.ReachedFrom(MatcherNamespace).Where(static m => !m.StartsWith(MatcherNamespace + ".", StringComparison.Ordinal)).Order(StringComparer.Ordinal));
+        Assert.All(graph.ReachedFrom(MatcherNamespace).Where(static m => m.StartsWith("Broiler.Regex.RegexMatchCeilings.", StringComparison.Ordinal)),
+            m => Assert.DoesNotContain(graph.Callees(m), static c => !c.StartsWith("Broiler.Regex.RegexMatchCeilings.get_", StringComparison.Ordinal)));
         Assert.Equal(ReviewedExternalTypes, graph.ExternalTypesFrom(MatcherNamespace));
         Assert.Contains("Broiler.Unicode.Algorithms.UnicodeCaseFolding", graph.ExternalTypesFrom(MatcherNamespace));
 

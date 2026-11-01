@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   4
-// Annotated:        4/4
+// Relevant units:   5
+// Annotated:        5/5
 // Exempt:           3
-// Human-reviewed:   0/4
+// Human-reviewed:   0/5
 // IP risk:          None
 // Security risk:    High
-// Criteria:         2/2
+// Criteria:         3/2
 // Resource impact:  0/10 max
-// Unverified:       4
+// Unverified:       5
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -82,16 +82,26 @@ internal readonly struct RegexNesting
     }
 
     /// <summary>
+    /// The message of every refusal of a nesting limit: the one <see cref="BroilerRegex.Compile"/> and the validate entry
+    /// answer with <see cref="RegexDiagnosticCode.NestingLimit"/>, and the one the members that take no limit throw with
+    /// at <see cref="BroilerRegex.MaximumNestingLimit"/>, whose diagnostic's argument names the limit.
+    /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C32C03
+    // Broiler-Human:        PENDING
+    internal const string RefusalMessage = "The pattern nests deeper than the nesting limit";
+
+    /// <summary>
     /// The refusal the members that take no limit report for a pattern nested deeper than
     /// <see cref="BroilerRegex.MaximumNestingLimit"/>: they refuse every pattern they do not compile with a
     /// <see cref="RegexSyntaxException"/>, as they refuse every pattern they do not compile, whose diagnostic is the
-    /// validate entry's for the same refusal (<see cref="RegexDiagnosticCode.NestingLimit"/>, task 2.8 of SJL-11.2).
+    /// validate entry's for the same refusal at <see cref="BroilerRegex.MaximumNestingLimit"/>
+    /// (<see cref="RegexDiagnosticCode.NestingLimit"/>, task 2.8 of SJL-11.2), its message <see cref="RefusalMessage"/>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0F06C5
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A5409A
+    // Broiler-Falsified-If: a pattern of 600 nested groups is refused by a constructor with a message other than the one Validate answers for it at MaximumNestingLimit
     // Broiler-Human:        PENDING
     internal static RegexSyntaxException AsSyntaxError(NestingLimitExceeded refusal)
-        => new(RegexDiagnostic.Nesting(refusal.Position, BroilerRegex.MaximumNestingLimit,
-            "The pattern nests deeper than the library's maximum nesting limit"));
+        => new(RegexDiagnostic.Nesting(refusal.Position, BroilerRegex.MaximumNestingLimit, RefusalMessage));
 }
 
 /// <summary>

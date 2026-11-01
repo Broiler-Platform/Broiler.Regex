@@ -66,7 +66,17 @@ answering, is a finding at the iteration it was in), and each known finding's re
   pattern's read alone, 19 of whose tight compilations now answer the syntax error where they met their budget (18) or
   their meter (1). The oracle's comparison of the validate entry, which adds its answers to each record, then made it
   `1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`, the same over two runs with four worker processes
-  and over three under `tr-TR`; the session took 34 seconds on four cores beside other builds. The digest is a record,
+  and over three under `tr-TR`; the session took 34 seconds on four cores beside other builds. Task 2.9 moved it once:
+  with `RegexSyntaxException` internal, the constructor's refusal is an `ArgumentException`, which the record names
+  `syntax`, and the digest is `f8477deef307ca48c0bea72dcdc9a44a4197ee09665f9a52599ae4310227dad1`, no finding; `Compile`'s
+  syntax status, the flags reader's diagnostic, `Groups` as a span, `GroupNamed` and `NextMatch` left it unchanged.
+  The review of task 2.9 moved it once more: `Compile`, the validate entry and the constructor over a `RegexFlags`
+  value refuse `Unicode | UnicodeSets` as ParsePattern does, with `UnicodeWithUnicodeSets` at -1 before any unit is
+  charged, where they read the pair as `v`; the generator draws both modes in 3 cases of 100, and each validate policy
+  answers `syntax` 680 times more. The digest is `c2ed95c98feb225ec1df3eccf378d9f4804aab02f410d48299be02891e4c5d5b`,
+  the same with four worker processes and with three under `tr-TR`, no finding; the constructor's nesting message, now
+  the validate entry's, and the oracle's comparison of it left it unchanged.
+  The digest is a record,
   not a pin: the records hold the units the meter was charged and the library's
   answers, so it moves with any change of the library's behaviour or units, and CI prints it without comparing it.
 
@@ -90,7 +100,8 @@ subtraction, ranges and `\q{…}` (empty strings included), capturing, non-captu
 escaped, astral and as escaped surrogate pairs, repeated), the four look-arounds (look-aheads quantified outside `u`),
 modifier groups, numbered and named back-references (forward, backward and missing), `^ $ \b \B`, and every quantifier
 form, greedy and lazy, with bounds up to 2^20, `int.MaxValue` and past it. Every flag combination: the mode (none, `u`,
-`v`, and both, which `Compile` reads as `v`), each of `d g i m s y` independently.
+`v`, and both, which `Compile` refuses as ParsePattern does since task 2.9's review, where it read them as `v`), each of
+`d g i m s y` independently.
 
 **Near misses.** 18 iterations in 100 take a grammar pattern and make one edit that most often reaches a refusal:
 quantifier bounds out of order, a group or class left open or closed twice, duplicate and undeclared group names,
@@ -113,36 +124,41 @@ run of up to 65,536 characters; the classes have their own, of up to 1,100,000 c
   random, one inside a surrogate pair and one after it), anchored and not, under wide ceilings (a step ceiling of 2^18
   units, 2^23 for a long subject, and the engines' frames and trail) and a meter, and once under narrow ones, which
   reach every ceiling and the meter's allowance;
-- the string-bearing `Match(string, int)`, `IsMatch` and `Matches`, from every start and, now and then, -1 and past the
+- the string-bearing `Match(string, int)`, `IsMatch` and the global iteration through `NextMatch` (`Matches` until
+  task 2.9), from every start and, now and then, -1 and past the
   end;
 - the text helpers `RegexEscaper.EscapePattern` and `EscapeString`, with a maximum length and a meter, half the time;
 - now and then, each documented argument exception, for an argument broken on purpose.
 
 ## What counts as a finding
 
-An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension, and the validate entry's
-`SyntaxError` with its diagnostic), a `RegexSyntaxException` from compilation, the session's own meter exception, a documented argument exception for an
-argument broken on purpose, and `IsMatch`'s `InvalidOperationException` for a match that reached a ceiling. A finding
-is anything else:
+An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension, and `SyntaxError` with its
+diagnostic, from the validate entry and, since task 2.9 of SJL-11.2, from `Compile`), the constructor's
+`ArgumentException` for a pattern it refuses (task 2.9: the public `RegexSyntaxException` is gone, and the constructor
+documents a pattern the specification refuses as its broken precondition), the session's own meter exception, a
+documented argument exception for an argument broken on purpose, and `IsMatch`'s `InvalidOperationException` for a
+match that reached a ceiling, which the owner admitted on 2026-11-01. A finding is anything else, a
+`RegexSyntaxException` from `Compile` included since task 2.9:
 
 - **exception**: any other exception escaping an entry, a documented argument exception included when the session's
   arguments were valid;
 - **process-end** and **hang**: a child that ends without its last line, or writes nothing for the watchdog's time,
   reported at the iteration after its last record, with that case; the child is restarted after it;
 - **disagreement**: two answers to one question that differ. A tight compilation that succeeds, or refuses a syntax
-  error, against the full one; the constructor against the full compilation; the validate entry against the compilation
+  error, against the full one; the constructor against the full compilation (for a refusal, the message of the
+  full compilation's syntax error or, its nesting limit being the maximum, of its nesting limit); the validate entry against the compilation
   under the same nesting limit, wherever that compilation met neither its compile budget nor its meter (the same status,
   and for a syntax error the same code, message identifier, argument, position and message); a narrow match call that completes
   against the wide one; after the meter's exception, the same instance against its own earlier answer; the
   string-bearing members against the offset entry, through the mapping their documentation states
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
   decision D41, groups from the slots, each `Value` (the match's, group 0's and every group's) the subject's text at
-  the offsets reported, each group's `Number` its own, `NamedGroups` from the participating group of each name, its
+  the offsets reported, each group's `Number` its own, `GroupNamed` (`NamedGroups` until task 2.9) the participating group of each name, its
   `Number` that group's and its offsets that group's slots, as `RegexGroupNames.ParticipatingGroup` reads them, or,
   where no group of the name participated, the name's first group, unmatched, a failed match with no index, text or
-  groups, `Matches`' iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
-  as `Matches`' last element), compared wherever the wide call completed or met the frame or trail ceiling the
-  string-bearing members also pass. `Matches` is emulated through the wide calls: those the case made already, from
+  groups, `NextMatch`'s iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
+  as the iteration's last match), compared wherever the wide call completed or met the frame or trail ceiling the
+  string-bearing members also pass. The iteration is emulated through the wide calls: those the case made already, from
   its starts, are always taken, so its first element is compared on every subject, a ceiling there included (only
   subjects of about 500,000 units and more reach one, the corpus's class M now and then); a new call is made only on a
   subject of at most 4,096 units, within 2^20 units spent and 4,096 elements. An emulation that reaches the

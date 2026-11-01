@@ -28,7 +28,7 @@ public class ClassSetExpressionEndTests
     private static RegexSyntaxException Refusal(string pattern, RegexFlags flags)
     {
         var thrown = Assert.Throws<RegexSyntaxException>(() => TestRegex.Compile(pattern, flags));
-        var compiled = Assert.Throws<RegexSyntaxException>(() => TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, 512, out _, out _));
+        Assert.Equal(RegexStatus.SyntaxError, TestRegex.TryCompile(pattern, flags, UnicodeTables.Instance, 512, out _, out _, out var compiled));
         Assert.Equal(thrown.Message, compiled.Message);
         Assert.Equal(thrown.Position, compiled.Position);
         return thrown;

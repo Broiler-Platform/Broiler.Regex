@@ -26,11 +26,10 @@ namespace Broiler.Regex;
 /// <param name="units">The units about to be spent: a whole number of blocks (decision D8; the block is 512 units, for a match and for a compilation).</param>
 /// <remarks>
 /// <para>
-/// <b>Public since task 2.4c, provisional.</b> The offset entry,
-/// <see cref="BroilerRegex.Match(System.ReadOnlySpan{char}, int, bool, System.Span{int}, RegexWorkCharge?, Engine.RegexMatchCeilings, out RegexLimit)"/>,
+/// <b>Public since task 2.4c of SJL-11.2</b>, fixed for <c>0.1.0-preview.6</c> by task 2.9. The offset entry,
+/// <see cref="BroilerRegex.Match(System.ReadOnlySpan{char}, int, bool, System.Span{int}, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)"/>,
 /// takes it, and since task 2.5 <see cref="BroilerRegex.Compile"/> charges the same meter for compilation (requirement
-/// R2), in units in proportion to the ranges and strings its expansions touch; task 2.9 fixes the public surface of
-/// <c>0.2.0-preview.1</c>, so its name and shape may still change before that version ships. The meter is not a cancellation token and the library never polls a clock: cancellation reaches an operation
+/// R2), in units in proportion to the ranges and strings its expansions touch, and so do the text helpers. The meter is not a cancellation token and the library never polls a clock: cancellation reaches an operation
 /// through the meter, by throwing.
 /// </para>
 /// <para>

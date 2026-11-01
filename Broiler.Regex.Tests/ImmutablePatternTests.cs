@@ -26,7 +26,7 @@ public class ImmutablePatternTests
 
         var regex = TestRegex.Compile("(?<y>a)");
         Assert.Equal([1], regex.GroupNames.GroupsNamed("y").ToArray());
-        Assert.Equal("a", regex.Match("a").NamedGroups["y"].Value);
+        Assert.Equal("a", regex.Match("a").GroupNamed("y")!.Value);
         Assert.Equal([1], regex.GroupNames.GroupsNamed("y").ToArray());
     }
 

@@ -5,7 +5,7 @@ GENERATED - DO NOT EDIT MANUALLY. Regenerate with
 `CODE-ASSURANCE.md`, `assurance.manifest.json` and every generated source header from the
 product tree.
 
-> **Status: PENDING.** Human-reviewed: 0 of 377 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
+> **Status: PENDING.** Human-reviewed: 0 of 384 relevant units. `dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root Broiler.RegEx --release`
 > fails while any relevant unit is without a decision bound to its current fingerprint.
 
 ## 1. How To Use This File
@@ -51,11 +51,11 @@ did, which is the narrower and the more useful of the two.
 |---|---:|
 | Files scanned | 26 |
 | Code units | 717 |
-| Relevant | 377 |
-| Exempt | 340 |
-| Assessed | 377 of 377 (100%) |
-| Human reviewed | 0 of 377 (0%) |
-| Unverified | 377 |
+| Relevant | 384 |
+| Exempt | 333 |
+| Assessed | 384 of 384 (100%) |
+| Human reviewed | 0 of 384 (0%) |
+| Unverified | 384 |
 | Aliases naming a decision | 0 |
 
 ## 4. Review States
@@ -67,11 +67,11 @@ annotations and the current fingerprints; nothing stores them.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 377 |
+| HUMAN_PENDING | 384 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 340 |
+| EXEMPT | 333 |
 
 ## 5. Aliases In The Tree
 
@@ -91,24 +91,24 @@ relevant units in a state that blocks a release.
 | `Broiler.Regex/Ast/RegexNode.cs` | 46 | 20 | 26 | 20 | None | Low | 0/0 |
 | `Broiler.Regex/BroilerRegex.cs` | 21 | 15 | 6 | 15 | Low | High | 14/14 |
 | `Broiler.Regex/CompileCharge.cs` | 29 | 10 | 19 | 10 | None | High | 2/2 |
-| `Broiler.Regex/Compiling/ProgramCompiler.cs` | 64 | 34 | 30 | 34 | None | High | 21/18 |
+| `Broiler.Regex/Compiling/ProgramCompiler.cs` | 64 | 35 | 29 | 35 | None | High | 22/18 |
 | `Broiler.Regex/Engine/RegexInstruction.cs` | 8 | 1 | 7 | 1 | None | Medium | 1/0 |
 | `Broiler.Regex/Engine/RegexMachine.cs` | 70 | 42 | 28 | 42 | None | High | 30/17 |
-| `Broiler.Regex/Engine/RegexMatchCeilings.cs` | 11 | 8 | 3 | 8 | None | High | 2/2 |
 | `Broiler.Regex/Engine/RegexOp.cs` | 30 | 1 | 29 | 1 | None | Medium | 0/0 |
 | `Broiler.Regex/Engine/RegexProgram.cs` | 21 | 10 | 11 | 10 | None | High | 4/2 |
 | `Broiler.Regex/Engine/RegexStrings.cs` | 15 | 6 | 9 | 6 | None | High | 2/1 |
-| `Broiler.Regex/Parsing/RegexNesting.cs` | 7 | 4 | 3 | 4 | None | High | 2/2 |
-| `Broiler.Regex/Parsing/RegexParser.cs` | 95 | 70 | 25 | 70 | Low | High | 65/56 |
+| `Broiler.Regex/Parsing/RegexNesting.cs` | 8 | 5 | 3 | 5 | None | High | 3/2 |
+| `Broiler.Regex/Parsing/RegexParser.cs` | 96 | 72 | 24 | 72 | Low | High | 67/56 |
 | `Broiler.Regex/RegexDiagnostic.cs` | 63 | 9 | 54 | 9 | None | Low | 5/0 |
 | `Broiler.Regex/RegexFlags.cs` | 13 | 4 | 9 | 4 | Low | High | 4/2 |
 | `Broiler.Regex/RegexGroupNames.cs` | 12 | 7 | 5 | 7 | None | Medium | 6/0 |
-| `Broiler.Regex/RegexMatch.cs` | 24 | 9 | 15 | 9 | None | Low | 3/0 |
+| `Broiler.Regex/RegexMatch.cs` | 26 | 12 | 14 | 12 | None | Low | 6/0 |
+| `Broiler.Regex/RegexMatchCeilings.cs` | 11 | 8 | 3 | 8 | None | High | 2/2 |
 | `Broiler.Regex/RegexStatus.cs` | 13 | 2 | 11 | 2 | None | Low | 0/0 |
 | `Broiler.Regex/RegexSyntaxException.cs` | 5 | 3 | 2 | 3 | Low | Low | 0/0 |
 | `Broiler.Regex/RegexWorkCharge.cs` | 1 | 1 | 0 | 1 | None | Medium | 0/0 |
 | `Broiler.Regex/Text/RegexEscaper.cs` | 31 | 26 | 5 | 26 | None | High | 12/12 |
-| `Broiler.Regex/Text/RegexFlagsText.cs` | 13 | 9 | 4 | 9 | None | High | 2/2 |
+| `Broiler.Regex/Text/RegexFlagsText.cs` | 9 | 9 | 0 | 9 | None | High | 3/2 |
 | `Broiler.Regex/Unicode/RegexUnicode.cs` | 41 | 27 | 14 | 27 | Low | High | 13/9 |
 | `Broiler.Regex/Unicode/UnicodeCharSets.cs` | 13 | 9 | 4 | 9 | Low | Medium | 6/0 |
 
@@ -127,12 +127,12 @@ The units at the top of the security vocabulary, with the observation that would
 one wrong and the human line it carries. The set is read from the assessments rather than
 written out, so a unit that becomes `High` joins it at the next generation.
 
-- `Broiler.Regex.Ast.CharSet` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=none cited, `BD9DC9`, PENDING
+- `Broiler.Regex.Ast.CharSet` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=none cited, `A2DE0A`, PENDING
   - Falsified if: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
 - `Broiler.Regex.Ast.CharSet.AddRange(int, int)` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=none cited, `11B259`, PENDING
   - Falsified if: a class range written high to low, such as [z-a], is added to the set instead of throwing RegexSyntaxException
-- `Broiler.Regex.Ast.CharSet.CheckRange(int, int)` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=ECMA-262 s22.2.1.1, `64DF54`, PENDING
-  - Falsified if: [z-a] is accepted, or [a-a] refused
+- `Broiler.Regex.Ast.CharSet.CheckRange(int, int)` in `Broiler.Regex/Ast/CharSet.cs` - Security=High, Spec=ECMA-262 s22.2.1.1, `C72FB5`, PENDING
+  - Falsified if: [z-a] is accepted, or [a-a] refused, or the message's code points read the current culture
 - `Broiler.Regex.Ast.ClassStrings` in `Broiler.Regex/Ast/ClassStrings.cs` - Security=High, Spec=ECMA-262 s22.2.1, `BAF455`, PENDING
   - Falsified if: a union of two operands keeps a string twice or loses one, an intersection keeps a string one operand lacks, a difference keeps a string of its second operand, or adding or finding a string costs comparisons that grow with the strings already held
 - `Broiler.Regex.BroilerRegex` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `1B83F8`, PENDING
@@ -140,18 +140,18 @@ written out, so a unit that becomes `High` joins it at the next generation.
 - `Broiler.Regex.BroilerRegex.MaximumNestingLimit` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decision D6, `953223`, PENDING
   - Falsified if: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, string?, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `14510D`, PENDING
-  - Falsified if: a flags string with a repeated letter such as "gg" produces an instance instead of throwing RegexSyntaxException
-- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `DFF8D4`, PENDING
-  - Falsified if: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
+  - Falsified if: a flags string with a repeated letter such as "gg" produces an instance instead of throwing an ArgumentException with the validate entry's message
+- `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, IUnicodeTables)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `1F38E3`, PENDING
+  - Falsified if: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing an ArgumentException
 - `Broiler.Regex.BroilerRegex.BroilerRegex(string, RegexFlags, RegexUnicode, RegexNesting, bool)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `310E62`, PENDING
   - Falsified if: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
-- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, ulong?, RegexWorkCharge?, out BroilerRegex?, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6 to D9, `3C8E92`, PENDING
-  - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, or the meter is charged after the work it pays for
-- `Broiler.Regex.BroilerRegex.Validate(string, RegexFlags, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D9 and D18, `384C55`, PENDING
+- `Broiler.Regex.BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int, ulong?, RegexWorkCharge?, out BroilerRegex?, out RegexLimit, out RegexDiagnostic)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D6 to D9, `3C068C`, PENDING
+  - Falsified if: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
+- `Broiler.Regex.BroilerRegex.Validate(string, RegexFlags, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decisions D9 and D18, `C0FA71`, PENDING
   - Falsified if: under u, \k<b>(?<a>x) answers Success, a pattern Compile refuses with a syntax error is answered otherwise or at another position, one Compile compiles is refused, 512 nested groups under a limit of 512 answer other than LimitExceeded naming Nesting, or validating charges a unit of expansion
-- `Broiler.Regex.BroilerRegex.Validate(string, string?, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral, `D30070`, PENDING
+- `Broiler.Regex.BroilerRegex.Validate(string, string?, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral, `702602`, PENDING
   - Falsified if: the flags "gg" answer other than DuplicateFlag at 1, "uv" other than UnicodeWithUnicodeSets at 1, or a flags refusal is answered after a refusal of the pattern
-- `Broiler.Regex.BroilerRegex.Validate(string, RegexFlags, RegexUnicode, RegexNesting, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decision D18, `FB9215`, PENDING
+- `Broiler.Regex.BroilerRegex.Validate(string, RegexFlags, RegexUnicode, RegexNesting, out RegexDiagnostic, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=JSD-0081 decision D18, `D3A4DE`, PENDING
   - Falsified if: a refusal escapes as an exception, or the nesting refusal is answered without its diagnostic
 - `Broiler.Regex.BroilerRegex.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `DF6AB2`, PENDING
   - Falsified if: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 or 16,384 groups allocates once the pool is warm
@@ -159,9 +159,9 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: Match(input, -1) does not give the result that Match(input, 0) gives, under u /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, or a match that reaches a ceiling answers RegexMatch.Empty or throws
 - `Broiler.Regex.BroilerRegex.IsMatch(string, int)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `494A37`, PENDING
   - Falsified if: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start, or returns false for a match that reached a ceiling
-- `Broiler.Regex.BroilerRegex.Matches(string)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=none cited, `46F375`, PENDING
-  - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling ends the enumeration with no element naming it, or the enumeration goes on after it
-- `Broiler.Regex.BroilerRegex.Run(RegexProgram, string, int, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41, `1C23DC`, PENDING
+- `Broiler.Regex.BroilerRegex.NextMatch(RegexMatch)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex, `770A62`, PENDING
+  - Falsified if: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling answers other than itself, or the matches it walks differ from the global iteration's
+- `Broiler.Regex.BroilerRegex.Run(RegexProgram, string, int, out RegexLimit)` in `Broiler.Regex/BroilerRegex.cs` - Security=High, Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41, `DE5CAD`, PENDING
   - Falsified if: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
 - `Broiler.Regex.CompileCharge` in `Broiler.Regex/CompileCharge.cs` - Security=High, Spec=JSD-0081 decisions D8 and D9, `F31C83`, PENDING
   - Falsified if: a compilation's meter is charged anything but whole blocks of 512 units, is charged after the work a charge pays for, or a budget of n units admits a compilation whose charges total more than n
@@ -237,10 +237,6 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: a call holds one frame more than its frame ceiling, answers LimitExceeded holding fewer, or a choice's frame is pushed with a mark
 - `Broiler.Regex.Engine.RegexMachine.SetRegister(int, int)` in `Broiler.Regex/Engine/RegexMachine.cs` - Security=High, Spec=none cited, `46CC5B`, PENDING
   - Falsified if: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
-- `Broiler.Regex.Engine.RegexMatchCeilings` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=JSD-0081 decisions D8 and D10, `0B6794`, PENDING
-  - Falsified if: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
-- `Broiler.Regex.Engine.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/Engine/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `1B8BFB`, PENDING
-  - Falsified if: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
 - `Broiler.Regex.Engine.RegexProgram` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, Spec=JSD-0081 decisions D5 and D8, `E22681`, PENDING
   - Falsified if: two threads matching one program at the same time answer differently from one thread matching it twice, or a match call writes a field of the program
 - `Broiler.Regex.Engine.RegexProgram.Match(ReadOnlySpan<char>, int, bool, Span<int>, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit, out ulong)` in `Broiler.Regex/Engine/RegexProgram.cs` - Security=High, Spec=ECMA-262 s22.2.7.2, `775D0C`, PENDING
@@ -251,7 +247,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: with a limit of 512, a pattern of 511 nested groups is refused, or one of 512 nested groups or 512 nested v-mode classes is accepted
 - `Broiler.Regex.Parsing.RegexNesting.Descend(int, int)` in `Broiler.Regex/Parsing/RegexNesting.cs` - Security=High, Spec=JSD-0081 decision D6, `6580D7`, PENDING
   - Falsified if: Descend(Limit - 1, p) throws, or Descend(Limit, p) returns instead of throwing
-- `Broiler.Regex.Parsing.RegexParser` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `0CA2F0`, PENDING
+- `Broiler.Regex.Parsing.RegexParser` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `52F8B3`, PENDING
   - Falsified if: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
 - `Broiler.Regex.Parsing.RegexParser.Parse(string, RegexFlags, IUnicodeTables, out int)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `2D8D8D`, PENDING
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2
@@ -259,7 +255,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
 - `Broiler.Regex.Parsing.RegexParser.Validate(string, RegexFlags, RegexUnicode, RegexNesting)` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1 and JSD-0081 decision D18, `2909F1`, PENDING
   - Falsified if: a pattern a compilation's parse refuses is accepted, one it accepts is refused, a refusal's code or position differs from the compilation's, or validating expands a property escape, folds a set or builds a class's set
-- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `430B7C`, PENDING
+- `Broiler.Regex.Parsing.RegexParser.ParsePattern()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `DA462E`, PENDING
   - Falsified if: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
 - `Broiler.Regex.Parsing.RegexParser.PreScan()` in `Broiler.Regex/Parsing/RegexParser.cs` - Security=High, Spec=ECMA-262 s22.2.1, `83B68B`, PENDING
   - Falsified if: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
@@ -365,8 +361,12 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: it returns true for '/', '-' or ',', or false for one of ^ $ \ . * + ? ( ) [ ] { } |
 - `Broiler.Regex.RegexFlagsParser` in `Broiler.Regex/RegexFlags.cs` - Security=High, Spec=none cited, `8E3CEF`, PENDING
   - Falsified if: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
-- `Broiler.Regex.RegexFlagsParser.Parse(string?)` in `Broiler.Regex/RegexFlags.cs` - Security=High, Spec=ECMA-262 s22.2.3.3 RegExpInitialize, `2217E0`, PENDING
+- `Broiler.Regex.RegexFlagsParser.Parse(string?)` in `Broiler.Regex/RegexFlags.cs` - Security=High, Spec=ECMA-262 s22.2.3.3 RegExpInitialize, `640203`, PENDING
   - Falsified if: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
+- `Broiler.Regex.RegexMatchCeilings` in `Broiler.Regex/RegexMatchCeilings.cs` - Security=High, Spec=JSD-0081 decisions D8 and D10, `0B6794`, PENDING
+  - Falsified if: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
+- `Broiler.Regex.RegexMatchCeilings.RegexMatchCeilings(ulong?, int, int)` in `Broiler.Regex/RegexMatchCeilings.cs` - Security=High, Spec=none cited, `1B8BFB`, PENDING
+  - Falsified if: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
 - `Broiler.Regex.Text.RegexEscaper` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1 RegExp.escape, `A07F5C`, PENDING
   - Falsified if: a code point EncodeForRegExpEscape escapes is copied as itself, or U+0085 is escaped, so text placed in a pattern after escaping matches other text than itself
 - `Broiler.Regex.Text.RegexEscaper.SyntaxCharactersAndSolidus` in `Broiler.Regex/Text/RegexEscaper.cs` - Security=High, Spec=ECMA-262 s22.2.5.1.1 EncodeForRegExpEscape, `7A7608`, PENDING
@@ -393,7 +393,7 @@ written out, so a unit that becomes `High` joins it at the next generation.
   - Falsified if: units already paid for are charged again, or units past what was paid are not charged before this returns
 - `Broiler.Regex.Text.RegexFlagsText` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, Spec=ECMA-262 s22.2.3.3 RegExpInitialize, `C217B9`, PENDING
   - Falsified if: a flags string that RegExpInitialize refuses, such as "gg", "x" or "uv", answers Success, or one it accepts answers a refusal
-- `Broiler.Regex.Text.RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out int)` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, Spec=ECMA-262 s22.2.3.3 RegExpInitialize, `E771AD`, PENDING
+- `Broiler.Regex.Text.RegexFlagsText.Parse(ReadOnlySpan<char>, out RegexFlags, out RegexDiagnostic)` in `Broiler.Regex/Text/RegexFlagsText.cs` - Security=High, Spec=ECMA-262 s22.2.3.3 RegExpInitialize, `E328F7`, PENDING
   - Falsified if: "gg", "x", "G", "uv" or "uvx" answers Success, "uvx" answers UnicodeWithUnicodeSets rather than UnknownFlag at 2, or a refusal's position is not the code unit it names
 - `Broiler.Regex.Unicode.RegexUnicode` in `Broiler.Regex/Unicode/RegexUnicode.cs` - Security=High, Spec=ECMA-262 s22.2.2.7.3, `3576CE`, PENDING
   - Falsified if: a compiled pattern reads a Unicode answer that no IUnicodeTables call made during its compilation or matching could have supplied, so a recording provider misses a table the library read
@@ -429,5 +429,5 @@ An assessment is a comment, so changing one moves no fingerprint anywhere, and n
 mechanical checks that it is right; the check holds its values to their vocabularies and no
 further.
 
-377 of the 377 assessed units declare `Origin=AI`. Reading a declaration is the only thing
+384 of the 384 assessed units declare `Origin=AI`. Reading a declaration is the only thing
 that makes it read.

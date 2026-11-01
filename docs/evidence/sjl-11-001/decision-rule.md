@@ -32,6 +32,29 @@ parameters.
 - **The end reading** is taken at the commit both engines pin after their cut-overs, if it differs.
 Every part is judged at both.
 
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2); the rule above is not rewritten.* The candidate reading's line reads
+"The candidate reading is taken at the commit `0.2.0-preview.1` is packed from", after decision D12 of Broiler.VM's
+JSD-0081 ("the SJL-11 surface ships as `0.2.0-preview.1`"). The owner wrote on 2026-11-01 "Please keep using version
+0.1.0-x scheme!", which revises D12: the SJL-11 surface ships as `0.1.0-preview.6`, the next of the `0.1.0-preview.N`
+stream after `0.1.0-preview.5`, which the owner published on 2026-10-29 from `24344b3`. The candidate reading is read
+as taken at the commit `0.1.0-preview.6` is packed from.
+
+*The same dated note, extended on 2026-11-01 (the review of task 2.9).* It ended "nothing else of the rule changes",
+which was not so: two more lines of the rule are read otherwise from 2026-11-01, each by a dated record, and neither is
+rewritten.
+- **Check E-4's baseline.** E-4 reads "package validation against 0.1.0-preview.4". By the owner's decision of
+  2026-11-01, recorded in `docs/roadmap.md` (task 2.9's record: "The SJL-11 surface ships as `0.1.0-preview.6`,
+  validated against `0.1.0-preview.5`"), the baseline is the last published version, `0.1.0-preview.5`, and
+  `Broiler.Regex/CompatibilitySuppressions.xml` holds only the breaks of `0.1.0-preview.5`; the 23 breaks of
+  `0.1.0-preview.4` that `0.1.0-preview.5` shipped left it and stay listed in `docs/suppressions.md` and the CHANGELOG
+  as history. E-4 is read as package validation against `0.1.0-preview.5`; a pack against `0.1.0-preview.4` would fail.
+- **The pins and check A-10's "version above".** The pins line names `Broiler.Unicode.Algorithms` `0.1.0-preview.5`,
+  "the version both engines admit", and `Broiler.Unicode.Tables` `0.1.0-preview.5`. The owner's dependency update
+  `77284f1` ("Update dependencies", 2026-10-30) pins both at `0.1.0-preview.6` in this repository, and both engines pin
+  `Broiler.Unicode.Algorithms` `0.1.0-preview.6` (Broiler.JS at `66973a29`, Broiler.VM at `07def73`). The pins line and
+  A-10's "at the version above" are read as `0.1.0-preview.6` of both packages; the packed `0.1.0-preview.6` depends on
+  `Broiler.Unicode.Algorithms` `0.1.0-preview.6`.
+
 **The pins.** test262 `ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e`, checked by its tree hash; `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5`, the version both engines admit, and `Broiler.Unicode.Tables` `0.1.0-preview.5` for tests and the
 probe only; the vectors' copy under `tests/Vectors/` by its pin file.

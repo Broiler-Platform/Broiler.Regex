@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   70
-// Annotated:        70/70
-// Exempt:           25
-// Human-reviewed:   0/70
+// Relevant units:   72
+// Annotated:        72/72
+// Exempt:           24
+// Human-reviewed:   0/72
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         65/56
+// Criteria:         67/56
 // Resource impact:  7/10 max
-// Unverified:       70
+// Unverified:       72
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -31,14 +31,22 @@ namespace Broiler.Regex.Parsing;
 /// <c>Pattern</c> grammar (ECMA-262 §22.2.1). Produces a <see cref="RegexNode"/>
 /// tree consumed by the matcher.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=0CA2F0
+/// <remarks>
+/// Internal since task 2.9 of SJL-11.2, with the tree it produces: its work grows with the pattern and it took no meter
+/// (convention 4), and it threw for a pattern it refuses (convention 3). <see cref="BroilerRegex.Compile"/> and the
+/// validate entry are the public parses, under the caller's nesting limit, each answering a status.
+/// </remarks>
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=52F8B3
 // Broiler-Falsified-If: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
 // Broiler-Human:        PENDING
-public sealed class RegexParser
+internal sealed class RegexParser
 {
     private readonly string _src;
     private readonly bool _unicode;
     private readonly bool _unicodeSets;
+
+    /// <summary>Whether the flags carry <c>u</c> and <c>v</c> both, which ParsePattern refuses before it reads the pattern.</summary>
+    private readonly bool _unicodeWithUnicodeSets;
     private readonly RegexUnicode _data;
     private int _pos;
     private int _captureCount;
@@ -81,18 +89,23 @@ public sealed class RegexParser
     /// </summary>
     /// <remarks>
     /// Made once, when the pattern has been read, and never changed: the compiled pattern that keeps it, and its matches,
-    /// share it (convention 10). Provisional in its shape since task 2.6 of SJL-11.2, which reshaped it from a map of each
-    /// name to one group; task 2.9 fixes the public surface.
+    /// share it (convention 10). Task 2.6 of SJL-11.2 reshaped it from a map of each name to one group.
     /// </remarks>
     public RegexGroupNames GroupNames { get; private set; }
 
     /// <summary>Each name's groups, ascending, as the parse declares them.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1769F7
+    // Broiler-Falsified-If: two group names that differ only in case, such as (?<a>x)(?<A>y), are read as one name
+    // Broiler-Human:        PENDING
     private readonly Dictionary<string, List<int>> _groupsByName = new(StringComparer.Ordinal);
 
     /// <summary>The names, in the order of their first groups.</summary>
     private readonly List<string> _namesInOrder = [];
 
     /// <summary>The position of the <c>(</c> of each name's latest group, which a later group of the name is checked against.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9FF007
+    // Broiler-Falsified-If: (?<a>x)|(?<A>y) is refused as a duplicate name because the names are compared without regard to case
+    // Broiler-Human:        PENDING
     private readonly Dictionary<string, int> _latestGroupOf = new(StringComparer.Ordinal);
 
     /// <summary>
@@ -130,7 +143,7 @@ public sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=0360F0
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=5DCA3B
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool expand = true)
@@ -139,6 +152,7 @@ public sealed class RegexParser
         _src = pattern ?? "";
         _unicode = flags.IsUnicodeMode();
         _unicodeSets = (flags & RegexFlags.UnicodeSets) != 0;
+        _unicodeWithUnicodeSets = _unicodeSets && (flags & RegexFlags.Unicode) != 0;
         _data = data;
         _account = data.Account;
         _nesting = nesting;
@@ -211,11 +225,17 @@ public sealed class RegexParser
     internal static void Validate(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
         => new RegexParser(pattern, flags, data, nesting, expand: false).ParsePattern();
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=430B7C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=DA462E
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
     {
+        // §22.2.3.4 ParsePattern, step 1: "If v is true and u is true", a SyntaxError, before the pattern is read. A flags
+        // text refuses the pair before it reaches the parser (RegexFlagsText.Parse); a flags value is refused here, with
+        // the same code and message at no place in a flags text.
+        if (_unicodeWithUnicodeSets)
+            throw new RegexSyntaxException(RegexDiagnostic.OfFlags(RegexDiagnosticCode.UnicodeWithUnicodeSets, 'v', -1));
+
         // The pattern's units, one per code unit, before the pre-scan reads each of them once and the parse reads them
         // again (requirement R2: the parse's own work, a constant amount per code unit).
         _account.Charge(CompileSite.Pattern, _src.Length);

@@ -107,7 +107,8 @@ internal sealed record FuzzCase(
 
     /// <summary>
     /// Every flag combination: the mode (none, <c>u</c>, <c>v</c>, and now and then both, which the flags text refuses
-    /// and <see cref="BroilerRegex.Compile"/> reads as <c>v</c>), each of <c>d g i m s y</c> independently.
+    /// and, since task 2.9's review, <see cref="BroilerRegex.Compile"/> refuses too, with the diagnostic at -1), each of
+    /// <c>d g i m s y</c> independently.
     /// </summary>
     private static RegexFlags DrawFlags(FuzzRandom random, SortedSet<string> constructs)
     {

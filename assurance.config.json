@@ -4,7 +4,8 @@
   "projects": [
     "Broiler.Regex/Broiler.Regex.csproj"
   ],
-  "exemptionPredicate": "owning-component",
+  "exemptionPredicate": "strict",
+  "forbidDirectives": true,
   "spdx": {
     "copyright": [
       "2026 Broiler Platform contributors"
