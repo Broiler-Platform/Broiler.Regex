@@ -10,8 +10,9 @@ The shipping package is `Broiler.Regex`, targeting .NET 10.
   authorized to create and push `Broiler.Regex` versions. The publish workflow reads
   it as `secrets.NUGET_TOKEN` and hands it to its steps as the environment variable
   `NUGET_API_KEY`.
-- The dependency `Broiler.Unicode.Algorithms` at `0.1.0-preview.5`, the version
-  `Directory.Packages.props` pins, must remain available on nuget.org; it is already
+- The dependency `Broiler.Unicode.Algorithms` at the version `Directory.Packages.props`
+  pins, `0.1.0-preview.6` since the owner's dependency update of 2026-10-30 (`77284f1`;
+  `0.1.0-preview.5` before it), must remain available on nuget.org; it is already
   published. `Broiler.Unicode.Tables` at the same version, which the tests and the
   Native AOT probe read, is not a dependency of the package.
 - Review the current revision and its documented limitations before publishing.
@@ -22,7 +23,19 @@ The shipping package is `Broiler.Regex`, targeting .NET 10.
 
 `node eng/resolve-preview-version.mjs` evaluates the shipping projects and selects
 the next preview for their configured `VersionPrefix`. The configured
-`VersionSuffix` is a minimum, not a fixed published version.
+`VersionSuffix` is a minimum, not a fixed published version. This repository sets
+both in `Directory.Build.props`, over the vendored `eng/Broiler.Packaging.props`'s
+suite floor `0.1.0-preview.1`: `0.1.0` and `preview.6`, the version the next
+publication takes, so that a local pack gives it too.
+
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2).* The owner wrote on 2026-11-01
+"Please keep using version 0.1.0-x scheme!": the SJL-11 surface ships as
+`0.1.0-preview.6`, in this `0.1.0-preview.N` stream, where decision D12 of
+Broiler.VM's JSD-0081 had shipped it as `0.2.0-preview.1`, a new minor line. The
+owner published `0.1.0-preview.5` on 2026-10-29 from `24344b3` (run
+[40902832350](https://github.com/Broiler-Platform/Broiler.RegEx/actions/runs/40902832350),
+the version chosen by the resolver with `version-suffix` empty), so the next is
+`0.1.0-preview.6`.
 
 The resolver combines all shipping packages' listed and unlisted nuget.org
 versions with `eng/preview-version-history.json`. That file preserves versions
@@ -32,6 +45,20 @@ seeded with `Broiler.Regex 0.1.0-preview.1`, confirmed by successful publish run
 If versions were published outside that workflow, add those versions (or the
 highest preview for each release line) to the history before the first release.
 Do not remove historical entries when moving feeds.
+
+Since 2026-11-01 the history also lists every version published to nuget.org,
+`0.1.0-preview.2` to `0.1.0-preview.5`, each checked against nuget.org's
+package index (`https://api.nuget.org/v3-flatcontainer/broiler.regex/index.json`)
+and against its publish run: `0.1.0-preview.2`
+([35835329372](https://github.com/Broiler-Platform/Broiler.RegEx/actions/runs/35835329372),
+`856ce88`, 2026-09-23), `0.1.0-preview.3`
+([35839612009](https://github.com/Broiler-Platform/Broiler.RegEx/actions/runs/35839612009),
+`749b80e`, 2026-09-23), `0.1.0-preview.4`
+([38136576590](https://github.com/Broiler-Platform/Broiler.RegEx/actions/runs/38136576590),
+`c1422f4`, 2026-10-11) and `0.1.0-preview.5` (40902832350, `24344b3`, 2026-10-29),
+so that the sequence does not depend on nuget.org listing them. With them and the
+floor, the resolver's next is `0.1.0-preview.6`, which
+`eng/resolve-preview-version.test.mjs` asserts.
 
 For example, history containing `0.1.0-preview.3` and nuget.org containing
 `0.1.0-preview.2` resolves to `0.1.0-preview.4`. Higher nuget.org previews also
@@ -48,7 +75,8 @@ meet the same rule; the workflow publishes exactly that tagged version or fails.
    and Linux, checks the `.nupkg` and `.snupkg`, and runs a separate consumer using the
    local package plus dependencies from nuget.org with an isolated package cache. This
    is the no-push rehearsal; **Publish** has no dry-run mode. Every pack also runs
-   package validation against the last published version, `0.1.0-preview.4`, and fails
+   package validation against the last published version, `0.1.0-preview.5` (it was
+   `0.1.0-preview.4` until task 2.9 of SJL-11.2), and fails
    on a break of its API that `Broiler.Regex/CompatibilitySuppressions.xml` does not
    accept ([conventions](conventions.md), convention 16).
 2. Run **Publish**, leaving `version-suffix` empty for automatic numbering, or push the
@@ -62,7 +90,7 @@ node --test eng/resolve-preview-version.test.mjs
 node eng/resolve-preview-version.mjs
 dotnet build Broiler.Regex.slnx -c Release
 dotnet test Broiler.Regex.slnx -c Release --no-build
-./eng/pack.ps1 -Version 0.1.0-preview.2 -Output artifacts/preview-check
+./eng/pack.ps1 -Version 0.1.0-preview.6 -Output artifacts/preview-check
 ./eng/verify-feed.ps1 -Packages artifacts/preview-check
 ```
 

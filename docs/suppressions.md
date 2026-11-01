@@ -39,10 +39,21 @@ None of these is a trim, AOT or single-file warning.
 
 ## Accepted breaks of the published API
 
-Package validation compares every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.4`
-(convention 16). A break that the SJL-11 work makes on purpose (decision D12 of Broiler.VM's JSD-0081) is suppressed
-in `Broiler.Regex/CompatibilitySuppressions.xml`, listed here with its R item, and recorded in
+Package validation compares every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.5` since
+task 2.9 of SJL-11.2 (convention 16). A break that the SJL-11 work makes on purpose (decision D12 of Broiler.VM's
+JSD-0081) is suppressed in `Broiler.Regex/CompatibilitySuppressions.xml`, listed here with its R item, and recorded in
 [`CHANGELOG.md`](../CHANGELOG.md) under **Changed**.
+
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2): the baseline moved.* This paragraph read "Package validation compares
+every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.4` (convention 16)". The owner published
+`0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main`, which carries tasks 2.2 to 2.7, 2.6 and 2.11, and
+wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!", so the SJL-11 surface ships as `0.1.0-preview.6`
+(decision D12 named `0.2.0-preview.1`), and package validation reads `0.1.0-preview.5`, the version a consumer can have.
+Every break the four sections that follow list, those of tasks 2.2, 2.3, 2.4c and 2.6, is a break of
+`0.1.0-preview.4` that `0.1.0-preview.5` shipped: a pack compared with `0.1.0-preview.5` no longer reports it, so its
+suppression has left `CompatibilitySuppressions.xml` (23 suppressions, which package validation generated against
+`0.1.0-preview.4`), and the sections stay, as written, as the history of what `0.1.0-preview.5` broke. The breaks of
+`0.1.0-preview.5` are task 2.9's, in the last section.
 
 ### R11: Unicode data through the Unicode owner's provider (task 2.2 of SJL-11.2, 2026-10-26)
 

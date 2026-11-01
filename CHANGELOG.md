@@ -5,13 +5,15 @@ work package SJL-11.2 of the shared JavaScript libraries programme, whose
 [convention 16](docs/conventions.md) asks each governed library for a changelog with "Observable changes" and "Data"
 headings. Releases before it, `0.1.0-preview.1` to `0.1.0-preview.4`, are recorded only by their packages on
 nuget.org. [`eng/preview-version-history.json`](eng/preview-version-history.json) is not a release record: it holds
-only the versions the version resolver has to remember beside nuget.org's, which today is `0.1.0-preview.1`
-([publishing guide](docs/publishing.md), "Choose the version").
+the versions the version resolver has to remember beside nuget.org's, `0.1.0-preview.1` to `0.1.0-preview.5` since
+2026-11-01 ([publishing guide](docs/publishing.md), "Choose the version"; it held `0.1.0-preview.1` alone until then).
 
 The package follows semantic versioning on its preview stream ([publishing guide](docs/publishing.md)):
 
 - a public API removal or a binary-breaking change is a major version; for a `0.x` preview, a `0.y` minor version
-  (decision D12 of Broiler.VM's JSD-0081);
+  (decision D12 of Broiler.VM's JSD-0081); *dated note, 2026-11-01: the owner wrote that day "Please keep using
+  version 0.1.0-x scheme!", so the SJL-11 surface's breaks ship in the `0.1.0-preview.N` stream, as
+  `0.1.0-preview.6`, not as `0.2.0-preview.1` (the entry below);*
 - a new API is a minor version;
 - a correction toward the specification is a minor version, with its own entry under **Observable changes**;
 - a change of the Unicode data the package reads is a minor version, with its own entry under **Data**.
@@ -21,10 +23,18 @@ heading with nothing to report. A break of the published API that package valida
 **Changed** with the requirement (R1 to R11 of [`docs/roadmap.md`](docs/roadmap.md) section 6) that forces it, and
 in [`docs/suppressions.md`](docs/suppressions.md).
 
-## Unreleased
+## 0.1.0-preview.6 (2026-11-01; prepared, not published)
 
-*SJL-11.2's changes accumulate here. Decision D12 of Broiler.VM's JSD-0081 ships the SJL-11 surface as
-`0.2.0-preview.1`, published to nuget.org only with the owner's approval (decision D13).*
+*The owner published `0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main` (publish run 40902832350),
+which carries this entry's changes of tasks 2.1 to 2.7, 2.6 and 2.11; those of tasks 2.8, 2.14 and 2.9 are first in
+`0.1.0-preview.6`. Package validation reads `0.1.0-preview.5` (Changed). Publication is the owner's, after the
+candidate reading (plan WP4: tasks 4.1 and 4.2).*
+
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2).* This heading read "Unreleased", under the line "*SJL-11.2's changes
+accumulate here. Decision D12 of Broiler.VM's JSD-0081 ships the SJL-11 surface as `0.2.0-preview.1`, published to
+nuget.org only with the owner's approval (decision D13).*" The owner wrote on 2026-11-01 "Please keep using version
+0.1.0-x scheme!", which revises D12: the SJL-11 surface ships as `0.1.0-preview.6`, published with the owner's approval
+as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9 fixes the surface of, it is this one.
 
 ### Added
 
@@ -274,6 +284,14 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 
 ### Changed
 
+- **The version stream and package validation's baseline (task 2.9; the owner's decision of 2026-11-01).** This
+  package is `0.1.0-preview.6`, the next of the `0.1.0-preview.N` stream, which `Directory.Build.props` sets as the
+  stream's floor over the vendored packaging props' `preview.1`, so a local pack gives it and the resolver goes past
+  every version nuget.org or the history holds; `eng/preview-version-history.json` lists `0.1.0-preview.1` to
+  `0.1.0-preview.5`. Package validation reads `0.1.0-preview.5`, the last published version, in place of
+  `0.1.0-preview.4`: every break listed below that `0.1.0-preview.5` already shipped (tasks 2.2, 2.3, 2.4c and 2.6) has
+  left `Broiler.Regex/CompatibilitySuppressions.xml`, which holds only the breaks a consumer of `0.1.0-preview.5` meets
+  (task 2.9's, below), and each stays listed here and in [`docs/suppressions.md`](docs/suppressions.md) as history.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

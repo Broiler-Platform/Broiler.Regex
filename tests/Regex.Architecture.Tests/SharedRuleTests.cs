@@ -24,9 +24,10 @@ public class SharedRuleTests
 
     /// <summary>
     /// The last version of the package published to nuget.org, which package validation reads as its baseline
-    /// (convention 16). It moves when a later version is published.
+    /// (convention 16). It moves when a later version is published: the owner published 0.1.0-preview.5 on 2026-10-29,
+    /// and task 2.9 of SJL-11.2 moved it from 0.1.0-preview.4.
     /// </summary>
-    private const string LastPublishedVersion = "0.1.0-preview.4";
+    private const string LastPublishedVersion = "0.1.0-preview.5";
 
     private static IReadOnlyDictionary<string, AssemblyFacts> Assemblies { get; } =
         SharedTree.Libraries.ToDictionary(static p => p.Name, static p => AssemblyFacts.Read(SharedTree.AssemblyPath(p.Name)), StringComparer.Ordinal);

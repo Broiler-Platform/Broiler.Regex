@@ -1,3 +1,9 @@
 {
-  "Broiler.Regex": ["0.1.0-preview.1"]
+  "Broiler.Regex": [
+    "0.1.0-preview.1",
+    "0.1.0-preview.2",
+    "0.1.0-preview.3",
+    "0.1.0-preview.4",
+    "0.1.0-preview.5"
+  ]
 }

@@ -106,3 +106,20 @@ test('invalid history and feed failures cannot silently reset the sequence', asy
   await assert.rejects(resolveVersion(packages, { 'Broiler.Regex': ['0.1.0-preview.3'] }, {}, async () =>
     new Response(null, { status: 503 })), /HTTP 503/);
 });
+
+// The committed history and floor (2026-11-01, task 2.9 of SJL-11.2): the owner keeps the SJL-11 surface in the
+// 0.1.0-preview.N stream and published 0.1.0-preview.5 on 2026-10-29, so with nuget.org's 0.1.0-preview.2 to
+// preview.5 the next is 0.1.0-preview.6, whether or not the feed still lists them.
+test('the committed history and the configured floor resolve to 0.1.0-preview.6', async () => {
+  const { readFileSync } = await import('node:fs');
+  const history = JSON.parse(readFileSync(new URL('./preview-version-history.json', import.meta.url), 'utf8'));
+  assert.deepEqual(history['Broiler.Regex'], [1, 2, 3, 4, 5].map(n => `0.1.0-preview.${n}`));
+  const floor = /<VersionSuffix>(preview\.\d+)<\/VersionSuffix>/.exec(readFileSync(new URL('../Directory.Build.props', import.meta.url), 'utf8'));
+  assert.ok(floor, 'Directory.Build.props sets the stream\'s VersionSuffix');
+  const configured = [{ PackageId: 'Broiler.Regex', PackageVersion: `0.1.0-${floor[1]}` }];
+  const published = ['0.1.0-preview.2', '0.1.0-preview.3', '0.1.0-preview.4', '0.1.0-preview.5'];
+  assert.equal(await resolveVersion(configured, history, {}, nugetFeed(published)), '0.1.0-preview.6');
+  assert.equal(await resolveVersion(configured, history, {}, nugetFeed([])), '0.1.0-preview.6');
+  assert.equal(await resolveVersion(configured, history, {}, nugetFeed([...published, '0.1.0-preview.6'])), '0.1.0-preview.7');
+  await assert.rejects(resolveVersion(configured, history, { VERSION_SUFFIX: 'preview.5' }, nugetFeed(published)), /at least '0.1.0-preview.6'/);
+});

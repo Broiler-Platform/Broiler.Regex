@@ -2,6 +2,19 @@
   <Import Project="$(MSBuildThisFileDirectory)eng/Broiler.Packaging.props" />
 
   <!--
+    This repository's preview stream (docs/publishing.md, "Choose the version"). The vendored packaging props set the
+    suite's floor, 0.1.0-preview.1, and are not edited here; this floor wins over it, as Broiler.ECMAScript's own stream
+    does in Broiler.JS. The owner's decision of 2026-11-01 ("Please keep using version 0.1.0-x scheme!") keeps the SJL-11
+    surface in the 0.1.0-preview.N stream, where decision D12 of Broiler.VM's JSD-0081 had put it at 0.2.0-preview.1.
+    The owner published 0.1.0-preview.5 on 2026-10-29, so the next is 0.1.0-preview.6: a local pack gives it, and
+    eng/resolve-preview-version.mjs still goes past every version nuget.org or eng/preview-version-history.json holds.
+  -->
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>preview.6</VersionSuffix>
+  </PropertyGroup>
+
+  <!--
     Every project of this repository. The shared JavaScript libraries programme's convention 17
     (docs/conventions.md): net10.0, nullable enabled, implicit usings disabled so that every type a
     source uses is traceable from that source, warnings as errors, deterministic builds and no unsafe
