@@ -117,7 +117,7 @@ public class SharedRuleTests
         // so it is the witness for the assembly half as Broiler.VM's is for B1.
         var self = AssemblyFacts.Read(typeof(SharedRuleTests).Assembly.Location);
         var violations = SharedRules.SL1Assembly(self).ToList();
-        Assert.Contains(violations, static v => v.EndsWith("references the assembly xunit.core", StringComparison.Ordinal));
+        Assert.Contains(violations, static v => v.EndsWith("references the assembly xunit.v3.core", StringComparison.Ordinal));
         Assert.Contains(violations, static v => v.EndsWith("references the assembly Broiler.Regex", StringComparison.Ordinal));
     }
 

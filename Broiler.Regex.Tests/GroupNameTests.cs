@@ -69,8 +69,8 @@ public class GroupNameTests
     {
         foreach (var row in Accepted)
         {
-            var spelling = (string)row[0];
-            var name = (string)row[1];
+            var spelling = row.Data.Item1;
+            var name = row.Data.Item2;
             var regex = TestRegex.Compile("(?<" + spelling + ">x)", flags);
             Assert.Equal([1], regex.GroupNames.GroupsNamed(name).ToArray());
             Assert.Equal((1, name, name), (regex.GroupNames.Count, regex.GroupNames.NameAt(0), regex.GroupNames.NameOfGroup(1)));
@@ -87,7 +87,7 @@ public class GroupNameTests
     {
         foreach (var row in Refused)
         {
-            var spelling = (string)row[0];
+            var spelling = row.Data;
             var exception = Record.Exception(() => TestRegex.Compile("(?<" + spelling + ">x)", flags));
             Assert.True(exception is RegexSyntaxException, spelling + " under /" + flags + ": " + (exception?.GetType().Name ?? "accepted"));
         }

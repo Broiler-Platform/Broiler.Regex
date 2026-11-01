@@ -159,7 +159,7 @@ public class NestingMaximumTests
         {
             var all = new TheoryData<string>();
             foreach (var shape in MatchedShapes.Concat(ShapesTheOldMatcherDidNotProve))
-                all.Add((string)shape[0]);
+                all.Add(shape.Data);
             return all;
         }
     }
@@ -187,7 +187,7 @@ public class NestingMaximumTests
     [Fact]
     public void The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for()
     {
-        var all = AllShapes.Select(static s => (string)s[0]).ToList();
+        var all = AllShapes.Select(static s => s.Data).ToList();
         Assert.Equal(all.Count, all.Distinct(StringComparer.Ordinal).Count());
         foreach (var shape in all)
         {

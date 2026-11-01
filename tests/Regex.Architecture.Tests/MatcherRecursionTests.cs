@@ -148,7 +148,7 @@ public class MatcherRecursionTests
         // another namespace that calls back. Each is refused, by its cycle or by the dispatch the graph cannot follow.
         var missed = Refusals(CallGraph.Read(Compile([.. sources, ("Broiler.Regex/Engine/PlantedMiss.cs", PlantedMiss)])));
         string[] shapes = ["Lambda", "Stored", "Virtual", "Interface", "Metered"];
-        Assert.Empty(shapes.Where(shape => !missed.Any(r => r.Contains("Broiler.Regex.Engine.PlantedMiss", StringComparison.Ordinal) && r.Contains(shape, StringComparison.Ordinal))));
+        Assert.DoesNotContain(shapes, shape => !missed.Any(r => r.Contains("Broiler.Regex.Engine.PlantedMiss", StringComparison.Ordinal) && r.Contains(shape, StringComparison.Ordinal)));
 
         // A recursion planted in the loop itself: the charging the loop calls calling the loop back.
         var loop = sources.Select(static s => s.Path.EndsWith("Engine/RegexMachine.cs", StringComparison.Ordinal)
@@ -777,7 +777,8 @@ public class MatcherRecursionTests
         {
             if (code == ILOpCode.Switch)
             {
-                il.Offset += 4 * il.ReadInt32();
+                int count = il.ReadInt32();
+                il.Offset += 4 * count;
                 return;
             }
 

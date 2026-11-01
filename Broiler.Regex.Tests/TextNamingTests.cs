@@ -46,6 +46,6 @@ public class TextNamingTests
         Assert.Contains(nameof(RegexFlagsText.Parse), declared);
 
         var refused = EngineNames.Concat(EngineNames.Select(static n => n.Replace("RegExp", "Regex", StringComparison.Ordinal))).ToArray();
-        Assert.Empty(declared.Where(n => refused.Any(r => string.Equals(n.TrimStart('_'), r, StringComparison.OrdinalIgnoreCase))));
+        Assert.DoesNotContain(declared, n => refused.Any(r => string.Equals(n.TrimStart('_'), r, StringComparison.OrdinalIgnoreCase)));
     }
 }

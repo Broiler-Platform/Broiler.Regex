@@ -137,7 +137,7 @@ public class ValidateEntryTests
     [Fact]
     public void Every_code_is_refused_by_a_case_of_the_table()
     {
-        var reached = Refusals.Select(static row => (RegexDiagnosticCode)row[2]).Append(RegexDiagnosticCode.NestingLimit).ToHashSet();
+        var reached = Refusals.Select(static row => row.Data.Item3).Append(RegexDiagnosticCode.NestingLimit).ToHashSet();
         var missing = Enum.GetValues<RegexDiagnosticCode>().Where(code => code != RegexDiagnosticCode.None && !reached.Contains(code));
         Assert.Empty(missing);
     }
