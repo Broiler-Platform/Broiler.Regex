@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Arm S of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): Broiler.Regex at
+    the commit under test, through the public API the engines call. Its own executable, built in Release and run under
+    the JIT only, never in the Native AOT probe, and never referenced or packed; tests/ReferenceArms/README.md says how
+    it is run. IsTestProject marks it a test project, as the arms of Broiler.Unicode's bundle sjl-7-001 are.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Broiler.Regex.ReferenceArms</RootNamespace>
+    <AssemblyName>Regex.ReferenceArms.S</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PublishAot>false</PublishAot>
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Broiler.Regex\Broiler.Regex.csproj" />
+    <!-- The Unicode owner's tables, which S hands to every compilation as its IUnicodeTables: test-only data, as the
+         library's tests and probe use them (R11, decision D11 of Broiler.VM's JSD-0081). -->
+    <PackageReference Include="Broiler.Unicode.Tables" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Harness.cs" Link="Common\Harness.cs" />
+  </ItemGroup>
+
+</Project>
