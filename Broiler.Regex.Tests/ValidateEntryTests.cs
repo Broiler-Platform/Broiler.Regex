@@ -267,6 +267,47 @@ public class ValidateEntryTests
     }
 
     /// <summary>
+    /// Catalogue row EG0002 (<c>annexb.regexp.unicode-mode</c>, JSE8107) is one condition for every Annex B extension of
+    /// the pattern grammar refused under <c>u</c> or <c>v</c>. The validator tells them apart (JSD-0083's decision D7, "the
+    /// failing condition's message identifier where the validator can tell it"), so the codes split EG0002: wholly
+    /// <see cref="RegexDiagnosticCode.LoneSyntaxCharacter"/>, <see cref="RegexDiagnosticCode.InvalidIdentityEscape"/> (with
+    /// a legacy octal escape and <c>\8</c> in a class) and <see cref="RegexDiagnosticCode.InvalidControlEscape"/>, and in
+    /// part <see cref="RegexDiagnosticCode.QuantifiedAssertion"/> (a quantified look-ahead),
+    /// <see cref="RegexDiagnosticCode.InvalidHexEscape"/> (<c>\x</c> or <c>\u</c> without its digits),
+    /// <see cref="RegexDiagnosticCode.NamedReferenceWithoutName"/> (<c>\k</c> without <c>&lt;</c>) and
+    /// <see cref="RegexDiagnosticCode.PropertyEscapeWithoutBrace"/> (<c>\p</c> without <c>{</c>). The row's other examples,
+    /// <c>\8</c> without an eighth group and a class range ending in a class escape, are rows EE0192, EE0193 and EE0195 and
+    /// take theirs. The split is a difference the catalogue is to adopt (the record of task 2.8 in <c>docs/roadmap.md</c>):
+    /// each pattern here is admitted by Annex B without <c>u</c> or <c>v</c> and refused with its code under both.
+    /// </summary>
+    [Theory]
+    [InlineData("{", RegexDiagnosticCode.LoneSyntaxCharacter, 0)]
+    [InlineData("a]", RegexDiagnosticCode.LoneSyntaxCharacter, 1)]
+    [InlineData("}", RegexDiagnosticCode.LoneSyntaxCharacter, 0)]
+    [InlineData("\\a", RegexDiagnosticCode.InvalidIdentityEscape, 1)]
+    [InlineData("\\01", RegexDiagnosticCode.InvalidIdentityEscape, 1)]
+    [InlineData("[\\8]", RegexDiagnosticCode.InvalidIdentityEscape, 2)]
+    [InlineData("\\c1", RegexDiagnosticCode.InvalidControlEscape, 2)]
+    [InlineData("[\\c]", RegexDiagnosticCode.InvalidControlEscape, 3)]
+    [InlineData("(?=a)*", RegexDiagnosticCode.QuantifiedAssertion, 5)]
+    [InlineData("(?!a){2}", RegexDiagnosticCode.QuantifiedAssertion, 5)]
+    [InlineData("\\xg", RegexDiagnosticCode.InvalidHexEscape, 2)]
+    [InlineData("\\u12", RegexDiagnosticCode.InvalidHexEscape, 4)]
+    [InlineData("\\ka", RegexDiagnosticCode.NamedReferenceWithoutName, 2)]
+    [InlineData("\\p", RegexDiagnosticCode.PropertyEscapeWithoutBrace, 2)]
+    public void An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(string pattern, RegexDiagnosticCode code, int position)
+    {
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Validate(pattern, RegexFlags.None, UnicodeTables.Instance, 512, out _, out _));
+        foreach (var flags in new[] { RegexFlags.Unicode, RegexFlags.UnicodeSets })
+        {
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, flags, UnicodeTables.Instance, 512, out var diagnostic, out _));
+            Assert.Equal(code, diagnostic.Code);
+            Assert.Equal(position, diagnostic.Position);
+            Assert.NotEqual("annexb.regexp.unicode-mode", diagnostic.MessageId);
+        }
+    }
+
+    /// <summary>
     /// The critic's <c>\k</c> case (SJL-11's plan, row 2.8; the critic's probe of <c>0.1.0-preview.4</c>, where
     /// <c>RegexParser.Parse(\k&lt;b&gt;(?&lt;a&gt;x), u)</c> was accepted by the parse alone): a reference before any group
     /// to a name no group declares is refused by the validate entry, as by compilation (check A-5, "\k&lt;name&gt; to an

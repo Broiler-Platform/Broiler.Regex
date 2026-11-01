@@ -1204,9 +1204,10 @@ early errors (EE), Annex B's (EG) and limits and grammar (EX): where the catalog
 identifier is the catalogue's (EE0184 to EE0213: `regexp.group-name.duplicate`, `regexp.quantifier.out-of-order`,
 `regexp.modifiers.repeated-flag` for EE0186, EE0188 and EE0189, and so on; and EX0026, the limit on a pattern's nesting
 of groups and classes, `limit.regexp.too-deep`, for `NestingLimit`; a test pinning each row). The library coins an
-identifier, in the catalogue's `regexp` namespace and form, only for a condition the catalogue has no row for: the
+identifier, in the catalogue's `regexp` namespace and form, only for a condition the catalogue has no row for, the
 grammar's own refusals and the flags', which the catalogue folds into EE0019 (`regexp.group.unterminated`,
-`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`). EE0183, 2^32 - 1 or more capturing groups, has no code:
+`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`); and for the conditions of row EG0002, which it splits (the
+differences, below). EE0183, 2^32 - 1 or more capturing groups, has no code:
 no string the platform holds reaches it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an
 unescaped class-set syntax character; the flag for a repeated flag or modifier; the quantifier's code unit for nothing
 to repeat; the digits of an out-of-range back-reference; the decoded name of an undefined or duplicate group name; the
@@ -1307,9 +1308,24 @@ two entries, which then reads the status. **SJL-11.4 and SJL-11.5** call the ent
 - **The engines' identifiers.** JSD-0083's D7 has the provider answer "the failing condition's message identifier", and
   otherwise EE0019's `regexp.literal.invalid` with the validator's message as its argument. The catalogue names early
   errors (EE), Annex B's (EG) and limits and grammar (EX), and where it has a row for a condition the code uses its
-  identifier, EX0026's `limit.regexp.too-deep` for the nesting limit among them. It has no row of their own for the
-  grammar's refusals and the flags', which it folds into EE0019, so those have identifiers of this library's, which an
-  adapter maps to EE0019 with the message, or the catalogue adopts.
+  identifier, EX0026's `limit.regexp.too-deep` for the nesting limit among them, but for EG0002's (next). It has no row
+  of their own for the grammar's refusals and the flags', which it folds into EE0019, so those have identifiers of this
+  library's, which an adapter maps to EE0019 with the message, or the catalogue adopts.
+- **Catalogue row EG0002** (`annexb.regexp.unicode-mode`, JSE8107) is one condition for every Annex B extension of the
+  pattern grammar refused under `u` or `v`; Broiler.VM's correspondence (`58b0c84`, row B25) hands it to the provider with
+  EE0019 and EX0026. The validator tells the extensions apart, and D7 asks for the failing condition's identifier where
+  the validator can tell it, so the codes split EG0002 and keep their own identifiers: wholly `LoneSyntaxCharacter` (17,
+  a lone `]`, `{` or `}`), `InvalidIdentityEscape` (21, a legacy octal escape and `\8` in a class among them) and
+  `InvalidControlEscape` (22); in part `QuantifiedAssertion` (14, a quantified look-ahead), `InvalidHexEscape` (23, `\x`
+  or `\u` without its digits), `NamedReferenceWithoutName` (32, `\k` without `<`) and `PropertyEscapeWithoutBrace` (80,
+  `\p` without `{`). The row's other examples, `\8` without an eighth group and a class range ending in a class escape,
+  are EE0192, EE0193 and EE0195's and take their identifiers. **The catalogue is to adopt the split** (rows of its own
+  for the seven, or EG0002 noted as split), with the identifiers this library publishes; until it does, an adapter that
+  knows only the catalogue's identifiers maps a refusal of one of the seven under `u` or `v` to EG0002 where what it
+  refuses is an Annex B extension (the pattern parses past that place without `u` and `v`), and to EE0019 where it is
+  not (`^*`, or a `\u` escape short of its digits in a group name).
+  `ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002` pins each with a pattern
+  Annex B admits without `u` and `v`.
 - **Broiler.JS's `ParserTests.cs:420`** admits `/[\q{/}--[a]]/v`, which ECMA-262 refuses (under `v` a `/` is a
   ClassSetSyntaxCharacter, which a `\q{…}` may not hold unescaped) and V8 (node 22.22.0) refuses too; this library
   refuses it with `ClassSetUnescapedSyntaxCharacter` at 4, and admits `/[\q{\/}--[a]]/v`. The engine's test owes the

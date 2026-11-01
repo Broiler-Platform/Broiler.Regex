@@ -237,7 +237,8 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   identifier of the form of the shared frontend's early-error catalogue, the catalogue's own where it has a row for the
   condition (EE0184 to EE0213, and EX0026's `limit.regexp.too-deep` for the nesting limit), and one of this library's in
   the catalogue's `regexp` namespace only for a condition it has no row for, the grammar's and the flags' own refusals,
-  which it folds into EE0019; `Argument`, the name, flag, digits, range or property text the code names,
+  which it folds into EE0019, and for the Annex B extensions refused under `u` or `v`, which its row EG0002 gathers and
+  seven codes tell apart (a split the catalogue is to adopt); `Argument`, the name, flag, digits, range or property text the code names,
   or null; `Position`, a code-unit offset into the pattern, or into the flags text for the flags' three codes; and
   `Message`, a default English rendering that is no contract. `RegexDiagnostic.MessageIdOf(code)` reads the table.
   `RegexDiagnosticCode` names 49 conditions and `None`, numbered by the part of the grammar (the flags 1 to 3, groups

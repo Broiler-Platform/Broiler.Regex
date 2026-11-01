@@ -39,10 +39,13 @@ namespace Broiler.Regex;
 /// (EE), Annex B's (EG) and its limits and grammar (EX). Where the catalogue has a row for the condition, the identifier
 /// is the catalogue's and the member's documentation names the row: EE0184 to EE0213, and EX0026, the nesting limit,
 /// <c>limit.regexp.too-deep</c>. The library coins an identifier, in the catalogue's <c>regexp</c> namespace, only for a
-/// condition the catalogue has no row for: the grammar's own refusals and the flags', which the catalogue folds into
-/// EE0019, <c>regexp.literal.invalid</c>. An engine
-/// renders its own text from the identifier and the argument (decision SJL-D-11); <see cref="RegexDiagnostic.Message"/>
-/// is a default English rendering and no contract.
+/// condition the catalogue has no row for, the grammar's own refusals and the flags', which the catalogue folds into
+/// EE0019, <c>regexp.literal.invalid</c>; and for the conditions of row EG0002 (<c>annexb.regexp.unicode-mode</c>), Annex
+/// B's extensions refused under <c>u</c> or <c>v</c>, which the library tells apart (decision D7 of JSD-0083: the failing
+/// condition's identifier "where the validator can tell it"): codes 14, 17, 21, 22, 23, 32 and 80 split EG0002, a split
+/// the catalogue is to adopt (the record of task 2.8 in <c>docs/roadmap.md</c>). An engine renders its own text from the
+/// identifier and the argument (decision SJL-D-11); <see cref="RegexDiagnostic.Message"/> is a default English rendering
+/// and no contract.
 /// </para>
 /// <para>
 /// <b>Positions</b> are code-unit offsets into the pattern, or, for the three codes of the flags, into the flags text.
@@ -99,7 +102,8 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.quantifier.after-assertion</c>: a quantifier after an assertion no grammar lets one follow: <c>^ $ \b \B</c>,
-    /// a look-behind, and under <c>u</c> or <c>v</c> a look-ahead too (Annex B's QuantifiableAssertion). Position: the quantifier.
+    /// a look-behind, and under <c>u</c> or <c>v</c> a look-ahead too (Annex B's QuantifiableAssertion; that part is one of the
+    /// conditions of catalogue row EG0002, which these codes split). Position: the quantifier.
     /// </summary>
     QuantifiedAssertion = 14,
 
@@ -116,7 +120,8 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.pattern.lone-syntax-character</c>: an unescaped <c>]</c>, <c>{</c> or <c>}</c> as a character under <c>u</c>
-    /// or <c>v</c>, where Annex B's ExtendedPatternCharacter does not apply. Argument: the code unit. Position: it.
+    /// or <c>v</c>, where Annex B's ExtendedPatternCharacter does not apply (one of the conditions of catalogue row EG0002,
+    /// which these codes split). Argument: the code unit. Position: it.
     /// </summary>
     LoneSyntaxCharacter = 17,
 
@@ -125,20 +130,21 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.escape.invalid-identity</c>: under <c>u</c> or <c>v</c>, an escape of a code unit that is neither a syntax
-    /// character nor <c>/</c> (catalogue row EG0002's Annex B identity escapes refused there). Argument: the escaped code unit.
-    /// Position: it.
+    /// character nor <c>/</c>, a legacy octal escape among them (one of the conditions of catalogue row EG0002, which these
+    /// codes split: Annex B's identity escapes refused there). Argument: the escaped code unit. Position: it.
     /// </summary>
     InvalidIdentityEscape = 21,
 
     /// <summary>
-    /// <c>regexp.escape.invalid-control</c>: under <c>u</c> or <c>v</c>, <c>\c</c> not followed by an ASCII letter. Position:
-    /// the code unit after the <c>c</c>.
+    /// <c>regexp.escape.invalid-control</c>: under <c>u</c> or <c>v</c>, <c>\c</c> not followed by an ASCII letter (one of the
+    /// conditions of catalogue row EG0002, which these codes split). Position: the code unit after the <c>c</c>.
     /// </summary>
     InvalidControlEscape = 22,
 
     /// <summary>
     /// <c>regexp.escape.invalid-hex</c>: a <c>\x</c> or a four-digit <c>\u</c> escape with a code unit that is not a hexadecimal
-    /// digit where one is required (under <c>u</c> or <c>v</c>, or in a group name). Position: that code unit.
+    /// digit where one is required (under <c>u</c> or <c>v</c>, where that part is one of the conditions of catalogue row
+    /// EG0002, which these codes split; or in a group name). Position: that code unit.
     /// </summary>
     InvalidHexEscape = 23,
 
@@ -167,7 +173,8 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.backreference.missing-group-name</c>: <c>\k</c> not followed by <c>&lt;</c> where it must be a reference
-    /// (under <c>u</c> or <c>v</c>, or in a pattern that declares a group name). Position: the code unit after the <c>k</c>.
+    /// (under <c>u</c> or <c>v</c>, where that part is one of the conditions of catalogue row EG0002, which these codes split;
+    /// or in a pattern that declares a group name). Position: the code unit after the <c>k</c>.
     /// </summary>
     NamedReferenceWithoutName = 32,
 
@@ -294,8 +301,8 @@ public enum RegexDiagnosticCode
     UnterminatedClassStringDisjunction = 76,
 
     /// <summary>
-    /// <c>regexp.property.without-brace</c>: under <c>u</c> or <c>v</c>, <c>\p</c> or <c>\P</c> not followed by <c>{</c>.
-    /// Position: the code unit after the <c>p</c>.
+    /// <c>regexp.property.without-brace</c>: under <c>u</c> or <c>v</c>, <c>\p</c> or <c>\P</c> not followed by <c>{</c> (one of
+    /// the conditions of catalogue row EG0002, which these codes split). Position: the code unit after the <c>p</c>.
     /// </summary>
     PropertyEscapeWithoutBrace = 80,
 
