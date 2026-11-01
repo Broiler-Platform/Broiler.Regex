@@ -605,10 +605,10 @@ public sealed class BroilerRegex
     /// <see cref="Match(string, int)"/> answers with <see cref="RegexMatch.Limit"/>, is an
     /// <see cref="InvalidOperationException"/> here rather than a false that would read as no match (requirement R1).
     /// A caller that expects to meet a ceiling calls <see cref="Match(string, int)"/> or the offset entry instead.
-    /// <b>This departs from convention 3</b>, which makes an expected failure a status and admits an exception only for
-    /// a broken precondition: decision D12 keeps this member for its consumers, and task 2.9, which fixes the public
-    /// surface, decides between an owner's admission of the exception and a status-returning form
-    /// (<c>docs/conventions.md</c>, "Where Broiler.Regex stands").
+    /// This is the string-bearing member's one throw for an expected failure, which convention 3 would make a status:
+    /// decision D12 keeps the member for its consumers, and the owner admitted the exception for it on 2026-11-01
+    /// (task 2.9; <c>docs/conventions.md</c>, "Where Broiler.Regex stands"). The status forms are
+    /// <see cref="Match(string, int)"/> and the offset entry.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The match reached the engines' frame or trail ceiling.</exception>
     // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=494A37

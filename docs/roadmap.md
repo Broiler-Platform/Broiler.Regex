@@ -1512,6 +1512,140 @@ part C's control (2) and what remains are no longer the head's, and the record i
   "1 if reported else 0". The report's format, `adversarial-1`, is unchanged, and `AdversarialModeTests` asserts the
   `validate` rows' lines with no branch for a runner that does not answer the operation.
 
+*Dated record, 2026-11-01 (task 2.9 of SJL-11.2; R8 and R10's conventions 1, 3, 4, 16, 17 and 18; decisions D9, D10
+and D12, D12 as the owner revised it; checks C1, C3 and C5 and rules SL4, SL5 and SL8).*
+
+**What it builds.** The public surface the SJL-11 work ships, as `0.1.0-preview.6`, with nothing provisional, every
+break of `0.1.0-preview.5` suppressed and listed with its R item, and the starting violation list empty. In order of
+the branch's commits:
+- *The version* (`81b89bc`). `Directory.Build.props` sets the stream's floor, `0.1.0` and `preview.6`, over the vendored
+  packaging props' `preview.1`, which are not edited; `eng/preview-version-history.json` lists `0.1.0-preview.1` to
+  `0.1.0-preview.5`, each of `preview.2` to `preview.5` checked against nuget.org's index of the package
+  (`preview.1` is the retired feed's, not on nuget.org); the resolver's test of the committed history and floor answers
+  `0.1.0-preview.6` (watched failing first), and so does the resolver against nuget.org (`DRY_RUN=true`). Package
+  validation's baseline is `0.1.0-preview.5`; every break `0.1.0-preview.5` already shipped (tasks 2.2, 2.3, 2.4c and
+  2.6) left `CompatibilitySuppressions.xml` and stays listed in `docs/suppressions.md` and the CHANGELOG as history.
+- *`Compile`'s syntax status* (`2cbd408`). `Compile` gains a last `out RegexDiagnostic`: a pattern the grammar or an
+  early error refuses answers `RegexStatus.SyntaxError` with the diagnostic the validate entry answers for it, and the
+  nesting limit its `NestingLimit` diagnostic. 460 tests failed against a stub that kept the exception, and pass.
+- *The flags* (`8f4765c`). `RegexFlagsText.Parse` answers `RegexStatus` with a `RegexDiagnostic`; `RegexFlagsStatus` is
+  removed, its three refusals the codes `UnknownFlag` (1), `DuplicateFlag` (2) and `UnicodeWithUnicodeSets` (3);
+  `RegexFlagsParser.Parse` is internal and `IsUnicodeMode` stays public. 29 tests failed against a reader whose refusal
+  carried no diagnostic. *Correction:* that commit's message says the flags tests read "117,000 strings"; they read
+  183,558 (109,601 orderings of subsets, 65,536 single code units and 8,421 strings of up to three units).
+- *No public exception type* (`b6211b4`). `RegexSyntaxException` is internal and derives from `ArgumentException`; the
+  string-bearing constructors document a pattern or flags text the specification refuses as their broken precondition.
+  C3's row was watched failing on the old build and leaves the list.
+- *The tree, the parser and the set algebra internal* (`616b640`): the seventeen types of `Broiler.Regex.Ast`,
+  `Parsing.RegexParser` and `Unicode.UnicodeCharSets`; `CharSet.CheckRange` builds its message through
+  `NumberFormatInfo.InvariantInfo`. The last SL4 row and nine C1 rows leave the list.
+- *The string-bearing result* (`2785f56`). `RegexMatch.Groups` is a `ReadOnlySpan<RegexGroup>`, `RegexMatch.GroupNamed`
+  answers a name's group, and `BroilerRegex.NextMatch` the global iteration; `Matches` and `NamedGroups` are removed.
+  Three of four new tests failed against a stub; the last three C1 rows leave the list.
+- *Nothing provisional* (`04869ac`). Every `# provisional:` mark of `PublicAPI.txt` is resolved and the documentation that
+  called members provisional states their contract; `RegexMatchCeilings` moves to `Broiler.Regex`; the library's
+  project resets `NoWarn` to `CS1701` and `CS1702`, so a public member without documentation fails the build, and
+  `Pattern`, `Flags` and `RegexFlags.None` gain theirs. SL5's seven rows leave the list.
+- *The assurance scheme strict* (`c03abd8`). `assurance.config.json` uses the strict exemption predicate and forbids
+  preprocessor directives, as Broiler.Unicode's does; three fields the strict predicate counts carry annotations (382
+  relevant units). SL8's two rows leave the list, which is now **empty**: row 2.9's check holds.
+- *The records*, with this one: the CHANGELOG, `docs/suppressions.md`, `docs/conventions.md`, both READMEs, the fuzz
+  target's README, bundle `sjl-11-001`'s README and rule (by dated note) and `docs/publishing.md`.
+
+**The owner's decisions.** Each is the owner's decision of 2026-11-01, taken as recommended under the owner's direction
+of 2026-10-18, "Please do all recommended decisions and skip waiting for review", beside the owner's own words of
+2026-11-01, "Please keep using version 0.1.0-x scheme!".
+- **The version.** The SJL-11 surface ships as `0.1.0-preview.6`, validated against `0.1.0-preview.5`; the dated note on
+  "The version and the break (decision D12)" below quotes what it replaces.
+- **`IsMatch` at a ceiling: kept, its exception admitted.** Decision D12 keeps the string-bearing members and R8 asks for
+  an offset-only interface beside them, not for their removal, and Broiler.JS's adapter and the feed check's consumer
+  call `IsMatch`; so the member stays, and its `InvalidOperationException` at a frame or trail ceiling is admitted as the
+  string-bearing member's one documented throw. The status forms are `Match(string, int)`, whose `RegexMatch.Limit`
+  names the ceiling, and the offset entry, which answers `LimitExceeded` with the `RegexLimit`; no member that answers a
+  status throws for an expected failure. No `TryIsMatch` is added: the two status forms already answer it.
+- **`Compile` and syntax errors.** `Compile` answers `SyntaxError` with task 2.8's diagnostic. The recommendation kept
+  the constructors throwing `RegexSyntaxException`; check C3 refuses the library's own public exception type and row
+  2.9's check is an empty list, so that shape is ruled out, and the constructors throw an `ArgumentException` (the
+  internal `RegexSyntaxException`) with the diagnostic's message, documented as their broken precondition (convention 3
+  admits an exception there). `RegexParser.Parse` and `RegexFlagsParser.Parse` are **internal**, the choice that leaves
+  the list empty: the public status forms are `Compile`, the validate entry and `RegexFlagsText.Parse`.
+- **`RegexFlagsStatus`: folded** into `RegexDiagnosticCode`, the same names at the same numbers, which removes a second
+  public type for one refusal.
+- **The budget's place.** The compile budget stays a parameter after the nesting limit, and the meter after it, the shape
+  Broiler.Unicode's operations take; `Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, ulong?
+  compileBudget, RegexWorkCharge? meter, out BroilerRegex?, out RegexLimit, out RegexDiagnostic)`.
+- Beside them, as the earlier records left them to this task: the syntax tree, the parser and `UnicodeCharSets` are
+  internal (conventions 1, 3 and 4; check A-1); the escape helpers take no length dimension of `RegexLimit`, an escape's
+  length being bounded by its input's; a name none of whose groups participated answers its first group, unmatched; the
+  ceilings live in the root namespace beside the offset entry.
+
+**What the earlier records owed task 2.9, and what became of each.**
+- Task 2.4c's record: the offset entry, `SlotCount`, `RegexWorkCharge`, `RegexMatchCeilings` and its namespace and
+  `RegexMatch.Limit`: kept, marks removed, the ceilings moved to `Broiler.Regex`; `IsMatch`'s exception: admitted (above;
+  `conventions.md`'s note is closed by a dated note); the remaining starting violations: none remain; the version and
+  `eng/preview-version-history.json`: `0.1.0-preview.6`, the history through `preview.5`.
+- Task 2.5's record: `Compile`'s signature (the budget's place, the syntax error) and `RegexLimit.Compile`: settled as
+  above, `RegexLimit.Compile` kept; the marks: removed; the public `RegexParser` and `CodePointSet` operations that take
+  no meter: internal.
+- Task 2.7's record: the text helpers' surface, a length dimension or not, and `RegexFlagsParser.Parse`'s exception: kept
+  with no length dimension, `RegexFlagsText.Parse` reshaped onto the diagnostic, `RegexFlagsParser.Parse` internal.
+- Task 2.6's record: `RegexGroupNames` and its five members, `RegexGroup.Number` and the two `GroupNames`: kept, marks
+  removed (`RegexParser.GroupNames` internal with its type); `RegexMatch.NamedGroups` and `Groups`: replaced by
+  `GroupNamed` and the span; the unmatched entry of a name no group of which participated: its first group.
+- Task 2.11's record: the fuzz oracle's admitted answers once `Compile` answers a status: narrowed (`Verdicts.Compile`
+  takes any exception from `Compile` as a finding; the constructor's comparison catches `ArgumentException`); and
+  `Verdicts.IsMatch`, which already admits `InvalidOperationException` only where the offset entry met the frame or
+  trail ceiling, stays as it is, the exception being admitted.
+- Task 2.8's record: the shape of `Compile`'s, the constructors', `RegexParser.Parse`'s and `RegexFlagsParser.Parse`'s
+  syntax error with C3's row: settled, the row gone; the marks of the validate entry, `RegexDiagnostic`,
+  `RegexDiagnosticCode`, `RegexStatus.SyntaxError` and `RegexSyntaxException.Diagnostic`: removed, the last internal
+  with its type; `RegexFlagsStatus`: folded; `CharSet.CheckRange`'s SL4 place and its missing diagnostic: the type is
+  internal, the message culture-free, and no public member reaches it, so it carries no diagnostic; the oracle's
+  comparison of the two entries: it reads `Compile`'s diagnostic.
+- Carried, with their owners: SJL-11.4 and SJL-11.5, each engine's adapter onto this surface (plan rows 5.2 and 6.1),
+  Broiler.JS's among them (it reads `RegexParser.Parse`, the tree, `RegexFlagsParser.Parse` and `Groups.Count` today,
+  below); WP4 (tasks 4.1 and 4.2), the candidate reading at the commit `0.1.0-preview.6` is packed from and the owner's
+  publication after it. Nothing of task 2.9's own is carried.
+
+**The breaks.** Twenty-nine suppressions, 22 CP0001 and 7 CP0002, each listed with its R item in
+[`suppressions.md`](suppressions.md), section "R10 and R8: the surface of `0.1.0-preview.6`", and in the CHANGELOG
+under **Changed**. A pack with the suppression file emptied fails with exactly those 29 errors against
+`0.1.0-preview.5`, and one that regenerates the file writes it unchanged.
+
+**The checks, at `c03abd8` with this record's files.** The Release build of the solution: no warning, no error. The
+tests: 2,581 library, 49 architecture (the starting violation list empty) and 11 fuzz, all passing. The declared fuzz
+session (seed 20261027, 24,000 iterations): no finding, every one of 122 construct classes reached, digest
+`f8477deef307ca48c0bea72dcdc9a44a4197ee09665f9a52599ae4310227dad1` (moved once, at `b6211b4`, by the constructor's
+refusal recorded as `syntax`). The probe's default report is byte for byte the one at `cfb541e`; `--adversarial`: 65
+rows, 65 give their declared status, none differs, ends abnormally or waits, and the report is the same file under the
+JIT and Native AOT (SHA-256 `3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75`, the one task 2.14
+recorded), as is the default report. `dotnet pack` gives `Broiler.Regex.0.1.0-preview.6.nupkg`, depending on
+`Broiler.Unicode.Algorithms` `0.1.0-preview.6`, with package validation against `0.1.0-preview.5` passing on the listed
+suppressions only. The assurance check: no violation. The feed check's consumer (`eng/verify-feed.ps1`, reproduced in
+bash) restores the packed package and `Broiler.Unicode.Tables` `0.1.0-preview.6` and passes, unchanged: it calls the
+constructor, `Match` and `IsMatch`, which this task keeps. The resolver's tests: 10 of 10.
+
+**Where the plan, JSD-0081 and this repository differ, read at this record.**
+- JSD-0081's D12 and the plan's row 2.9 ship the surface as `0.2.0-preview.1`, validated against `0.1.0-preview.4`; it
+  ships as `0.1.0-preview.6`, validated against `0.1.0-preview.5`, by the owner's decision. JSD-0081's D12 and SJL-D-3's
+  reading ("inside a `0.y` minor version") are Broiler.VM's records and are not revised here; convention 16 carries a
+  dated revision. The filed rule of bundle `sjl-11-001` names `0.2.0-preview.1` for the candidate reading and carries
+  a dated note; its check E-4 reads the baseline as `0.1.0-preview.4`, which is now `0.1.0-preview.5`.
+- D12 says "Broiler.JS moves its pin only at SJL-11.5". Broiler.JS's `main` pins `Broiler.Regex` `0.1.0-preview.5`
+  since the owner's dependency update of 2026-10-29 (`a58d31d1`). It reads `RegexFlagsParser.Parse`,
+  `RegexParser.Parse`, the tree (`GapScan`), `Groups.Count` and `GroupNames` (`JSRegExp.Broiler.cs`), so it cannot take
+  `0.1.0-preview.6` without SJL-11.5's adapter; no release depends on `0.1.0-preview.6`.
+- Both engines' and this repository's pins of `Broiler.Unicode.Algorithms` are `0.1.0-preview.6` since the owner's
+  dependency update of 2026-10-30 (`77284f1`); R11's reading in this section, its README and check A-10 name
+  `0.1.0-preview.5`.
+- Decision D5 says "the parser, the public tree, the `CodePointSet` algebra and the flag parser stay": they stay as the
+  library's internal model; the tree is no longer public.
+- The brief of this task names the breaks "against `0.1.0-preview.4`" in one place and the baseline `0.1.0-preview.5` in
+  another; the owner's decision, the binding one, reads `0.1.0-preview.5`. It says `0.1.0-preview.5` carries "tasks 2.4c
+  to 2.11"; `24344b3` carries tasks 2.1 to 2.7, 2.6 and 2.11, and not 2.8 or 2.14. It names `eng/Broiler.Packaging.props`
+  as where the version is set; the vendored file says not to edit it, and the floor is set in `Directory.Build.props`.
+- The recommendation kept the constructors' `RegexSyntaxException`; C3 and the empty list rule it out (above).
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
@@ -1528,6 +1662,17 @@ stays, as R8 allows; no shim is kept for a member R11 makes impossible. Decision
 major version" is read, for a `0.x` preview, as inside a `0.y` minor version. **No release of either
 engine depends on `0.2` before both cut-overs have merged**, and Broiler.JS moves its pin only at
 SJL-11.5. `0.2.0-preview.1` is published to nuget.org only with the owner's approval (decision D13).
+
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2): the version, revised by the owner.* The paragraph above reads "The
+SJL-11 surface ships as **`0.2.0-preview.1`**, validated against `0.1.0-preview.4` with every break suppressed and
+listed with its R item", and "`0.2.0-preview.1` is published to nuget.org only with the owner's approval (decision
+D13)". The owner wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!": the SJL-11 surface ships as
+**`0.1.0-preview.6`**, the next of the `0.1.0-preview.N` stream after `0.1.0-preview.5`, which the owner published on
+2026-10-29 from `24344b3`, and package validation reads `0.1.0-preview.5`. Where this roadmap names `0.2.0-preview.1` as
+the SJL-11 package (the record of SJL-11.1 above, the candidate reading "at the commit `0.2.0-preview.1` is packed
+from", and the records of tasks 2.4c, 2.5, 2.6, 2.8 and 2.14), it is `0.1.0-preview.6`; "`0.2`", where an engine's pin
+is meant, is the SJL-11 surface. Publication stays the owner's, after the candidate reading (D13). The rest of the
+paragraph stands; task 2.9's record above says what the release train's "inside a `0.y` minor version" now reads.
 
 *Dated note, 2026-10-26 (task 2.3 of SJL-11.2, R10: conventions 7 and 10): the starting violation list left
 the owner of `RegexMatch.Empty`'s SL2 row unassigned, to be decided at task 2.3. Task 2.3 took it, as its row

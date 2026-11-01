@@ -29,12 +29,19 @@ var match = regex.Match("123αβ"); // Success = true, Index = 3, Length = 2
 ```
 
 The package carries no Unicode data. It depends on the Unicode owner's provider,
-`Broiler.Unicode.Algorithms` `0.1.0-preview.5`, alone, and every compilation takes the
+`Broiler.Unicode.Algorithms` `0.1.0-preview.6`, alone, and every compilation takes the
 caller's tables as an `IUnicodeTables` (requirement R11 of the
 [roadmap](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/docs/roadmap.md)):
 a JavaScript engine hands in the tables it embeds, and the example above hands in the
-owner's `Broiler.Unicode.Tables` `0.1.0-preview.5`, which a caller references itself.
+owner's `Broiler.Unicode.Tables` `0.1.0-preview.6`, which a caller references itself.
 The tables must be of the Unicode version the provider reads, 17.0.0.
+
+This package is `0.1.0-preview.6`. *Dated note, 2026-11-01 (task 2.9 of SJL-11.2):* this README named
+`0.1.0-preview.5` as the provider's and the tables' version; the owner's dependency update of 2026-10-30 moved both to
+`0.1.0-preview.6`. The surface the SJL-11 work fixes, which decision D12 of Broiler.VM's JSD-0081 had ship as
+`0.2.0-preview.1`, ships as `0.1.0-preview.6`: the owner wrote on 2026-11-01 "Please keep using version
+0.1.0-x scheme!". Its breaks of `0.1.0-preview.5` are listed in the
+[changelog](https://github.com/Broiler-Platform/Broiler.RegEx/blob/main/CHANGELOG.md) under **Changed**.
 
 ## Build and publish
 

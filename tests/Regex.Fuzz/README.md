@@ -66,7 +66,11 @@ answering, is a finding at the iteration it was in), and each known finding's re
   pattern's read alone, 19 of whose tight compilations now answer the syntax error where they met their budget (18) or
   their meter (1). The oracle's comparison of the validate entry, which adds its answers to each record, then made it
   `1fedb4b47f2f4cd45c45f03f78473b130f6e0504a4275b823adebd624f2e24c8`, the same over two runs with four worker processes
-  and over three under `tr-TR`; the session took 34 seconds on four cores beside other builds. The digest is a record,
+  and over three under `tr-TR`; the session took 34 seconds on four cores beside other builds. Task 2.9 moved it once:
+  with `RegexSyntaxException` internal, the constructor's refusal is an `ArgumentException`, which the record names
+  `syntax`, and the digest is `f8477deef307ca48c0bea72dcdc9a44a4197ee09665f9a52599ae4310227dad1`, no finding; `Compile`'s
+  syntax status, the flags reader's diagnostic, `Groups` as a span, `GroupNamed` and `NextMatch` left it unchanged.
+  The digest is a record,
   not a pin: the records hold the units the meter was charged and the library's
   answers, so it moves with any change of the library's behaviour or units, and CI prints it without comparing it.
 
@@ -113,7 +117,8 @@ run of up to 65,536 characters; the classes have their own, of up to 1,100,000 c
   random, one inside a surrogate pair and one after it), anchored and not, under wide ceilings (a step ceiling of 2^18
   units, 2^23 for a long subject, and the engines' frames and trail) and a meter, and once under narrow ones, which
   reach every ceiling and the meter's allowance;
-- the string-bearing `Match(string, int)`, `IsMatch` and `Matches`, from every start and, now and then, -1 and past the
+- the string-bearing `Match(string, int)`, `IsMatch` and the global iteration through `NextMatch` (`Matches` until
+  task 2.9), from every start and, now and then, -1 and past the
   end;
 - the text helpers `RegexEscaper.EscapePattern` and `EscapeString`, with a maximum length and a meter, half the time;
 - now and then, each documented argument exception, for an argument broken on purpose.
@@ -140,12 +145,12 @@ match that reached a ceiling, which the owner admitted on 2026-11-01. A finding 
   string-bearing members against the offset entry, through the mapping their documentation states
   (RegExpBuiltinExec's step back into a surrogate pair under `u` and `v`, `y` as the anchored argument, the index of
   decision D41, groups from the slots, each `Value` (the match's, group 0's and every group's) the subject's text at
-  the offsets reported, each group's `Number` its own, `NamedGroups` from the participating group of each name, its
+  the offsets reported, each group's `Number` its own, `GroupNamed` (`NamedGroups` until task 2.9) the participating group of each name, its
   `Number` that group's and its offsets that group's slots, as `RegexGroupNames.ParticipatingGroup` reads them, or,
   where no group of the name participated, the name's first group, unmatched, a failed match with no index, text or
-  groups, `Matches`' iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
-  as `Matches`' last element), compared wherever the wide call completed or met the frame or trail ceiling the
-  string-bearing members also pass. `Matches` is emulated through the wide calls: those the case made already, from
+  groups, `NextMatch`'s iteration of §22.2.6.9, a ceiling reached as `RegexMatch.Limit`, as `IsMatch`'s exception and
+  as the iteration's last match), compared wherever the wide call completed or met the frame or trail ceiling the
+  string-bearing members also pass. The iteration is emulated through the wide calls: those the case made already, from
   its starts, are always taken, so its first element is compared on every subject, a ceiling there included (only
   subjects of about 500,000 units and more reach one, the corpus's class M now and then); a new call is made only on a
   subject of at most 4,096 units, within 2^20 units spent and 4,096 elements. An emulation that reaches the

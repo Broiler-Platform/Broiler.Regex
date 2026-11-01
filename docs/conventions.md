@@ -52,6 +52,21 @@ JSD-0081 or here, or by a status-returning form with the `bool` member deprecate
 change. `Matches`, which threw for the same reason during task 2.4c, answers the ceiling as data since its
 review: a failed `RegexMatch` naming it, as its last element.
 
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2): where Broiler.Regex stands at `0.1.0-preview.6`.* The starting
+violation list is empty: task 2.9 closed its last rows (C3's `RegexSyntaxException`, the last SL4 place, the C1 rows of
+the syntax tree, the set algebra and the string-bearing result, SL5's seven `NoWarn` rows and SL8's two settings), and
+each rule's test now refuses any violation. The breach of the note above is closed by the owner's admission, decided on
+2026-11-01 as recommended under the owner's direction of 2026-10-18 ("Please do all recommended decisions and skip
+waiting for review"): `BroilerRegex.IsMatch` keeps its `InvalidOperationException` at a frame or trail ceiling as the
+string-bearing member's one documented throw, since decision D12 keeps the member and requirement R8 does not require
+its removal, and the status forms are `Match(string, int)`, whose `RegexMatch.Limit` names the ceiling, and the offset
+entry, which answers `RegexStatus.LimitExceeded` with the `RegexLimit`. No member that answers a status throws for an
+expected failure: `Compile`, the validate entry and `RegexFlagsText.Parse` answer a refusal as `RegexStatus.SyntaxError`
+with its `RegexDiagnostic`, and the string-bearing constructors document a pattern or flags text the specification
+refuses as their broken precondition, an `ArgumentException`. The note above stays as the record of the breach. One
+departure from convention 16's reading is recorded too: its breaks of `0.1.0-preview.5` ship inside `0.1`, as
+`0.1.0-preview.6`, by the owner's decision of 2026-11-01, "Please keep using version 0.1.0-x scheme!".
+
 ## Scope
 
 - **The library**, `Broiler.Regex/` (the package `Broiler.Regex`), is held to every convention.

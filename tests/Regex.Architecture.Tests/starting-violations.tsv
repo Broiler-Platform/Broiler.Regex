@@ -28,7 +28,7 @@
 # Broiler.Regex.Matching to Broiler.Regex when the old backend's namespace was deleted (decision D12, requirement R8;
 # a break docs/suppressions.md lists), so the rows of Matches, RegexMatch.Groups and RegexMatch.NamedGroups name the
 # moved type where they named Broiler.Regex.Matching.RegexMatch. They are the same three violations, which task 2.9
-# closes with the surface of 0.2.0-preview.1.
+# closes with the surface of 0.2.0-preview.1 (0.1.0-preview.6 by the owner's decision of 2026-11-01; closed, below).
 # Task 2.6 (2026-10-27) removes the two C1 rows of BroilerRegex.GroupNames and RegexParser.GroupNames: requirement R6
 # reshapes both from a dictionary of each name to one group into the library's own RegexGroupNames, since ES2025 lets
 # several groups share a name (a break docs/suppressions.md lists), so neither names a collection in a public signature.

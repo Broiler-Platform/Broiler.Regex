@@ -34,7 +34,9 @@ candidate reading (plan WP4: tasks 4.1 and 4.2).*
 accumulate here. Decision D12 of Broiler.VM's JSD-0081 ships the SJL-11 surface as `0.2.0-preview.1`, published to
 nuget.org only with the owner's approval (decision D13).*" The owner wrote on 2026-11-01 "Please keep using version
 0.1.0-x scheme!", which revises D12: the SJL-11 surface ships as `0.1.0-preview.6`, published with the owner's approval
-as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9 fixes the surface of, it is this one.
+as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9 fixes the surface of, it is this one. Where an item below
+calls a member provisional until task 2.9, task 2.9 settled it: kept, or changed as **Changed** lists, and no member of
+this version is provisional.
 
 ### Added
 
@@ -347,6 +349,10 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
   three fields whose initializers run code, which the owning component's predicate exempted as storage, now carry their
   annotations (382 relevant units). Rule SL8's two starting violations close, and with them the starting violation
   list: row 2.9's check, that the list is empty, holds. No compiled code changes.
+- **The Unicode provider is `0.1.0-preview.6` (the owner's dependency update of 2026-10-30, `77284f1`).** The package
+  depends on `Broiler.Unicode.Algorithms` `0.1.0-preview.6`, where `0.1.0-preview.5` depended on `0.1.0-preview.5`,
+  and the tests and the probe read `Broiler.Unicode.Tables` `0.1.0-preview.6`; the item on R11 below, which names
+  `0.1.0-preview.5`, was written before that update. Every test project moved to xunit v3 in the same update.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

@@ -30,7 +30,9 @@ namespace Broiler.Regex.Architecture.Tests;
 /// <para>
 /// <b>Provisional members</b> (task 2.5 of SJL-11.2). A baseline line <c># provisional: </c> followed by a member's line
 /// as the listing writes it marks that member as one that may still change before the version that ships it, as the
-/// CHANGELOG says of it; task 2.9 fixes the surface of <c>0.2.0-preview.1</c> and removes the marks it settles. The
+/// CHANGELOG says of it. Task 2.9 fixed the surface of <c>0.1.0-preview.6</c> (decision D12 had named
+/// <c>0.2.0-preview.1</c>; the owner's decision of 2026-11-01 keeps the <c>0.1.0-preview.N</c> stream) and removed every
+/// mark, so the baseline holds none; the marks remain for a member a later version ships as provisional. The
 /// comparison ignores the marks, a rewrite keeps each mark whose member is still listed, and rule SL6 refuses a mark
 /// whose member the assembly does not have.
 /// </para>
