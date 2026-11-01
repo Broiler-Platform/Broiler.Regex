@@ -26,8 +26,10 @@ namespace Broiler.Regex.Text;
 /// position in place of an exception; decision SJL-D-11, each engine's text its own).
 /// </summary>
 /// <remarks>
-/// <b>Provisional</b> (task 2.7 of SJL-11.2): task 2.8 gives the validate entry decision D9's syntax status, and task
-/// 2.9, which fixes the public surface of <c>0.2.0-preview.1</c>, may fold these three refusals into it.
+/// <b>Provisional</b> (task 2.7 of SJL-11.2): since task 2.8 the validate entry over a flags text answers each of these
+/// three refusals as decision D9's syntax status, <see cref="RegexStatus.SyntaxError"/> with the
+/// <see cref="RegexDiagnosticCode"/> of the same name at the same position; task 2.9, which fixes the public surface of
+/// <c>0.2.0-preview.1</c>, may fold this status into that one.
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=Low; Resources=0; Fingerprint=645656
 // Broiler-Human:        PENDING

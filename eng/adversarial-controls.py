@@ -23,7 +23,7 @@ revert checked". This script reads the corpus itself, independently of the probe
 - every other row giving its declared status, and no row waiting: a row the report says waits for task
   2.8 (the validate entry) is refused, and the waiting line must be "waiting: none";
 - the counts line and the reported line agreeing with the rows, and the probe's exit code being 1 when a
-  row is reported and 0 otherwise.
+  row is reported or waits and 0 otherwise.
 
 With --holds or --lacks it reads files instead: each must hold (or lack) each text, in UTF-16, as a string
 literal of an assembly holds it, or in UTF-8, as its metadata names do. The control's text is searched for in
@@ -38,6 +38,10 @@ the corpus's validate rows, so none waits. The script held control (2) to "every
 task 2.8 (the validate entry) and is then named on the report's waiting line"; it took the waiting rows out
 of the rows a control must report, so control (2) required 9 of the 15 N rows past the limit. It now
 requires all 15 and refuses a row that waits, whatever the control.
+
+Dated note, 2026-11-01 (the same integration): the probe's --adversarial mode now exits 1 when a row waits,
+where it exited 0 when no row was reported, waiting or not. The script held "the probe's exit code being 1
+when a row is reported and 0 otherwise"; it now holds it to 1 when a row is reported or waits.
 """
 
 import argparse
@@ -168,8 +172,9 @@ def main():
     reported_line = "reported: " + (" ".join(sorted(reported)) if reported else "none")
     if reported_line not in lines:
         failures.append("the report's reported line is not its rows': expected '" + reported_line + "'")
-    if args.exit != (1 if reported else 0):
-        failures.append("the probe exited " + str(args.exit) + ", where " + str(1 if reported else 0) + " was due")
+    due = 1 if reported or waiting else 0
+    if args.exit != due:
+        failures.append("the probe exited " + str(args.exit) + ", where " + str(due) + " was due")
 
     for failure in failures:
         print("adversarial-controls: " + failure, file=sys.stderr)

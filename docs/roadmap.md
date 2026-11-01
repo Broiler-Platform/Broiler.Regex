@@ -1485,9 +1485,11 @@ part C's control (2) and what remains are no longer the head's, and the record i
   under the JIT, 139 under Native AOT); N01, N07 and N13 and the 47 rows of the other classes give their declared
   statuses. The validate entry checks nesting through `RegexNesting.Descend`, the control's line, so the control
   reaches its rows with no line of its own. Control (1) reports the same 17 rows, the other 48 giving their declared
-  statuses. Each was reverted and the revert checked, its report the one above; the control builds left
-  `Broiler.Regex.dll` byte for byte and its time unchanged, and the DLL holds neither control's text.
-- *The script.* `eng/adversarial-controls.py` held control (2) to "every N row past the limit (declared
+  statuses, where the table's cell for it read "41 rows give their declared status, 7 wait". Each was reverted and
+  the revert checked, its report the one above; the control builds left `Broiler.Regex.dll` byte for byte and its
+  time unchanged, and the DLL holds neither control's text.
+- *The script.* The record above described it as holding "every other row to its declared status or, for a
+  `validate` row, to waiting". `eng/adversarial-controls.py` held control (2) to "every N row past the limit (declared
   limit:nesting) that runs" and admitted "a row whose operation is validate, which may wait for task 2.8"; it took the
   rows that wait out of those a control must report. It now holds control (2) to all 15 and refuses a report with a
   row that waits, under any control. Shown on a scratch copy of the tree with the probe's `validate` operation planted
@@ -1501,6 +1503,14 @@ part C's control (2) and what remains are no longer the head's, and the record i
   `AdversarialCorpusTests` lists no row that waits. Its second read "MET needs every row's declared status in both
   modes on both RIDs, so it cannot be judged before task 2.8"; part C is now judged at the candidate reading alone,
   from CI's runs at the commit `0.2.0-preview.1` is packed from, win-x64's among them. The margin is unchanged.
+- *The exit.* The record read "The mode exits 1 when a row differs or a child ends abnormally, 0 otherwise", so a run
+  with rows waiting passed: with the probe's `validate` operation planted out of `EngineRun.Answer` (and the plant
+  reverted after), the mode reported the seven rows waiting and exited 0. It now exits 1 when a row waits too (`AdversarialMode.Exit`),
+  as no row may since task 2.8; under the same plant it exits 1. `AdversarialModeTests.A_row_that_waits_fails_the_run`
+  was watched failing before the change (the exit over a waiting verdict was 0) and, under the plant, failing before
+  and after it; `eng/adversarial-controls.py` holds the exit code to 1 when a row is reported or waits, where it read
+  "1 if reported else 0". The report's format, `adversarial-1`, is unchanged, and `AdversarialModeTests` asserts the
+  `validate` rows' lines with no branch for a runner that does not answer the operation.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

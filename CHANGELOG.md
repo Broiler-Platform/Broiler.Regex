@@ -59,8 +59,9 @@ in [`docs/suppressions.md`](docs/suppressions.md).
   - The probe's `--adversarial` mode (task 2.14; bundle `sjl-11-001`'s part C, the milestone's component clause 3):
     every row of `tests/Adversarial/corpus.tsv` run in a child process of the probe, on a thread of the 1 MiB stack
     the corpus's header declares, and reported against its declared status in a deterministic report (the corpus's
-    SHA-256, each child's exit code, status line and units, in id order); the mode fails on a row that differs or a
-    child that ends abnormally. CI's `native-aot-probe` job runs it under Native AOT and under the JIT on
+    SHA-256, each child's exit code, status line and units, in id order); the mode fails on a row that differs, a
+    child that ends abnormally or, since the integration of tasks 2.8 and 2.14, a row that waits, which none may now
+    (it exited 0 with rows waiting before). CI's `native-aot-probe` job runs it under Native AOT and under the JIT on
     ubuntu-latest and windows-latest and compares the two reports byte for byte. Part C's two controls are scratch
     builds of the probe (`-p:RegexAdversarialControl=steps`, `LimitExceeded` naming steps answered as no match, and
     `=nesting`, the nesting check removed), which compile the library's sources into the probe with one line changed

@@ -12,8 +12,9 @@ namespace Broiler.Regex.Tests;
 /// The probe's <c>--adversarial</c> mode (task 2.14 of SJL-11.2; bundle <c>sjl-11-001</c>'s part C) over scratch corpora
 /// built from the real corpus's header: each row run in a child process and reported against its declared status, in
 /// ordinal order of the ids, with the corpus's SHA-256; a row that differs and a child that ends abnormally each reported
-/// and each failing the run; a <c>validate</c> row waiting for task 2.8 while the probe's runner does not run the
-/// operation; and a corpus the mode cannot read refused. The whole corpus is run so by CI's Native AOT job, under the JIT
+/// and each failing the run; a <c>validate</c> row run through the validate entry as every other row is, and a row that
+/// waits failing the run too, where none may since the integration of tasks 2.8 and 2.14; and a corpus the mode cannot
+/// read refused. The whole corpus is run so by CI's Native AOT job, under the JIT
 /// and the Native AOT image, and its rows one by one by <see cref="AdversarialCorpusTests"/>; part C's two controls, which
 /// need scratch builds of the probe, by CI's <c>adversarial-controls</c> job.
 /// </summary>
@@ -48,10 +49,6 @@ public class AdversarialModeTests
         }
     }
 
-    /// <summary>Whether the probe's runner answers <c>validate</c> yet: until task 2.8 it answers the operation <c>unsupported</c>.</summary>
-    private static bool ValidateWaits =>
-        EngineRun.Answer("validate", "a", "-", "", EngineRun.ParsePolicy("meter=none steps=none frames=1 trail=1 nesting=512 compile=none"), out _) == "unsupported";
-
     [Fact]
     public void Each_row_is_reported_in_id_order_and_a_row_that_differs_or_a_child_that_ends_abnormally_fails_the_run()
     {
@@ -76,17 +73,12 @@ public class AdversarialModeTests
         Assert.StartsWith("A07 A match@9 declared \"match 0,1\": exit ", lines[3], StringComparison.Ordinal);
         Assert.EndsWith(", no status line: ends abnormally", lines[3], StringComparison.Ordinal);
         Assert.DoesNotContain("exit 0,", lines[3], StringComparison.Ordinal);
-        if (ValidateWaits)
-            Assert.Equal("N03 N validate declared \"limit:nesting\": not run: waits for task 2.8 (the validate entry)", lines[4]);
-        else
-            Assert.Matches("^N03 N validate declared \"limit:nesting\": exit 0, status line \"N03 limit:nesting\"(, units [0-9]+)?: gives its declared status$", lines[4]);
+        Assert.Equal("N03 N validate declared \"limit:nesting\": exit 0, status line \"N03 limit:nesting\", units 0: gives its declared status", lines[4]);
         Assert.Equal("O03 O match@0 declared \"match 2,3\": exit 0, status line \"O03 match 0,1\", units 2: differs", lines[5]);
         Assert.Equal("O11 O match@1 declared \"match 2,3\": exit 0, status line \"O11 match 2,3\", units 3: gives its declared status", lines[6]);
 
-        Assert.Equal(ValidateWaits
-            ? "rows 4: 1 give their declared status, 1 differ, 1 end abnormally, 1 wait for task 2.8 (the validate entry)"
-            : "rows 4: 2 give their declared status, 1 differ, 1 end abnormally, 0 wait for task 2.8 (the validate entry)", lines[7]);
-        Assert.Equal(ValidateWaits ? "waiting: N03" : "waiting: none", lines[8]);
+        Assert.Equal("rows 4: 2 give their declared status, 1 differ, 1 end abnormally, 0 wait for task 2.8 (the validate entry)", lines[7]);
+        Assert.Equal("waiting: none", lines[8]);
         Assert.Equal("reported: A07 O03", lines[9]);
         Assert.Equal("", lines[10]);
         Assert.Equal(11, lines.Length);
@@ -106,6 +98,32 @@ public class AdversarialModeTests
         Assert.Equal(first.Report, second.Report);
         Assert.Contains("\nN01 N match@0 declared \"match 0,1 0,1^511\": exit 0, status line \"N01 match 0,1 0,1^511\", units 1024: gives its declared status\n", first.Report, StringComparison.Ordinal);
         Assert.EndsWith("rows 3: 3 give their declared status, 0 differ, 0 end abnormally, 0 wait for task 2.8 (the validate entry)\nwaiting: none\nreported: none\n", first.Report, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_row_that_waits_fails_the_run()
+    {
+        // The mode exits 0 only when every row gives its declared status: a row that differs, a child that ends
+        // abnormally and a row that waits each fail the run. No row may wait since the integration of tasks 2.8 and 2.14:
+        // a validate row waits only if the probe's runner answers the operation unsupported, a regression.
+        Assert.Equal(0, AdversarialMode.Exit([]));
+        Assert.Equal(0, AdversarialMode.Exit([AdversarialMode.Verdict.Given, AdversarialMode.Verdict.Given]));
+        Assert.Equal(1, AdversarialMode.Exit([AdversarialMode.Verdict.Given, AdversarialMode.Verdict.Waiting]));
+        Assert.Equal(1, AdversarialMode.Exit([AdversarialMode.Verdict.Differs]));
+        Assert.Equal(1, AdversarialMode.Exit([AdversarialMode.Verdict.Abnormal, AdversarialMode.Verdict.Given]));
+
+        // End to end over validate rows, one of each status the entry answers, and a match row: the run passes exactly
+        // when the report's waiting and reported lines are none, which at this commit they are.
+        var corpus = Header()
+            + Row("O11", "match@1", "\"a\"", "\"aba\"", "match 2,3")
+            + Row("N03", "validate", "\"(\" * 512 + \"a\" + \")\" * 512", "-", "limit:nesting")
+            + Row("O19", "validate", "\"(\"", "-", "syntax")
+            + Row("O20", "validate", "\"a\"", "-", "ok");
+        var (exit, _, report, _) = Run(corpus);
+        var lines = report.Split('\n');
+        Assert.Equal(lines.Contains("waiting: none") && lines.Contains("reported: none") ? 0 : 1, exit);
+        Assert.Equal(0, exit);
+        Assert.Contains("waiting: none", lines);
     }
 
     [Fact]

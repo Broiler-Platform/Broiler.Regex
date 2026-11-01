@@ -28,10 +28,12 @@ namespace Broiler.Regex.Probe;
 /// </para>
 /// <para>
 /// <b>The comparison.</b> Each child's status, with the corpus's <c>x^k</c> written out, against the row's declared
-/// status: equal, the row gives its declared status; otherwise it differs. A row whose operation is <c>validate</c>
-/// waits for task 2.8, the validate entry, and is not run, as long as <see cref="EngineRun.Answer"/> answers that
-/// operation <c>unsupported</c>; it is named and counted. When task 2.8 gives <see cref="EngineRun"/> the operation, the
-/// rows run with no change here.
+/// status: equal, the row gives its declared status; otherwise it differs. No row waits: since the integration of tasks
+/// 2.8 and 2.14, <see cref="EngineRun.Answer"/> answers the <c>validate</c> operation through task 2.8's validate
+/// entry, and the corpus's <c>validate</c> rows run as every other row does. The mode still asks the runner first; were
+/// it to answer that operation <c>unsupported</c>, a regression, each <c>validate</c> row would not be run but named on
+/// the report's waiting line and counted, in the words of task 2.14's report (<see cref="ValidateTask"/>), and the run
+/// fails.
 /// </para>
 /// <para>
 /// <b>The report</b> is deterministic: the corpus's SHA-256, its header, one line per row in ordinal order of the ids
@@ -40,8 +42,8 @@ namespace Broiler.Regex.Probe;
 /// child ends abnormally, the JIT's report and the Native AOT image's compare byte for byte per platform, part C's
 /// comparison. A child that crashes still makes them differ, by its exit code, which the report keeps as part C asks
 /// (134 under the JIT and 139 under Native AOT for a stack overflow on linux-x64); such a run fails already, and part C
-/// cannot be met by it. The mode exits 0 when no row differs and no child ended abnormally, 1 otherwise, and 2 on
-/// arguments or a corpus it cannot read.
+/// cannot be met by it. The mode exits 0 when every row gives its declared status, 1 when a row differs, a child ended
+/// abnormally or a row waits (<see cref="Exit"/>), and 2 on arguments or a corpus it cannot read.
 /// </para>
 /// <para>
 /// <b>The controls</b> of part C are scratch builds of the probe that compile the library's sources into it with one
@@ -60,7 +62,11 @@ internal static class AdversarialMode
     /// </summary>
     internal static readonly TimeSpan ChildLimit = TimeSpan.FromSeconds(120);
 
-    /// <summary>The task a <c>validate</c> row waits for while the probe's runner does not run the operation.</summary>
+    /// <summary>
+    /// The task a <c>validate</c> row waits for, in the report's words: written by task 2.14, when the probe's runner did
+    /// not run the operation, and kept so that the report's format stays <see cref="Name"/> and
+    /// <c>eng/adversarial-controls.py</c> reads it; task 2.8 has landed, and a row that waits fails the run.
+    /// </summary>
     internal const string ValidateTask = "task 2.8 (the validate entry)";
 
     /// <summary>A row's verdict.</summary>
@@ -150,8 +156,14 @@ internal static class AdversarialMode
         if (reportPath is not null)
             File.WriteAllText(reportPath, report.ToString());
         Console.Out.Write(report.ToString());
-        return reported.Length == 0 ? 0 : 1;
+        return Exit(verdicts.Select(static v => v.Verdict));
     }
+
+    /// <summary>
+    /// The mode's exit over the rows' verdicts: 0 when every row gives its declared status; 1 when a row differs, a child
+    /// ends abnormally or a row waits, which none may since the integration of tasks 2.8 and 2.14.
+    /// </summary>
+    internal static int Exit(IEnumerable<Verdict> verdicts) => verdicts.All(static v => v == Verdict.Given) ? 0 : 1;
 
     private static int Usage()
     {

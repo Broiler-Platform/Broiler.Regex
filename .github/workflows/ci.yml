@@ -110,9 +110,10 @@ jobs:
   # settings and no warning, leaves no managed assembly beside the native image, and gives the report the
   # same probe gives under the JIT, byte for byte. Since task 2.14 of SJL-11.2 it also runs bundle
   # sjl-11-001's part C: --adversarial over tests/Adversarial/corpus.tsv, each row in a child process of the
-  # probe on a thread of the corpus's declared stack, failing on a row that differs from its declared status
-  # or a child that ends abnormally, under Native AOT and under the JIT, the two reports compared byte for byte
-  # per RID. About 2 s under Native AOT and 6 s under the JIT on linux-x64 locally.
+  # probe on a thread of the corpus's declared stack, failing on a row that differs from its declared status,
+  # a child that ends abnormally or a row that waits (none may since task 2.8), under Native AOT and under the
+  # JIT, the two reports compared byte for byte per RID. About 2 s under Native AOT and 6 s under the JIT on
+  # linux-x64 locally.
   native-aot-probe:
     name: Native AOT probe (${{ matrix.rid }})
     runs-on: ${{ matrix.os }}
