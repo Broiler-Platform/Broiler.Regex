@@ -159,11 +159,21 @@ public sealed class BroilerRegex
     /// <param name="pattern">The pattern's source text.</param>
     /// <param name="flags">The flags, as a <c>RegExp</c> receives them: a string of <c>d g i m s u v y</c>, or null for none.</param>
     /// <param name="tables">The Unicode owner's tables, of the version <c>Broiler.Unicode.Algorithms</c> reads.</param>
-    /// <exception cref="RegexSyntaxException">The flags or the pattern are not valid (ECMA-262 §22.2.3.1), or the pattern nests deeper than <see cref="MaximumNestingLimit"/>.</exception>
+    /// <remarks>
+    /// A string-bearing convenience (decision D12): its precondition is a flags text and a pattern the specification
+    /// accepts, nested no deeper than <see cref="MaximumNestingLimit"/>. A caller that does not know they are reads the
+    /// refusal as a status from <see cref="Text.RegexFlagsText.Parse"/>, <see cref="Validate(string, string, IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>
+    /// or <see cref="Compile"/>, with its diagnostic.
+    /// </remarks>
+    /// <exception cref="System.ArgumentException">
+    /// The flags or the pattern are not valid (ECMA-262 §22.2.3.1), or the pattern nests deeper than
+    /// <see cref="MaximumNestingLimit"/>: the precondition broken, with the refusal's message, which the validate entry's
+    /// diagnostic carries for the same flags and pattern (its <c>Message</c>); or the tables are of another Unicode version
+    /// or lack a table the algorithms read.
+    /// </exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
-    /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=14510D
-    // Broiler-Falsified-If: a flags string with a repeated letter such as "gg" produces an instance instead of throwing RegexSyntaxException
+    // Broiler-Falsified-If: a flags string with a repeated letter such as "gg" produces an instance instead of throwing an ArgumentException with the validate entry's message
     // Broiler-Human:        PENDING
     public BroilerRegex(string pattern, string? flags, IUnicodeTables tables)
         : this(pattern, RegexFlagsParser.Parse(flags), tables)
@@ -175,17 +185,33 @@ public sealed class BroilerRegex
     /// <param name="flags">The flags.</param>
     /// <param name="tables">The Unicode owner's tables, of the version <c>Broiler.Unicode.Algorithms</c> reads.</param>
     /// <remarks>
-    /// The pattern is parsed and compiled under <see cref="MaximumNestingLimit"/>. A pattern nested deeper is refused as
-    /// every pattern this constructor does not compile is, with a <see cref="RegexSyntaxException"/> at the group or
-    /// class that opens the level past it; <see cref="Compile"/> takes the caller's own limit and answers a status.
+    /// <para>
+    /// A string-bearing convenience (decision D12), compiled as <see cref="Compile"/> compiles under
+    /// <see cref="MaximumNestingLimit"/> with no budget and no meter. Its precondition is a pattern the specification
+    /// accepts under <paramref name="flags"/>, nested no deeper than that maximum; a pattern that breaks it is refused, as
+    /// a broken precondition is (convention 3), with an <see cref="System.ArgumentException"/> whose message is the
+    /// refusal's, the validate entry's diagnostic's <c>Message</c> for the same pattern. A caller that does not know its
+    /// pattern is valid calls <see cref="Compile"/>, which answers the refusal as the syntax status with its diagnostic and
+    /// takes the caller's own nesting limit, compile budget and meter.
+    /// </para>
+    /// <para>
     /// No meter is charged and no compile budget bounds the work, which is in proportion to the ranges and strings the
-    /// pattern's expansions touch; <see cref="Compile"/> takes the caller's meter and budget.
+    /// pattern's expansions touch (decision D10's policy for an engine that passes no meter).
+    /// </para>
+    /// <para>
+    /// <b>Changed in <c>0.1.0-preview.6</c></b> (task 2.9 of SJL-11.2): the refusal was a public <c>RegexSyntaxException</c>,
+    /// the library's own type for a failure its contract admits, which convention 3 refuses; it is an
+    /// <see cref="System.ArgumentException"/> now, whose runtime type is internal.
+    /// </para>
     /// </remarks>
-    /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>.</exception>
+    /// <exception cref="System.ArgumentException">
+    /// The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>:
+    /// the precondition broken, with the refusal's message; or the tables are of another Unicode version or lack a table the
+    /// algorithms read.
+    /// </exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
-    /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
     // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=DFF8D4
-    // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing RegexSyntaxException
+    // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing an ArgumentException
     // Broiler-Human:        PENDING
     public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
         : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true)
@@ -194,7 +220,7 @@ public sealed class BroilerRegex
 
     /// <summary>
     /// Parses and compiles <paramref name="pattern"/>, descending under <paramref name="nesting"/>, to the new backend's
-    /// program, charging <paramref name="data"/>'s account. A pattern nested deeper is refused with a
+    /// program, charging <paramref name="data"/>'s account. A pattern nested deeper is refused with the internal
     /// <see cref="RegexSyntaxException"/> when <paramref name="refusesAsSyntax"/> is set, and otherwise with the
     /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status; a compilation past the account's
     /// budget ends with the <see cref="CompileBudgetSpent"/> that <see cref="Compile"/> answers as a status.
@@ -375,12 +401,13 @@ public sealed class BroilerRegex
     /// <para>
     /// <b>As <see cref="Compile"/> answers.</b> Every syntax error <see cref="Compile"/> and the constructors refuse a
     /// pattern with, this entry answers with the same diagnostic: the same code, identifier, argument and position, which
-    /// the <see cref="RegexSyntaxException"/> they throw carries; and a pattern it accepts compiles. The two part only
+    /// <see cref="Compile"/> answers with its status and whose message the constructors' exception carries; and a pattern it
+    /// accepts compiles. The two part only
     /// where <see cref="Compile"/> meets a limit this entry does not have: its compile budget, which may stop a compilation
     /// before it reaches a later syntax error or the end of a valid pattern, and its meter, whose exception does the same.
     /// Both read the caller's nesting limit alike: past it, this entry answers <see cref="RegexStatus.LimitExceeded"/> where
     /// <see cref="Compile"/> does, and the constructors, which parse under <see cref="MaximumNestingLimit"/>, throw with the
-    /// same diagnostic.
+    /// same diagnostic's message.
     /// </para>
     /// <para>
     /// <b>Provisional.</b> New in task 2.8 of SJL-11.2, with <see cref="RegexDiagnostic"/>, <see cref="RegexDiagnosticCode"/>
@@ -418,7 +445,7 @@ public sealed class BroilerRegex
     /// <param name="diagnostic">The refusal, or the default value when the status is <see cref="RegexStatus.Success"/>.</param>
     /// <param name="limit"><see cref="RegexLimit.Nesting"/> when the status is <see cref="RegexStatus.LimitExceeded"/>; otherwise <see cref="RegexLimit.None"/>.</param>
     /// <returns><see cref="RegexStatus.Success"/>, <see cref="RegexStatus.SyntaxError"/> or <see cref="RegexStatus.LimitExceeded"/>, as the overload over <see cref="RegexFlags"/> answers.</returns>
-    /// <remarks>Provisional, as the other overload is. The constructor over a flags text throws the same diagnostic for the same flags.</remarks>
+    /// <remarks>The constructor over a flags text throws with the same diagnostic's message for the same flags.</remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>

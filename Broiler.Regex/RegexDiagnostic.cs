@@ -24,8 +24,8 @@ namespace Broiler.Regex;
 /// (ECMA-262 §22.2.1 and §22.2.1.1, Annex B §B.1.2, and the flags of RegExpInitialize, §22.2.3.3, and ParsePattern,
 /// §22.2.3.4), and one for the caller's nesting limit. The code of a <see cref="RegexDiagnostic"/>, which the validate entry
 /// (<see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>)
-/// answers and a <see cref="RegexSyntaxException"/> carries (decision D9 of Broiler.VM's JSD-0081: a syntax status with a
-/// code, a message identifier and a position).
+/// answers, as <see cref="BroilerRegex.Compile"/> and <see cref="Text.RegexFlagsText.Parse"/> do (decision D9 of
+/// Broiler.VM's JSD-0081: a syntax status with a code, a message identifier and a position).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -352,9 +352,10 @@ public enum RegexDiagnosticCode
 /// <summary>
 /// One refusal of a pattern or a flags string, as data (decision D9 of Broiler.VM's JSD-0081; decision SJL-D-11): its
 /// <see cref="Code"/>, its <see cref="MessageId"/> and <see cref="Argument"/>, its <see cref="Position"/>, and a default
-/// English <see cref="Message"/>. The validate entry answers it with <see cref="RegexStatus.SyntaxError"/>, or with
-/// <see cref="RegexStatus.LimitExceeded"/> for the nesting limit, and a <see cref="RegexSyntaxException"/> carries it as
-/// <see cref="RegexSyntaxException.Diagnostic"/>.
+/// English <see cref="Message"/>. The validate entry and <see cref="BroilerRegex.Compile"/> answer it with
+/// <see cref="RegexStatus.SyntaxError"/>, or with <see cref="RegexStatus.LimitExceeded"/> for the nesting limit, and
+/// <see cref="Text.RegexFlagsText.Parse"/> with <see cref="RegexStatus.SyntaxError"/> for a flags text; the string-bearing
+/// constructors throw an <see cref="System.ArgumentException"/> with its <see cref="Message"/>.
 /// </summary>
 /// <remarks>
 /// The default value is no refusal: <see cref="RegexDiagnosticCode.None"/>, an empty identifier and message, no argument

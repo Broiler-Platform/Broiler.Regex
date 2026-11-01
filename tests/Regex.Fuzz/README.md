@@ -120,10 +120,13 @@ run of up to 65,536 characters; the classes have their own, of up to 1,100,000 c
 
 ## What counts as a finding
 
-An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension, and the validate entry's
-`SyntaxError` with its diagnostic), a `RegexSyntaxException` from compilation, the session's own meter exception, a documented argument exception for an
-argument broken on purpose, and `IsMatch`'s `InvalidOperationException` for a match that reached a ceiling. A finding
-is anything else:
+An answer is a status (`Success`, `Match`, `NoMatch`, `LimitExceeded` naming its dimension, and `SyntaxError` with its
+diagnostic, from the validate entry and, since task 2.9 of SJL-11.2, from `Compile`), the constructor's
+`ArgumentException` for a pattern it refuses (task 2.9: the public `RegexSyntaxException` is gone, and the constructor
+documents a pattern the specification refuses as its broken precondition), the session's own meter exception, a
+documented argument exception for an argument broken on purpose, and `IsMatch`'s `InvalidOperationException` for a
+match that reached a ceiling, which the owner admitted on 2026-11-01. A finding is anything else, a
+`RegexSyntaxException` from `Compile` included since task 2.9:
 
 - **exception**: any other exception escaping an entry, a documented argument exception included when the session's
   arguments were valid;

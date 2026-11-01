@@ -392,12 +392,11 @@ internal static class ProbePopulation
     private static string Shown(RegexGroup group) => group.Success ? Span(group.Index, group.Length) : "-";
 
     /// <summary>
-    /// An exception as the probe reports it: the library's own, the syntax error, by name and with its
-    /// position; any other by its type, which no message or resource text enters.
+    /// An exception as the probe reports it, by its type, which no message or resource text enters. A syntax error is no
+    /// exception here since task 2.9 of SJL-11.2: the population compiles through <c>Compile</c>, whose status reports it.
     /// </summary>
     private static string Thrown(Exception exception) => exception switch
     {
-        RegexSyntaxException syntax => "syntax @" + Decimal(syntax.Position),
         ArgumentOutOfRangeException => "threw ArgumentOutOfRangeException",
         ArgumentException => "threw ArgumentException",
         InvalidOperationException => "threw InvalidOperationException",

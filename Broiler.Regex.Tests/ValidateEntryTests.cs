@@ -403,6 +403,32 @@ public class ValidateEntryTests
         Assert.Equal(RegexStatus.Success, BroilerRegex.Validate("", "dgimsvy", UnicodeTables.Instance, 512, out _, out _));
     }
 
+    /// <summary>
+    /// Task 2.9 of SJL-11.2 (convention 3; check C3): the library declares no public exception type. A refusal is a status
+    /// with its diagnostic wherever a member answers one; the string-bearing constructors, which decision D12 keeps and
+    /// which answer none, document a pattern or flags text the specification refuses as their broken precondition and
+    /// throw an <see cref="ArgumentException"/> with the diagnostic's message, the internal type of the refusal.
+    /// </summary>
+    [Fact]
+    public void No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException()
+    {
+        Assert.DoesNotContain(typeof(BroilerRegex).Assembly.GetExportedTypes(), static type => typeof(Exception).IsAssignableFrom(type));
+        Assert.False(typeof(RegexSyntaxException).IsPublic);
+
+        foreach (var (pattern, flags) in new[] { ("a)", ""), ("(?<a>x)(?<a>y)", "u"), ("a", "gg") })
+        {
+            var refusal = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(pattern, flags, UnicodeTables.Instance)));
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, flags, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var diagnostic, out _));
+            Assert.Equal(diagnostic.Message, refusal.Message);
+            Assert.Null(refusal.ParamName);
+        }
+
+        // Past the maximum the constructors refuse with the nesting limit's message, naming the library's maximum where the
+        // validate entry names the caller's limit.
+        var deep = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(new string('(', 600), "", UnicodeTables.Instance)));
+        Assert.Equal("The pattern nests deeper than the library's maximum nesting limit", deep.Message);
+    }
+
     [Fact]
     public void The_default_diagnostic_is_no_refusal()
     {
@@ -413,8 +439,8 @@ public class ValidateEntryTests
         Assert.Null(none.Argument);
         Assert.Equal("", none.Message);
 
-        // An exception made through the public constructor carries no diagnostic.
-        Assert.Equal(RegexDiagnosticCode.None, new RegexSyntaxException("made by a caller", 3).Diagnostic.Code);
+        // An exception made from a message alone carries no diagnostic.
+        Assert.Equal(RegexDiagnosticCode.None, new RegexSyntaxException("made from a message", 3).Diagnostic.Code);
 
         // Nor, until task 2.9, does the public CharSet.AddRange's refusal of a range written high to low, the one refusal of
         // the library made that way: no compilation reaches it, since the parser refuses such a range with its diagnostic

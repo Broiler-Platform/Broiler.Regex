@@ -308,6 +308,13 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
     same names at the same numbers, is removed (CP0001), and the old `Parse` with its `out int` position (CP0002).
   - **`RegexFlagsParser.Parse` is internal (R10, convention 3).** It throws for a flags string the specification refuses;
     `RegexFlagsText.Parse` is the status form (CP0002). `RegexFlagsParser.IsUnicodeMode` stays public.
+  - **No public exception type (R10, convention 3; check C3).** `RegexSyntaxException` is internal and derives from
+    `ArgumentException` (CP0001): the library's own public type for a failure its contract admits was check C3's
+    starting violation. Every member that can answer a status answers the refusal as one; the string-bearing
+    constructors, which decision D12 keeps, document a pattern or flags text the specification refuses as their broken
+    precondition and throw an `ArgumentException` with the refusal's message, the validate entry's diagnostic's
+    `Message` for the same pattern; a caller that catches `RegexSyntaxException` catches `ArgumentException`, and one
+    that read its `Position` or `Diagnostic` calls the validate entry or `Compile`.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

@@ -315,7 +315,12 @@ internal static class Verdicts
             outcome.Find("disagreement", site, Invariant($"the validate entry refused with {diagnostic.Code} at {diagnostic.Position} where Compile refused with {expected.Code} at {expected.Position}"));
     }
 
-    /// <summary>The constructor takes no limit and parses under the maximum: it answers as the full compilation does.</summary>
+    /// <summary>
+    /// The constructor takes no limit and parses under the maximum: it answers as the full compilation does. A refusal is
+    /// the <see cref="ArgumentException"/> it documents for a broken precondition since task 2.9 of SJL-11.2, carrying the
+    /// refusal's message, which is compared with the compilation's diagnostic; its position is no longer public, so the
+    /// transcript notes the refusal without one.
+    /// </summary>
     private static void CompareConstructor(FuzzCase c, Compiled full, Outcome outcome)
     {
         if (full.Answer is not ("ok" or "syntax" or "limit:nesting"))
@@ -327,11 +332,11 @@ internal static class Verdicts
             if (full.Regex is not { } regex || regex.CaptureCount != built.CaptureCount || regex.SlotCount != built.SlotCount)
                 outcome.Find("disagreement", "constructor", "the constructor compiled a pattern Compile answered " + full.Text);
         }
-        catch (RegexSyntaxException refusal)
+        catch (ArgumentException refusal) when (refusal is not (ArgumentNullException or ArgumentOutOfRangeException))
         {
-            outcome.Note("ctor", Invariant($"syntax@{refusal.Position}"));
-            if (full.Answer == "ok" || full.Answer == "syntax" && (refusal.Position != full.Position || refusal.Message != full.Message))
-                outcome.Find("disagreement", "constructor", Invariant($"the constructor refused a syntax error at {refusal.Position} ({refusal.Message}) where Compile answered {full.Text} {full.Message}"));
+            outcome.Note("ctor", "syntax");
+            if (full.Answer == "ok" || full.Answer == "syntax" && refusal.Message != full.Message)
+                outcome.Find("disagreement", "constructor", Invariant($"the constructor refused the pattern ({refusal.Message}) where Compile answered {full.Text} {full.Message}"));
         }
         catch (Exception failure)
         {
