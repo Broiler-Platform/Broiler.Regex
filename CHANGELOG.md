@@ -316,7 +316,10 @@ this version is provisional.
     constructors, which decision D12 keeps, document a pattern or flags text the specification refuses as their broken
     precondition and throw an `ArgumentException` with the refusal's message, the validate entry's diagnostic's
     `Message` for the same pattern; a caller that catches `RegexSyntaxException` catches `ArgumentException`, and one
-    that read its `Position` or `Diagnostic` calls the validate entry or `Compile`.
+    that read its `Position` or `Diagnostic` calls the validate entry or `Compile`. Past `MaximumNestingLimit` that
+    message is the one `Compile` and the validate entry answer with `NestingLimit`, "The pattern nests deeper than the
+    nesting limit", where `0.1.0-preview.5` wrote "The pattern nests deeper than the library's maximum nesting limit"
+    and task 2.8's validate entry "... than the caller's nesting limit".
   - **The syntax tree, the parser and the set algebra are internal (R10, conventions 1, 3 and 4; check C1).** The
     seventeen types of `Broiler.Regex.Ast` (the nodes, `CharSet`, `ClassEscape`, `CodePointSet`), `Broiler.Regex.Parsing.RegexParser`
     and `Broiler.Regex.Unicode.UnicodeCharSets` leave the public surface (CP0001 each): their signatures named

@@ -423,10 +423,21 @@ public class ValidateEntryTests
             Assert.Null(refusal.ParamName);
         }
 
-        // Past the maximum the constructors refuse with the nesting limit's message, naming the library's maximum where the
-        // validate entry names the caller's limit.
-        var deep = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(new string('(', 600), "", UnicodeTables.Instance)));
-        Assert.Equal("The pattern nests deeper than the library's maximum nesting limit", deep.Message);
+        // Past the maximum both constructors refuse with the message the validate entry's diagnostic carries at
+        // MaximumNestingLimit, as their documentation promises.
+        var nested = new string('(', 600) + new string(')', 600);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Validate(nested, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var nesting, out var limit));
+        Assert.Equal(RegexLimit.Nesting, limit);
+        Assert.Equal(RegexDiagnosticCode.NestingLimit, nesting.Code);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Validate(nested, "", UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var nestingOfText, out _));
+        Assert.Equal(nesting.Message, nestingOfText.Message);
+        Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Compile(nested, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, null, null, out _, out _, out var compiled));
+        Assert.Equal(nesting.Message, compiled.Message);
+
+        var deep = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(nested, "", UnicodeTables.Instance)));
+        Assert.Equal(nesting.Message, deep.Message);
+        var deepOfFlags = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(nested, RegexFlags.None, UnicodeTables.Instance)));
+        Assert.Equal(nesting.Message, deepOfFlags.Message);
     }
 
     [Fact]

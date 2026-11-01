@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 26 |
 | Files not covered | 0 |
 | Files carrying an annotation | 26 |
-| Code units | 714 |
-| Relevant | 382 |
+| Code units | 715 |
+| Relevant | 383 |
 | Exempt by predicate | 332 |
-| Annotated | 382 of 382 (100%) |
-| Human reviewed | 0 of 382 (0%) |
-| Unverified | 382 |
+| Annotated | 383 of 383 (100%) |
+| Human reviewed | 0 of 383 (0%) |
+| Unverified | 383 |
 
 ## Review states
 
@@ -32,7 +32,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 382 |
+| HUMAN_PENDING | 383 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
@@ -42,7 +42,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Value | Units |
 |---|---:|
-| None | 294 |
+| None | 295 |
 | Low | 105 |
 | Medium | 0 |
 | High | 0 |
@@ -54,7 +54,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Value | Units |
 |---|---:|
 | None | 13 |
-| Low | 137 |
+| Low | 138 |
 | Medium | 106 |
 | High | 143 |
 | Critical | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.5 / 10 |
-| Units scored | 382 |
+| Units scored | 383 |
 
 ## High-security review areas
 
@@ -218,7 +218,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 224 |
+| Units carrying a criterion | 225 |
 | Units required to carry one | 143 |
 | Required and missing | 0 |
 
@@ -270,7 +270,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-714 of them, exempt and relevant alike - with the fingerprint of its declaration.
+715 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

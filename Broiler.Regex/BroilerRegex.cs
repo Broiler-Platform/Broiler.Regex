@@ -327,7 +327,7 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="compileBudget"/> is zero.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=DBCDCA
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=B527E7
     // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, ulong? compileBudget,
@@ -358,7 +358,7 @@ public sealed class BroilerRegex
         {
             regex = null;
             limit = RegexLimit.Nesting;
-            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nestingLimit, "The pattern nests deeper than the caller's nesting limit");
+            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nestingLimit, RegexNesting.RefusalMessage);
             return RegexStatus.LimitExceeded;
         }
         catch (CompileBudgetSpent)
@@ -474,7 +474,7 @@ public sealed class BroilerRegex
     /// The validate entry over one compilation's view of the provider, <paramref name="data"/>, whose account a test reads to
     /// see that nothing but the pattern's read is charged (no expansion); the arguments are checked.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=FB9215
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=D3A4DE
     // Broiler-Falsified-If: a refusal escapes as an exception, or the nesting refusal is answered without its diagnostic
     // Broiler-Human:        PENDING
     internal static RegexStatus Validate(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
@@ -495,7 +495,7 @@ public sealed class BroilerRegex
         }
         catch (NestingLimitExceeded refusal)
         {
-            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nesting.Limit, "The pattern nests deeper than the caller's nesting limit");
+            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nesting.Limit, RegexNesting.RefusalMessage);
             limit = RegexLimit.Nesting;
             return RegexStatus.LimitExceeded;
         }
