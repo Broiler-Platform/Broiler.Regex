@@ -75,7 +75,7 @@ public enum RegexStatus
     NoMatch = 3,
 
     /// <summary>
-    /// The pattern or its flags break the grammar or an early error (ECMA-262 §22.2.1, §22.2.1.1, §22.2.3.4): the syntax
+    /// The pattern or its flags break the grammar or an early error (ECMA-262 §22.2.1, §22.2.1.1, §22.2.3.3, §22.2.3.4): the syntax
     /// status of decision D9, its code, message identifier, argument and position in a <see cref="RegexDiagnostic"/> beside
     /// it. The validate entry answers it (task 2.8 of SJL-11.2); provisional, with the entry.
     /// </summary>

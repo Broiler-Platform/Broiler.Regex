@@ -21,8 +21,8 @@ namespace Broiler.Regex;
 
 /// <summary>
 /// What a refused pattern or flags string breaks: one code per kind of syntax error and early error the parser knows
-/// (ECMA-262 §22.2.1 and §22.2.1.1, Annex B §B.1.2, and the flags of RegExpInitialize, §22.2.3.4), and one for the
-/// caller's nesting limit. The code of a <see cref="RegexDiagnostic"/>, which the validate entry
+/// (ECMA-262 §22.2.1 and §22.2.1.1, Annex B §B.1.2, and the flags of RegExpInitialize, §22.2.3.3, and ParsePattern,
+/// §22.2.3.4), and one for the caller's nesting limit. The code of a <see cref="RegexDiagnostic"/>, which the validate entry
 /// (<see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>)
 /// answers and a <see cref="RegexSyntaxException"/> carries (decision D9 of Broiler.VM's JSD-0081: a syntax status with a
 /// code, a message identifier and a position).
@@ -66,7 +66,7 @@ public enum RegexDiagnosticCode
     None = 0,
 
     /// <summary>
-    /// <c>regexp.flags.unknown</c>: a flags code unit other than <c>d g i m s u v y</c> (§22.2.3.4 RegExpInitialize). Argument: the
+    /// <c>regexp.flags.unknown</c>: a flags code unit other than <c>d g i m s u v y</c> (§22.2.3.3 RegExpInitialize). Argument: the
     /// code unit. Position: its index in the flags text.
     /// </summary>
     UnknownFlag = 1,
@@ -477,7 +477,7 @@ public readonly struct RegexDiagnostic
     /// The refusal of a flags text <see cref="Text.RegexFlagsText.Parse"/> answered <paramref name="status"/> for, at
     /// <paramref name="position"/>, with the message <c>0.1.0-preview.4</c> gave each.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.4; IP=None; Security=Low; Resources=0; Fingerprint=92AC82
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=92AC82
     // Broiler-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
     // Broiler-Human:        PENDING
     internal static RegexDiagnostic OfFlags(Text.RegexFlagsStatus status, string flags, int position) => status switch
