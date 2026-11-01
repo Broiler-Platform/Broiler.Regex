@@ -55,7 +55,7 @@ namespace Broiler.Regex;
 /// <b>Not reachable, so not a code:</b> EE0183, a pattern of 2³² − 1 or more capturing groups, which no string the
 /// platform can hold reaches.
 /// </para>
-/// <para><b>Provisional</b> with the validate entry (task 2.8 of SJL-11.2); task 2.9 fixes the public surface.</para>
+/// <para><b>New in task 2.8 of SJL-11.2</b>, with the validate entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.</para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9 and ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=7C239A
 // Broiler-Falsified-If: two members share a number or a message identifier, or a member's number changes once published
@@ -359,8 +359,8 @@ public enum RegexDiagnosticCode
 /// </summary>
 /// <remarks>
 /// The default value is no refusal: <see cref="RegexDiagnosticCode.None"/>, an empty identifier and message, no argument
-/// and position -1 being its fields' defaults read through these members. Provisional with the validate entry (task 2.8 of
-/// SJL-11.2); task 2.9 fixes the public surface.
+/// and position -1 being its fields' defaults read through these members. New in task 2.8 of SJL-11.2, with the validate
+/// entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=D31024
 // Broiler-Falsified-If: a diagnostic's MessageId is not its code's identifier, or the default value reports a code, an identifier or a position other than None, the empty string and -1
@@ -479,7 +479,7 @@ public readonly struct RegexDiagnostic
     /// <paramref name="position"/> of a flags text (<see cref="Text.RegexFlagsText.Parse"/>), with the message
     /// <c>0.1.0-preview.4</c> gave each.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=92AC82
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=BE9012
     // Broiler-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
     // Broiler-Human:        PENDING
     internal static RegexDiagnostic OfFlags(RegexDiagnosticCode code, char unit, int position) => code switch

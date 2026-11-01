@@ -29,7 +29,7 @@ namespace Broiler.Regex.Ast;
 /// reduces to one <see cref="CodePointSet"/>, optionally negated as a whole
 /// (ECMA-262 §22.2.1 CharacterClass / ClassSetExpression).
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=BD9DC9
+// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=4; Fingerprint=A2DE0A
 // Broiler-Falsified-If: a v-mode class written [\q{ab|ab|c}] ends up with a duplicate entry or a one-code-point member in Strings
 // Broiler-Human:        PENDING
 internal sealed class CharSet
@@ -116,7 +116,7 @@ internal sealed class CharSet
     /// 9; the starting violation list's last SL4 row, which interpolated the two code points).
     /// </summary>
     /// <exception cref="RegexSyntaxException"><paramref name="lo"/> is greater than <paramref name="hi"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=0; Fingerprint=64DF54
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=0; Fingerprint=C72FB5
     // Broiler-Falsified-If: [z-a] is accepted, or [a-a] refused, or the message's code points read the current culture
     // Broiler-Human:        PENDING
     internal static void CheckRange(int lo, int hi)
@@ -214,7 +214,7 @@ internal sealed class CharSet
 }
 
 /// <summary>A built-in character-class escape usable inside or outside a class.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=C35DA6
+// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=CA00CD
 // Broiler-Human:        PENDING
 internal enum ClassEscape
 {

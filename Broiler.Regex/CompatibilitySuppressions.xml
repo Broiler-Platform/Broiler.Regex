@@ -122,6 +122,13 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Broiler.Regex.Engine.RegexMatchCeilings</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
     <Target>T:Broiler.Regex.Parsing.RegexParser</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
@@ -151,6 +158,13 @@
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Broiler.Regex.BroilerRegex.Compile(System.String,Broiler.Regex.RegexFlags,Broiler.Unicode.Algorithms.IUnicodeTables,System.Int32,System.Nullable{System.UInt64},Broiler.Regex.RegexWorkCharge,Broiler.Regex.BroilerRegex@,Broiler.Regex.RegexLimit@)</Target>
+    <Left>lib/net10.0/Broiler.Regex.dll</Left>
+    <Right>lib/net10.0/Broiler.Regex.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan{System.Char},System.Int32,System.Boolean,System.Span{System.Int32},Broiler.Regex.RegexWorkCharge,Broiler.Regex.Engine.RegexMatchCeilings,Broiler.Regex.RegexLimit@)</Target>
     <Left>lib/net10.0/Broiler.Regex.dll</Left>
     <Right>lib/net10.0/Broiler.Regex.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>

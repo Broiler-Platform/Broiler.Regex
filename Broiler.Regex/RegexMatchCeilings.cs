@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Broiler.Regex.Engine;
+namespace Broiler.Regex;
 
 /// <summary>
 /// The caller's ceilings for one match call (requirements R1 and R3; decisions D8 and D10 of Broiler.VM's JSD-0081;
@@ -26,7 +26,7 @@ namespace Broiler.Regex.Engine;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Steps</b> are optional and counted in the units the meter is charged in (<see cref="RegexMachine"/>'s remarks,
+/// <b>Steps</b> are optional and counted in the units the meter is charged in (<see cref="Engine.RegexMachine"/>'s remarks,
 /// "Charging"): a call does at most that many, and an instruction that would take it past them is not dispatched.
 /// <b>Frames</b> are the choices a call holds open at once, <b>trail cells</b> the register writes that change a
 /// register and that backtracking has not undone, whether or not a choice was open when they were made: the cells of an
@@ -41,9 +41,10 @@ namespace Broiler.Regex.Engine;
 /// <c>(?:ab){1048576}</c>.
 /// </para>
 /// <para>
-/// <b>Public since task 2.4c, provisional</b>, with the offset entry that takes it,
+/// <b>Public since task 2.4c of SJL-11.2</b>, with the offset entry that takes it,
 /// <see cref="BroilerRegex.Match(ReadOnlySpan{char}, int, bool, Span{int}, RegexWorkCharge?, RegexMatchCeilings, out RegexLimit)"/>;
-/// task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>, its namespace included. The default value is no set of
+/// fixed for <c>0.1.0-preview.6</c> by task 2.9, which moved it from <c>Broiler.Regex.Engine</c>, a namespace otherwise
+/// internal, the machine's (check A-4 reads it), to <c>Broiler.Regex</c>, where the rest of the engines' surface is. The default value is no set of
 /// ceilings: the entry refuses it as a broken precondition, so a caller always states its frame and trail ceilings.
 /// </para>
 /// <para>

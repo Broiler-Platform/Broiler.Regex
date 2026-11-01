@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   9
-// Annotated:        9/9
-// Exempt:           15
-// Human-reviewed:   0/9
+// Relevant units:   12
+// Annotated:        12/12
+// Exempt:           14
+// Human-reviewed:   0/12
 // IP risk:          None
 // Security risk:    Low
-// Criteria:         3/0
+// Criteria:         6/0
 // Resource impact:  1/10 max
-// Unverified:       9
+// Unverified:       12
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -108,6 +108,9 @@ public sealed class RegexMatch
     /// The groups, group 0 (the whole match) first and then each capturing group in source order, each participating or
     /// not; none for a failed match. A span of the match's own array, which a caller cannot change.
     /// </summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4CAEDE
+    // Broiler-Falsified-If: a match of (a)(b)? on "a" answers other than two groups, group 0 first, or a caller can write a group through the span
+    // Broiler-Human:        PENDING
     public ReadOnlySpan<RegexGroup> Groups => _groups.AsSpan();
 
     /// <summary>
@@ -121,7 +124,7 @@ public sealed class RegexMatch
     /// The no-match result, which every call that finds no match answers. Nothing reachable from it can change: its
     /// groups are an empty array (convention 7).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=E09821
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=166586
     // Broiler-Falsified-If: RegexMatch.Empty reports Success as true, a non-empty Groups span or a group for a name
     // Broiler-Human:        PENDING
     public static readonly RegexMatch Empty = new(false, -1, 0, "", Array.Empty<RegexGroup>(), null);
@@ -154,11 +157,15 @@ public sealed class RegexMatch
     private static readonly RegexMatch StepsExceeded = new(RegexLimit.Steps);
 
     /// <summary>A failed match naming <paramref name="limit"/>, with no groups, as <see cref="Empty"/> has none.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=881BBA
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D49C0B
     // Broiler-Human:        PENDING
     private RegexMatch(RegexLimit limit)
         : this(false, -1, 0, "", Array.Empty<RegexGroup>(), null) => Limit = limit;
 
+    /// <summary>A match, or a failed one, of <paramref name="groups"/>, an array made for it alone and never written after.</summary>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=A43A57
+    // Broiler-Falsified-If: a match's groups change after it is answered, or its subject is not the one it was found in
+    // Broiler-Human:        PENDING
     internal RegexMatch(bool success, int index, int length, string value, RegexGroup[] groups, string? input)
     {
         Success = success;
@@ -187,7 +194,7 @@ public sealed class RegexMatch
     /// pattern's capture count.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 RegExpBuiltinExec; IP=None; Security=Low; Resources=1; Fingerprint=5C1E07
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 RegExpBuiltinExec; IP=None; Security=Low; Resources=1; Fingerprint=A8B0C7
     // Broiler-Falsified-If: under (?:(?<n>a)|(?<n>b)) on "b" the name n answers group 1, a name no group of which participated answers null, or an undeclared name answers a group
     // Broiler-Human:        PENDING
     public RegexGroup? GroupNamed(string name)

@@ -330,6 +330,18 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
     answers the global iteration's next match, a failed match answering itself, the one that names a ceiling last
     (CP0002 for `Matches`, the enumerable). The matches, groups and names are those the removed members gave. Broiler.JS
     at `main` reads `Groups.Count`, which becomes `Groups.Length` when it takes this version.
+  - **The match ceilings are `Broiler.Regex.RegexMatchCeilings` (R8; task 2.4c).** The offset entry's ceilings type
+    moves from `Broiler.Regex.Engine` to the package's root namespace beside the entry that takes it (CP0001 for
+    `Broiler.Regex.Engine.RegexMatchCeilings`, and CP0002 for the offset entry's signature over it); its members, their
+    meaning and the entry's behaviour are unchanged, and a caller adds or drops one `using`.
+- **Every public member is documented, and the build resets no warning (R10, convention 17; rule SL5).** The library's
+  project file resets `NoWarn` to the compiler's two defaults, `CS1701` and `CS1702`, in place of the vendored props'
+  `CS1591` and the rest, so a public member without its XML documentation fails the build; `BroilerRegex.Pattern`,
+  `BroilerRegex.Flags` and `RegexFlags.None` gain theirs. Rule SL5's seven starting violations close.
+- **No member is provisional.** Every `# provisional:` mark of `PublicAPI.txt`, which tasks 2.4b to 2.7 set until task
+  2.9 fixed the surface, is resolved: the members marked are this version's surface as listed above, and their
+  documentation no longer calls them provisional. The escape helpers keep the shape task 2.7 gave them; `RegexLimit`
+  gains no length dimension for them, since an escape's length is bounded by its input's.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's

@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   9
-// Annotated:        9/9
-// Exempt:           4
-// Human-reviewed:   0/9
+// Relevant units:   8
+// Annotated:        8/8
+// Exempt:           0
+// Human-reviewed:   0/8
 // IP risk:          None
 // Security risk:    High
 // Criteria:         2/2
 // Resource impact:  0/10 max
-// Unverified:       9
+// Unverified:       8
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -83,7 +83,7 @@ public static class RegexFlagsText
     /// unknown either way, and no flag is a surrogate, so the answer is the same in both readings, and the position is
     /// in code units. The work is at most nine code units (the type's remarks).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=High; Resources=0; Fingerprint=E771AD
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=None; Security=High; Resources=0; Fingerprint=E328F7
     // Broiler-Falsified-If: "gg", "x", "G", "uv" or "uvx" answers Success, "uvx" answers UnicodeWithUnicodeSets rather than UnknownFlag at 2, or a refusal's position is not the code unit it names
     // Broiler-Human:        PENDING
     public static RegexStatus Parse(ReadOnlySpan<char> text, out RegexFlags flags, out RegexDiagnostic diagnostic)
@@ -158,7 +158,7 @@ public static class RegexFlagsText
     };
 
     /// <summary>A refusal of kind <paramref name="code"/>: no flags, and the diagnostic of the code unit at <paramref name="at"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=05A3FD
+    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E2EFE4
     // Broiler-Human:        PENDING
     private static RegexStatus Refuse(RegexDiagnosticCode code, ReadOnlySpan<char> text, int at, out RegexFlags flags, out RegexDiagnostic diagnostic)
     {

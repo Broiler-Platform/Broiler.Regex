@@ -36,7 +36,7 @@ namespace Broiler.Regex.Parsing;
 /// (convention 4), and it threw for a pattern it refuses (convention 3). <see cref="BroilerRegex.Compile"/> and the
 /// validate entry are the public parses, under the caller's nesting limit, each answering a status.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=0CA2F0
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=52F8B3
 // Broiler-Falsified-If: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
 // Broiler-Human:        PENDING
 internal sealed class RegexParser
@@ -86,8 +86,7 @@ internal sealed class RegexParser
     /// </summary>
     /// <remarks>
     /// Made once, when the pattern has been read, and never changed: the compiled pattern that keeps it, and its matches,
-    /// share it (convention 10). Provisional in its shape since task 2.6 of SJL-11.2, which reshaped it from a map of each
-    /// name to one group; task 2.9 fixes the public surface.
+    /// share it (convention 10). Task 2.6 of SJL-11.2 reshaped it from a map of each name to one group.
     /// </remarks>
     public RegexGroupNames GroupNames { get; private set; }
 

@@ -33,7 +33,7 @@ namespace Broiler.Regex;
 /// the position and the diagnostic, are the validate entry's answer for the same pattern, which a caller that needs them
 /// reads there. A break of <c>0.1.0-preview.5</c>, listed with requirement R10 in <c>docs/suppressions.md</c>.
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=B41B30
+// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=9919DF
 // Broiler-Human:        PENDING
 internal sealed class RegexSyntaxException(string message, int position = -1) : ArgumentException(message)
 {

@@ -43,7 +43,10 @@ namespace Broiler.Regex.Text;
 /// result longer than the caller's maximum length is refused before it is written (convention 5).
 /// </para>
 /// <para>
-/// <b>Provisional</b>, with every member of <c>Broiler.Regex.Text</c>: task 2.9 fixes the public surface.
+/// New in task 2.7 of SJL-11.2, with every member of <c>Broiler.Regex.Text</c>; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2, which keeps
+/// the escapes' answers <see cref="RegexStatus.Success"/> and <see cref="RegexStatus.LimitExceeded"/> with no
+/// <see cref="RegexLimit"/> member for a length: the caller's maximum length is their one limit, and decision D9's
+/// dimensions are a match's and a compilation's.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.5.1 RegExp.escape; IP=None; Security=High; Resources=2; Fingerprint=A07F5C

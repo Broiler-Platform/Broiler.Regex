@@ -41,8 +41,8 @@ namespace Broiler.Regex;
 /// <see cref="ParticipatingGroup"/> reads the caller's slots (convention 11).
 /// </para>
 /// <para>
-/// <b>Provisional.</b> New in task 2.6 of SJL-11.2, where requirement R6 reshapes <c>GroupNames</c>, which was a map of
-/// each name to one group; task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.
+/// New in task 2.6 of SJL-11.2, where requirement R6 reshapes <c>GroupNames</c>, which was a map of each name to one
+/// group; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
 /// </para>
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4 and s22.2.7.2; IP=None; Security=Medium; Resources=1; Fingerprint=A28383
@@ -90,7 +90,6 @@ public sealed class RegexGroupNames
     internal int CaptureCount { get; }
 
     /// <summary>How many distinct names the pattern declares; zero when it declares none.</summary>
-    /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E964CF
     // Broiler-Human:        PENDING
     public int Count => _nameList.Length;
@@ -101,7 +100,6 @@ public sealed class RegexGroupNames
     /// </summary>
     /// <param name="index">The name's position, from 0 to <see cref="Count"/> - 1.</param>
     /// <returns>The name, decoded: the code points its GroupSpecifier spells, escapes read (§22.2.1.10 CapturingGroupName).</returns>
-    /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative, or <see cref="Count"/> or more.</exception>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Low; Resources=0; Fingerprint=521344
     // Broiler-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ position 0 answers x, or a position of Count answers a name
@@ -119,7 +117,6 @@ public sealed class RegexGroupNames
     /// </summary>
     /// <param name="name">A name, decoded, compared by code unit.</param>
     /// <returns>The group numbers, a read-only view of the instance's own, which nothing changes.</returns>
-    /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.9; IP=None; Security=Low; Resources=0; Fingerprint=DB3D86
     // Broiler-Falsified-If: for /(?<x>a)|(?<x>b)/ the groups of x are not 1 and 2, or a name the pattern does not declare answers a group
@@ -132,7 +129,6 @@ public sealed class RegexGroupNames
 
     /// <summary>The name of group <paramref name="group"/>, or null when it has none, as group 0, the whole match, has none.</summary>
     /// <param name="group">A group number, from 0 to the pattern's capture count.</param>
-    /// <remarks>Provisional (task 2.9 fixes the public surface).</remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="group"/> is negative or past the pattern's capture count.</exception>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=219B4C
     // Broiler-Falsified-If: for /(?<x>a)|(b)|(?<x>c)/ group 3's name is not x, group 2 has one, or group 4 answers instead of throwing
@@ -155,7 +151,7 @@ public sealed class RegexGroupNames
     /// <param name="slots">The slots of a match, as the offset entry writes them: two for each group, group 0 first, -1 for a group that did not participate.</param>
     /// <returns>The participating group's number, or 0.</returns>
     /// <remarks>
-    /// Reads the slots of the name's groups alone, and allocates nothing. Provisional (task 2.9 fixes the public surface).
+    /// Reads the slots of the name's groups alone, and allocates nothing.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer slots than a match of the pattern writes, two for each group and two for the whole match.</exception>

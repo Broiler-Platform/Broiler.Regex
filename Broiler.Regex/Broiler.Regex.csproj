@@ -18,6 +18,13 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <RootNamespace>Broiler.Regex</RootNamespace>
     <AssemblyName>Broiler.Regex</AssemblyName>
+    <!--
+      Conventions 12 and 15 (rule SL5): this resets the vendored packaging props' NoWarn, which appends the seven
+      XML-documentation codes for every project, to the SDK's own codes, so nothing is suppressed here and a public
+      member without its documentation, or with a cref that does not resolve, is a build error (TreatWarningsAsErrors).
+      Task 2.9 of SJL-11.2; the probe resets it the same way.
+    -->
+    <NoWarn>1701;1702</NoWarn>
   </PropertyGroup>
 
   <!--

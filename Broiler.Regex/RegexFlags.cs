@@ -29,6 +29,7 @@ namespace Broiler.Regex;
 [Flags]
 public enum RegexFlags
 {
+    /// <summary>No flag: the empty flags text (ECMA-262 §22.2.3.3, RegExpInitialize with F the empty String).</summary>
     None = 0,
 
     /// <summary><c>d</c> — generate match indices (<c>hasIndices</c>).</summary>
@@ -84,7 +85,7 @@ public static class RegexFlagsParser
     /// <c>0.1.0-preview.4</c> gave each and no position in the pattern; since task 2.8 of SJL-11.2 its
     /// <see cref="RegexSyntaxException.Diagnostic"/> names the refusal and its place in the flags text.
     /// </exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=2217E0
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=640203
     // Broiler-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     internal static RegexFlags Parse(string? flags)

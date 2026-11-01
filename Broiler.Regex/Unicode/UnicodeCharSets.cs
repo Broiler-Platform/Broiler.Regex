@@ -35,7 +35,7 @@ namespace Broiler.Regex.Unicode;
 /// members that needed the old packages' tables - <c>AllCharacters</c>, <c>EscapeSet</c>, <c>IsSpace</c>, <c>IsWord</c>,
 /// <c>ResolveProperty</c> and <c>WordSet</c> - went at task 2.2, as <c>docs/suppressions.md</c> lists.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Low; Resources=1; Fingerprint=7E3895
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Low; Resources=1; Fingerprint=9B8753
 // Broiler-Human:        PENDING
 internal static class UnicodeCharSets
 {
@@ -81,7 +81,7 @@ internal static class UnicodeCharSets
     /// <c>UnicodePropertyValueExpression</c>; §22.2.2.9.7 UnicodeMatchProperty and §22.2.2.9.8
     /// UnicodeMatchPropertyValue): its code points, and its strings when it is a property of strings.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=0; Fingerprint=D1335C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=0; Fingerprint=635852
     // Broiler-Falsified-If: a resolution the library builds for a property of strings reports IsStringProperty false, so \p{RGI_Emoji} is accepted outside v or \P{RGI_Emoji} under v
     // Broiler-Human:        PENDING
     internal sealed class PropertyMatch(CodePointSet codePoints, IReadOnlyList<string> strings)

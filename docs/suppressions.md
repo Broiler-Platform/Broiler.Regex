@@ -21,21 +21,26 @@ to what it finds: each suppression is listed there, and when the scan finds none
 files are read from the evaluation's import list, not named in the test, so one a later change adds (a
 `Directory.Build.targets`, another `eng/*.props`) is scanned the day it is imported.
 
-The probe's project file sets `NoWarn` to `1701;1702`, the compiler's informational codes the SDK puts in every
-project. That **replaces** the XML-documentation codes the packaging file appends; it resets the property rather than
+The probe's project file, and since task 2.9 the library's, sets `NoWarn` to `1701;1702`, the compiler's informational
+codes the SDK puts in every project. That **replaces** the XML-documentation codes the packaging file appends; it resets the property rather than
 suppressing anything, and is not listed. The test projects, whose sources are the rules' own and name every marker
 the scan looks for, and the witnesses of the rules, which exist to break them, are not scanned.
 
 ### Inventory
 
-- `eng/Broiler.Packaging.props`: `NoWarn` appends `CS1570`, `CS1572`, `CS1573`, `CS1574`, `CS1587`, `CS1591` and
-  `CS1734`, the XML-documentation warnings, for every project of the repository. The file is the vendored copy of the
-  platform's packaging props and is not edited here. It reaches the library, whose project file does not reset it,
-  so a public member without its documentation compiles there today. Rule SL5 refuses the library's evaluated
-  `NoWarn` for each of the seven codes, and the starting violation list holds the seven rows until the library resets
-  the property and documents every public member (convention 15).
+None.
 
-None of these is a trim, AOT or single-file warning.
+*Dated note, 2026-11-01 (task 2.9 of SJL-11.2).* The inventory read: "`eng/Broiler.Packaging.props`: `NoWarn` appends
+`CS1570`, `CS1572`, `CS1573`, `CS1574`, `CS1587`, `CS1591` and `CS1734`, the XML-documentation warnings, for every
+project of the repository. The file is the vendored copy of the platform's packaging props and is not edited here. It
+reaches the library, whose project file does not reset it, so a public member without its documentation compiles
+there today. Rule SL5 refuses the library's evaluated `NoWarn` for each of the seven codes, and the starting violation
+list holds the seven rows until the library resets the property and documents every public member (convention 15)."
+The library's project file now resets `NoWarn` to the SDK's own codes, `1701;1702`, as the probe's does, so the seven
+codes no longer reach it, every public member is documented (three were not: `BroilerRegex.Pattern`, `Flags` and
+`RegexFlags.None`), and a missing comment or an unresolved reference is a build error; the seven rows have left the
+starting violation list. The packaging props still append the codes for the test projects, which SL5 does not scan.
+
 
 ## Accepted breaks of the published API
 
@@ -182,3 +187,5 @@ interface beside the string-bearing one D12 keeps).
 | CP0002 | `M:Broiler.Regex.RegexMatch.get_Groups` | R10 (convention 1; check C1) | `RegexMatch.Groups`, answering `ReadOnlySpan<RegexGroup>` where it answered `IReadOnlyList<RegexGroup>`: `Groups[i]` and `foreach` read as before, and `Count` is `Length`. |
 | CP0002 | `M:Broiler.Regex.RegexMatch.get_NamedGroups` | R10 (convention 1; check C1), R6 | `RegexMatch.GroupNamed(name)`: the name's participating group, or its first group unmatched when none participated, or null for a name the pattern does not declare and for a failed match, the answer the dictionary's entry gave; `BroilerRegex.GroupNames` lists the names in order. |
 | CP0002 | `M:Broiler.Regex.BroilerRegex.Matches(System.String)` | R10 (convention 1; check C1) | `BroilerRegex.NextMatch(match)`, from `Match(input, 0)`: the same matches in the same order, after an empty match a code point on (a pair whole under `u` and `v`), and a last failed match naming the ceiling a match reached. |
+| CP0001 | `T:Broiler.Regex.Engine.RegexMatchCeilings` | R8 (task 2.4c's offset entry) | `Broiler.Regex.RegexMatchCeilings`, the same type in the package's root namespace beside the offset entry that takes it: its members and their meaning are unchanged. |
+| CP0002 | `M:Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan{System.Char},System.Int32,System.Boolean,System.Span{System.Int32},Broiler.Regex.RegexWorkCharge,Broiler.Regex.Engine.RegexMatchCeilings,Broiler.Regex.RegexLimit@)` | R8 (task 2.4c's offset entry) | The same offset entry over `Broiler.Regex.RegexMatchCeilings`, its behaviour unchanged. |

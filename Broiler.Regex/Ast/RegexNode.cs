@@ -24,14 +24,14 @@ namespace Broiler.Regex.Ast;
 /// The tree mirrors the ECMAScript <c>Pattern</c> grammar (ECMA-262 §22.2.1):
 /// a <see cref="DisjunctionNode"/> of <see cref="SequenceNode"/>s of terms.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=9FE564
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=E77094
 // Broiler-Human:        PENDING
 internal abstract class RegexNode
 {
 }
 
 /// <summary>An alternation: <c>a|b|c</c> (§22.2.1 Disjunction).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=396456
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=1BEBB3
 // Broiler-Human:        PENDING
 internal sealed class DisjunctionNode(IReadOnlyList<RegexNode> alternatives) : RegexNode
 {
@@ -39,7 +39,7 @@ internal sealed class DisjunctionNode(IReadOnlyList<RegexNode> alternatives) : R
 }
 
 /// <summary>A concatenation of terms (§22.2.1 Alternative).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=61124D
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=157A70
 // Broiler-Human:        PENDING
 internal sealed class SequenceNode(IReadOnlyList<RegexNode> terms) : RegexNode
 {
@@ -47,7 +47,7 @@ internal sealed class SequenceNode(IReadOnlyList<RegexNode> terms) : RegexNode
 }
 
 /// <summary>The empty alternative (matches the empty string).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=E81119
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=7DD9C3
 // Broiler-Human:        PENDING
 internal sealed class EmptyNode : RegexNode
 {
@@ -58,7 +58,7 @@ internal sealed class EmptyNode : RegexNode
 }
 
 /// <summary>A single literal code point (§22.2.1 PatternCharacter / CharacterEscape).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=7313B3
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=B0296C
 // Broiler-Human:        PENDING
 internal sealed class CharNode(int codePoint) : RegexNode
 {
@@ -67,7 +67,7 @@ internal sealed class CharNode(int codePoint) : RegexNode
 }
 
 /// <summary><c>.</c> — matches any character (any code point under <c>s</c>, else non-line-terminator).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=1A69F5
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=None; Resources=0; Fingerprint=43D5A0
 // Broiler-Human:        PENDING
 internal sealed class AnyCharNode : RegexNode
 {
@@ -78,7 +78,7 @@ internal sealed class AnyCharNode : RegexNode
 }
 
 /// <summary>A character class <c>[...]</c> or a standalone class escape such as <c>\d</c>.</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=ED7BF1
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=2A55B9
 // Broiler-Human:        PENDING
 internal sealed class CharClassNode(CharSet set) : RegexNode
 {
@@ -86,7 +86,7 @@ internal sealed class CharClassNode(CharSet set) : RegexNode
 }
 
 /// <summary>A quantified term: <c>X* X+ X? X{n,m}</c> (§22.2.1 Quantifier).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=12605D
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=84EAB5
 // Broiler-Human:        PENDING
 internal sealed class QuantifierNode(RegexNode child, int min, int max, bool greedy) : RegexNode
 {
@@ -102,7 +102,7 @@ internal sealed class QuantifierNode(RegexNode child, int min, int max, bool gre
 }
 
 /// <summary>A group: capturing (numbered, optionally named) or non-capturing (§22.2.1 Atom).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=E124F7
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=C513B3
 // Broiler-Human:        PENDING
 internal sealed class GroupNode(RegexNode child, int captureIndex, string? name) : RegexNode
 {
@@ -121,7 +121,7 @@ internal sealed class GroupNode(RegexNode child, int captureIndex, string? name)
 /// An inline-modifier group <c>(?ims-ims:…)</c> (ES2025 §22.2.1). Adds/removes
 /// the <c>i</c>/<c>m</c>/<c>s</c> flags for the duration of its body.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=B1EE3A
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=B3DD70
 // Broiler-Human:        PENDING
 internal sealed class ModifierGroupNode(RegexNode child, RegexFlags added, RegexFlags removed) : RegexNode
 {
@@ -131,7 +131,7 @@ internal sealed class ModifierGroupNode(RegexNode child, RegexFlags added, Regex
 }
 
 /// <summary>A back-reference to an earlier capture by number or name (§22.2.1 AtomEscape).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=EB97EE
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=C382DA
 // Broiler-Human:        PENDING
 internal sealed class BackreferenceNode : RegexNode
 {
@@ -147,7 +147,7 @@ internal sealed class BackreferenceNode : RegexNode
     public BackreferenceNode(string name) { Index = 0; Name = name; }
 }
 
-// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=DF9E67
+// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=D701D8
 // Broiler-Human:        PENDING
 internal enum AnchorKind
 {
@@ -162,7 +162,7 @@ internal enum AnchorKind
 }
 
 /// <summary>A zero-width assertion at the boundary level (§22.2.1 Assertion).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=7976EB
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=CE283F
 // Broiler-Human:        PENDING
 internal sealed class AnchorNode(AnchorKind kind) : RegexNode
 {
@@ -174,7 +174,7 @@ internal sealed class AnchorNode(AnchorKind kind) : RegexNode
 /// <c>(?&lt;=…)</c>/<c>(?&lt;!…)</c> (§22.2.1 Assertion). A look-behind body is
 /// matched in the reverse direction (see the matcher).
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=26E184
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Low; Resources=0; Fingerprint=F505EE
 // Broiler-Human:        PENDING
 internal sealed class LookaroundNode(RegexNode child, bool behind, bool negative) : RegexNode
 {

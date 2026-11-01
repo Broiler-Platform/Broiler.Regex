@@ -120,7 +120,10 @@ public sealed class BroilerRegex
     /// <summary>The new backend's program, which every member runs since task 2.4c.</summary>
     private readonly RegexProgram _program;
 
+    /// <summary>The pattern's source text, as the caller gave it (the <c>source</c> before EscapeRegExpPattern, ECMA-262 §22.2.6.13.1).</summary>
     public string Pattern { get; }
+
+    /// <summary>The flags the pattern was compiled under (ECMA-262 §22.2.6.4, the <c>flags</c> getter's flags).</summary>
     public RegexFlags Flags { get; }
 
     /// <summary>Number of capturing groups in the pattern.</summary>
@@ -128,7 +131,7 @@ public sealed class BroilerRegex
 
     /// <summary>
     /// How many slots the offset entry writes: two for each group, group 0, the whole match, first, so
-    /// 2 × (<see cref="CaptureCount"/> + 1). Provisional, with the entry (task 2.9 fixes the public surface).
+    /// 2 × (<see cref="CaptureCount"/> + 1).
     /// </summary>
     // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C9AE6
     // Broiler-Human:        PENDING
@@ -146,9 +149,9 @@ public sealed class BroilerRegex
     /// for <see cref="Match(string, int)"/>'s result).
     /// </para>
     /// <para>
-    /// <b>Reshaped, and provisional.</b> Until task 2.6 of SJL-11.2 this was an <c>IReadOnlyDictionary&lt;string, int&gt;</c>
+    /// <b>Reshaped.</b> Until task 2.6 of SJL-11.2 this was an <c>IReadOnlyDictionary&lt;string, int&gt;</c>
     /// of each name to its one group, which a name of several groups does not fit (a break of <c>0.1.0-preview.4</c>'s
-    /// surface, suppressed and listed with requirement R6); task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.
+    /// surface, listed with requirement R6); fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
     /// It cannot be changed: the compiled pattern and its concurrent matches share it (convention 10).
     /// </para>
     /// </remarks>
@@ -324,7 +327,7 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="compileBudget"/> is zero.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=3C8E92
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=DBCDCA
     // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, ulong? compileBudget,
@@ -409,8 +412,8 @@ public sealed class BroilerRegex
     /// same diagnostic's message.
     /// </para>
     /// <para>
-    /// <b>Provisional.</b> New in task 2.8 of SJL-11.2, with <see cref="RegexDiagnostic"/>, <see cref="RegexDiagnosticCode"/>
-    /// and <see cref="RegexStatus.SyntaxError"/>; task 2.9 fixes the public surface of <c>0.2.0-preview.1</c>.
+    /// New in task 2.8 of SJL-11.2, with <see cref="RegexDiagnostic"/>, <see cref="RegexDiagnosticCode"/>
+    /// and <see cref="RegexStatus.SyntaxError"/>; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
     /// </para>
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
@@ -448,7 +451,7 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral; IP=None; Security=High; Resources=3; Fingerprint=D30070
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral; IP=None; Security=High; Resources=3; Fingerprint=702602
     // Broiler-Falsified-If: the flags "gg" answer other than DuplicateFlag at 1, "uv" other than UnicodeWithUnicodeSets at 1, or a flags refusal is answered after a refusal of the pattern
     // Broiler-Human:        PENDING
     public static RegexStatus Validate(string pattern, string? flags, IUnicodeTables tables, int nestingLimit,
@@ -533,9 +536,8 @@ public sealed class BroilerRegex
     /// <returns><see cref="RegexStatus.Match"/>, <see cref="RegexStatus.NoMatch"/>, or <see cref="RegexStatus.LimitExceeded"/> naming the ceiling in <paramref name="limit"/>.</returns>
     /// <remarks>
     /// <para>
-    /// <b>Provisional.</b> This member is new in task 2.4c of SJL-11.2, with <see cref="RegexWorkCharge"/>,
-    /// <see cref="RegexMatchCeilings"/> and <see cref="SlotCount"/> made public for it; task 2.9 fixes the public surface
-    /// of <c>0.2.0-preview.1</c>, and its shape may change before that version ships.
+    /// New in task 2.4c of SJL-11.2, with <see cref="RegexWorkCharge"/>, <see cref="RegexMatchCeilings"/> and
+    /// <see cref="SlotCount"/> made public for it; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2, with no change of its signature.
     /// </para>
     /// <para>
     /// <b>Memory.</b> The call's registers, frames and trail are arrays rented from the shared array pool and given back
@@ -637,7 +639,7 @@ public sealed class BroilerRegex
     /// so a match another pattern found steps over a pair as this one's flags say.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex; IP=None; Security=High; Resources=8; Fingerprint=46F375
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex; IP=None; Security=High; Resources=8; Fingerprint=770A62
     // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling answers other than itself, or the matches it walks differ from the global iteration's
     // Broiler-Human:        PENDING
     public RegexMatch NextMatch(RegexMatch match)
@@ -672,7 +674,7 @@ public sealed class BroilerRegex
     /// reports <paramref name="start"/> as its index (row M4), and an empty one the pair's start (decision D41,
     /// <see cref="Match(string, int)"/>'s remarks); null for no match or a ceiling, which <paramref name="limit"/> names.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=1C23DC
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=DE5CAD
     // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
     // Broiler-Human:        PENDING
     private RegexMatch? Run(RegexProgram program, string input, int start, out RegexLimit limit)

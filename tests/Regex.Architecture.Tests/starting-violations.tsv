@@ -24,13 +24,6 @@
 # RuleRegisterTests checks that each cited line holds the token, so a citation moves with the code; the rule's own test
 # decides whether the violation, and each place of it, is still there. A comment line here names a row's repair.
 #rule	violation	token	sites
-SL5	Broiler.Regex: NoWarn suppresses CS1570	CS1570	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1572	CS1572	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1573	CS1573	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1574	CS1574	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1587	CS1587	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1591	CS1591	eng/Broiler.Packaging.props:72
-SL5	Broiler.Regex: NoWarn suppresses CS1734	CS1734	eng/Broiler.Packaging.props:72
 SL8	assurance.config.json does not forbid preprocessor directives	"exemptionPredicate"	assurance.config.json:7
 SL8	assurance.config.json does not use the strict exemption predicate	"owning-component"	assurance.config.json:7
 # Task 2.4c (2026-10-26) re-words three C1 rows, which adds no violation: RegexMatch and RegexGroup moved from
@@ -63,3 +56,6 @@ SL8	assurance.config.json does not use the strict exemption predicate	"owning-co
 # RegexMatch.Groups is a ReadOnlySpan<RegexGroup>, RegexMatch.GroupNamed(name) answers a name's group where the
 # NamedGroups dictionary did, and BroilerRegex.NextMatch(match) answers the global iteration's next match where Matches'
 # IEnumerable did. No C1 row remains.
+# Task 2.9 (2026-11-01) removes the seven SL5 rows: Broiler.Regex/Broiler.Regex.csproj resets NoWarn to the SDK's own
+# codes, so the packaging props' XML-documentation codes no longer reach the library, and every public member is
+# documented (convention 15), a missing comment a build error.
