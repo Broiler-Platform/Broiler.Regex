@@ -1198,14 +1198,16 @@ references 30 to 33 (`BackreferenceOutOfRange`, `UndefinedGroupName`, `NamedRefe
 `UnterminatedClassStringDisjunction`); property escapes 80 to 86 (`PropertyEscapeWithoutBrace`,
 `UnterminatedPropertyEscape`, `UnknownPropertyName`, `UnknownPropertyValue`, `UnknownLonePropertyName`,
 `PropertyOfStringsOutsideUnicodeSets`, `NegatedPropertyOfStrings`); and the nesting limit, 90 (`NestingLimit`). 49
-conditions and `None` (0). Each code has one identifier, dotted and lower case in the `regexp` namespace of the shared
-frontend's early-error catalogue (Broiler.JS's `Broiler.ECMAScript/docs/frontend/early-errors.tsv` at `238069ab`): where
-the catalogue has a row for the condition, EE0184 to EE0213, the identifier is the catalogue's (`regexp.group-name.duplicate`,
-`regexp.quantifier.out-of-order`, `regexp.modifiers.repeated-flag` for EE0186, EE0188 and EE0189, and so on, a test
-pinning each row); the grammar's own refusals, which the catalogue lists as no early error, have identifiers of this
-library's in the same namespace and form (`regexp.group.unterminated`, `regexp.class-set.mixed-operators`,
-`regexp.pattern.nesting-limit`). EE0183, 2^32 - 1 or more capturing groups, has no code: no string the platform holds
-reaches it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an
+conditions and `None` (0). Each code has one identifier, dotted and lower case in the form of the shared frontend's
+early-error catalogue (Broiler.JS's `Broiler.ECMAScript/docs/frontend/early-errors.tsv` at `238069ab`), whose rows are
+early errors (EE), Annex B's (EG) and limits and grammar (EX): where the catalogue has a row for the condition, the
+identifier is the catalogue's (EE0184 to EE0213: `regexp.group-name.duplicate`, `regexp.quantifier.out-of-order`,
+`regexp.modifiers.repeated-flag` for EE0186, EE0188 and EE0189, and so on; and EX0026, the limit on a pattern's nesting
+of groups and classes, `limit.regexp.too-deep`, for `NestingLimit`; a test pinning each row). The library coins an
+identifier, in the catalogue's `regexp` namespace and form, only for a condition the catalogue has no row for: the
+grammar's own refusals and the flags', which the catalogue folds into EE0019 (`regexp.group.unterminated`,
+`regexp.class-set.mixed-operators`, `regexp.flags.duplicate`). EE0183, 2^32 - 1 or more capturing groups, has no code:
+no string the platform holds reaches it. The arguments: the code unit for an unknown flag, a lone syntax character, an identity escape or an
 unescaped class-set syntax character; the flag for a repeated flag or modifier; the quantifier's code unit for nothing
 to repeat; the digits of an out-of-range back-reference; the decoded name of an undefined or duplicate group name; the
 range as written, out of order; the two code units of a reserved double punctuator; the text between a property
@@ -1304,8 +1306,10 @@ two entries, which then reads the status. **SJL-11.4 and SJL-11.5** call the ent
   task follows (above).
 - **The engines' identifiers.** JSD-0083's D7 has the provider answer "the failing condition's message identifier", and
   otherwise EE0019's `regexp.literal.invalid` with the validator's message as its argument. The catalogue names early
-  errors only, so the grammar's own refusals have identifiers of this library's, which an adapter maps to EE0019 with
-  the message, or the catalogue adopts; the codes the catalogue has use its identifiers.
+  errors (EE), Annex B's (EG) and limits and grammar (EX), and where it has a row for a condition the code uses its
+  identifier, EX0026's `limit.regexp.too-deep` for the nesting limit among them. It has no row of their own for the
+  grammar's refusals and the flags', which it folds into EE0019, so those have identifiers of this library's, which an
+  adapter maps to EE0019 with the message, or the catalogue adopts.
 - **Broiler.JS's `ParserTests.cs:420`** admits `/[\q{/}--[a]]/v`, which ECMA-262 refuses (under `v` a `/` is a
   ClassSetSyntaxCharacter, which a `\q{…}` may not hold unescaped) and V8 (node 22.22.0) refuses too; this library
   refuses it with `ClassSetUnescapedSyntaxCharacter` at 4, and admits `/[\q{\/}--[a]]/v`. The engine's test owes the

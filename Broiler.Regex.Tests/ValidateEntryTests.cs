@@ -200,7 +200,7 @@ public class ValidateEntryTests
             (RegexDiagnosticCode.UnknownLonePropertyName, 84, "regexp.property.unknown-lone-name"),
             (RegexDiagnosticCode.PropertyOfStringsOutsideUnicodeSets, 85, "regexp.property.of-strings-outside-v-mode"),
             (RegexDiagnosticCode.NegatedPropertyOfStrings, 86, "regexp.property.negated-strings"),
-            (RegexDiagnosticCode.NestingLimit, 90, "regexp.pattern.nesting-limit"),
+            (RegexDiagnosticCode.NestingLimit, 90, "limit.regexp.too-deep"),
         ];
 
         Assert.Equal(Enum.GetValues<RegexDiagnosticCode>().Order(), table.Select(static row => row.Code).Order());
@@ -211,18 +211,22 @@ public class ValidateEntryTests
         }
 
         // One identifier per code, each of the form the shared catalogue gives its identifiers (early-errors.md, section 6):
-        // two to four lower-case dotted segments, in the regexp namespace.
+        // two to four lower-case dotted segments, in the regexp namespace, but for the nesting limit's, which is EX0026's
+        // in EX's limit namespace.
         var ids = table.Skip(1).Select(static row => row.Id).ToArray();
         Assert.Equal(ids.Length, ids.Distinct(StringComparer.Ordinal).Count());
-        Assert.All(ids, static id => Assert.Matches("^regexp(\\.[a-z][a-z0-9]*(-[a-z0-9]+)*){1,3}$", id));
+        Assert.All(ids, static id => Assert.Matches("^[a-z][a-z0-9]*(-[a-z0-9]+)*(\\.[a-z][a-z0-9]*(-[a-z0-9]+)*){1,3}$", id));
+        Assert.All(table.Skip(1).Where(static row => row.Code != RegexDiagnosticCode.NestingLimit), static row => Assert.StartsWith("regexp.", row.Id, StringComparison.Ordinal));
         Assert.Throws<ArgumentOutOfRangeException>(() => RegexDiagnostic.MessageIdOf((RegexDiagnosticCode)4));
     }
 
     /// <summary>
     /// Where the shared frontend's early-error catalogue has a row for a condition, the code's identifier is the
-    /// catalogue's: its rows EE0184 to EE0213 with their <c>message_id</c> column, transcribed from Broiler.JS's
+    /// catalogue's: its rows EE0184 to EE0213 and EX0026 with their <c>message_id</c> column, transcribed from Broiler.JS's
     /// <c>Broiler.ECMAScript/docs/frontend/early-errors.tsv</c> at <c>238069ab</c> (the provider's answer names "the failing
-    /// condition's message identifier", JSD-0083's decision D7). EE0183 has no code: no string reaches it.
+    /// condition's message identifier", JSD-0083's decision D7). EE0183 has no code: no string reaches it. EX0026 is the
+    /// catalogue's limit on a pattern's nesting of groups and classes, which the caller's nesting limit is (decision D7 of
+    /// JSD-0081 makes Broiler.VM's bound of 512 the caller's limit).
     /// </summary>
     [Theory]
     [InlineData("EE0184", "regexp.group-name.duplicate", RegexDiagnosticCode.DuplicateGroupName)]
@@ -255,9 +259,10 @@ public class ValidateEntryTests
     [InlineData("EE0211", "regexp.class.range-out-of-order", RegexDiagnosticCode.ClassRangeOutOfOrder)]
     [InlineData("EE0212", "regexp.class.range-endpoint-is-class", RegexDiagnosticCode.ClassRangeEndpointIsClass)]
     [InlineData("EE0213", "regexp.class.range-out-of-order", RegexDiagnosticCode.ClassRangeOutOfOrder)]
+    [InlineData("EX0026", "limit.regexp.too-deep", RegexDiagnosticCode.NestingLimit)]
     public void A_condition_the_catalogue_names_has_the_catalogue_s_identifier(string row, string catalogueId, RegexDiagnosticCode code)
     {
-        Assert.StartsWith("EE", row, StringComparison.Ordinal);
+        Assert.Matches("^E[EX][0-9]{4}$", row);
         Assert.Equal(catalogueId, RegexDiagnostic.MessageIdOf(code));
     }
 
@@ -298,7 +303,7 @@ public class ValidateEntryTests
         Assert.Equal(RegexStatus.LimitExceeded, BroilerRegex.Validate(past, RegexFlags.None, UnicodeTables.Instance, 512, out var diagnostic, out var limit));
         Assert.Equal(RegexLimit.Nesting, limit);
         Assert.Equal(RegexDiagnosticCode.NestingLimit, diagnostic.Code);
-        Assert.Equal("regexp.pattern.nesting-limit", diagnostic.MessageId);
+        Assert.Equal("limit.regexp.too-deep", diagnostic.MessageId);
         Assert.Equal(511, diagnostic.Position);
         Assert.Equal("512", diagnostic.Argument);
 

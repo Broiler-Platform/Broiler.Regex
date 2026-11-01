@@ -34,12 +34,15 @@ namespace Broiler.Regex;
 /// one message identifier (<see cref="RegexDiagnostic.MessageIdOf"/>), so code and identifier name the same thing.
 /// </para>
 /// <para>
-/// <b>The message identifiers</b> are dotted, lower case, in the <c>regexp</c> namespace of the shared frontend's
-/// early-error catalogue (Broiler.JS's <c>Broiler.ECMAScript/docs/frontend/early-errors.md</c>, section 6). Where the
-/// catalogue has a row for the condition, rows EE0184 to EE0213, the identifier is the catalogue's, and the member's
-/// documentation names the rows; the grammar's own refusals, which the catalogue does not list as early errors, have
-/// identifiers of this library's. An engine renders its own text from the identifier and the argument (decision
-/// SJL-D-11); <see cref="RegexDiagnostic.Message"/> is a default English rendering and no contract.
+/// <b>The message identifiers</b> are dotted and lower case, of the form of the shared frontend's early-error catalogue
+/// (Broiler.JS's <c>Broiler.ECMAScript/docs/frontend/early-errors.md</c>, section 6), whose rows are its early errors
+/// (EE), Annex B's (EG) and its limits and grammar (EX). Where the catalogue has a row for the condition, the identifier
+/// is the catalogue's and the member's documentation names the row: EE0184 to EE0213, and EX0026, the nesting limit,
+/// <c>limit.regexp.too-deep</c>. The library coins an identifier, in the catalogue's <c>regexp</c> namespace, only for a
+/// condition the catalogue has no row for: the grammar's own refusals and the flags', which the catalogue folds into
+/// EE0019, <c>regexp.literal.invalid</c>. An engine
+/// renders its own text from the identifier and the argument (decision SJL-D-11); <see cref="RegexDiagnostic.Message"/>
+/// is a default English rendering and no contract.
 /// </para>
 /// <para>
 /// <b>Positions</b> are code-unit offsets into the pattern, or, for the three codes of the flags, into the flags text.
@@ -331,7 +334,8 @@ public enum RegexDiagnosticCode
     NegatedPropertyOfStrings = 86,
 
     /// <summary>
-    /// <c>regexp.pattern.nesting-limit</c>: not a syntax error but the caller's nesting limit (requirement R4, decision D7), a
+    /// <c>limit.regexp.too-deep</c> (catalogue row EX0026, the limit on a pattern's nesting of groups and classes): not a
+    /// syntax error but the caller's nesting limit (requirement R4, decision D7), a
     /// <see cref="RegexStatus.LimitExceeded"/> naming <see cref="RegexLimit.Nesting"/>, given a diagnostic so that an engine can
     /// report it as one. Argument: the limit, in decimal. Position: the group or class that opens the level past it.
     /// </summary>
@@ -398,7 +402,7 @@ public readonly struct RegexDiagnostic
 
     /// <summary>The message identifier of <paramref name="code"/>, the table <see cref="RegexDiagnosticCode"/> documents; the empty string for <see cref="RegexDiagnosticCode.None"/>.</summary>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="code"/> is no member of <see cref="RegexDiagnosticCode"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=67322A
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=0FCD51
     // Broiler-Falsified-If: a code's identifier differs from the one its documentation names, or two codes share one
     // Broiler-Human:        PENDING
     public static string MessageIdOf(RegexDiagnosticCode code) => code switch
@@ -452,7 +456,7 @@ public readonly struct RegexDiagnostic
         RegexDiagnosticCode.UnknownLonePropertyName => "regexp.property.unknown-lone-name",
         RegexDiagnosticCode.PropertyOfStringsOutsideUnicodeSets => "regexp.property.of-strings-outside-v-mode",
         RegexDiagnosticCode.NegatedPropertyOfStrings => "regexp.property.negated-strings",
-        RegexDiagnosticCode.NestingLimit => "regexp.pattern.nesting-limit",
+        RegexDiagnosticCode.NestingLimit => "limit.regexp.too-deep",
         _ => throw new System.ArgumentOutOfRangeException(nameof(code), "No member of RegexDiagnosticCode has this number."),
     };
 
