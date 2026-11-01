@@ -40,9 +40,11 @@ the smallest stack the corpus's header declares", with "each child's exit and st
   than 0, writes anything but one line `id status`, or runs past 120 seconds (it is then stopped) has **ended
   abnormally**. Otherwise its status, with the corpus's `x^k` written out, either **gives the declared status** or
   **differs**.
-- **Rows that wait.** A row whose operation is `validate` waits for task 2.8, the validate entry, and is not run,
-  while `EngineRun.Answer` answers that operation `unsupported`. It is named on the report's `waiting` line and
-  counted. When task 2.8 gives the runner the operation, those rows run with no change to the mode.
+- **Rows that wait.** None: since the integration of tasks 2.8 and 2.14, `EngineRun.Answer` runs a row whose
+  operation is `validate` through the validate entry, and the seven such rows run as every other row does. The mode
+  still names a `validate` row on the report's `waiting` line, and counts it, if the runner answers that operation
+  `unsupported`; `eng/adversarial-controls.py` refuses such a report, and `AdversarialCorpusTests` lists no row that
+  waits.
 - **The report** is deterministic: a header with the corpus's SHA-256, then one line per row with the child's exit
   code, its status line, the units it wrote, and the verdict; then the counts, the rows waiting and the rows
   reported (those that differ or end abnormally). It holds no time, path or machine and no text of a child's
@@ -54,7 +56,9 @@ the smallest stack the corpus's header declares", with "each child's exit and st
 CI's `native-aot-probe` job runs the mode under Native AOT and under the JIT on ubuntu-latest (linux-x64) and
 windows-latest (win-x64) and compares the two reports with `cmp`; a row that differs or a child that ends abnormally
 fails the step. On 2026-10-27 at linux-x64 locally, the mode took about 2 seconds under Native AOT and 6 under the
-JIT, and the two reports were the same file.
+JIT, and the two reports were the same file. On 2026-11-01, at the integration of tasks 2.8 and 2.14, with the seven
+`validate` rows run, about 2 seconds and 7, and the two reports were again the same file: all 65 rows give their
+declared statuses.
 
 ## Part C's controls
 
@@ -63,7 +67,7 @@ The rule names two controls, each "a scratch build", each "reverted and the reve
 | Build | The line changed | What the report must show |
 |---|---|---|
 | `dotnet build probes/Regex.Probe -c Release -p:RegexAdversarialControl=steps` | `Engine/RegexProgram.cs`, in `RegexProgram.Match`: after the machine runs, a `LimitExceeded` naming steps is answered `NoMatch` | (1) every K, A, L, W and G row reported, and no other |
-| `dotnet build probes/Regex.Probe -c Release -p:RegexAdversarialControl=nesting` | `Parsing/RegexNesting.cs`, in `RegexNesting.Descend`: the check of the caller's limit never refuses | (2) every N row past the limit reported, ending abnormally or differing, and no other |
+| `dotnet build probes/Regex.Probe -c Release -p:RegexAdversarialControl=nesting` | `Parsing/RegexNesting.cs`, in `RegexNesting.Descend`: the check of the caller's limit never refuses | (2) every N row past the limit, all 15, reported, ending abnormally or differing, and no other |
 
 [`AdversarialControls.targets`](AdversarialControls.targets) makes the build: with the switch set the probe does not
 reference the library project, but compiles the library's sources into itself, with the declared file replaced by a
@@ -77,12 +81,14 @@ the switch.
 [`eng/adversarial-controls.py`](../../eng/adversarial-controls.py) holds a report to its control, reading the corpus
 itself: the report's SHA-256 is the corpus's, every row is there once in id order, the rows reported are exactly the
 control's (`--control steps` or `nesting`) or none (`--control none`, the revert), every other row gives its declared
-status or, for a `validate` row, waits, and the probe's exit code agrees. Its `--holds` and `--lacks` search files
+status, no row waits, and the probe's exit code agrees. Its `--holds` and `--lacks` search files
 for a text in UTF-16 and UTF-8. CI's `adversarial-controls` job builds each control, runs it and checks its report,
 shows the control's text in the control's probe assembly, shows that no control built `Broiler.Regex/bin`, then
 builds the probe as usual, checks that report as the revert, and shows that the library's DLL lacks both the
 controls' text and the switch's name. 30 to 45 seconds of builds and runs locally on linux-x64 (35 and 36 on two
-fresh copies of the tree at `57002e0`, every build without build servers).
+fresh copies of the tree at `57002e0`, every build without build servers); 46 and 50 seconds on two fresh copies at
+the integration of tasks 2.8 and 2.14, on a busier machine (load average about 8), with the seven `validate` rows
+run.
 
 What the controls reported on 2026-10-27, the same under the JIT and under Native AOT on linux-x64:
 
@@ -91,7 +97,17 @@ What the controls reported on 2026-10-27, the same under the JIT and under Nativ
 - Control (2): N02, N08 and N14, one level past the limit, compiled (`ok`) and differed; N04, N05, N10, N11, N16 and
   N17, 20,000 and 1,000,000 levels deep, overflowed the 1 MiB stack in the parser and ended abnormally (exit 134
   under the JIT, 139 under Native AOT); N01, N07 and N13, at the limit, gave their declared statuses. The six N rows
-  past the limit whose operation is `validate` wait for task 2.8 and are not reached.
+  past the limit whose operation is `validate` waited for task 2.8 and were not reached.
+
+What they reported on 2026-11-01, at the integration of tasks 2.8 and 2.14, the same under the JIT and under Native
+AOT on linux-x64 but for the exit code of a crash, with no row waiting:
+
+- Control (1): the same 17 rows reported, differing; the other 48 rows gave their declared statuses, the seven
+  `validate` rows among them.
+- Control (2): all 15 N rows past the limit reported. N02, N08 and N14 (`compile`) and N03, N09 and N15
+  (`validate`), one level past the limit, answered `ok` and differed; N04, N05, N10, N11, N16 and N17 (`compile`)
+  and N06, N12 and N18 (`validate`), 20,000 and 1,000,000 levels deep, overflowed the stack in the parser and ended
+  abnormally; N01, N07 and N13 gave their declared statuses, and so did the 47 rows of the other classes.
 
 ## Locally
 

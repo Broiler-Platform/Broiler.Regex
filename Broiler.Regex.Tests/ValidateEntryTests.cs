@@ -271,11 +271,11 @@ public class ValidateEntryTests
     /// the pattern grammar refused under <c>u</c> or <c>v</c>. The validator tells them apart (JSD-0083's decision D7, "the
     /// failing condition's message identifier where the validator can tell it"), so the codes split EG0002: wholly
     /// <see cref="RegexDiagnosticCode.LoneSyntaxCharacter"/>, <see cref="RegexDiagnosticCode.InvalidIdentityEscape"/> (with
-    /// a legacy octal escape and <c>\8</c> in a class) and <see cref="RegexDiagnosticCode.InvalidControlEscape"/>, and in
-    /// part <see cref="RegexDiagnosticCode.QuantifiedAssertion"/> (a quantified look-ahead),
-    /// <see cref="RegexDiagnosticCode.InvalidHexEscape"/> (<c>\x</c> or <c>\u</c> without its digits),
-    /// <see cref="RegexDiagnosticCode.NamedReferenceWithoutName"/> (<c>\k</c> without <c>&lt;</c>) and
-    /// <see cref="RegexDiagnosticCode.PropertyEscapeWithoutBrace"/> (<c>\p</c> without <c>{</c>). The row's other examples,
+    /// a legacy octal escape and <c>\8</c> in a class), <see cref="RegexDiagnosticCode.InvalidControlEscape"/> and
+    /// <see cref="RegexDiagnosticCode.PropertyEscapeWithoutBrace"/> (<c>\p</c> or <c>\P</c> without <c>{</c>), and in part
+    /// <see cref="RegexDiagnosticCode.QuantifiedAssertion"/> (a quantified look-ahead),
+    /// <see cref="RegexDiagnosticCode.InvalidHexEscape"/> (<c>\x</c> or <c>\u</c> without its digits) and
+    /// <see cref="RegexDiagnosticCode.NamedReferenceWithoutName"/> (<c>\k</c> without <c>&lt;</c>). The row's other examples,
     /// <c>\8</c> without an eighth group and a class range ending in a class escape, are rows EE0192, EE0193 and EE0195 and
     /// take theirs. The split is a difference the catalogue is to adopt (the record of task 2.8 in <c>docs/roadmap.md</c>):
     /// each pattern here is admitted by Annex B without <c>u</c> or <c>v</c> and refused with its code under both.

@@ -1330,10 +1330,10 @@ shared catalogue** (Broiler.JS's `early-errors.tsv`) owes the adoption of EG0002
   pattern grammar refused under `u` or `v`; Broiler.VM's correspondence (`58b0c84`, row B25) hands it to the provider with
   EE0019 and EX0026. The validator tells the extensions apart, and D7 asks for the failing condition's identifier where
   the validator can tell it, so the codes split EG0002 and keep their own identifiers: wholly `LoneSyntaxCharacter` (17,
-  a lone `]`, `{` or `}`), `InvalidIdentityEscape` (21, a legacy octal escape and `\8` in a class among them) and
-  `InvalidControlEscape` (22); in part `QuantifiedAssertion` (14, a quantified look-ahead), `InvalidHexEscape` (23, `\x`
-  or `\u` without its digits), `NamedReferenceWithoutName` (32, `\k` without `<`) and `PropertyEscapeWithoutBrace` (80,
-  `\p` without `{`). The row's other examples, `\8` without an eighth group and a class range ending in a class escape,
+  a lone `]`, `{` or `}`), `InvalidIdentityEscape` (21, a legacy octal escape and `\8` in a class among them),
+  `InvalidControlEscape` (22) and `PropertyEscapeWithoutBrace` (80, `\p` or `\P` without `{`); in part
+  `QuantifiedAssertion` (14, a quantified look-ahead), `InvalidHexEscape` (23, `\x` or `\u` without its digits) and
+  `NamedReferenceWithoutName` (32, `\k` without `<`). The row's other examples, `\8` without an eighth group and a class range ending in a class escape,
   are EE0192, EE0193 and EE0195's and take their identifiers. **The catalogue is to adopt the split** (rows of its own
   for the seven, or EG0002 noted as split), with the identifiers this library publishes; until it does, an adapter that
   knows only the catalogue's identifiers maps a refusal of one of the seven under `u` or `v` to EG0002 where what it
@@ -1341,6 +1341,13 @@ shared catalogue** (Broiler.JS's `early-errors.tsv`) owes the adoption of EG0002
   not (`^*`, or a `\u` escape short of its digits in a group name).
   `ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002` pins each with a pattern
   Annex B admits without `u` and `v`.
+  *Dated note, 2026-11-01 (the integration of tasks 2.8 and 2.14 of SJL-11.2): the list read "wholly
+  `LoneSyntaxCharacter` (17, …), `InvalidIdentityEscape` (21, …) and `InvalidControlEscape` (22); in part
+  `QuantifiedAssertion` (14, …), `InvalidHexEscape` (23, …), `NamedReferenceWithoutName` (32, `\k` without `<`) and
+  `PropertyEscapeWithoutBrace` (80, `\p` without `{`)". Code 80 is wholly EG0002's: the parser refuses `\p` or `\P`
+  not followed by `{` only under `u` or `v`, and without them the same text is an identity escape wherever it stands,
+  in a class or out of one, so every refusal with code 80 is of an Annex B extension. It is now listed with the codes
+  wholly EG0002's, and the test's comment says the same.*
 - **Broiler.JS's `ParserTests.cs:420`** admits `/[\q{/}--[a]]/v`, which ECMA-262 refuses (under `v` a `/` is a
   ClassSetSyntaxCharacter, which a `\q{…}` may not hold unescaped) and V8 (node 22.22.0) refuses too; this library
   refuses it with `ClassSetUnescapedSyntaxCharacter` at 4, and admits `/[\q{\/}--[a]]/v`. The engine's test owes the
@@ -1460,6 +1467,40 @@ and at this record's commit, under the JIT and Native AOT (SHA-256
 - The corpus's README (section 1) says three header lines are read. The probe reads two, the format and the stack; the
   third, the wall-clock limit, is Broiler.JS's programs'.
 - The brief names the probe's README, which did not exist: it is new with this task.
+
+*Dated note, 2026-11-01 (the integration of tasks 2.8 and 2.14 of SJL-11.2, branch `sjl-11-2-integrate-c`, task 2.14
+merged first and task 2.8 onto it): task 2.8's validate entry runs the seven `validate` rows, so the reading above,
+part C's control (2) and what remains are no longer the head's, and the record is kept as written.*
+
+- *The reading.* The record read "of the 65 rows, **58 give their declared status** under the JIT and under Native
+  AOT, none differs and no child ends abnormally; **7 wait for task 2.8**, the `validate` rows N03, N06, N09, N12,
+  N15, N18 and O19". At the integration, on linux-x64 locally, all **65 rows give their declared status** under the
+  JIT and under Native AOT, none differs, no child ends abnormally and **none waits**; the two reports are the same
+  file (SHA-256 `3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75`), the Native AOT run in about 2
+  seconds and the JIT's in about 7. N03, N06, N09, N12, N15 and N18 answer `limit:nesting` and O19 `syntax`.
+- *Control (2).* The table read "Exactly the 9 N rows past the limit that run" and "the six `validate` rows past the
+  limit wait and are not reached". The control now reports **all 15 N rows past the limit**, under the JIT and under
+  Native AOT: beside the nine the table names, N03, N09 and N15, one level past the limit, answer `ok` through the
+  validate entry and differ, and N06, N12 and N18 overflow the 1 MiB stack in the parser and end abnormally (exit 134
+  under the JIT, 139 under Native AOT); N01, N07 and N13 and the 47 rows of the other classes give their declared
+  statuses. The validate entry checks nesting through `RegexNesting.Descend`, the control's line, so the control
+  reaches its rows with no line of its own. Control (1) reports the same 17 rows, the other 48 giving their declared
+  statuses. Each was reverted and the revert checked, its report the one above; the control builds left
+  `Broiler.Regex.dll` byte for byte and its time unchanged, and the DLL holds neither control's text.
+- *The script.* `eng/adversarial-controls.py` held control (2) to "every N row past the limit (declared
+  limit:nesting) that runs" and admitted "a row whose operation is validate, which may wait for task 2.8"; it took the
+  rows that wait out of those a control must report. It now holds control (2) to all 15 and refuses a report with a
+  row that waits, under any control. Shown on a scratch copy of the tree with the probe's `validate` operation planted
+  out (`EngineRun.Answer` answering it `unsupported`, so the seven rows wait): task 2.14's script passed the nesting
+  control's report (9 rows reported, 7 waiting) and the revert's (58 given, 7 waiting); this one fails both, naming
+  N03, N06, N09, N12, N15 and N18 as not reported and the seven rows as waiting.
+- *CI.* The `adversarial-controls` job's steps took 46 and 50 seconds on two fresh copies of the tree at the
+  integration, without build servers, on a busier machine than the record's (load average about 8).
+- *What remains.* The record's first item, "**Task 2.8.** The seven `validate` rows run once `EngineRun.Answer`
+  answers the operation, with no change to the mode", is done, with no change to the mode, and
+  `AdversarialCorpusTests` lists no row that waits. Its second read "MET needs every row's declared status in both
+  modes on both RIDs, so it cannot be judged before task 2.8"; part C is now judged at the candidate reading alone,
+  from CI's runs at the commit `0.2.0-preview.1` is packed from, win-x64's among them. The margin is unchanged.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

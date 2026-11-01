@@ -18,10 +18,10 @@ revert checked". This script reads the corpus itself, independently of the probe
 - its header naming the corpus's SHA-256, and one line for every row of the corpus, in ordinal order of
   the ids, each ending in a verdict;
 - the rows reported (differs or ends abnormally) being exactly the control's rows: steps, every row of
-  the classes K, A, L, W and G; nesting, every N row past the limit (declared limit:nesting) that runs;
+  the classes K, A, L, W and G; nesting, every N row past the limit (declared limit:nesting), all 15;
   none, the revert, no row;
-- every other row giving its declared status, but a row whose operation is validate, which may wait for
-  task 2.8 (the validate entry) and is then named on the report's waiting line;
+- every other row giving its declared status, and no row waiting: a row the report says waits for task
+  2.8 (the validate entry) is refused, and the waiting line must be "waiting: none";
 - the counts line and the reported line agreeing with the rows, and the probe's exit code being 1 when a
   row is reported and 0 otherwise.
 
@@ -31,6 +31,13 @@ the control's probe assembly, where it must be found, and in the library's DLL a
 not: the switch is a scratch build's alone.
 
 It exits 0 when the report or the files hold and 1 with each failure named otherwise. Standard library only.
+
+Dated note, 2026-11-01 (the integration of tasks 2.8 and 2.14 of SJL-11.2): task 2.8's validate entry runs
+the corpus's validate rows, so none waits. The script held control (2) to "every N row past the limit
+(declared limit:nesting) that runs" and admitted "a row whose operation is validate, which may wait for
+task 2.8 (the validate entry) and is then named on the report's waiting line"; it took the waiting rows out
+of the rows a control must report, so control (2) required 9 of the 15 N rows past the limit. It now
+requires all 15 and refuses a row that waits, whatever the control.
 """
 
 import argparse
@@ -142,18 +149,15 @@ def main():
 
     reported = {row_id for row_id, verdict in verdicts.items() if verdict in ("differs", "abnormal")}
     waiting = {row_id for row_id, verdict in verdicts.items() if verdict == "waiting"}
-    wanted = expected_reported(args.control, rows) - waiting
+    wanted = expected_reported(args.control, rows)
     for row_id in sorted(wanted - reported):
         failures.append(row_id + " is not reported, which control '" + args.control + "' requires")
     for row_id in sorted(reported - wanted):
         failures.append(row_id + " is reported (" + verdicts[row_id] + "), which control '" + args.control + "' does not explain")
     for row_id in sorted(waiting):
-        if by_id[row_id]["op"] != "validate":
-            failures.append(row_id + " waits, but its operation is " + by_id[row_id]["op"] + ", not validate")
-    unreached = sorted(expected_reported(args.control, rows) & waiting)
-    if unreached:
-        print("adversarial-controls: " + " ".join(unreached) + " wait for task 2.8 and are not run, so control '"
-              + args.control + "' cannot reach them yet")
+        failures.append(row_id + " waits for task 2.8 and is not run, where the validate entry runs every row")
+    if "waiting: none" not in lines:
+        failures.append("the report's waiting line is not 'waiting: none'")
 
     counts = {name: sum(1 for verdict in verdicts.values() if verdict == name) for name in VERDICTS.values()}
     summary = ("rows " + str(len(verdicts)) + ": " + str(counts["given"]) + " give their declared status, "
@@ -173,7 +177,7 @@ def main():
         return 1
     print("adversarial-controls: control '" + args.control + "' holds: " + str(len(reported)) + " rows reported ("
           + (" ".join(sorted(reported)) or "none") + "), " + str(counts["given"]) + " give their declared status, "
-          + str(len(waiting)) + " wait for task 2.8")
+          + "none waits")
     return 0
 
 
