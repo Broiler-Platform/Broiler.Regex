@@ -19,12 +19,12 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 | Files scanned | 26 |
 | Files not covered | 0 |
 | Files carrying an annotation | 26 |
-| Code units | 715 |
-| Relevant | 383 |
-| Exempt by predicate | 332 |
-| Annotated | 383 of 383 (100%) |
-| Human reviewed | 0 of 383 (0%) |
-| Unverified | 383 |
+| Code units | 717 |
+| Relevant | 384 |
+| Exempt by predicate | 333 |
+| Annotated | 384 of 384 (100%) |
+| Human reviewed | 0 of 384 (0%) |
+| Unverified | 384 |
 
 ## Review states
 
@@ -32,17 +32,17 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | NEW | 0 |
 | AI_ASSESSED | 0 |
-| HUMAN_PENDING | 383 |
+| HUMAN_PENDING | 384 |
 | HUMAN_APPROVED_PENDING_FINGERPRINT | 0 |
 | VERIFIED | 0 |
 | STALE | 0 |
-| EXEMPT | 332 |
+| EXEMPT | 333 |
 
 ## IP risk
 
 | Value | Units |
 |---|---:|
-| None | 295 |
+| None | 296 |
 | Low | 105 |
 | Medium | 0 |
 | High | 0 |
@@ -55,7 +55,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | None | 13 |
 | Low | 138 |
-| Medium | 106 |
+| Medium | 107 |
 | High | 143 |
 | Critical | 0 |
 | *not annotated* | 0 |
@@ -66,7 +66,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 |---|---:|
 | Maximum | 8 / 10 |
 | Average over annotated units | 1.5 / 10 |
-| Units scored | 383 |
+| Units scored | 384 |
 
 ## High-security review areas
 
@@ -218,7 +218,7 @@ neither reads it nor summarizes it, and nothing in it is counted here.
 
 | Metric | Value |
 |---|---:|
-| Units carrying a criterion | 225 |
+| Units carrying a criterion | 226 |
 | Units required to carry one | 143 |
 | Required and missing | 0 |
 
@@ -245,7 +245,7 @@ that the rule is reviewable in one place rather than in several hundred.
 | CompilerSuppliedRecordOrEnumMember | 0 |
 | DelegatingOverrideOrOperator | 0 |
 | InsideAssemblyMarker | 0 |
-| FieldDeclaringStorage | 134 |
+| FieldDeclaringStorage | 135 |
 | EnumMemberOfADeclaredVocabulary | 138 |
 | DeclaredInSource | 0 |
 
@@ -270,7 +270,7 @@ through a `<Compile Include>` it states, is left out of the record.
 ## Change detection
 
 `assurance.manifest.json` lists **every** code unit in the covered assembly -
-715 of them, exempt and relevant alike - with the fingerprint of its declaration.
+717 of them, exempt and relevant alike - with the fingerprint of its declaration.
 This manifest is a change-detection record, not a review. A unit listed there is watched, not reviewed:
 the entry records what the declaration's tokens hashed to when the generator last ran, and
 nothing else. What the manifest adds is that a unit the exemption predicate treats as

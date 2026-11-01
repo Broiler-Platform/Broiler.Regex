@@ -236,10 +236,10 @@ internal static class Verdicts
             if (status == RegexStatus.LimitExceeded && regex is null && limit == RegexLimit.Compile && diagnostic.Code == RegexDiagnosticCode.None)
                 return new("limit:compile", null, -1, "", meter.Charged);
 
-            // A syntax error is a status since task 2.9 of SJL-11.2, with a diagnostic of a syntax code at a place in the pattern.
-            if (status == RegexStatus.SyntaxError && regex is null && limit == RegexLimit.None
-                && diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit)
-                && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= pattern.Length)
+            // A syntax error is a status since task 2.9 of SJL-11.2, with a diagnostic of a syntax code at a place in the pattern,
+            // or, for flags carrying u with v, ParsePattern's first refusal at no place, before any unit is charged.
+            if (status == RegexStatus.SyntaxError && regex is null && limit == RegexLimit.None && IsSyntaxRefusal(pattern, flags, diagnostic)
+                && (!BothModes(flags) || meter.Charged == 0))
                 return new("syntax", null, diagnostic.Position, diagnostic.Message, meter.Charged) { Diagnostic = diagnostic };
             outcome.Find("contract", site, Invariant($"Compile answered {status} with limit {limit}, diagnostic {diagnostic.Code} at {diagnostic.Position} and {(regex is null ? "no" : "a")} compiled pattern"));
             return new("contract", null, -1, "", meter.Charged);
@@ -254,6 +254,21 @@ internal static class Verdicts
             return new("escaped", null, -1, "", meter.Charged);
         }
     }
+
+    /// <summary>Whether the flags carry <c>u</c> and <c>v</c> both, which ParsePattern (ECMA-262 §22.2.3.4) refuses first.</summary>
+    private static bool BothModes(RegexFlags flags) => (flags & (RegexFlags.Unicode | RegexFlags.UnicodeSets)) == (RegexFlags.Unicode | RegexFlags.UnicodeSets);
+
+    /// <summary>
+    /// A syntax refusal as the documentation states it: under <c>u</c> with <c>v</c>, <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>
+    /// at -1 and nothing else (task 2.9 of SJL-11.2); otherwise a code of the pattern's syntax, its identifier, at a place in
+    /// the pattern.
+    /// </summary>
+    private static bool IsSyntaxRefusal(string pattern, RegexFlags flags, RegexDiagnostic diagnostic) => BothModes(flags)
+        ? diagnostic.Code == RegexDiagnosticCode.UnicodeWithUnicodeSets && diagnostic.Position == -1
+            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code)
+        : diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit or RegexDiagnosticCode.UnknownFlag
+            or RegexDiagnosticCode.DuplicateFlag or RegexDiagnosticCode.UnicodeWithUnicodeSets)
+            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= pattern.Length;
 
     /// <summary>A tight compilation that completes, or meets a syntax error, met no limit first: the full one answers alike.</summary>
     private static void CompareCompilations(Compiled full, Compiled tight, Outcome outcome)
@@ -287,8 +302,7 @@ internal static class Verdicts
         string answer;
         if (status == RegexStatus.Success && limit == RegexLimit.None && diagnostic.Code == RegexDiagnosticCode.None)
             answer = "ok";
-        else if (status == RegexStatus.SyntaxError && limit == RegexLimit.None && diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit)
-            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= c.Pattern.Length)
+        else if (status == RegexStatus.SyntaxError && limit == RegexLimit.None && IsSyntaxRefusal(c.Pattern, c.Flags, diagnostic))
             answer = "syntax";
         else if (status == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit
             && diagnostic.Argument == policy.Nesting.ToString(CultureInfo.InvariantCulture))

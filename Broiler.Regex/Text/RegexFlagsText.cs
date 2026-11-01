@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   8
-// Annotated:        8/8
+// Relevant units:   9
+// Annotated:        9/9
 // Exempt:           0
-// Human-reviewed:   0/8
+// Human-reviewed:   0/9
 // IP risk:          None
 // Security risk:    High
-// Criteria:         2/2
+// Criteria:         3/2
 // Resource impact:  0/10 max
-// Unverified:       8
+// Unverified:       9
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -123,12 +123,11 @@ public static class RegexFlagsText
     /// this is its answer for a receiver whose properties are the flags of one regular expression.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines: a broken precondition.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.4; IP=None; Security=Medium; Resources=0; Fingerprint=E5522E
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.4; IP=None; Security=Medium; Resources=0; Fingerprint=479A2A
     // Broiler-Human:        PENDING
     public static string Format(RegexFlags flags)
     {
-        if ((flags & ~Defined) != 0)
-            throw new ArgumentOutOfRangeException(nameof(flags), "A flags value holds only the bits RegexFlags defines.");
+        CheckDefined(flags);
 
         Span<char> letters = stackalloc char[CanonicalOrder.Length];
         var count = 0;
@@ -140,6 +139,20 @@ public static class RegexFlagsText
 
         return count == 0 ? string.Empty : new string(letters[..count]);
     }
+
+    /// <summary>
+    /// Refuses a flags value holding a bit no member of <see cref="RegexFlags"/> defines, a broken precondition of every
+    /// member that takes a flags value: <see cref="Format"/>, <see cref="BroilerRegex.Compile"/>, the validate entry and the
+    /// constructor over a flags value.
+    /// </summary>
+    /// <param name="flags">The flags value.</param>
+    /// <returns><paramref name="flags"/>, when it holds only defined bits.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
+    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=DB7306
+    // Broiler-Falsified-If: (RegexFlags)256 is returned, or any combination of the eight defined flags throws
+    // Broiler-Human:        PENDING
+    internal static RegexFlags CheckDefined(RegexFlags flags)
+        => (flags & ~Defined) == 0 ? flags : throw new ArgumentOutOfRangeException(nameof(flags), "A flags value holds only the bits RegexFlags defines.");
 
     /// <summary>The flag <paramref name="letter"/> names, or <see cref="RegexFlags.None"/> for a code unit that names none.</summary>
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.4; IP=None; Security=Medium; Resources=0; Fingerprint=3C0A77

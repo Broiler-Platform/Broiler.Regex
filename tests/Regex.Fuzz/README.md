@@ -70,6 +70,12 @@ answering, is a finding at the iteration it was in), and each known finding's re
   with `RegexSyntaxException` internal, the constructor's refusal is an `ArgumentException`, which the record names
   `syntax`, and the digest is `f8477deef307ca48c0bea72dcdc9a44a4197ee09665f9a52599ae4310227dad1`, no finding; `Compile`'s
   syntax status, the flags reader's diagnostic, `Groups` as a span, `GroupNamed` and `NextMatch` left it unchanged.
+  The review of task 2.9 moved it once more: `Compile`, the validate entry and the constructor over a `RegexFlags`
+  value refuse `Unicode | UnicodeSets` as ParsePattern does, with `UnicodeWithUnicodeSets` at -1 before any unit is
+  charged, where they read the pair as `v`; the generator draws both modes in 3 cases of 100, and each validate policy
+  answers `syntax` 680 times more. The digest is `c2ed95c98feb225ec1df3eccf378d9f4804aab02f410d48299be02891e4c5d5b`,
+  the same with four worker processes and with three under `tr-TR`, no finding; the constructor's nesting message, now
+  the validate entry's, and the oracle's comparison of it left it unchanged.
   The digest is a record,
   not a pin: the records hold the units the meter was charged and the library's
   answers, so it moves with any change of the library's behaviour or units, and CI prints it without comparing it.
@@ -94,7 +100,8 @@ subtraction, ranges and `\q{…}` (empty strings included), capturing, non-captu
 escaped, astral and as escaped surrogate pairs, repeated), the four look-arounds (look-aheads quantified outside `u`),
 modifier groups, numbered and named back-references (forward, backward and missing), `^ $ \b \B`, and every quantifier
 form, greedy and lazy, with bounds up to 2^20, `int.MaxValue` and past it. Every flag combination: the mode (none, `u`,
-`v`, and both, which `Compile` reads as `v`), each of `d g i m s y` independently.
+`v`, and both, which `Compile` refuses as ParsePattern does since task 2.9's review, where it read them as `v`), each of
+`d g i m s y` independently.
 
 **Near misses.** 18 iterations in 100 take a grammar pattern and make one edit that most often reaches a refusal:
 quantifier bounds out of order, a group or class left open or closed twice, duplicate and undeclared group names,

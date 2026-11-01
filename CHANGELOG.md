@@ -449,6 +449,15 @@ this version is provisional.
 
 ### Observable changes
 
+- **A flags value with `u` and `v` is refused, and an undefined bit is a broken precondition (task 2.9).**
+  `BroilerRegex.Compile`, the validate entry over a `RegexFlags` value and the constructor over one compiled a pattern
+  under `RegexFlags.Unicode | RegexFlags.UnicodeSets`, which ECMA-262's ParsePattern (§22.2.3.4) refuses as its first
+  step and which the members over a flags text already refused as `uv`. They now answer `SyntaxError` with
+  `RegexDiagnosticCode.UnicodeWithUnicodeSets` at position -1 (a flags value has no text), before the pattern is read
+  or a unit charged, and the constructor throws an `ArgumentException` with that diagnostic's message. A value holding
+  a bit no member of `RegexFlags` defines, such as `(RegexFlags)256`, was accepted silently; it is now an
+  `ArgumentOutOfRangeException` naming `flags`, as `RegexFlagsText.Format` already threw. Neither engine's adapter
+  passes either: each reads a flags text first.
 - **A class range out of order is refused at its position in every mode (task 2.8).** Outside `v`, `/[z-a]/` and
   `/x[\u0062-\u0061]/u` were a `RegexSyntaxException` whose `Position` was -1, the check being
   `CharSet.CheckRange`'s, which knows no position; it is now the range's first character, 1 and 2, as it already was

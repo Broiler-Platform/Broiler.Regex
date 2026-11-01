@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   72
 // Annotated:        72/72
-// Exempt:           23
+// Exempt:           24
 // Human-reviewed:   0/72
 // IP risk:          Low
 // Security risk:    High
@@ -44,6 +44,9 @@ internal sealed class RegexParser
     private readonly string _src;
     private readonly bool _unicode;
     private readonly bool _unicodeSets;
+
+    /// <summary>Whether the flags carry <c>u</c> and <c>v</c> both, which ParsePattern refuses before it reads the pattern.</summary>
+    private readonly bool _unicodeWithUnicodeSets;
     private readonly RegexUnicode _data;
     private int _pos;
     private int _captureCount;
@@ -140,7 +143,7 @@ internal sealed class RegexParser
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=0360F0
+    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=5DCA3B
     // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
     // Broiler-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool expand = true)
@@ -149,6 +152,7 @@ internal sealed class RegexParser
         _src = pattern ?? "";
         _unicode = flags.IsUnicodeMode();
         _unicodeSets = (flags & RegexFlags.UnicodeSets) != 0;
+        _unicodeWithUnicodeSets = _unicodeSets && (flags & RegexFlags.Unicode) != 0;
         _data = data;
         _account = data.Account;
         _nesting = nesting;
@@ -221,11 +225,17 @@ internal sealed class RegexParser
     internal static void Validate(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
         => new RegexParser(pattern, flags, data, nesting, expand: false).ParsePattern();
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=430B7C
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=DA462E
     // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
     // Broiler-Human:        PENDING
     private RegexNode ParsePattern()
     {
+        // §22.2.3.4 ParsePattern, step 1: "If v is true and u is true", a SyntaxError, before the pattern is read. A flags
+        // text refuses the pair before it reaches the parser (RegexFlagsText.Parse); a flags value is refused here, with
+        // the same code and message at no place in a flags text.
+        if (_unicodeWithUnicodeSets)
+            throw new RegexSyntaxException(RegexDiagnostic.OfFlags(RegexDiagnosticCode.UnicodeWithUnicodeSets, 'v', -1));
+
         // The pattern's units, one per code unit, before the pre-scan reads each of them once and the parse reads them
         // again (requirement R2: the parse's own work, a constant amount per code unit).
         _account.Charge(CompileSite.Pattern, _src.Length);

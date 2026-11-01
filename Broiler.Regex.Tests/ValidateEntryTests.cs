@@ -440,6 +440,54 @@ public class ValidateEntryTests
         Assert.Equal(nesting.Message, deepOfFlags.Message);
     }
 
+    /// <summary>
+    /// ParsePattern (ECMA-262 §22.2.3.4) refuses <c>u</c> with <c>v</c> as its first step, so the members over a flags
+    /// value refuse <c>Unicode | UnicodeSets</c> as the members over a flags text refuse <c>uv</c>: the syntax status with
+    /// <see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>, at no place in a flags text (-1), before the pattern is
+    /// read; the constructor with that diagnostic's message. A bit no member of <see cref="RegexFlags"/> defines is a
+    /// broken precondition, as <see cref="Text.RegexFlagsText.Format"/> reads it.
+    /// </summary>
+    [Fact]
+    public void A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition()
+    {
+        const RegexFlags both = RegexFlags.Unicode | RegexFlags.UnicodeSets;
+        foreach (var pattern in new[] { "a", "a)", "[a--b]" })
+        {
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Compile(pattern, both | RegexFlags.Global, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit,
+                null, null, out var regex, out var limit, out var diagnostic));
+            Assert.Null(regex);
+            Assert.Equal(RegexLimit.None, limit);
+            Assert.Equal(RegexDiagnosticCode.UnicodeWithUnicodeSets, diagnostic.Code);
+            Assert.Equal("regexp.flags.unicode-with-unicode-sets", diagnostic.MessageId);
+            Assert.Equal(-1, diagnostic.Position);
+            Assert.Null(diagnostic.Argument);
+
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, both, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var validated, out var validatedLimit));
+            Assert.Equal(RegexLimit.None, validatedLimit);
+            Assert.Equal(diagnostic, validated);
+
+            Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Validate(pattern, "uv", UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out var ofText, out _));
+            Assert.Equal(diagnostic.Code, ofText.Code);
+            Assert.Equal(diagnostic.Message, ofText.Message);
+
+            var refusal = Assert.IsAssignableFrom<ArgumentException>(Record.Exception(() => new BroilerRegex(pattern, both, UnicodeTables.Instance)));
+            Assert.Equal(diagnostic.Message, refusal.Message);
+        }
+
+        // No unit of the pattern is charged: the refusal comes before ParsePattern reads it.
+        ulong charged = 0;
+        Assert.Equal(RegexStatus.SyntaxError, BroilerRegex.Compile("abc", both, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, null,
+            units => charged += units, out _, out _, out _));
+        Assert.Equal(0UL, charged);
+
+        var undefined = (RegexFlags)(1 << 8);
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => BroilerRegex.Compile("a", undefined, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit,
+            null, null, out _, out _, out _));
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => BroilerRegex.Validate("a", undefined | RegexFlags.Global, UnicodeTables.Instance,
+            BroilerRegex.MaximumNestingLimit, out _, out _));
+        Assert.Throws<ArgumentOutOfRangeException>("flags", () => new BroilerRegex("a", undefined, UnicodeTables.Instance));
+    }
+
     [Fact]
     public void The_default_diagnostic_is_no_refusal()
     {

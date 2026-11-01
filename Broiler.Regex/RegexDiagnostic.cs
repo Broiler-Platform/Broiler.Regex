@@ -78,7 +78,8 @@ public enum RegexDiagnosticCode
 
     /// <summary>
     /// <c>regexp.flags.unicode-with-unicode-sets</c>: <c>u</c> with <c>v</c> (§22.2.3.4 ParsePattern). Position: the later of the
-    /// two in the flags text.
+    /// two in the flags text, or -1 for a <see cref="RegexFlags"/> value that sets both, which has no text (task 2.9 of
+    /// SJL-11.2).
     /// </summary>
     UnicodeWithUnicodeSets = 3,
 

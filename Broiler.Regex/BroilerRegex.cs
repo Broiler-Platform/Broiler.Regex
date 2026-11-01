@@ -207,16 +207,18 @@ public sealed class BroilerRegex
     /// </para>
     /// </remarks>
     /// <exception cref="System.ArgumentException">
-    /// The pattern is not valid under the flags (ECMA-262 §22.2.1), or nests deeper than <see cref="MaximumNestingLimit"/>:
+    /// The pattern is not valid under the flags (ECMA-262 §22.2.1), the flags set both <see cref="RegexFlags.Unicode"/> and
+    /// <see cref="RegexFlags.UnicodeSets"/> (§22.2.3.4), or the pattern nests deeper than <see cref="MaximumNestingLimit"/>:
     /// the precondition broken, with the refusal's message; or the tables are of another Unicode version or lack a table the
     /// algorithms read.
     /// </exception>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=DFF8D4
+    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=1F38E3
     // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing an ArgumentException
     // Broiler-Human:        PENDING
     public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
-        : this(pattern ?? "", flags, new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true)
+        : this(pattern ?? "", Text.RegexFlagsText.CheckDefined(flags), new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true)
     {
     }
 
@@ -290,7 +292,9 @@ public sealed class BroilerRegex
     /// </param>
     /// <returns>
     /// <see cref="RegexStatus.Success"/>; <see cref="RegexStatus.SyntaxError"/> for a pattern the grammar or an early error
-    /// refuses under <paramref name="flags"/>; or <see cref="RegexStatus.LimitExceeded"/> when the pattern nests deeper than
+    /// refuses under <paramref name="flags"/>, or for <paramref name="flags"/> setting both <see cref="RegexFlags.Unicode"/> and
+    /// <see cref="RegexFlags.UnicodeSets"/>, which ParsePattern refuses first (<see cref="RegexDiagnosticCode.UnicodeWithUnicodeSets"/>
+    /// at -1, before the pattern is read or a unit charged); or <see cref="RegexStatus.LimitExceeded"/> when the pattern nests deeper than
     /// <paramref name="nestingLimit"/> or its compilation would pass <paramref name="compileBudget"/>. Each is checked in
     /// the order the parser reads the pattern and then the compiler lowers it, before the work it guards: the nesting
     /// limit before each descent, the budget before each charge, so a syntax error or a limit the parser meets first is
@@ -325,9 +329,9 @@ public sealed class BroilerRegex
     /// </para>
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="compileBudget"/> is zero.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, <paramref name="compileBudget"/> is zero, or <paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=B527E7
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=3C068C
     // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
     // Broiler-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, ulong? compileBudget,
@@ -335,6 +339,7 @@ public sealed class BroilerRegex
     {
         diagnostic = default;
         ArgumentNullException.ThrowIfNull(pattern);
+        Text.RegexFlagsText.CheckDefined(flags);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);
         if (compileBudget == 0)
@@ -417,15 +422,16 @@ public sealed class BroilerRegex
     /// </para>
     /// </remarks>
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D9 and D18; IP=None; Security=High; Resources=3; Fingerprint=384C55
+    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D9 and D18; IP=None; Security=High; Resources=3; Fingerprint=C0FA71
     // Broiler-Falsified-If: under u, \k<b>(?<a>x) answers Success, a pattern Compile refuses with a syntax error is answered otherwise or at another position, one Compile compiles is refused, 512 nested groups under a limit of 512 answer other than LimitExceeded naming Nesting, or validating charges a unit of expansion
     // Broiler-Human:        PENDING
     public static RegexStatus Validate(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
         out RegexDiagnostic diagnostic, out RegexLimit limit)
     {
         ArgumentNullException.ThrowIfNull(pattern);
+        Text.RegexFlagsText.CheckDefined(flags);
         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);
         return Validate(pattern, flags, new RegexUnicode(tables), new RegexNesting(nestingLimit), out diagnostic, out limit);
