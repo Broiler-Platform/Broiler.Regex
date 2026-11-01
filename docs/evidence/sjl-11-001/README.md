@@ -67,6 +67,13 @@ packed from", after decision D12 of Broiler.VM's JSD-0081. The owner wrote on 20
 0.1.0-x scheme!": the SJL-11 surface ships as `0.1.0-preview.6`, and the candidate reading is taken at the commit
 `0.1.0-preview.6` is packed from. The filed rule carries the same note ([`decision-rule.md`](decision-rule.md)).
 
+*Dated note, 2026-11-01 (the review of task 2.9), mirroring the rule's extended note.* Two more lines of the filed rule
+are read otherwise, not rewritten: check E-4's "package validation against 0.1.0-preview.4" is read as against
+`0.1.0-preview.5`, by the owner's decision of 2026-11-01 ("The SJL-11 surface ships as `0.1.0-preview.6`, validated
+against `0.1.0-preview.5`", task 2.9's record in `docs/roadmap.md`); and the pins line's `Broiler.Unicode.Algorithms`
+and `Broiler.Unicode.Tables` `0.1.0-preview.5`, with check A-10's "at the version above", are read as `0.1.0-preview.6`
+of both, since the owner's dependency update `77284f1` of 2026-10-30, which both engines' pins follow.
+
 ## The commits named so far
 
 - **The rule commit:** the commit that adds this bundle, `tests/Adversarial/` and `eng/adversarial-programs.py`, on

@@ -8,6 +8,13 @@ nuget.org. [`eng/preview-version-history.json`](eng/preview-version-history.json
 the versions the version resolver has to remember beside nuget.org's, `0.1.0-preview.1` to `0.1.0-preview.5` since
 2026-11-01 ([publishing guide](docs/publishing.md), "Choose the version"; it held `0.1.0-preview.1` alone until then).
 
+*Dated note, 2026-11-01 (the review of task 2.9 of SJL-11.2).* Two statements above are not exact. `0.1.0-preview.1`
+came from the retired feed, not nuget.org, whose index lists `0.1.0-preview.2` to `0.1.0-preview.5` only; the history
+file and the publishing guide record it (publish run 35323188753). And `0.1.0-preview.5` (2026-10-29, from `24344b3`)
+has no entry of its own: its changes, those of tasks 2.1 to 2.7 and 2.11, are recorded inside the `0.1.0-preview.6`
+entry below, each picked out by its task number, and those of tasks 2.8, 2.14 and 2.9 are first in `0.1.0-preview.6`.
+A reader of that entry takes a change as new in `0.1.0-preview.6` only when its task is one of those three.
+
 The package follows semantic versioning on its preview stream ([publishing guide](docs/publishing.md)):
 
 - a public API removal or a binary-breaking change is a major version; for a `0.x` preview, a `0.y` minor version
@@ -26,7 +33,7 @@ in [`docs/suppressions.md`](docs/suppressions.md).
 ## 0.1.0-preview.6 (2026-11-01; prepared, not published)
 
 *The owner published `0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main` (publish run 40902832350),
-which carries this entry's changes of tasks 2.1 to 2.7, 2.6 and 2.11; those of tasks 2.8, 2.14 and 2.9 are first in
+which carries this entry's changes of tasks 2.1 to 2.7 and 2.11; those of tasks 2.8, 2.14 and 2.9 are first in
 `0.1.0-preview.6`. Package validation reads `0.1.0-preview.5` (Changed). Publication is the owner's, after the
 candidate reading (plan WP4: tasks 4.1 and 4.2).*
 

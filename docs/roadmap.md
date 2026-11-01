@@ -1563,6 +1563,13 @@ of 2026-10-18, "Please do all recommended decisions and skip waiting for review"
   string-bearing member's one documented throw. The status forms are `Match(string, int)`, whose `RegexMatch.Limit`
   names the ceiling, and the offset entry, which answers `LimitExceeded` with the `RegexLimit`; no member that answers a
   status throws for an expected failure. No `TryIsMatch` is added: the two status forms already answer it.
+  *Dated correction, 2026-11-01 (the review of task 2.9).* This item read "and Broiler.JS's adapter and the feed check's
+  consumer call `IsMatch`". Broiler.JS does not call `BroilerRegex.IsMatch`: at `66973a29` its only call into a
+  `BroilerRegex` instance is `broiler.Match(input, start)` (`JSRegExp.Broiler.cs`, line 287), and its own `IsMatch`
+  (line 347) is `RunMatch(input, 0).Success`, which goes through that `Match`; its SJL-11.5 adapter will call the offset
+  entry. Only the feed check's consumer (`eng/verify-feed.ps1`, line 73) calls `IsMatch`. The decision stands on D12,
+  which keeps the string-bearing members, and R8, which asks for the offset-only interface beside them and not for their
+  removal.
 - **`Compile` and syntax errors.** `Compile` answers `SyntaxError` with task 2.8's diagnostic. The recommendation kept
   the constructors throwing `RegexSyntaxException`; check C3 refuses the library's own public exception type and row
   2.9's check is an empty list, so that shape is ruled out, and the constructors throw an `ArgumentException` (the
@@ -1625,6 +1632,27 @@ suppressions only. The assurance check: no violation. The feed check's consumer 
 bash) restores the packed package and `Broiler.Unicode.Tables` `0.1.0-preview.6` and passes, unchanged: it calls the
 constructor, `Match` and `IsMatch`, which this task keeps. The resolver's tests: 10 of 10.
 
+*Dated note, 2026-11-01 (the review of task 2.9).* The review's findings and their fixes, each in its own commit after
+this record's: the constructors refused a pattern past `MaximumNestingLimit` with "The pattern nests deeper than the
+library's maximum nesting limit" where `Compile` and the validate entry answer "... than the caller's nesting limit",
+so their documentation's promise of the validate entry's message was false; every nesting refusal now carries one
+message, "The pattern nests deeper than the nesting limit", a test compares them, and the fuzz oracle compares the
+constructor's nesting refusal too (with the old message restored, the declared session reports it at iterations 40,
+6034 and others). `Compile`, the validate entry and the constructor over a `RegexFlags` value compiled
+`Unicode | UnicodeSets` as `v`; they refuse it as ParsePattern does, `SyntaxError` with `UnicodeWithUnicodeSets` at -1
+before a unit is charged, and refuse a bit `RegexFlags` does not define with an `ArgumentOutOfRangeException`, as
+`RegexFlagsText.Format` did (CHANGELOG, Observable changes). `RegexFlagsParser`'s summary names what it now offers. The
+records: the `IsMatch` item's reason (corrected above), the differs list's reading of row 2.9 (below), the filed rule's
+note on E-4 and the pins, the task list of `24344b3`, the CHANGELOG's preamble and the reference of the version note.
+The checks at the review's fixes: the Release build, no warning; 2,582 library tests, 49 architecture and 11 fuzz, all
+passing; the declared fuzz session, no finding, digest `c2ed95c98feb225ec1df3eccf378d9f4804aab02f410d48299be02891e4c5d5b`
+with four worker processes and with three under `tr-TR` (moved by the `u`-with-`v` refusal: each validate policy answers
+`syntax` 680 times more); the probe's default report and its `--adversarial` report unchanged and the same under the
+JIT and Native AOT (`8f40ae86…` and `3f7fc538…`), 65 rows at their declared status; `dotnet pack` gives
+`0.1.0-preview.6`, depending on `Broiler.Unicode.Algorithms` `0.1.0-preview.6`, package validation against
+`0.1.0-preview.5` passing with the same 29 suppressions; the assurance check, no violation; the feed check's consumer,
+unchanged, passes against the packed package.
+
 **Where the plan, JSD-0081 and this repository differ, read at this record.**
 - JSD-0081's D12 and the plan's row 2.9 ship the surface as `0.2.0-preview.1`, validated against `0.1.0-preview.4`; it
   ships as `0.1.0-preview.6`, validated against `0.1.0-preview.5`, by the owner's decision. JSD-0081's D12 and SJL-D-3's
@@ -1637,12 +1665,21 @@ constructor, `Match` and `IsMatch`, which this task keeps. The resolver's tests:
   `0.1.0-preview.6` without SJL-11.5's adapter; no release depends on `0.1.0-preview.6`.
 - Both engines' and this repository's pins of `Broiler.Unicode.Algorithms` are `0.1.0-preview.6` since the owner's
   dependency update of 2026-10-30 (`77284f1`); R11's reading in this section, its README and check A-10 name
-  `0.1.0-preview.5`.
+  `0.1.0-preview.5`. *Added 2026-11-01 (the review of task 2.9):* the filed rule's dated note now reads its pins line,
+  A-10's "version above" and E-4's baseline as `0.1.0-preview.6`, `0.1.0-preview.6` and `0.1.0-preview.5`.
 - Decision D5 says "the parser, the public tree, the `CodePointSet` algebra and the flag parser stay": they stay as the
   library's internal model; the tree is no longer public.
+- *Added 2026-11-01 (the review of task 2.9).* The plan's row 2.9 says the 0.1 surface is "removed where R11 and R8 force
+  it, kept where they allow (the string-bearing `RegexMatch`)", and D12 keeps "the string-bearing RegexMatch (R8
+  allows)". This task also removes or reshapes members neither R11 nor R8 forces: the public tree, `RegexParser`,
+  `UnicodeCharSets`, `BroilerRegex.Matches`, `RegexMatch.NamedGroups` and the type of `RegexMatch.Groups`, each by R10's
+  conventions (convention 1 and check C1 above all) and by row 2.9's own check, "the violation list is empty"; 25 of the
+  29 suppressions cite R10, two R9 and two R8. Row 2.9's "removed where R11 and R8 force it" is read with R10's
+  conventions and that check forcing removals too. D12's string-bearing `RegexMatch` is kept as a type, with `Groups`
+  reshaped to a span and `NamedGroups` and `Matches` replaced by `GroupNamed` and `NextMatch`.
 - The brief of this task names the breaks "against `0.1.0-preview.4`" in one place and the baseline `0.1.0-preview.5` in
   another; the owner's decision, the binding one, reads `0.1.0-preview.5`. It says `0.1.0-preview.5` carries "tasks 2.4c
-  to 2.11"; `24344b3` carries tasks 2.1 to 2.7, 2.6 and 2.11, and not 2.8 or 2.14. It names `eng/Broiler.Packaging.props`
+  to 2.11"; `24344b3` carries tasks 2.1 to 2.7 and 2.11, and not 2.8, 2.14 or 2.9. It names `eng/Broiler.Packaging.props`
   as where the version is set; the vendored file says not to edit it, and the floor is set in `Directory.Build.props`.
 - The recommendation kept the constructors' `RegexSyntaxException`; C3 and the empty list rule it out (above).
 
@@ -1672,7 +1709,11 @@ D13)". The owner wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!"
 the SJL-11 package (the record of SJL-11.1 above, the candidate reading "at the commit `0.2.0-preview.1` is packed
 from", and the records of tasks 2.4c, 2.5, 2.6, 2.8 and 2.14), it is `0.1.0-preview.6`; "`0.2`", where an engine's pin
 is meant, is the SJL-11 surface. Publication stays the owner's, after the candidate reading (D13). The rest of the
-paragraph stands; task 2.9's record above says what the release train's "inside a `0.y` minor version" now reads.
+paragraph stands. What the release train's "inside a `0.y` minor version" now reads is in
+[`conventions.md`](conventions.md): convention 16's dated revision of 2026-11-01 and "Where Broiler.Regex stands" record
+that the SJL-11 surface's breaks ship inside `0.1`, as `0.1.0-preview.6`, by the owner's decision, a recorded departure
+from that reading, which stays the programme's. (Corrected by the review of task 2.9: this sentence sent the reader to
+task 2.9's record, which does not say it.)
 
 *Dated note, 2026-10-26 (task 2.3 of SJL-11.2, R10: conventions 7 and 10): the starting violation list left
 the owner of `RegexMatch.Empty`'s SL2 row unassigned, to be decided at task 2.3. Task 2.3 took it, as its row

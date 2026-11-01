@@ -51,9 +51,10 @@ JSD-0081) is suppressed in `Broiler.Regex/CompatibilitySuppressions.xml`, listed
 
 *Dated note, 2026-11-01 (task 2.9 of SJL-11.2): the baseline moved.* This paragraph read "Package validation compares
 every pack of `Broiler.Regex` with the last published package, `0.1.0-preview.4` (convention 16)". The owner published
-`0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main`, which carries tasks 2.2 to 2.7, 2.6 and 2.11, and
-wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!", so the SJL-11 surface ships as `0.1.0-preview.6`
-(decision D12 named `0.2.0-preview.1`), and package validation reads `0.1.0-preview.5`, the version a consumer can have.
+`0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main`, which carries tasks 2.1 to 2.7 and 2.11 (not
+2.8, 2.14 or 2.9), and wrote on 2026-11-01 "Please keep using version 0.1.0-x scheme!", so the SJL-11 surface ships as
+`0.1.0-preview.6` (decision D12 named `0.2.0-preview.1`), and package validation reads `0.1.0-preview.5`, the version a
+consumer can have.
 Every break the four sections that follow list, those of tasks 2.2, 2.3, 2.4c and 2.6, is a break of
 `0.1.0-preview.4` that `0.1.0-preview.5` shipped: a pack compared with `0.1.0-preview.5` no longer reports it, so its
 suppression has left `CompatibilitySuppressions.xml` (23 suppressions, which package validation generated against
