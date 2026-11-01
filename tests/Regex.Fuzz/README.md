@@ -138,7 +138,8 @@ match that reached a ceiling, which the owner admitted on 2026-11-01. A finding 
 - **process-end** and **hang**: a child that ends without its last line, or writes nothing for the watchdog's time,
   reported at the iteration after its last record, with that case; the child is restarted after it;
 - **disagreement**: two answers to one question that differ. A tight compilation that succeeds, or refuses a syntax
-  error, against the full one; the constructor against the full compilation; the validate entry against the compilation
+  error, against the full one; the constructor against the full compilation (for a refusal, the message of the
+  full compilation's syntax error or, its nesting limit being the maximum, of its nesting limit); the validate entry against the compilation
   under the same nesting limit, wherever that compilation met neither its compile budget nor its meter (the same status,
   and for a syntax error the same code, message identifier, argument, position and message); a narrow match call that completes
   against the wide one; after the meter's exception, the same instance against its own earlier answer; the
