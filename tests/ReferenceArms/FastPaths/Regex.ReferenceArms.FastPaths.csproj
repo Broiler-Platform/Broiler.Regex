@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The fast-path differential over the reference arms' population P4, which the records of tasks 2.4c and 2.11 of
+    SJL-11.2 owe to task 2.13 (docs/roadmap.md): every P4 pattern compiled twice, with the program compiler's fast paths
+    and without them (its internal fastPaths option), and every P4 exec answered by both programs. The library's
+    internal compiler has no public door, so this executable compiles Broiler.Regex's own sources at the commit under
+    test into itself (they are not copied: the items below name the library's files), reaching the option as the
+    library's tests do. Built in Release, run under the JIT only, never referenced or packed.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Broiler.Regex.ReferenceArms</RootNamespace>
+    <AssemblyName>Regex.ReferenceArms.FastPaths</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PublishAot>false</PublishAot>
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\Broiler.Regex\**\*.cs" Exclude="..\..\..\Broiler.Regex\bin\**;..\..\..\Broiler.Regex\obj\**" LinkBase="Library" />
+    <PackageReference Include="Broiler.Unicode.Algorithms" />
+    <PackageReference Include="Broiler.Unicode.Tables" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Harness.cs" Link="Common\Harness.cs" />
+  </ItemGroup>
+
+</Project>
