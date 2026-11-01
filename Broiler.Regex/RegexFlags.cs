@@ -58,9 +58,9 @@ public enum RegexFlags
 }
 
 /// <summary>
-/// Parses and validates an ECMAScript flags string (RegExpInitialize, ECMA-262 §22.2.3.3, and ParsePattern's refusal of
-/// <c>u</c> with <c>v</c>, §22.2.3.4), throwing for a string they refuse. Each flag may appear at most once; <c>u</c> and
-/// <c>v</c> are mutually exclusive; an unknown letter is a syntax error.
+/// Reads a flags value: <see cref="IsUnicodeMode"/>, whether it sets <c>u</c> or <c>v</c>, the pattern's Unicode mode. A
+/// flags string is read as a status by <see cref="Text.RegexFlagsText.Parse"/> (RegExpInitialize, ECMA-262 §22.2.3.3, and
+/// ParsePattern's refusal of <c>u</c> with <c>v</c>, §22.2.3.4), with the diagnostic of a refusal.
 /// </summary>
 /// <remarks>
 /// <see cref="Parse"/> is the reader of <c>0.1.0-preview.4</c>, kept with its answers and its messages; since task 2.7 of
