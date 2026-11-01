@@ -4,6 +4,8 @@
 # Members that may still change before the version that ships them (CHANGELOG.md), kept by a rewrite:
 # provisional: Broiler.Regex.BroilerRegex.Compile(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, System.Nullable`1<System.UInt64>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.BroilerRegex&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int32, System.Boolean, System.Span`1<System.Int32>, Broiler.Regex.RegexWorkCharge, Broiler.Regex.Engine.RegexMatchCeilings, Broiler.Regex.RegexLimit&) method Broiler.Regex.RegexStatus
+# provisional: Broiler.Regex.BroilerRegex.Validate(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
+# provisional: Broiler.Regex.BroilerRegex.Validate(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 # provisional: Broiler.Regex.BroilerRegex.get_GroupNames() method Broiler.Regex.RegexGroupNames
 # provisional: Broiler.Regex.BroilerRegex.get_SlotCount() method System.Int32
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings struct
@@ -17,6 +19,65 @@
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings.get_Steps() method System.Nullable`1<System.UInt64>
 # provisional: Broiler.Regex.Engine.RegexMatchCeilings.get_Trail() method System.Int32
 # provisional: Broiler.Regex.Parsing.RegexParser.get_GroupNames() method Broiler.Regex.RegexGroupNames
+# provisional: Broiler.Regex.RegexDiagnostic struct
+# provisional: Broiler.Regex.RegexDiagnostic.MessageIdOf(Broiler.Regex.RegexDiagnosticCode) method static System.String
+# provisional: Broiler.Regex.RegexDiagnostic.get_Argument() method System.String
+# provisional: Broiler.Regex.RegexDiagnostic.get_Code() method Broiler.Regex.RegexDiagnosticCode
+# provisional: Broiler.Regex.RegexDiagnostic.get_Message() method System.String
+# provisional: Broiler.Regex.RegexDiagnostic.get_MessageId() method System.String
+# provisional: Broiler.Regex.RegexDiagnostic.get_Position() method System.Int32
+# provisional: Broiler.Regex.RegexDiagnosticCode enum
+# provisional: Broiler.Regex.RegexDiagnosticCode.BackreferenceOutOfRange = 30
+# provisional: Broiler.Regex.RegexDiagnosticCode.BracedQuantifierWithoutAtom = 16
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassRangeEndpointIsClass = 62
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassRangeOutOfOrder = 61
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassSetAmpersandAfterIntersection = 71
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassSetMixedOperators = 70
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassSetRangeEndpointNotCharacter = 72
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassSetReservedDoublePunctuator = 74
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassSetUnescapedSyntaxCharacter = 73
+# provisional: Broiler.Regex.RegexDiagnosticCode.ClassStringDisjunctionWithoutBrace = 75
+# provisional: Broiler.Regex.RegexDiagnosticCode.CodePointOutOfRange = 25
+# provisional: Broiler.Regex.RegexDiagnosticCode.DuplicateFlag = 2
+# provisional: Broiler.Regex.RegexDiagnosticCode.DuplicateGroupName = 45
+# provisional: Broiler.Regex.RegexDiagnosticCode.EmptyGroupName = 44
+# provisional: Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidEscape = 41
+# provisional: Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidPart = 43
+# provisional: Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidStart = 42
+# provisional: Broiler.Regex.RegexDiagnosticCode.InvalidBracedEscape = 24
+# provisional: Broiler.Regex.RegexDiagnosticCode.InvalidControlEscape = 22
+# provisional: Broiler.Regex.RegexDiagnosticCode.InvalidGroup = 12
+# provisional: Broiler.Regex.RegexDiagnosticCode.InvalidHexEscape = 23
+# provisional: Broiler.Regex.RegexDiagnosticCode.InvalidIdentityEscape = 21
+# provisional: Broiler.Regex.RegexDiagnosticCode.LoneSyntaxCharacter = 17
+# provisional: Broiler.Regex.RegexDiagnosticCode.ModifierAddedAndRemoved = 52
+# provisional: Broiler.Regex.RegexDiagnosticCode.ModifierRepeated = 50
+# provisional: Broiler.Regex.RegexDiagnosticCode.ModifiersEmpty = 51
+# provisional: Broiler.Regex.RegexDiagnosticCode.NamedReferenceInClass = 33
+# provisional: Broiler.Regex.RegexDiagnosticCode.NamedReferenceWithoutName = 32
+# provisional: Broiler.Regex.RegexDiagnosticCode.NegatedClassMayContainStrings = 63
+# provisional: Broiler.Regex.RegexDiagnosticCode.NegatedPropertyOfStrings = 86
+# provisional: Broiler.Regex.RegexDiagnosticCode.NestingLimit = 90
+# provisional: Broiler.Regex.RegexDiagnosticCode.None = 0
+# provisional: Broiler.Regex.RegexDiagnosticCode.NothingToRepeat = 13
+# provisional: Broiler.Regex.RegexDiagnosticCode.PropertyEscapeWithoutBrace = 80
+# provisional: Broiler.Regex.RegexDiagnosticCode.PropertyOfStringsOutsideUnicodeSets = 85
+# provisional: Broiler.Regex.RegexDiagnosticCode.QuantifiedAssertion = 14
+# provisional: Broiler.Regex.RegexDiagnosticCode.QuantifierOutOfOrder = 15
+# provisional: Broiler.Regex.RegexDiagnosticCode.TrailingBackslash = 20
+# provisional: Broiler.Regex.RegexDiagnosticCode.UndefinedGroupName = 31
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnicodeWithUnicodeSets = 3
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnknownFlag = 1
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnknownLonePropertyName = 84
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnknownPropertyName = 82
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnknownPropertyValue = 83
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnmatchedParenthesis = 10
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnterminatedClass = 60
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnterminatedClassStringDisjunction = 76
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnterminatedGroup = 11
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnterminatedGroupName = 40
+# provisional: Broiler.Regex.RegexDiagnosticCode.UnterminatedPropertyEscape = 81
+# provisional: Broiler.Regex.RegexDiagnosticCode.value__ field System.Int32
 # provisional: Broiler.Regex.RegexGroup.get_Number() method System.Int32
 # provisional: Broiler.Regex.RegexGroupNames sealed class
 # provisional: Broiler.Regex.RegexGroupNames.GroupsNamed(System.String) method System.ReadOnlySpan`1<System.Int32>
@@ -31,6 +92,8 @@
 # provisional: Broiler.Regex.RegexMatch.get_Limit() method Broiler.Regex.RegexLimit
 # provisional: Broiler.Regex.RegexStatus.Match = 2
 # provisional: Broiler.Regex.RegexStatus.NoMatch = 3
+# provisional: Broiler.Regex.RegexStatus.SyntaxError = 4
+# provisional: Broiler.Regex.RegexSyntaxException.get_Diagnostic() method Broiler.Regex.RegexDiagnostic
 # provisional: Broiler.Regex.RegexWorkCharge delegate
 # provisional: Broiler.Regex.RegexWorkCharge..ctor(System.Object, System.IntPtr) method System.Void
 # provisional: Broiler.Regex.RegexWorkCharge.BeginInvoke(System.UInt64, System.AsyncCallback, System.Object) method virtual System.IAsyncResult
@@ -154,6 +217,8 @@ Broiler.Regex.BroilerRegex.Match(System.ReadOnlySpan`1<System.Char>, System.Int3
 Broiler.Regex.BroilerRegex.Match(System.String, System.Int32) method Broiler.Regex.RegexMatch
 Broiler.Regex.BroilerRegex.Matches(System.String) method System.Collections.Generic.IEnumerable`1<Broiler.Regex.RegexMatch>
 Broiler.Regex.BroilerRegex.MaximumNestingLimit field static const System.Int32 = 512
+Broiler.Regex.BroilerRegex.Validate(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
+Broiler.Regex.BroilerRegex.Validate(System.String, System.String, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32, Broiler.Regex.RegexDiagnostic&, Broiler.Regex.RegexLimit&) method static Broiler.Regex.RegexStatus
 Broiler.Regex.BroilerRegex.get_CaptureCount() method System.Int32
 Broiler.Regex.BroilerRegex.get_Flags() method Broiler.Regex.RegexFlags
 Broiler.Regex.BroilerRegex.get_GroupNames() method Broiler.Regex.RegexGroupNames
@@ -174,6 +239,65 @@ Broiler.Regex.Parsing.RegexParser..ctor(System.String, Broiler.Regex.RegexFlags,
 Broiler.Regex.Parsing.RegexParser.Parse(System.String, Broiler.Regex.RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, System.Int32&) method static Broiler.Regex.Ast.RegexNode
 Broiler.Regex.Parsing.RegexParser.get_CaptureCount() method System.Int32
 Broiler.Regex.Parsing.RegexParser.get_GroupNames() method Broiler.Regex.RegexGroupNames
+Broiler.Regex.RegexDiagnostic struct
+Broiler.Regex.RegexDiagnostic.MessageIdOf(Broiler.Regex.RegexDiagnosticCode) method static System.String
+Broiler.Regex.RegexDiagnostic.get_Argument() method System.String
+Broiler.Regex.RegexDiagnostic.get_Code() method Broiler.Regex.RegexDiagnosticCode
+Broiler.Regex.RegexDiagnostic.get_Message() method System.String
+Broiler.Regex.RegexDiagnostic.get_MessageId() method System.String
+Broiler.Regex.RegexDiagnostic.get_Position() method System.Int32
+Broiler.Regex.RegexDiagnosticCode enum
+Broiler.Regex.RegexDiagnosticCode.BackreferenceOutOfRange = 30
+Broiler.Regex.RegexDiagnosticCode.BracedQuantifierWithoutAtom = 16
+Broiler.Regex.RegexDiagnosticCode.ClassRangeEndpointIsClass = 62
+Broiler.Regex.RegexDiagnosticCode.ClassRangeOutOfOrder = 61
+Broiler.Regex.RegexDiagnosticCode.ClassSetAmpersandAfterIntersection = 71
+Broiler.Regex.RegexDiagnosticCode.ClassSetMixedOperators = 70
+Broiler.Regex.RegexDiagnosticCode.ClassSetRangeEndpointNotCharacter = 72
+Broiler.Regex.RegexDiagnosticCode.ClassSetReservedDoublePunctuator = 74
+Broiler.Regex.RegexDiagnosticCode.ClassSetUnescapedSyntaxCharacter = 73
+Broiler.Regex.RegexDiagnosticCode.ClassStringDisjunctionWithoutBrace = 75
+Broiler.Regex.RegexDiagnosticCode.CodePointOutOfRange = 25
+Broiler.Regex.RegexDiagnosticCode.DuplicateFlag = 2
+Broiler.Regex.RegexDiagnosticCode.DuplicateGroupName = 45
+Broiler.Regex.RegexDiagnosticCode.EmptyGroupName = 44
+Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidEscape = 41
+Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidPart = 43
+Broiler.Regex.RegexDiagnosticCode.GroupNameInvalidStart = 42
+Broiler.Regex.RegexDiagnosticCode.InvalidBracedEscape = 24
+Broiler.Regex.RegexDiagnosticCode.InvalidControlEscape = 22
+Broiler.Regex.RegexDiagnosticCode.InvalidGroup = 12
+Broiler.Regex.RegexDiagnosticCode.InvalidHexEscape = 23
+Broiler.Regex.RegexDiagnosticCode.InvalidIdentityEscape = 21
+Broiler.Regex.RegexDiagnosticCode.LoneSyntaxCharacter = 17
+Broiler.Regex.RegexDiagnosticCode.ModifierAddedAndRemoved = 52
+Broiler.Regex.RegexDiagnosticCode.ModifierRepeated = 50
+Broiler.Regex.RegexDiagnosticCode.ModifiersEmpty = 51
+Broiler.Regex.RegexDiagnosticCode.NamedReferenceInClass = 33
+Broiler.Regex.RegexDiagnosticCode.NamedReferenceWithoutName = 32
+Broiler.Regex.RegexDiagnosticCode.NegatedClassMayContainStrings = 63
+Broiler.Regex.RegexDiagnosticCode.NegatedPropertyOfStrings = 86
+Broiler.Regex.RegexDiagnosticCode.NestingLimit = 90
+Broiler.Regex.RegexDiagnosticCode.None = 0
+Broiler.Regex.RegexDiagnosticCode.NothingToRepeat = 13
+Broiler.Regex.RegexDiagnosticCode.PropertyEscapeWithoutBrace = 80
+Broiler.Regex.RegexDiagnosticCode.PropertyOfStringsOutsideUnicodeSets = 85
+Broiler.Regex.RegexDiagnosticCode.QuantifiedAssertion = 14
+Broiler.Regex.RegexDiagnosticCode.QuantifierOutOfOrder = 15
+Broiler.Regex.RegexDiagnosticCode.TrailingBackslash = 20
+Broiler.Regex.RegexDiagnosticCode.UndefinedGroupName = 31
+Broiler.Regex.RegexDiagnosticCode.UnicodeWithUnicodeSets = 3
+Broiler.Regex.RegexDiagnosticCode.UnknownFlag = 1
+Broiler.Regex.RegexDiagnosticCode.UnknownLonePropertyName = 84
+Broiler.Regex.RegexDiagnosticCode.UnknownPropertyName = 82
+Broiler.Regex.RegexDiagnosticCode.UnknownPropertyValue = 83
+Broiler.Regex.RegexDiagnosticCode.UnmatchedParenthesis = 10
+Broiler.Regex.RegexDiagnosticCode.UnterminatedClass = 60
+Broiler.Regex.RegexDiagnosticCode.UnterminatedClassStringDisjunction = 76
+Broiler.Regex.RegexDiagnosticCode.UnterminatedGroup = 11
+Broiler.Regex.RegexDiagnosticCode.UnterminatedGroupName = 40
+Broiler.Regex.RegexDiagnosticCode.UnterminatedPropertyEscape = 81
+Broiler.Regex.RegexDiagnosticCode.value__ field System.Int32
 Broiler.Regex.RegexFlags enum
 Broiler.Regex.RegexFlags.DotAll = 16
 Broiler.Regex.RegexFlags.Global = 2
@@ -223,9 +347,11 @@ Broiler.Regex.RegexStatus.LimitExceeded = 1
 Broiler.Regex.RegexStatus.Match = 2
 Broiler.Regex.RegexStatus.NoMatch = 3
 Broiler.Regex.RegexStatus.Success = 0
+Broiler.Regex.RegexStatus.SyntaxError = 4
 Broiler.Regex.RegexStatus.value__ field System.Int32
 Broiler.Regex.RegexSyntaxException sealed class : System.Exception
 Broiler.Regex.RegexSyntaxException..ctor(System.String, System.Int32) method System.Void
+Broiler.Regex.RegexSyntaxException.get_Diagnostic() method Broiler.Regex.RegexDiagnostic
 Broiler.Regex.RegexSyntaxException.get_Position() method System.Int32
 Broiler.Regex.RegexWorkCharge delegate
 Broiler.Regex.RegexWorkCharge..ctor(System.Object, System.IntPtr) method System.Void

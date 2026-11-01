@@ -106,6 +106,14 @@ internal sealed class FuzzMeter
 /// the full compilation at <see cref="BroilerRegex.MaximumNestingLimit"/> does.
 /// </para>
 /// <para>
+/// <b>Validation</b> (task 2.8): the validate entry under each policy's nesting limit, which takes no meter and no budget,
+/// answers as that compilation does wherever the compilation met neither its budget nor its meter: <c>Success</c> for a
+/// pattern it compiled, <c>SyntaxError</c> with the code, identifier, argument, position and message of the
+/// <see cref="RegexSyntaxException"/>'s diagnostic for one it refused, and <c>LimitExceeded</c> naming the nesting limit,
+/// with that diagnostic, where it met the limit. Where the budget or the meter stopped the compilation, the entry's
+/// answer is held to its own contract alone.
+/// </para>
+/// <para>
 /// <b>Matching</b>: the offset entry from every start of the case, anchored and not, under the wide ceilings (a step
 /// ceiling and the engines' frames and trail) and once under narrow ones; its slots are held to their contract, and a
 /// narrow call that completes answers as the wide one does. The string-bearing <see cref="BroilerRegex.Match(string, int)"/>,
@@ -130,6 +138,9 @@ internal static class Verdicts
 
     private readonly record struct Compiled(string Answer, BroilerRegex? Regex, int Position, string Message, ulong Units)
     {
+        /// <summary>A syntax refusal's diagnostic, which the validate entry answers alike; the default value otherwise.</summary>
+        internal RegexDiagnostic Diagnostic { get; init; }
+
         internal string Text => Regex is { } regex
             ? string.Create(CultureInfo.InvariantCulture, $"ok:{regex.CaptureCount}:{regex.SlotCount}:u{Units}")
             : Answer == "syntax" ? string.Create(CultureInfo.InvariantCulture, $"syntax@{Position}:{Hash(Message)}:u{Units}")
@@ -177,6 +188,8 @@ internal static class Verdicts
         outcome.Reach("compile:" + tight.Answer);
         CompareCompilations(full, tight, outcome);
         CompareConstructor(c, full, outcome);
+        Validate(c, c.Full, full, "validate/full", outcome);
+        Validate(c, c.Tight, tight, "validate/tight", outcome);
 
         if (full.Regex is { } regex)
         {
@@ -221,7 +234,7 @@ internal static class Verdicts
         }
         catch (RegexSyntaxException refusal)
         {
-            return new("syntax", null, refusal.Position, refusal.Message, meter.Charged);
+            return new("syntax", null, refusal.Position, refusal.Message, meter.Charged) { Diagnostic = refusal.Diagnostic };
         }
         catch (AllowanceSpent)
         {
@@ -241,6 +254,57 @@ internal static class Verdicts
             outcome.Find("disagreement", "compile/tight", "the tight policy compiled the pattern " + tight.Text + " where the full policy answered " + full.Text);
         if (tight.Answer == "syntax" && (full.Answer != "syntax" || full.Position != tight.Position || full.Message != tight.Message))
             outcome.Find("disagreement", "compile/tight", Invariant($"the tight policy refused a syntax error at {tight.Position} ({tight.Message}) where the full policy answered {full.Text}"));
+    }
+
+    /// <summary>
+    /// The validate entry under <paramref name="policy"/>'s nesting limit answers as <paramref name="compiled"/>, the
+    /// compilation under the same policy, did, wherever that compilation met neither its compile budget nor its meter
+    /// (task 2.8): the same status, and for a refusal the same diagnostic.
+    /// </summary>
+    private static void Validate(FuzzCase c, CompilePolicy policy, Compiled compiled, string site, Outcome outcome)
+    {
+        RegexStatus status;
+        RegexDiagnostic diagnostic;
+        RegexLimit limit;
+        try
+        {
+            status = BroilerRegex.Validate(c.Pattern, c.Flags, UnicodeTables.Instance, policy.Nesting, out diagnostic, out limit);
+        }
+        catch (Exception failure)
+        {
+            outcome.Find("exception", site, Describe(failure));
+            return;
+        }
+
+        string answer;
+        if (status == RegexStatus.Success && limit == RegexLimit.None && diagnostic.Code == RegexDiagnosticCode.None)
+            answer = "ok";
+        else if (status == RegexStatus.SyntaxError && limit == RegexLimit.None && diagnostic.Code is not (RegexDiagnosticCode.None or RegexDiagnosticCode.NestingLimit)
+            && diagnostic.MessageId == RegexDiagnostic.MessageIdOf(diagnostic.Code) && diagnostic.Position >= 0 && diagnostic.Position <= c.Pattern.Length)
+            answer = "syntax";
+        else if (status == RegexStatus.LimitExceeded && limit == RegexLimit.Nesting && diagnostic.Code == RegexDiagnosticCode.NestingLimit
+            && diagnostic.Argument == policy.Nesting.ToString(CultureInfo.InvariantCulture))
+            answer = "limit:nesting";
+        else
+        {
+            outcome.Find("contract", site, Invariant($"Validate answered {status} with limit {limit} and diagnostic {diagnostic.Code} at {diagnostic.Position}"));
+            return;
+        }
+
+        outcome.Note(site, answer == "syntax" ? Invariant($"syntax@{diagnostic.Position}:{(int)diagnostic.Code}") : answer);
+        outcome.Reach("validate:" + answer);
+        if (compiled.Answer is not ("ok" or "syntax" or "limit:nesting"))
+            return;
+        if (answer != compiled.Answer)
+        {
+            outcome.Find("disagreement", site, "the validate entry answered " + answer + " where Compile answered " + compiled.Text);
+            return;
+        }
+
+        var expected = compiled.Diagnostic;
+        if (answer == "syntax" && (expected.Code != diagnostic.Code || expected.Position != diagnostic.Position || expected.Argument != diagnostic.Argument
+            || expected.Message != diagnostic.Message || compiled.Position != diagnostic.Position))
+            outcome.Find("disagreement", site, Invariant($"the validate entry refused with {diagnostic.Code} at {diagnostic.Position} where Compile refused with {expected.Code} at {expected.Position}"));
     }
 
     /// <summary>The constructor takes no limit and parses under the maximum: it answers as the full compilation does.</summary>

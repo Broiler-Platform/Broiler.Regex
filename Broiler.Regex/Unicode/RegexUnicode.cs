@@ -3,15 +3,15 @@
 //
 // Broiler Code Assurance
 // ----------------------
-// Relevant units:   25
-// Annotated:        25/25
-// Exempt:           11
-// Human-reviewed:   0/25
+// Relevant units:   27
+// Annotated:        27/27
+// Exempt:           14
+// Human-reviewed:   0/27
 // IP risk:          Low
 // Security risk:    High
-// Criteria:         12/9
+// Criteria:         13/9
 // Resource impact:  3/10 max
-// Unverified:       25
+// Unverified:       27
 //
 // GENERATED - DO NOT EDIT MANUALLY
 
@@ -443,6 +443,28 @@ internal sealed class RegexUnicode
     }
 
     /// <summary>
+    /// What the property escape <c>\p{name}</c> or <c>\p{name=value}</c> names, by the exact names ECMA-262 admits, as
+    /// <see cref="ResolveProperty"/> resolves it, but read from the provider's lookups alone, with no set copied and nothing
+    /// charged: the validate entry's reading (task 2.8 of SJL-11.2; decision D18 of Broiler.VM's JSD-0081, "no expansion"),
+    /// and every compilation's before it expands, so that a property refused where it stands is never expanded.
+    /// </summary>
+    /// <remarks>
+    /// The provider's <c>TryResolve</c> answers a view of its tables, which allocates nothing (its own documentation), and its
+    /// work is a binary search bounded by the tables, a name longer than the longest they hold refused before it is compared.
+    /// </remarks>
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Medium; Resources=0; Fingerprint=AD3680
+    // Broiler-Falsified-If: it answers a kind for a name ResolveProperty answers null for, Unknown for one it resolves, Strings for a property of code points or CodePoints for a property of strings
+    // Broiler-Human:        PENDING
+    internal PropertyKind ClassifyProperty(string name, string? value)
+    {
+        if (value != null)
+            return _properties.TryResolve(name, value, out _) ? PropertyKind.CodePoints : PropertyKind.Unknown;
+        if (_properties.TryResolve(name, out _))
+            return PropertyKind.CodePoints;
+        return _stringProperties.TryResolve(name, out _) ? PropertyKind.Strings : PropertyKind.Unknown;
+    }
+
+    /// <summary>
     /// A property of strings: its single code points as a set and its sequences of two or more as strings.
     /// <c>RGI_Emoji</c> is the union of the others, which the provider holds no data for of its own. The compilation is
     /// charged, before anything is read, one unit per range and per sequence of each property read, and each sequence's
@@ -520,4 +542,19 @@ internal sealed class RegexUnicode
         for (var range = 0; range < set.RangeCount; range++)
             ranges.Add((set.First(range), set.Last(range)));
     }
+}
+
+/// <summary>What a property escape's name names (<see cref="RegexUnicode.ClassifyProperty"/>).</summary>
+// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Low; Resources=0; Fingerprint=028287
+// Broiler-Human:        PENDING
+internal enum PropertyKind
+{
+    /// <summary>No property ECMA-262 admits, as written: a syntax error.</summary>
+    Unknown = 0,
+
+    /// <summary>A General_Category value, a binary property, or a name and value of General_Category, Script or Script_Extensions: a set of code points.</summary>
+    CodePoints = 1,
+
+    /// <summary>A property of strings (§22.2.2.9, the properties of strings table): admitted under <c>v</c> alone.</summary>
+    Strings = 2,
 }

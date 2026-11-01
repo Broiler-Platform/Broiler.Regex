@@ -18,7 +18,9 @@ namespace Broiler.Regex.Probe;
 /// </summary>
 /// <remarks>
 /// The answer beyond the corpus's statuses is <c>unsupported</c>, for an operation other than <c>compile</c>,
-/// <c>match@k</c> and <c>anchored@k</c> (the validate entry is task 2.8's); since task 2.4b every pattern the parser
+/// <c>validate</c>, <c>match@k</c> and <c>anchored@k</c>. A <c>validate</c> row runs the validate entry (task 2.8) under the
+/// row's nesting limit alone, as the entry takes no meter and no compile budget (decision D18), and answers <c>ok</c>,
+/// <c>syntax</c> or <c>limit:nesting</c> with no units; since task 2.4b every pattern the parser
 /// accepts compiles to a program, unless it nests past the row's limit, and since task 2.5 the compilation is charged to
 /// the row's meter and bounded by its compile budget (requirement R2), answering <c>limit:compile</c> past it. The meter is
 /// the same for the compilation and the match, as an engine's is (bundle <c>sjl-11-001</c>'s check A-2: "compile charges
@@ -45,6 +47,9 @@ internal static class EngineRun
     internal static string Answer(string op, string pattern, string flags, string subject, Policy policy, out ulong units)
     {
         units = 0;
+        if (op == "validate")
+            return Validate(pattern, flags, policy);
+
         var charged = 0UL;
         RegexWorkCharge? meter = policy.Meter is { } allowance
             ? spent =>
@@ -121,6 +126,19 @@ internal static class EngineRun
             return "meter-exception";
         }
     }
+
+    /// <summary>
+    /// A <c>validate</c> row: the validate entry over the row's flags text, under its nesting limit; the meter, the ceilings
+    /// and the compile budget are a compilation's and a match's, which the entry takes none of.
+    /// </summary>
+    private static string Validate(string pattern, string flags, Policy policy) =>
+        BroilerRegex.Validate(pattern, flags == "-" ? "" : flags, UnicodeTables.Instance, policy.Nesting, out _, out var limit) switch
+        {
+            RegexStatus.Success => "ok",
+            RegexStatus.SyntaxError => "syntax",
+            RegexStatus.LimitExceeded when limit == RegexLimit.Nesting => "limit:nesting",
+            _ => "another",
+        };
 
     /// <summary>A match as the corpus writes it: <c>match s,e</c> and each group's <c>s,e</c> or <c>-</c>, a run of eight or more equal groups as <c>x^k</c>.</summary>
     internal static string Render(ReadOnlySpan<int> slots)

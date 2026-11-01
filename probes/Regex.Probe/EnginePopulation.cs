@@ -112,6 +112,23 @@ internal static class EnginePopulation
         ("E55", "-", "match@0", "\"(?:(?<a>x)|(?<a>y))\\\\k<a>\"", "i", "\"zyY\"", Ordinary),
         ("E56", "-", "match@0", "\"(?<=\\\\k<a>(?:(?<a>x)|(?<a>y)))z\"", "-", "\"xyyz\"", Ordinary),
         ("E57", "-", "match@0", "\"(?:\" + \"(?<n>x)|\" * 999 + \"(?<n>y))\\\\k<n>\"", "-", "\"yy\"", Ordinary),
+
+        // The corpus's validate rows, which task 2.8 brings to the validate entry: nesting at one past the limit and a million
+        // levels past it, in groups, non-capturing groups and v-mode classes, refused with the nesting status on the
+        // probe's 1 MiB thread, and the critic's \k case refused as a syntax error; then a pattern the entry admits, a
+        // class V pattern it admits by its read where a compile budget refuses it, the \k case without u, and a flags
+        // text it refuses before the pattern.
+        ("E58", "N03", "validate", "\"(\" * 512 + \"a\" + \")\" * 512", "-", "-", Ordinary),
+        ("E59", "N06", "validate", "\"(\" * 1000000 + \"a\" + \")\" * 1000000", "-", "-", Ordinary),
+        ("E60", "N09", "validate", "\"(?:\" * 512 + \"a\" + \")\" * 512", "-", "-", Ordinary),
+        ("E61", "N12", "validate", "\"(?:\" * 1000000 + \"a\" + \")\" * 1000000", "-", "-", Ordinary),
+        ("E62", "N15", "validate", "\"[\" * 512 + \"a\" + \"]\" * 512", "v", "-", Ordinary),
+        ("E63", "N18", "validate", "\"[\" * 1000000 + \"a\" + \"]\" * 1000000", "v", "-", Ordinary),
+        ("E64", "O19", "validate", "\"\\\\k<b>(?<a>x)\"", "u", "-", Ordinary),
+        ("E65", "-", "validate", "\"(\" * 511 + \"a\" + \")\" * 511", "-", "-", Ordinary),
+        ("E66", "-", "validate", "\"[\" + \"\\\\p{RGI_Emoji}\" * 50 + \"]\"", "iv", "-", "meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000"),
+        ("E67", "-", "validate", "\"\\\\k<b>(?<a>x)\"", "-", "-", Ordinary),
+        ("E68", "-", "validate", "\"(\"", "gg", "-", Ordinary),
     ];
 
     /// <summary>The engine section of the report: a header line, one line per case with its answer and units, and a digest line.</summary>

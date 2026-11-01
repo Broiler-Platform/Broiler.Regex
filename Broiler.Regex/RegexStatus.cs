@@ -5,7 +5,7 @@
 // ----------------------
 // Relevant units:   2
 // Annotated:        2/2
-// Exempt:           10
+// Exempt:           11
 // Human-reviewed:   0/2
 // IP risk:          None
 // Security risk:    Low
@@ -27,9 +27,10 @@ namespace Broiler.Regex;
 /// have needed so far: <see cref="Success"/> and <see cref="LimitExceeded"/>, which task 2.3 introduced for the caller's
 /// nesting limit (<see cref="BroilerRegex.Compile"/>), and <see cref="Match"/> and <see cref="NoMatch"/>, which task 2.4a
 /// added for the new backend's match entry, which task 2.4c made public as <see cref="BroilerRegex"/>'s offset entry
-/// (<c>BroilerRegex.Match</c> over a span), answering this enum. The later steps add members and keep these: the syntax status with
-/// its code, message identifier and position (the validate entry of task 2.8). A syntax error from
-/// <see cref="BroilerRegex.Compile"/> is still a <see cref="RegexSyntaxException"/>, and the signature of
+/// (<c>BroilerRegex.Match</c> over a span), answering this enum, and <see cref="SyntaxError"/>, which task 2.8 added for
+/// the validate entry, <see cref="BroilerRegex.Validate(string, RegexFlags, Broiler.Unicode.Algorithms.IUnicodeTables, int, out RegexDiagnostic, out RegexLimit)"/>,
+/// with its code, message identifier and position in a <see cref="RegexDiagnostic"/>. A syntax error from
+/// <see cref="BroilerRegex.Compile"/> is still a <see cref="RegexSyntaxException"/>, which carries the same diagnostic, and the signature of
 /// <see cref="BroilerRegex.Compile"/> is provisional: task 2.5 replaced it to take the caller's compile budget and meter,
 /// and a syntax status needs room for its code, message identifier and position (its remarks). The members here are kept
 /// whatever replaces it, and their numbers are fixed.
@@ -39,7 +40,8 @@ namespace Broiler.Regex;
 /// dimension, and a syntax status: the answers of a match and of a validation. A compilation that completes is none of
 /// them, so <see cref="Success"/> is added for it, named and numbered as the Unicode owner's <c>UnicodeStatus.Success</c>
 /// is, as <see cref="LimitExceeded"/> is. Compiling answers <see cref="Success"/> or <see cref="LimitExceeded"/>; a match
-/// answers <see cref="Match"/>, <see cref="NoMatch"/> or <see cref="LimitExceeded"/>, and never <see cref="Success"/>.
+/// answers <see cref="Match"/>, <see cref="NoMatch"/> or <see cref="LimitExceeded"/>, and never <see cref="Success"/>; a
+/// validation answers <see cref="Success"/>, <see cref="SyntaxError"/> or <see cref="LimitExceeded"/> naming the nesting limit.
 /// </para>
 /// <para>
 /// <b>Not an exception.</b> A status is how the library reports a failure its contract admits. It throws only when
@@ -47,7 +49,7 @@ namespace Broiler.Regex;
 /// the caller's that throws propagates its own exception (convention 3).
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=F52169
+// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=E2A8EC
 // Broiler-Human:        PENDING
 public enum RegexStatus
 {
@@ -71,6 +73,13 @@ public enum RegexStatus
     /// position from it to the end of the subject otherwise (§22.2.7.2 RegExpBuiltinExec's loop).
     /// </summary>
     NoMatch = 3,
+
+    /// <summary>
+    /// The pattern or its flags break the grammar or an early error (ECMA-262 §22.2.1, §22.2.1.1, §22.2.3.3, §22.2.3.4): the syntax
+    /// status of decision D9, its code, message identifier, argument and position in a <see cref="RegexDiagnostic"/> beside
+    /// it. The validate entry answers it (task 2.8 of SJL-11.2); provisional, with the entry.
+    /// </summary>
+    SyntaxError = 4,
 }
 
 /// <summary>
