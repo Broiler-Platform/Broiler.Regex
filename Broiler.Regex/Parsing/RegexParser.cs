@@ -31,10 +31,15 @@ namespace Broiler.Regex.Parsing;
 /// <c>Pattern</c> grammar (ECMA-262 §22.2.1). Produces a <see cref="RegexNode"/>
 /// tree consumed by the matcher.
 /// </summary>
+/// <remarks>
+/// Internal since task 2.9 of SJL-11.2, with the tree it produces: its work grows with the pattern and it took no meter
+/// (convention 4), and it threw for a pattern it refuses (convention 3). <see cref="BroilerRegex.Compile"/> and the
+/// validate entry are the public parses, under the caller's nesting limit, each answering a status.
+/// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=0CA2F0
 // Broiler-Falsified-If: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
 // Broiler-Human:        PENDING
-public sealed class RegexParser
+internal sealed class RegexParser
 {
     private readonly string _src;
     private readonly bool _unicode;

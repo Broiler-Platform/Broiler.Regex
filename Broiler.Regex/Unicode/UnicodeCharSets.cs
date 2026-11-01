@@ -29,14 +29,15 @@ namespace Broiler.Regex.Unicode;
 /// provider (requirement R11).
 /// </summary>
 /// <remarks>
-/// The public members are those of <c>0.1.0-preview.4</c> that read no Unicode table, which R11 does not force
-/// out (decision D12: the 0.1 surface is kept where R11 and R8 allow it; task 2.9 decides the rest). The members
-/// that needed the old packages' tables - <c>AllCharacters</c>, <c>EscapeSet</c>, <c>IsSpace</c>, <c>IsWord</c>,
-/// <c>ResolveProperty</c> and <c>WordSet</c> - are removed, as <c>docs/suppressions.md</c> lists.
+/// Internal since task 2.9 of SJL-11.2, with the syntax tree it serves. Until then its members that read no Unicode
+/// table were public, those of <c>0.1.0-preview.4</c> that R11 did not force out; <see cref="PropertyMatch"/> named a
+/// collection in its public signature (convention 1, check C1), and neither engine's adapter reads any of them. The
+/// members that needed the old packages' tables - <c>AllCharacters</c>, <c>EscapeSet</c>, <c>IsSpace</c>, <c>IsWord</c>,
+/// <c>ResolveProperty</c> and <c>WordSet</c> - went at task 2.2, as <c>docs/suppressions.md</c> lists.
 /// </remarks>
 // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Low; Resources=1; Fingerprint=7E3895
 // Broiler-Human:        PENDING
-public static class UnicodeCharSets
+internal static class UnicodeCharSets
 {
     /// <summary>
     /// Whether <paramref name="cp"/> is a member of <c>\d</c>: exactly the ASCII digits <c>0-9</c>
@@ -83,7 +84,7 @@ public static class UnicodeCharSets
     // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=0; Fingerprint=D1335C
     // Broiler-Falsified-If: a resolution the library builds for a property of strings reports IsStringProperty false, so \p{RGI_Emoji} is accepted outside v or \P{RGI_Emoji} under v
     // Broiler-Human:        PENDING
-    public sealed class PropertyMatch(CodePointSet codePoints, IReadOnlyList<string> strings)
+    internal sealed class PropertyMatch(CodePointSet codePoints, IReadOnlyList<string> strings)
     {
         /// <summary>
         /// A resolution whose kind is stated: <paramref name="isStringProperty"/> is true for one of ECMA-262's

@@ -315,6 +315,14 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
     precondition and throw an `ArgumentException` with the refusal's message, the validate entry's diagnostic's
     `Message` for the same pattern; a caller that catches `RegexSyntaxException` catches `ArgumentException`, and one
     that read its `Position` or `Diagnostic` calls the validate entry or `Compile`.
+  - **The syntax tree, the parser and the set algebra are internal (R10, conventions 1, 3 and 4; check C1).** The
+    seventeen types of `Broiler.Regex.Ast` (the nodes, `CharSet`, `ClassEscape`, `CodePointSet`), `Broiler.Regex.Parsing.RegexParser`
+    and `Broiler.Regex.Unicode.UnicodeCharSets` leave the public surface (CP0001 each): their signatures named
+    collections and a delegate (nine C1 rows), their operations took no meter where their work grows with the pattern
+    or the sets (convention 4; check A-1 reads every public member), and the parser and `CharSet.AddRange` threw for a
+    refusal. Neither engine's adapter reads them (plan rows 5.2 and 6.1); `Compile`, the validate entry and the offset
+    entry are the public compilation, validation and match. Broiler.JS at `main` reads `RegexParser.Parse` and the tree
+    to route a pattern (`JSRegExp.Broiler.cs`, `TryRouteToBroiler` and `GapScan`), which its cut-over, SJL-11.5, deletes.
 - **The assembly declares itself trimmable and AOT-compatible.** `IsAotCompatible` and `IsTrimmable` are set, with the
   trim, AOT and single-file analyzers reporting as errors; they report nothing. The assembly now carries the
   `IsTrimmable` and `IsAotCompatible` assembly metadata, so a consumer's trimmer treats it as trimmable. No method's
