@@ -101,7 +101,7 @@ this version is provisional.
     `[Symbol.search]`, `RegExp.escape`, the flags getter, and EscapeRegExpPattern's invariants), lists the six ops of
     the object model it does not implement by name, and writes a deterministic report; `VectorsRunTests` reads it. The
     probe's `--vectors dir` mode runs the same runner, and CI's `native-aot-probe` job runs it under Native AOT and the
-    JIT on ubuntu-latest and windows-latest and compares the two reports byte for byte. At task 2.12 every vector the
+    JIT on ubuntu-24.04 and windows-latest and compares the two reports byte for byte. At task 2.12 every vector the
     rule holds to its `out` whose op the library implements gives it (1,308, the 18 status vectors among them, and the
     8 of `EscapeRegExpPattern, one P and F`, whose two P are one string at library level, so that they check only that
     `Compile` and `EscapePattern` succeed), and the 85 impl-defined vectors are reported (`docs/roadmap.md`, task

@@ -1554,7 +1554,7 @@ its sibling of part C, rather than after task 2.9's, so that it merges beside ta
   SyntaxError, or none). The report is ordered by id, holds no time or path, and is made on a 1 MiB thread.
 - **The probe** ([its README](../probes/Regex.Probe/README.md)): `--vectors dir [--report path]` in its own file,
   `VectorsMode.cs`, compiling the runner's sources in; exit 2 on a refused pin with no report. CI's `native-aot-probe`
-  job runs it under Native AOT and the JIT on ubuntu-latest and windows-latest and compares the reports with `cmp`,
+  job runs it under Native AOT and the JIT on ubuntu-24.04 and windows-latest and compares the reports with `cmp`,
   each step within 10 minutes; locally about 2 s each.
 
 **The reading at this commit** (linux-x64, the report's SHA-256 `3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b`,
