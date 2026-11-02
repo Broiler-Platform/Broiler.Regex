@@ -2128,6 +2128,20 @@ no violation; `dotnet pack` gives `Broiler.Regex.0.1.0-preview.6.nupkg` with the
 the nuspec, the README, the notices and the icon, no arm and no arm type in the assembly; and `git merge-tree
 --write-tree origin/claude/busy-lamport-m3yprr HEAD` merges with no conflict).
 
+*Dated note, 2026-11-02 (task 2.13, after its second review; no class changed).* "The run, taken twice" above reads
+"the classification (`classification.json` `4f6ebdb4…`, `classified.tsv.gz` `a03b9973…`)". That `classification.json`
+held the correspondence as `"file"`, the absolute path the two runs were given (the same in both, so their files
+agreed), and so its digest depended on where the inputs were. The classifier now names the correspondence by its file
+name, git blob (`d7323aec`, the blob named above) and SHA-256 and by no path (`29c980bf`), and a script test runs it
+twice from different directories and compares the two files byte for byte (the script tests are 58 now, all passing
+with both variables set). The classifier was run again over run A's retained comparison and arm runs, twice at once:
+from one working directory with every path relative to it, and from another with absolute paths through a symbolic
+link and a copy of the correspondence elsewhere. Both wrote the same counts (a 376,172, a' 45, b 8,983, c 1,516,309,
+exit 1 for class (c)), **`classification.json` `614399f118f1870fa4e951495e70a42c3e051ce60072663396b9ab72f1c7c444`**
+in each, byte for byte, which differs from `4f6ebdb4…` only in the correspondence's entry, and `classified.tsv.gz`
+`a03b9973…` unchanged. Run A's `differences.tsv.gz` (`0a8345fd…`) and `summary.json` (`f0147d1b…`) were read, not
+written, and are unchanged.
+
 *Where the plan, the filed rule and this repository differ, read at this record.*
 - The filed rule's class (b) holds row M4's empty match by decision D41 and its class (c) excepts it; the plan's text of
   section 4.4 has neither (the rule's revision of 2026-10-25 added both). The rule wins and the classifier reads it.
