@@ -50,7 +50,8 @@ its rows S1 and S2b for arm J (row S1's class names Broiler.VM and preview.4, ro
 not copy) are gone, rows M2b, S10 and M7 for J are added, and each predicate now reads its row's correction.
 
 A difference in the case an arm's run file names as its negative-control case is listed **unclassified**.
-It writes DIR/classification.json (the counts by class, row and run, the arbiter's commit and blob) and
+It writes DIR/classification.json (the counts by class, row and run, the arbiter's commit and blob, the
+correspondence's file name, blob and SHA-256, and no path, so that it is the same wherever its inputs are) and
 DIR/classified.tsv.gz (each difference with its class, row, the arbiter's answer and why), and exits 0 when no
 difference is (c), 1 when one is, 2 when it refuses to run (a row it names is missing from the correspondence, or
 its class does not name the engine the predicate corrects, or an argument is wrong), and 3 when it fails (an
@@ -689,6 +690,17 @@ class Context:
         return self._refusal_code(d) if self._refusal_code else None
 
 
+def correspondence_identity(path: Path) -> dict[str, str]:
+    """The correspondence as classification.json names it: its file name, its git blob and its SHA-256, which the
+    bytes alone decide, never the path it was read from, so that the same inputs give the same classification.json
+    wherever they are and whatever the working directory. The blob is the one Broiler.VM's history holds the file by
+    (`git log --find-object`). *(Revised 2026-11-02, before any judged run: it read `{"file":
+    str(args.correspondence), "sha256": ...}`, the path as given, absolute or relative to the working directory.)*"""
+    data = path.read_bytes()
+    blob = hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+    return {"name": path.name, "blob": blob, "sha256": hashlib.sha256(data).hexdigest()}
+
+
 def read_correspondence(path: Path) -> dict[str, str]:
     rows = {}
     for line in path.read_text(encoding="utf-8").split("\n"):
@@ -884,8 +896,7 @@ def run(argv: list[str] | None = None) -> int:
                                   why]) + "\n")
     result = {"classifier": CLASSIFIER_VERSION, "arbiter": {"version": arbiter.version, "commit": arbiter.commit,
                                                             "blobs": arbiter.blobs, "cutoff": args.cutoff},
-              "correspondence": {"file": str(args.correspondence),
-                                 "sha256": hashlib.sha256(args.correspondence.read_bytes()).hexdigest()},
+              "correspondence": correspondence_identity(args.correspondence),
               "controls": controls, "counts": dict(sorted(counts.items())), "by-class-row-run-population": dict(sorted(by_row.items()))}
     (out / "classification.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if args.cache:

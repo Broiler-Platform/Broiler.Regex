@@ -132,7 +132,11 @@ in its cut-off is class (c) until reduced to an input it can, as the rule's arbi
 (exit 2) when a row it names is missing from the correspondence or its class does not hold the row's words, exits 3
 when it fails (an exception), and otherwise 0 when no difference is (c) and 1 when one is; it writes
 `classification.json` last. `run.sh` fails on 2, on 3, and on a run that leaves no `classification.json`. The case
-an arm's run file names as its negative-control case is listed unclassified.
+an arm's run file names as its negative-control case is listed unclassified. `classification.json` names its inputs
+by what decides them and by no path: the arbiter by its commit and blobs, the correspondence by its file name, git
+blob and SHA-256, so that the same inputs give the same bytes wherever they are and from any working directory.
+*(Revised 2026-11-02, before any judged run: it held the correspondence as `"file"`, the path as given on the command
+line, so the digest of one classification changed with where its inputs were.)*
 
 The harness's stop (`limit:harness`, `tests/ReferenceArms/README.md`, "The stop list, and the limits") is one answer
 whichever limit fired, whether the worker crashed or whether the stop list held the case, and the older `crash:exit-N`, `limit:wall-clock` and `limit:timeout` are read as it:

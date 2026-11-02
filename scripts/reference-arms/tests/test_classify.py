@@ -306,5 +306,162 @@ class ExitStatusTests(unittest.TestCase):
             C.run = original
 
 
+STUB_REGEXPREF = '''
+REFERENCE_VERSION = "regexpref@stub"
+
+
+class PatternSyntaxError(Exception):
+    def __init__(self, code):
+        super().__init__(code)
+        self.code = code
+
+
+class SpecAssertion(Exception):
+    pass
+
+
+class _Counted:
+    exhausted = False
+    result = None
+
+
+def regexp_create(pattern, flags):
+    if pattern == [0x28]:
+        raise PatternSyntaxError("grammar:stub")
+
+
+def counted_exec(pattern, flags, subject, last_index, cutoff):
+    return _Counted()
+
+
+class _Data:
+    def orbit(self, unit):
+        return {unit}
+
+
+def ucd():
+    return _Data()
+
+
+def _canonicalize_bmp():
+    return list(range(0x10000))
+
+
+def _canonicalize_bmp_preimages():
+    return {}
+'''
+
+STUB_ROWS = {"S1": "Correction of Broiler.VM", "S2a": "Correction of Broiler.JS",
+             "S5": "Broiler.JS: **correction of Broiler.JS**, by D-s5", "S7": "Correction of Broiler.JS",
+             "S8": "Correction of Broiler.JS",
+             "S10": "Correction of Broiler.VM. The class case `[\\uD83D\\u{DC38}]`: **correction of Broiler.JS**",
+             "M2a": "Correction of Broiler.JS", "M2b": "Correction of Broiler.JS", "M2": "Correction of Broiler.JS",
+             "M3": "Correction of Broiler.JS",
+             "M4": "correction of Broiler.VM. The half-pair matches (`/\\udf06/gu`, `/yu`, the look-behind): "
+                   "**correction of Broiler.JS**",
+             "M7": "Correction of Broiler.VM. The look-behind: also a correction of Broiler.Regex's preview.4, and so "
+                   "of Broiler.JS",
+             "B2": "Correction of Broiler.JS and of Broiler.Regex's preview.4", "S3": "policy", "B6": "policy",
+             "B7": "policy", "B8": "Correction of Broiler.JS and of Broiler.Regex's preview.4",
+             "F3": "`(?x:a)`, accepted by Broiler.JS's constructor, a **correction of Broiler.JS**",
+             "U3": "Correction of Broiler.JS by data decision"}
+
+
+class PathIndependenceTests(unittest.TestCase):
+    """classification.json names its inputs by their bytes and commits, not by where they are (task 2.13: it held the
+    correspondence's path as given, so the same inputs elsewhere, or a relative path from another working directory,
+    gave another digest)."""
+
+    def setUp(self) -> None:
+        import subprocess
+        import tempfile
+        self.subprocess = subprocess
+        self.scratch = Path(tempfile.mkdtemp(prefix="classify-paths-"))
+        self.saved = (list(sys.path), sys.modules.pop("regexpref", None), os.environ.get("BROILER_UNICODE_PINS"),
+                      os.getcwd())
+
+    def tearDown(self) -> None:
+        import shutil
+        path, module, pins, cwd = self.saved
+        os.chdir(cwd)
+        sys.path[:] = path
+        sys.modules.pop("regexpref", None)
+        if module is not None:
+            sys.modules["regexpref"] = module
+        if pins is None:
+            os.environ.pop("BROILER_UNICODE_PINS", None)
+        else:
+            os.environ["BROILER_UNICODE_PINS"] = pins
+        shutil.rmtree(self.scratch, ignore_errors=True)
+
+    def git(self, *args) -> None:
+        env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@example.invalid", GIT_COMMITTER_NAME="t",
+                   GIT_COMMITTER_EMAIL="t@example.invalid", GIT_AUTHOR_DATE="2026-01-01T00:00:00Z",
+                   GIT_COMMITTER_DATE="2026-01-01T00:00:00Z", GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+        self.subprocess.run(["git", *args], check=True, capture_output=True, env=env)
+
+    def inputs(self, where: Path, checkout: Path | None) -> tuple[Path, Path]:
+        """A Broiler.JS stand-in checkout with a stub arbiter (or a clone of `checkout`), a correspondence, a
+        comparison and a runs directory under `where`."""
+        from population_format import open_text
+        js = where / "broiler-js"
+        if checkout is None:
+            (js / "scripts" / "conformance").mkdir(parents=True)
+            (js / "conformance" / "vectors" / "sources").mkdir(parents=True)
+            (js / "scripts" / "conformance" / "regexpref.py").write_text(STUB_REGEXPREF, encoding="utf-8")
+            (js / "scripts" / "conformance" / "unicoderef.py").write_text("# stub\n", encoding="utf-8")
+            (js / "conformance" / "vectors" / "sources" / "unicode.pin").write_text("stub\n", encoding="utf-8")
+            self.git("init", "-q", str(js))
+            self.git("-C", str(js), "add", ".")
+            self.git("-C", str(js), "commit", "-q", "-m", "stub")
+        else:
+            self.git("clone", "-q", str(checkout), str(js))
+        docs = where / "vm" / "docs"
+        docs.mkdir(parents=True)
+        (docs / "correspondence.md").write_text(
+            "".join(f"| {row} | construct | {cls} |\n" for row, cls in STUB_ROWS.items()), encoding="utf-8")
+        comparison, runs = where / "comparison", where / "runs"
+        comparison.mkdir()
+        runs.mkdir()
+        (runs / "run.V.json").write_text('{"control-case": null}\n', encoding="utf-8")
+        with open_text(comparison / "differences.tsv.gz", "wt") as out:
+            out.write("# id\tclass\top\trun\tpattern\tflags\tsubject\tlastIndex\tpolicy\tS\tarm\n")
+            out.write(f"P4-1\tP4\taccept\tV\t{encode('(?<a>x)|(?<a>y)')}\t.\t-\t-\tdefault\taccept\trefuse:syntax\n")
+            out.write(f"P4-2\tP4\texec\tJ\t{encode('a')}\t.\t{encode('b')}\t0\tdefault\tnull\tmatch:0,1\n")
+        return js, docs / "correspondence.md"
+
+    def test_two_runs_from_different_places_write_the_same_classification_json(self) -> None:
+        written = []
+        checkout = None
+        for k, relative in enumerate((True, False)):
+            where = self.scratch / f"place-{k}" / ("deeper" if k else "")
+            where.mkdir(parents=True, exist_ok=True)
+            js, correspondence = self.inputs(where, checkout)
+            checkout = checkout or js
+            out = self.scratch / f"out-{k}"
+            if relative:
+                # From the inputs' directory, every path relative to it.
+                os.chdir(where)
+                args = ["--comparison", "comparison", "--runs", "runs", "--broiler-js", "broiler-js",
+                        "--correspondence", "vm/docs/correspondence.md"]
+            else:
+                os.chdir(self.scratch)
+                args = ["--comparison", str(where / "comparison"), "--runs", str(where / "runs"), "--broiler-js",
+                        str(js), "--correspondence", str(correspondence)]
+            args += ["--commit", "HEAD", "--unicode-pins", str(where), "--out", str(out)]
+            self.assertEqual(C.main(args), 1)
+            written.append((out / "classification.json").read_bytes())
+            sys.modules.pop("regexpref", None)
+        self.assertEqual(written[0], written[1])
+        self.assertNotIn(str(self.scratch).encode(), written[0])
+        self.assertNotIn(b"vm/docs", written[0])
+        facts = __import__("json").loads(written[0])
+        data = (self.scratch / "place-0" / "vm" / "docs" / "correspondence.md").read_bytes()
+        self.assertEqual(facts["correspondence"], {
+            "name": "correspondence.md", "sha256": __import__("hashlib").sha256(data).hexdigest(),
+            "blob": self.subprocess.run(["git", "hash-object", "--stdin"], input=data, capture_output=True,
+                                        check=True).stdout.decode().strip()})
+
+
 if __name__ == "__main__":
     unittest.main()
