@@ -2082,8 +2082,11 @@ the same**: `differences.tsv.gz` SHA-256 `0a8345fd6275347eeaaae432d95aacfdc3c946
 `summary.json` SHA-256 `f0147d1b429b19d5705f2482639e4cb3353a111f242bce491cde3b96a3dbc1d5` in each, and so are the
 population (manifest `2366b090…`, the same class files the calibration ran), every arm's answer file, the
 classification (`classification.json` `4f6ebdb4…`, `classified.tsv.gz` `a03b9973…`) and the fast-path differential's
-summary (`3cb4bb79…`). The comparison wrote **1,901,509 differences**: V 5,454; J 626,895 under the invariant culture,
-636,411 under `tr-TR` and 632,749 under `lt-LT`; by class P1 465, P2 556, P3 7, P4 1,899,989, P5 492, P6 and P7 none.
+summary (`3cb4bb79…`). `differences.tsv.gz` holds cases and answers alone; `summary.json` also names the commit, by
+the population's manifest and by S's informational version, so a run at another commit with the same code changes it
+there and nowhere else. The comparison wrote **1,901,509 differences**: V 5,454; J 626,895 under the invariant
+culture, 636,411 under `tr-TR` and 632,749 under `lt-LT`; by class P1 465, P2 556, P3 7, P4 1,899,989, P5 492, P6 and
+P7 none.
 
 **The classification** (classifier `@3`), which **supersedes** the review's classification above (`@2`: "(a)
 373,571 [...] (a'), 45 [...] (b), 11,052 [...] (c), 1,516,452"):

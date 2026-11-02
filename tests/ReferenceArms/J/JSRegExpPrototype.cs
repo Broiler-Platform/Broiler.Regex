@@ -7,9 +7,10 @@
 //          Apache-2.0); this copy keeps the attribution Broiler.JS's THIRD_PARTY_NOTICES.md gives that origin.
 // Members: the matcher's call in ExecMatch (:153-180): the start at lastIndex as the harness read it, RunMatch (:177), and
 //          the sticky emulation (:179-180); and the constructor's `(value, globalSearch, …) = CreateRegex(…)` (:393).
-// Changes: each marked ARM CHANGE: lastIndex's ToLength (:158-176) and its writes (:181-200), the legacy statics
-//          (:202-216) and the result object (BuildExecResult) are not copied; the start is the harness's; ArmTiering
-//          (:394) is not called (tiering off).
+// Changes: each marked ARM CHANGE: lastIndex's ToLength (:158-176), the null answer and lastIndex's writes (:182-193),
+//          the result's capture count (:195-200), the legacy statics (:202-216) and the result object (BuildExecResult)
+//          are not copied; the start is the harness's; ArmTiering (:394) is not called (tiering off). *(2026-11-02, task
+//          2.13's second review: this read "its writes (:181-200)", a range that also held the capture count.)*
 
 using Broiler.JavaScript.Runtime;
 
@@ -37,7 +38,8 @@ public partial class JSRegExp
         if (sticky && (!match.Success || match.Index != startPosition))
             match = RegexMatchData.NoMatch;
 
-        // ARM CHANGE: the lastIndex writes (:181-200) and the legacy statics (:202-216) are not copied.
+        // ARM CHANGE: the null answer and the lastIndex writes (:182-193), the capture count (:195-200) and the legacy
+        // statics (:202-216) are not copied.
         return match;
     }
 }
