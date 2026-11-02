@@ -126,14 +126,14 @@ internal static class Harness
     /// (README.md, "Workers"): a matcher that does not end within it (an arm with no bound on some input) is recorded, as
     /// the rule records a member that throws, and the next case runs in a new worker.
     /// </summary>
-    internal static readonly TimeSpan WallClock = TimeSpan.FromSeconds(2);
+    internal static readonly TimeSpan WallClock = TimeSpan.FromSeconds(10);
 
     /// <summary>
     /// The wall-clock limit of a case whose pattern and flags a stopped case of the same range had: once one exec of a
     /// pattern does not end, the next ones of that pattern are given less time, so that a pattern no arm's own bound
     /// stops costs a range seconds and not hours (README.md, "Workers").
     /// </summary>
-    internal static readonly TimeSpan WallClockAfterAStop = TimeSpan.FromMilliseconds(500);
+    internal static readonly TimeSpan WallClockAfterAStop = TimeSpan.FromSeconds(1);
 
     /// <summary>
     /// One class's file: the cases in contiguous ranges, one worker process of this arm per range, each answering its

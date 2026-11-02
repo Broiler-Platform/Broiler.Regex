@@ -48,9 +48,13 @@ and error construction stay in the engines and are not compared.
 **Workers.** Each class's cases are split into contiguous ranges, one worker process of the arm per range (`--threads`,
 3 by default), each case on a thread of 16 MiB, the stack Broiler.JS's shell gives a script (`SH/Program.cs:128`). A
 worker that ends while a case runs (Broiler.Regex 0.1.0-preview.4's recursive matcher overflows the stack, row B8) has
-that case answered `crash:exit-N`; a case that runs longer than 3 seconds of wall-clock time has its worker stopped and
-is answered `limit:wall-clock`; a new worker takes the range from the next case. Only arm J reaches either: its .NET
-engine's match timeout (1 second, below) is not checked in every loop, and the package's matcher recurses.
+that case answered `crash:exit-N`; a case that runs longer than 10 seconds of wall-clock time (1 second once a case of
+the same pattern, flags and policy has been stopped in that range) has its worker stopped and is answered
+`limit:wall-clock`; a new worker takes the range from the next case. Arm J reaches both: its .NET engine's match timeout
+(1 second, below) is not checked in every loop, and the package's matcher recurses. The wall clock is a limit of the
+run, not of an arm: on a loaded machine it can stop a case S or V would end under its own bound, so a run to be judged
+is taken on an idle machine. *(The unjudged run of 2026-11-01, `docs/roadmap.md`'s record of task 2.13, ran with 2
+seconds and 0.5 seconds; the limits were raised after it.)*
 
 ## Arm S
 

@@ -114,6 +114,27 @@ class Arbiter:
         self.cutoff = cutoff
         self.cache: dict = {}
 
+    def _identity(self) -> list:
+        return [self.version, self.commit, self.cutoff]
+
+    def load(self, path: Path) -> None:
+        """The answers a run saved, when they are this arbiter's at this cut-off; otherwise none."""
+        with open_text(path) as handle:
+            if json.loads(handle.readline()) != self._identity():
+                return
+            for line in handle:
+                key, answer = json.loads(line)
+                if isinstance(answer, list):
+                    answer = ("match", tuple(None if c is None else tuple(c) for c in answer[1]),
+                              tuple((n, None if r is None else tuple(r)) for n, r in answer[2]))
+                self.cache[tuple(key)] = answer
+
+    def save(self, path: Path) -> None:
+        with open_text(path, "wt") as handle:
+            handle.write(json.dumps(self._identity()) + "\n")
+            for key, answer in self.cache.items():
+                handle.write(json.dumps([list(key), answer]) + "\n")
+
     def answer(self, pattern, flags, subject, last_index, op) -> str | tuple:
         key = (pattern, flags, subject if op == "exec" else None, last_index if op == "exec" else None)
         if key in self.cache:
@@ -401,6 +422,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--unicode-pins", required=True, type=Path)
     parser.add_argument("--cutoff", type=int, default=DEFAULT_CUTOFF)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--cache", type=Path, help="a file of the arbiter's answers, read when it exists and written "
+                        "after the run: an answer depends only on the input, the arbiter's commit and the cut-off")
     args = parser.parse_args(argv)
     out = args.out or args.comparison
     out.mkdir(parents=True, exist_ok=True)
@@ -410,6 +433,8 @@ def main(argv: list[str] | None = None) -> int:
         print("refused:\n  " + "\n  ".join(problems), file=sys.stderr)
         return 2
     arbiter = Arbiter(args.broiler_js, args.commit, args.unicode_pins, args.cutoff)
+    if args.cache and args.cache.exists():
+        arbiter.load(args.cache)
     controls = control_cases(args.runs)
     partners = data_partners(args.unicode_pins)
     counts: Counter = Counter()
@@ -442,6 +467,8 @@ def main(argv: list[str] | None = None) -> int:
                                  "sha256": hashlib.sha256(args.correspondence.read_bytes()).hexdigest()},
               "controls": controls, "counts": dict(sorted(counts.items())), "by-class-row-run-population": dict(sorted(by_row.items()))}
     (out / "classification.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if args.cache:
+        arbiter.save(args.cache)
     print(json.dumps(result["counts"], sort_keys=True))
     return 1 if counts.get("c") else 0
 
