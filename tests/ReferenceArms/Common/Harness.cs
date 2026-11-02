@@ -316,7 +316,7 @@ internal static class Harness
 
                 var answer = c.IsExec ? ExecCase(arm, c, last) : last.Answer;
                 if (ControlCase is not null && string.Equals(c.Id, ControlCase, StringComparison.Ordinal))
-                    answer = new Answer(answer.Text + "#negative-control", answer.Charge);
+                    answer = new Answer(Planted(answer.Text), answer.Charge);
                 output.WriteLine("A\t" + c.Id + "\t" + answer.Text + "\t" + answer.Charge);
             }
 
@@ -325,6 +325,32 @@ internal static class Harness
         thread.Start();
         thread.Join();
         return 0;
+    }
+
+    /// <summary>
+    /// The negative control's change: the answer itself, not a marker. A match's first capture ends one unit later, a
+    /// null is a match of the empty string at 0, an acceptance a refusal, and anything else a null; so the planted
+    /// answer differs from the arm's in every notation the comparison and the classifier read.
+    /// </summary>
+    internal static string Planted(string text)
+    {
+        if (text.StartsWith("match:", StringComparison.Ordinal))
+        {
+            var body = text.Substring(6);
+            var end = body.IndexOfAny(new[] { ';', '|' });
+            var first = end < 0 ? body : body.Substring(0, end);
+            var comma = first.IndexOf(',');
+            var to = long.Parse(first.Substring(comma + 1), CultureInfo.InvariantCulture);
+            return "match:" + first.Substring(0, comma + 1) + (to + 1).ToString(CultureInfo.InvariantCulture) +
+                   (end < 0 ? "" : body.Substring(end));
+        }
+
+        return text switch
+        {
+            "null" => "match:0,0",
+            "accept" => "refuse:syntax",
+            _ => "null",
+        };
     }
 
     private static (Answer Answer, object? Compiled) Guarded(Func<(Answer Answer, object? Compiled)> compile)

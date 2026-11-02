@@ -109,9 +109,12 @@ under `i` (rows M2 and M2a); the project runs on ICU, not in invariant globaliza
 The rule asks for a copy of arm V with one result changed for one input of P4, and a copy of arm J with one result
 changed for one input of P1, each run once, the comparison reporting each as a difference unclassified, then the
 copies removed. A control copy is this directory's `V/` or `J/` copied to a scratch directory, its `Program.cs`'s
-`NEGATIVE-CONTROL` line given `Harness.ControlCase = "<case id>";` and nothing else: the harness then appends
-`#negative-control` to that case's answer and records the case in the run file, which the classifier reads to list the
-difference unclassified. The copies are never committed.
+`NEGATIVE-CONTROL` line given `Harness.ControlCase = "<case id>";` and nothing else: the harness then changes that
+case's answer itself (`Harness.Planted`: a match's first capture ends one unit later, a null becomes the empty match at
+0, an acceptance a refusal, anything else a null) and records the case in the run file, which the classifier reads to
+list the difference unclassified. The copies are never committed. *(Until the review of 2026-11-02 the harness
+appended "`#negative-control` to that case's answer", a marker the classifier's canonical form stripped, so the
+planted answer was not a changed result; the classifier no longer strips anything.)*
 
 ## The fast-path differential
 
