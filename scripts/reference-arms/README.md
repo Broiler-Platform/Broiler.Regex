@@ -97,11 +97,34 @@ and the arm's. It classifies nothing.
 `classify.py` was written before any judged run. For each difference it asks the arbiter, `regexpref.py`
 (`ref:regexpref@1`) taken by `git archive` from the Broiler.JS commit `--commit` names (with `unicoderef.py` and the
 corpus's `unicode.pin`), with a cut-off of 1,000,000 Matcher invocations, and classes the difference by the rule:
-(a) the arm wrong, S right, and a correspondence row whose class names the arm's engine as corrected matching the
-input (`ROWS`: S1, S2a, S2b, S5, S7, S8, S10, M2, M2a, M3, M4, M7, B2, each with its predicate); (a') arm J under `i`
-without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a case pair is in the pattern or the subject (row U3);
-(b) a refusal for nesting or a limit on one side, the other side's answer the arbiter's or the arbiter past its
-cut-off (rows S3, B6, B7, and decision D10 for J), and row M4's empty match from a lastIndex inside a surrogate pair,
-which the arbiter cannot answer (decision D41); (c) everything else, an unreachable arbiter included. It refuses to
-run (exit 2) when a row it names is missing from the correspondence or its class does not name the engine. The case
-an arm's run file names as its negative-control case is listed unclassified.
+(a) the arm wrong, S right, and a correspondence row whose class names the arm's engine as corrected (in the words
+`ROWS` gives, which the classifier checks against the correspondence) recording that correction. Each predicate reads
+the row's own correction, the direction of the difference and its construct, never a feature of the input alone:
+
+| Row | Arm | The difference it holds |
+|---|---|---|
+| S1 | V | V refuses a duplicate name S accepts |
+| S2a | J | J accepts a name repeated only once decoded, `(?<\u0061>x)(?<a>y)`, the arbiter's reason a duplicate name |
+| S5 | V | V accepts `\k` in a class in a pattern with a group name, which S refuses |
+| S7 | J | without `u` or `v`, J accepts a quantified look-behind, the arbiter's reason nothing to repeat or a braced quantifier |
+| S8 | J | under `v`, J accepts a class the arbiter refuses for a ClassSetSyntaxCharacter or a reserved double punctuator |
+| S10 | V | V refuses a four-digit lead escape before `\u{`, under `u` or `v` |
+| S10 | J | an exec of `[\uD83D\u{DC38}]`'s class case: a lead escape then a braced trail in a class, under `u` or `v` |
+| M2a | J | under `tr-TR` or `lt-LT`, `i` without `u` or `v`, U+0130 or U+0131 in the input, J's answer not its invariant one |
+| M2b, M2 | J | `i` (the flag or a modifier) without `u` or `v`, an exec both answer, a case pair the arbiter's UCD and Canonicalize hold differently in the input (U+1F80 to U+1FFF: M2b) |
+| M3 | J | without `u` or `v`, an exec both answer: under `m`, `^` or `$` and U+2028 or U+2029; without `m`, `$` and a final LF |
+| M4 | V, J | from a lastIndex inside a pair: V's match (its start steps back); J's match where S has none |
+| M7 | V, J | under `u` or `v`, the arm matches where S does not: a back-reference with a surrogate in the subject (V); one inside a look-behind (J) |
+| B2 | J | under `u` or `v`, a nested quantifier, S's match against J's null or later start |
+
+Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
+in arm J. (a') arm J, an exec both answer, under `i` without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a
+case pair is in the pattern or the subject (row U3). (b) both sides stopped by their own bounds, or a refusal for
+nesting or a limit on one side and the other side's answer the arbiter's (rows S3, B6, B7, and decision D10 for J),
+and row M4's empty match from a lastIndex inside a surrogate pair, which the arbiter cannot answer (decision D41).
+(c) everything else, an unreachable arbiter included: a stop on one side against an answer the arbiter cannot check
+in its cut-off is class (c) until reduced to an input it can, as the rule's arbiter clause reads. It refuses to run
+(exit 2) when a row it names is missing from the correspondence or its class does not hold the row's words. The case
+an arm's run file names as its negative-control case is listed unclassified. *(Revised 2026-11-02 at the review of task
+2.13, before any judged run: the predicates read only a flag or a character, rows S1 and S2b were read for arm J, and
+class (b) admitted "the arbiter past its cut-off"; `classify.py`'s docstring quotes what changed.)*
