@@ -18,12 +18,12 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 
 ```sh
 python3 -m unittest discover -s scripts/reference-arms/tests      # BROILER_UNICODE=<checkout> adds P5's test
-python3 -I scripts/reference-arms/generate_population.py --out OUT/population \
+python3 -I -B scripts/reference-arms/generate_population.py --out OUT/population \
     --test262 <test262 at ccaac100> --unicode <Broiler.Unicode checkout> [--vectors <conformance/vectors/regexp>]
 dotnet tests/ReferenceArms/S/bin/Release/net10.0/Regex.ReferenceArms.S.dll --population OUT/population --out OUT/runs
 #   ... V, J, and J again with --culture tr-TR and --culture lt-LT (tests/ReferenceArms/README.md)
-python3 -I scripts/reference-arms/compare.py --population OUT/population --runs OUT/runs --out OUT/comparison
-python3 -I scripts/reference-arms/classify.py --comparison OUT/comparison --runs OUT/runs \
+python3 -I -B scripts/reference-arms/compare.py --population OUT/population --runs OUT/runs --out OUT/comparison
+python3 -I -B scripts/reference-arms/classify.py --comparison OUT/comparison --runs OUT/runs \
     --broiler-js <Broiler.JS checkout> --commit <the commit the bundle names> \
     --correspondence <Broiler.VM>/docs/evidence/sjl-11-001/correspondence.md \
     --unicode-pins <Broiler.Unicode>/data/unicode/pins

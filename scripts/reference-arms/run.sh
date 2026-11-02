@@ -13,7 +13,9 @@
 # log in OUT/logs. The script stops at the first step that fails; the classifier's exit 1 (a class (c) difference)
 # is not a failure of the script, and is kept in its log.
 set -euo pipefail
-export PYTHONDONTWRITEBYTECODE=1  # rule SL10 reads every file of the tree, and a .pyc holds a CR
+# Rule SL10 reads every file of the tree, and a .pyc holds a CR: -B (which -I does not imply, and -I ignores
+# PYTHONDONTWRITEBYTECODE) and the variable, for the unittest run, keep Python from writing them.
+export PYTHONDONTWRITEBYTECODE=1
 
 out=$(realpath -m "${1:?usage: run.sh OUT --test262 DIR --unicode DIR --broiler-js DIR --commit SHA --correspondence FILE [--vectors DIR] [--classes LIST]}")
 shift
@@ -50,7 +52,7 @@ step() {
   echo "taken $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "kernel $(uname -srm)"
   echo "sdk $(dotnet --version)"
-  echo "python $(python3 -I -c 'import sys; print(sys.version.split()[0])')"
+  echo "python $(python3 -I -B -c 'import sys; print(sys.version.split()[0])')"
 } > "$out/environment.txt"
 
 for arm in S V J FastPaths; do
@@ -59,7 +61,7 @@ done
 step script-tests python3 -m unittest discover -s scripts/reference-arms/tests
 population_args=(--out "$out/population" --test262 "$test262" --unicode "$unicode" --classes "$classes")
 [ -n "$vectors" ] && population_args+=(--vectors "$vectors")
-step population python3 -I scripts/reference-arms/generate_population.py "${population_args[@]}"
+step population python3 -I -B scripts/reference-arms/generate_population.py "${population_args[@]}"
 
 bin() { echo "tests/ReferenceArms/$1/bin/Release/net10.0/Regex.ReferenceArms.$1.dll"; }
 step arm-S dotnet "$(bin S)" --population "$out/population" --out "$out/runs" --classes "$classes"
@@ -67,11 +69,11 @@ step arm-V dotnet "$(bin V)" --population "$out/population" --out "$out/runs" --
 step arm-J dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes"
 step arm-J-tr-TR dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture tr-TR
 step arm-J-lt-LT dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture lt-LT
-step compare python3 -I scripts/reference-arms/compare.py --population "$out/population" --runs "$out/runs" --out "$out/comparison"
+step compare python3 -I -B scripts/reference-arms/compare.py --population "$out/population" --runs "$out/runs" --out "$out/comparison"
 
-echo "\$ python3 -I scripts/reference-arms/classify.py ..." > "$out/logs/classify.log"
+echo "\$ python3 -I -B scripts/reference-arms/classify.py ..." > "$out/logs/classify.log"
 status=0
-python3 -I scripts/reference-arms/classify.py --comparison "$out/comparison" --runs "$out/runs" --broiler-js "$js" \
+python3 -I -B scripts/reference-arms/classify.py --comparison "$out/comparison" --runs "$out/runs" --broiler-js "$js" \
   --commit "$commit" --correspondence "$correspondence" --unicode-pins "$unicode/data/unicode/pins" \
   >> "$out/logs/classify.log" 2>&1 || status=$?
 echo "exit $status" >> "$out/logs/classify.log"
