@@ -1,6 +1,8 @@
 // Arm J of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy.
 // Source:  Broiler.JS, Broiler.JS/Broiler.JavaScript.Runtime/RegExpGroupNames.cs at 1f91b8f1 (the correspondence's revision),
 //          git blob 1c53b863414a3e73069e2ac6219110c8ba6dd710, Apache-2.0, Broiler Platform contributors.
+// Origin:  Broiler.JS code, and Broiler.JS is derived in part from Yantra JS (https://github.com/yantrajs/yantra,
+//          Apache-2.0); this copy keeps the attribution Broiler.JS's THIRD_PARTY_NOTICES.md gives that origin.
 // Members: the whole file: RegExpGroupNames.FirstError (:33), FirstDuplicate (:117).
 // Changes: none.
 

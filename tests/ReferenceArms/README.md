@@ -95,6 +95,9 @@ Packages: `Broiler.Unicode.Algorithms` and `Broiler.Unicode.Tables` `0.1.0-previ
 | `J/JSUnicode.cs` | `Broiler.JavaScript.Runtime/Unicode/JSUnicode.cs` | in its header | the whole file | the five reads of `JSUnicodeTables.Instance`, Broiler.JS's embedded tables of the same UCD 17.0.0, read `UnicodeTables.Instance` of `Broiler.Unicode.Tables` |
 | `J/StandIns.cs` | not a copy | - | `JSException`, `JSEngine.NewSyntaxError`, `RegexTieringDiagnostics`, `RegexTiering` (off) and the instance fields the copied members read | - |
 
+Every copy is Broiler.JS code, and Broiler.JS is derived in part from Yantra JS (Apache-2.0): each header says so
+(`Origin:`), and [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md) keeps the attribution Broiler.JS's notice
+gives that origin.
 The two `.cs` files of `BuiltIns/RegExp/` that Broiler.JS keeps with CRLF line endings are LF here (rule SL10).
 Packages: `Broiler.Regex` **`0.1.0-preview.4` from nuget.org**, the package whose identity S has, which is why J is
 its own executable; `Broiler.Unicode.Algorithms` and `Broiler.Unicode.Tables` `0.1.0-preview.5` (Broiler.JS's pin at

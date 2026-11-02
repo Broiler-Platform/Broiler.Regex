@@ -1,6 +1,8 @@
 // Arm J of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy.
 // Source:  Broiler.JS, Broiler.JS/Broiler.JavaScript.BuiltIns/RegExp/JSRegExp.cs at 1f91b8f1 (the correspondence's revision),
 //          git blob 4217ce7529a53ca35038074b76efb8899f3a7dd3, Apache-2.0, Broiler Platform contributors.
+// Origin:  Broiler.JS code, and Broiler.JS is derived in part from Yantra JS (https://github.com/yantrajs/yantra,
+//          Apache-2.0); this copy keeps the attribution Broiler.JS's THIRD_PARTY_NOTICES.md gives that origin.
 // Members: lines 1-17 and 20 (the usings, the namespace, the class), 141-145 and 152-168 (IsSyntaxCharacter,
 //          AppendHexEscape, AppendUnicodeEscape), 649-4366 and 4369-4965: BuildFlagsString, ParseFlags,
 //          both CreateRegex (:765-1046) and every static member of the translator they call, CaptureGroupMap (:1254) among

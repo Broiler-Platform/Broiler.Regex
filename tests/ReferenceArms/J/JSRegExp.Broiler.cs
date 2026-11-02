@@ -1,10 +1,14 @@
 // Arm J of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy.
 // Source:  Broiler.JS, Broiler.JS/Broiler.JavaScript.BuiltIns/RegExp/JSRegExp.Broiler.cs at 1f91b8f1 (the correspondence's revision),
 //          git blob 9b365458cc1c36cf685bf837f18e636bd8802a3b, Apache-2.0, Broiler Platform contributors.
+// Origin:  Broiler.JS code, and Broiler.JS is derived in part from Yantra JS (https://github.com/yantrajs/yantra,
+//          Apache-2.0); this copy keeps the attribution Broiler.JS's THIRD_PARTY_NOTICES.md gives that origin.
 // Members: the whole file but EnumerateMatches and IsMatch: TryRouteToBroiler (:64-100), GapScan (:104-228),
 //          BuildCaptureMapFromBroiler (:236), RegexCapture, RegexMatchData, RunMatch (:284-316), FromBroiler and FromNet.
 // Changes: two, each marked ARM CHANGE: EnumerateMatches and IsMatch, which the arm does not call, and the using only they
-//          need are left out. RunMatch reads the instance fields JSRegExpFields.cs declares, which Broiler.JS's constructor sets.
+//          need are left out. RunMatch reads `broiler`, which this file declares (:40), and instance fields
+//          that J/StandIns.cs declares (JSRegExp.cs declares them at the source, captureMap at :300 among them), which
+//          Broiler.JS's constructor sets.
 //          The source's CRLF line endings are LF here, as rule SL10 holds every file of this repository to LF.
 
 using System.Collections.Generic;

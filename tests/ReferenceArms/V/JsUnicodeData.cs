@@ -9,7 +9,6 @@
 //          Broiler.Unicode.Tables;` is added for it.
 
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
-// SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
 // Broiler Code Assurance

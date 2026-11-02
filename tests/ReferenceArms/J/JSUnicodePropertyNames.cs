@@ -1,6 +1,8 @@
 // Arm J of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy.
 // Source:  Broiler.JS, Broiler.JS/Broiler.JavaScript.Runtime/Unicode/JSUnicodePropertyNames.cs at 1f91b8f1 (the correspondence's revision),
 //          git blob 1e250db3be3738fe7c47093a580a5ac1505b738b, Apache-2.0, Broiler Platform contributors.
+// Origin:  Broiler.JS code, and Broiler.JS is derived in part from Yantra JS (https://github.com/yantrajs/yantra,
+//          Apache-2.0); this copy keeps the attribution Broiler.JS's THIRD_PARTY_NOTICES.md gives that origin.
 // Members: the whole file: JSUnicodePropertyNames.FirstRefused (:31).
 // Changes: none.
 

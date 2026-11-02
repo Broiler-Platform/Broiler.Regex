@@ -49,6 +49,11 @@ and every change made to it:
   its prechecks ([Broiler.JS](https://github.com/Broiler-Platform/Broiler.JS) at `1f91b8f1`).
 
 Both are Copyright Broiler Platform contributors under the Apache License 2.0, the licence in [`LICENSE`](LICENSE).
+The arm J copies are Broiler.JS code, and Broiler.JS is derived in part from
+[Yantra JS](https://github.com/yantrajs/yantra), an Apache License 2.0 JavaScript engine for .NET: as Broiler.JS's own
+`THIRD_PARTY_NOTICES.md` says, Broiler.JS retains Yantra JS contribution history and attribution, and that origin
+carries over to these copies, each of whose headers says so. The Yantra JS authors have not reviewed, sponsored or
+endorsed Broiler.JS or this repository; the upstream project's name is used only to give accurate provenance.
 Arm J restores `Broiler.Regex` `0.1.0-preview.4` from nuget.org, as Broiler.JS did at that commit; the arms read
 Unicode data only through `Broiler.Unicode.Tables`, under the notice of the first section. The arms' population
 generator (`scripts/reference-arms/`) reads test262 at `ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e` from a checkout
