@@ -32,6 +32,12 @@
     <PackageReference Include="Broiler.Unicode.Tables" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The library runner of bundle sjl-11-001's part D, which Broiler.Regex.Tests holds and this probe runs in its
+         vectors mode under the JIT and Native AOT (task 2.12; VectorsMode.cs). -->
+    <Compile Include="..\..\Broiler.Regex.Tests\Vectors\*.cs" Link="Vectors\%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <!-- Part C's two controls, scratch builds of this probe under -p:RegexAdversarialControl=steps or =nesting (task 2.14);
        without the switch, which is every build but the controls', it changes nothing. After the library's reference above. -->
   <Import Project="AdversarialControls.targets" />
