@@ -62,25 +62,29 @@ internal static class Harness
 
     internal static int Run(string[] args, IArm arm)
     {
-        if (args.Length == 5 && args[0] == "--worker")
+        if (args.Length == 6 && args[0] == "--worker")
         {
-            SetCulture(args[4] == "-" ? null : args[4]);
-            return RunWorker(arm, args[1], long.Parse(args[2], CultureInfo.InvariantCulture), long.Parse(args[3], CultureInfo.InvariantCulture));
+            var workerCulture = args[4] == "-" ? null : args[4];
+            SetCulture(workerCulture);
+            var listed = args[5] == "-" ? new HashSet<string>(StringComparer.Ordinal) : ReadStops(args[5], Suffix(arm, workerCulture));
+            return RunWorker(arm, args[1], long.Parse(args[2], CultureInfo.InvariantCulture), long.Parse(args[3], CultureInfo.InvariantCulture), listed);
         }
 
         var options = Options.Parse(args);
         if (options is null)
         {
-            Console.Error.WriteLine("usage: <arm> --population DIR --out DIR [--classes P1,P2] [--culture NAME]");
+            Console.Error.WriteLine("usage: <arm> --population DIR --out DIR [--classes P1,P2] [--culture NAME] (--stops FILE | --calibrate)");
             return 2;
         }
 
         SetCulture(options.Culture);
+        Calibrating = options.Calibrate;
+        StopsFile = options.Stops;
 
         Directory.CreateDirectory(options.Out);
         var timing = Path.Combine(options.Out, "timing");
         Directory.CreateDirectory(timing);
-        var suffix = arm.Name + (options.Culture is { } c ? "." + c : "");
+        var suffix = Suffix(arm, options.Culture);
         var counts = new SortedDictionary<string, long>(StringComparer.Ordinal);
         var started = DateTime.UtcNow;
         foreach (var population in options.Classes)
@@ -106,6 +110,12 @@ internal static class Harness
             ["control-case"] = ControlCase,
             ["calls"] = arm.Facts,
             ["limits"] = Limits.Recorded,
+            ["stops"] = options.Calibrate
+                ? "calibration: the cases the calibration's limits stop, answered " + Limits.HarnessStop
+                : options.Stops is null
+                    ? "none"
+                    : "the stop list of SHA-256 " + Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(options.Stops))) +
+                      ", " + ReadStops(options.Stops, suffix).Count.ToString(CultureInfo.InvariantCulture) + " cases of this run",
         };
         File.WriteAllText(Path.Combine(options.Out, "run." + suffix + ".json"),
             JsonSerializer.Serialize(facts, new JsonSerializerOptions { WriteIndented = true }) + "\n");
@@ -120,6 +130,34 @@ internal static class Harness
         return 0;
     }
 
+    /// <summary>Whether this run is a calibration (Limits.cs): the time limits decide, and the run's stops make a stop list.</summary>
+    private static bool Calibrating { get; set; }
+
+    /// <summary>The stop list a run reads (Limits.cs), when it is not a calibration.</summary>
+    private static string? StopsFile { get; set; }
+
+    /// <summary>The run's name in the output files and the stop list: the arm, and the culture when one is given.</summary>
+    private static string Suffix(IArm arm, string? culture) => arm.Name + (culture is { } c ? "." + c : "");
+
+    /// <summary>
+    /// The cases the stop list holds for one run: its lines are the run's name and a case's id, tab-separated, and
+    /// `#` begins a comment line (tests/ReferenceArms/README.md, "Limits").
+    /// </summary>
+    internal static HashSet<string> ReadStops(string path, string run)
+    {
+        var listed = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var line in File.ReadLines(path, new UTF8Encoding(false)))
+        {
+            if (line.Length == 0 || line[0] == '#')
+                continue;
+            var tab = line.IndexOf('\t', StringComparison.Ordinal);
+            if (tab > 0 && string.Equals(line[..tab], run, StringComparison.Ordinal))
+                listed.Add(line[(tab + 1)..]);
+        }
+
+        return listed;
+    }
+
     private static void SetCulture(string? name)
     {
         var culture = name is null ? CultureInfo.InvariantCulture : CultureInfo.GetCultureInfo(name);
@@ -132,10 +170,12 @@ internal static class Harness
     /// <summary>
     /// One class's file: the cases in <see cref="Limits.Workers"/> contiguous ranges, one worker process of this arm per
     /// range, each answering its cases in order. A worker that ends while a case runs (a stack overflow in Broiler.Regex
-    /// 0.1.0-preview.4's recursive matcher, correspondence row B8) or that runs one case past its limit
-    /// (<see cref="Limits.CaseTime"/>) is stopped; the case is answered <see cref="Limits.HarnessStop"/>, whichever it
-    /// was, and a new worker takes the range from the next case. Which it was, with the case's processor and wall-clock
-    /// time, goes to <paramref name="timing"/>, beside every case slower than <see cref="Limits.SlowCase"/>.
+    /// 0.1.0-preview.4's recursive matcher, correspondence row B8) or that runs one case past its limit (in a calibration
+    /// <see cref="Limits.CalibrationCaseTime"/>, in a run <see cref="Limits.RunBackstop"/>) is stopped; the case is
+    /// answered <see cref="Limits.HarnessStop"/>, whichever it was, and a new worker takes the range from the next case.
+    /// In a run, a case the stop list holds is answered <see cref="Limits.HarnessStop"/> without running. Which stop it
+    /// was, with the case's processor and wall-clock time, goes to <paramref name="timing"/>, beside every case slower
+    /// than <see cref="Limits.SlowCase"/>.
     /// </summary>
     private static long RunFile(string input, string output, string timing, string? culture)
     {
@@ -219,7 +259,7 @@ internal static class Harness
             };
             if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.Ordinal))
                 start.ArgumentList.Add(System.Reflection.Assembly.GetEntryAssembly()!.Location);
-            foreach (var argument in new[] { "--worker", input, next.ToString(CultureInfo.InvariantCulture), to.ToString(CultureInfo.InvariantCulture), culture ?? "-" })
+            foreach (var argument in new[] { "--worker", input, next.ToString(CultureInfo.InvariantCulture), to.ToString(CultureInfo.InvariantCulture), culture ?? "-", StopsFile ?? "-" })
                 start.ArgumentList.Add(argument);
             using var child = System.Diagnostics.Process.Start(start)!;
             child.ErrorDataReceived += static (_, _) => { };
@@ -279,10 +319,20 @@ internal static class Harness
                     var afterAStop = stoppedKeys.Contains(inFlightKey);
                     used = ProcessorTime(child) - sinceProcessor;
                     wall = DateTime.UtcNow - sinceWall;
-                    if (used > (afterAStop ? Limits.CaseTimeAfterAStop : inFlightAmple ? Limits.AmpleCaseTime : Limits.CaseTime))
+                    if (!Calibrating)
+                    {
+                        // A run: no case the stop list does not hold should reach this; one that does makes the run
+                        // not reproducible, and its timing line says so (run.sh reads it).
+                        if (used > Limits.RunBackstop)
+                            stop = "unlisted-processor-time-backstop";
+                    }
+                    else if (used > (afterAStop ? Limits.CalibrationCaseTimeAfterAStop : inFlightAmple ? Limits.CalibrationAmpleCaseTime : Limits.CalibrationCaseTime))
+                    {
                         stop = afterAStop ? "processor-time-after-a-stop" : "processor-time";
-                    else if (wall > Limits.CaseWallClockBackstop)
-                        stop = "wall-clock-backstop";
+                    }
+
+                    if (stop is null && wall > Limits.WallClockBackstop)
+                        stop = Calibrating ? "wall-clock-backstop" : "unlisted-wall-clock-backstop";
                     if (stop is not null)
                     {
                         child.Kill(entireProcessTree: true);
@@ -303,8 +353,8 @@ internal static class Harness
                         wall = DateTime.UtcNow - sinceWall;
                     }
 
-                    // Every stop, a crash among them, shortens the limit of the pattern's later cases in this range: which
-                    // stop it was must not change what follows.
+                    // In a calibration every stop, a crash among them, shortens the limit of the pattern's later cases in
+                    // this range: which stop it was must not change what follows.
                     stoppedKeys.Add(inFlightKey);
                     writer.WriteLine(inFlightId + "\t" + Limits.HarnessStop + "\t-");
                     timing.WriteLine(inFlightId + "\tstop:" + stop + "\t" + Seconds(used) + "\t" + Seconds(wall));
@@ -332,7 +382,7 @@ internal static class Harness
     }
 
     /// <summary>A worker: the cases from index <paramref name="from"/> to <paramref name="to"/>, one at a time on a thread of <see cref="Limits.StackBytes"/>.</summary>
-    private static int RunWorker(IArm arm, string input, long from, long to)
+    private static int RunWorker(IArm arm, string input, long from, long to, HashSet<string> listed)
     {
         var output = new StreamWriter(Console.OpenStandardOutput(), new UTF8Encoding(false)) { NewLine = "\n", AutoFlush = false };
         var thread = new Thread(() =>
@@ -355,6 +405,13 @@ internal static class Harness
                 output.WriteLine("S\t" + index.ToString(CultureInfo.InvariantCulture) + "\t" + c.Id + "\t" + KeyOf(c) + "\t" +
                                  (c.AmpleNesting is null ? "default" : "ample"));
                 output.Flush();
+                if (listed.Contains(c.Id))
+                {
+                    // The stop list holds the case: answered as the calibration's stop, without running it.
+                    output.WriteLine("A\t" + c.Id + "\t" + Limits.HarnessStop + "\t-");
+                    continue;
+                }
+
                 var clock = System.Diagnostics.Stopwatch.StartNew();
                 var key = c.Pattern + "\u0000" + c.Flags + "\u0000" + c.Policy;
                 if (!string.Equals(key, lastKey, StringComparison.Ordinal))
@@ -519,25 +576,38 @@ internal static class Harness
         return builder.ToString();
     }
 
-    private sealed record Options(string Population, string Out, IReadOnlyList<string> Classes, string? Culture)
+    private sealed record Options(string Population, string Out, IReadOnlyList<string> Classes, string? Culture, string? Stops, bool Calibrate)
     {
         internal static Options? Parse(string[] args)
         {
-            string? population = null, output = null, culture = null;
+            string? population = null, output = null, culture = null, stops = null;
+            var calibrate = false;
             var classes = new[] { "P1", "P2", "P3", "P4", "P5", "P6", "P7" };
-            for (var i = 0; i + 1 < args.Length; i += 2)
+            for (var i = 0; i < args.Length; i++)
             {
+                if (args[i] == "--calibrate")
+                {
+                    calibrate = true;
+                    continue;
+                }
+
+                if (i + 1 >= args.Length)
+                    return null;
                 switch (args[i])
                 {
-                    case "--population": population = args[i + 1]; break;
-                    case "--out": output = args[i + 1]; break;
-                    case "--classes": classes = args[i + 1].Split(',', StringSplitOptions.RemoveEmptyEntries); break;
-                    case "--culture": culture = args[i + 1]; break;
+                    case "--population": population = args[++i]; break;
+                    case "--out": output = args[++i]; break;
+                    case "--classes": classes = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries); break;
+                    case "--culture": culture = args[++i]; break;
+                    case "--stops": stops = Path.GetFullPath(args[++i]); break;
                     default: return null;
                 }
             }
 
-            return population is null || output is null || args.Length % 2 != 0 ? null : new Options(population, output, classes, culture);
+            // A run reads a stop list, or is a calibration that writes one; not both.
+            return population is null || output is null || calibrate == (stops is not null)
+                ? null
+                : new Options(population, output, classes, culture, stops, calibrate);
         }
     }
 }

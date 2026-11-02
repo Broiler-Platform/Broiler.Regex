@@ -52,33 +52,46 @@ read under `g` or `y` and is 0 otherwise, a lastIndex past the subject is `null`
 its matcher as its engine does, in the copied members below. Argument conversion, lastIndex's writes, the protocols
 and error construction stay in the engines and are not compared.
 
-**Workers.** Each class's cases are split into 3 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
+**Workers.** Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
 depend on the machine), one worker process of the arm per range, each case on a thread of 16 MiB, the stack
-Broiler.JS's shell gives a script (`SH/Program.cs:128`). The harness stops a case, and answers it `limit:harness`,
-when: its worker's processor time (user and system, all its threads) since the case began passes 5 seconds (20 under
-P3's ample policy, whose inputs run to 10,000,001 code units: arm J answers P3-F03 in about 4.5), or 2 seconds once a
-case of the same pattern, flags and policy has been stopped in that range; its wall-clock time passes 120 seconds
-whatever its processor time (a backstop for a worker that does not run); or its worker ends while it runs (a crash:
-Broiler.Regex 0.1.0-preview.4's recursive matcher overflows the stack, row B8). A new worker takes the range from the
-next case. Arm J reaches it: its .NET engine runs with no match timeout, as Broiler.JS builds it, and the package's
-matcher recurses. The stops are one answer so that which came first, which a loaded machine can change (a deep
-recursion overflows the stack, or is stopped by time before it does), never changes the answer; processor time, not
-wall-clock time, because a loaded machine stretches a case's wall-clock time far more than its processor time. A case
-that ends near a limit can still be stopped in one run and not in another; `timing/` lists the slow cases, and the
-bundle's record says what two runs gave. Which stop it was is in `timing/`.
+Broiler.JS's shell gives a script (`SH/Program.cs:128`). A case the harness stops, loses or skips is answered
+`limit:harness`, one answer whichever it was; a new worker takes the range from the next case.
 
-**Limits.** `Common/Limits.cs` holds every bound: the default policy's 10,000,000 steps (S's step ceiling and V's
-allowance), the 3 workers, the 16 MiB stack, the 5, 20 and 2 seconds of processor time, the 120-second backstop and the
-1-second threshold of a slow case. Each run file records them. *(Revised 2026-11-02, at task 2.13's second review:
-the harness stopped a case after "10 seconds of wall-clock time (1 second once a case of the same pattern, flags and
-policy has been stopped in that range)" and answered it `limit:wall-clock`, a crash `crash:exit-N`, and arm J's .NET
-`Regex` had "a match timeout of 1 second (a timeout is `limit:timeout`)"; the workers were `--threads`, "3 by
-default" but at most the machine's processors. Which of them fired first, and the wall clock itself, depended on the
-machine's load, so a run did not regenerate its listings byte for byte: the verifier's run of 2026-11-02 changed
-2,248 of arm J's rows against the record's. The paragraph also read "The wall clock is a limit of the run, not of an
-arm: on a loaded machine it can stop a case S or V would end under its own bound, so a run to be judged is taken on an
-idle machine. *(The unjudged run of 2026-11-01, `docs/roadmap.md`'s record of task 2.13, ran with 2 seconds and 0.5
-seconds; the limits were raised after it.)*")*
+**The stop list, and the limits.** Arm J has no bound of its own on some inputs: its .NET engine runs with no match
+timeout, as Broiler.JS builds it, and Broiler.Regex 0.1.0-preview.4's matcher recurses once per term (row B8). Any
+limit of time stops, in one run and not in the next, some case that ends near it (arm J ended P4-08462-v-12 after
+about 5 seconds of processor time on a loaded machine, and stopped it at 5.07 on the same machine an hour later), so time decides
+no answer of the runs whose listings the comparison writes:
+- **A calibration** (`run.sh OUT --calibrate`) runs every arm under time limits: a case is stopped when its worker's
+  processor time (user and system, all its threads) since the case began passes 5 seconds (20 under P3's ample policy,
+  whose inputs run to 10,000,001 code units: arm J answers P3-F03 in about 4.5), or 2 seconds once a case of the same
+  pattern, flags and policy was stopped in that range, or when its wall-clock time passes 900 seconds, or when its
+  worker ends while it runs (a crash: preview.4's recursion overflows the stack). `scripts/reference-arms/stops.py`
+  writes the cases it stopped, by run and id, as the stop list, which the repository keeps as [`stops.tsv`](stops.tsv)
+  with the calibration it came from named in its header and in `docs/roadmap.md`.
+- **Every other run** reads `stops.tsv` (`--stops`): a case the list holds for that run (S, V, J, J.tr-TR or J.lt-LT)
+  is answered `limit:harness` without running, and every other case runs to its end, under backstops of 60 seconds of
+  processor time, twelve times the calibration's limit, and 900 of wall-clock time. A crash is still `limit:harness`.
+  A case that reaches a backstop is recorded as `stop:unlisted-...` in `timing/` and `run.sh` fails the run as not
+  reproducible: the list is then calibrated again.
+
+So the listings follow from the commit, which holds the list, and the population (the rule's "How it is read").
+`timing/` holds which stop each was, with the case's processor and wall-clock seconds, and every case that ended after
+a second or more of wall-clock time (`slow`). `Common/Limits.cs` holds every bound: the default policy's 10,000,000
+steps (S's step ceiling and V's allowance), the 6 workers, the 16 MiB stack, the calibration's 5, 20 and 2 seconds,
+the run's 60-second backstop, the 900-second wall-clock backstop and the 1-second threshold of a slow case; each run
+file records them and the stop list's SHA-256.
+
+*(Revised 2026-11-02, at task 2.13's second review: these two paragraphs read as one, **Workers**, and the harness
+stopped a case after "10 seconds of wall-clock time (1 second once a case of the same pattern, flags and policy has
+been stopped in that range)" and answered it `limit:wall-clock`, a crash `crash:exit-N`, and arm J's .NET `Regex` had
+"a match timeout of 1 second (a timeout is `limit:timeout`)"; the workers were `--threads`, "3 by default" but at most
+the machine's processors. Which of them fired first, and the wall clock itself, depended on the machine's load, so a
+run did not regenerate its listings byte for byte: the verifier's run of 2026-11-02 changed 2,248 of arm J's rows
+against the record's. The paragraph also read "The wall clock is a limit of the run, not of an arm: on a loaded
+machine it can stop a case S or V would end under its own bound, so a run to be judged is taken on an idle machine.
+*(The unjudged run of 2026-11-01, `docs/roadmap.md`'s record of task 2.13, ran with 2 seconds and 0.5 seconds; the
+limits were raised after it.)*")*
 
 ## Arm S
 

@@ -6,7 +6,7 @@
 # invariant culture, tr-TR and lt-LT), compare, classify. README.md beside this file says what each step is.
 #
 #   scripts/reference-arms/run.sh OUT --test262 DIR --unicode DIR --broiler-js DIR --commit SHA \
-#       --correspondence FILE [--vectors DIR] [--classes P1,...] [--classify-only]
+#       --correspondence FILE [--vectors DIR] [--classes P1,...] [--classify-only | --calibrate]
 #
 # OUT receives the population, the arms' answers, the comparison and the classification; nothing is written into the
 # repository but the arms' build output (tests/ReferenceArms/*/bin, obj). Each step's command is the first line of its
@@ -15,6 +15,13 @@
 # run that leaves no OUT/comparison/classification.json, is. The fast-path differential's exit 1 (a disagreement) is
 # kept the same way; any other failure of it fails the script. --classify-only runs the classification alone, over
 # the comparison an earlier run left in OUT.
+#
+# The arms read the stop list tests/ReferenceArms/stops.tsv: a case it holds is answered as the harness's stop without
+# running, and every other case runs to its end under backstops (tests/ReferenceArms/Common/Limits.cs), so that no
+# limit of time decides an answer and the listings regenerate byte for byte. A run in which a case the list does not
+# hold reaches a backstop ends with exit 1 after the classification, as it is not reproducible. --calibrate instead
+# runs the arms under the time limits and writes OUT/stops.tsv, the list a calibration makes (scripts/reference-arms/
+# stops.py), and stops there: it compares and classifies nothing.
 set -euo pipefail
 # Rule SL10 reads every file of the tree, and a .pyc holds a CR: -B (which -I does not imply, and -I ignores
 # PYTHONDONTWRITEBYTECODE) and the variable, for the unittest run, keep Python from writing them.
@@ -26,6 +33,7 @@ test262="" unicode="" js="" commit="" correspondence="" vectors="" classes="P1,P
 while [ $# -gt 0 ]; do
   case "$1" in
     --classify-only) only=classify; shift; continue ;;
+    --calibrate) only=calibrate; shift; continue ;;
     --test262) test262=$2 ;;
     --unicode) unicode=$2 ;;
     --broiler-js) js=$2 ;;
@@ -99,11 +107,23 @@ population_args=(--out "$out/population" --test262 "$test262" --unicode "$unicod
 step population python3 -I -B scripts/reference-arms/generate_population.py "${population_args[@]}"
 
 bin() { echo "tests/ReferenceArms/$1/bin/Release/net10.0/Regex.ReferenceArms.$1.dll"; }
-step arm-S dotnet "$(bin S)" --population "$out/population" --out "$out/runs" --classes "$classes"
-step arm-V dotnet "$(bin V)" --population "$out/population" --out "$out/runs" --classes "$classes"
-step arm-J dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes"
-step arm-J-tr-TR dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture tr-TR
-step arm-J-lt-LT dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture lt-LT
+stops=tests/ReferenceArms/stops.tsv
+if [ "$only" = calibrate ]; then
+  mode=(--calibrate)
+else
+  [ -f "$stops" ] || { echo "no stop list $stops: run.sh OUT --calibrate writes one" >&2; exit 1; }
+  mode=(--stops "$stops")
+fi
+step arm-S dotnet "$(bin S)" --population "$out/population" --out "$out/runs" --classes "$classes" "${mode[@]}"
+step arm-V dotnet "$(bin V)" --population "$out/population" --out "$out/runs" --classes "$classes" "${mode[@]}"
+step arm-J dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" "${mode[@]}"
+step arm-J-tr-TR dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture tr-TR "${mode[@]}"
+step arm-J-lt-LT dotnet "$(bin J)" --population "$out/population" --out "$out/runs" --classes "$classes" --culture lt-LT "${mode[@]}"
+if [ "$only" = calibrate ]; then
+  step stops python3 -I -B scripts/reference-arms/stops.py --runs "$out/runs" --population "$out/population" --out "$out/stops.tsv"
+  echo "calibrated: $out/stops.tsv"
+  exit 0
+fi
 step compare python3 -I -B scripts/reference-arms/compare.py --population "$out/population" --runs "$out/runs" --out "$out/comparison"
 
 classify
@@ -117,5 +137,9 @@ if [ -f "$out/population/P4.tsv.gz" ]; then
     echo "the fast-path differential failed (exit $status); see $out/logs/fast-paths.log" >&2
     exit 1
   fi
+fi
+if grep -l $'\tstop:unlisted' "$out"/runs/timing/*.tsv > "$out/logs/unlisted-stops.log" 2>/dev/null; then
+  echo "a case the stop list does not hold reached a backstop (see $out/logs/unlisted-stops.log): this run is not reproducible" >&2
+  exit 1
 fi
 echo "done: $out"

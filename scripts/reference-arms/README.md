@@ -11,7 +11,8 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 | `population_format.py` | The string notation and the gzip files, shared by the three scripts |
 | `compare.py` | S against each arm run, exactly; writes `summary.json` and `differences.tsv.gz`; classifies nothing |
 | `classify.py` | The classification, from the differences, the correspondence's rows and the arbiter's answers |
-| `run.sh` | Every step in order, each logged with its command; it fails when a step fails, the classifier's crash among them |
+| `stops.py` | The stop list, from a calibration's timing files (`tests/ReferenceArms/README.md`, "The stop list, and the limits") |
+| `run.sh` | Every step in order, each logged with its command; it fails when a step fails, the classifier's crash among them; `--calibrate` writes a stop list instead |
 | `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit |
 
 ## Commands
@@ -133,8 +134,8 @@ when it fails (an exception), and otherwise 0 when no difference is (c) and 1 wh
 `classification.json` last. `run.sh` fails on 2, on 3, and on a run that leaves no `classification.json`. The case
 an arm's run file names as its negative-control case is listed unclassified.
 
-The harness's stop (`limit:harness`, `tests/ReferenceArms/README.md`, "Workers") is one answer whichever limit fired
-or whether the worker crashed, and the older `crash:exit-N`, `limit:wall-clock` and `limit:timeout` are read as it:
+The harness's stop (`limit:harness`, `tests/ReferenceArms/README.md`, "The stop list, and the limits") is one answer
+whichever limit fired, whether the worker crashed or whether the stop list held the case, and the older `crash:exit-N`, `limit:wall-clock` and `limit:timeout` are read as it:
 arm J's stop is (a) under row B8 on that row's input (above) when S's answer is the arbiter's, (b) under decision D10
 on any other input S answers as the arbiter does, and (b) where S stopped too; S's or arm V's stop is (c), as neither
 declares a bound it stands for. *(Revised 2026-11-02 at task 2.13's second review, before any judged run,

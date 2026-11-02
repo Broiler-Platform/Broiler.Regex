@@ -29,8 +29,8 @@ as the rule's admitted classes read (docs/evidence/sjl-11-001/reference-arms.md)
   can", the rule's arbiter clause). A difference with arm V under any row but V's corrections, the policy rows and M4
   is (c).
 
-**The harness's stop.** A case the harness stopped or lost (tests/ReferenceArms/Common/Limits.cs) is answered
-`limit:harness`, whichever limit fired first or whether the worker crashed; the older answers `crash:exit-N`,
+**The harness's stop.** A case the harness stopped, lost or skipped (tests/ReferenceArms/Common/Limits.cs: a
+calibration's time limit, a run's stop list or backstop, a crash) is answered `limit:harness`, whichever it was; the older answers `crash:exit-N`,
 `limit:wall-clock` and `limit:timeout` are read as it. Arm J's stop is class (a) under row B8 when the input is that
 row's (a sequence of at least B8_TERMS terms under u or v, which Broiler.Regex 0.1.0-preview.4's matcher recurses
 through once per term) and S's answer is the arbiter's, and class (b) under decision D10 otherwise; arm V's or S's is
