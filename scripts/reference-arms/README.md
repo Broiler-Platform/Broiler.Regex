@@ -47,8 +47,14 @@ SHA-256. A population written with `--classes` or `--reduced`, or without P1, is
 - **P1**: every vector of every `*.vectors` file of the `regexp` directory given, in file and line order: the first
   two `str` arguments of `in` are the pattern and the flags; a third `str` is the subject and an `int` after it the
   lastIndex (0 when none). A vector with a third string is an exec, one without an acceptance case. The rule names the
-  corpus revision bundle sjl-11-001 names; **the judged run waits for revision 32**, and until then P1 is read from the
-  `sjl-11-3-regexp` branch's revision as a smoke run, never committed as evidence.
+  corpus revision bundle sjl-11-001 names: **revision 32, at Broiler.JS `b2c2e2243a086285d806866a64b83297791a8ec5`**
+  (Broiler.JS#1089 on its `main`; `tests/Vectors/regexp/` is a byte-for-byte copy). The unjudged runs read P1 from that
+  commit's `conformance/vectors/regexp/`, and so will the judged run; nothing of an unjudged run is committed as
+  evidence. *(Dated note, 2026-11-02, task 2.13: this item read "**the judged run waits for revision 32**, and until
+  then P1 is read from the `sjl-11-3-regexp` branch's revision as a smoke run, never committed as evidence". Revision
+  32 is on Broiler.JS's `main` since `b2c2e224`, and the two runs of 2026-11-02 at `a113c91` read P1 from it; the
+  judged run waits no longer for the revision but for what `docs/roadmap.md`'s record of task 2.13 says, the
+  correspondence's rows for the differences class (c) still holds among it.)*
 - **P2**: every regular-expression literal and every `RegExp(...)` call whose first one or two arguments are string
   literals, in every `.js` file but `_FIXTURE` files under `test/built-ins/RegExp`, `test/language/literals/regexp`,
   `test/annexB` and `test/built-ins/String/prototype/{match,matchAll,replace,replaceAll,search,split}` of test262 at
