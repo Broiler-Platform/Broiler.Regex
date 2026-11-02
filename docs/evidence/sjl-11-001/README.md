@@ -74,6 +74,20 @@ against `0.1.0-preview.5`", task 2.9's record in `docs/roadmap.md`); and the pin
 and `Broiler.Unicode.Tables` `0.1.0-preview.5`, with check A-10's "at the version above", are read as `0.1.0-preview.6`
 of both, since the owner's dependency update `77284f1` of 2026-10-30, which both engines' pins follow.
 
+*Dated note, 2026-11-02 (task 2.13 of SJL-11.2; no rule changed).* The table above read "`run-reference-arms.sh`: the
+arms, the population, the comparison and the classification | Before the candidate reading". What that script will
+run exists: the arms S, V and J as separate executables under
+[`tests/ReferenceArms/`](../../../tests/ReferenceArms/README.md), the population's generator, the comparison and the
+classifier under [`scripts/reference-arms/`](../../../scripts/reference-arms/README.md), whose `run.sh` runs every step
+in order, and the fast-path differential over population P4. They were run once, **unjudged**, at the task's branch,
+with P1 read from the corpus revision of Broiler.JS's branch `sjl-11-3-regexp` as a smoke run and the arbiter
+`regexpref.py` taken from that branch: [`reference-arms.md`](reference-arms.md)'s "MET if and only if" was not read,
+and nothing of that run is retained here or is a reading (validation principle 5 keeps its figures out of this
+bundle; [`docs/roadmap.md`](../../roadmap.md)'s record of task 2.13 has them). **The judged run waits for corpus
+revision 32**, which SJL-11.3's task 3.3 produces, to reach Broiler.JS's `main`: then P1 is that revision's, the arbiter
+that commit's, and the run is a reading of this bundle at the commit `0.1.0-preview.6` is packed from, by
+`run-reference-arms.sh` (still to be written, as the table says) over `scripts/reference-arms/run.sh`.
+
 ## The commits named so far
 
 - **The rule commit:** the commit that adds this bundle, `tests/Adversarial/` and `eng/adversarial-programs.py`, on

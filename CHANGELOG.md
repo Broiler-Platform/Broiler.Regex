@@ -30,6 +30,34 @@ heading with nothing to report. A break of the published API that package valida
 **Changed** with the requirement (R1 to R11 of [`docs/roadmap.md`](docs/roadmap.md) section 6) that forces it, and
 in [`docs/suppressions.md`](docs/suppressions.md).
 
+## Unreleased
+
+*Process only (task 2.13 of SJL-11.2, 2026-11-01): nothing here changes the package, which is packed from the same
+sources as the `0.1.0-preview.6` entry below.* The reference arms of bundle `sjl-11-001`
+([`docs/evidence/sjl-11-001/reference-arms.md`](docs/evidence/sjl-11-001/reference-arms.md)) exist: arms S, V and J as
+separate executables under [`tests/ReferenceArms/`](tests/ReferenceArms/README.md), test-only copies of Broiler.VM's
+matcher at `aaa39fb` and of Broiler.JS's translator and routing at `1f91b8f1` (named in `THIRD_PARTY_NOTICES.md`),
+the population generator, the comparison and the classifier under
+[`scripts/reference-arms/`](scripts/reference-arms/README.md), and the fast-path differential over population P4
+that tasks 2.4c and 2.11 left to this task. They ran once, unjudged; the judged run waits for corpus revision 32
+([`docs/roadmap.md`](docs/roadmap.md), the record of task 2.13). None of it is in the solution or the package.
+
+### Added
+
+None in the package.
+
+### Changed
+
+None.
+
+### Observable changes
+
+None.
+
+### Data
+
+None.
+
 ## 0.1.0-preview.6 (2026-11-01; prepared, not published)
 
 *The owner published `0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main` (publish run 40902832350),
