@@ -21,13 +21,28 @@ as the rule's admitted classes read (docs/evidence/sjl-11-001/reference-arms.md)
 - **(a')** as (a), arm J, an exec both sides answer, and row U3's data decision (a code point whose case mapping
   .NET's data and UCD 17.0.0 hold differently is in the pattern or the subject, under i without u or v);
 - **(b)** an outcome kind that follows from a policy: both sides stopped by their own bounds, or one side refused for
-  nesting or stopped at a limit (steps, a ceiling, a timeout) and the other's answer is the arbiter's, under rows S3,
-  B6 and B7 (V) and decision D10 (J); and row M4's empty match from a lastIndex inside a surrogate pair, which the
-  arbiter cannot answer (decision D41);
+  nesting or stopped at a limit (steps, a ceiling, or for arm J the harness's stop) and the other's answer is the
+  arbiter's, under rows S3, B6 and B7 (V) and decision D10 (J); and row M4's empty match from a lastIndex inside a
+  surrogate pair, which the arbiter cannot answer (decision D41);
 - **(c)** everything else: S's answer is not the arbiter's, or the arm's is wrong and no row names it, or the arbiter
   cannot reach the input, a stop against an answer past its cut-off included ("class (c) until reduced to an input it
   can", the rule's arbiter clause). A difference with arm V under any row but V's corrections, the policy rows and M4
   is (c).
+
+**The harness's stop.** A case the harness stopped or lost (tests/ReferenceArms/Common/Limits.cs) is answered
+`limit:harness`, whichever limit fired first or whether the worker crashed; the older answers `crash:exit-N`,
+`limit:wall-clock` and `limit:timeout` are read as it. Arm J's stop is class (a) under row B8 when the input is that
+row's (a sequence of at least B8_TERMS terms under u or v, which Broiler.Regex 0.1.0-preview.4's matcher recurses
+through once per term) and S's answer is the arbiter's, and class (b) under decision D10 otherwise; arm V's or S's is
+class (c), as neither declares a bound the harness's limit stands for.
+
+*Revised 2026-11-02, at task 2.13's second review and before any judged run (CLASSIFIER_VERSION @3).* It read crashes
+and the wall clock as distinct answers: a crash was "no row names" (c) and a wall-clock stop (b) under D10, so one
+input's class depended on which came first, and row B8 was never read. The harness's stop is now one answer, read as
+the paragraph above says. The correspondence is read at Broiler.VM's `5d025cc` (the owner's decisions D-s5 and
+D-widen of 2026-11-01): row S5 is no longer read for arm V (its class case is the specification's answer, which S
+gives since task 2.12) and is read for arm J (its refusal of the class case is a correction of Broiler.JS), and row
+F3 is read for arm J (`(?x:a)`, an invalid modifier its constructor accepts).
 
 *Revised 2026-11-02, at the review of task 2.13 and before any judged run (CLASSIFIER_VERSION @2).* It read "(b) ... the
 other's answer is the arbiter's or the arbiter is past its cut-off", which the rule's arbiter clause does not admit;
@@ -38,7 +53,9 @@ A difference in the case an arm's run file names as its negative-control case is
 It writes DIR/classification.json (the counts by class, row and run, the arbiter's commit and blob) and
 DIR/classified.tsv.gz (each difference with its class, row, the arbiter's answer and why), and exits 0 when no
 difference is (c), 1 when one is, 2 when it refuses to run (a row it names is missing from the correspondence, or
-its class does not name the engine the predicate corrects).
+its class does not name the engine the predicate corrects, or an argument is wrong), and 3 when it fails (an
+exception: an arbiter it cannot take from the checkout, a listing it cannot read); it writes classification.json last,
+so a run that does not end with 0 or 1 leaves none.
 """
 
 from __future__ import annotations
@@ -53,6 +70,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import traceback
 from collections import Counter
 from pathlib import Path
 
@@ -62,7 +80,7 @@ if str(HERE) not in sys.path:
 
 from population_format import decode_units, open_text  # noqa: E402
 
-CLASSIFIER_VERSION = "sjl-11-001-classification@2"
+CLASSIFIER_VERSION = "sjl-11-001-classification@3"
 DEFAULT_CUTOFF = 1_000_000
 
 
@@ -96,6 +114,17 @@ def canonical(answer: str):
 
 def kind(answer: str) -> str:
     return answer.split(":", 1)[0]
+
+
+HARNESS_STOP = "limit:harness"
+RAW_HARNESS_STOP = re.compile(r"crash:exit-\d+|limit:wall-clock|limit:timeout")
+
+
+def harness_read(answer: str) -> str:
+    """An answer with the harness's stops read as one (tests/ReferenceArms/Common/Limits.cs, HarnessStop): a crash, a
+    wall clock and arm J's former .NET match timeout are each the answer `limit:harness`, so which came first never
+    changes a class."""
+    return HARNESS_STOP if RAW_HARNESS_STOP.fullmatch(answer) else answer
 
 
 # --------------------------------------------------------------------------------------------------
@@ -345,6 +374,70 @@ def _in_class_at(text: str, index: int) -> bool:
     return i == index and depth > 0
 
 
+B8_TERMS = 10_000
+
+
+def longest_sequence(text: str) -> int:
+    """The most terms of one alternative, at any depth: each character, escape, class and group outside a class is a
+    term, a quantifier is not, and `|` begins a new alternative. `\\B` 100,000 times is one sequence of 100,000."""
+    best, counts, depth, i = 0, [0], 0, 0
+    while i < len(text):
+        ch = text[i]
+        if ch == "\\":
+            if depth == 0:
+                counts[-1] += 1
+            i += 2
+            continue
+        if depth > 0:
+            depth += 1 if ch == "[" else -1 if ch == "]" else 0
+        elif ch == "[":
+            depth = 1
+            counts[-1] += 1
+        elif ch == "(":
+            counts[-1] += 1
+            counts.append(0)
+        elif ch == ")" and len(counts) > 1:
+            best = max(best, counts.pop())
+        elif ch == "|":
+            best = max(best, counts[-1])
+            counts[-1] = 0
+        elif ch == "{" and re.match(r"\{\d+(?:,\d*)?\}", text[i:]):
+            i = text.index("}", i)
+        elif ch not in "*+?":
+            counts[-1] += 1
+        i += 1
+    return max([best] + counts)
+
+
+def recursion_per_term(d, context) -> bool:
+    """Row B8: arm J stopped by the harness (a stack overflow, or the time the recursion takes) on an input S answers,
+    under u or v, whose pattern holds a sequence of at least B8_TERMS terms: Broiler.Regex 0.1.0-preview.4's matcher,
+    which Broiler.JS hands every u and v pattern, recurses once per term (`\\B` 20,000 times takes over a second in
+    the arm, 100,000 times is stopped; row B8's input is `(?:a)` 100,000 times). Which stop it was is not read."""
+    return d["arm"] == HARNESS_STOP and answers(d["S"]) and unicode_mode(d) and longest_sequence(
+        units_text(d["pattern"])) >= B8_TERMS
+
+
+def class_k_refused(d) -> bool:
+    """Row S5's class case for Broiler.JS (decision D-s5): J refuses a pattern S accepts that holds `\\k` in a class
+    beside a group name, `[\\k<a>](?<a>x)`."""
+    return arm_refuses_what_s_accepts(d) and k_in_class(d)
+
+
+def invalid_modifier_accepted(d) -> bool:
+    """Row F3's correction of Broiler.JS (decision D-widen): J accepts what S refuses, and the pattern holds a modifiers
+    group with a letter that is not a modifier, `(?x:a)`."""
+    if not arm_accepts_what_s_refuses(d):
+        return False
+    text = units_text(d["pattern"])
+    for i, ch, in_class, _ in scan(text):
+        if ch == "(" and not in_class:
+            m = re.match(r"\(\?([A-Za-z]*)(?:-([A-Za-z]*))?:", text[i:])
+            if m and set((m.group(1) or "") + (m.group(2) or "")) - set("ims"):
+                return True
+    return False
+
+
 def lead_before_braced(d) -> bool:
     """Row S10: under u or v, a four-digit lead-surrogate escape followed by a braced escape."""
     return bool(re.search(r"\\u[dD][89abAB][0-9a-fA-F]{2}\\u\{", units_text(d["pattern"]))) and unicode_mode(d)
@@ -553,7 +646,7 @@ ROWS = [
     ("S1", "V", lambda d, c: arm_refuses_what_s_accepts(d) and duplicate_names(d), "Correction of Broiler.VM"),
     ("S2a", "J", lambda d, c: arm_accepts_what_s_refuses(d) and duplicate_only_when_decoded(d)
      and c.refusal_code(d) == "early:duplicate-group-name", "Correction of Broiler.JS"),
-    ("S5", "V", lambda d, c: arm_accepts_what_s_refuses(d) and k_in_class(d), "correction of Broiler.VM"),
+    ("S5", "J", lambda d, c: class_k_refused(d), "Broiler.JS: **correction of Broiler.JS**, by D-s5"),
     ("S7", "J", quantified_lookbehind_accepted, "Correction of Broiler.JS"),
     ("S8", "J", v_mode_syntax, "Correction of Broiler.JS"),
     ("S10", "V", lambda d, c: arm_refuses_what_s_accepts(d) and lead_before_braced(d), "Correction of Broiler.VM"),
@@ -571,7 +664,13 @@ ROWS = [
     ("M7", "J", lambda d, c: both_answer_exec(d) and kind(d["arm"]) == "match" and backreference_in_look_behind(d),
      "also a correction of Broiler.Regex's preview.4, and so of Broiler.JS"),
     ("B2", "J", lambda d, c: budget_reset_per_start(d), "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("B8", "J", recursion_per_term, "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("F3", "J", lambda d, c: invalid_modifier_accepted(d),
+     "`(?x:a)`, accepted by Broiler.JS's constructor, a **correction of Broiler.JS**"),
 ]
+
+# The rows that read a stop: they are read where one side stopped and the other answered, before the policy's (b).
+STOP_ROWS = frozenset({"B8"})
 
 POLICY_ROWS = {"V": ("S3", "B6", "B7"), "J": ("S3",)}
 ENGINE_WORDS = {"V": "Broiler.VM", "J": "Broiler.JS"}
@@ -621,21 +720,24 @@ def check_rows(rows: dict[str, str]) -> list[str]:
 
 # --------------------------------------------------------------------------------------------------
 
-LIMITS = ("limit", "crash")
-
-
 def stopped(answer: str) -> bool:
-    return kind(answer) == "limit" or answer == "refuse:nesting"
+    return kind(harness_read(answer)) == "limit" or answer == "refuse:nesting"
 
 
 def both_stopped(d) -> bool:
-    return stopped(d["S"]) and stopped(d["arm"])
+    return stopped(d["S"]) and stopped(d["arm"]) and harness_read(d["S"]) != HARNESS_STOP
 
 
 def classify(d, arbiter_answer, data_partners: set[int], context: Context | None = None) -> tuple[str, str, str]:
     context = context or Context()
+    d = dict(d, S=harness_read(d["S"]), arm=harness_read(d["arm"]))
     engine = d["run"].split(".", 1)[0]
     s, arm = d["S"], d["arm"]
+    # The harness's stop of S or of arm V stands for no bound either declares: no answer, and no policy's.
+    if s == HARNESS_STOP:
+        return "c", "-", "S stopped by the harness (a time limit or its worker's end), not by a policy it declares"
+    if engine == "V" and arm == HARNESS_STOP:
+        return "c", "-", "arm V stopped by the harness (a time limit or its worker's end), which no row names"
     s_c, arm_c = canonical(s), canonical(arm)
     arb = arbiter_answer
     unreachable = isinstance(arb, str) and arb.startswith("arbiter:")
@@ -656,6 +758,10 @@ def classify(d, arbiter_answer, data_partners: set[int], context: Context | None
         # its cut-off has checked nothing, so the difference is class (c) until reduced to an input it can reach (the
         # rule's arbiter clause), below.
         other = arm_c if s_policy else s_c
+        if other == arb and arm_policy:
+            for row, row_engine, predicate, _ in ROWS:
+                if row in STOP_ROWS and row_engine == engine and predicate(d, context):
+                    return "a", row, f"a correction of {ENGINE_WORDS[engine]}"
         if other == arb:
             row = "S3" if "nesting" in (s + arm) else ("B6" if engine == "V" and "ceiling" in arm else
                                                       "B7" if engine == "V" else "D10")
@@ -671,7 +777,7 @@ def classify(d, arbiter_answer, data_partners: set[int], context: Context | None
         if input_code_points(d) & data_partners:
             return "a'", "U3", "arm J answers from .NET's case data, S from UCD 17.0.0 (SJL-D-6 (c))"
     for row, row_engine, predicate, _ in ROWS:
-        if row_engine == engine and predicate(d, context):
+        if row not in STOP_ROWS and row_engine == engine and predicate(d, context):
             return "a", row, f"a correction of {ENGINE_WORDS[engine]}"
     return "c", "-", f"arm {engine} is wrong by the arbiter and no row of the correspondence names the input"
 
@@ -713,6 +819,18 @@ def invariant_answers(path: Path) -> dict[str, str]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """The exit status: 0 no class (c), 1 a class (c) difference, 2 refused (or an argument argparse refuses), 3 failed."""
+    try:
+        return run(argv)
+    except SystemExit:
+        raise
+    except BaseException:  # noqa: BLE001 - every failure is exit 3, never the 1 of a class (c) difference
+        traceback.print_exc()
+        print("failed: the classification did not run to its end, and wrote no classification.json", file=sys.stderr)
+        return 3
+
+
+def run(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--comparison", required=True, type=Path)
     parser.add_argument("--runs", required=True, type=Path)
@@ -749,6 +867,7 @@ def main(argv: list[str] | None = None) -> int:
                 header = line[2:].rstrip("\n").split("\t")
                 continue
             d = dict(zip(header, line.rstrip("\n").split("\t")))
+            d["S"], d["arm"] = harness_read(d["S"]), harness_read(d["arm"])
             if controls.get(d["run"]) == d["id"]:
                 category, row, why = "unclassified", "-", "the negative control's planted difference"
                 arb = "-"

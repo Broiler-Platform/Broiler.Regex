@@ -175,6 +175,60 @@ class ClassifyTests(unittest.TestCase):
         d = diff("J", "exec", "(a+)+b", "", "limit:steps", "null", "a" * 40)
         self.assertEqual(C.classify(d, "null", set())[:2], ("b", "D10"))
 
+    def test_every_harness_stop_is_one_answer(self) -> None:
+        # Task 2.13's second review: a crash, the wall clock and the former .NET timeout are the harness's one stop,
+        # so P3-F02 (`\B` 100,000 times under u) has one class whichever came first.
+        for raw in ("limit:harness", "crash:exit-134", "limit:wall-clock", "limit:timeout"):
+            self.assertEqual(C.harness_read(raw), "limit:harness")
+            d = diff("J.tr-TR", "exec", "\\B" * 100000, "u", "match:0,0", raw)
+            self.assertEqual(C.classify(d, ("match", ((0, 0),), ()), set())[:2], ("a", "B8"), raw)
+            d = diff("J", "exec", "(?:(a+)+b|a*c)", "u", "match:0,25;-", raw, "a" * 24 + "c")
+            self.assertEqual(C.classify(d, ("match", ((0, 25), None), ()), set())[:2], ("b", "D10"), raw)
+            d = diff("J", "exec", "(a+)+b", "", "limit:steps", raw, "a" * 40)
+            self.assertEqual(C.classify(d, "-", set())[:2], ("b", "D10"), raw)
+        self.assertEqual(C.harness_read("limit:steps"), "limit:steps")
+
+    def test_row_b8_is_a_long_sequence_under_u_or_v(self) -> None:
+        match = ("match", ((0, 0),), ())
+        for pattern, flags, expected in (("\\B" * 100000, "v", "a"), ("(?:a)" * 10000, "u", "a"),
+                                         ("\\B" * 100000, "", "b"), ("(?:a)" * 9999, "u", "b")):
+            d = diff("J", "exec", pattern, flags, "match:0,0", "crash:exit-134")
+            self.assertEqual(C.classify(d, match, set())[0], expected, (pattern[:10], flags))
+        # A stop on an input the arbiter cannot reach, or against a wrong S, is no correction.
+        d = diff("J", "exec", "\\B" * 100000, "u", "match:0,0", "limit:harness")
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set())[0], "c")
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
+        self.assertEqual(C.longest_sequence("ab|cde(f(g))"), 4)
+        self.assertEqual(C.longest_sequence("a{2,3}b*[xyz]\\d"), 4)
+
+    def test_a_harness_stop_of_s_or_v_is_c(self) -> None:
+        d = diff("V", "exec", "a", "", "match:0,1", "limit:harness", "a")
+        self.assertEqual(C.classify(d, MATCH01, set())[:2], ("c", "-"))
+        d = diff("V", "exec", "(a+)+b", "", "limit:steps", "crash:exit-134", "a" * 40)
+        self.assertEqual(C.classify(d, "-", set())[:2], ("c", "-"))
+        d = diff("J", "exec", "a", "", "limit:harness", "match:0,1", "a")
+        self.assertEqual(C.classify(d, MATCH01, set())[:2], ("c", "-"))
+        self.assertFalse(C.both_stopped({"S": "limit:wall-clock", "arm": "limit:harness"}))
+
+    def test_row_s5_is_j_refusing_k_in_a_class(self) -> None:
+        # Decision D-s5: the class case is the specification's answer, which S gives since task 2.12.
+        d = diff("J", "accept", "[\\k<a>](?<a>x)", "", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S5"))
+        d = diff("J", "exec", "[\\k](?<a>x)", "", "match:0,1", "refuse:syntax", "k")
+        self.assertEqual(C.classify(d, MATCH01, set())[:2], ("a", "S5"))
+        d = diff("V", "accept", "[\\k<a>](?<a>x)", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "accept", set())[0], "c")
+        d = diff("J", "accept", "[\\k<a>](?<a>x)", "u", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S5"))
+
+    def test_row_f3_is_j_accepting_an_invalid_modifier(self) -> None:
+        d = diff("J", "accept", "(?x:a)", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set())[:2], ("a", "F3"))
+        d = diff("J", "accept", "(?i-x:a)", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set())[:2], ("a", "F3"))
+        d = diff("J", "accept", "(?i-i:a)", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set())[0], "c")
+
     def test_the_data_decision(self) -> None:
         d = diff("J", "exec", "꟎", "i", "match:0,1", "null", "꟏")
         self.assertEqual(C.classify(d, MATCH01, C.data_partners(Path(".")))[:2], ("a'", "U3"))
@@ -190,7 +244,7 @@ class CorrespondenceTests(unittest.TestCase):
 
     def test_the_rows_as_their_classes_name_them(self) -> None:
         rows = {"S1": "**Correction of Broiler.VM** and of Broiler.Regex's preview.4", "S2a": "Correction of Broiler.JS",
-                "S5": "VM: **correction of Broiler.VM** (kind R); preview.4",
+                "S5": "VM: the specification's answer. Broiler.JS: **correction of Broiler.JS**, by D-s5: ...",
                 "S7": "Correction of Broiler.JS", "S8": "Correction of Broiler.JS",
                 "S10": "Correction of Broiler.VM. The class case `[\\uD83D\\u{DC38}]`: **correction of Broiler.JS**",
                 "M2a": "Correction of Broiler.JS", "M2b": "Correction of Broiler.JS", "M2": "Correction of Broiler.JS",
@@ -200,6 +254,9 @@ class CorrespondenceTests(unittest.TestCase):
                 "M7": "Correction of Broiler.VM. The look-behind: also a correction of Broiler.Regex's preview.4, and "
                       "so of Broiler.JS",
                 "B2": "Correction of Broiler.JS and of Broiler.Regex's preview.4", "S3": "policy", "B6": "policy",
+                "B8": "**Correction of Broiler.JS and of Broiler.Regex's preview.4** (R4)",
+                "F3": "**Same in both** ...; and `(?x:a)`, accepted by Broiler.JS's constructor, a **correction of "
+                      "Broiler.JS** that SJL-11.5 answers",
                 "B7": "policy", "U3": "Correction of Broiler.JS by data decision"}
         self.assertEqual(C.check_rows(rows), [])
         rows["S10"] = "Same in both"
@@ -217,6 +274,36 @@ class CorrespondenceTests(unittest.TestCase):
         if not path:
             self.skipTest("BROILER_VM_CORRESPONDENCE names no correspondence.md")
         self.assertEqual(C.check_rows(C.read_correspondence(Path(path))), [])
+
+
+class ExitStatusTests(unittest.TestCase):
+    """The exit status run.sh reads: 0 no class (c), 1 a class (c) difference, 2 refused, 3 failed."""
+
+    def test_a_refusal_is_2_and_a_failure_is_3(self) -> None:
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "correspondence.md").write_text("| S1 | nothing |\n", encoding="utf-8")
+            args = ["--comparison", str(tmp), "--runs", str(tmp), "--broiler-js", str(tmp / "no-checkout"),
+                    "--commit", "HEAD", "--correspondence", str(tmp / "correspondence.md"), "--unicode-pins", str(tmp)]
+            self.assertEqual(C.main(args), 2)
+            filed = os.environ.get("BROILER_VM_CORRESPONDENCE")
+            if filed:
+                args[args.index("--correspondence") + 1] = filed
+                # The arbiter cannot be taken from a directory that is no checkout: an exception, exit 3, no file.
+                self.assertEqual(C.main(args), 3)
+                self.assertFalse((tmp / "classification.json").exists())
+            with self.assertRaises(SystemExit) as raised:
+                C.main(["--comparison"])
+            self.assertEqual(raised.exception.code, 2)
+
+    def test_an_exception_is_3_not_the_1_of_class_c(self) -> None:
+        original = C.run
+        try:
+            C.run = lambda argv: 1 // 0
+            self.assertEqual(C.main([]), 3)
+        finally:
+            C.run = original
 
 
 if __name__ == "__main__":

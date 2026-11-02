@@ -11,13 +11,15 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 | `population_format.py` | The string notation and the gzip files, shared by the three scripts |
 | `compare.py` | S against each arm run, exactly; writes `summary.json` and `differences.tsv.gz`; classifies nothing |
 | `classify.py` | The classification, from the differences, the correspondence's rows and the arbiter's answers |
-| `run.sh` | Every step in order, each logged with its command |
-| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier |
+| `run.sh` | Every step in order, each logged with its command; it fails when a step fails, the classifier's crash among them |
+| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit |
 
 ## Commands
 
 ```sh
-python3 -m unittest discover -s scripts/reference-arms/tests      # BROILER_UNICODE=<checkout> adds P5's test
+python3 -m unittest discover -s scripts/reference-arms/tests
+#   two tests are skipped unless BROILER_UNICODE=<Broiler.Unicode checkout> (P5's) and
+#   BROILER_VM_CORRESPONDENCE=<correspondence.md> (the classifier's words against the filed rows) are set; run.sh sets both
 python3 -I -B scripts/reference-arms/generate_population.py --out OUT/population \
     --test262 <test262 at ccaac100> --unicode <Broiler.Unicode checkout> [--vectors <conformance/vectors/regexp>]
 dotnet tests/ReferenceArms/S/bin/Release/net10.0/Regex.ReferenceArms.S.dll --population OUT/population --out OUT/runs
@@ -105,7 +107,7 @@ the row's own correction, the direction of the difference and its construct, nev
 |---|---|---|
 | S1 | V | V refuses a duplicate name S accepts |
 | S2a | J | J accepts a name repeated only once decoded, `(?<\u0061>x)(?<a>y)`, the arbiter's reason a duplicate name |
-| S5 | V | V accepts `\k` in a class in a pattern with a group name, which S refuses |
+| S5 | J | J refuses `\k` in a class in a pattern with a group name, which S accepts (decision D-s5) |
 | S7 | J | without `u` or `v`, J accepts a quantified look-behind, the arbiter's reason nothing to repeat or a braced quantifier |
 | S8 | J | under `v`, J accepts a class the arbiter refuses for a ClassSetSyntaxCharacter or a reserved double punctuator |
 | S10 | V | V refuses a four-digit lead escape before `\u{`, under `u` or `v` |
@@ -116,6 +118,8 @@ the row's own correction, the direction of the difference and its construct, nev
 | M4 | V, J | from a lastIndex inside a pair: V's match (its start steps back); J's match where S has none |
 | M7 | V, J | under `u` or `v`, the arm matches where S does not: a back-reference with a surrogate in the subject (V); one inside a look-behind (J) |
 | B2 | J | under `u` or `v`, a nested quantifier, S's match against J's null or later start |
+| B8 | J | under `u` or `v`, the harness's stop of J against S's answer, the pattern a sequence of 10,000 terms or more |
+| F3 | J | J accepts what S refuses, a modifiers group with a letter that is no modifier, `(?x:a)` (decision D-widen) |
 
 Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
 in arm J. (a') arm J, an exec both answer, under `i` without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a
@@ -124,7 +128,19 @@ nesting or a limit on one side and the other side's answer the arbiter's (rows S
 and row M4's empty match from a lastIndex inside a surrogate pair, which the arbiter cannot answer (decision D41).
 (c) everything else, an unreachable arbiter included: a stop on one side against an answer the arbiter cannot check
 in its cut-off is class (c) until reduced to an input it can, as the rule's arbiter clause reads. It refuses to run
-(exit 2) when a row it names is missing from the correspondence or its class does not hold the row's words. The case
-an arm's run file names as its negative-control case is listed unclassified. *(Revised 2026-11-02 at the review of task
+(exit 2) when a row it names is missing from the correspondence or its class does not hold the row's words, exits 3
+when it fails (an exception), and otherwise 0 when no difference is (c) and 1 when one is; it writes
+`classification.json` last. `run.sh` fails on 2, on 3, and on a run that leaves no `classification.json`. The case
+an arm's run file names as its negative-control case is listed unclassified.
+
+The harness's stop (`limit:harness`, `tests/ReferenceArms/README.md`, "Workers") is one answer whichever limit fired
+or whether the worker crashed, and the older `crash:exit-N`, `limit:wall-clock` and `limit:timeout` are read as it:
+arm J's stop is (a) under row B8 on that row's input (above) when S's answer is the arbiter's, (b) under decision D10
+on any other input S answers as the arbiter does, and (b) where S stopped too; S's or arm V's stop is (c), as neither
+declares a bound it stands for. *(Revised 2026-11-02 at task 2.13's second review, before any judged run,
+`CLASSIFIER_VERSION` @3: a crash was "no row names" and a wall-clock stop (b), so one input's class depended on which
+came first, and row B8 was not read. The correspondence is read at Broiler.VM's `5d025cc`: this table's row S5 read
+"| S5 | V | V accepts `\k` in a class in a pattern with a group name, which S refuses |", which decision D-s5 and task
+2.12 retired, and rows B8 and F3 are new.)* *(Revised 2026-11-02 at the review of task
 2.13, before any judged run: the predicates read only a flag or a character, rows S1 and S2b were read for arm J, and
 class (b) admitted "the arbiter past its cut-off"; `classify.py`'s docstring quotes what changed.)*
