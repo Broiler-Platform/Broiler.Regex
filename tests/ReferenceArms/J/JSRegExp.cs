@@ -7,9 +7,12 @@
 //          AppendHexEscape, AppendUnicodeEscape), 649-4366 and 4369-4965: BuildFlagsString, ParseFlags,
 //          both CreateRegex (:765-1046) and every static member of the translator they call, CaptureGroupMap (:1254) among
 //          them.
-// Changes: four, each marked ARM CHANGE: the class has no JSClassGenerator attribute, is not a JSObject and implements no
-//          IJSRegExp; its lines 21-648 but those three helpers and 4367-4368 (instance members) are left out; and the .NET Regex it builds (:1013)
-//          takes a match timeout (ArmJ.MatchTimeout), which bounds a catastrophic match of the .NET engine, answered as a limit.
+// Changes: three, each marked ARM CHANGE: the class has no JSClassGenerator attribute, is not a JSObject and implements no
+//          IJSRegExp; and its lines 21-648 but those three helpers and 4367-4368 (instance members) are left out.
+//          *(2026-11-02, task 2.13's second review: a fourth change, the .NET Regex built at :1013 with a match timeout
+//          "(ArmJ.MatchTimeout), which bounds a catastrophic match of the .NET engine, answered as a limit", is removed:
+//          the Regex is built as Broiler.JS builds it, with none, and the harness's processor-time limit
+//          (tests/ReferenceArms/Common/Limits.cs) stops a match that does not end, as it stops any other.)*
 //          The source's CRLF line endings are LF here, as rule SL10 holds every file of this repository to LF.
 
 using Broiler.JavaScript.Engine.Core;
@@ -423,8 +426,7 @@ public partial class JSRegExp // ARM CHANGE: was `public partial class JSRegExp 
             // (the earlier transforms only add non-capturing groups / lookarounds).
             pattern = RewriteCaptureGroups(pattern, unicode || unicodeSets, out captureMap);
 
-            // ARM CHANGE: was `new System.Text.RegularExpressions.Regex(pattern, options)`: a timeout bounds a catastrophic match.
-            var compiled = new System.Text.RegularExpressions.Regex(pattern, options, global::Broiler.Regex.ReferenceArms.ArmJ.MatchTimeout);
+            var compiled = new System.Text.RegularExpressions.Regex(pattern, options);
             RegexTieringDiagnostics.RecordPatternBuilt();
 
             // For a Broiler-routed pattern the capture layout that drives exec result

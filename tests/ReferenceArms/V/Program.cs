@@ -24,7 +24,7 @@ internal static class Program
 internal sealed class ArmV : IArm
 {
     /// <summary>The allowance of one exec under the population's default policy: S's step ceiling, in the same units.</summary>
-    internal const ulong DefaultAllowance = 10_000_000;
+    internal const ulong DefaultAllowance = Limits.DefaultSteps;
 
     public string Name => "V";
 

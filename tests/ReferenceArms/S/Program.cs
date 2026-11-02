@@ -23,7 +23,7 @@ internal static class Program
 internal sealed class ArmS : IArm
 {
     /// <summary>The population's default policy, step ceiling: arm V's allowance, in the same units (JSD-0081 D8).</summary>
-    internal const ulong DefaultSteps = 10_000_000;
+    internal const ulong DefaultSteps = Limits.DefaultSteps;
 
     public string Name => "S";
 

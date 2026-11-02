@@ -26,12 +26,6 @@ internal static class Program
 
 internal sealed class ArmJ : IArm
 {
-    /// <summary>
-    /// The .NET Regex's match timeout, the copy's one change of behaviour (J/JSRegExp.cs, ARM CHANGE at CreateRegex's
-    /// construction): Broiler.JS builds the Regex with none, so a catastrophic pattern runs until it ends.
-    /// </summary>
-    internal static readonly TimeSpan MatchTimeout = TimeSpan.FromSeconds(1);
-
     public string Name => "J";
 
     public IReadOnlyDictionary<string, string> Facts { get; } = new SortedDictionary<string, string>(StringComparer.Ordinal)
@@ -40,8 +34,7 @@ internal sealed class ArmJ : IArm
         ["Broiler.Regex"] = InformationalVersion(typeof(Broiler.Regex.BroilerRegex)),
         ["Broiler.Unicode.Algorithms"] = InformationalVersion(typeof(Broiler.Unicode.Algorithms.IUnicodeTables)),
         ["Broiler.Unicode.Tables"] = InformationalVersion(typeof(Broiler.Unicode.Tables.UnicodeTables)),
-        ["net-match-timeout"] = MatchTimeout.ToString(),
-        ["policy"] = "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with the timeout",
+        ["policy"] = "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout",
     };
 
     private static string InformationalVersion(Type type) =>
@@ -64,16 +57,9 @@ internal sealed class ArmJ : IArm
     public Answer Exec(object compiled, Case c, int start, bool sticky)
     {
         var regexp = (JSRegExp)compiled;
-        JSRegExp.RegexMatchData match;
-        try
-        {
-            match = regexp.ExecMatchAt(c.Subject, start);
-        }
-        catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
-        {
-            return Answer.Of("limit:timeout");
-        }
-
+        // The .NET Regex has no match timeout, as Broiler.JS builds it: a match that does not end is stopped by the
+        // harness's processor-time limit (Common/Limits.cs) and answered as the harness's stop.
+        var match = regexp.ExecMatchAt(c.Subject, start);
         if (!match.Success)
             return Answer.Of("null");
         var groups = match.Groups;
