@@ -40,7 +40,11 @@ matcher at `aaa39fb` and of Broiler.JS's translator and routing at `1f91b8f1` (n
 the population generator, the comparison and the classifier under
 [`scripts/reference-arms/`](scripts/reference-arms/README.md), and the fast-path differential over population P4
 that tasks 2.4c and 2.11 left to this task. They ran once, unjudged; the judged run waits for corpus revision 32
-([`docs/roadmap.md`](docs/roadmap.md), the record of task 2.13). None of it is in the solution or the package.
+([`docs/roadmap.md`](docs/roadmap.md), the record of task 2.13). None of it is in the solution or the package. At the
+task's review (2026-11-02), before any judged run, the classifier's rows were made to read each row's own correction
+and an arbiter past its cut-off to leave a difference in class (c), the negative control was made to change the
+answer itself, both controls were taken again, and arm J's copies were given their Yantra JS origin; the record says
+what changed.
 
 ### Added
 
