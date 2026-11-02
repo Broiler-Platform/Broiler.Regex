@@ -174,8 +174,19 @@ def inside_pair(d) -> bool:
 NAME = re.compile(r"\(\?<([^=!>][^>]*)>")
 
 
+NAME_ESCAPE = re.compile(r"\\u\{([0-9A-Fa-f]+)\}|\\u([0-9A-Fa-f]{4})")
+
+
+def decoded_name(name: str) -> str:
+    """A GroupName's string value: its \\u escapes decoded (22.2.1.6, RegExpIdentifierCodePoints), a pair of escaped
+    surrogates joined."""
+    text = NAME_ESCAPE.sub(lambda m: chr(int(m.group(1) or m.group(2), 16)), name)
+    return text.encode("utf-16-le", "surrogatepass").decode("utf-16-le", "surrogatepass")
+
+
 def duplicate_names(d) -> bool:
-    names = NAME.findall(units_text(d["pattern"]))
+    """Row S1: a name declared twice, compared by its value, so that `(?<\\u0061>x)|(?<a>y)` repeats `a` (S2a)."""
+    names = [decoded_name(n) for n in NAME.findall(units_text(d["pattern"]))]
     return len(names) != len(set(names))
 
 
@@ -281,6 +292,14 @@ def check_rows(rows: dict[str, str]) -> list[str]:
 LIMITS = ("limit", "crash")
 
 
+def stopped(answer: str) -> bool:
+    return kind(answer) == "limit" or answer == "refuse:nesting"
+
+
+def both_stopped(d) -> bool:
+    return stopped(d["S"]) and stopped(d["arm"])
+
+
 def classify(d, arbiter_answer, data_partners: set[int]) -> tuple[str, str, str]:
     engine = d["run"].split(".", 1)[0]
     s, arm = d["S"], d["arm"]
@@ -294,8 +313,7 @@ def classify(d, arbiter_answer, data_partners: set[int]) -> tuple[str, str, str]
         if empty:
             return "b", "M4", "the empty match from a lastIndex inside a surrogate pair (decision D41)"
     # The policies: a refusal for nesting or a stop at a limit on one side.
-    s_policy = kind(s) == "limit" or s == "refuse:nesting"
-    arm_policy = (kind(arm) == "limit" or arm == "refuse:nesting")
+    s_policy, arm_policy = stopped(s), stopped(arm)
     if s_policy and arm_policy:
         # Both stopped, by different bounds: each side's policy, and the arbiter past its cut-off or the same answer.
         row = "S3" if "nesting" in (s + arm) else ("B6" if engine == "V" and "ceiling" in arm else "B7" if engine == "V" else "D10")
@@ -377,6 +395,10 @@ def main(argv: list[str] | None = None) -> int:
             if controls.get(d["run"]) == d["id"]:
                 category, row, why = "unclassified", "-", "the negative control's planted difference"
                 arb = "-"
+            elif both_stopped(d):
+                # Both sides stopped by their own bounds: the class does not read the arbiter, so it is not asked.
+                arb = "-"
+                category, row, why = classify(d, arb, partners)
             else:
                 arb = arbiter.answer(d["pattern"], d["flags"], d["subject"], d["lastIndex"], d["op"])
                 category, row, why = classify(d, arb, partners)

@@ -85,6 +85,10 @@ class GeneratorTests(unittest.TestCase):
             self.assertLessEqual(max(lengths), 2 * G.P4_SUBJECT_MAX)  # an astral draw is two code units
             p3 = manifest["classes"]["P3"]
             self.assertGreater(p3["rows"], 0)
+            # The class's file and the corpus it reads are named apart (the facts once overwrote the file's digest).
+            import hashlib
+            self.assertEqual(p3["sha256"], hashlib.sha256((outs[0] / "P3.tsv.gz").read_bytes()).hexdigest())
+            self.assertNotEqual(p3["sha256"], p3["corpus-sha256"])
 
 
 @unittest.skipUnless(os.environ.get("BROILER_UNICODE"), "BROILER_UNICODE names a Broiler.Unicode checkout")

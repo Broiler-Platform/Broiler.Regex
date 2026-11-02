@@ -31,6 +31,12 @@ class ClassifyTests(unittest.TestCase):
         d = diff("V", "accept", "(?<a>x)|(?<a>y)", "", "accept", "refuse:syntax")
         self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S1"))
 
+    def test_a_duplicate_spelled_with_an_escape_is_row_s1(self) -> None:
+        d = diff("V", "accept", "(?<\\u0061>x)|(?<a>y)", "", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S1"))
+        d = diff("V", "accept", "(?<\\u{62}>x)|(?<a>y)", "", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set())[0], "c")
+
     def test_s_wrong_is_c(self) -> None:
         d = diff("J", "exec", "a", "", "null", "match:0,1", "a")
         self.assertEqual(C.classify(d, MATCH01, set())[0], "c")

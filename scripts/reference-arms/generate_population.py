@@ -409,7 +409,7 @@ def p3(writer: Writer, corpus: Path) -> dict:
                          encoded_pattern=corpus_expression(row["pattern"]), encoded_subject=corpus_expression(row["subject"]))
         rows += 1
     return {"corpus": str(corpus.relative_to(REPOSITORY)) if corpus.is_relative_to(REPOSITORY) else str(corpus),
-            "sha256": hashlib.sha256(corpus.read_bytes()).hexdigest(), "rows": rows}
+            "corpus-sha256": hashlib.sha256(corpus.read_bytes()).hexdigest(), "rows": rows}
 
 
 # --------------------------------------------------------------------------------------------------
