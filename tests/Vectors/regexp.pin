@@ -1,0 +1,17 @@
+# The pin of tests/Vectors/regexp/: Broiler.JS's conformance/vectors/regexp/*.vectors, copied byte for byte.
+# Bundle sjl-11-001's part D (docs/evidence/sjl-11-001/decision-rule.md): "a pin file naming Broiler.JS's commit and
+# each file's SHA-256, checked before the run". The runner (Broiler.Regex.Tests/Vectors/) refuses to run when a file
+# this pin names is missing, has another length or SHA-256, or when the directory holds a .vectors file it does not
+# name. Each file line: the name, its length in bytes, its SHA-256 and its git blob at the commit. Refreshed only by
+# copying another revision whole and rewriting this file (tests/Vectors/README.md).
+broiler-js-commit: b2c2e2243a086285d806866a64b83297791a8ec5
+corpus-revision: 32
+source: conformance/vectors/regexp/
+file: budget.vectors 44502 1726b9f08ffae85f210eb32cd2ffa33ca4041ff95e62f8206db8c866e19645db 7bb389f89b2f884fcbaf7277712a451b0b53e60c
+file: case-insensitive.vectors 103166 43e0e9141928432cd755cdc80485909813475ef3a319a9b4f6a6a0d6a374bf64 0240833987a0d061f95ce1d135a52f4d885c0143
+file: last-index.vectors 90818 0468645f946c9699773ddec4e974a0e78ab9a30ed35e9bcdf8dadd582119d630 48b8523afdbba219e489df8055db8497e17cbcfe
+file: literals.vectors 118198 6d4491cc6c6dd48ae890bcc74c40714bd84ac63f566a3107cfcc3ed9711362e0 32afc9bc503cc8a58c5d57ff1ca684b7d4a84dce
+file: matching.vectors 558062 348d7c0d6806ab2c51fc0b5f313d93f8b52a894db31972932331825a0a88650a ac3a0e4a502f88007f629bb9a09f3d923119b173
+file: properties.vectors 59714 351e6f00d75da2b3b9f9d7c4daf5b01693632d26b00ac0042a85a41deb2d72a6 331d62f639611d29621a8a3de4e2417d9d904c51
+file: syntax.vectors 398286 8c843a29136c4fc901767287eacb5fe35a4791f44cfdff645faa8a08431e93cf 358d8c62c125e8b8101d6747a2792fc623f5d48d
+file: text.vectors 44791 00ba6f921c5aaa57d81e07d4f18b3bcaac81e52487df14eaee07e3fa2e33f634 9c14efb23332837c4632fad938a31ab0953d5bd3

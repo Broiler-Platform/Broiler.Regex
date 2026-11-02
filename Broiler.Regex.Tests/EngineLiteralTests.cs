@@ -128,7 +128,10 @@ public class EngineLiteralTests
         { "js reference /\\k(?<a>.)/", @"\k(?<a>.)", "", RegexDiagnosticCode.NamedReferenceWithoutName },
         { "js reference /(?<a>.)\\k<a/", @"(?<a>.)\k<a", "", RegexDiagnosticCode.UnterminatedGroupName },
         { "js reference /(?<a>.)\\k<1>/", @"(?<a>.)\k<1>", "", RegexDiagnosticCode.GroupNameInvalidStart },
-        { "js reference /(?<a>.)[\\k]/", @"(?<a>.)[\k]", "", RegexDiagnosticCode.NamedReferenceInClass },
+        // Broiler.JS's test refuses \k in a class beside a group name; B.1.2 admits it, the letter, as a class reads
+        // ~NamedCaptureGroups: decision D-s5 of Broiler.VM's JSD-0081 makes the refusal a correction of Broiler.JS, and
+        // this library accepts it since task 2.12 of SJL-11.2, where it answered NamedReferenceInClass.
+        { "js reference /(?<a>.)[\\k]/", @"(?<a>.)[\k]", "", null },
 
         // Valid group names and references.
         { "js valid /(?<a>a)|(?<a>b)/", "(?<a>a)|(?<a>b)", "", null },

@@ -1512,6 +1512,127 @@ part C's control (2) and what remains are no longer the head's, and the record i
   "1 if reported else 0". The report's format, `adversarial-1`, is unchanged, and `AdversarialModeTests` asserts the
   `validate` rows' lines with no branch for a runner that does not answer the operation.
 
+*Dated record, 2026-11-02 (task 2.12 of SJL-11.2; bundle `sjl-11-001`'s part D, the vectors at library level, template
+T3; decisions D25 and D-partd of Broiler.VM's JSD-0081, and D-s5 for the fix below). Placed after task 2.14's record,
+its sibling of part C, rather than after task 2.9's, so that it merges beside task 2.13's record without touching it.*
+
+**What it builds.**
+- **The pinned copy** ([`tests/Vectors/README.md`](../tests/Vectors/README.md)): `tests/Vectors/regexp/`, the eight files
+  of Broiler.JS's `conformance/vectors/regexp/` at `b2c2e2243a086285d806866a64b83297791a8ec5` (`main` after
+  Broiler.JS#1089), corpus revision 32, byte for byte (1,420 vectors; the files last changed at `de8d7b54`), and
+  `tests/Vectors/regexp.pin`, which names the commit, the revision and each file's length, SHA-256 and git blob; each
+  committed blob is the pinned one. The check comes before every run: every named file with its length and SHA-256,
+  and no `.vectors` file the pin does not name, or nothing is read. `THIRD_PARTY_NOTICES.md` names the copy.
+- **The runner** in `Broiler.Regex.Tests/Vectors/` (the rule's "the library runner in Broiler.Regex.Tests"), in
+  Broiler.ECMAScript's `LibraryRun` shape where it applies: each op called on the decoded `in`, the answer rendered in
+  SCHEMA.md's notation, verdicts `match`, `difference` and `not-implemented`. **The op mapping**, through the public
+  surface alone, under the policy both engines pass (D7 and D10: `Compile` at nesting 512, no budget, no meter; the
+  engines' ceilings):
+
+  | Op | The library |
+  |---|---|
+  | `RegExpInitialize`, and its nested form | `RegexFlagsText.Parse`, then `BroilerRegex.Compile`; `value: bool:true`, `error: SyntaxError`, or the limit's status |
+  | `IsValidRegularExpressionLiteral` | `BroilerRegex.Validate` over the flags text |
+  | `RegExpBuiltinExec`, and its repeated form | `Compile`, then `Match(string, int)` from `lastIndex` (0 without `g` and `y`; past the end, null); `lastIndex` written under `g` or `y`; the canonical serialisation, `groups` in the order of the names' first groups (`RegexGroupNames.NameAt`, the participating group by `GroupsNamed`), `d`'s indices |
+  | `RegExpBuiltinExec, step budget` | `Compile`, then the offset entry with a step ceiling of the vector's budget, the engines' frame and trail ceilings and a meter that counts; `LimitExceeded` naming steps is `status: exhausted` |
+  | `RegExp.prototype.test`, `[ %Symbol.search% ]` | `Match(string, 0)`: `Success`, or `Index` and -1 as a Number |
+  | `RegExp.prototype [ %Symbol.match% ]` | `Match(string, 0)`'s groups without `g`; with it every match through `NextMatch` |
+  | `RegExp.escape`, and its round trip | `RegexEscaper.EscapeString`; the round trip compiles the text and tests the string |
+  | `get RegExp.prototype.flags` | `Compile` of `a`, then `RegexFlagsText.Format` |
+  | `EscapeRegExpPattern, one P and F` | `Compile`, then `RegexEscaper.EscapePattern` of the compiled `Pattern`: at library level the literal's body and the constructor's pattern are one string by construction (`Pattern` is the caller's text, and the library has no literal scanner), so the vector checks only that the two calls succeed |
+  | `EscapeRegExpPattern, a literal of S` | S = `EscapePattern(Pattern)`: no line terminator, a RegularExpressionBody (§12.9.5), valid under F, and matching the subject as the pattern does |
+
+  The six ops of the object model are not implemented and are listed by name, with the reason, in every report:
+  `RegExp.prototype [ %Symbol.split% ]` (12 vectors), `String.prototype.search` (6), `RegExp.prototype accessors` (4),
+  `RegularExpressionLiteral, eval code` (3), `get RegExp.prototype.flags, ordinary object` (1) and `get
+  RegExp.prototype.flags, read order` (1). An op neither mapped nor listed renders a fault, a difference, so a later
+  revision's new op cannot pass unread. A limit the specification does not have is the library's status, never an
+  engine's rendering: `status: exhausted` for steps, `status: limit-nesting`, `-frames`, `-trail`, `-compile` else.
+- **The verdicts.** A `normative` or `divergence` vector is held to its `out` (a divergence field classifies an
+  engine's difference and names no library), the 18 status vectors among them; an `impl-defined` vector is reported
+  with the library's answer and what it meets (`out`, each engine's `per-engine` field, the nesting status as D7's
+  SyntaxError, or none). The report is ordered by id, holds no time or path, and is made on a 1 MiB thread.
+- **The probe** ([its README](../probes/Regex.Probe/README.md)): `--vectors dir [--report path]` in its own file,
+  `VectorsMode.cs`, compiling the runner's sources in; exit 2 on a refused pin with no report. CI's `native-aot-probe`
+  job runs it under Native AOT and the JIT on ubuntu-24.04 and windows-latest and compares the reports with `cmp`,
+  each step within 10 minutes; locally about 2 s each.
+
+**The reading at this commit** (linux-x64, the report's SHA-256 `3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b`,
+the same file from the Native AOT image and under the JIT):
+
+| Class | Vectors | Implemented | Gives its `out` | Differs | Not implemented |
+|---|---|---|---|---|---|
+| normative (status vectors aside) | 1,086 | 1,066 | 1,066 | 0 | 20 |
+| divergence | 231 | 224 | 224 | 0 | 7 |
+| status (`status: exhausted`, all normative) | 18 | 18 | 18 | 0 | 0 |
+| impl-defined | 85 | 85 | reported | | 0 |
+
+Of the 85 impl-defined vectors, 68 meet `out` and both engines' expectations, and 17 answer `status: limit-nesting`,
+the status both engines render as decision D7's SyntaxError, which their `per-engine` fields hold (`out`, the
+specification's, sets no bound): `regexp/syntax/s3-nesting/0011` to `0020`, `regexp/syntax/s3b-deep-nesting/0001` to
+`0003`, `regexp/literals/s3-nesting/0002` and `regexp/matching/s3-nesting/0004` to `0006`. **Every normative vector
+whose op the library implements gives its `out`**, the six budget vectors that complete among them, and every status
+vector its status. The 8 vectors of `EscapeRegExpPattern, one P and F`
+(`regexp/text/t1-source-literal-and-constructor/0001` to `0008`, 4 normative and 4 divergence, the divergence ones
+those where Broiler.JS answers two texts) are among those counts but check only that `Compile` and `EscapePattern`
+succeed, since their P is one string by construction at library level (the op's row above); the literal scanner they
+are about is the object model's, judged by the engines.
+
+**The finding, fixed.** At the branch's start (`6ceb0df`'s library, the report SHA-256
+`f78ee318aaac80b498c75660430ef1bad2cb61c76e8338406cc61cfd52ca458b`) the same counts held but for four impl-defined
+vectors that met none: `[\k<a>](?<a>x)` and `[\k](?<a>x)` through RegExpInitialize
+(`regexp/syntax/s5-named-references/0012`, `0014`), `[\k<a>](?<a>x)` as a literal (`regexp/literals/s1-s5-names/0001`)
+and `[\k](?<b>x)` on `kx` (`regexp/matching/s4-escapes/0031`), each refused with `NamedReferenceInClass`. Decision D-s5
+records that `regexpref` refutes the reading the refusal rested on: no production passes [NamedCaptureGroups] into a
+CharacterClass, so B.1.2's ClassEscape reads ~NamedCaptureGroups and admits `k`. A library defect within this task's
+reach, so fixed (`2e35cbb`): the parser's refusal is gone, `NamedReferenceTests` was watched failing first (five of five
+cases), and `RegexDiagnosticCode.NamedReferenceInClass` is retired, its number kept; no public signature changed.
+No vector was found defective, and nothing is reported to the corpus's owner.
+
+**What the earlier records owed this task, and what became of each.**
+- Task 2.7's record: "the vectors' flag, escape and `source` operations mapped onto these helpers": done, the table above.
+- Task 2.11's record ("the vectors and the reference arms do", for whether a match is the specification's): the
+  reading above; the integration's note sends `[\q{\uD83D\u{DE00}}]` under `v` to the vectors and the arms next, and no
+  vector of revision 32 holds it, so it stays the reference arms' (task 2.13) or a later revision's.
+- Convention 12: the probe "runs bundle `sjl-11-001`'s part D, the vectors at library level, from task 2.12 on": done.
+- Rule SL9's statement ends "The vectors at library level replace the population when SJL-11.2 adds them". SL9 still
+  reads the probe's population; `VectorsRunTests` holds the vectors' report equal over two runs and two concurrent
+  threads, which is SL9's check over the vectors. Moving SL9 itself onto them is a change of the architecture tests'
+  register, not made here; it is left to the orchestrator (below).
+
+**Checks at this commit**, linux-x64: the build without a warning; `Broiler.Regex.Tests` 2,631 passed,
+`Regex.Architecture.Tests` 49 (the violation list empty), `Regex.Fuzz` 11; the declared fuzz session no finding, its
+transcript digest `902fbd151db4d37af1cff3a2424e4df0dc8dc768879ef190a22313ff536ee39d` where `6ceb0df`'s is
+`c2ed95c98feb225ec1df3eccf378d9f4804aab02f410d48299be02891e4c5d5b`, since 98 more of its generated patterns compile
+with `\k` in a class; the probe's default report and `--adversarial`'s byte-identical to `6ceb0df`'s and between the two
+modes; part C's control 1 still builds with the runner compiled in and reports its 17 rows; the Native AOT publish
+without a warning; package validation against `0.1.0-preview.5` with `CompatibilitySuppressions.xml` unchanged, and
+the packed package holding no vector and no runner; the assurance check without a violation after regeneration.
+
+**What remains.** Part D's judgement is the candidate reading's, from CI's runs at the commit `0.1.0-preview.6` is
+packed from, win-x64's among them. A later corpus revision is a new copy, a new pin, a dated note in the bundle's
+README and a new reading.
+
+*Where the plan, the filed rule, the corpus and the library differ, read at this record.*
+- The filed rule's population is the vectors "at the corpus revision bundle sjl-11-001 names", and this bundle named
+  none; its README now names revision 32 at `b2c2e224`, Broiler.JS's part D's revision (D-partd). Plan row 2.12 says
+  "at the named revision" and its pin "SHA-256 per file"; the pin also gives each file's length and git blob.
+- The rule's MET clause names "every normative vector"; the runner holds the `divergence` vectors to their `out` too,
+  as SCHEMA.md section 5 says their `out` is the specification's. Status vectors are `normative` in the corpus.
+- The corpus's generator lists as the object model's `String.prototype.search`, the flags getter over an ordinary
+  object and "the invariants of EscapeRegExpPattern (`source`) that its text fixes"; task 2.7's record asks for the
+  `source` operations mapped onto the helpers, so the two EscapeRegExpPattern ops are mapped, the second with the
+  literal grammar of §12.9.5 checked in the runner and the pattern's own answer, not the script's embedded reference
+  answer, as the comparison. The first's comparison of a literal scanner's P with a constructor's is the object
+  model's, as the generator says: mapped, it exercises only `Compile` and `EscapePattern` (the op's row above).
+  `[Symbol.split]`, which the generator does not list, is listed as the object model's: no
+  member of the library splits.
+- Broiler.ECMAScript's `LibraryRun` compares an impl-defined vector with the engines' agreeing `per-engine` field;
+  part D asks for impl-defined vectors to be reported, so they are reported with what they meet, and none is judged.
+- The library answered B.1.2's class `\k` otherwise than the text, by its own reading of task 2.2 (fixed above), and
+  Broiler.JS's `RegExpLiteralEarlyErrorTests` case `/(?<a>.)[\k]/`, transcribed in `EngineLiteralTests`, expects the
+  refusal D-s5 makes a correction of Broiler.JS.
+
 *Dated record, 2026-11-01 (task 2.9 of SJL-11.2; R8 and R10's conventions 1, 3, 4, 16, 17 and 18; decisions D9, D10
 and D12, D12 as the owner revised it; checks C1, C3 and C5 and rules SL4, SL5 and SL8).*
 

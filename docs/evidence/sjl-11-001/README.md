@@ -57,6 +57,21 @@ exit and status line, the two compared byte for byte), and the `adversarial-cont
 reading names those runs by their identifiers and retains the reports by their SHA-256;
 [`probes/Regex.Probe/README.md`](../../../probes/Regex.Probe/README.md) gives the commands that repeat them locally.
 
+*Added 2026-11-02, at task 2.12 of SJL-11.2; no rule changed.* **Part D's population is named.** Part D reads "every
+vector of conformance/vectors/regexp/*.vectors at the corpus revision bundle sjl-11-001 names", and until this note
+the bundle named none. It names **corpus revision 32 at Broiler.JS `b2c2e2243a086285d806866a64b83297791a8ec5`**, the
+revision Broiler.JS's bundle `sjl-11-001` names for its own part D (in its `decision-rule.md`, part D's note of
+2026-11-01 on the owner's decision D-partd: "The corpus revision this part names is 32"; the decision is recorded in
+Broiler.VM's JSD-0081; the status vectors are judged here only), copied into
+[`tests/Vectors/regexp/`](../../../tests/Vectors/README.md) with the pin file `tests/Vectors/regexp.pin`. A later
+revision is a new copy, a new pin and a dated note here. **Part D's runs** are CI's at the reading's commit: the
+`native-aot-probe` job's `vectors-aot.txt` and `vectors-jit.txt` for linux-x64 and win-x64 (each the report of
+`--vectors tests/Vectors`, whose header carries the pin and the pin check comes before the run, the two compared byte
+for byte), each kept as an artifact of its run, and the test job's run of `VectorsRunTests` and `VectorsProbeTests`,
+named by its run identifier. At task
+2.12, locally on linux-x64, the two reports were one file (`docs/roadmap.md`, task 2.12's record); the rule's MET is
+read at the candidate reading, from CI's runs, win-x64's among them.
+
 **The readings**, named as they come:
 - **The candidate reading**, at the commit `0.2.0-preview.1` is packed from. A part NOT MET there blocks both
   cut-overs.

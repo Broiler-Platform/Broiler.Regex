@@ -16,6 +16,7 @@ is not packed. Since task 2.14 of SJL-11.2 it also runs bundle `sjl-11-001`'s pa
 |---|---|---|
 | `Broiler.Regex.Probe [--report path]` | On a thread of 1 MiB, the smallest stack the corpus declares: the smoke population `smoke-1` (`ProbePopulation.cs`), the new backend's cases `engine-1` (`EnginePopulation.cs`) and the text helpers' populations `text-1` (`TextPopulation.cs`); the report to standard output and, with `--report`, to the file | 0; 2 on arguments it does not read |
 | `Broiler.Regex.Probe --adversarial corpus.tsv [--report path]` | Part C: every row of the adversarial corpus, each in a child process of the probe, against its declared status (below) | 0 when every row gives its declared status; 1 when a row differs, a child ends abnormally or a row waits; 2 on arguments or a corpus it cannot read |
+| `Broiler.Regex.Probe --vectors dir [--report path]` | Part D, since task 2.12: the pinned copy of Broiler.JS's regular-expression vectors in `dir` (`tests/Vectors`), its pin checked first, run through the library runner of `Broiler.Regex.Tests/Vectors/` on a 1 MiB thread (below) | 0 when every vector the rule holds to its `out` gives it; 1 when one does not; 2 on arguments, a pin it refuses or a file it cannot read |
 | `Broiler.Regex.Probe --engine-row corpus.tsv id` | Hidden: one row of the corpus in this process, on a thread of the corpus's declared stack; writes `id status` on standard output and `units n` on standard error | 0 when the row ran, whatever it answered; 3 when the corpus cannot be read or has no such row; a crash ends the process |
 
 Under the JIT the probe runs as `dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll`; under Native
@@ -142,3 +143,24 @@ dotnet build probes/Regex.Probe -c Release   # the revert, before any other use 
 
 A control build leaves the probe's `bin/` and `obj/` holding the control; build the probe without the switch before
 the tests, which run its child mode, or the architecture tests, which read its assembly.
+
+## The vectors (`--vectors`)
+
+*Added 2026-11-02, at task 2.12 of SJL-11.2.* The rule's part D asks for "the library runner in Broiler.Regex.Tests,
+mapping each op to the library (compile and validate, exec at a lastIndex under the flags, the helpers), under the JIT
+and through the Native AOT probe". The runner's sources are `Broiler.Regex.Tests/Vectors/*.cs`, which the probe's project
+file compiles in (`VectorsMode.cs` is the mode's own file); [`tests/Vectors/README.md`](../../tests/Vectors/README.md)
+describes the pinned copy and its pin. The mode reads `dir/regexp.pin`, checks `dir/regexp/` against it (every named
+file's length and SHA-256, and no `.vectors` file it does not name) and only then reads the vectors; a problem is
+written to standard error after `refused: `, and the mode exits 2 with no report. Otherwise it runs every vector on a
+thread of 1 MiB, the adversarial corpus's smallest stack, and writes the report: the pin, the counts by class and
+verdict, every op not implemented (the object model's) by name with its count and reason, and one line per vector,
+ordered by id, with its class, op, `out`, the library's answer and the verdict (`match`, `difference`,
+`not-implemented`, or, for an `impl-defined` vector, `reported` and what the answer meets). No time, path or machine is
+in it, so the Native AOT run's report and the JIT run's are compared with `cmp`.
+
+```sh
+dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --vectors tests/Vectors --report vectors-jit.txt
+probes/Regex.Probe/bin/Release/net10.0/linux-x64/publish/Broiler.Regex.Probe --vectors tests/Vectors --report vectors-aot.txt
+cmp vectors-jit.txt vectors-aot.txt
+```
