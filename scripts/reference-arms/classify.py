@@ -224,8 +224,38 @@ def turkic_or_lithuanian(d) -> bool:
     return case_insensitive_without_u(d) and d["run"] in ("J.tr-TR", "J.lt-LT")
 
 
+def quantified_lookbehind(text: str) -> bool:
+    """Whether a look-behind group is followed by a quantifier, `(?<=a)*`: the group's end found by counting
+    parentheses outside classes and escapes."""
+    for m in re.finditer(r"\(\?<[=!]", text):
+        depth, i, in_class = 0, m.start(), False
+        while i < len(text):
+            ch = text[i]
+            if ch == "\\":
+                i += 2
+                continue
+            if in_class:
+                in_class = ch != "]"
+            elif ch == "[":
+                in_class = True
+            elif ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if depth == 0:
+                    if i + 1 < len(text) and text[i + 1] in "*+?{":
+                        return True
+                    break
+            i += 1
+    return False
+
+
 def unicode_mode_syntax(d) -> bool:
-    return d["op"] == "accept" and has_flag(d, "u")
+    """Row S7: an acceptance difference under u; or, without u, a quantified look-behind, which Broiler.JS accepts
+    (`(?<=a)*`, the row's one Broiler.JS answer that differs) where an early error refuses it."""
+    if d["op"] != "accept":
+        return False
+    return has_flag(d, "u") or (d["arm"] == "accept" and quantified_lookbehind(units_text(d["pattern"])))
 
 
 def unicode_sets(d) -> bool:

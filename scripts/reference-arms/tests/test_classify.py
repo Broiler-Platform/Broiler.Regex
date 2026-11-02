@@ -37,6 +37,12 @@ class ClassifyTests(unittest.TestCase):
         d = diff("V", "accept", "(?<\\u{62}>x)|(?<a>y)", "", "accept", "refuse:syntax")
         self.assertEqual(C.classify(d, "accept", set())[0], "c")
 
+    def test_a_quantified_look_behind_j_accepts_is_row_s7(self) -> None:
+        d = diff("J", "accept", "(?<=a)*b", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set())[:2], ("a", "S7"))
+        d = diff("J", "accept", "(?<=a)b*", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set())[0], "c")
+
     def test_s_wrong_is_c(self) -> None:
         d = diff("J", "exec", "a", "", "null", "match:0,1", "a")
         self.assertEqual(C.classify(d, MATCH01, set())[0], "c")
