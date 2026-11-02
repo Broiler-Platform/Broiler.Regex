@@ -60,8 +60,9 @@ reading names those runs by their identifiers and retains the reports by their S
 *Added 2026-11-02, at task 2.12 of SJL-11.2; no rule changed.* **Part D's population is named.** Part D reads "every
 vector of conformance/vectors/regexp/*.vectors at the corpus revision bundle sjl-11-001 names", and until this note
 the bundle named none. It names **corpus revision 32 at Broiler.JS `b2c2e2243a086285d806866a64b83297791a8ec5`**, the
-revision Broiler.JS's bundle `sjl-11-001` names for its own part D (its decision D-partd, recorded in Broiler.VM's
-JSD-0081: "The corpus revision this part names is 32"; the status vectors are judged here only), copied into
+revision Broiler.JS's bundle `sjl-11-001` names for its own part D (in its `decision-rule.md`, part D's note of
+2026-11-01 on the owner's decision D-partd: "The corpus revision this part names is 32"; the decision is recorded in
+Broiler.VM's JSD-0081; the status vectors are judged here only), copied into
 [`tests/Vectors/regexp/`](../../../tests/Vectors/README.md) with the pin file `tests/Vectors/regexp.pin`. A later
 revision is a new copy, a new pin and a dated note here. **Part D's runs** are CI's at the reading's commit: the
 `native-aot-probe` job's `vectors-aot.txt` and `vectors-jit.txt` for linux-x64 and win-x64 (each the report of
