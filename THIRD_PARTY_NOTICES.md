@@ -21,6 +21,18 @@ Those data files and the tables derived from them remain subject to the
 The Apache License 2.0 in [`LICENSE`](LICENSE) applies to Broiler's source code and does
 not replace the Unicode Terms of Use for Unicode-provided data.
 
+## The conformance vectors in the tests
+
+`tests/Vectors/regexp/` (task 2.12 of milestone SJL-11.2, 2026-11-02) is a byte-for-byte copy of the regular-expression
+area of the shared conformance corpus, `conformance/vectors/regexp/` of
+[Broiler.JS](https://github.com/Broiler-Platform/Broiler.JS) at commit `b2c2e2243a086285d806866a64b83297791a8ec5`
+(corpus revision 32), pinned by `tests/Vectors/regexp.pin`. It is Copyright 2026 Broiler Platform contributors under
+the Apache License 2.0, this repository's own licence. Its expected values for property escapes, case folding and white
+space are computed over the Unicode Character Database 17.0.0, which remains subject to the
+[Unicode Terms of Use](https://www.unicode.org/terms_of_use.html); its notes name test262 files by path and carry no
+test262 text. [`tests/Vectors/README.md`](tests/Vectors/README.md) says where it comes from and how it is refreshed.
+The package carries none of it.
+
 ## test262 cases in the tests
 
 The test project `Broiler.Regex.Tests`, which is not packed, carries cases ported as data from **test262**, the

@@ -9,7 +9,8 @@ namespace Broiler.Regex.Tests;
 /// <c>AtomEscape :: k GroupName</c> naming no GroupSpecifier of the pattern is an early error (ECMA-262 §22.2.1.1),
 /// which the parser decides, so a parse alone refuses it as a compilation does; and where the pattern is read with
 /// <c>[+NamedCaptureGroups]</c> (under <c>u</c> or <c>v</c>, or when it declares a group name, Annex B §B.1.2),
-/// <c>\k</c> is no identity escape, in a class either.
+/// <c>\k</c> is no identity escape outside a class, and under <c>u</c> and <c>v</c> in a class either; without them, a
+/// class reads ~NamedCaptureGroups and holds the letter (decision D-s5).
 /// </summary>
 public class NamedReferenceTests
 {
@@ -48,13 +49,31 @@ public class NamedReferenceTests
     public void Without_a_group_name_k_is_the_letter(string pattern, string expected)
         => Assert.Equal(expected, TestRegex.Compile(pattern).Match(expected).Value);
 
+    /// <summary>
+    /// In a class, without <c>u</c> and <c>v</c>, <c>\k</c> is the letter whatever group names the pattern declares: no
+    /// production passes [NamedCaptureGroups] into a CharacterClass, so B.1.2's ClassEscape reads ~NamedCaptureGroups and
+    /// SourceCharacterIdentityEscape admits <c>k</c> (decision D-s5 of Broiler.VM's JSD-0081, 2026-11-01; the vectors
+    /// <c>regexp/syntax/s5-named-references/0012</c> and <c>0014</c>, <c>regexp/literals/s1-s5-names/0001</c> and
+    /// <c>regexp/matching/s4-escapes/0031</c>). Until task 2.12 the parser refused it with
+    /// <see cref="RegexDiagnosticCode.NamedReferenceInClass"/>.
+    /// </summary>
+    [Theory]
+    [InlineData(@"[\k<a>](?<a>x)", "kx", "kx")]
+    [InlineData(@"[\k<a>](?<a>x)", "<x", "<x")]
+    [InlineData(@"[\k](?<a>x)", "kx", "kx")]
+    [InlineData(@"(?<a>x)[\k]", "xk", "xk")]
+    [InlineData(@"(?<a>x)[^\k]", "xk", "")]
+    public void In_a_class_without_u_and_v_k_is_the_letter_beside_a_group_name(string pattern, string subject, string expected)
+    {
+        Assert.Equal(expected, TestRegex.Compile(pattern).Match(subject).Value);
+        Assert.Equal(RegexStatus.Success, BroilerRegex.Validate(pattern, RegexFlags.None, UnicodeTables.Instance, BroilerRegex.MaximumNestingLimit, out _, out _));
+    }
+
     [Theory]
     [InlineData(@"(?<a>.)\k", "")]
     [InlineData(@"(?<a>.)\k<a", "")]
     [InlineData(@"(?<a>.)\k<>", "")]
     [InlineData(@"(?<a>.)\k<1>", "")]
-    [InlineData(@"[\k<a>](?<a>x)", "")]
-    [InlineData(@"(?<a>x)[\k]", "")]
     [InlineData(@"[\k<a>](?<a>x)", "u")]
     [InlineData(@"[\k<a>]", "u")]
     [InlineData(@"\k", "u")]

@@ -113,7 +113,11 @@ jobs:
   # probe on a thread of the corpus's declared stack, failing on a row that differs from its declared status,
   # a child that ends abnormally or a row that waits (none may since task 2.8), under Native AOT and under the
   # JIT, the two reports compared byte for byte per RID. About 2 s under Native AOT and 6 s under the JIT on
-  # linux-x64 locally.
+  # linux-x64 locally. Since task 2.12 it also runs bundle sjl-11-001's part D: --vectors over tests/Vectors, the
+  # pinned copy of Broiler.JS's regular-expression vectors, its pin checked first (a changed byte refuses the run,
+  # exit 2), failing on a vector the rule holds to its out that does not give it, under Native AOT and under the JIT,
+  # the two reports compared byte for byte per RID. About 1 s under Native AOT and 2 s under the JIT on linux-x64
+  # locally; each step bounded by 10 minutes.
   native-aot-probe:
     name: Native AOT probe (${{ matrix.rid }})
     runs-on: ${{ matrix.os }}
@@ -156,6 +160,9 @@ jobs:
       - name: Run the adversarial corpus under Native AOT
         timeout-minutes: 10
         run: ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --adversarial tests/Adversarial/corpus.tsv --report adversarial-aot.txt
+      - name: Run the vectors under Native AOT
+        timeout-minutes: 10
+        run: ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --vectors tests/Vectors --report vectors-aot.txt > /dev/null
       - name: Run it under the JIT, and compare
         run: |
           dotnet build probes/Regex.Probe -c Release --nologo
@@ -166,6 +173,11 @@ jobs:
         run: |
           dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report adversarial-jit.txt
           cmp adversarial-aot.txt adversarial-jit.txt
+      - name: Run the vectors under the JIT, and compare
+        timeout-minutes: 10
+        run: |
+          dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --vectors tests/Vectors --report vectors-jit.txt > /dev/null
+          cmp vectors-aot.txt vectors-jit.txt
       - name: Keep the logs
         if: always()
         uses: actions/upload-artifact@v7
@@ -177,6 +189,8 @@ jobs:
             probe-jit.txt
             adversarial-aot.txt
             adversarial-jit.txt
+            vectors-aot.txt
+            vectors-jit.txt
           if-no-files-found: warn
 
   # Part C's two controls (bundle sjl-11-001's decision rule; task 2.14 of SJL-11.2), each a scratch build of the probe

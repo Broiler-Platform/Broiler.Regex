@@ -180,8 +180,11 @@ public enum RegexDiagnosticCode
     NamedReferenceWithoutName = 32,
 
     /// <summary>
-    /// <c>regexp.class.named-reference</c>: outside <c>u</c> and <c>v</c>, <c>\k</c> in a class of a pattern that declares a
-    /// group name, where Annex B's IdentityEscape excludes it and no class holds a reference. Position: the <c>k</c>.
+    /// <c>regexp.class.named-reference</c>: retired, answered for no pattern. Until task 2.12 of SJL-11.2 it refused, outside
+    /// <c>u</c> and <c>v</c>, <c>\k</c> in a class of a pattern that declares a group name, on the reading that Annex B's
+    /// IdentityEscape[+NamedCaptureGroups] excludes it in a class too. No production passes [NamedCaptureGroups] into a
+    /// CharacterClass, so B.1.2's ClassEscape reads ~NamedCaptureGroups and admits <c>k</c>, the letter (decision D-s5 of
+    /// Broiler.VM's JSD-0081, 2026-11-01). The number and identifier are kept and never reused.
     /// </summary>
     NamedReferenceInClass = 33,
 
