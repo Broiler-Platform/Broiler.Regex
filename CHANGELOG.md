@@ -102,8 +102,10 @@ this version is provisional.
     the object model it does not implement by name, and writes a deterministic report; `VectorsRunTests` reads it. The
     probe's `--vectors dir` mode runs the same runner, and CI's `native-aot-probe` job runs it under Native AOT and the
     JIT on ubuntu-latest and windows-latest and compares the two reports byte for byte. At task 2.12 every vector the
-    rule holds to its `out` whose op the library implements gives it (1,308, the 18 status vectors among them), and
-    the 85 impl-defined vectors are reported (`docs/roadmap.md`, task 2.12's record).
+    rule holds to its `out` whose op the library implements gives it (1,308, the 18 status vectors among them, and the
+    8 of `EscapeRegExpPattern, one P and F`, whose two P are one string at library level, so that they check only that
+    `Compile` and `EscapePattern` succeed), and the 85 impl-defined vectors are reported (`docs/roadmap.md`, task
+    2.12's record).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

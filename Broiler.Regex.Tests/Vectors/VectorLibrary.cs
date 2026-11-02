@@ -81,7 +81,8 @@ internal sealed class VectorLibrary
         ["RegExp.escape"] = "RegexEscaper.EscapeString",
         ["RegExp.escape, round trip"] = "RegexEscaper.EscapeString, then Compile and Match(string, 0).Success on the string",
         ["get RegExp.prototype.flags"] = "Compile of \"a\", then RegexFlagsText.Format of its Flags",
-        ["EscapeRegExpPattern, one P and F"] = "Compile, then RegexEscaper.EscapePattern of the literal's body and of the compiled Pattern, compared",
+        ["EscapeRegExpPattern, one P and F"] =
+            "Compile, then RegexEscaper.EscapePattern of the compiled Pattern; the literal's body and the constructor's pattern are one string at library level, so only the two calls' success is checked",
         ["EscapeRegExpPattern, a literal of S"] =
             "Compile, then S = RegexEscaper.EscapePattern(Pattern): no line terminator, a RegularExpressionBody, valid, and matching the subject as the pattern does",
     };
@@ -282,17 +283,19 @@ internal sealed class VectorLibrary
     }
 
     /// <summary>
-    /// A literal <c>/P/F</c> and its constructor twin give one <c>source</c>: the literal's P is its body text, the
-    /// constructor's the pattern the instance keeps, and EscapeRegExpPattern of each is compared.
+    /// A literal <c>/P/F</c> and its constructor twin give one <c>source</c>. The vector's two P are one string by
+    /// construction at library level: the library has no literal scanner, its <see cref="BroilerRegex.Pattern"/> is
+    /// the text the caller gave, and EscapeRegExpPattern is a function of P and F. What the vector compares (a literal
+    /// scanner's P against a constructor's) is the object model's, so this answers <c>bool:true</c> when the pattern
+    /// compiles under F and EscapePattern of it succeeds; only those two outcomes are exercised.
     /// </summary>
     private string OnePattern(string body, string flags)
     {
         if (Compile(body, flags, out var regex) is { } ended)
             return ended;
-        if (RegexEscaper.EscapePattern(body, int.MaxValue, null, out var fromLiteral) != RegexStatus.Success
-            || RegexEscaper.EscapePattern(regex!.Pattern, int.MaxValue, null, out var fromConstructor) != RegexStatus.Success)
-            return "status: limit-length";
-        return string.Equals(fromLiteral, fromConstructor, StringComparison.Ordinal) ? "value: bool:true" : "value: bool:false";
+        return RegexEscaper.EscapePattern(regex!.Pattern, int.MaxValue, null, out _) == RegexStatus.Success
+            ? "value: bool:true"
+            : "status: limit-length";
     }
 
     /// <summary>

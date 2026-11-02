@@ -1539,7 +1539,7 @@ its sibling of part C, rather than after task 2.9's, so that it merges beside ta
   | `RegExp.prototype [ %Symbol.match% ]` | `Match(string, 0)`'s groups without `g`; with it every match through `NextMatch` |
   | `RegExp.escape`, and its round trip | `RegexEscaper.EscapeString`; the round trip compiles the text and tests the string |
   | `get RegExp.prototype.flags` | `Compile` of `a`, then `RegexFlagsText.Format` |
-  | `EscapeRegExpPattern, one P and F` | `RegexEscaper.EscapePattern` of the literal's body and of the compiled `Pattern`, compared |
+  | `EscapeRegExpPattern, one P and F` | `Compile`, then `RegexEscaper.EscapePattern` of the compiled `Pattern`: at library level the literal's body and the constructor's pattern are one string by construction (`Pattern` is the caller's text, and the library has no literal scanner), so the vector checks only that the two calls succeed |
   | `EscapeRegExpPattern, a literal of S` | S = `EscapePattern(Pattern)`: no line terminator, a RegularExpressionBody (§12.9.5), valid under F, and matching the subject as the pattern does |
 
   The six ops of the object model are not implemented and are listed by name, with the reason, in every report:
@@ -1572,7 +1572,11 @@ the status both engines render as decision D7's SyntaxError, which their `per-en
 specification's, sets no bound): `regexp/syntax/s3-nesting/0011` to `0020`, `regexp/syntax/s3b-deep-nesting/0001` to
 `0003`, `regexp/literals/s3-nesting/0002` and `regexp/matching/s3-nesting/0004` to `0006`. **Every normative vector
 whose op the library implements gives its `out`**, the six budget vectors that complete among them, and every status
-vector its status.
+vector its status. The 8 vectors of `EscapeRegExpPattern, one P and F`
+(`regexp/text/t1-source-literal-and-constructor/0001` to `0008`, 4 normative and 4 divergence, the divergence ones
+those where Broiler.JS answers two texts) are among those counts but check only that `Compile` and `EscapePattern`
+succeed, since their P is one string by construction at library level (the op's row above); the literal scanner they
+are about is the object model's, judged by the engines.
 
 **The finding, fixed.** At the branch's start (`6ceb0df`'s library, the report SHA-256
 `f78ee318aaac80b498c75660430ef1bad2cb61c76e8338406cc61cfd52ca458b`) the same counts held but for four impl-defined
@@ -1619,7 +1623,9 @@ README and a new reading.
   object and "the invariants of EscapeRegExpPattern (`source`) that its text fixes"; task 2.7's record asks for the
   `source` operations mapped onto the helpers, so the two EscapeRegExpPattern ops are mapped, the second with the
   literal grammar of §12.9.5 checked in the runner and the pattern's own answer, not the script's embedded reference
-  answer, as the comparison. `[Symbol.split]`, which the generator does not list, is listed as the object model's: no
+  answer, as the comparison. The first's comparison of a literal scanner's P with a constructor's is the object
+  model's, as the generator says: mapped, it exercises only `Compile` and `EscapePattern` (the op's row above).
+  `[Symbol.split]`, which the generator does not list, is listed as the object model's: no
   member of the library splits.
 - Broiler.ECMAScript's `LibraryRun` compares an impl-defined vector with the engines' agreeing `per-engine` field;
   part D asks for impl-defined vectors to be reported, so they are reported with what they meet, and none is judged.
