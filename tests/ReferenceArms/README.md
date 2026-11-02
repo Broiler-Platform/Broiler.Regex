@@ -54,20 +54,21 @@ and error construction stay in the engines and are not compared.
 
 **Workers.** Each class's cases are split into 3 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
 depend on the machine), one worker process of the arm per range, each case on a thread of 16 MiB, the stack
-Broiler.JS's shell gives a script (`SH/Program.cs:128`). The harness stops a case, and answers it `limit:harness`, when:
-its worker's processor time (user and system, all its threads) since the case began passes 5 seconds, or 2 seconds
-once a case of the same pattern, flags and policy has been stopped in that range; its wall-clock time passes 120
-seconds whatever its processor time (a backstop for a worker that does not run); or its worker ends while it runs (a
-crash: Broiler.Regex 0.1.0-preview.4's recursive matcher overflows the stack, row B8). A new worker takes the range
-from the next case. Arm J reaches it: its .NET engine runs with no match timeout, as Broiler.JS builds it, and the
-package's matcher recurses. The stops are one answer so that which came first, which a loaded machine can change (a
-deep recursion overflows the stack, or is stopped by time before it does), never changes the answer; processor time,
-not wall-clock time, because a loaded machine stretches a case's wall-clock time far more than its processor time. A
-case that ends near a limit can still be stopped in one run and not in another; `timing/` lists the slow cases, and
-the bundle's record says what two runs gave. Which stop it was is in `timing/`.
+Broiler.JS's shell gives a script (`SH/Program.cs:128`). The harness stops a case, and answers it `limit:harness`,
+when: its worker's processor time (user and system, all its threads) since the case began passes 5 seconds (20 under
+P3's ample policy, whose inputs run to 10,000,001 code units: arm J answers P3-F03 in about 4.5), or 2 seconds once a
+case of the same pattern, flags and policy has been stopped in that range; its wall-clock time passes 120 seconds
+whatever its processor time (a backstop for a worker that does not run); or its worker ends while it runs (a crash:
+Broiler.Regex 0.1.0-preview.4's recursive matcher overflows the stack, row B8). A new worker takes the range from the
+next case. Arm J reaches it: its .NET engine runs with no match timeout, as Broiler.JS builds it, and the package's
+matcher recurses. The stops are one answer so that which came first, which a loaded machine can change (a deep
+recursion overflows the stack, or is stopped by time before it does), never changes the answer; processor time, not
+wall-clock time, because a loaded machine stretches a case's wall-clock time far more than its processor time. A case
+that ends near a limit can still be stopped in one run and not in another; `timing/` lists the slow cases, and the
+bundle's record says what two runs gave. Which stop it was is in `timing/`.
 
 **Limits.** `Common/Limits.cs` holds every bound: the default policy's 10,000,000 steps (S's step ceiling and V's
-allowance), the 3 workers, the 16 MiB stack, the 5 and 2 seconds of processor time, the 120-second backstop and the
+allowance), the 3 workers, the 16 MiB stack, the 5, 20 and 2 seconds of processor time, the 120-second backstop and the
 1-second threshold of a slow case. Each run file records them. *(Revised 2026-11-02, at task 2.13's second review:
 the harness stopped a case after "10 seconds of wall-clock time (1 second once a case of the same pattern, flags and
 policy has been stopped in that range)" and answered it `limit:wall-clock`, a crash `crash:exit-N`, and arm J's .NET

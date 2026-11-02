@@ -227,6 +227,7 @@ internal static class Harness
             var inFlight = -1L;
             var inFlightId = "";
             var inFlightKey = "";
+            var inFlightAmple = false;
             var sinceWall = DateTime.UtcNow;
             var sinceProcessor = TimeSpan.Zero;
             var gate = new object();
@@ -244,6 +245,7 @@ internal static class Harness
                             inFlight = long.Parse(fields[1], CultureInfo.InvariantCulture);
                             inFlightId = fields[2];
                             inFlightKey = fields[3];
+                            inFlightAmple = fields[4] == "ample";
                             sinceWall = DateTime.UtcNow;
                             sinceProcessor = processor;
                         }
@@ -277,7 +279,7 @@ internal static class Harness
                     var afterAStop = stoppedKeys.Contains(inFlightKey);
                     used = ProcessorTime(child) - sinceProcessor;
                     wall = DateTime.UtcNow - sinceWall;
-                    if (used > (afterAStop ? Limits.CaseTimeAfterAStop : Limits.CaseTime))
+                    if (used > (afterAStop ? Limits.CaseTimeAfterAStop : inFlightAmple ? Limits.AmpleCaseTime : Limits.CaseTime))
                         stop = afterAStop ? "processor-time-after-a-stop" : "processor-time";
                     else if (wall > Limits.CaseWallClockBackstop)
                         stop = "wall-clock-backstop";
@@ -350,7 +352,8 @@ internal static class Harness
                 if (index >= to)
                     break;
                 var c = Parse(line);
-                output.WriteLine("S\t" + index.ToString(CultureInfo.InvariantCulture) + "\t" + c.Id + "\t" + KeyOf(c));
+                output.WriteLine("S\t" + index.ToString(CultureInfo.InvariantCulture) + "\t" + c.Id + "\t" + KeyOf(c) + "\t" +
+                                 (c.AmpleNesting is null ? "default" : "ample"));
                 output.Flush();
                 var clock = System.Diagnostics.Stopwatch.StartNew();
                 var key = c.Pattern + "\u0000" + c.Flags + "\u0000" + c.Policy;

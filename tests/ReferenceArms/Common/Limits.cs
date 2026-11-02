@@ -41,6 +41,12 @@ internal static class Limits
     internal static readonly TimeSpan CaseTime = TimeSpan.FromSeconds(5);
 
     /// <summary>
+    /// <see cref="CaseTime"/> for a case under P3's ample policy, whose inputs run to 10,000,001 code units: arm J takes
+    /// about 4.5 seconds of processor time to answer P3-F03, `(?:a)` 100,000 times on 100,000 `a`.
+    /// </summary>
+    internal static readonly TimeSpan AmpleCaseTime = TimeSpan.FromSeconds(20);
+
+    /// <summary>
     /// The processor time of a case whose pattern, flags and policy a case stopped earlier in the same range had: a
     /// pattern no arm's own bound stops costs a range seconds, not hours.
     /// </summary>
@@ -74,6 +80,7 @@ internal static class Limits
         ["workers"] = Workers.ToString(CultureInfo.InvariantCulture),
         ["stack-bytes"] = StackBytes.ToString(CultureInfo.InvariantCulture),
         ["case-processor-seconds"] = CaseTime.TotalSeconds.ToString(CultureInfo.InvariantCulture),
+        ["case-processor-seconds-ample-policy"] = AmpleCaseTime.TotalSeconds.ToString(CultureInfo.InvariantCulture),
         ["case-processor-seconds-after-a-stop"] = CaseTimeAfterAStop.TotalSeconds.ToString(CultureInfo.InvariantCulture),
         ["case-wall-clock-backstop-seconds"] = CaseWallClockBackstop.TotalSeconds.ToString(CultureInfo.InvariantCulture),
         ["slow-case-seconds"] = SlowCase.TotalSeconds.ToString(CultureInfo.InvariantCulture),
