@@ -57,7 +57,6 @@ public class ValidateEntryTests
         { "(?<a>x)\\k<\\u0062>", "", RegexDiagnosticCode.UndefinedGroupName, 7, "b" },
         { "(?<a>x)\\k", "", RegexDiagnosticCode.NamedReferenceWithoutName, 9, null },
         { "\\k", "u", RegexDiagnosticCode.NamedReferenceWithoutName, 2, null },
-        { "(?<a>x)[\\k<a>]", "", RegexDiagnosticCode.NamedReferenceInClass, 9, null },
         { "(?<a", "", RegexDiagnosticCode.UnterminatedGroupName, 4, null },
         { "(?<a\\x41>.)", "", RegexDiagnosticCode.GroupNameInvalidEscape, 4, null },
         { "(?<1>.)", "", RegexDiagnosticCode.GroupNameInvalidStart, 3, null },
@@ -137,10 +136,17 @@ public class ValidateEntryTests
         }
     }
 
+    /// <summary>
+    /// Every code but a retired one: <see cref="RegexDiagnosticCode.NamedReferenceInClass"/>, which no pattern is refused
+    /// with since task 2.12 of SJL-11.2 (decision D-s5: without <c>u</c> and <c>v</c>, <c>\k</c> in a class is the letter
+    /// beside a group name, as B.1.2's ClassEscape reads ~NamedCaptureGroups), and whose number is kept, as a published
+    /// code's is (<see cref="The_code_table_is_pinned"/>).
+    /// </summary>
     [Fact]
     public void Every_code_is_refused_by_a_case_of_the_table()
     {
-        var reached = Refusals.Select(static row => row.Data.Item3).Append(RegexDiagnosticCode.NestingLimit).ToHashSet();
+        var reached = Refusals.Select(static row => row.Data.Item3).Append(RegexDiagnosticCode.NestingLimit).Append(RegexDiagnosticCode.NamedReferenceInClass).ToHashSet();
+        Assert.DoesNotContain(Refusals, static row => row.Data.Item3 == RegexDiagnosticCode.NamedReferenceInClass);
         var missing = Enum.GetValues<RegexDiagnosticCode>().Where(code => code != RegexDiagnosticCode.None && !reached.Contains(code));
         Assert.Empty(missing);
     }

@@ -1476,7 +1476,7 @@ internal sealed class RegexParser
     }
 
     /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0, legacy octal, identity.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=191AC3
+    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=827CE4
     // Broiler-Falsified-If: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
     // Broiler-Human:        PENDING
     private int ReadCharacterEscape()
@@ -1519,15 +1519,16 @@ internal sealed class RegexParser
             return c;
         }
 
-        // Annex B's IdentityEscape[+NamedCaptureGroups] excludes k (§B.1.2): in a pattern
-        // that declares a group name, \k is a GroupName reference, which no class holds,
-        // so [\k<a>](?<a>x) is a syntax error where [\k<a>] alone is a class of four letters.
-        // An atom's \k never reaches here in such a pattern; ParseAtomEscape reads it first.
-        if (!_unicode && c == 'k' && _hasGroupNames)
-            throw Refuse(RegexDiagnosticCode.NamedReferenceInClass, _pos, "\\k in a pattern that declares a group name must be a reference");
+        // Annex B's IdentityEscape[+NamedCaptureGroups] excludes k (§B.1.2), but only an atom
+        // reads [+NamedCaptureGroups]: no production passes the parameter into a CharacterClass,
+        // so a class's ClassEscape reads ~NamedCaptureGroups and SourceCharacterIdentityEscape
+        // admits k, and [\k<a>](?<a>x) is a class of four letters beside a group, as
+        // [\k<a>] alone is (decision D-s5 of Broiler.VM's JSD-0081, 2026-11-01; until task
+        // 2.12 of SJL-11.2 this was refused with NamedReferenceInClass). An atom's \k never
+        // reaches here in a pattern that declares a group name; ParseAtomEscape reads it first.
 
         // IdentityEscape: in Unicode mode only syntax characters and '/' may be
-        // escaped; outside Unicode mode any character but c (and k, above) may be.
+        // escaped; outside Unicode mode any character but c may be.
         if (_unicode && !IsSyntaxChar(c) && c != '/')
             throw Refuse(RegexDiagnosticCode.InvalidIdentityEscape, _pos, "Invalid escape \\" + c + " in Unicode mode", c.ToString());
 

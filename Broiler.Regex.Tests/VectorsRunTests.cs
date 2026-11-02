@@ -239,17 +239,6 @@ public class VectorsRunTests
         "regexp/syntax/s3b-deep-nesting/0002", "regexp/syntax/s3b-deep-nesting/0003",
     ];
 
-    /// <summary>
-    /// The impl-defined vectors whose answer meets neither <c>out</c> nor an engine's expectation, each a finding of the
-    /// reading: <c>\k</c> in a class beside a group name without <c>u</c> and <c>v</c>, which B.1.2 admits as the letter
-    /// (decision D-s5 of Broiler.VM's JSD-0081) and the library refuses with <c>NamedReferenceInClass</c>.
-    /// </summary>
-    private static readonly string[] MeetingNone =
-    [
-        "regexp/literals/s1-s5-names/0001", "regexp/matching/s4-escapes/0031", "regexp/syntax/s5-named-references/0012",
-        "regexp/syntax/s5-named-references/0014",
-    ];
-
     [Fact]
     public void Every_vector_the_rule_holds_to_its_out_gives_it()
     {
@@ -276,9 +265,7 @@ public class VectorsRunTests
         Assert.All(reported, result => Assert.Equal(
             NestingStatusVectors.Contains(result.Vector.Id)
                 ? "reported; meets per-engine.broiler-js (D7), per-engine.broiler-vm (D7)"
-                : MeetingNone.Contains(result.Vector.Id)
-                    ? "reported; meets none"
-                    : "reported; meets out, per-engine.broiler-js, per-engine.broiler-vm",
+                : "reported; meets out, per-engine.broiler-js, per-engine.broiler-vm",
             result.Verdict));
 
         // Every op the library does not implement, by name: the object model's.
