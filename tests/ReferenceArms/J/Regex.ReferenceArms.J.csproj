@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Arm J of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy
+    of Broiler.JS's CreateRegex, translator, GapScan, TryRouteToBroiler and RunMatch at 1f91b8f1, the correspondence's
+    revision, over Broiler.Regex 0.1.0-preview.4 from nuget.org and .NET Regex. Its own executable, because it references
+    the package whose identity arm S has: it references no project of this repository. Built in Release, run under the
+    JIT only, never in the Native AOT probe, never referenced or packed; run under the invariant culture, tr-TR and lt-LT.
+    tests/ReferenceArms/README.md says what each file copies and how the arm is run.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Broiler.Regex.ReferenceArms</RootNamespace>
+    <AssemblyName>Regex.ReferenceArms.J</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Broiler.JS's sources are written without nullable annotations outside the files that opt in. -->
+    <Nullable>disable</Nullable>
+    <PublishAot>false</PublishAot>
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <!-- The .NET engine reads the host culture under i (correspondence rows M2 and M2a): the process runs on ICU. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <NoWarn>1701;1702</NoWarn>
+    <!-- The versions Broiler.JS's Directory.Packages.props pins at 1f91b8f1, not this repository's. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Broiler.Regex" Version="0.1.0-preview.4" />
+    <PackageReference Include="Broiler.Unicode.Algorithms" Version="0.1.0-preview.5" />
+    <!-- The test-only tables the re-pointed JSUnicode reads, at the Algorithms version Broiler.JS pins. -->
+    <PackageReference Include="Broiler.Unicode.Tables" Version="0.1.0-preview.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Harness.cs" Link="Common\Harness.cs" />
+    <Compile Include="..\Common\Limits.cs" Link="Common\Limits.cs" />
+  </ItemGroup>
+
+</Project>

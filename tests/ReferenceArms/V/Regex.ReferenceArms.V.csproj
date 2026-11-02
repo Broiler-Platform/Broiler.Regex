@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Arm V of bundle sjl-11-001's reference-arm comparison (docs/evidence/sjl-11-001/reference-arms.md): a test-only copy
+    of Broiler.VM's JsRegExpMatcher family at aaa39fb, the correspondence's revision, with its Unicode calls re-pointed to
+    Broiler.Unicode.Algorithms over Broiler.Unicode.Tables as test-only data. Its own executable, built in Release and
+    run under the JIT only, never in the Native AOT probe, never referenced or packed; it references no project of this
+    repository. tests/ReferenceArms/README.md says what each file copies and how the arm is run.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Broiler.Regex.ReferenceArms</RootNamespace>
+    <AssemblyName>Regex.ReferenceArms.V</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PublishAot>false</PublishAot>
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>false</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The versions Broiler.VM's Directory.Packages.props pins at aaa39fb (Algorithms), and the owner's tables of the
+         same version as the test-only data the copy's re-pointed provider reads: the versions each arm calls are the
+         engine's, not this repository's, so they override the central ones. -->
+    <PackageReference Include="Broiler.Unicode.Algorithms" VersionOverride="0.1.0-preview.5" />
+    <PackageReference Include="Broiler.Unicode.Tables" VersionOverride="0.1.0-preview.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Harness.cs" Link="Common\Harness.cs" />
+    <Compile Include="..\Common\Limits.cs" Link="Common\Limits.cs" />
+  </ItemGroup>
+
+</Project>

@@ -47,3 +47,26 @@ states. test262 is Copyright (C) 2012 Ecma International, made
 available under the BSD License (3-clause), whose text, notice and disclaimer are kept beside the data at
 [`Broiler.Regex.Tests/test262-LICENSE.txt`](Broiler.Regex.Tests/test262-LICENSE.txt), as its condition 1 requires. The
 package carries none of it.
+
+## Copies of both engines in the reference arms
+
+The reference arms of bundle `sjl-11-001` (task 2.13 of milestone SJL-11.2, 2026-11-01), under
+[`tests/ReferenceArms/`](tests/ReferenceArms/README.md), which are not packed and which nothing references, carry
+test-only copies of two other repositories of the Broiler Platform, each file headed by its source path, its git blob
+and every change made to it:
+
+- `tests/ReferenceArms/V/` copies Broiler.VM's regular-expression matcher and the members of its realm that call it
+  ([Broiler.VM](https://github.com/Broiler-Platform/Broiler.VM) at `aaa39fb`);
+- `tests/ReferenceArms/J/` copies Broiler.JS's translator to .NET regular expressions, its routing to Broiler.Regex and
+  its prechecks ([Broiler.JS](https://github.com/Broiler-Platform/Broiler.JS) at `1f91b8f1`).
+
+Both are Copyright Broiler Platform contributors under the Apache License 2.0, the licence in [`LICENSE`](LICENSE).
+The arm J copies are Broiler.JS code, and Broiler.JS is derived in part from
+[Yantra JS](https://github.com/yantrajs/yantra), an Apache License 2.0 JavaScript engine for .NET: as Broiler.JS's own
+`THIRD_PARTY_NOTICES.md` says, Broiler.JS retains Yantra JS contribution history and attribution, and that origin
+carries over to these copies, each of whose headers says so. The Yantra JS authors have not reviewed, sponsored or
+endorsed Broiler.JS or this repository; the upstream project's name is used only to give accurate provenance.
+Arm J restores `Broiler.Regex` `0.1.0-preview.4` from nuget.org, as Broiler.JS did at that commit; the arms read
+Unicode data only through `Broiler.Unicode.Tables`, under the notice of the first section. The arms' population
+generator (`scripts/reference-arms/`) reads test262 at `ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e` from a checkout
+given to it and writes the literals and strings it extracts into a population that is never committed.
