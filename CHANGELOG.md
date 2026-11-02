@@ -30,38 +30,6 @@ heading with nothing to report. A break of the published API that package valida
 **Changed** with the requirement (R1 to R11 of [`docs/roadmap.md`](docs/roadmap.md) section 6) that forces it, and
 in [`docs/suppressions.md`](docs/suppressions.md).
 
-## Unreleased
-
-*Process only (task 2.13 of SJL-11.2, 2026-11-01): nothing here changes the package, which is packed from the same
-sources as the `0.1.0-preview.6` entry below.* The reference arms of bundle `sjl-11-001`
-([`docs/evidence/sjl-11-001/reference-arms.md`](docs/evidence/sjl-11-001/reference-arms.md)) exist: arms S, V and J as
-separate executables under [`tests/ReferenceArms/`](tests/ReferenceArms/README.md), test-only copies of Broiler.VM's
-matcher at `aaa39fb` and of Broiler.JS's translator and routing at `1f91b8f1` (named in `THIRD_PARTY_NOTICES.md`),
-the population generator, the comparison and the classifier under
-[`scripts/reference-arms/`](scripts/reference-arms/README.md), and the fast-path differential over population P4
-that tasks 2.4c and 2.11 left to this task. They ran once, unjudged; the judged run waits for corpus revision 32
-([`docs/roadmap.md`](docs/roadmap.md), the record of task 2.13). None of it is in the solution or the package. At the
-task's review (2026-11-02), before any judged run, the classifier's rows were made to read each row's own correction
-and an arbiter past its cut-off to leave a difference in class (c), the negative control was made to change the
-answer itself, both controls were taken again, and arm J's copies were given their Yantra JS origin; the record says
-what changed.
-
-### Added
-
-None in the package.
-
-### Changed
-
-None.
-
-### Observable changes
-
-None.
-
-### Data
-
-None.
-
 ## 0.1.0-preview.6 (2026-11-01; prepared, not published)
 
 *The owner published `0.1.0-preview.5` to nuget.org on 2026-10-29, from `24344b3` of `main` (publish run 40902832350),
@@ -138,6 +106,26 @@ this version is provisional.
     8 of `EscapeRegExpPattern, one P and F`, whose two P are one string at library level, so that they check only that
     `Compile` and `EscapePattern` succeed), and the 85 impl-defined vectors are reported (`docs/roadmap.md`, task
     2.12's record).
+  - The reference arms (task 2.13, 2026-11-02; bundle `sjl-11-001`'s
+    [`reference-arms.md`](docs/evidence/sjl-11-001/reference-arms.md), template T4), process only, in neither the
+    solution nor the package: arms S, V and J as separate executables under
+    [`tests/ReferenceArms/`](tests/ReferenceArms/README.md), test-only copies of Broiler.VM's matcher at `aaa39fb` and
+    of Broiler.JS's translator and routing at `1f91b8f1` (named in `THIRD_PARTY_NOTICES.md`), with every bound of a
+    run in `tests/ReferenceArms/Common/Limits.cs` and the cases a limit of time stops in the stop list
+    `tests/ReferenceArms/stops.tsv`, which a calibration writes; the population generator, the comparison, the
+    classifier and `run.sh` under [`scripts/reference-arms/`](scripts/reference-arms/README.md); and the fast-path
+    differential over population P4 that tasks 2.4c and 2.11 left to this task. They ran unjudged; two full runs at one
+    commit, over P1 and the arbiter of Broiler.JS's `b2c2e224` (corpus revision 32 on its `main`), wrote byte-identical
+    listings (`docs/roadmap.md`, the record of task 2.13 and its dated notes).
+    *Moved 2026-11-02, at task 2.13's second review: this item was the process-only entry "## Unreleased", above this
+    version's, with empty headings, which read "The reference arms of bundle `sjl-11-001` [...] exist [...]. They ran
+    once, unjudged; the judged run waits for corpus revision 32 ([`docs/roadmap.md`](docs/roadmap.md), the record of
+    task 2.13). None of it is in the solution or the package. At the task's review (2026-11-02), before any judged
+    run, the classifier's rows were made to read each row's own correction and an arbiter past its cut-off to leave a
+    difference in class (c), the negative control was made to change the answer itself, both controls were taken
+    again, and arm J's copies were given their Yantra JS origin; the record says what changed." Task 2.12 put its
+    items in this unpublished version's entry, so task 2.13's is beside them. Revision 32 is on Broiler.JS's `main`
+    since `b2c2e224`, and the run waits for it no longer.*
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

@@ -2016,6 +2016,115 @@ for the unlisted differences are filed (for Broiler.JS, the review's item 4 abov
 arbiter's reason, and its matches), and an input the arbiter cannot reach is reduced to one it can or stays class
 (c) (the review's item 3); `run-reference-arms.sh` in the bundle wraps `run.sh` (WP4, task 4.1).
 
+*Dated note, 2026-11-02 (task 2.13's second review: the base merged, three problems of the run fixed, the run taken
+twice).* The review's verifier found the records above out of date and the run not reproducible. What changed:
+
+- **The base moved, and S's `\k` defect is fixed.** `origin/main` became `306d204` (task 2.12, Broiler.Regex#17), which
+  is merged into this branch (`33b468a`) with no conflict. Task 2.12's `2e35cbb` reads `\k` in a class, without `u` and
+  `v`, beside a group name, as the letter (Broiler.VM's decision D-s5) and retires `NamedReferenceInClass`. The (c)
+  item 1 above read "**Not fixed here**: the fix is in the library's parser and its tests, outside the paths this task
+  changes, and the arbiter that decides it is on a branch that has not merged (its review commit `3ea693c7` made this
+  reading); task 2.8's record chose the other reading. It is to be fixed before the candidate reading, after which the
+  whole comparison runs again", and the review's note "S's defect of item 1 above, unchanged: 718 against V": the
+  defect is fixed by task 2.12, not here, and in the run below S accepts and matches those inputs as arm V and the
+  arbiter do, so that no difference with V remains on them. Arm J refuses them, which Broiler.VM's correspondence
+  records as a correction of Broiler.JS since its `5d025cc` (row S5, D-s5); the classifier `@3` reads it so.
+- **The judged run no longer waits for corpus revision 32.** "What the judged run waits for" above read "Corpus revision
+  32 on Broiler.JS's `main`, which SJL-11.3's task 3.3 produces: then P1 is that revision's vectors, the arbiter
+  `regexpref.py` at that commit (the bundle names it) [...] Before it: S's `\k` defect is fixed and [...]". Revision 32
+  is on Broiler.JS's `main` since `b2c2e224` (Broiler.JS#1089), of which `cfe32852` is an ancestor; `regexpref.py` there
+  is the same blob, `d031add5`, and `tests/Vectors/regexp/` (task 2.12) is a byte-for-byte copy of its vectors; and S's
+  `\k` defect is fixed. The judged run waits now for the rest of that paragraph: the correspondence's rows for the
+  differences class (c) still holds (below), each input the arbiter cannot reach reduced or recorded, the bundle naming
+  its commits, and `run-reference-arms.sh` (WP4, task 4.1) at the commit `0.1.0-preview.6` is packed from.
+- **`run.sh` hid a classifier crash.** Python's exit for an uncaught exception is 1, the classifier's "a class (c)
+  difference", and `run.sh` printed "done" and exited 0 with no `classification.json` when the arbiter's checkout was
+  gone. `classify.py` now exits 0, 1, 2 (refused, or a bad argument) or 3 (failed) and writes `classification.json`
+  last; `run.sh` fails on 2, on 3 and on a run that leaves no file (`6d1757c`), and `test_run_sh.py` runs each path.
+- **Row B8 was never read.** P3-F02 (`\B` 100,000 times under `u`) was (c) where arm J crashed (`crash:exit-134`,
+  under `tr-TR`) and (b) under D10 where the wall clock stopped it first. The classifier `@3` reads row B8 for arm J
+  (`6d1757c`): the harness's stop of J on a sequence of 10,000 terms or more under `u` or `v`, against S's answer when
+  it is the arbiter's, is class (a), whichever stop it was.
+- **The run was not reproducible.** Every row the verifier's run changed against the record's was an arm J case where
+  one side reached the wall clock, J's .NET timeout, or crashed. First (`10b1c59`, `3b65595`, `81bd650`): every bound
+  of a run is in `tests/ReferenceArms/Common/Limits.cs` and each run file records them; every stop of the harness, a
+  crash among them, is the one answer `limit:harness`; arm J's .NET `Regex` has no match timeout, as Broiler.JS builds
+  it; the workers are fixed, not the machine's processor count; the run's times and which stop each case met go to
+  `runs/timing/`, which nothing compares; and the population's manifest names its inputs by their bytes and commits,
+  not their paths. Two full runs at `81bd650`, the limit 5 seconds of processor time per case, showed that this is not
+  enough: arm J ends some cases after about that much processor time, and `P4-08462-v-12` ended in one and was stopped
+  at 5.07 seconds in a probe an hour later on the same machine, so any limit of time leaves a case on its edge. The
+  two runs were stopped in arm J. Then (`fab57fa`): no limit of time decides an answer of a run. A **calibration**
+  (`run.sh OUT --calibrate`) runs the arms under the time limits and writes the cases they stop as a **stop list**,
+  which the repository keeps (`tests/ReferenceArms/stops.tsv`, `a113c91`); every other run answers a listed case
+  `limit:harness` without running it and runs every other case to its end, under backstops of 60 seconds of processor
+  time (twelve times the calibration's limit) and 900 of wall-clock time, and fails as not reproducible if a case the
+  list does not hold reaches one.
+
+**The calibration** (2026-11-02, 11:53 to 15:44 UTC, at `fab57fa`, on the population below): S and V stopped no case.
+Arm J stopped 1,930 under the invariant culture, 1,928 under `tr-TR` and 1,930 under `lt-LT`: in P4, 168 or 169 at the
+5-second limit and the rest, 1,758 to 1,762, after a stop of the same pattern in the range; and P3-F02 under the first
+two, whose stack overflowed (`exit-134`) after 9 to 10 seconds of processor time, while under `lt-LT` the arm answered
+it. The machine was shared with other work (load averages between 5 and 25 on its four processors). The list is
+`tests/ReferenceArms/stops.tsv` (`a113c91`, SHA-256 `d427109d…`, 5,788 cases). The same commit turns the workers'
+tiered compilation off (`DOTNET_TieredCompilation=0`): with it on, how deep 0.1.0-preview.4's recursion goes before
+the stack overflows depends on when the background compiler replaces a method's unoptimized frames, which is why
+P3-F02 overflowed in two cultures and not the third; with it off the arm answers P3-F02 in all three, and the list,
+made before, still holds it for two, where the runs answer it `limit:harness` (row B8, class (a)).
+
+**The run, taken twice** at `a113c91`: P1 from Broiler.JS's `b2c2e224` (`conformance/vectors/regexp/`, the same bytes
+as `tests/Vectors/regexp/`), test262 at `ccaac100` (`test/` tree `c022917`), the arbiter `regexpref.py` from
+`b2c2e224` (blob `d031add5`) with its cut-off of 1,000,000 Matcher invocations, Broiler.VM's correspondence as its
+`main` (`292ae6b`) holds it (blob `d7323aec`, last changed in `5d025cc`), and the classifier `@3`. Two worktrees of
+`a113c91` each ran `run.sh` whole, from the build to the fast-path differential, at the same time on a machine shared
+with other work. Both ended with exit 0, no case reached a backstop, and **the two runs' listings are byte for byte
+the same**: `differences.tsv.gz` SHA-256 `0a8345fd6275347eeaaae432d95aacfdc3c946a4271dca72c9be576f6e5ab677` and
+`summary.json` SHA-256 `f0147d1b429b19d5705f2482639e4cb3353a111f242bce491cde3b96a3dbc1d5` in each, and so are the
+population (manifest `2366b090…`, the same class files the calibration ran), every arm's answer file, the
+classification (`classification.json` `4f6ebdb4…`, `classified.tsv.gz` `a03b9973…`) and the fast-path differential's
+summary (`3cb4bb79…`). The comparison wrote **1,901,509 differences**: V 5,454; J 626,895 under the invariant culture,
+636,411 under `tr-TR` and 632,749 under `lt-LT`; by class P1 465, P2 556, P3 7, P4 1,899,989, P5 492, P6 and P7 none.
+
+**The classification** (classifier `@3`), which **supersedes** the review's classification above (`@2`: "(a)
+373,571 [...] (a'), 45 [...] (b), 11,052 [...] (c), 1,516,452"):
+- **(a)**, 376,172. J under the invariant culture 119,527, under `tr-TR` 128,759, under `lt-LT` 125,649, by row over
+  the three: S7 232,239, S8 110,121, M2a 15,313, M2 6,909, S2a 4,860, **S5 2,460** (J's refusal of `\k` in a class,
+  decision D-s5: new, since S no longer refuses it), M3 1,671, M2b 333, M4 12, S10 9, **F3 3** (`(?x:a)`), M7 3, **B8 2**
+  (P3-F02 under the invariant culture and `tr-TR`). V, 2,237: S1 2,007, S10 218, M4 7, M7 5;
+- **(a')**, 45: J under U3, 15 in each culture;
+- **(b)**, 8,983: V under B6 3,182; J under D10 5,786 (1,929, 1,927 and 1,930), every one S at its own ceiling (trail
+  3,023, steps 1,793, frames 945, a refusal 25) and J at the harness's stop the list holds; S3 4 and row M4's empty
+  match 1 in each culture;
+- **(c)**, 1,516,309, of which **none is a defect of S**:
+  1. Broiler.VM's `\w` under `iv`, 22, unchanged (the review's item 2);
+  2. inputs the arbiter cannot reach in its cut-off against a stop, V 13 and J 6,446;
+  3. Broiler.JS's differences no row names, 1,509,828 (P1 21, P2 9, P4 1,509,770, P5 28), the review's item 4 and its
+     list of P1, P2 and P5 vectors less those rows F3 and S5 now hold.
+  The 718 differences of S's `\k` defect against V are gone: S, V and the arbiter agree on those inputs.
+
+**The negative controls, taken again** at `a113c91` with the stop list, once each, from a scratch worktree
+(`/home/user/rx-213-ctl`) whose `Program.cs` of V and of J set the control case and changed nothing else, removed after
+(`git worktree remove`): V's copy over P4 differed from run A's V in one line, `P4-01234-u-05`, `match:0,1` for
+`match:0,0`; with S over P4 the comparison held 4,951 differences (SHA-256 `4228e09a…`) and the classifier listed the
+planted one **unclassified** and the rest a 1,734, b 3,182, c 34 (`classified.tsv.gz` `ba6e0da3…`). J's copy over P1
+differed in one line, `P1-regexp:matching:m1-notes:0001`, `match:0,2` for `match:0,1`; 126 differences (`4feaef16…`),
+the planted one **unclassified**, the rest a 110, a' 3, b 5, c 7 (`7ca8f03b…`). They were also taken at `81bd650`,
+before the stop list, with the same digests; this round reports those at `a113c91`.
+
+**The fast-path differential**, in both runs: 473,852 pattern-flag pairs compiled twice (181,508 refused), 7,579,193
+exec cases compared, **no disagreement** (the record above's 473,804 and 7,578,425 grow by the `\k` patterns S now
+accepts).
+
+**The checks, at `a113c91` with this note's files** (the Release build of the solution, no warning and no error; the
+tests, 2,631 library, 49 architecture (the starting violation list still empty) and 11 fuzz, all passing; arms S, V, J
+and `FastPaths` in Release, no warning; the script tests, 57, all passing with `BROILER_UNICODE` and
+`BROILER_VM_CORRESPONDENCE` set, as `run.sh` sets them, and 2 skipped without them (P5's test and the correspondence's
+words; the fix round's record said 1); the probe's default report `8f40ae86…` and its `--adversarial` report
+`3f7fc538…` under the JIT, both unchanged (no library or probe source differs from `306d204`'s); the assurance check,
+no violation; `dotnet pack` gives `Broiler.Regex.0.1.0-preview.6.nupkg` with the library's assembly and documentation,
+the nuspec, the README, the notices and the icon, no arm and no arm type in the assembly; and `git merge-tree
+--write-tree origin/claude/busy-lamport-m3yprr HEAD` merges with no conflict).
+
 *Where the plan, the filed rule and this repository differ, read at this record.*
 - The filed rule's class (b) holds row M4's empty match by decision D41 and its class (c) excepts it; the plan's text of
   section 4.4 has neither (the rule's revision of 2026-10-25 added both). The rule wins and the classifier reads it.
@@ -2032,6 +2141,15 @@ arbiter's reason, and its matches), and an input the arbiter cannot reach is red
   direct children of `tests/` as projects, so the arms, one level down, are read by rule SL10 alone, as test projects
   are by every other rule.
 - The brief's diff list holds no library path, so S's defect is reported, not fixed (above).
+
+*Dated note, 2026-11-02 (task 2.13's second review).* Two items of this list no longer hold. "The rule names no bound
+for an arm; V's allowance (10,000,000 units, S's default step ceiling in the same units), J's .NET match timeout (one
+second, an `ARM CHANGE`) and the harness's wall clock are this task's, each a policy of class (b)": arm J's .NET `Regex`
+is built with no match timeout, as Broiler.JS builds it; every bound of a run, V's allowance and the harness's
+processor-time limits among them, is in `tests/ReferenceArms/Common/Limits.cs`; and the harness's stop is class (b)
+under D10 for arm J, class (a) under row B8 on that row's inputs, and class (c) for S and V (the note above). "The
+brief's diff list holds no library path, so S's defect is reported, not fixed (above)": task 2.12 fixed it (`2e35cbb`),
+and its merge brought the fix here.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
