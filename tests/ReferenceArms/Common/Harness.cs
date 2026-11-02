@@ -259,6 +259,8 @@ internal static class Harness
             };
             if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath), "dotnet", StringComparison.Ordinal))
                 start.ArgumentList.Add(System.Reflection.Assembly.GetEntryAssembly()!.Location);
+            foreach (var (name, value) in Limits.WorkerEnvironment)
+                start.Environment[name] = value;
             foreach (var argument in new[] { "--worker", input, next.ToString(CultureInfo.InvariantCulture), to.ToString(CultureInfo.InvariantCulture), culture ?? "-", StopsFile ?? "-" })
                 start.ArgumentList.Add(argument);
             using var child = System.Diagnostics.Process.Start(start)!;

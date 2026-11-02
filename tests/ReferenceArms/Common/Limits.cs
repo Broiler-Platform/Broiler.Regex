@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Broiler.Regex.ReferenceArms;
 
@@ -80,6 +81,15 @@ internal static class Limits
     internal static readonly TimeSpan SlowCase = TimeSpan.FromSeconds(1);
 
     /// <summary>
+    /// The environment of every worker process: tiered compilation off, so that each method runs as the JIT's optimized
+    /// code from its first call. With it on, a method runs first as unoptimized code with larger frames and is replaced
+    /// in the background, so how deep a recursion goes before the stack overflows depends on when the replacement came:
+    /// in the calibration of 2026-11-02 arm J overflowed the stack on P3-F02 (`\B` 100,000 times under `u`) under the
+    /// invariant culture and `tr-TR` and answered it under `lt-LT`.
+    /// </summary>
+    internal static IReadOnlyList<(string Name, string Value)> WorkerEnvironment { get; } = [("DOTNET_TieredCompilation", "0")];
+
+    /// <summary>
     /// The one answer of a case the harness stopped, lost or skipped: in a calibration, past its limit or its worker ended
     /// (a crash, such as the stack overflow of Broiler.Regex 0.1.0-preview.4's recursive matcher, correspondence row B8);
     /// in a run, a case the stop list holds, or one that reached a backstop or crashed. One kind, so that which of them it
@@ -101,5 +111,6 @@ internal static class Limits
         ["wall-clock-backstop-seconds"] = WallClockBackstop.TotalSeconds.ToString(CultureInfo.InvariantCulture),
         ["slow-case-seconds"] = SlowCase.TotalSeconds.ToString(CultureInfo.InvariantCulture),
         ["harness-stop"] = HarnessStop,
+        ["worker-environment"] = string.Join(" ", WorkerEnvironment.Select(static e => e.Name + "=" + e.Value)),
     };
 }

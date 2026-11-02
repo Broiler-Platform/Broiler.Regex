@@ -55,7 +55,11 @@ and error construction stay in the engines and are not compared.
 **Workers.** Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
 depend on the machine), one worker process of the arm per range, each case on a thread of 16 MiB, the stack
 Broiler.JS's shell gives a script (`SH/Program.cs:128`). A case the harness stops, loses or skips is answered
-`limit:harness`, one answer whichever it was; a new worker takes the range from the next case.
+`limit:harness`, one answer whichever it was; a new worker takes the range from the next case. Every worker runs
+with tiered compilation off (`DOTNET_TieredCompilation=0`, `Limits.WorkerEnvironment`), so that a method runs as
+optimized code from its first call: with it on, how deep preview.4's recursion goes before the stack overflows
+depends on when the background compiler replaces its unoptimized frames, and in the calibration below arm J
+overflowed on P3-F02 under the invariant culture and `tr-TR` and answered it under `lt-LT`.
 
 **The stop list, and the limits.** Arm J has no bound of its own on some inputs: its .NET engine runs with no match
 timeout, as Broiler.JS builds it, and Broiler.Regex 0.1.0-preview.4's matcher recurses once per term (row B8). Any
@@ -75,6 +79,10 @@ no answer of the runs whose listings the comparison writes:
   A case that reaches a backstop is recorded as `stop:unlisted-...` in `timing/` and `run.sh` fails the run as not
   reproducible: the list is then calibrated again.
 
+The list the repository keeps was calibrated on 2026-11-02 at `fab57fa`, before the workers' tiered compilation was
+turned off: arm J's 1,930, 1,928 and 1,930 cases under the invariant culture, `tr-TR` and `lt-LT` (P4's, and P3-F02
+under the first two, whose stack overflowed), S's and V's none. With tiered compilation off arm J answers P3-F02 in
+every culture, so the next calibration will not list it; the runs answer it `limit:harness` where the list holds it.
 So the listings follow from the commit, which holds the list, and the population (the rule's "How it is read").
 `timing/` holds which stop each was, with the case's processor and wall-clock seconds, and every case that ended after
 a second or more of wall-clock time (`slow`). `Common/Limits.cs` holds every bound: the default policy's 10,000,000
