@@ -91,6 +91,24 @@ class GeneratorTests(unittest.TestCase):
             self.assertNotEqual(p3["sha256"], p3["corpus-sha256"])
 
 
+    def test_the_manifest_names_p1_s_vectors_by_their_bytes_not_their_place(self) -> None:
+        # Task 2.13's second review: the manifest held the vectors directory's path, so the population's digest in
+        # summary.json changed with where the inputs were.
+        vector = 'id: regexp/x/0001\nop: RegExpBuiltinExec\nin: str:"a" str:"g" str:"bab" int:1\n'
+        with tempfile.TemporaryDirectory() as scratch:
+            manifests = []
+            for k in range(2):
+                vectors = Path(scratch) / f"vectors-{k}" / "regexp"
+                vectors.mkdir(parents=True)
+                (vectors / "x.vectors").write_text(vector, encoding="utf-8")
+                out = Path(scratch) / f"out-{k}"
+                self.assertEqual(G.main(["--out", str(out), "--classes", "P1", "--vectors", str(vectors)]), 0)
+                manifests.append((out / "manifest.json").read_bytes())
+                self.assertEqual(sum(1 for _ in read_lines(out / "P1.tsv.gz")), 1)
+            self.assertEqual(manifests[0], manifests[1])
+            self.assertNotIn(scratch.encode(), manifests[0])
+
+
 @unittest.skipUnless(os.environ.get("BROILER_UNICODE"), "BROILER_UNICODE names a Broiler.Unicode checkout")
 class UnicodeClassTests(unittest.TestCase):
     def test_p5_s_subjects_are_the_orbit_and_the_upper_case(self) -> None:

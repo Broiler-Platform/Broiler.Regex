@@ -7,7 +7,10 @@
         [--vectors DIR] [--classes P2,P4] [--reduced]
 
 One file per class, DIR/<class>.tsv.gz, and DIR/manifest.json (every input by its SHA-256 or commit, every class's
-count and SHA-256, the seed). README.md beside this file states each class, the draw procedure of P4 and the format.
+count and SHA-256, the seed; no input by its path, so that the population, which the comparison's summary.json names
+by the manifest's digest, is the same wherever its inputs are). *(Revised 2026-11-02, at task 2.13's second review:
+the manifest also held the vectors directory, the test262 checkout and the Broiler.Unicode checkout by their absolute
+paths, as "vectors", "test262" and "checkout".)* README.md beside this file states each class, the draw procedure of P4 and the format.
 Two runs over the same inputs write the same bytes. `--vectors` names a `conformance/vectors/regexp/` directory (P1);
 without it P1 is not written and the manifest says so. `--classes` writes only the classes named and `--reduced`
 writes a smaller P4, P5 and P7 for the tests: either makes the population partial, which the manifest records, and
@@ -141,7 +144,7 @@ def p1(writer: Writer, vectors: Path) -> dict:
                 else:
                     writer.accept_case(case_id, pattern, flags)
                 vector_id = None
-    return {"vectors": str(vectors), "files": inputs, "not-patterns": skipped}
+    return {"files": inputs, "not-patterns": skipped}
 
 
 # --------------------------------------------------------------------------------------------------
@@ -360,7 +363,7 @@ def p2(writer: Writer, test262: Path) -> dict:
                     break
                 writer.exec_case(f"{case}:{k}", pattern, flags, subject, 0)
                 pairs += 1
-    return {"test262": str(test262), "pin": TEST262_PIN, "tree": git_tree(test262 / "test"), "files": len(files),
+    return {"pin": TEST262_PIN, "tree": git_tree(test262 / "test"), "files": len(files),
             "cap": P2_CAP, "patterns-capped": capped, "directories": list(TEST262_DIRECTORIES)}
 
 
@@ -662,7 +665,7 @@ def load_unicode(checkout: Path):
     commit = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     blobs = {name: subprocess.run(["git", "-C", str(checkout), "hash-object", str(scripts / name)], capture_output=True,
                                   text=True).stdout.strip() for name in ("unicoderef.py", "generate_population.py")}
-    return ucd, unicode_population, {"checkout": str(checkout), "commit": commit, "blobs": blobs,
+    return ucd, unicode_population, {"commit": commit, "blobs": blobs,
                                      "pin": {"sha256": pins.sha256, "version": pins.version}}
 
 
