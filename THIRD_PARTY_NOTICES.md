@@ -35,3 +35,15 @@ states. test262 is Copyright (C) 2012 Ecma International, made
 available under the BSD License (3-clause), whose text, notice and disclaimer are kept beside the data at
 [`Broiler.Regex.Tests/test262-LICENSE.txt`](Broiler.Regex.Tests/test262-LICENSE.txt), as its condition 1 requires. The
 package carries none of it.
+
+## The conformance vectors in the tests
+
+`tests/Vectors/regexp/` (task 2.12 of milestone SJL-11.2, 2026-11-02) is a byte-for-byte copy of the regular-expression
+area of the shared conformance corpus, `conformance/vectors/regexp/` of
+[Broiler.JS](https://github.com/Broiler-Platform/Broiler.JS) at commit `b2c2e2243a086285d806866a64b83297791a8ec5`
+(corpus revision 32), pinned by `tests/Vectors/regexp.pin`. It is Copyright 2026 Broiler Platform contributors under
+the Apache License 2.0, this repository's own licence. Its expected values for property escapes, case folding and white
+space are computed over the Unicode Character Database 17.0.0, which remains subject to the
+[Unicode Terms of Use](https://www.unicode.org/terms_of_use.html); its notes name test262 files by path and carry no
+test262 text. [`tests/Vectors/README.md`](tests/Vectors/README.md) says where it comes from and how it is refreshed.
+The package carries none of it.
