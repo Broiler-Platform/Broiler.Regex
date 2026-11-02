@@ -91,6 +91,19 @@ this version is provisional.
     it admits its file I/O. The rows whose operation is `validate` run through task 2.8's validate entry, so all 65 rows
     give their declared statuses under the JIT and under Native AOT, and none waits (the integration of tasks 2.8 and
     2.14). Task 2.14 left the library, `Broiler.Regex.dll` and its API, and the package unchanged.
+  - The vectors at library level (task 2.12, 2026-11-02; bundle `sjl-11-001`'s part D, template T3):
+    `tests/Vectors/regexp/`, a byte-for-byte copy of Broiler.JS's `conformance/vectors/regexp/*.vectors` at
+    `b2c2e2243a086285d806866a64b83297791a8ec5`, corpus revision 32 (1,420 vectors), and `tests/Vectors/regexp.pin`,
+    its pin (the commit, the revision, each file's length, SHA-256 and git blob), checked before every run: a changed,
+    missing or unnamed file refuses the run. The runner, `Broiler.Regex.Tests/Vectors/`, maps each op to the public
+    surface (compile and validate, exec at a lastIndex under the flags through `Match(string, int)`, the step-budget
+    vectors through the offset entry with a step ceiling, `test`, `[Symbol.match]` through `NextMatch`,
+    `[Symbol.search]`, `RegExp.escape`, the flags getter, and EscapeRegExpPattern's invariants), lists the six ops of
+    the object model it does not implement by name, and writes a deterministic report; `VectorsRunTests` reads it. The
+    probe's `--vectors dir` mode runs the same runner, and CI's `native-aot-probe` job runs it under Native AOT and the
+    JIT on ubuntu-latest and windows-latest and compares the two reports byte for byte. At task 2.12 every vector the
+    rule holds to its `out` whose op the library implements gives it (1,308, the 18 status vectors among them), and
+    the 85 impl-defined vectors are reported (`docs/roadmap.md`, task 2.12's record).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
@@ -626,6 +639,17 @@ this version is provisional.
   `\1`. Inside a class, `ClassEscape :: c ClassControlLetter` also takes a decimal digit or `_`, so `[\c1]` is U+0011
   and `[\c_]` U+001F, and any other `\c` is the backslash followed by `c`, so `[\c*]` holds `\`, `c` and `*`;
   `0.1.0-preview.4` read `[\c1]` as `\` and `1`. Under `u` and `v` each stays a syntax error.
+- **`\k` in a class is the letter beside a group name, without `u` and `v` (R5; task 2.12, 2026-11-02; decision D-s5 of
+  Broiler.VM's JSD-0081).** `[\k<a>](?<a>x)`, `[\k](?<a>x)` and `(?<a>x)[\k]` compile, validate and match as classes
+  that hold `k`: no production passes [NamedCaptureGroups] into a CharacterClass, so B.1.2's ClassEscape reads
+  ~NamedCaptureGroups and admits `k` as an identity escape. Task 2.2's item above reads "In a pattern that declares a
+  group name, Annex B's identity escapes exclude `k` (§B.1.2), so `[\k<a>](?<a>x)` is refused, which
+  `0.1.0-preview.4` read as a class holding `k`"; that refusal shipped in `0.1.0-preview.5` and is withdrawn, so
+  `0.1.0-preview.6` answers as `0.1.0-preview.4` did for these patterns. Four vectors of the corpus found it
+  (`regexp/syntax/s5-named-references/0012` and `0014`, `regexp/literals/s1-s5-names/0001`,
+  `regexp/matching/s4-escapes/0031`). `RegexDiagnosticCode.NamedReferenceInClass` (33) is retired: no pattern is refused
+  with it, and its number and identifier are kept. Under `u` and `v`, `\k` in a class is still `InvalidIdentityEscape`,
+  and outside a class, in a pattern that declares a group name, `\k` is still only a reference.
 
 ### Data
 
