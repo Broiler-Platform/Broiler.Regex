@@ -14,7 +14,7 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 | `stops.py` | The stop list, from a calibration's timing files (`tests/ReferenceArms/README.md`, "The stop list, and the limits") |
 | `run.sh` | Every step in order, each logged with its command; it fails when a step fails, the classifier's crash among them; `--calibrate` writes a stop list instead |
 | `reduce.py` | The reduction of the inputs the arbiter cannot reach (written 2026-11-15): each such exec's subject cut to the longest prefix the arbiter reaches, written as a population the arms, the comparison and the classifier run over unchanged, and each difference read against its reduced case (its docstring) |
-| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit; the reduction's reading |
+| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit; the reduction's reading (added 2026-11-15) |
 
 ## Commands
 

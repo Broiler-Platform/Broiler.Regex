@@ -10,19 +10,25 @@
 #
 #   docs/evidence/sjl-11-001/run-reference-arms.sh COMMIT OUT \
 #       --test262 DIR --unicode DIR --broiler-js DIR --broiler-vm DIR --correspondence-commit SHA \
-#       [--js-commit SHA] [--classes P1,...]
+#       [--js-commit SHA] [--unicode-commit SHA] [--classes P1,...]
 #
-# COMMIT   the commit of this repository to run (a reading's: the commit 0.1.0-preview.6 is packed from).
+# COMMIT   the commit of this repository to run (a reading's).
 # OUT      an empty or absent directory; it receives inputs/, run/ (run.sh's OUT), logs/, digests.sha256 and
 #          inputs.txt. Nothing is written into this repository's working tree.
 # --test262              a copy of test262 whose test/ is the pin's tree (checked here, by its git tree hash).
-# --unicode              a Broiler.Unicode git checkout (P5 and P6, by its unicoderef.py over its archived UCD pins).
+# --unicode              a Broiler.Unicode git checkout (P5 and P6, by its unicoderef.py over its archived UCD pins),
+#                        at --unicode-commit with no change to a tracked file (checked here).
 # --broiler-js           a Broiler.JS git repository holding --js-commit: P1 is that commit's
 #                        conformance/vectors/regexp/, checked against COMMIT's tests/Vectors/regexp.pin, and the arbiter
 #                        regexpref.py is that commit's (the classifier reads it by git archive).
 # --broiler-vm           a Broiler.VM git repository holding --correspondence-commit, whose
 #                        docs/evidence/sjl-11-001/correspondence.md the classifier reads (written to OUT/inputs).
 # --js-commit            default: the commit COMMIT's tests/Vectors/regexp.pin names (corpus revision 32 at b2c2e224).
+# --unicode-commit       default: 0bcb917564d514feadaa27ce7dd1e0b57b585c90, the Broiler.Unicode commit of the full
+#                        run at 07d7825 (2026-11-15) that gave task 2.13's comparison and classification byte for byte
+#                        (docs/roadmap.md, the record of SJL-11.2's tail). Task 2.13's own record names no Broiler.Unicode
+#                        commit, so P5 and P6 are shown to reproduce at this commit only (added 2026-11-15, after the
+#                        review of the tail).
 # --classes              default: all seven; a run with fewer is partial, and the population's manifest says so.
 #
 # COMMIT is checked out as a detached worktree under OUT (git worktree add --detach), so the arms are built from a clean
@@ -33,14 +39,14 @@ set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 
 usage() {
-  echo "usage: run-reference-arms.sh COMMIT OUT --test262 DIR --unicode DIR --broiler-js DIR --broiler-vm DIR --correspondence-commit SHA [--js-commit SHA] [--classes LIST]" >&2
+  echo "usage: run-reference-arms.sh COMMIT OUT --test262 DIR --unicode DIR --broiler-js DIR --broiler-vm DIR --correspondence-commit SHA [--js-commit SHA] [--unicode-commit SHA] [--classes LIST]" >&2
   exit 2
 }
 [ $# -ge 2 ] || usage
 commit_arg=$1
 out=$(realpath -m "$2")
 shift 2
-test262="" unicode="" js="" vm="" corr_commit="" js_commit="" classes=""
+test262="" unicode="" js="" vm="" corr_commit="" js_commit="" classes="" unicode_commit=0bcb917564d514feadaa27ce7dd1e0b57b585c90
 while [ $# -gt 0 ]; do
   [ $# -ge 2 ] || usage
   case "$1" in
@@ -50,6 +56,7 @@ while [ $# -gt 0 ]; do
     --broiler-vm) vm=$(realpath "$2") ;;
     --correspondence-commit) corr_commit=$2 ;;
     --js-commit) js_commit=$2 ;;
+    --unicode-commit) unicode_commit=$2 ;;
     --classes) classes=$2 ;;
     *) usage ;;
   esac
@@ -111,6 +118,15 @@ check_vectors() {
   [ -n "$listed" ] && [ "$listed" = "$found" ]
 }
 
+check_unicode() {
+  # The checkout's HEAD is the commit, and no tracked file differs from it: P5 and P6 read its working tree.
+  local head changed
+  head=$(git -C "$unicode" rev-parse HEAD)
+  changed=$(git -C "$unicode" status --porcelain --untracked-files=no)
+  echo "Broiler.Unicode HEAD $head, the commit asked $unicode_commit; tracked files changed: ${changed:-none}"
+  [ "$head" = "$(git -C "$unicode" rev-parse --verify "$unicode_commit^{commit}")" ] && [ -z "$changed" ]
+}
+
 check_correspondence() {
   local dir="$out/inputs/correspondence"
   mkdir -p "$dir"
@@ -133,6 +149,7 @@ fi
 js_commit=$(git -C "$js" rev-parse --verify "$js_commit^{commit}")
 step check-test262 check_test262
 step check-vectors check_vectors
+step check-unicode check_unicode
 step check-correspondence check_correspondence
 {
   echo "commit $commit"

@@ -32,8 +32,12 @@ OUT/outcomes.tsv and OUT/outcomes.json:
 - `reduced`: the reduced case differs in the same run with the same kinds of answer on each side (a stop against an
   answer, as before) and the arbiter answers it: its class and row are the classifier's over the reduced case;
 - `differs-otherwise`: the reduced case differs, but in other kinds of answer; listed with its class;
-- `agrees`: S and the arm answer the reduced case alike: the difference does not survive the reduction, so the input
-  stays one the arbiter cannot reach (class (c), recorded with both answers there);
+- `agrees`: S and the arm answer the reduced case alike: the input is reduced to one the arbiter reaches, where the
+  difference does not survive. The original difference is left in class (c), recorded with both answers there: this
+  script takes a reduction to discharge class (c) only when the same difference survives it, a reading the rule does
+  not settle and its owner decides (the other reading: the reduced input's agreement with the arbiter ends the rule's
+  "until reduced" condition). (Reworded 2026-11-15, after the review of the tail: this item read "the difference does
+  not survive the reduction, so the input stays one the arbiter cannot reach".)
 - `no-prefix`: the arbiter reaches no prefix, not even the shortest: what it cannot reach is in the pattern, which
   this reduction does not change.
 """

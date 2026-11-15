@@ -9,13 +9,22 @@
 # commit (.github/workflows/ci.yml); the rule reads CI's runs, named by their identifiers, and this script's logs are
 # the reading's local repetition, not a substitute for them.
 #
+# What reproduces (added 2026-11-15, after the review of the tail): the reports under reports/, and so digests.sha256,
+# are the same bytes on every run at one commit on one RID. The packages of check E-4 are not: dotnet pack writes the
+# files' and the pack's times into the zip's entries, so two runs at one commit give packages of other bytes (the
+# entries' names and lengths the same); their digests are in packages.sha256, apart, and say only which files this
+# run's pack wrote. The packages are this run's evidence for E-4 and nothing else: they carry the version the commit's
+# props give and are never pushed to a feed.
+#
 #   docs/evidence/sjl-11-001/run-library-evidence.sh COMMIT OUT --test262 DIR [--broiler-code DIR] [--rid RID]
 #
-# COMMIT          the commit to read (the candidate reading's: the commit 0.1.0-preview.6 is packed from).
-# OUT             an empty or absent directory: logs/, reports/, packages/, digests.sha256, steps.tsv.
+# COMMIT          the commit to read (the candidate reading's).
+# OUT             an empty or absent directory: logs/, reports/, packages/, digests.sha256, packages.sha256, steps.tsv.
 # --test262       a copy of test262 whose test/ is the pin's tree (checked here by its git tree hash), for check B-2.
-# --broiler-code  a Broiler.Code checkout beside which check E-6's assurance command runs, as CI's job lays them out;
-#                 without it, E-6 is recorded as not run, with why.
+# --broiler-code  only for a commit before Broiler.Regex#19 (df5cfc2), whose tree has no hairs.config.json: a
+#                 Broiler.Code checkout holding src/Broiler.Code.Review.Cli, beside which check E-6's assurance command
+#                 runs as that commit's CI job laid them out; without it, E-6 is recorded as not run there, with why. At
+#                 a commit with hairs.config.json, E-6 runs as CI's job does since #19, and this option is not read.
 # --rid           the runtime identifier of the Native AOT publish (default linux-x64).
 #
 # The steps, in order (the part or check of the rule each serves in brackets):
@@ -30,7 +39,8 @@
 #   check B-1, the host job: not run here; it waits for Broiler.JS's SJL-11.5 branch (decision D35)
 #   the pack, package validation against the baseline the project names [E-4]
 #   the declared fuzz session, and the planted-defect control [E-5]
-#   the assurance check [E-6]
+#   the assurance check, as the commit's CI job runs it: with hairs.config.json, from the cleaned tree, dotnet tool
+#     restore then dotnet hairs assurance check --root . (Hairs.Cli as .config/dotnet-tools.json pins it) [E-6]
 # Exit: 0 when every step ends as the rule expects; 1 at the first that does not (its log names why); 2 on arguments
 # it does not read.
 set -euo pipefail
@@ -205,7 +215,12 @@ check fuzz-no-finding "the declared session reports no finding (E-5)" fuzz_no_fi
 expect fuzz-plant-build 0 dotnet build tests/Regex.Fuzz -c Release --nologo --disable-build-servers -p:RegexFuzzPlant=true
 expect fuzz-control 1 dotnet tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll --stop-when-found "planted defect (D32 control)"
 check fuzz-control-found "the declared seed reports the planted defect (E-5)" fuzz_found_plant
-if [ -n "$code" ]; then
+if [ -f "$tree/hairs.config.json" ]; then
+  # CI's assurance job since Broiler.Regex#19: a fresh checkout, the local tool restored, the check at the root.
+  expect assurance-clean 0 git clean -xfdq
+  expect assurance-restore 0 dotnet tool restore
+  expect assurance 0 dotnet hairs assurance check --root .
+elif [ -n "$code" ]; then
   echo "\$ dotnet run --project $code/src/Broiler.Code.Review.Cli -c Release -- assurance check --root $tree" > "$out/logs/assurance.log"
   status=0
   (cd "$(dirname "$code")" && dotnet run --project "$code/src/Broiler.Code.Review.Cli" -c Release --disable-build-servers -- assurance check --root "$tree") >> "$out/logs/assurance.log" 2>&1 || status=$?
@@ -213,10 +228,10 @@ if [ -n "$code" ]; then
   printf 'assurance\t%s\t0\n' "$status" >> "$out/steps.tsv"
   [ "$status" -eq 0 ] || { echo "step assurance exited $status; see $out/logs/assurance.log" >&2; exit 1; }
 else
-  echo "# not run: check E-6, the assurance check: no --broiler-code was given; the rule reads CI's assurance job" > "$out/logs/assurance.log"
+  echo "# not run: check E-6, the assurance check: the commit has no hairs.config.json and no --broiler-code was given; the rule reads CI's assurance job" > "$out/logs/assurance.log"
   printf 'assurance\tnot run\t0\n' >> "$out/steps.tsv"
 fi
 
 (cd "$reports" && LC_ALL=C ls | xargs sha256sum) > "$out/digests.sha256"
-(cd "$out/packages" && LC_ALL=C ls | xargs sha256sum) >> "$out/digests.sha256"
+(cd "$out/packages" && LC_ALL=C ls | xargs sha256sum) > "$out/packages.sha256"
 echo "done: $out"
