@@ -223,6 +223,11 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v7
+      # The runner reads the files' bytes, and the pin check below reads git's objects: on the Windows runner, whose
+      # git converts line endings on checkout by default, test262 is checked out as committed, so the bytes read are
+      # the objects' (added 2026-11-15, after the review of the tail; the runner's own config on the runner only).
+      - name: Keep test262's line endings as committed
+        run: git config --global core.autocrlf false
       - name: Check out test262 at the pin
         uses: actions/checkout@v7
         with:
@@ -242,12 +247,13 @@ jobs:
         run: dotnet publish probes/Regex.Probe -c Release -r ${{ matrix.rid }} --nologo
       - name: Run the library job under Native AOT
         timeout-minutes: 15
-        run: ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-aot.txt > /dev/null
+        run: |
+          ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-aot.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-aot.txt || true; exit $code; }
       - name: Run it under the JIT, and compare
         timeout-minutes: 15
         run: |
           dotnet build probes/Regex.Probe -c Release --nologo
-          dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-jit.txt > /dev/null
+          dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-jit.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-jit.txt || true; exit $code; }
           cmp test262-library-aot.txt test262-library-jit.txt
       - name: Keep the reports
         if: always()

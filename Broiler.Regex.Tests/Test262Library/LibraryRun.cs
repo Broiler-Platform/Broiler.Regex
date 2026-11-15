@@ -48,9 +48,11 @@ internal enum Population
 /// <para><b>Unreadable files.</b> A file with no literal the grammar extracts, a generated file the structured reader
 /// does not read, or a negative file whose SyntaxError is not a literal's (the grammar extracts only accepted literals
 /// from it), cannot be judged by this runner. The list <c>test262/library-unreadable.txt</c> names each such file with
-/// why. A listed file is run and reported with the runner's own reading beside the list's why, and is not judged; a
-/// file the runner cannot read that the list does not name, a listed file the runner reads and passes, and a listed
-/// path the populations do not hold each fail the run, so that the list stays exact.</para>
+/// the reading the runner gives it (<c>unreadable</c>, or <c>FAIL</c> for a negative file whose only literal is accepted)
+/// and why. A listed file is run and reported with the runner's own reading beside the list's why, and is not judged; a
+/// file the runner cannot read that the list does not name, a listed file whose reading is not the one the list gives
+/// (a pass among them), and a listed path the populations do not hold each fail the run, so that the list stays
+/// exact.</para>
 /// <para><b>The report</b> holds a line per file and the counts, and no time, absolute path or machine, so that the
 /// JIT's and Native AOT's compare byte for byte on one platform.</para>
 /// </remarks>
@@ -101,20 +103,24 @@ internal sealed class LibraryRun
         return result;
     }
 
-    /// <summary>The unreadable list's entries: each line <c>path</c>, a tab and why; <c>#</c> lines are comments.</summary>
-    internal static Dictionary<string, string> ReadUnreadableList(string text)
+    /// <summary>
+    /// The unreadable list's entries: each line <c>path</c>, a tab, the reading the runner gives the file
+    /// (<c>unreadable</c> or <c>FAIL</c>), a tab and why; <c>#</c> lines are comments.
+    /// </summary>
+    internal static Dictionary<string, (string Reading, string Why)> ReadUnreadableList(string text)
     {
-        var entries = new Dictionary<string, string>(StringComparer.Ordinal);
+        var entries = new Dictionary<string, (string, string)>(StringComparer.Ordinal);
         foreach (var raw in text.Split('\n'))
         {
             var line = raw.TrimEnd('\r');
             if (line.Length == 0 || line[0] == '#')
                 continue;
-            var tab = line.IndexOf('\t', StringComparison.Ordinal);
-            if (tab <= 0 || tab == line.Length - 1)
-                throw new FormatException("an entry of the unreadable list is not a path, a tab and why: " + line);
-            if (!entries.TryAdd(line[..tab], line[(tab + 1)..]))
-                throw new FormatException("the unreadable list names a file twice: " + line[..tab]);
+            var fields = line.Split('\t', 3);
+            if (fields.Length != 3 || fields[0].Length == 0 || fields[2].Length == 0
+                || (fields[1] != "unreadable" && fields[1] != "FAIL"))
+                throw new FormatException("an entry of the unreadable list is not a path, a tab, unreadable or FAIL, a tab and why: " + line);
+            if (!entries.TryAdd(fields[0], (fields[1], fields[2])))
+                throw new FormatException("the unreadable list names a file twice: " + fields[0]);
         }
 
         return entries;
@@ -170,18 +176,20 @@ internal sealed class LibraryRun
 
             var (verdict, detail) = Judge(population, source);
             var name = Label(population);
-            if (listed.TryGetValue(path, out var why))
+            if (listed.TryGetValue(path, out var entry))
             {
-                if (verdict != "pass")
+                if (verdict == entry.Reading)
                 {
                     report.Append("unreadable ").Append(name).Append(' ').Append(path).Append(": ").Append(verdict)
-                        .Append(", ").Append(detail).Append(" | listed: ").Append(why).Append('\n');
+                        .Append(", ").Append(detail).Append(" | listed: ").Append(entry.Why).Append('\n');
                     Count(counts, name + " unreadable");
                     continue;
                 }
 
+                detail = verdict == "pass"
+                    ? "listed as unreadable, but it passes: " + detail
+                    : "listed as reading " + entry.Reading + ", but it reads " + verdict + ": " + detail;
                 verdict = "FAIL";
-                detail = "listed as unreadable, but it passes: " + detail;
             }
             else if (verdict == "unreadable")
             {

@@ -192,7 +192,9 @@ compiles in (`Test262Mode.cs` is the mode's own file) and `Test262LibraryRunnerT
   extracts (the literals of `eval`'s strings, lexical errors of the literal token), and a negative file whose
   SyntaxError is not a literal's. A listed file is still run, and its reading is reported beside the reason; the run
   fails when a file it cannot judge is not listed, when a listed file passes, and when a listed path is not in the
-  populations.
+  populations. *(Added 2026-11-15, after the review of the tail: each entry also gives the reading the runner gives the
+  file, `unreadable` or, for `S7.8.5_A2.2_T2.js` alone, `FAIL`, and the run fails when a listed file reads otherwise.
+  Before, a listed file was accepted with any reading but a pass.)*
 
 The report holds a line per file in ordinal order of the paths, the list's SHA-256, the policy and the counts, and no
 time, absolute path or machine, so the Native AOT run's report and the JIT run's are compared with `cmp`. The mode does

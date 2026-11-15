@@ -179,7 +179,7 @@ public class Test262LibraryRunnerTests
     // ---- The run and the unreadable list ---------------------------------------------------------------------------
 
     [Fact]
-    public void The_run_fails_on_an_unlisted_unreadable_file_and_on_a_listed_file_that_passes()
+    public void The_run_fails_on_an_unlisted_unreadable_file_and_on_a_listed_file_whose_reading_is_not_the_lists()
     {
         var root = Directory.CreateTempSubdirectory("test262-library-");
         try
@@ -195,14 +195,20 @@ public class Test262LibraryRunnerTests
             Assert.False(unlisted.Passed);
             Assert.Contains("FAIL literals test/language/literals/regexp/lexical.js: unreadable and not listed", unlisted.Report, StringComparison.Ordinal);
 
-            var listed = Runner.Run(root.FullName, "# list\ntest/language/literals/regexp/lexical.js\tthe error is lexical\n");
+            var listed = Runner.Run(root.FullName, "# list\ntest/language/literals/regexp/lexical.js\tunreadable\tthe error is lexical\n");
             Assert.True(listed.Passed, listed.Report);
             Assert.Contains("pass literals test/language/literals/regexp/good.js: positive, 1 literals, 0 refused", listed.Report, StringComparison.Ordinal);
             Assert.DoesNotContain("FIXTURE", listed.Report, StringComparison.Ordinal);
 
-            var stale = Runner.Run(root.FullName, "test/language/literals/regexp/good.js\twhy\ntest/language/literals/regexp/lexical.js\twhy\n");
+            var stale = Runner.Run(root.FullName, "test/language/literals/regexp/good.js\tunreadable\twhy\ntest/language/literals/regexp/lexical.js\tunreadable\twhy\n");
             Assert.False(stale.Passed);
             Assert.Contains("listed as unreadable, but it passes", stale.Report, StringComparison.Ordinal);
+
+            // A listed file's reading must be the one the list gives (added 2026-11-15, after the review of the tail).
+            var other = Runner.Run(root.FullName, "test/language/literals/regexp/lexical.js\tFAIL\twhy\n");
+            Assert.False(other.Passed);
+            Assert.Contains("FAIL literals test/language/literals/regexp/lexical.js: listed as reading FAIL, but it reads unreadable", other.Report, StringComparison.Ordinal);
+            Assert.Throws<FormatException>(() => LibraryRun.ReadUnreadableList("test/language/literals/regexp/lexical.js\twhy\n"));
         }
         finally
         {
