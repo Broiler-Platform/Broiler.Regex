@@ -124,6 +124,49 @@ differences it leaves in class (c) wait for the correspondence's rows or for the
 
 No other commit is named yet.
 
+*Dated note, 2026-11-15 (SJL-11.2's tail: task 2.10's library job, task 4.1; no rule changed).* The item above read
+"**The rule commit:** the commit that adds this bundle, `tests/Adversarial/` and `eng/adversarial-programs.py`, on the
+branch that lands SJL-11.1 here. Its identifier is recorded in this README when it reaches the default branch.", and "No
+other commit is named yet." It has reached it. **The rule commit is `fca7a6d6b010d1e830fd79a8f56ceb0c15064976`**
+(2026-10-20, "SJL-11.1: adopt R1 to R11 as owner conditions, and bundle sjl-11-001's rules with the adversarial
+corpus"), the one commit that adds this README, [`decision-rule.md`](decision-rule.md),
+[`reference-arms.md`](reference-arms.md), `tests/Adversarial/` and `eng/adversarial-programs.py`. The same branch
+revised the two rule files three times on 2026-10-25, before any run, each revision stated in the file's header:
+`cbf49e8`, `a9738ca` and `edfb2d8`. It reached `main` by the merge commit `e568b88` (Broiler.Regex#6, 2026-10-25), whose
+second parent is `edfb2d8`, so the rules as filed are `edfb2d8`'s. Since then the rule files have changed only by the
+dated notes of 2026-11-01 (`d22f118`, `53aa534`), which read lines otherwise and rewrite none: every `rule` block of
+both files is byte for byte `edfb2d8`'s at this note's commit. The commits of the engines' inputs, `c2aa771`, are named
+above. **No reading's commit is named yet**: the candidate reading's is the commit `0.1.0-preview.6` is packed from
+(task 4.2).
+
+*Dated note, 2026-11-15 (the same work; no rule changed).* The table above reads "`run-library-evidence.sh`: parts A
+to E at one commit, in a detached worktree, stopping at the first step that does not end as the rule expects | Before
+the candidate reading" and "`run-reference-arms.sh`: the arms, the population, the comparison and the classification |
+Before the candidate reading"; the note of 2026-11-02 above calls the second "still to be written, as the table says".
+Both are written (WP4, task 4.1), beside this README:
+- [`run-library-evidence.sh`](run-library-evidence.sh) `COMMIT OUT --test262 DIR [--broiler-code DIR]` checks the
+  commit out as a detached worktree and runs, in order, part C's controls and revert from the clean tree, the Release
+  build (E-1), the tests (A, D's runner, E-3, E-7), the probe's Native AOT publish (E-2) and its four reports under
+  Native AOT and the JIT compared byte for byte (the default population, C, D and check B-2), the pack (E-4), the
+  fuzz session and its control (E-5) and the assurance check (E-6), each step's command the first line of its log, and
+  stops at the first step whose exit is not the one the rule expects. Check B-1 is recorded as not run.
+- [`run-reference-arms.sh`](run-reference-arms.sh) `COMMIT OUT --test262 DIR --unicode DIR --broiler-js DIR
+  --broiler-vm DIR --correspondence-commit SHA` checks the commit out the same way, checks test262's `test/` against the
+  pin's tree, P1 against the commit's `tests/Vectors/regexp.pin` and writes the correspondence out with its blob, runs
+  that commit's [`scripts/reference-arms/run.sh`](../../../scripts/reference-arms/README.md), and lists every
+  population, answer, comparison and classification file by SHA-256.
+
+**Part B's library job exists** (task 2.10): CI's `test262-library` job and the probe's `--test262` mode
+([`probes/Regex.Probe/README.md`](../../../probes/Regex.Probe/README.md)), with
+[`test262/library-unreadable.txt`](../../../test262/library-unreadable.txt). **Its host job does not**: B-1's
+retained commit is Broiler.JS's SJL-11.5 branch until it merges (decision D35), and that branch does not exist. What
+each script and the job were shown to do, locally and unjudged, is in [`docs/roadmap.md`](../../roadmap.md)'s record
+of 2026-11-15; nothing of those runs is a reading or retained here (validation principle 5). The note of 2026-11-02
+above ends "the differences it leaves in class (c) wait for the correspondence's rows or for their inputs reduced":
+the inputs the arbiter cannot reach were put through one declared reduction,
+[`scripts/reference-arms/reduce.py`](../../../scripts/reference-arms/README.md), and none became an input the arbiter
+reaches with the same difference; that record says what each gave. The rows are Broiler.VM's and wait.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
