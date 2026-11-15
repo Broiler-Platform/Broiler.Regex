@@ -45,6 +45,13 @@ as D13 says. Where an item below names `0.2.0-preview.1` as the version task 2.9
 calls a member provisional until task 2.9, task 2.9 settled it: kept, or changed as **Changed** lists, and no member of
 this version is provisional.
 
+*Dated note, 2026-11-15 (the review of SJL-11.2's tail).* The heading reads "(2026-11-01; prepared, not published)",
+and the first note "Publication is the owner's, after the candidate reading". `0.1.0-preview.6` was published to
+nuget.org on 2026-11-15 from `df5cfc2` of `main` (publish run 43736141111), before any candidate reading. The item
+below of 2026-11-15, test262's library job and the bundle's two scripts, is process only and is not in that commit:
+the published package is `df5cfc2`'s. Which version's entry carries it, and where the candidate reading is taken, are
+the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11-15 on the tail's record).
+
 ### Added
 
 - **The programme's process (R10).**

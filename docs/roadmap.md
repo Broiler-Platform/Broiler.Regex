@@ -2381,6 +2381,156 @@ taken.*
 - **The brief names the rule commit "around RXB:119-125"**; the README's item is there, and the note names
   `fca7a6d` by the item's own definition (the commit that adds the bundle), with the revisions and the merge beside it.
 
+*Dated note, 2026-11-15 (the review of SJL-11.2's tail; the record above is left as written, and this note corrects it
+where it says).* Read at the branch's head after this note's commits; nothing here is a reading, and nothing is declared
+met.
+
+**`0.1.0-preview.6` is published.** The record's items 4 and 5 below "What remains" read "**The reading itself, at the
+commit `0.1.0-preview.6` is packed from**" and "**Then the owner's publication of `0.1.0-preview.6` (decision D13)**,
+after the candidate reading and only if no part reads NOT MET there", and the bundle README's note of today reads "**No
+reading's commit is named yet**: the candidate reading's is the commit `0.1.0-preview.6` is packed from (task 4.2)".
+Neither holds. `0.1.0-preview.6` was published to nuget.org from `df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e` (main after
+Broiler.Regex#19) by the Publish workflow's run 43736141111 (workflow_dispatch on `main`, created 16:33:28 UTC; its
+"Publish to nuget.org" job pushed `Broiler.Regex.0.1.0-preview.6.nupkg` and `.snupkg` at 16:37:08 UTC), and nuget.org's
+index lists `0.1.0-preview.6`. That was before any candidate reading, and before the record above was written (19:01
+UTC), which did not know it. The commit it was packed from holds no `--test262` mode, no `test262-library` job and
+neither of task 4.1's scripts, so the reading the record describes cannot be taken as written, and D13's order
+("Publication stays the owner's, after the candidate reading", the dated note of 2026-11-01 above) was not followed.
+This work dispatched no workflow and published nothing; the record's "No `0.1.0-preview.6` was published and no workflow
+was dispatched by this work" stands as a statement about this work only. **The owner's open question, not decided
+here:** whether the candidate reading (task 4.2) is taken at `df5cfc2`, the published package's commit, whose tree lacks
+check B-2's job and the scripts (they would then run from a later tree against it), or at a later commit that carries
+them, packed as a later version (a version bump this work does not owe and does not make). The CHANGELOG's heading
+"`0.1.0-preview.6` (2026-11-01; prepared, not published)" is corrected there by a dated note.
+
+**Broiler.Regex#19 is merged, and this branch now carries it.** Item 3 reads "The `assurance` job checks out
+Broiler.Code's default branch, whose `src/Broiler.Code.Review.Cli` its commit `1b31684` ("Switch to Hairs", 2026-11-06)
+removed, so the job as written fails today ... The pull request Broiler-Platform/Broiler.RegEx#19, open on 2026-11-15,
+moves the check to Hairs; it is not this work's, and it touches `.github/workflows/ci.yml` too." The choice "**E-6 runs
+only when a Broiler.Code checkout is given** ... Not taken: requiring it, which would make the script fail today for a
+reason outside this repository (item 3 above); and moving the check to Hairs, which Broiler-Platform/Broiler.RegEx#19
+does" and the disagreement "the job fails as written at `ec796fc` itself" rest on the same premise. Broiler.Regex#19
+merged at 16:32:50 UTC as `df5cfc2` (its change `aa219db`: Hairs.Cli `0.1.0-preview.2` pinned as a local tool,
+`assurance.config.json` renamed `hairs.config.json`, the job `dotnet tool restore` then `dotnet hairs assurance check
+--root .`); CI's run 43736082350 on `main` at `df5cfc2` succeeded, as did the publish run's assurance job. The branch
+merged `main` at `df5cfc2` (`371692f`, no conflict), and `run-library-evidence.sh`'s check E-6 now repeats the commit's
+CI job: at a commit with `hairs.config.json`, the tree cleaned, `dotnet tool restore` and `dotnet hairs assurance check
+--root .`; `--broiler-code` is read only for a commit before #19. *Choice:* that fallback is kept, so the script still
+reads the commits before #19 as their CI did. Not taken: dropping it, which would leave E-6 unrun at those commits. The
+record's references "Broiler-Platform/Broiler.RegEx#19" are this repository's own pull request, written here, as
+elsewhere in this file, Broiler.Regex#19.
+
+**The checks at the scripts' commit** `3760449` (this branch, after the merge and the review's fixes), behind the
+machine's build lock and idle gate: `run-library-evidence.sh 3760449 OUT --test262 <copy whose test/ is c022917>`, every
+one of its 39 steps as the rule expects in 168 seconds, among them the Release build with no warning, 2,644 library, 49
+architecture and 11 fuzz tests passing, the four modes' reports each one file under Native AOT and the JIT (the default
+report `8f40ae86…`, `--adversarial` `3f7fc538…`, `--vectors` `3b35a475…`, all three the retained ones) and E-6 under
+Hairs ("Broiler.RegEx: no violations."). The `--test262` report is now
+`374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d`, in both modes: it differs from `db578837…` above in
+one line only, the unreadable list's SHA-256, since the list changed (below).
+
+**What reproduces byte for byte.** The record says each script was shown "reproducing retained outputs byte for byte".
+For `run-library-evidence.sh` that holds of its reports, not of all it writes: two runs at one commit give packages of
+other bytes (the pack writes times into the zip's entries; the review's run at `2c57110` against the implementer's), so
+the packages' digests are now written to `packages.sha256`, apart from `digests.sha256`, and the script's header says
+only `reports/` reproduces. The packages it leaves are its evidence for check E-4 only, carry the version the commit's
+props give, and are never pushed to a feed; those of the runs before this note were deleted from scratch. For
+`run-reference-arms.sh`, the P1-to-P3 comparison the record calls the base's byte for byte was taken by an uncommitted
+draft of the script, whose run exited 1 (`ebbf303` committed it after); the committed script was shown on the full run
+at `07d7825`, which exited 0. The committed script, with its new check, was run at `3760449` over P1 to P3 (19:55 UTC,
+76 seconds, exit 0, the classifier's exit 1 kept): of the 28 files it lists, 25 are the base's byte for byte, and
+`population/manifest.json`, `runs/run.S.json` and `comparison/summary.json` differ only where they name the commit. Its
+first try at `3760449` stopped in arm S: `Harness.ProcessorTime` (`tests/ReferenceArms/Common/Harness.cs`) catches
+`InvalidOperationException` only, and reading `TotalProcessorTime` of a worker that had just exited threw
+`Win32Exception` in the supervisor's reading thread, which ended the process. The run was taken again unchanged and
+passed. That defect of the harness is recorded, not fixed here: it can end any run of the arms, the candidate reading's
+among them, and its fix is the arms' owner's to make before the reading.
+
+**Broiler.Unicode's commit.** P5 and P6 come from the Broiler.Unicode checkout, which the script recorded but did not
+check. It now takes `--unicode-commit`, by default `0bcb917564d514feadaa27ce7dd1e0b57b585c90`, the commit of the full
+run at `07d7825` that gave task 2.13's comparison and classification byte for byte, and checks the checkout's HEAD and
+its tracked files against it. Task 2.13's own record names no Broiler.Unicode commit, so P5 and P6 are shown to
+reproduce at this commit only.
+
+**The reference arms' two negative controls are owed.** `reference-arms.md` asks for "a copy of arm V with one result
+changed for one input of P4, and a copy of arm J with one result changed for one input of P1, each run once; the
+comparison reports each as a difference and does not classify it", and its MET needs both reported unclassified. Task
+2.13 took them from scratch worktrees (its record above), as `tests/ReferenceArms/README.md`'s "The negative controls"
+describes; `run-reference-arms.sh` runs `scripts/reference-arms/run.sh`, which has no control step, and so does not take
+them. Item 4 below "What remains" names part B's control but not these: they are owed at the candidate reading, beside
+the script's run, the same way task 2.13 took them.
+
+**The library job's unreadable list gives each file's reading.** The record reads "A listed file is still run and its
+reading reported beside the reason; the run fails on a file that does not pass, on an unlisted file the runner cannot
+judge, on a listed file that passes and on a listed path the populations do not hold". A listed file was so accepted
+with any reading but a pass, and one listed file, `S7.8.5_A2.2_T2.js`, reads FAIL, not unreadable (negative, its only
+literal `/a/` accepted). Each entry now gives the reading the runner gives the file (42 `unreadable`, that one `FAIL`),
+and the run fails when a listed file reads otherwise (`f58b5c9`; the runner's test covers both).
+
+**The Windows leg is unshown.** The record says the job "runs on linux-x64 and win-x64"; every local run was linux-x64,
+and the job has not run in CI. The pin check reads git's objects (`rev-parse HEAD:test`), not the working tree, and the
+Windows runner's git converts line endings on checkout by default; the job now sets `core.autocrlf` to false on the
+runner before checking test262 out, so the bytes read are the objects'. The win-x64 leg stays unshown until CI runs it.
+On a red run each step now prints the report's FAIL lines.
+
+**The 895 inputs whose difference does not survive.** The record reads "**The difference does not survive the reduction:
+895 inputs** ... So the difference exists only at sizes the specification's matcher needs more than the cut-off for:
+**they stay unreachable, class (c)**", and "None reduced to an input the arbiter reaches with the same difference, so
+**class (c) keeps every one of the 6,459**, as the rule's arbiter clause reads them". These 895 inputs were **reduced to
+an input the arbiter reaches, where the difference does not survive**: they are not unreachable. That their 2,664
+differences stay in class (c) is a reading the rule does not settle, not the rule's own: "a difference the arbiter
+cannot reach in its step cut-off is class (c) until reduced to an input it can" does not say whether the reduced input
+must carry the same difference. *Choice taken*, and taken by `reduce.py`: a reduction discharges class (c) only when the
+same difference survives it (the outcome `reduced`). *Not taken*: the reduced input's agreement with the arbiter ends
+the "until reduced" condition, which would take these 2,664 differences out of class (c). Which reading applies is the
+rule owner's decision, not this repository's; `reduce.py`'s docstring now says so. The 1,269 inputs with no prefix the
+arbiter reaches are unreachable under either reading, and the record's "the 6 that reduce join Broiler.JS's differences,
+whose rows are Broiler.VM's correspondence's" is better read: the 6 resemble the family of Broiler.JS's differences no
+row names; whether a row covers them is Broiler.VM's call.
+
+**The reduction, regenerable.** The record gives its listings by 8-digit prefixes and keeps them in session scratch,
+which can be cleared. In full: `reductions.tsv` `b3e053014bbbdd8c2cf48419edc4f0053b520b642166a45d5acdbabfd3b56237`,
+`outcomes.tsv` `9ed9f99ac1cf5643b0a7d38e983d49142026d8dd0ad9202494684f6cf95e9efa`, `outcomes.json`
+`2379e634b80d0707cd84c47b8adb980abf8aa74cf1615eda1b5493a5d6ecf4b7`. Their inputs: the full run's comparison
+(`differences.tsv.gz` `0a8345fd6275347eeaaae432d95aacfdc3c946a4271dca72c9be576f6e5ab677`, `classified.tsv.gz`
+`a03b9973191e969c41c107f8bbf1d80c0bdf1950729623a5e4b9968bea69da61`), Broiler.JS at
+`b2c2e2243a086285d806866a64b83297791a8ec5` (the arbiter), Broiler.Unicode at `0bcb917564d514feadaa27ce7dd1e0b57b585c90`
+and Broiler.VM's correspondence at `292ae6b2834f98be5f9a1f93c409a4e1aa832c66` (blob
+`d7323aeccd7a9c70aa7e34cd9667bccdf000eebb`). The commands, from a tree of this repository at the commit read:
+1. `python3 -I -B scripts/reference-arms/reduce.py prefixes --comparison <full run>/run/comparison --broiler-js
+   <Broiler.JS> --commit b2c2e2243a086285d806866a64b83297791a8ec5 --unicode-pins <Broiler.Unicode>/data/unicode/pins
+   --out OUT --workers 4` (the cut-off its default, 1,000,000, the classifier's);
+2. the arms S, V and J built Release (`dotnet build tests/ReferenceArms/<arm> -c Release`) and each run as `dotnet
+   tests/ReferenceArms/<arm>/bin/Release/net10.0/Regex.ReferenceArms.<arm>.dll --population OUT/population --out
+   OUT/runs --classes P1,P3,P4 --stops tests/ReferenceArms/stops.tsv`, J also with `--culture tr-TR` and `--culture
+   lt-LT`;
+3. `python3 -I -B scripts/reference-arms/compare.py --population OUT/population --runs OUT/runs --out OUT/comparison`;
+4. `python3 -I -B scripts/reference-arms/classify.py --comparison OUT/comparison --runs OUT/runs --broiler-js
+   <Broiler.JS> --commit b2c2e2243a086285d806866a64b83297791a8ec5 --correspondence <correspondence.md at 292ae6b>
+   --unicode-pins <Broiler.Unicode>/data/unicode/pins` (its exit 1, class (c) present, expected);
+5. `python3 -I -B scripts/reference-arms/reduce.py read --comparison <full run>/run/comparison --reduced OUT`. Run again
+   at `3760449` from a clean `git archive` (19:36 to 19:54 UTC), these commands gave `reductions.tsv`, the reduced
+   population, `outcomes.tsv` and `outcomes.json` byte for byte as above, and every comparison and run file the same but
+   the two that carry the build's informational version (`runs/run.S.json` and `comparison/summary.json`: an archive's
+   build has no commit in it). The listings stay outside the repository, as the runs' files do (validation principle 5);
+   the candidate reading's retained files are where a durable copy belongs, if the rule's owner wants one.
+
+**The rule commit, and Broiler.VM's convention.** The bundle README's note names "**The rule commit is
+`fca7a6d6b010d1e830fd79a8f56ceb0c15064976`**", the branch commit that adds the bundle, and the choice above reads "Not
+taken: naming the merge `e568b88` or the last revision `edfb2d8` alone." Broiler.VM's half of the same bundle names the
+default-branch merge: its README's note of 2026-11-15 (`d4a6d1ac`) reads "merged on 2026-10-25 in
+Broiler-Platform/Broiler.VM#168 as `cd1928d6...`, the rule commit, the default-branch merge, as bundles `sjl-12-001` and
+`sjl-13-001` name theirs". Under that convention this README's rule commit would be the merge
+`e568b88248c7de5dd75210e22cd357197108e644`, whose rule files are `edfb2d8`'s, the rules as filed. Which this bundle
+names is the owner's or the bundle reviewer's choice; `fca7a6d` is not settled by this record. The README's "revised the
+two rule files three times" is also loose: the rule files were revised in three commits, `cbf49e8` and `a9738ca`
+changing both and `edfb2d8` changing `decision-rule.md` only.
+
+*Where the brief, the map and this repository differ, added.* The brief's State reads "Broiler.Regex `origin/main` is
+`ec796fc`"; `main` was `df5cfc2` from 16:32 UTC, twelve minutes after this branch was made from `ec796fc`, and the local
+`origin/main` was fetched to it at 16:56, before the record above. The brief's and the record's order, the candidate
+reading before the owner's publication of `0.1.0-preview.6` (D13), was overtaken by that publication (above).
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

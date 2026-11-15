@@ -167,6 +167,32 @@ the inputs the arbiter cannot reach were put through one declared reduction,
 [`scripts/reference-arms/reduce.py`](../../../scripts/reference-arms/README.md), and none became an input the arbiter
 reaches with the same difference; that record says what each gave. The rows are Broiler.VM's and wait.
 
+*Dated note, 2026-11-15 (the review of the same work; no rule changed).* Four statements of the two notes above are
+corrected here, as [`docs/roadmap.md`](../../roadmap.md)'s note of the same date on that record says in full.
+- The first note ends "**No reading's commit is named yet**: the candidate reading's is the commit `0.1.0-preview.6` is
+  packed from (task 4.2)". `0.1.0-preview.6` was published to nuget.org on 2026-11-15 from `df5cfc2` (publish run
+  43736141111), before any candidate reading, from a tree with neither script and no `test262-library` job. No reading's
+  commit is named yet; whether the candidate reading is taken at `df5cfc2` or at a later commit, packed as a later
+  version, is the owner's question and is not decided here.
+- It also names "**The rule commit is `fca7a6d6b010d1e830fd79a8f56ceb0c15064976`**", the branch commit that adds the
+  bundle. Broiler.VM's half of this bundle, and bundles `sjl-12-001` and `sjl-13-001`, name the default-branch merge as
+  the rule commit (Broiler.VM's README, its note of 2026-11-15); here that would be
+  `e568b88248c7de5dd75210e22cd357197108e644` (Broiler.Regex#6), whose rule files are `edfb2d8`'s. Which this README
+  names is left to the owner or this bundle's reviewer. And where it says the branch "revised the two rule files three
+  times", the rule files were revised in three commits, `cbf49e8` and `a9738ca` changing both and `edfb2d8` changing
+  `decision-rule.md` only.
+- The second note's [`run-library-evidence.sh`](run-library-evidence.sh) now runs check E-6 as the commit's CI job does:
+  since Broiler.Regex#19 (`df5cfc2`), `dotnet tool restore` and `dotnet hairs assurance check --root .` from the cleaned
+  tree; `--broiler-code` is read only for a commit before it. Its reports reproduce byte for byte; its packages do not
+  (the pack writes times into them), so their digests are in `packages.sha256`, apart.
+  [`run-reference-arms.sh`](run-reference-arms.sh) also checks the Broiler.Unicode checkout against `--unicode-commit`
+  (default `0bcb917`, the full run's), since P5 and P6 come from it.
+- `run-reference-arms.sh` does not take [`reference-arms.md`](reference-arms.md)'s two negative controls (a copy of arm
+  V and one of arm J, each with one result changed, which the comparison must report and not classify); task 2.13 took
+  them from scratch worktrees. They are owed at the candidate reading. And of the inputs the arbiter could not reach,
+  895 were reduced to an input it reaches where the difference does not survive: they stay in class (c) only under a
+  reading of the rule's "until reduced" its owner decides (the roadmap's note).
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
