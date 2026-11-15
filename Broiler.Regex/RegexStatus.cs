@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   2
 // Annotated:        2/2
 // Exempt:           11
@@ -47,8 +47,8 @@ namespace Broiler.Regex;
 /// the caller's that throws propagates its own exception (convention 3).
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=E2A8EC
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=E2A8EC
+// Hairs-Human:        PENDING
 public enum RegexStatus
 {
     /// <summary>The operation completed, and its result is set: a compilation's compiled pattern.</summary>
@@ -92,8 +92,8 @@ public enum RegexStatus
 /// string-bearing <c>Match</c>. Task 2.5 added <see cref="Compile"/>, the caller's compile budget (requirement R2),
 /// which <see cref="BroilerRegex.Compile"/> answers; it changed none of the members before it.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=2530A5
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=2530A5
+// Hairs-Human:        PENDING
 public enum RegexLimit
 {
     /// <summary>No limit: the status is not <see cref="RegexStatus.LimitExceeded"/>.</summary>

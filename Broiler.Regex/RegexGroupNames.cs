@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   7
 // Annotated:        7/7
 // Exempt:           5
@@ -45,9 +45,9 @@ namespace Broiler.Regex;
 /// group; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4 and s22.2.7.2; IP=None; Security=Medium; Resources=1; Fingerprint=A28383
-// Broiler-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ the names are not y then x, x's groups are not 2 and 3, group 4's name is not y, or the slots of a match of bb send x to other than group 3
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4 and s22.2.7.2; IP=None; Security=Medium; Resources=1; Fingerprint=A28383
+// Hairs-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ the names are not y then x, x's groups are not 2 and 3, group 4's name is not y, or the slots of a match of bb send x to other than group 3
+// Hairs-Human:        PENDING
 public sealed class RegexGroupNames
 {
     /// <summary>The names, in the order of their first groups.</summary>
@@ -67,9 +67,9 @@ public sealed class RegexGroupNames
     /// their first groups, and at the same positions in <paramref name="groupLists"/> the groups of each, ascending. The
     /// arrays become the instance's own.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=31A196
-    // Broiler-Falsified-If: a group of a name is given no name, or another name's, or a group beyond the capture count is accepted
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=31A196
+    // Hairs-Falsified-If: a group of a name is given no name, or another name's, or a group beyond the capture count is accepted
+    // Hairs-Human:        PENDING
     internal RegexGroupNames(string[] nameList, int[][] groupLists, int captureCount)
     {
         _nameList = nameList;
@@ -90,8 +90,8 @@ public sealed class RegexGroupNames
     internal int CaptureCount { get; }
 
     /// <summary>How many distinct names the pattern declares; zero when it declares none.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E964CF
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E964CF
+    // Hairs-Human:        PENDING
     public int Count => _nameList.Length;
 
     /// <summary>
@@ -101,9 +101,9 @@ public sealed class RegexGroupNames
     /// <param name="index">The name's position, from 0 to <see cref="Count"/> - 1.</param>
     /// <returns>The name, decoded: the code points its GroupSpecifier spells, escapes read (§22.2.1.10 CapturingGroupName).</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative, or <see cref="Count"/> or more.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Low; Resources=0; Fingerprint=521344
-    // Broiler-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ position 0 answers x, or a position of Count answers a name
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Low; Resources=0; Fingerprint=521344
+    // Hairs-Falsified-If: for /(?<y>a)(?<x>a)|(?<x>b)(?<y>b)/ position 0 answers x, or a position of Count answers a name
+    // Hairs-Human:        PENDING
     public string NameAt(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -118,9 +118,9 @@ public sealed class RegexGroupNames
     /// <param name="name">A name, decoded, compared by code unit.</param>
     /// <returns>The group numbers, a read-only view of the instance's own, which nothing changes.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.9; IP=None; Security=Low; Resources=0; Fingerprint=DB3D86
-    // Broiler-Falsified-If: for /(?<x>a)|(?<x>b)/ the groups of x are not 1 and 2, or a name the pattern does not declare answers a group
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.9; IP=None; Security=Low; Resources=0; Fingerprint=DB3D86
+    // Hairs-Falsified-If: for /(?<x>a)|(?<x>b)/ the groups of x are not 1 and 2, or a name the pattern does not declare answers a group
+    // Hairs-Human:        PENDING
     public ReadOnlySpan<int> GroupsNamed(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -130,9 +130,9 @@ public sealed class RegexGroupNames
     /// <summary>The name of group <paramref name="group"/>, or null when it has none, as group 0, the whole match, has none.</summary>
     /// <param name="group">A group number, from 0 to the pattern's capture count.</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="group"/> is negative or past the pattern's capture count.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=219B4C
-    // Broiler-Falsified-If: for /(?<x>a)|(b)|(?<x>c)/ group 3's name is not x, group 2 has one, or group 4 answers instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=219B4C
+    // Hairs-Falsified-If: for /(?<x>a)|(b)|(?<x>c)/ group 3's name is not x, group 2 has one, or group 4 answers instead of throwing
+    // Hairs-Human:        PENDING
     public string? NameOfGroup(int group)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(group);
@@ -155,9 +155,9 @@ public sealed class RegexGroupNames
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer slots than a match of the pattern writes, two for each group and two for the whole match.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Medium; Resources=1; Fingerprint=FFB2A0
-    // Broiler-Falsified-If: for /(?<x>a)|(?<x>b)/ the slots of a match of b send x to other than group 2, the slots of no participating group to other than 0, or a call allocates
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=Medium; Resources=1; Fingerprint=FFB2A0
+    // Hairs-Falsified-If: for /(?<x>a)|(?<x>b)/ the slots of a match of b send x to other than group 2, the slots of no participating group to other than 0, or a call allocates
+    // Hairs-Human:        PENDING
     public int ParticipatingGroup(string name, ReadOnlySpan<int> slots)
     {
         ArgumentNullException.ThrowIfNull(name);

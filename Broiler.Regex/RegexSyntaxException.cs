@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   3
 // Annotated:        3/3
 // Exempt:           2
@@ -33,16 +33,16 @@ namespace Broiler.Regex;
 /// the position and the diagnostic, are the validate entry's answer for the same pattern, which a caller that needs them
 /// reads there. A break of <c>0.1.0-preview.5</c>, listed with requirement R10 in <c>docs/suppressions.md</c>.
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=9919DF
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=Low; Security=Low; Resources=0; Fingerprint=9919DF
+// Hairs-Human:        PENDING
 internal sealed class RegexSyntaxException(string message, int position = -1) : ArgumentException(message)
 {
     /// <summary>
     /// A refusal the library made: its <paramref name="diagnostic"/>'s message and position, the position -1 for an error of
     /// the flags, whose place in the flags text the diagnostic gives.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=C7FDD8
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=C7FDD8
+    // Hairs-Human:        PENDING
     internal RegexSyntaxException(RegexDiagnostic diagnostic)
         : this(diagnostic.Message, IsOfFlags(diagnostic.Code) ? -1 : diagnostic.Position)
     {
@@ -59,8 +59,8 @@ internal sealed class RegexSyntaxException(string message, int position = -1) : 
     internal RegexDiagnostic Diagnostic { get; }
 
     /// <summary>Whether <paramref name="code"/> is one of the flags', whose position is in the flags text.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0093C7
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0093C7
+    // Hairs-Human:        PENDING
     private static bool IsOfFlags(RegexDiagnosticCode code) =>
         code is RegexDiagnosticCode.UnknownFlag or RegexDiagnosticCode.DuplicateFlag or RegexDiagnosticCode.UnicodeWithUnicodeSets;
 }

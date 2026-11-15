@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   1
 // Annotated:        1/1
 // Exempt:           7
@@ -21,14 +21,14 @@ namespace Broiler.Regex.Engine;
 /// One instruction of a <see cref="RegexProgram"/>: an operation, its three operands, the direction it reads in and its
 /// cost in work units (decision D8 of Broiler.VM's JSD-0081). It is written once, by the compiler, and never changed.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=4FB6AB
-// Broiler-Falsified-If: an instruction's operation, an operand, its cost or its direction reads back other than the value it was made with
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=4FB6AB
+// Hairs-Falsified-If: an instruction's operation, an operand, its cost or its direction reads back other than the value it was made with
+// Hairs-Human:        PENDING
 internal readonly struct RegexInstruction
 {
     /// <summary>An instruction of <paramref name="op"/> with its operands, its cost and its direction.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=CC5D98
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=CC5D98
+    // Hairs-Human:        PENDING
     internal RegexInstruction(RegexOp op, int a, int b, int c, int cost, bool rightToLeft)
     {
         Op = op;

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   4
 // Annotated:        4/4
 // Exempt:           9
@@ -23,9 +23,9 @@ namespace Broiler.Regex;
 /// The ECMAScript regular-expression flags (ECMA-262 §22.2.6 "Flags").
 /// Mirrors the flag letters <c>d g i m s u v y</c>.
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=FCF95D
-// Broiler-Falsified-If: two members share a bit value, so a parsed flags string such as "gy" reads back as a different set of letters
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=FCF95D
+// Hairs-Falsified-If: two members share a bit value, so a parsed flags string such as "gy" reads back as a different set of letters
+// Hairs-Human:        PENDING
 [Flags]
 public enum RegexFlags
 {
@@ -69,9 +69,9 @@ public enum RegexFlags
 /// <see cref="Text.RegexFlagsText.Parse"/> answers with the diagnostic. <see cref="IsUnicodeMode"/>, which reads a flags
 /// value and can fail for none, stays public.
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=8E3CEF
-// Broiler-Falsified-If: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=8E3CEF
+// Hairs-Falsified-If: a flags string holding a letter outside d, g, i, m, s, u, v and y, such as "x", is accepted instead of throwing RegexSyntaxException
+// Hairs-Human:        PENDING
 public static class RegexFlagsParser
 {
     /// <summary>
@@ -85,9 +85,9 @@ public static class RegexFlagsParser
     /// <c>0.1.0-preview.4</c> gave each and no position in the pattern; since task 2.8 of SJL-11.2 its
     /// <see cref="RegexSyntaxException.Diagnostic"/> names the refusal and its place in the flags text.
     /// </exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=640203
-    // Broiler-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize; IP=Low; Security=High; Resources=1; Fingerprint=640203
+    // Hairs-Falsified-If: the flags string "uv" (or "vu") returns Unicode | UnicodeSets instead of throwing RegexSyntaxException
+    // Hairs-Human:        PENDING
     internal static RegexFlags Parse(string? flags)
     {
         return Text.RegexFlagsText.Parse(flags, out var result, out var diagnostic) == RegexStatus.Success ? result : throw new RegexSyntaxException(diagnostic);
@@ -100,9 +100,9 @@ public static class RegexFlagsParser
     /// </summary>
     /// <param name="flags">The flags.</param>
     /// <returns>Whether <see cref="RegexFlags.Unicode"/> or <see cref="RegexFlags.UnicodeSets"/> is set.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B0612A
-    // Broiler-Falsified-If: IsUnicodeMode(RegexFlags.UnicodeSets) returns false, so a v-mode pattern is parsed and matched per UTF-16 code unit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B0612A
+    // Hairs-Falsified-If: IsUnicodeMode(RegexFlags.UnicodeSets) returns false, so a v-mode pattern is parsed and matched per UTF-16 code unit
+    // Hairs-Human:        PENDING
     public static bool IsUnicodeMode(this RegexFlags flags)
         => (flags & (RegexFlags.Unicode | RegexFlags.UnicodeSets)) != 0;
 }

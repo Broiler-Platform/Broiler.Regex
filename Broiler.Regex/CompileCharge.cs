@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   10
 // Annotated:        10/10
 // Exempt:           19
@@ -25,8 +25,8 @@ namespace Broiler.Regex;
 /// same units whatever the place; the place is named for the tests of check A-2, which read what each place charged
 /// through <see cref="CompileCharge.Observer"/>.
 /// </summary>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=6F7846
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=6F7846
+// Hairs-Human:        PENDING
 internal enum CompileSite
 {
     /// <summary>The parser's read of the pattern: one unit per code unit, which its pre-scan reads once before the parse proper.</summary>
@@ -87,8 +87,8 @@ internal enum CompileSite
 }
 
 /// <summary>A test's observer of a compilation's charges: the place, the units it charged, and the units spent through them.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=DBBE2E
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=DBBE2E
+// Hairs-Human:        PENDING
 internal delegate void CompileChargeObserver(CompileSite site, ulong units, ulong spent);
 
 /// <summary>
@@ -119,14 +119,14 @@ internal delegate void CompileChargeObserver(CompileSite site, ulong units, ulon
 /// and reaches the caller as it was thrown, and the next compilation starts from a new instance (decision D9).
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D9; IP=None; Security=High; Resources=1; Fingerprint=F31C83
-// Broiler-Falsified-If: a compilation's meter is charged anything but whole blocks of 512 units, is charged after the work a charge pays for, or a budget of n units admits a compilation whose charges total more than n
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D9; IP=None; Security=High; Resources=1; Fingerprint=F31C83
+// Hairs-Falsified-If: a compilation's meter is charged anything but whole blocks of 512 units, is charged after the work a charge pays for, or a budget of n units admits a compilation whose charges total more than n
+// Hairs-Human:        PENDING
 internal sealed class CompileCharge
 {
     /// <summary>The units the meter is charged in, whole blocks before the work they pay for, as a match's are (decision D8).</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=5491AD
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=5491AD
+    // Hairs-Human:        PENDING
     internal const ulong Block = 512;
 
     private readonly RegexWorkCharge? _meter;
@@ -146,8 +146,8 @@ internal sealed class CompileCharge
     /// <summary>An account charging <paramref name="meter"/>, or none, under <paramref name="budget"/>, or none.</summary>
     /// <param name="meter">The caller's meter, or null.</param>
     /// <param name="budget">The caller's compile budget in units, at least one, or null for none; the caller has checked it.</param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=2B81C4
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=2B81C4
+    // Hairs-Human:        PENDING
     internal CompileCharge(RegexWorkCharge? meter, ulong? budget)
     {
         _meter = meter;
@@ -157,8 +157,8 @@ internal sealed class CompileCharge
     }
 
     /// <summary>The units the compilation has spent so far, every charge admitted included.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=24A8BF
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=24A8BF
+    // Hairs-Human:        PENDING
     internal ulong Spent => _spent;
 
     /// <summary>
@@ -166,8 +166,8 @@ internal sealed class CompileCharge
     /// there is a meter, and before the work it pays for, with the place, its units and the units spent through them, so
     /// that a test reads what its own meter holds at that moment (bundle <c>sjl-11-001</c>'s check A-2).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9995D4
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9995D4
+    // Hairs-Human:        PENDING
     internal CompileChargeObserver? Observer { private get; init; }
 
     /// <summary>
@@ -175,9 +175,9 @@ internal sealed class CompileCharge
     /// and when they pass what the meter has been charged, the meter is charged the whole blocks that cover them.
     /// </summary>
     /// <exception cref="CompileBudgetSpent">The units would take the compilation past the caller's budget; nothing is spent or charged.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=6F285C
-    // Broiler-Falsified-If: a charge that takes the units spent past the budget is admitted, a refused charge stays spent, the meter is charged a part of a block, or the observer sees a charge before the meter has been charged for it
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=6F285C
+    // Hairs-Falsified-If: a charge that takes the units spent past the budget is admitted, a refused charge stays spent, the meter is charged a part of a block, or the observer sees a charge before the meter has been charged for it
+    // Hairs-Human:        PENDING
     internal void Charge(CompileSite site, ulong units)
     {
         if (units == 0)
@@ -200,18 +200,18 @@ internal sealed class CompileCharge
     }
 
     /// <summary>Charges <paramref name="units"/> of work at <paramref name="site"/>, as <see cref="Charge(CompileSite, ulong)"/> does; a count never negative.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=0DFF28
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=0DFF28
+    // Hairs-Human:        PENDING
     internal void Charge(CompileSite site, long units) => Charge(site, (ulong)Math.Max(0, units));
 
     /// <summary>The units of a string a compilation reads: its length in code units, at least one, so that the empty string costs a unit too.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=8DF064
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=8DF064
+    // Hairs-Human:        PENDING
     internal static long StringUnits(string text) => Math.Max(1, text.Length);
 
     /// <summary>The comparisons a sort of <paramref name="count"/> items makes per item at most: 1 + ⌊log₂ n⌋, and none for an empty list.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C311D8
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C311D8
+    // Hairs-Human:        PENDING
     internal static long SortFactor(int count) => count <= 1 ? 1 : 1 + System.Numerics.BitOperations.Log2((uint)count);
 }
 
@@ -219,6 +219,6 @@ internal sealed class CompileCharge
 /// A charge past the caller's compile budget, thrown by <see cref="CompileCharge.Charge(CompileSite, ulong)"/> to unwind
 /// a compilation. It is the library's own and never leaves it: <see cref="BroilerRegex.Compile"/> answers it as a status.
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=A2DD93
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=A2DD93
+// Hairs-Human:        PENDING
 internal sealed class CompileBudgetSpent() : Exception("The compilation would do more work than the caller's compile budget admits.");

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   8
 // Annotated:        8/8
 // Exempt:           3
@@ -62,38 +62,38 @@ namespace Broiler.Regex;
 /// and the trail grow as a match needs them.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D10; IP=None; Security=High; Resources=2; Fingerprint=0B6794
-// Broiler-Falsified-If: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decisions D8 and D10; IP=None; Security=High; Resources=2; Fingerprint=0B6794
+// Hairs-Falsified-If: a frame or trail ceiling of zero or above its maximum, or a step ceiling of zero, is accepted, or the engines' defaults are other than 1 << 20 frames and 1 << 21 trail cells
+// Hairs-Human:        PENDING
 public readonly struct RegexMatchCeilings
 {
     /// <summary>The largest frame ceiling a caller may pass: 16,777,216 frames, 256 MiB, and 128 MiB more while they grow to it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BF24C1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=BF24C1
+    // Hairs-Human:        PENDING
     public const int FrameCeilingMaximum = 1 << 24;
 
     /// <summary>The largest trail ceiling a caller may pass: 33,554,432 cells, 256 MiB, and 128 MiB more while they grow to it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=47EA6F
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=47EA6F
+    // Hairs-Human:        PENDING
     public const int TrailCeilingMaximum = 1 << 25;
 
     /// <summary>The frame ceiling both engines pass (decision D10): Broiler.VM's <c>MaximumFrames</c>, 1,048,576.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=F36971
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=F36971
+    // Hairs-Human:        PENDING
     public const int EngineFrames = 1 << 20;
 
     /// <summary>The trail ceiling both engines pass (decision D10): Broiler.VM's <c>MaximumTrail</c>, 2,097,152.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=9B2F10
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=9B2F10
+    // Hairs-Human:        PENDING
     public const int EngineTrail = 1 << 21;
 
     /// <summary>Ceilings of <paramref name="steps"/> units, or none, <paramref name="frames"/> frames and <paramref name="trail"/> trail cells.</summary>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="steps"/> is zero, or <paramref name="frames"/> or <paramref name="trail"/> is below one or above its maximum.
     /// </exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=1B8BFB
-    // Broiler-Falsified-If: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=0; Fingerprint=1B8BFB
+    // Hairs-Falsified-If: new RegexMatchCeilings(0, 1, 1), new RegexMatchCeilings(null, 0, 1) or new RegexMatchCeilings(null, 1, TrailCeilingMaximum + 1) does not throw
+    // Hairs-Human:        PENDING
     public RegexMatchCeilings(ulong? steps, int frames, int trail)
     {
         if (steps == 0)
@@ -108,8 +108,8 @@ public readonly struct RegexMatchCeilings
     }
 
     /// <summary>The ceilings both engines pass (decision D10): no step ceiling, <see cref="EngineFrames"/> and <see cref="EngineTrail"/>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=6DC9DE
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D10; IP=None; Security=Low; Resources=0; Fingerprint=6DC9DE
+    // Hairs-Human:        PENDING
     public static RegexMatchCeilings Engines => new(null, EngineFrames, EngineTrail);
 
     /// <summary>The units a call may do, or null for no step ceiling.</summary>
@@ -122,7 +122,7 @@ public readonly struct RegexMatchCeilings
     public int Trail { get; }
 
     /// <summary>Whether the ceilings were made by the constructor: the default value, whose frame ceiling is zero, was not.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=530DC2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=530DC2
+    // Hairs-Human:        PENDING
     internal bool IsSet => Frames >= 1;
 }

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   26
 // Annotated:        26/26
 // Exempt:           5
@@ -45,37 +45,37 @@ namespace Broiler.Regex.Ast;
 /// sorted ranges, so its work is in proportion to the units it charges.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=9A9575
-// Broiler-Falsified-If: a set built from the ranges (5, 9), (0, 4) and (7, 12), in that order, reports Ranges other than the single range 0..12, or a read of a set writes a field of it
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=9A9575
+// Hairs-Falsified-If: a set built from the ranges (5, 9), (0, 4) and (7, 12), in that order, reports Ranges other than the single range 0..12, or a read of a set writes a field of it
+// Hairs-Human:        PENDING
 internal sealed class CodePointSet
 {
     /// <summary>The highest Unicode code point; the universe complements are taken against.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=F4973F
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=F4973F
+    // Hairs-Human:        PENDING
     public const int MaxCodePoint = 0x10FFFF;
 
     /// <summary>The ranges, sorted by their low ends, disjoint and never adjacent.</summary>
     private readonly ImmutableArray<(int Lo, int Hi)> _ranges;
 
     /// <summary>The empty set.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=1; Fingerprint=EC905E
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=None; Resources=1; Fingerprint=EC905E
+    // Hairs-Human:        PENDING
     public CodePointSet() => _ranges = [];
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=1A62E0
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=None; Resources=0; Fingerprint=1A62E0
+    // Hairs-Human:        PENDING
     private CodePointSet(ImmutableArray<(int Lo, int Hi)> normalized) => _ranges = normalized;
 
     /// <summary>The empty set.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=None; Resources=1; Fingerprint=C7C053
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=None; Resources=1; Fingerprint=C7C053
+    // Hairs-Human:        PENDING
     public static CodePointSet Empty() => new();
 
     /// <summary>The code points <paramref name="lo"/> to <paramref name="hi"/>, both included.</summary>
     /// <exception cref="ArgumentException"><paramref name="lo"/> is greater than <paramref name="hi"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=106FB1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=106FB1
+    // Hairs-Human:        PENDING
     public static CodePointSet Of(int lo, int hi)
     {
         if (lo > hi)
@@ -93,8 +93,8 @@ internal sealed class CodePointSet
     /// </remarks>
     /// <param name="ranges">The ranges, each inclusive; the list is copied.</param>
     /// <param name="charge">The compilation that builds the set, charged for its normalization (<see cref="CompileSite.Normalize"/>), or null.</param>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=CE4F5B
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=CE4F5B
+    // Hairs-Human:        PENDING
     internal static CodePointSet FromRanges(List<(int Lo, int Hi)> ranges, CompileCharge? charge = null)
     {
         foreach (var (lo, hi) in ranges)
@@ -117,9 +117,9 @@ internal sealed class CodePointSet
     /// do, are merged in one pass with no sort. A compilation is charged one unit per range for the pass and, when the
     /// ranges are out of order, ⌊log₂ n⌋ more per range for the sort, before each (<see cref="CompileSite.Normalize"/>).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=DEA094
-    // Broiler-Falsified-If: ranges that overlap or touch, such as (0, 4) and (5, 9), or a range ending at int.MaxValue followed by another, are left as two entries instead of being merged, or ranges out of order are merged without being sorted
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=DEA094
+    // Hairs-Falsified-If: ranges that overlap or touch, such as (0, 4) and (5, 9), or a range ending at int.MaxValue followed by another, are left as two entries instead of being merged, or ranges out of order are merged without being sorted
+    // Hairs-Human:        PENDING
     private static CodePointSet Normalized((int Lo, int Hi)[] ranges, CompileCharge? charge)
     {
         if (ranges.Length == 0)
@@ -156,23 +156,23 @@ internal sealed class CodePointSet
     }
 
     /// <summary>The ranges, sorted, disjoint and never adjacent. The list cannot be changed.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=2982CA
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Low; Resources=1; Fingerprint=2982CA
+    // Hairs-Human:        PENDING
     public IReadOnlyList<(int Lo, int Hi)> Ranges => _ranges;
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=96A816
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=96A816
+    // Hairs-Human:        PENDING
     public bool IsEmpty => _ranges.IsEmpty;
 
     /// <summary>How many ranges the set holds: the units an operation of a compilation charges for reading it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=995345
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=995345
+    // Hairs-Human:        PENDING
     internal int RangeCount => _ranges.Length;
 
     /// <summary>How many code points the set holds, read from its ranges in one pass.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=1E8DEA
-    // Broiler-Falsified-If: the count of Of(0, 0x10FFFF) is not 1,114,112, or of the empty set not zero
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=1E8DEA
+    // Hairs-Falsified-If: the count of Of(0, 0x10FFFF) is not 1,114,112, or of the empty set not zero
+    // Hairs-Human:        PENDING
     internal long CodePointCount()
     {
         var count = 0L;
@@ -182,13 +182,13 @@ internal sealed class CodePointSet
     }
 
     /// <summary>This set itself: a set never changes, so it is its own copy.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=ADF644
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=ADF644
+    // Hairs-Human:        PENDING
     public CodePointSet Clone() => this;
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=3F5B91
-    // Broiler-Falsified-If: a code point equal to a range's Lo or Hi, such as 0x10FFFF tested against Of(0, 0x10FFFF), is reported absent
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=3F5B91
+    // Hairs-Falsified-If: a code point equal to a range's Lo or Hi, such as 0x10FFFF tested against Of(0, 0x10FFFF), is reported absent
+    // Hairs-Human:        PENDING
     public bool Contains(int codePoint)
     {
         var lo = 0;
@@ -211,8 +211,8 @@ internal sealed class CodePointSet
     /// <see cref="Complement()"/>, charged to <paramref name="charge"/> one unit per range and one more before it is
     /// taken (<see cref="CompileSite.Complement"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=5AD5F0
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=5AD5F0
+    // Hairs-Human:        PENDING
     internal CodePointSet Complement(CompileCharge charge)
     {
         charge.Charge(CompileSite.Complement, (long)_ranges.Length + 1);
@@ -220,9 +220,9 @@ internal sealed class CodePointSet
     }
 
     /// <summary>Every code point in <c>0..<see cref="MaxCodePoint"/></c> that is not in this set.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=D4EA19
-    // Broiler-Falsified-If: complementing a set such as {0x41..0x5A, 0x10FFFF} twice does not give back exactly its original ranges
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=D4EA19
+    // Hairs-Falsified-If: complementing a set such as {0x41..0x5A, 0x10FFFF} twice does not give back exactly its original ranges
+    // Hairs-Human:        PENDING
     public CodePointSet Complement()
     {
         var result = ImmutableArray.CreateBuilder<(int Lo, int Hi)>(_ranges.Length + 1);
@@ -247,8 +247,8 @@ internal sealed class CodePointSet
     /// <see cref="Union(CodePointSet)"/>, charged to <paramref name="charge"/> one unit per range of each operand before it
     /// is taken (<see cref="CompileSite.Union"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=5ED2DC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=5ED2DC
+    // Hairs-Human:        PENDING
     internal CodePointSet Union(CodePointSet other, CompileCharge charge)
     {
         charge.Charge(CompileSite.Union, (long)_ranges.Length + other._ranges.Length);
@@ -259,9 +259,9 @@ internal sealed class CodePointSet
     /// Every code point of this set or <paramref name="other"/>: one pass over the two sorted range lists, so adding
     /// a range to a set of <c>n</c> ranges costs <c>O(n)</c>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=C29A01
-    // Broiler-Falsified-If: Union of {0..4} and {5..9} gives two ranges instead of 0..9, or Union of {0..2, 8..9} and {3..7} gives anything other than 0..9
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=C29A01
+    // Hairs-Falsified-If: Union of {0..4} and {5..9} gives two ranges instead of 0..9, or Union of {0..2, 8..9} and {3..7} gives anything other than 0..9
+    // Hairs-Human:        PENDING
     public CodePointSet Union(CodePointSet other)
     {
         if (other._ranges.IsEmpty)
@@ -298,17 +298,17 @@ internal sealed class CodePointSet
     /// <see cref="Intersect(CodePointSet)"/>, charged to <paramref name="charge"/> one unit per range of each operand
     /// before it is taken (<see cref="CompileSite.Intersection"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=0FE6CB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=0FE6CB
+    // Hairs-Human:        PENDING
     internal CodePointSet Intersect(CodePointSet other, CompileCharge charge)
     {
         charge.Charge(CompileSite.Intersection, (long)_ranges.Length + other._ranges.Length);
         return Intersect(other);
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=AAC14E
-    // Broiler-Falsified-If: intersecting {0..10, 20..30} with {5..25} gives anything other than the two ranges 5..10 and 20..25
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=AAC14E
+    // Hairs-Falsified-If: intersecting {0..10, 20..30} with {5..25} gives anything other than the two ranges 5..10 and 20..25
+    // Hairs-Human:        PENDING
     public CodePointSet Intersect(CodePointSet other)
     {
         var result = ImmutableArray.CreateBuilder<(int Lo, int Hi)>();
@@ -330,17 +330,17 @@ internal sealed class CodePointSet
         return new CodePointSet(result.DrainToImmutable());
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=23BD23
-    // Broiler-Falsified-If: subtracting {0x4D} from {0x41..0x5A} gives anything other than the two ranges 0x41..0x4C and 0x4E..0x5A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=4; Fingerprint=23BD23
+    // Hairs-Falsified-If: subtracting {0x4D} from {0x41..0x5A} gives anything other than the two ranges 0x41..0x4C and 0x4E..0x5A
+    // Hairs-Human:        PENDING
     public CodePointSet Subtract(CodePointSet other) => Intersect(other.Complement());
 
     /// <summary>
     /// <see cref="Subtract(CodePointSet)"/>, charged to <paramref name="charge"/> one unit per range of each operand and
     /// one more, for the complement it takes on the way, before it is taken (<see cref="CompileSite.Difference"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=973189
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=973189
+    // Hairs-Human:        PENDING
     internal CodePointSet Subtract(CodePointSet other, CompileCharge charge)
     {
         charge.Charge(CompileSite.Difference, (long)_ranges.Length + other._ranges.Length + 1);
@@ -354,9 +354,9 @@ internal sealed class CodePointSet
     /// what <c>\p{Lowercase_Letter}</c> matches; under <c>ui</c>, whose case closure runs after the
     /// complement, it matches only the lowercase letters with no case partner, such as U+0138.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=00D103
-    // Broiler-Falsified-If: mapping Of(0x41, 0x5A) through simple case folding returns anything other than the single range 0x61..0x7A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=6; Fingerprint=00D103
+    // Hairs-Falsified-If: mapping Of(0x41, 0x5A) through simple case folding returns anything other than the single range 0x61..0x7A
+    // Hairs-Human:        PENDING
     public CodePointSet Map(Func<int, int> fold)
     {
         var result = new Builder();
@@ -376,9 +376,9 @@ internal sealed class CodePointSet
     /// sets one after another to a growing set would read the first sets' ranges <c>k</c> times. A builder is the
     /// parser's own, one per set it builds, and is never shared.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=8D1EAA
-    // Broiler-Falsified-If: a set built from members added out of order, such as 9, 0 and then the range 1..8, is anything other than the single range 0..9, or a builder of k sets reads a range more than ceil(log2(k + 1)) times
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=8D1EAA
+    // Hairs-Falsified-If: a set built from members added out of order, such as 9, 0 and then the range 1..8, is anything other than the single range 0..9, or a builder of k sets reads a range more than ceil(log2(k + 1)) times
+    // Hairs-Human:        PENDING
     internal sealed class Builder
     {
         private readonly List<(int Lo, int Hi)> _pending = [];
@@ -387,18 +387,18 @@ internal sealed class CodePointSet
         private readonly List<CodePointSet> _sets = [];
 
         /// <summary>Adds one code point.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=129D7E
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=129D7E
+        // Hairs-Human:        PENDING
         internal void Add(int codePoint) => _pending.Add((codePoint, codePoint));
 
         /// <summary>Adds the code points <paramref name="lo"/> to <paramref name="hi"/>; the caller has ordered them.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=BD880A
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=BD880A
+        // Hairs-Human:        PENDING
         internal void AddRange(int lo, int hi) => _pending.Add((lo, hi));
 
         /// <summary>Adds every code point of <paramref name="set"/>, which is kept whole until <see cref="ToSet"/> unions it.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=2; Fingerprint=B16B52
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=2; Fingerprint=B16B52
+        // Hairs-Human:        PENDING
         internal void AddAll(CodePointSet set)
         {
             if (!set.IsEmpty)
@@ -410,9 +410,9 @@ internal sealed class CodePointSet
         /// and merge of the appended ranges (<see cref="CompileSite.Normalize"/>) and for each union
         /// (<see cref="CompileSite.Union"/>), before each.
         /// </summary>
-        // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=2686FA
-        // Broiler-Falsified-If: the set holds a code point no member added holds, or lacks one a member added holds
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=2686FA
+        // Hairs-Falsified-If: the set holds a code point no member added holds, or lacks one a member added holds
+        // Hairs-Human:        PENDING
         internal CodePointSet ToSet(CompileCharge? charge = null)
         {
             var level = new List<CodePointSet>(_sets.Count + 1);

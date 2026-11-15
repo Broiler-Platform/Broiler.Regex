@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   15
 // Annotated:        15/15
 // Exempt:           6
@@ -58,9 +58,9 @@ namespace Broiler.Regex;
 /// tables it embeds, and a test the owner's <c>Broiler.Unicode.Tables</c>.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=1B83F8
-// Broiler-Falsified-If: two threads making their first Match calls at the same time on one instance built from [zab] both normalize the class's out-of-order range list in place, and one throws or misses a match that a single thread finds
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=8; Fingerprint=1B83F8
+// Hairs-Falsified-If: two threads making their first Match calls at the same time on one instance built from [zab] both normalize the class's out-of-order range list in place, and one throws or misses a match that a single thread finds
+// Hairs-Human:        PENDING
 public sealed class BroilerRegex
 {
     /// <summary>
@@ -112,9 +112,9 @@ public sealed class BroilerRegex
     /// which leaves a caller built against this one passing a limit that is still valid.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=953223
-    // Broiler-Falsified-If: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=953223
+    // Hairs-Falsified-If: on linux-x64, a pattern nested to this depth, parsed and compiled on a thread of a 1 MiB stack under the JIT or Native AOT, ends the process with a stack overflow, or a pattern of a shape NestingMaximumTests.MatchedShapes lists, at this depth, does so when it is matched
+    // Hairs-Human:        PENDING
     public const int MaximumNestingLimit = 512;
 
     /// <summary>The new backend's program, which every member runs since task 2.4c.</summary>
@@ -133,8 +133,8 @@ public sealed class BroilerRegex
     /// How many slots the offset entry writes: two for each group, group 0, the whole match, first, so
     /// 2 × (<see cref="CaptureCount"/> + 1).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C9AE6
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C9AE6
+    // Hairs-Human:        PENDING
     public int SlotCount => _program.SlotCount;
 
     /// <summary>
@@ -174,9 +174,9 @@ public sealed class BroilerRegex
     /// or lack a table the algorithms read.
     /// </exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=14510D
-    // Broiler-Falsified-If: a flags string with a repeated letter such as "gg" produces an instance instead of throwing an ArgumentException with the validate entry's message
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=14510D
+    // Hairs-Falsified-If: a flags string with a repeated letter such as "gg" produces an instance instead of throwing an ArgumentException with the validate entry's message
+    // Hairs-Human:        PENDING
     public BroilerRegex(string pattern, string? flags, IUnicodeTables tables)
         : this(pattern, RegexFlagsParser.Parse(flags), tables)
     {
@@ -214,9 +214,9 @@ public sealed class BroilerRegex
     /// </exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=1F38E3
-    // Broiler-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing an ArgumentException
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=1F38E3
+    // Hairs-Falsified-If: a pattern of 1,000,000 nested opening parentheses ends the process with a stack overflow instead of throwing an ArgumentException
+    // Hairs-Human:        PENDING
     public BroilerRegex(string pattern, RegexFlags flags, IUnicodeTables tables)
         : this(pattern ?? "", Text.RegexFlagsText.CheckDefined(flags), new RegexUnicode(tables), new RegexNesting(MaximumNestingLimit), refusesAsSyntax: true)
     {
@@ -229,9 +229,9 @@ public sealed class BroilerRegex
     /// <see cref="NestingLimitExceeded"/> that <see cref="Compile"/> answers as a status; a compilation past the account's
     /// budget ends with the <see cref="CompileBudgetSpent"/> that <see cref="Compile"/> answers as a status.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=310E62
-    // Broiler-Falsified-If: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=7; Fingerprint=310E62
+    // Hairs-Falsified-If: a pattern the parser accepts under a limit is compiled under another, so the compiler's recursion is bounded by neither
+    // Hairs-Human:        PENDING
     private BroilerRegex(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool refusesAsSyntax)
     {
         Pattern = pattern;
@@ -331,9 +331,9 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, <paramref name="compileBudget"/> is zero, or <paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=3C068C
-    // Broiler-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decisions D6 to D9; IP=Low; Security=High; Resources=7; Fingerprint=3C068C
+    // Hairs-Falsified-If: with a nesting limit of 512, a pattern of 512 nested groups or 512 nested v-mode classes answers Success, one of 511 answers LimitExceeded, a limit above MaximumNestingLimit is accepted, a pattern of 1,000,000 nested groups ends the process, a class of fifty \p{L} under v compiles within a budget of 300 units, the meter is charged after the work it pays for, or a syntax error such as "a)" is thrown rather than answered SyntaxError with the validate entry's diagnostic
+    // Hairs-Human:        PENDING
     public static RegexStatus Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, ulong? compileBudget,
         RegexWorkCharge? meter, out BroilerRegex? regex, out RegexLimit limit, out RegexDiagnostic diagnostic)
     {
@@ -424,9 +424,9 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>, or <paramref name="flags"/> holds a bit no member of <see cref="RegexFlags"/> defines.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D9 and D18; IP=None; Security=High; Resources=3; Fingerprint=C0FA71
-    // Broiler-Falsified-If: under u, \k<b>(?<a>x) answers Success, a pattern Compile refuses with a syntax error is answered otherwise or at another position, one Compile compiles is refused, 512 nested groups under a limit of 512 answer other than LimitExceeded naming Nesting, or validating charges a unit of expansion
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decisions D9 and D18; IP=None; Security=High; Resources=3; Fingerprint=C0FA71
+    // Hairs-Falsified-If: under u, \k<b>(?<a>x) answers Success, a pattern Compile refuses with a syntax error is answered otherwise or at another position, one Compile compiles is refused, 512 nested groups under a limit of 512 answer other than LimitExceeded naming Nesting, or validating charges a unit of expansion
+    // Hairs-Human:        PENDING
     public static RegexStatus Validate(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit,
         out RegexDiagnostic diagnostic, out RegexLimit limit)
     {
@@ -457,9 +457,9 @@ public sealed class BroilerRegex
     /// <exception cref="System.ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral; IP=None; Security=High; Resources=3; Fingerprint=702602
-    // Broiler-Falsified-If: the flags "gg" answer other than DuplicateFlag at 1, "uv" other than UnicodeWithUnicodeSets at 1, or a flags refusal is answered after a refusal of the pattern
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s13.2.7.2 IsValidRegularExpressionLiteral; IP=None; Security=High; Resources=3; Fingerprint=702602
+    // Hairs-Falsified-If: the flags "gg" answer other than DuplicateFlag at 1, "uv" other than UnicodeWithUnicodeSets at 1, or a flags refusal is answered after a refusal of the pattern
+    // Hairs-Human:        PENDING
     public static RegexStatus Validate(string pattern, string? flags, IUnicodeTables tables, int nestingLimit,
         out RegexDiagnostic diagnostic, out RegexLimit limit)
     {
@@ -480,9 +480,9 @@ public sealed class BroilerRegex
     /// The validate entry over one compilation's view of the provider, <paramref name="data"/>, whose account a test reads to
     /// see that nothing but the pattern's read is charged (no expansion); the arguments are checked.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=D3A4DE
-    // Broiler-Falsified-If: a refusal escapes as an exception, or the nesting refusal is answered without its diagnostic
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=D3A4DE
+    // Hairs-Falsified-If: a refusal escapes as an exception, or the nesting refusal is answered without its diagnostic
+    // Hairs-Human:        PENDING
     internal static RegexStatus Validate(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
         out RegexDiagnostic diagnostic, out RegexLimit limit)
     {
@@ -562,9 +562,9 @@ public sealed class BroilerRegex
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=DF6AB2
-    // Broiler-Falsified-If: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 or 16,384 groups allocates once the pool is warm
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=DF6AB2
+    // Hairs-Falsified-If: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 or 16,384 groups allocates once the pool is warm
+    // Hairs-Human:        PENDING
     public RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots, RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit) =>
         _program.Match(subject, start, anchored, slots, meter, ceilings, out limit, out _);
 
@@ -594,9 +594,9 @@ public sealed class BroilerRegex
     /// The offset entry takes the start as given and leaves that step to its caller.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=Low; Security=High; Resources=8; Fingerprint=CCA438
-    // Broiler-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, under u /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, or a match that reaches a ceiling answers RegexMatch.Empty or throws
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=Low; Security=High; Resources=8; Fingerprint=CCA438
+    // Hairs-Falsified-If: Match(input, -1) does not give the result that Match(input, 0) gives, under u /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, or a match that reaches a ceiling answers RegexMatch.Empty or throws
+    // Hairs-Human:        PENDING
     public RegexMatch Match(string input, int start = 0)
     {
         if (start < 0) start = 0;
@@ -617,9 +617,9 @@ public sealed class BroilerRegex
     /// <see cref="Match(string, int)"/> and the offset entry.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The match reached the engines' frame or trail ceiling.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=494A37
-    // Broiler-Falsified-If: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start, or returns false for a match that reached a ceiling
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=8; Fingerprint=494A37
+    // Hairs-Falsified-If: IsMatch(input, start) returns a value other than Match(input, start).Success for the same input and start, or returns false for a match that reached a ceiling
+    // Hairs-Human:        PENDING
     public bool IsMatch(string input, int start = 0)
     {
         var match = Match(input, start);
@@ -645,9 +645,9 @@ public sealed class BroilerRegex
     /// so a match another pattern found steps over a pair as this one's flags say.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="match"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex; IP=None; Security=High; Resources=8; Fingerprint=770A62
-    // Broiler-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling answers other than itself, or the matches it walks differ from the global iteration's
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.6.9 and s22.2.7.3 AdvanceStringIndex; IP=None; Security=High; Resources=8; Fingerprint=770A62
+    // Hairs-Falsified-If: after an empty match just before a surrogate pair in u or v mode, the next match starts at the pair's low surrogate, a match that reached a ceiling answers other than itself, or the matches it walks differ from the global iteration's
+    // Hairs-Human:        PENDING
     public RegexMatch NextMatch(RegexMatch match)
     {
         ArgumentNullException.ThrowIfNull(match);
@@ -668,8 +668,8 @@ public sealed class BroilerRegex
     }
 
     /// <summary>The exception <see cref="IsMatch"/> throws for a match that reached <paramref name="limit"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=AF14E6
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=AF14E6
+    // Hairs-Human:        PENDING
     private static InvalidOperationException Exhausted(RegexLimit limit) =>
         new("The match reached the engines' " + (limit == RegexLimit.Frames ? "frame" : "trail") + " ceiling (RegexLimit." + limit
             + "); Match(string, int) answers it as RegexMatch.Limit, and the offset entry as a status.");
@@ -680,9 +680,9 @@ public sealed class BroilerRegex
     /// reports <paramref name="start"/> as its index (row M4), and an empty one the pair's start (decision D41,
     /// <see cref="Match(string, int)"/>'s remarks); null for no match or a ceiling, which <paramref name="limit"/> names.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=DE5CAD
-    // Broiler-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 and JSD-0081 decision D41; IP=None; Security=High; Resources=8; Fingerprint=DE5CAD
+    // Hairs-Falsified-If: under u, /[\s\S]*\u{1F600}/ from index 1 of "\u{1F600}ba" answers other than a match at 1 ending at 2, /(?:)/u from index 1 of "\u{1F600}" answers other than an empty match at 0, a sticky instance finds a match after its start, or a ceiling reached answers null with no limit
+    // Hairs-Human:        PENDING
     private RegexMatch? Run(RegexProgram program, string input, int start, out RegexLimit limit)
     {
         var from = start;

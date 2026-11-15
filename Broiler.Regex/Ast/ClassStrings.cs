@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   9
 // Annotated:        9/9
 // Exempt:           3
@@ -42,17 +42,17 @@ namespace Broiler.Regex.Ast;
 /// one or adds to its own, which no other value holds.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=High; Resources=3; Fingerprint=BAF455
-// Broiler-Falsified-If: a union of two operands keeps a string twice or loses one, an intersection keeps a string one operand lacks, a difference keeps a string of its second operand, or adding or finding a string costs comparisons that grow with the strings already held
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=High; Resources=3; Fingerprint=BAF455
+// Hairs-Falsified-If: a union of two operands keeps a string twice or loses one, an intersection keeps a string one operand lacks, a difference keeps a string of its second operand, or adding or finding a string costs comparisons that grow with the strings already held
+// Hairs-Human:        PENDING
 internal sealed class ClassStrings
 {
     private readonly List<string> _order = [];
     private readonly HashSet<string> _members;
 
     /// <summary>An empty set whose strings are compared by code unit, as the parser's always are.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=770416
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=770416
+    // Hairs-Human:        PENDING
     internal ClassStrings()
         : this(StringComparer.Ordinal)
     {
@@ -63,19 +63,19 @@ internal sealed class ClassStrings
     /// differences answer: a test's comparer that counts its calls counts every comparison the set makes, so it bounds the
     /// work and not only the charge.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E372E1
-    // Broiler-Falsified-If: a set made with a comparer that equates "ab" and "AB" adds both, or answers that it does not hold "AB" once it holds "ab"
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E372E1
+    // Hairs-Falsified-If: a set made with a comparer that equates "ab" and "AB" adds both, or answers that it does not hold "AB" once it holds "ab"
+    // Hairs-Human:        PENDING
     internal ClassStrings(IEqualityComparer<string> comparer) => _members = new HashSet<string>(comparer);
 
     /// <summary>How many strings are held.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1630F6
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1630F6
+    // Hairs-Human:        PENDING
     internal int Count => _order.Count;
 
     /// <summary>The strings, in the order they were first added. The list is the instance's own; its reader does not change it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B08DFC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B08DFC
+    // Hairs-Human:        PENDING
     internal IReadOnlyList<string> InOrder => _order;
 
     /// <summary>
@@ -83,9 +83,9 @@ internal sealed class ClassStrings
     /// at least one, before it is hashed.
     /// </summary>
     /// <returns>Whether it was added.</returns>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=9B842B
-    // Broiler-Falsified-If: a string already held is added again, or one not held is not added
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=9B842B
+    // Hairs-Falsified-If: a string already held is added again, or one not held is not added
+    // Hairs-Human:        PENDING
     internal bool Add(string text, CompileCharge charge)
     {
         charge.Charge(CompileSite.Strings, CompileCharge.StringUnits(text));
@@ -96,8 +96,8 @@ internal sealed class ClassStrings
     }
 
     /// <summary>Whether <paramref name="text"/> is held, charging <paramref name="charge"/> the string's code units, at least one, before it is hashed.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=6D5B97
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=1; Fingerprint=6D5B97
+    // Hairs-Human:        PENDING
     internal bool Contains(string text, CompileCharge charge)
     {
         charge.Charge(CompileSite.Strings, CompileCharge.StringUnits(text));
@@ -105,9 +105,9 @@ internal sealed class ClassStrings
     }
 
     /// <summary>Adds every string of <paramref name="other"/> this set does not hold, in <paramref name="other"/>'s order: the strings of a union.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=775DFF
-    // Broiler-Falsified-If: the union of {ab, cd} and {cd, ef} is anything but ab, cd, ef in that order
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=775DFF
+    // Hairs-Falsified-If: the union of {ab, cd} and {cd, ef} is anything but ab, cd, ef in that order
+    // Hairs-Human:        PENDING
     internal void UnionWith(ClassStrings other, CompileCharge charge)
     {
         foreach (var text in other._order)
@@ -115,9 +115,9 @@ internal sealed class ClassStrings
     }
 
     /// <summary>The strings of this set that <paramref name="other"/> holds, in this set's order: the strings of an intersection.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=421C32
-    // Broiler-Falsified-If: the intersection of {ab, cd} and {cd, ef} is anything but cd
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=421C32
+    // Hairs-Falsified-If: the intersection of {ab, cd} and {cd, ef} is anything but cd
+    // Hairs-Human:        PENDING
     internal ClassStrings Intersect(ClassStrings other, CompileCharge charge)
     {
         var result = new ClassStrings(_members.Comparer);
@@ -131,9 +131,9 @@ internal sealed class ClassStrings
     }
 
     /// <summary>The strings of this set that <paramref name="other"/> does not hold, in this set's order: the strings of a difference.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=50C8B0
-    // Broiler-Falsified-If: the difference of {ab, cd} and {cd, ef} is anything but ab
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=None; Security=Medium; Resources=2; Fingerprint=50C8B0
+    // Hairs-Falsified-If: the difference of {ab, cd} and {cd, ef} is anything but ab
+    // Hairs-Human:        PENDING
     internal ClassStrings Except(ClassStrings other, CompileCharge charge)
     {
         var result = new ClassStrings(_members.Comparer);

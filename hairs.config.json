@@ -13,7 +13,9 @@
     "license": "Apache-2.0"
   },
   "artefacts": {
-    "humanReview": "HUMAN_REVIEW.units.md"
+    "report": "CODE-ASSURANCE.md",
+    "humanReview": "HUMAN_REVIEW.units.md",
+    "manifest": "assurance.manifest.json"
   },
-  "regenerateCommand": "dotnet run --project Broiler.Code/src/Broiler.Code.Review.Cli -c Release -- assurance generate --root Broiler.RegEx"
+  "regenerateCommand": "dotnet hairs assurance generate --root ."
 }
