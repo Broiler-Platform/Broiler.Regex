@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   10
 // Annotated:        10/10
 // Exempt:           11
@@ -40,9 +40,9 @@ namespace Broiler.Regex.Engine;
 /// into pairs <c>[low₀, high₀, low₁, high₁, …]</c>, so that one binary search tests a character.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decisions D5 and D8; IP=None; Security=High; Resources=6; Fingerprint=E22681
-// Broiler-Falsified-If: two threads matching one program at the same time answer differently from one thread matching it twice, or a match call writes a field of the program
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decisions D5 and D8; IP=None; Security=High; Resources=6; Fingerprint=E22681
+// Hairs-Falsified-If: two threads matching one program at the same time answer differently from one thread matching it twice, or a match call writes a field of the program
+// Hairs-Human:        PENDING
 internal sealed class RegexProgram
 {
     /// <summary>The instructions, the first at address zero.</summary>
@@ -73,8 +73,8 @@ internal sealed class RegexProgram
     /// character's case orbit; null for a program with no such instruction.
     /// </param>
     /// <param name="firstTest">The address of the instruction the start-position scan tests positions with, or -1 for none (<see cref="FirstTest"/>).</param>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=B3022A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=B3022A
+    // Hairs-Human:        PENDING
     internal RegexProgram(RegexInstruction[] code, int[][] classes, int[] referenced, RegexStrings[] strings, int captureCount, int registerCount, bool unicode, UnicodeCaseFolding? folding,
         int firstTest = -1)
     {
@@ -124,8 +124,8 @@ internal sealed class RegexProgram
     internal int FirstTest { get; }
 
     /// <summary>How many slots a match writes: two per group, group 0 included.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=577663
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=577663
+    // Hairs-Human:        PENDING
     internal int SlotCount => 2 * (CaptureCount + 1);
 
     /// <summary>The registers a match uses: the capture registers, then the quantifiers' loop registers.</summary>
@@ -135,28 +135,28 @@ internal sealed class RegexProgram
     internal bool Unicode { get; }
 
     /// <summary>The instructions, for the machine and for a test that reads the lowering.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4B63A2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4B63A2
+    // Hairs-Human:        PENDING
     internal ReadOnlySpan<RegexInstruction> Code => _code;
 
     /// <summary>The <paramref name="count"/> group numbers a back-reference reads, from entry <paramref name="first"/> of the program's list.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E32DD4
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E32DD4
+    // Hairs-Human:        PENDING
     internal ReadOnlySpan<int> ReferencedGroups(int first, int count) => _referenced.AsSpan(first, count);
 
     /// <summary>The ranges of class <paramref name="index"/>, as pairs of inclusive bounds.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=150121
+    // Hairs-Human:        PENDING
     internal ReadOnlySpan<int> ClassRanges(int index) => _classes[index];
 
     /// <summary>The table of strings <paramref name="index"/>, which a <see cref="RegexOp.StringClass"/> names.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=516A25
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=516A25
+    // Hairs-Human:        PENDING
     internal RegexStrings Strings(int index) => _strings[index];
 
     /// <summary>How many tables of strings the program holds: one for each distinct class of strings, however often it occurs.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1962ED
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1962ED
+    // Hairs-Human:        PENDING
     internal int StringTableCount => _strings.Length;
 
     /// <summary>
@@ -197,9 +197,9 @@ internal sealed class RegexProgram
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative or past the subject's end.</exception>
     /// <exception cref="ArgumentException"><paramref name="slots"/> holds fewer than <see cref="SlotCount"/> slots, or <paramref name="ceilings"/> is the default value.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=775D0C
-    // Broiler-Falsified-If: /b/ anchored at 0 of "ab" answers Match, /a(b)?/ on "a" writes a slot other than -1 for group 1, a call that reaches a ceiling answers Match or NoMatch, or a call that does not match leaves a slot other than -1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=8; Fingerprint=775D0C
+    // Hairs-Falsified-If: /b/ anchored at 0 of "ab" answers Match, /a(b)?/ on "a" writes a slot other than -1 for group 1, a call that reaches a ceiling answers Match or NoMatch, or a call that does not match leaves a slot other than -1
+    // Hairs-Human:        PENDING
     internal RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots,
         RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit, out ulong units)
     {
@@ -240,9 +240,9 @@ internal sealed class RegexProgram
     /// a test is one binary search whose cost grows with the logarithm of the class's ranges. A class of one range costs
     /// what any instruction costs, one unit; <c>\p{L}</c>, 684 ranges at UCD 17.0.0, costs ten.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=680B3B
-    // Broiler-Falsified-If: the weight of a class of one range is not zero, of two or three ranges not one, or of 684 ranges not nine
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=680B3B
+    // Hairs-Falsified-If: the weight of a class of one range is not zero, of two or three ranges not one, or of 684 ranges not nine
+    // Hairs-Human:        PENDING
     internal static int ClassWeight(int rangeCount) => rangeCount <= 1 ? 0 : BitOperations.Log2((uint)rangeCount);
 
     /// <summary>
@@ -261,8 +261,8 @@ internal sealed class RegexProgram
     /// four code points at UCD 17.0.0. The lookups into the Unicode owner's folding tables that find a Canonicalize or an
     /// orbit are not weighed: they are bounded, whatever the pattern and the subject, as the dispatch is.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=DF8A5C
-    // Broiler-Falsified-If: a class of 684 ranges costs other than ten units searched once or thirty-seven searched four times, or a class of one range costs other than one unit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=DF8A5C
+    // Hairs-Falsified-If: a class of 684 ranges costs other than ten units searched once or thirty-seven searched four times, or a class of one range costs other than one unit
+    // Hairs-Human:        PENDING
     internal static int ClassCost(int rangeCount, int searches) => 1 + (searches * ClassWeight(rangeCount));
 }

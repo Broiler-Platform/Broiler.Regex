@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   1
 // Annotated:        1/1
 // Exempt:           0
@@ -40,6 +40,6 @@ namespace Broiler.Regex;
 /// pattern sees each operation's own blocks.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Medium; Resources=0; Fingerprint=87B1DC
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Medium; Resources=0; Fingerprint=87B1DC
+// Hairs-Human:        PENDING
 public delegate void RegexWorkCharge(ulong units);

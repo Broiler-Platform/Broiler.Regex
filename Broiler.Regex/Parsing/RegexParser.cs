@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   72
 // Annotated:        72/72
 // Exempt:           24
@@ -36,9 +36,9 @@ namespace Broiler.Regex.Parsing;
 /// (convention 4), and it threw for a pattern it refuses (convention 3). <see cref="BroilerRegex.Compile"/> and the
 /// validate entry are the public parses, under the caller's nesting limit, each answering a status.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=52F8B3
-// Broiler-Falsified-If: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=52F8B3
+// Hairs-Falsified-If: a pattern of 50,000 nested '(' characters ends the process with a stack overflow instead of raising a catchable exception
+// Hairs-Human:        PENDING
 internal sealed class RegexParser
 {
     private readonly string _src;
@@ -94,18 +94,18 @@ internal sealed class RegexParser
     public RegexGroupNames GroupNames { get; private set; }
 
     /// <summary>Each name's groups, ascending, as the parse declares them.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1769F7
-    // Broiler-Falsified-If: two group names that differ only in case, such as (?<a>x)(?<A>y), are read as one name
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1769F7
+    // Hairs-Falsified-If: two group names that differ only in case, such as (?<a>x)(?<A>y), are read as one name
+    // Hairs-Human:        PENDING
     private readonly Dictionary<string, List<int>> _groupsByName = new(StringComparer.Ordinal);
 
     /// <summary>The names, in the order of their first groups.</summary>
     private readonly List<string> _namesInOrder = [];
 
     /// <summary>The position of the <c>(</c> of each name's latest group, which a later group of the name is checked against.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9FF007
-    // Broiler-Falsified-If: (?<a>x)|(?<A>y) is refused as a duplicate name because the names are compared without regard to case
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9FF007
+    // Hairs-Falsified-If: (?<a>x)|(?<A>y) is refused as a duplicate name because the names are compared without regard to case
+    // Hairs-Human:        PENDING
     private readonly Dictionary<string, int> _latestGroupOf = new(StringComparer.Ordinal);
 
     /// <summary>
@@ -136,16 +136,16 @@ internal sealed class RegexParser
     /// <param name="tables">The Unicode owner's tables (requirement R11), of the version the provider's algorithms read.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=0F5AC3
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=0F5AC3
+    // Hairs-Human:        PENDING
     public RegexParser(string pattern, RegexFlags flags, IUnicodeTables tables)
         : this(pattern, flags, new RegexUnicode(tables), new RegexNesting(BroilerRegex.MaximumNestingLimit))
     {
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=5DCA3B
-    // Broiler-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=1; Fingerprint=5DCA3B
+    // Hairs-Falsified-If: flags holding only v leave the parser outside Unicode mode, so /\u{41}/v is not read as the code point A
+    // Hairs-Human:        PENDING
     internal RegexParser(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, bool expand = true)
     {
         _expand = expand;
@@ -160,9 +160,9 @@ internal sealed class RegexParser
         GroupNames = new RegexGroupNames([], [], 0);
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2
-    // Broiler-Falsified-If: inside a (?-i:...) group it reports the pattern's own i flag rather than the innermost modifier's value
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=2052D2
+    // Hairs-Falsified-If: inside a (?-i:...) group it reports the pattern's own i flag rather than the innermost modifier's value
+    // Hairs-Human:        PENDING
     private bool IgnoreCase => _ignoreCase.Peek();
 
     /// <summary>
@@ -181,9 +181,9 @@ internal sealed class RegexParser
     /// <exception cref="RegexSyntaxException">The pattern is not a <c>Pattern</c> under the flags, breaks an early error, or nests deeper than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="System.ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=2D8D8D
-    // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=2D8D8D
+    // Hairs-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2
+    // Hairs-Human:        PENDING
     public static RegexNode Parse(string pattern, RegexFlags flags, IUnicodeTables tables, out int captureCount)
     {
         var data = new RegexUnicode(tables);
@@ -198,9 +198,9 @@ internal sealed class RegexParser
     }
 
     /// <exception cref="NestingLimitExceeded">The pattern nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=9F8916
-    // Broiler-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=9F8916
+    // Hairs-Falsified-If: the capture count it returns for /(a)(?<n>b)/ is not 2, or the name map does not send n to 2
+    // Hairs-Human:        PENDING
     internal static RegexNode Parse(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting,
         out int captureCount, out RegexGroupNames groupNames)
     {
@@ -219,15 +219,15 @@ internal sealed class RegexParser
     /// </summary>
     /// <exception cref="RegexSyntaxException">The pattern is not a <c>Pattern</c> under the flags, or breaks an early error.</exception>
     /// <exception cref="NestingLimitExceeded">The pattern nests deeper than <paramref name="nesting"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1 and JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=2909F1
-    // Broiler-Falsified-If: a pattern a compilation's parse refuses is accepted, one it accepts is refused, a refusal's code or position differs from the compilation's, or validating expands a property escape, folds a set or builds a class's set
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1 and JSD-0081 decision D18; IP=None; Security=High; Resources=3; Fingerprint=2909F1
+    // Hairs-Falsified-If: a pattern a compilation's parse refuses is accepted, one it accepts is refused, a refusal's code or position differs from the compilation's, or validating expands a property escape, folds a set or builds a class's set
+    // Hairs-Human:        PENDING
     internal static void Validate(string pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting)
         => new RegexParser(pattern, flags, data, nesting, expand: false).ParsePattern();
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=DA462E
-    // Broiler-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=DA462E
+    // Hairs-Falsified-If: a pattern with unconsumed trailing text such as 'a)' returns a tree instead of throwing RegexSyntaxException
+    // Hairs-Human:        PENDING
     private RegexNode ParsePattern()
     {
         // §22.2.3.4 ParsePattern, step 1: "If v is true and u is true", a SyntaxError, before the pattern is read. A flags
@@ -276,9 +276,9 @@ internal sealed class RegexParser
     /// It reads no name. A name is decoded, validated against the identifier classes and checked for a
     /// duplicate where the parse proper meets it, so a name spelled with an escape is compared decoded.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=83B68B
-    // Broiler-Falsified-If: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=83B68B
+    // Hairs-Falsified-If: a '(' inside a class, or after a backslash, is counted as a capturing group, so /[(]\1/u is accepted
+    // Hairs-Human:        PENDING
     private void PreScan()
     {
         // A `v`-mode class nests, so the depth — not a single in-class flag — is what says
@@ -315,9 +315,9 @@ internal sealed class RegexParser
 
     // ----- Disjunction / Alternative -----------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3B256C
-    // Broiler-Falsified-If: a pattern of 100,000 nested '(?:' groups exhausts the native stack in this recursion instead of raising a catchable exception
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3B256C
+    // Hairs-Falsified-If: a pattern of 100,000 nested '(?:' groups exhausts the native stack in this recursion instead of raising a catchable exception
+    // Hairs-Human:        PENDING
     private RegexNode ParseDisjunction()
     {
         // Disjunction :: Alternative | Disjunction: each Alternative after a '|' begins a new region of this Disjunction,
@@ -335,9 +335,9 @@ internal sealed class RegexParser
         return alternatives.Count == 1 ? alternatives[0] : new DisjunctionNode(alternatives);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=FBAC09
-    // Broiler-Falsified-If: a raw U+0000 character inside the pattern ends the alternative early, so the text after it is lost or rejected
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=FBAC09
+    // Hairs-Falsified-If: a raw U+0000 character inside the pattern ends the alternative early, so the text after it is lost or rejected
+    // Hairs-Human:        PENDING
     private RegexNode ParseAlternative()
     {
         var terms = new List<RegexNode>();
@@ -358,9 +358,9 @@ internal sealed class RegexParser
 
     // ----- Term (Atom + optional Quantifier, or an Assertion) ----------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=36E555
-    // Broiler-Falsified-If: a quantifier after a look-behind, ^, $, \b or \B, or after any assertion under u or v, is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=36E555
+    // Hairs-Falsified-If: a quantifier after a look-behind, ^, $, \b or \B, or after any assertion under u or v, is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private RegexNode ParseTerm()
     {
         var assertion = TryParseAssertion(out var quantifiable);
@@ -386,9 +386,9 @@ internal sealed class RegexParser
     /// Parses an assertion, reporting through <paramref name="quantifiable"/> whether
     /// Annex B admits a quantifier after it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3E08EC
-    // Broiler-Falsified-If: 100,000 nested '(?=' look-aheads exhaust the native stack instead of raising a catchable exception
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=3E08EC
+    // Hairs-Falsified-If: 100,000 nested '(?=' look-aheads exhaust the native stack instead of raising a catchable exception
+    // Hairs-Human:        PENDING
     private RegexNode? TryParseAssertion(out bool quantifiable)
     {
         quantifiable = false;
@@ -442,9 +442,9 @@ internal sealed class RegexParser
     /// one is an ordinary character, so `/^{a}/` is the anchor followed by literal text
     /// while `/^{2}/` is a quantified assertion — a syntax error.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=C002FB
-    // Broiler-Falsified-If: outside u and v, /^{2}/ is accepted or /^{a}/ is rejected, because the cursor is not restored after the brace probe
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=C002FB
+    // Hairs-Falsified-If: outside u and v, /^{2}/ is accepted or /^{a}/ is rejected, because the cursor is not restored after the brace probe
+    // Hairs-Human:        PENDING
     private bool HasQuantifier()
     {
         if (Peek() is '*' or '+' or '?')
@@ -458,9 +458,9 @@ internal sealed class RegexParser
         return found;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=EAFCF6
-    // Broiler-Falsified-If: a '{' that opens no valid quantifier, as in /a{,5}/ outside u, is consumed instead of being left as literal text
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=EAFCF6
+    // Hairs-Falsified-If: a '{' that opens no valid quantifier, as in /a{,5}/ outside u, is consumed instead of being left as literal text
+    // Hairs-Human:        PENDING
     private RegexNode TryApplyQuantifier(RegexNode atom)
     {
         var c = Peek();
@@ -488,9 +488,9 @@ internal sealed class RegexParser
         return new QuantifierNode(atom, min, max, greedy);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=AB419B
-    // Broiler-Falsified-If: {3,2} is accepted, or {2147483648} wraps to a negative count instead of saturating at int.MaxValue
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=AB419B
+    // Hairs-Falsified-If: {3,2} is accepted, or {2147483648} wraps to a negative count instead of saturating at int.MaxValue
+    // Hairs-Human:        PENDING
     private bool TryParseBraceQuantifier(out int min, out int max)
     {
         min = max = 0;
@@ -533,9 +533,9 @@ internal sealed class RegexParser
 
     // ----- Atom ---------------------------------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=ED3398
-    // Broiler-Falsified-If: under u or v an unescaped ']', '{' or '}' is returned as a literal character instead of raising a syntax error, or without them /{2}/ is read as the text {2}
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=ED3398
+    // Hairs-Falsified-If: under u or v an unescaped ']', '{' or '}' is returned as a literal character instead of raising a syntax error, or without them /{2}/ is read as the text {2}
+    // Hairs-Human:        PENDING
     private RegexNode ParseAtom()
     {
         // The cursor is on a character that is not '|' or ')': ParseAlternative, the only caller of ParseTerm, ends the
@@ -579,9 +579,9 @@ internal sealed class RegexParser
         return new CharNode(cp);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=429745
-    // Broiler-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=429745
+    // Hairs-Falsified-If: a capturing group is numbered after the groups nested inside it, so the outer group of /((a)b)/ is not capture 1
+    // Hairs-Human:        PENDING
     private RegexNode ParseGroup()
     {
         _pos++; // consume '('
@@ -645,9 +645,9 @@ internal sealed class RegexParser
         return new GroupNode(child, captureIndex, null);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1249C8
-    // Broiler-Falsified-If: the i flag added by (?i:...) is still in effect after its ')', so a following v-mode class is case-folded
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=1249C8
+    // Hairs-Falsified-If: the i flag added by (?i:...) is still in effect after its ')', so a following v-mode class is case-folded
+    // Hairs-Human:        PENDING
     private RegexNode ParseModifierGroup()
     {
         var open = _pos - 1;
@@ -676,9 +676,9 @@ internal sealed class RegexParser
         return new ModifierGroupNode(body, added, removed);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=1; Fingerprint=579B30
-    // Broiler-Falsified-If: a repeated modifier flag such as (?ii:a) is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=1; Fingerprint=579B30
+    // Hairs-Falsified-If: a repeated modifier flag such as (?ii:a) is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private RegexFlags ReadModifierFlags()
     {
         var flags = RegexFlags.None;
@@ -703,9 +703,9 @@ internal sealed class RegexParser
 
     // ----- AtomEscape (outside a character class) -----------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=0E6882
-    // Broiler-Falsified-If: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=0E6882
+    // Hairs-Falsified-If: under u a numeric escape above the capture count, such as \2 in /(a)\2/u, is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private RegexNode ParseAtomEscape()
     {
         _pos++; // consume '\'
@@ -774,9 +774,9 @@ internal sealed class RegexParser
 
     // ----- Character class [ ... ] -------------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=59BEF2
-    // Broiler-Falsified-If: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=59BEF2
+    // Hairs-Falsified-If: under u a range with a class-escape endpoint such as [\d-z] is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private CharSet ParseCharacterClass()
     {
         if (_unicodeSets)
@@ -851,9 +851,9 @@ internal sealed class RegexParser
     /// Reads one class atom. Adds a class escape (\d…) or a property escape to <paramref name="members"/>, marking the
     /// latter on <paramref name="set"/>, and returns their sentinel as a non-literal; returns a literal code point otherwise.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=415B7D
-    // Broiler-Falsified-If: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=4; Fingerprint=415B7D
+    // Hairs-Falsified-If: inside a class \b yields anything but U+0008, \- throws under u instead of yielding a hyphen, or without u [\c1] holds anything but U+0011
+    // Hairs-Human:        PENDING
     private int ReadClassAtom(CharSet set, CodePointSet.Builder members, out bool isLiteral)
     {
         var c = Peek();
@@ -919,8 +919,8 @@ internal sealed class RegexParser
     /// syntax it was read from, which the early errors of a negated class read (§22.2.1.1). That is not whether
     /// strings are left: <c>\q{ab}--\q{ab}</c> leaves none and may contain strings.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.8; IP=None; Security=Low; Resources=1; Fingerprint=096551
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.8; IP=None; Security=Low; Resources=1; Fingerprint=096551
+    // Hairs-Human:        PENDING
     private sealed class ClassSetValue
     {
         public CodePointSet Set = new();
@@ -931,9 +931,9 @@ internal sealed class RegexParser
     private bool _usedSetOperations;
     private bool _usedPropertyEscape;
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=8B4152
-    // Broiler-Falsified-If: UsesPropertyEscape stays set from an earlier class, so the second class of /[\p{L}][a]/v is flagged as using a property escape
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=8B4152
+    // Hairs-Falsified-If: UsesPropertyEscape stays set from an earlier class, so the second class of /[\p{L}][a]/v is flagged as using a property escape
+    // Hairs-Human:        PENDING
     private CharSet ParseClassSet()
     {
         _usedSetOperations = false;
@@ -951,9 +951,9 @@ internal sealed class RegexParser
     /// class takes it (<see cref="CompileSite.Strings"/>), and the class's order, longest first, as a sort of them
     /// (<see cref="CompileSite.StringOrder"/>), before each.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=40F78F
-    // Broiler-Falsified-If: a set built while i is in effect is not marked CaseFolded, so /[\q{ab}]/vi does not match 'AB'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=4; Fingerprint=40F78F
+    // Hairs-Falsified-If: a set built while i is in effect is not marked CaseFolded, so /[\q{ab}]/vi does not match 'AB'
+    // Hairs-Human:        PENDING
     private CharSet ToCharSet(ClassSetValue value)
     {
         var set = new CharSet { CaseFolded = IgnoreCase };
@@ -976,9 +976,9 @@ internal sealed class RegexParser
     /// §22.2.2.9 CharacterComplement: the complement is taken against AllCharacters, which
     /// under <c>v</c> with <c>i</c> holds only the code points that fold to themselves.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=22D2A9
-    // Broiler-Falsified-If: under v with i the complement it returns contains a code point that does not fold to itself, such as 'A'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=22D2A9
+    // Hairs-Falsified-If: under v with i the complement it returns contains a code point that does not fold to itself, such as 'A'
+    // Hairs-Human:        PENDING
     private CodePointSet ComplementOperand(CodePointSet set)
     {
         if (!_expand)
@@ -989,9 +989,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>Reads <c>\d \D \w \W \s \S</c> as a class-set operand: fold, then complement.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=D0DA1A
-    // Broiler-Falsified-If: under vi the set returned for \W contains a code point that does not fold to itself, such as U+00C9
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=D0DA1A
+    // Hairs-Falsified-If: under vi the set returned for \W contains a code point that does not fold to itself, such as U+00C9
+    // Hairs-Human:        PENDING
     private ClassSetValue ReadClassEscapeOperand(ClassEscape escape)
     {
         if (!_expand)
@@ -1005,9 +1005,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>Reads <c>\p{…}</c> / <c>\P{…}</c> as a class-set operand: fold, then complement.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=6; Fingerprint=7EA416
-    // Broiler-Falsified-If: under vi \P{Ll} is complemented before its members are folded, so /\P{Ll}/vi matches 'a'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=6; Fingerprint=7EA416
+    // Hairs-Falsified-If: under vi \P{Ll} is complemented before its members are folded, so /\P{Ll}/vi matches 'a'
+    // Hairs-Human:        PENDING
     private ClassSetValue ReadPropertyOperand(bool allowStrings)
     {
         var resolved = ResolvePropertyEscape(allowStrings, out var negated, out var strings);
@@ -1024,9 +1024,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>Parses <c>[ ^? ClassContents ]</c>, the cursor sitting on the <c>'['</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=018294
-    // Broiler-Falsified-If: a v-mode class nested 100,000 '[' deep exhausts the native stack instead of raising a catchable exception
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=018294
+    // Hairs-Falsified-If: a v-mode class nested 100,000 '[' deep exhausts the native stack instead of raising a catchable exception
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseNestedClass()
     {
         var start = _pos;
@@ -1062,9 +1062,9 @@ internal sealed class RegexParser
         return new ClassSetValue { Set = ComplementOperand(value.Set) };
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=068B3E
-    // Broiler-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=7; Fingerprint=068B3E
+    // Hairs-Falsified-If: a v-mode class repeating \p{RGI_Emoji} a thousand times makes billions of string comparisons, because each union scans the accumulated string list once per member
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassSetExpression()
     {
         if (AtEnd || Peek() == ']')
@@ -1102,9 +1102,9 @@ internal sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=A442B9
-    // Broiler-Falsified-If: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=A442B9
+    // Hairs-Falsified-If: a string present in only one operand survives the intersection, so /[\q{ab}&&\q{cd}]/v matches 'ab'
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassIntersection(ClassSetValue first, int start)
     {
         _usedSetOperations = true;
@@ -1130,9 +1130,9 @@ internal sealed class RegexParser
         return accumulated;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=E01B6A
-    // Broiler-Falsified-If: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=E01B6A
+    // Hairs-Falsified-If: a string of the right operand survives the subtraction, so /[\q{ab|cd}--\q{ab}]/v matches 'ab'
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassSubtraction(ClassSetValue first, int start)
     {
         _usedSetOperations = true;
@@ -1161,9 +1161,9 @@ internal sealed class RegexParser
     /// mixture, so an operator met between a union's operands is a syntax error rather
     /// than a silently reassociated expression.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=44118D
-    // Broiler-Falsified-If: [ab--c], [ab&&c] or [a-z--b] under v is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=44118D
+    // Hairs-Falsified-If: [ab--c], [ab&&c] or [a-z--b] under v is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private void RejectMixedOperator(int start)
     {
         if (AtEnd || Peek() == ']')
@@ -1178,18 +1178,18 @@ internal sealed class RegexParser
     /// operator of the other kind, or any operand, would mix the expression with another, so it is refused here, before
     /// the class consumes its <c>]</c>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=55670B
-    // Broiler-Falsified-If: [a--bc or [a&&ac under v compiles, or [a--b&&c], [a&&b--c] or [a--b[c]] is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=55670B
+    // Hairs-Falsified-If: [a--bc or [a&&ac under v compiles, or [a--b&&c], [a&&b--c] or [a--b[c]] is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private void RejectAfterLastOperand(int start)
     {
         if (!AtEnd && Peek() != ']')
             throw Refuse(RegexDiagnosticCode.ClassSetMixedOperators, start, "A class-set expression may not mix union, '&&' and '--' without nesting");
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=7B17DF
-    // Broiler-Falsified-If: a range endpoint that is a class escape or \q{...}, as in [a-\d] under v, is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=7B17DF
+    // Hairs-Falsified-If: a range endpoint that is a class escape or \q{...}, as in [a-\d] under v, is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassSetRangeOrOperand(out bool range)
     {
         // range says whether a ClassSetRange was read, which only a ClassUnion may hold.
@@ -1218,9 +1218,9 @@ internal sealed class RegexParser
     /// point when the operand was a lone character, which is the only shape a range end
     /// may take.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=24DFA0
-    // Broiler-Falsified-If: an unescaped '(' or a doubled punctuator such as '!!' is accepted as a literal inside a v-mode class
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=24DFA0
+    // Hairs-Falsified-If: an unescaped '(' or a doubled punctuator such as '!!' is accepted as a literal inside a v-mode class
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassSetOperand(out int? single)
     {
         single = null;
@@ -1265,9 +1265,9 @@ internal sealed class RegexParser
     /// punctuator, or a CharacterEscape. A class-set operand and a <c>\q{…}</c> alternative read their characters here
     /// alike; <paramref name="inside"/> names which in a refusal.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=955367
-    // Broiler-Falsified-If: \b is refused, a reserved double punctuator such as && is read as two characters, or an unescaped ( or | is read as a character, inside a v-mode class or a \q{...} alternative
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=955367
+    // Hairs-Falsified-If: \b is refused, a reserved double punctuator such as && is read as two characters, or an unescaped ( or | is read as a character, inside a v-mode class or a \q{...} alternative
+    // Hairs-Human:        PENDING
     private int ReadClassSetCharacter(bool escaped, string inside)
     {
         if (escaped)
@@ -1294,9 +1294,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>Parses <c>\q{ ClassString (| ClassString)* }</c>, the cursor on the <c>'q'</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=FADBD6
-    // Broiler-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=6; Fingerprint=FADBD6
+    // Hairs-Falsified-If: an empty alternative, as in \q{a|}, is dropped instead of making the class match the empty string
+    // Hairs-Human:        PENDING
     private ClassSetValue ParseClassStringDisjunction()
     {
         _usedSetOperations = true;
@@ -1373,8 +1373,8 @@ internal sealed class RegexParser
         return Fold(value);
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=13D6DB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=13D6DB
+    // Hairs-Human:        PENDING
     private ClassSetValue SingleCodePoint(int codePoint)
         => _expand ? new() { Set = CodePointSet.Of(codePoint, codePoint) } : new();
 
@@ -1384,9 +1384,9 @@ internal sealed class RegexParser
     /// is charged its code units before it is folded (<see cref="CompileSite.CaseFold"/>); two strings that fold alike
     /// are kept once.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=6; Fingerprint=47A2EB
-    // Broiler-Falsified-If: under vi each \p{L} operand is folded one code point at a time, so a class repeating it 10,000 times makes over a billion fold calls during parse
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=6; Fingerprint=47A2EB
+    // Hairs-Falsified-If: under vi each \p{L} operand is folded one code point at a time, so a class repeating it 10,000 times makes over a billion fold calls during parse
+    // Hairs-Human:        PENDING
     private ClassSetValue Fold(ClassSetValue value)
     {
         if (!IgnoreCase || !_expand)
@@ -1408,9 +1408,9 @@ internal sealed class RegexParser
         return value;
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=561D11
-    // Broiler-Falsified-If: a surrogate pair is folded as two code units, so /[\q{\u{10400}x}]/vi does not match the text U+10428 followed by x
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=3; Fingerprint=561D11
+    // Hairs-Falsified-If: a surrogate pair is folded as two code units, so /[\q{\u{10400}x}]/vi does not match the text U+10428 followed by x
+    // Hairs-Human:        PENDING
     private string FoldString(string value)
     {
         var sb = new StringBuilder(value.Length);
@@ -1431,36 +1431,36 @@ internal sealed class RegexParser
     /// The UTF-16 text of one code point. Unlike <see cref="char.ConvertFromUtf32"/> this
     /// accepts a lone surrogate, which is a perfectly ordinary member of a class.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=C770F9
-    // Broiler-Falsified-If: a lone surrogate code point such as 0xD800 throws instead of returning its single UTF-16 unit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=C770F9
+    // Hairs-Falsified-If: a lone surrogate code point such as 0xD800 throws instead of returning its single UTF-16 unit
+    // Hairs-Human:        PENDING
     private static string FromCodePoint(int codePoint)
         => codePoint <= 0xFFFF ? ((char)codePoint).ToString() : char.ConvertFromUtf32(codePoint);
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=596E48
-    // Broiler-Falsified-If: it returns false for one of ( ) [ ] { } / - \ | or true for any other character
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=596E48
+    // Hairs-Falsified-If: it returns false for one of ( ) [ ] { } / - \ | or true for any other character
+    // Hairs-Human:        PENDING
     private static bool IsClassSetSyntaxCharacter(char c)
         => c is '(' or ')' or '[' or ']' or '{' or '}' or '/' or '-' or '\\' or '|';
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=1CB1BF
-    // Broiler-Falsified-If: it returns true for '$' or '^', or false for one of & - ! # % , : ; < = > @ ` ~
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=1CB1BF
+    // Hairs-Falsified-If: it returns true for '$' or '^', or false for one of & - ! # % , : ; < = > @ ` ~
+    // Hairs-Human:        PENDING
     private static bool IsClassSetReservedPunctuator(char c)
         => c is '&' or '-' or '!' or '#' or '%' or ',' or ':' or ';' or '<' or '=' or '>' or '@' or '`' or '~';
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=8B8981
-    // Broiler-Falsified-If: it returns true for '-' or '|', or false for one of & ! # $ % * + , . : ; < = > ? @ ^ ` ~
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=8B8981
+    // Hairs-Falsified-If: it returns true for '-' or '|', or false for one of & ! # $ % * + , . : ; < = > ? @ ^ ` ~
+    // Hairs-Human:        PENDING
     private static bool IsClassSetReservedDoublePunctuator(char c)
         => c is '&' or '!' or '#' or '$' or '%' or '*' or '+' or ',' or '.' or ':' or ';'
             or '<' or '=' or '>' or '?' or '@' or '^' or '`' or '~';
 
     // ----- Shared escape readers ---------------------------------------------
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=4612E7
-    // Broiler-Falsified-If: a letter other than d, D, w, W, s or S, such as b, is consumed as a class escape
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=4612E7
+    // Hairs-Falsified-If: a letter other than d, D, w, W, s or S, such as b, is consumed as a class escape
+    // Hairs-Human:        PENDING
     private ClassEscape? TryReadClassEscape()
     {
         switch (Peek())
@@ -1476,9 +1476,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>Reads a CharacterEscape (the '\' already consumed): \n \r \xHH \uHHHH \u{…} \cX \0, legacy octal, identity.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=827CE4
-    // Broiler-Falsified-If: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=827CE4
+    // Hairs-Falsified-If: under u an identity escape of a non-syntax character such as \a or \- outside a class is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private int ReadCharacterEscape()
     {
         // A '\' with nothing after it: \ is never a pattern character of its own
@@ -1535,9 +1535,9 @@ internal sealed class RegexParser
         return ReadSourceCodePoint();
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=F85821
-    // Broiler-Falsified-If: an octal escape above 0377, such as \400, is read as one code point greater than 0xFF instead of \40 followed by '0'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=F85821
+    // Hairs-Falsified-If: an octal escape above 0377, such as \400, is read as one code point greater than 0xFF instead of \40 followed by '0'
+    // Hairs-Human:        PENDING
     private int ReadLegacyOctalOrIdentity()
     {
         // Legacy octal escape \ooo (non-Unicode only); fall back to identity.
@@ -1559,9 +1559,9 @@ internal sealed class RegexParser
         return ReadSourceCodePoint();
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=54B1D6
-    // Broiler-Falsified-If: outside u, /\c1/ does not match the text backslash-c-1 because the c is consumed along with the backslash
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=54B1D6
+    // Hairs-Falsified-If: outside u, /\c1/ does not match the text backslash-c-1 because the c is consumed along with the backslash
+    // Hairs-Human:        PENDING
     private int ReadControlEscape()
     {
         // The cursor is on the 'c'. CharacterEscape :: c AsciiLetter (§22.2.1).
@@ -1581,9 +1581,9 @@ internal sealed class RegexParser
         return '\\';
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=1; Fingerprint=0B4138
-    // Broiler-Falsified-If: a non-hex character inside the fixed-width run, as in \x4g under u, is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=1; Fingerprint=0B4138
+    // Hairs-Falsified-If: a non-hex character inside the fixed-width run, as in \x4g under u, is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private int ReadHexEscape(int digits)
     {
         _pos++; // consume 'x' or 'u'
@@ -1600,9 +1600,9 @@ internal sealed class RegexParser
     }
 
     /// <summary>True when <paramref name="count"/> hexadecimal digits sit at the given offset.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=44C9C9
-    // Broiler-Falsified-If: outside u, \x4 at the end of the pattern is decoded as a hex escape instead of the identity escape x followed by 4
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=1; Fingerprint=44C9C9
+    // Hairs-Falsified-If: outside u, \x4 at the end of the pattern is decoded as a hex escape instead of the identity escape x followed by 4
+    // Hairs-Human:        PENDING
     private bool HasHexDigits(int offset, int count)
     {
         for (var i = 0; i < count; i++)
@@ -1623,9 +1623,9 @@ internal sealed class RegexParser
     /// two characters, and a four-digit lead escape followed by any other <c>\u</c> is a lone lead surrogate.
     /// Without it the escape is four hexadecimal digits, one code unit.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=115CDF
-    // Broiler-Falsified-If: under u, \uD83D\u{41} is rejected as an invalid hexadecimal escape instead of reading a lone lead surrogate followed by A, or \uD83D\u{DC38} is read as the one code point U+1F438
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=3; Fingerprint=115CDF
+    // Hairs-Falsified-If: under u, \uD83D\u{41} is rejected as an invalid hexadecimal escape instead of reading a lone lead surrogate followed by A, or \uD83D\u{DC38} is read as the one code point U+1F438
+    // Hairs-Human:        PENDING
     private int ReadUnicodeEscape(bool unicodeMode)
     {
         // Caller is positioned at 'u'. The braced form exists only in Unicode mode; the
@@ -1680,9 +1680,9 @@ internal sealed class RegexParser
     /// <c>[\P{L}\p{Nd}]</c> — where only one member is complemented — expressible. Outside <c>v</c> a property of
     /// strings is refused, so the answer holds no string. The complement is charged to the compilation.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=7ED14F
-    // Broiler-Falsified-If: \P{L} answers the letters, or \p{RGI_Emoji} under u is accepted instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=7ED14F
+    // Hairs-Falsified-If: \P{L} answers the letters, or \p{RGI_Emoji} under u is accepted instead of throwing
+    // Hairs-Human:        PENDING
     private CodePointSet ReadPropertyEscapeSet()
     {
         var resolved = ResolvePropertyEscape(allowStrings: false, out var negated, out _);
@@ -1710,9 +1710,9 @@ internal sealed class RegexParser
     /// property aliases is EE0201's refusal, and an unknown value of one of them EE0202's; a lone name is EE0203's.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1 and s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=382B2E
-    // Broiler-Falsified-If: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing, \p{RGI_Emoji} reports IsStringProperty false, \p{Scx=Greek} is refused as an unknown value or \p{Script=Grek_} as an unknown name, or validating copies a set
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1 and s22.2.2.9; IP=Low; Security=High; Resources=4; Fingerprint=382B2E
+    // Hairs-Falsified-If: a negated property of strings such as \P{RGI_Emoji} under v is accepted instead of throwing, \p{RGI_Emoji} reports IsStringProperty false, \p{Scx=Greek} is refused as an unknown value or \p{Script=Grek_} as an unknown name, or validating copies a set
+    // Hairs-Human:        PENDING
     private UnicodeCharSets.PropertyMatch? ResolvePropertyEscape(bool allowStrings, out bool negated, out bool strings)
     {
         var start = _pos;
@@ -1783,9 +1783,9 @@ internal sealed class RegexParser
     /// <c>EcmaScriptLexical</c> at its UCD. A lone surrogate is neither, so it is refused as a syntax error.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=3; Fingerprint=A4DD96
-    // Broiler-Falsified-If: a group name holding a lone surrogate escape, such as (?<\uD800>a), escapes as ArgumentOutOfRangeException instead of RegexSyntaxException, or (?<1>a) or (?<a-b>a) is accepted
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=Low; Security=High; Resources=3; Fingerprint=A4DD96
+    // Hairs-Falsified-If: a group name holding a lone surrogate escape, such as (?<\uD800>a), escapes as ArgumentOutOfRangeException instead of RegexSyntaxException, or (?<1>a) or (?<a-b>a) is accepted
+    // Hairs-Human:        PENDING
     private string ReadGroupName()
     {
         var name = new StringBuilder();
@@ -1847,9 +1847,9 @@ internal sealed class RegexParser
     /// constant amount of the work the pattern's units pay for (<see cref="CompileSite.Pattern"/>).
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4; IP=None; Security=High; Resources=1; Fingerprint=DD9C39
-    // Broiler-Falsified-If: (?<a>x)|(?<a>y), (?:(?<a>x)|(?<a>y))|(?<a>z) or ((?<a>x)|(?<a>y))* is refused, or (?<a>x)(?<a>y), (?:(?<a>x)|(?<a>y))(?<a>z), (?<a>x|(?<a>y)) or (?:(?<a>x)|b)(?:(?<a>y)|c) is accepted
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.4; IP=None; Security=High; Resources=1; Fingerprint=DD9C39
+    // Hairs-Falsified-If: (?<a>x)|(?<a>y), (?:(?<a>x)|(?<a>y))|(?<a>z) or ((?<a>x)|(?<a>y))* is refused, or (?<a>x)(?<a>y), (?:(?<a>x)|(?<a>y))(?<a>z), (?<a>x|(?<a>y)) or (?:(?<a>x)|b)(?:(?<a>y)|c) is accepted
+    // Hairs-Human:        PENDING
     private bool MightBothParticipate(int earlier)
     {
         int low = 0, high = _disjunctions.Count - 1;
@@ -1873,14 +1873,14 @@ internal sealed class RegexParser
     /// before the parser descends into it.
     /// </summary>
     /// <exception cref="NestingLimitExceeded">The level would be deeper than the caller's limit.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=266817
-    // Broiler-Falsified-If: a group opened at the limit's depth is entered instead of refused, so the parser's recursion outgrows the limit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=266817
+    // Hairs-Falsified-If: a group opened at the limit's depth is entered instead of refused, so the parser's recursion outgrows the limit
+    // Hairs-Human:        PENDING
     private void Descend(int open) => _depth = _nesting.Descend(_depth, open);
 
     /// <summary>Leaves the level <see cref="Descend"/> entered, once its closing character is read.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=23E5D5
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=23E5D5
+    // Hairs-Human:        PENDING
     private void Ascend() => _depth--;
 
     // ----- Low-level cursor helpers ------------------------------------------
@@ -1891,29 +1891,29 @@ internal sealed class RegexParser
     /// is a perfectly ordinary pattern character, so comparing against the sentinel
     /// would end the parse in the middle of a pattern that merely contains one.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=3FD96C
-    // Broiler-Falsified-If: it reports the end at a U+0000 pattern character rather than only once the cursor is past the last character
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=3FD96C
+    // Hairs-Falsified-If: it reports the end at a U+0000 pattern character rather than only once the cursor is past the last character
+    // Hairs-Human:        PENDING
     private bool AtEnd => _pos >= _src.Length;
 
     /// <summary>True when a character exists <paramref name="offset"/> ahead of the cursor.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=9D370C
-    // Broiler-Falsified-If: it returns true for an offset that lands on the source length, so [a- at the end of a pattern reads a range end past the text
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=9D370C
+    // Hairs-Falsified-If: it returns true for an offset that lands on the source length, so [a- at the end of a pattern reads a range end past the text
+    // Hairs-Human:        PENDING
     private bool HasAt(int offset) => _pos + offset < _src.Length;
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=63EC31
-    // Broiler-Falsified-If: it throws or reads past the source instead of returning U+0000 once the cursor reaches the source length
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=63EC31
+    // Hairs-Falsified-If: it throws or reads past the source instead of returning U+0000 once the cursor reaches the source length
+    // Hairs-Human:        PENDING
     private char Peek() => _pos < _src.Length ? _src[_pos] : '\0';
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=E7E209
-    // Broiler-Falsified-If: an offset past the end throws or reads outside the source instead of returning U+0000
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=E7E209
+    // Hairs-Falsified-If: an offset past the end throws or reads outside the source instead of returning U+0000
+    // Hairs-Human:        PENDING
     private char PeekAt(int offset) => _pos + offset < _src.Length ? _src[_pos + offset] : '\0';
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=16770A
-    // Broiler-Falsified-If: the cursor advances when the character does not match, so an unclosed '(' at the end of a pattern does not throw
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=16770A
+    // Hairs-Falsified-If: the cursor advances when the character does not match, so an unclosed '(' at the end of a pattern does not throw
+    // Hairs-Human:        PENDING
     private void Expect(char c, RegexDiagnosticCode code)
     {
         if (Peek() != c)
@@ -1925,8 +1925,8 @@ internal sealed class RegexParser
     /// A refusal of kind <paramref name="code"/> at <paramref name="position"/>, with its default English
     /// <paramref name="message"/> and the <paramref name="argument"/> its code takes (task 2.8 of SJL-11.2).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=57F7DC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=57F7DC
+    // Hairs-Human:        PENDING
     private static RegexSyntaxException Refuse(RegexDiagnosticCode code, int position, string message, string? argument = null)
         => new(new RegexDiagnostic(code, position, argument, message));
 
@@ -1934,9 +1934,9 @@ internal sealed class RegexParser
     /// The early error of a class range written high to low (ECMA-262 §22.2.1.1; catalogue rows EE0194, EE0196, EE0208,
     /// EE0211 and EE0213), at the range's first character, whose text from there to the cursor is the argument.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=9BE9BF
-    // Broiler-Falsified-If: [z-a] is refused at a position other than 1, or with an argument other than z-a
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=9BE9BF
+    // Hairs-Falsified-If: [z-a] is refused at a position other than 1, or with an argument other than z-a
+    // Hairs-Human:        PENDING
     private RegexSyntaxException RangeOutOfOrder(int low, int high, int start)
         => Refuse(RegexDiagnosticCode.ClassRangeOutOfOrder, start,
             "Range out of order in character class: U+" + low.ToString("X", NumberFormatInfo.InvariantInfo) + "-U+"
@@ -1944,9 +1944,9 @@ internal sealed class RegexParser
             _src[start.._pos]);
 
     /// <summary>Reads one source code point, combining a surrogate pair in Unicode mode.</summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=855020
-    // Broiler-Falsified-If: outside u and v a surrogate pair is read as one code point instead of two code units
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=855020
+    // Hairs-Falsified-If: outside u and v a surrogate pair is read as one code point instead of two code units
+    // Hairs-Human:        PENDING
     private int ReadSourceCodePoint()
     {
         var c = _src[_pos++];
@@ -1958,9 +1958,9 @@ internal sealed class RegexParser
         return c;
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=2D4224
-    // Broiler-Falsified-If: a digit run longer than ten digits, such as 99999999999, wraps to a negative or small value instead of saturating at int.MaxValue
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=3; Fingerprint=2D4224
+    // Hairs-Falsified-If: a digit run longer than ten digits, such as 99999999999, wraps to a negative or small value instead of saturating at int.MaxValue
+    // Hairs-Human:        PENDING
     private bool TryReadDecimal(out int value)
     {
         value = 0;
@@ -1978,9 +1978,9 @@ internal sealed class RegexParser
         return true;
     }
 
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=2D7172
-    // Broiler-Falsified-If: it returns a digit value for a character outside 0-9, a-f and A-F; the neighbours are '/', ':', '@', 'G', '`' and 'g'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=0; Fingerprint=2D7172
+    // Hairs-Falsified-If: it returns a digit value for a character outside 0-9, a-f and A-F; the neighbours are '/', ':', '@', 'G', '`' and 'g'
+    // Hairs-Human:        PENDING
     private static int HexValue(char c) => c switch
     {
         >= '0' and <= '9' => c - '0',
@@ -1989,9 +1989,9 @@ internal sealed class RegexParser
         _ => -1,
     };
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=4387A7
-    // Broiler-Falsified-If: it returns true for '/', '-' or ',', or false for one of ^ $ \ . * + ? ( ) [ ] { } |
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=Low; Security=High; Resources=0; Fingerprint=4387A7
+    // Hairs-Falsified-If: it returns true for '/', '-' or ',', or false for one of ^ $ \ . * + ? ( ) [ ] { } |
+    // Hairs-Human:        PENDING
     private static bool IsSyntaxChar(char c)
         => c is '^' or '$' or '\\' or '.' or '*' or '+' or '?' or '(' or ')'
             or '[' or ']' or '{' or '}' or '|';

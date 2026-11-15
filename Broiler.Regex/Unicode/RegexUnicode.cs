@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   27
 // Annotated:        27/27
 // Exempt:           14
@@ -51,22 +51,22 @@ namespace Broiler.Regex.Unicode;
 /// The sets it builds are immutable once built.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=High; Resources=2; Fingerprint=3576CE
-// Broiler-Falsified-If: a compiled pattern reads a Unicode answer that no IUnicodeTables call made during its compilation or matching could have supplied, so a recording provider misses a table the library read
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=High; Resources=2; Fingerprint=3576CE
+// Hairs-Falsified-If: a compiled pattern reads a Unicode answer that no IUnicodeTables call made during its compilation or matching could have supplied, so a recording provider misses a table the library read
+// Hairs-Human:        PENDING
 internal sealed class RegexUnicode
 {
     /// <summary>The largest orbit span this class allocates on the stack; a provider stating a larger one gets an array.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4FBBFC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4FBBFC
+    // Hairs-Human:        PENDING
     private const int StackOrbit = 16;
 
     /// <summary>
     /// The most code points of a set MaybeSimpleCaseFolding maps one at a time (<see cref="SimpleCaseFold"/>); a larger set
     /// is folded through <c>Cased</c>, so that its work is in proportion to its ranges, not to its code points.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=3A76CF
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=3A76CF
+    // Hairs-Human:        PENDING
     internal const long FoldedOneByOne = 4096;
 
     private readonly UnicodeProperties _properties;
@@ -92,9 +92,9 @@ internal sealed class RegexUnicode
     /// <param name="charge">The compilation's account (task 2.5), or null for one with no meter and no budget.</param>
     /// <exception cref="ArgumentNullException"><paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentException">The tables are of another Unicode version or lack a table the algorithms read.</exception>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=9A8BCF
-    // Broiler-Falsified-If: tables whose UnicodeVersion is not the provider's are accepted, so the library matches against a data version no caller pinned
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=High; Resources=2; Fingerprint=9A8BCF
+    // Hairs-Falsified-If: tables whose UnicodeVersion is not the provider's are accepted, so the library matches against a data version no caller pinned
+    // Hairs-Human:        PENDING
     internal RegexUnicode(IUnicodeTables tables, CompileCharge? charge = null)
     {
         ArgumentNullException.ThrowIfNull(tables);
@@ -107,8 +107,8 @@ internal sealed class RegexUnicode
     }
 
     /// <summary>The compilation's account, which every expansion of the compilation charges before its work (requirement R2).</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=8101FB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=8101FB
+    // Hairs-Human:        PENDING
     internal CompileCharge Account { get; }
 
     // ----- Canonicalize (§22.2.2.7.3) -----------------------------------------
@@ -118,8 +118,8 @@ internal sealed class RegexUnicode
     /// (<c>CaseFolding.txt</c> status C and S) under <c>u</c> or <c>v</c>, and the upper-casing of one code unit
     /// that keeps a code unit outside ASCII outside it without them.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=Medium; Resources=0; Fingerprint=D6AB18
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=Medium; Resources=0; Fingerprint=D6AB18
+    // Hairs-Human:        PENDING
     internal int Canonicalize(int codePoint, bool unicode)
     {
         if (codePoint < 0)
@@ -136,13 +136,13 @@ internal sealed class RegexUnicode
     /// case orbits its instructions read at match time (task 2.4b of SJL-11.2). It is immutable, as every object of the
     /// provider is.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=A617CF
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=A617CF
+    // Hairs-Human:        PENDING
     internal UnicodeCaseFolding Folding => _folding;
 
     /// <summary>True when the two code points are equal, or case-equivalent under <paramref name="ignoreCase"/>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=Medium; Resources=0; Fingerprint=E06948
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=Low; Security=Medium; Resources=0; Fingerprint=E06948
+    // Hairs-Human:        PENDING
     internal bool Equal(int a, int b, bool ignoreCase, bool unicode)
     {
         if (a == b)
@@ -161,9 +161,9 @@ internal sealed class RegexUnicode
     /// the other way: the provider writes the code point's orbit (every code point sharing its canonical form,
     /// rarely more than four) and each is a range lookup.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=Low; Security=High; Resources=1; Fingerprint=43DE79
-    // Broiler-Falsified-If: under iu, a class holding only U+212A KELVIN SIGN is reported not to hold a code point case-equivalent to 'k'
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=Low; Security=High; Resources=1; Fingerprint=43DE79
+    // Hairs-Falsified-If: under iu, a class holding only U+212A KELVIN SIGN is reported not to hold a code point case-equivalent to 'k'
+    // Hairs-Human:        PENDING
     internal bool OrbitIntersects(CodePointSet set, int codePoint, bool unicode)
     {
         if (codePoint < 0 || (!unicode && codePoint > 0xFFFF))
@@ -183,13 +183,13 @@ internal sealed class RegexUnicode
     // ----- Identifiers (§22.2.1.1 group names) ---------------------------------
 
     /// <summary>Whether <paramref name="codePoint"/> may start a RegExpIdentifierName: IdentifierStartChar.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Medium; Resources=0; Fingerprint=6AC628
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Medium; Resources=0; Fingerprint=6AC628
+    // Hairs-Human:        PENDING
     internal bool IsIdentifierStart(int codePoint) => _lexical.IsIdentifierStart(codePoint);
 
     /// <summary>Whether <paramref name="codePoint"/> may continue a RegExpIdentifierName: IdentifierPartChar.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Medium; Resources=0; Fingerprint=6AF8F2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.1; IP=None; Security=Medium; Resources=0; Fingerprint=6AF8F2
+    // Hairs-Human:        PENDING
     internal bool IsIdentifierPart(int codePoint) => _lexical.IsIdentifierPart(codePoint);
 
     // ----- Class escapes (§22.2.2.9) ---------------------------------------------
@@ -200,9 +200,9 @@ internal sealed class RegexUnicode
     /// §22.2.2.9.3 WordCharacters widens the basic word set with every code point that case-folds into it when
     /// both flags are on, which is why <c>/\W/iu</c> must not match <c>ſ</c>.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=16B70C
-    // Broiler-Falsified-If: EscapeSet(NonWord, ignoreCase: true, unicode: true) contains U+017F, so /\W/iu matches LATIN SMALL LETTER LONG S
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=1; Fingerprint=16B70C
+    // Hairs-Falsified-If: EscapeSet(NonWord, ignoreCase: true, unicode: true) contains U+017F, so /\W/iu matches LATIN SMALL LETTER LONG S
+    // Hairs-Human:        PENDING
     internal CodePointSet EscapeSet(ClassEscape escape, bool ignoreCase, bool unicode) => escape switch
     {
         ClassEscape.Digit => UnicodeCharSets.DigitSet,
@@ -215,20 +215,20 @@ internal sealed class RegexUnicode
     };
 
     /// <summary>§22.2.2.9.3 WordCharacters, <c>\w</c>'s set for the given mode.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Medium; Resources=0; Fingerprint=95CC7B
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Medium; Resources=0; Fingerprint=95CC7B
+    // Hairs-Human:        PENDING
     private CodePointSet WordSet(bool ignoreCase, bool unicode)
         => ignoreCase && unicode ? _foldedWordSet ??= BuildFoldedWordSet() : UnicodeCharSets.BasicWordSet;
 
     /// <summary><c>\s</c>'s set, built the first time the compilation reads it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=8BBDC2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=8BBDC2
+    // Hairs-Human:        PENDING
     private CodePointSet SpaceSet => _spaceSet ??= BuildSpaceSet();
 
     /// <summary>§22.2.2.4.1 IsWordChar, which <c>\b</c> and <c>\B</c> read.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.4.1; IP=None; Security=High; Resources=0; Fingerprint=03C9D1
-    // Broiler-Falsified-If: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.4.1; IP=None; Security=High; Resources=0; Fingerprint=03C9D1
+    // Hairs-Falsified-If: IsWord(0x017F, ignoreCase: true, unicode: true) returns false, so \b under iu treats LATIN SMALL LETTER LONG S as a non-word character
+    // Hairs-Human:        PENDING
     internal bool IsWord(int codePoint, bool ignoreCase, bool unicode)
         => WordSet(ignoreCase, unicode).Contains(codePoint);
 
@@ -236,8 +236,8 @@ internal sealed class RegexUnicode
     /// §22.2.2.9.4 AllCharacters under <c>v</c> with <c>i</c>: every code point that folds to itself, the universe
     /// a complement is taken against there, built the first time the compilation reads it and kept for the rest of it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=None; Security=Medium; Resources=0; Fingerprint=31B905
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=None; Security=Medium; Resources=0; Fingerprint=31B905
+    // Hairs-Human:        PENDING
     internal CodePointSet CanonicalCharacters => _canonicalCharacters ??= BuildCanonicalCharacters();
 
     /// <summary>
@@ -263,9 +263,9 @@ internal sealed class RegexUnicode
     /// code points' normalization and the difference charged as their own places charge them.
     /// </para>
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=Low; Security=High; Resources=2; Fingerprint=A87AAD
-    // Broiler-Falsified-If: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=Low; Security=High; Resources=2; Fingerprint=A87AAD
+    // Hairs-Falsified-If: the set it builds contains 0x0041 or U+212A KELVIN SIGN, whose simple case folds are not themselves
+    // Hairs-Human:        PENDING
     private CodePointSet BuildCanonicalCharacters()
     {
         var cased = Cased;
@@ -293,9 +293,9 @@ internal sealed class RegexUnicode
     /// the version the provider pins), so <see cref="BuildCanonicalCharacters"/> scans it and
     /// <see cref="SimpleCaseFold"/> folds through it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=None; Security=Medium; Resources=1; Fingerprint=3C57CC
-    // Broiler-Falsified-If: a code point outside the set it answers folds to another under simple case folding
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.4; IP=None; Security=Medium; Resources=1; Fingerprint=3C57CC
+    // Hairs-Falsified-If: a code point outside the set it answers folds to another under simple case folding
+    // Hairs-Human:        PENDING
     private CodePointSet Cased
     {
         get
@@ -325,9 +325,9 @@ internal sealed class RegexUnicode
     /// code points that fold to a run are kept as one range, so the result is normalized without a sort when they arrive
     /// in order.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.5; IP=None; Security=High; Resources=2; Fingerprint=769205
-    // Broiler-Falsified-If: the set it answers for \p{L}, \p{Lu}, \P{Ll}, [A-Z] or any other set differs from the set of each member's simple case folding, or folding \p{L} charges a unit per code point
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.5; IP=None; Security=High; Resources=2; Fingerprint=769205
+    // Hairs-Falsified-If: the set it answers for \p{L}, \p{Lu}, \P{Ll}, [A-Z] or any other set differs from the set of each member's simple case folding, or folding \p{L} charges a unit per code point
+    // Hairs-Human:        PENDING
     internal CodePointSet SimpleCaseFold(CodePointSet set)
     {
         Account.Charge(CompileSite.CaseFold, set.RangeCount);
@@ -345,8 +345,8 @@ internal sealed class RegexUnicode
     /// The simple case folding of each of <paramref name="set"/>'s <paramref name="count"/> code points, one at a time,
     /// charged a unit each before it starts; a run of code points that fold to a run is kept as one range.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.5; IP=None; Security=Medium; Resources=2; Fingerprint=F4AC0D
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.5; IP=None; Security=Medium; Resources=2; Fingerprint=F4AC0D
+    // Hairs-Human:        PENDING
     private CodePointSet FoldEachCodePoint(CodePointSet set, long count)
     {
         Account.Charge(CompileSite.CaseFold, count);
@@ -367,8 +367,8 @@ internal sealed class RegexUnicode
     }
 
     /// <summary><c>\s</c>, WhiteSpace and LineTerminator (ECMA-262 §12.2 and §12.3), its Space_Separator part the provider's.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s12.2; IP=Low; Security=Low; Resources=1; Fingerprint=44AE66
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s12.2; IP=Low; Security=Low; Resources=1; Fingerprint=44AE66
+    // Hairs-Human:        PENDING
     private CodePointSet BuildSpaceSet()
     {
         var separator = _properties.SpaceSeparator;
@@ -387,8 +387,8 @@ internal sealed class RegexUnicode
     /// §22.2.2.9.3 WordCharacters under <c>i</c> with <c>u</c> or <c>v</c>: the basic word characters and every
     /// code point whose simple case folding is one of them, from the provider's orbits.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Low; Resources=1; Fingerprint=D00E0B
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.3; IP=Low; Security=Low; Resources=1; Fingerprint=D00E0B
+    // Hairs-Human:        PENDING
     private CodePointSet BuildFoldedWordSet()
     {
         Account.Charge(CompileSite.Universe, UnicodeCharSets.BasicWordSet.CodePointCount());
@@ -421,9 +421,9 @@ internal sealed class RegexUnicode
     /// case folding, no ignoring of <c>_</c>, <c>-</c> or spaces, no <c>Is</c> prefix (§22.2.2.9.7
     /// UnicodeMatchProperty and §22.2.2.9.8 UnicodeMatchPropertyValue).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=Low; Security=High; Resources=3; Fingerprint=DEC057
-    // Broiler-Falsified-If: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=Low; Security=High; Resources=3; Fingerprint=DEC057
+    // Hairs-Falsified-If: a loosely spelled name such as \p{letter}, \p{Script=greek} or \p{ScriptExtensions=Greek} resolves to a set instead of returning null, or \p{Script=Katakana_Or_Hiragana} returns null
+    // Hairs-Human:        PENDING
     internal UnicodeCharSets.PropertyMatch? ResolveProperty(string name, string? value)
     {
         if (value != null)
@@ -452,9 +452,9 @@ internal sealed class RegexUnicode
     /// The provider's <c>TryResolve</c> answers a view of its tables, which allocates nothing (its own documentation), and its
     /// work is a binary search bounded by the tables, a name longer than the longest they hold refused before it is compared.
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Medium; Resources=0; Fingerprint=AD3680
-    // Broiler-Falsified-If: it answers a kind for a name ResolveProperty answers null for, Unknown for one it resolves, Strings for a property of code points or CodePoints for a property of strings
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Medium; Resources=0; Fingerprint=AD3680
+    // Hairs-Falsified-If: it answers a kind for a name ResolveProperty answers null for, Unknown for one it resolves, Strings for a property of code points or CodePoints for a property of strings
+    // Hairs-Human:        PENDING
     internal PropertyKind ClassifyProperty(string name, string? value)
     {
         if (value != null)
@@ -470,9 +470,9 @@ internal sealed class RegexUnicode
     /// charged, before anything is read, one unit per range and per sequence of each property read, and each sequence's
     /// code units before its string is built (<see cref="CompileSite.Property"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=623BE5
-    // Broiler-Falsified-If: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=High; Resources=3; Fingerprint=623BE5
+    // Hairs-Falsified-If: \p{RGI_Emoji} under v resolves to fewer code points or sequences than the union of the six properties it is defined as
+    // Hairs-Human:        PENDING
     private UnicodeCharSets.PropertyMatch ResolveStringProperty(StringProperty property)
     {
         var ranges = new List<(int Lo, int Hi)>();
@@ -494,9 +494,9 @@ internal sealed class RegexUnicode
         return new UnicodeCharSets.PropertyMatch(CodePointSet.FromRanges(ranges, Account), [.. strings], isStringProperty: true);
     }
 
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=2; Fingerprint=09D61A
-    // Broiler-Falsified-If: a sequence's string is built before its code units are charged, or a property's ranges and sequences are read before a unit is charged for each
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9; IP=Low; Security=Medium; Resources=2; Fingerprint=09D61A
+    // Hairs-Falsified-If: a sequence's string is built before its code units are charged, or a property's ranges and sequences are read before a unit is charged for each
+    // Hairs-Human:        PENDING
     private void AddStringProperty(StringProperty property, List<(int Lo, int Hi)> ranges, List<string> strings)
     {
         Account.Charge(CompileSite.Property, (long)property.CodePointRangeCount + property.SequenceCount);
@@ -524,9 +524,9 @@ internal sealed class RegexUnicode
     /// The conversion of a set the provider answers into this library's <see cref="CodePointSet"/>, charged to the
     /// compilation at <paramref name="site"/> one unit per range copied, before the copy, and for its normalization.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=A0E598
-    // Broiler-Falsified-If: a range is copied before a unit is charged for it
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=Low; Security=Medium; Resources=2; Fingerprint=A0E598
+    // Hairs-Falsified-If: a range is copied before a unit is charged for it
+    // Hairs-Human:        PENDING
     private CodePointSet ToCodePointSet(ProviderSet set, CompileSite site)
     {
         Account.Charge(site, set.RangeCount);
@@ -535,8 +535,8 @@ internal sealed class RegexUnicode
         return CodePointSet.FromRanges(ranges, Account);
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=0797FD
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=0797FD
+    // Hairs-Human:        PENDING
     private static void AddRanges(List<(int Lo, int Hi)> ranges, ProviderSet set)
     {
         for (var range = 0; range < set.RangeCount; range++)
@@ -545,8 +545,8 @@ internal sealed class RegexUnicode
 }
 
 /// <summary>What a property escape's name names (<see cref="RegexUnicode.ClassifyProperty"/>).</summary>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Low; Resources=0; Fingerprint=028287
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.9.7; IP=None; Security=Low; Resources=0; Fingerprint=028287
+// Hairs-Human:        PENDING
 internal enum PropertyKind
 {
     /// <summary>No property ECMA-262 admits, as written: a syntax error.</summary>

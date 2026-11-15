@@ -581,7 +581,7 @@ public class SharedRuleTests
     {
         Assert.Equal(["Broiler.Regex/Broiler.Regex.csproj"], LibraryProjectPaths);
 
-        using var config = JsonDocument.Parse(File.ReadAllText(Path.Combine(SharedTree.Root, "assurance.config.json")), Lenient);
+        using var config = JsonDocument.Parse(File.ReadAllText(Path.Combine(SharedTree.Root, "hairs.config.json")), Lenient);
         var violations = SharedRules.SL8(config, LibraryProjectPaths).ToList();
 
         foreach (var artefact in (string[])["CODE-ASSURANCE.md", "HUMAN_REVIEW.units.md", "assurance.manifest.json"])
@@ -602,8 +602,8 @@ public class SharedRuleTests
         }
 
         var workflow = File.ReadAllText(Path.Combine(SharedTree.Root, ".github", "workflows", "ci.yml"));
-        if (!workflow.Contains("assurance check --root Broiler.RegEx", StringComparison.Ordinal))
-            violations.Add(".github/workflows/ci.yml runs no assurance check over Broiler.RegEx");
+        if (!workflow.Contains("dotnet hairs assurance check --root .", StringComparison.Ordinal))
+            violations.Add(".github/workflows/ci.yml runs no Hairs assurance check over Broiler.RegEx");
 
         StartingViolations.AssertExactly("SL8", violations);
     }
@@ -613,11 +613,11 @@ public class SharedRuleTests
     {
         using var config = JsonDocument.Parse(Witness.Text("SL8-config-omits-a-library.json.witness"), Lenient);
         var violations = SharedRules.SL8(config, LibraryProjectPaths).ToList();
-        Assert.Contains("assurance.config.json does not cover Broiler.Regex/Broiler.Regex.csproj", violations);
-        Assert.Contains("assurance.config.json does not forbid preprocessor directives", violations);
-        Assert.Contains("assurance.config.json does not use the strict exemption predicate", violations);
-        Assert.Contains("assurance.config.json excludes 'Broiler.Regex/Parsing/RegexParser.cs' without a reason", violations);
-        Assert.Contains("assurance.config.json excludes 'Broiler.Regex/Parsing/RegexParser.cs', which can hide a unit of a library SL8 holds", violations);
+        Assert.Contains("hairs.config.json does not cover Broiler.Regex/Broiler.Regex.csproj", violations);
+        Assert.Contains("hairs.config.json does not forbid preprocessor directives", violations);
+        Assert.Contains("hairs.config.json does not use the strict exemption predicate", violations);
+        Assert.Contains("hairs.config.json excludes 'Broiler.Regex/Parsing/RegexParser.cs' without a reason", violations);
+        Assert.Contains("hairs.config.json excludes 'Broiler.Regex/Parsing/RegexParser.cs', which can hide a unit of a library SL8 holds", violations);
 
         // A configuration that covers the library under the strict predicate, forbids directives and excludes
         // nothing is accepted; and a source the manifest does not list is refused.
