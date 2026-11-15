@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   35
 // Annotated:        35/35
 // Exempt:           29
@@ -27,8 +27,8 @@ using CodePointSet = Broiler.Regex.Ast.CodePointSet;
 namespace Broiler.Regex.Compiling;
 
 /// <summary>How a compilation to the new backend's program ended.</summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E12D19
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E12D19
+// Hairs-Human:        PENDING
 internal enum ProgramCompilation
 {
     /// <summary>The program is built.</summary>
@@ -128,9 +128,9 @@ internal enum ProgramCompilation
 /// off, each string's code units for its lowering.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
-// Broiler-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=393186
+// Hairs-Falsified-If: compiling a tree nested to the library's maximum uses more CLR stack than a flat one, a group's, a modifier's or a look-around's body is entered without checking the caller's nesting limit, or a tree the parser built answers anything but a program or the nesting status
+// Hairs-Human:        PENDING
 internal static class ProgramCompiler
 {
     /// <summary>
@@ -148,9 +148,9 @@ internal static class ProgramCompiler
     /// <exception cref="RegexSyntaxException">The pattern is not valid under the flags, as the parser refuses it.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="pattern"/> or <paramref name="tables"/> is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="nestingLimit"/> is less than 1 or greater than <see cref="BroilerRegex.MaximumNestingLimit"/>.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=EE8FC4
-    // Broiler-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, one of 511 answers NestingLimitExceeded, or a compilation past its budget answers Compiled
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=EE8FC4
+    // Hairs-Falsified-If: a pattern of 512 nested groups under a limit of 512 answers Compiled, one of 511 answers NestingLimitExceeded, or a compilation past its budget answers Compiled
+    // Hairs-Human:        PENDING
     internal static ProgramCompilation Compile(string pattern, RegexFlags flags, IUnicodeTables tables, int nestingLimit, out RegexProgram? program, bool fastPaths = true,
         CompileCharge? charge = null, IEqualityComparer<string>? stringComparer = null)
     {
@@ -197,9 +197,9 @@ internal static class ProgramCompiler
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="tree"/> holds a node of a type the parser does not build.</exception>
     /// <exception cref="CompileBudgetSpent">The lowering would take the compilation past the caller's compile budget.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=518442
-    // Broiler-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=518442
+    // Hairs-Falsified-If: a tree the parser built within the nesting limit is answered without a program, a character under the i flag in force is given an instruction that compares it exactly, or one in a look-behind's body an instruction that reads left to right
+    // Hairs-Human:        PENDING
     internal static ProgramCompilation Compile(RegexNode tree, int captureCount, RegexGroupNames groupNames,
         RegexFlags flags, RegexUnicode data, RegexNesting nesting, out RegexProgram? program, bool fastPaths = true,
         IEqualityComparer<string>? stringComparer = null)
@@ -224,9 +224,9 @@ internal static class ProgramCompiler
     /// </summary>
     /// <exception cref="NestingLimitExceeded">The tree nests deeper than <paramref name="nesting"/>.</exception>
     /// <exception cref="ArgumentException">The tree holds a node of a type the parser does not build.</exception>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=DDC27C
-    // Broiler-Falsified-If: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=DDC27C
+    // Hairs-Falsified-If: the groups found for the quantifier of /((a)|(b))*/ are other than 1 to 3, or for the inner one of /(a)(?:(b)(c)+)*/ other than 3 to 3
+    // Hairs-Human:        PENDING
     private static Dictionary<QuantifierNode, (int First, int Last)> Survey(RegexNode tree, RegexNesting nesting)
     {
         var groups = new Dictionary<QuantifierNode, (int First, int Last)>();
@@ -286,14 +286,14 @@ internal static class ProgramCompiler
     }
 
     /// <summary>The span of groups <paramref name="span"/> widened to hold <paramref name="first"/> to <paramref name="last"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=22985D
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=22985D
+    // Hairs-Human:        PENDING
     private static (int First, int Last) Widen((int First, int Last) span, int first, int last) =>
         span.Last < span.First ? (first, last) : (Math.Min(span.First, first), Math.Max(span.Last, last));
 
     /// <summary>What one entry of the emitter's work list does.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=EC1FF0
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=EC1FF0
+    // Hairs-Human:        PENDING
     private enum Work
     {
         /// <summary>Lower a node.</summary>
@@ -322,8 +322,8 @@ internal static class ProgramCompiler
     }
 
     /// <summary>The addresses an alternation's lowering patches once its alternatives are emitted.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=44F968
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=44F968
+    // Hairs-Human:        PENDING
     private sealed class Alternation(int count)
     {
         /// <summary>How many alternatives there are.</summary>
@@ -337,8 +337,8 @@ internal static class ProgramCompiler
     }
 
     /// <summary>One quantifier's lowering in progress: its form, its registers and the addresses it patches.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=BFC3B2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=BFC3B2
+    // Hairs-Human:        PENDING
     private sealed class Iteration(QuantifierNode quantifier, int mark, int counter)
     {
         /// <summary>The quantifier.</summary>
@@ -366,49 +366,49 @@ internal static class ProgramCompiler
     /// direction it is compiled in, right to left in a look-behind's body and left to right elsewhere, a look-ahead's body
     /// in a look-behind's included.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=Medium; Resources=0; Fingerprint=03367C
-    // Broiler-Falsified-If: a flag a modifier group removes stays in force in its body, one it adds stays in force after it, or a modifier group changes the direction
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=Medium; Resources=0; Fingerprint=03367C
+    // Hairs-Falsified-If: a flag a modifier group removes stays in force in its body, one it adds stays in force after it, or a modifier group changes the direction
+    // Hairs-Human:        PENDING
     private readonly record struct Scope(bool IgnoreCase, bool Multiline, bool DotAll, bool RightToLeft)
     {
         /// <summary>The flags in force in the body of a modifier group that adds <paramref name="added"/> and removes <paramref name="removed"/>.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=Medium; Resources=0; Fingerprint=5E8FDF
-        // Broiler-Falsified-If: With(None, Multiline) leaves Multiline set, or With(IgnoreCase, None) leaves IgnoreCase clear
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=Medium; Resources=0; Fingerprint=5E8FDF
+        // Hairs-Falsified-If: With(None, Multiline) leaves Multiline set, or With(IgnoreCase, None) leaves IgnoreCase clear
+        // Hairs-Human:        PENDING
         internal Scope With(RegexFlags added, RegexFlags removed) => new(
             Updated(IgnoreCase, RegexFlags.IgnoreCase, added, removed),
             Updated(Multiline, RegexFlags.Multiline, added, removed),
             Updated(DotAll, RegexFlags.DotAll, added, removed),
             RightToLeft);
 
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4CB217
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4CB217
+        // Hairs-Human:        PENDING
         private static bool Updated(bool held, RegexFlags flag, RegexFlags added, RegexFlags removed) =>
             (held || (added & flag) != 0) && (removed & flag) == 0;
     }
 
     /// <summary>One work-list entry: what to do, to which node under which flags, with which pending lowering.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=FE0920
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=FE0920
+    // Hairs-Human:        PENDING
     private readonly record struct Step(Work Work, RegexNode? Node, Scope Scope = default, int Index = 0, Alternation? Alternation = null, Iteration? Iteration = null, int Count = 0);
 
     /// <summary>A table of strings the writer built, with the strings, the direction and the folding it was built for.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D758C3
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D758C3
+    // Hairs-Human:        PENDING
     private readonly record struct StringTable(IReadOnlyList<string> Strings, bool RightToLeft, bool Folded, RegexStrings Table);
 
     /// <summary>
     /// What a table of strings is found by: its direction, its folding, how many strings it holds and a hash of them in
     /// their order. Tables of one key are compared string by string, so two tables that only share a key stay two.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=6E55F2
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=6E55F2
+    // Hairs-Human:        PENDING
     private readonly record struct StringTableKey(bool RightToLeft, bool Folded, int Count, int Hash);
 
     /// <summary>The lowering of one tree into one program.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=7A6583
-    // Broiler-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=5; Fingerprint=7A6583
+    // Hairs-Falsified-If: a lazy quantifier's choice tries the body before the continuation, or an alternation's choice resumes anywhere but at the next alternative
+    // Hairs-Human:        PENDING
     private sealed class ProgramWriter(int captureCount, RegexGroupNames groupNames, RegexFlags flags, RegexUnicode data,
         Dictionary<QuantifierNode, (int First, int Last)> groups, bool fastPaths, IEqualityComparer<string> stringComparer)
     {
@@ -429,9 +429,9 @@ internal static class ProgramCompiler
 
         /// <summary>The compilation's account, which the lowering charges before what the expansions decide (task 2.5).</summary>
         private readonly CompileCharge _account = data.Account;
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Low; Resources=0; Fingerprint=2F0133
-        // Broiler-Falsified-If: a pattern compiled under v alone is lowered outside Unicode mode, so /./v matches one half of a surrogate pair
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=Low; Resources=0; Fingerprint=2F0133
+        // Hairs-Falsified-If: a pattern compiled under v alone is lowered outside Unicode mode, so /./v matches one half of a surrogate pair
+        // Hairs-Human:        PENDING
         private readonly bool _unicode = flags.IsUnicodeMode();
 
         /// <summary>The class of the word characters compared exactly, then under <c>i</c>, once it is added; -1 before.</summary>
@@ -444,9 +444,9 @@ internal static class ProgramCompiler
         private int _registers = 2 * (captureCount + 1);
 
         /// <summary>The program of <paramref name="tree"/>, which the first walk read, ending in <see cref="RegexOp.Succeed"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=06C840
-        // Broiler-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=5; Fingerprint=06C840
+        // Hairs-Falsified-If: an alternation's choice resumes at an address other than the next alternative's first instruction, or a group's end is written before its body
+        // Hairs-Human:        PENDING
         internal RegexProgram Emit(RegexNode tree)
         {
             var work = new Stack<Step>();
@@ -507,9 +507,9 @@ internal static class ProgramCompiler
         /// write a register, the one-character test every attempt makes first, read left to right: a character or class
         /// instruction, an atom run's first atom, or the atom of a run that requires a character; -1 for anything else.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=F1B6B9
-        // Broiler-Falsified-If: a pattern that can match without reading a character, such as a*b, a|b, ^a or (?=a)a, is given a first test, or one that reads past a choice is
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=F1B6B9
+        // Hairs-Falsified-If: a pattern that can match without reading a character, such as a*b, a|b, ^a or (?=a)a, is given a first test, or one that reads past a choice is
+        // Hairs-Human:        PENDING
         private int FirstTest()
         {
             var at = 0;
@@ -530,9 +530,9 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Lowers what can be lowered of <paramref name="node"/> under <paramref name="scope"/> now, and puts the rest on the work list.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=0ADCCD
-        // Broiler-Falsified-If: an alternation's alternatives are emitted in an order other than the pattern's, or a sequence's terms in an order other than the pattern's outside a look-behind's body and other than its reverse inside one
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=4; Fingerprint=0ADCCD
+        // Hairs-Falsified-If: an alternation's alternatives are emitted in an order other than the pattern's, or a sequence's terms in an order other than the pattern's outside a look-behind's body and other than its reverse inside one
+        // Hairs-Human:        PENDING
         private void Visit(RegexNode node, Scope scope, Stack<Step> work)
         {
             switch (node)
@@ -620,9 +620,9 @@ internal static class ProgramCompiler
         /// Begins a quantifier's lowering: its registers, the bound checks and the choice, the iteration's start and
         /// capture reset; the body and <see cref="Work.CloseIteration"/> go on the work list.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=F39735
-        // Broiler-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=F39735
+        // Hairs-Falsified-If: X{0} emits X, a quantifier with a minimum of zero emits an EnterBelowMinimum, or one with an unbounded maximum an ExitAtMaximum
+        // Hairs-Human:        PENDING
         private void OpenIteration(QuantifierNode quantifier, Scope scope, Stack<Step> work)
         {
             var min = quantifier.Min;
@@ -670,9 +670,9 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Ends a quantifier's lowering: the empty check, the count and the jump back, then the exits.</summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=D63006
-        // Broiler-Falsified-If: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=D63006
+        // Hairs-Falsified-If: the empty check of a counted quantifier reads the count after the iteration's increment, or a greedy choice's second way is the body
+        // Hairs-Human:        PENDING
         private void CloseIteration(Iteration iteration)
         {
             var quantifier = iteration.Quantifier;
@@ -697,17 +697,17 @@ internal static class ProgramCompiler
         /// pattern character, <c>.</c>, or a class without strings, each of which consumes exactly one character when it
         /// matches, at most one way, and holds no group.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=0; Fingerprint=B770CA
-        // Broiler-Falsified-If: a class holding strings, a group of one character or an assertion is taken for an atom
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=0; Fingerprint=B770CA
+        // Hairs-Falsified-If: a class holding strings, a group of one character or an assertion is taken for an atom
+        // Hairs-Human:        PENDING
         private static bool IsAtom(RegexNode node) => node is CharNode or AnyCharNode || node is CharClassNode { Set.HasStrings: false };
 
         /// <summary>
         /// The <paramref name="index"/>-th term of <paramref name="sequence"/> in the order it is matched: the pattern's order,
         /// or right to left its reverse (§22.2.2.3, Alternative :: Alternative Term with direction backward).
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=Medium; Resources=0; Fingerprint=578969
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=Medium; Resources=0; Fingerprint=578969
+        // Hairs-Human:        PENDING
         private static RegexNode MatchedTerm(SequenceNode sequence, int index, Scope scope) =>
             sequence.Terms[scope.RightToLeft ? sequence.Terms.Count - 1 - index : index];
 
@@ -716,9 +716,9 @@ internal static class ProgramCompiler
         /// <c>LiteralIgnoringCase</c> with its Canonicalize; <c>AnyButLineTerminator</c>, or <c>Any</c> under <c>s</c>; a class
         /// test (<see cref="AddClass"/>).
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=1; Fingerprint=DDB1B9
-        // Broiler-Falsified-If: a character under the i flag in force is given an instruction that compares it exactly, or the dot under s one that refuses a line terminator
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=1; Fingerprint=DDB1B9
+        // Hairs-Falsified-If: a character under the i flag in force is given an instruction that compares it exactly, or the dot under s one that refuses a line terminator
+        // Hairs-Human:        PENDING
         private void AddAtom(RegexNode node, Scope scope)
         {
             switch (node)
@@ -743,9 +743,9 @@ internal static class ProgramCompiler
         /// Adds an atom run: <c>AtomRun count</c>, then the <paramref name="count"/> atoms of <paramref name="sequence"/> from
         /// its <paramref name="first"/>-th term in the order it is matched, the run costing what its first atom costs.
         /// </summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=1; Fingerprint=FFC2CE
-        // Broiler-Falsified-If: a run's cost is not its first atom's, or its atoms are emitted in an order other than the sequence's matched order
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=1; Fingerprint=FFC2CE
+        // Hairs-Falsified-If: a run's cost is not its first atom's, or its atoms are emitted in an order other than the sequence's matched order
+        // Hairs-Human:        PENDING
         private void AddAtomRun(SequenceNode sequence, int first, int count, Scope scope)
         {
             var run = Add(RegexOp.AtomRun, count, rightToLeft: scope.RightToLeft);
@@ -769,9 +769,9 @@ internal static class ProgramCompiler
         /// 1 + ⌊log₂ n⌋ per string, before it is built (<see cref="CompileSite.Program"/>). Task 2.4c compared each
         /// occurrence's strings with every table built before it, string by string.
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=5A680C
-        // Broiler-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, a folded class's table holds a code point other than its Canonicalize, or an occurrence compares its strings with a table of another hash
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=5A680C
+        // Hairs-Falsified-If: two occurrences of \p{RGI_Emoji} in one pattern get two tables, two classes of different strings share one, a folded class's table holds a code point other than its Canonicalize, or an occurrence compares its strings with a table of another hash
+        // Hairs-Human:        PENDING
         private int StringTableOf(CharSet set, bool rightToLeft)
         {
             var strings = new List<string>();
@@ -854,8 +854,8 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Whether two lists hold the same strings in the same order, compared by the compilation's comparer of strings, by code unit but for a test's.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=52FB22
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=52FB22
+        // Hairs-Human:        PENDING
         private bool SameStrings(IReadOnlyList<string> a, IReadOnlyList<string> b)
         {
             if (a.Count != b.Count)
@@ -875,9 +875,9 @@ internal static class ProgramCompiler
         /// inverts (§22.2.2.7.1); a <c>v</c>-mode class the parser folded is its canonical members, tested against a
         /// character's Canonicalize.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=989588
-        // Broiler-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=3; Fingerprint=989588
+        // Hairs-Falsified-If: the class [^a-c] is given the ranges a to c rather than their complement, [^k] under i is given the complement of k rather than k inverted, or a class's cost is not one plus its weight for each code point its test searches for
+        // Hairs-Human:        PENDING
         private void AddClass(CharSet set, Scope scope)
         {
             if (set.CaseFolded)
@@ -917,9 +917,9 @@ internal static class ProgramCompiler
         /// table's dispatch costs one and its weight, the floor of the base-2 logarithm of the number of characters strings
         /// begin with, as a class of that many ranges is weighed (<see cref="RegexProgram.ClassWeight"/>).
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=BC8ED7
-        // Broiler-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=BC8ED7
+        // Hairs-Falsified-If: [\q{abc|ab}]c fails on abc, [\q{}a] on a matches the empty string, or in a look-behind a string's first character is read first
+        // Hairs-Human:        PENDING
         private void AddStrings(CharSet set, Scope scope)
         {
             if (fastPaths)
@@ -989,9 +989,9 @@ internal static class ProgramCompiler
         /// <c>\b</c> and <c>\B</c> with the class of the word characters the flags give (WordCharacters, §22.2.2.9.3),
         /// which costs one unit and the class's weight for each of the two characters tested.
         /// </summary>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=High; Resources=1; Fingerprint=7D25B8
-        // Broiler-Falsified-If: under u with i a word boundary reads a word class without U+017F, or without i or without u one with it
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=High; Resources=1; Fingerprint=7D25B8
+        // Hairs-Falsified-If: under u with i a word boundary reads a word class without U+017F, or without i or without u one with it
+        // Hairs-Human:        PENDING
         private void AddAnchor(AnchorKind kind, Scope scope)
         {
             switch (kind)
@@ -1029,9 +1029,9 @@ internal static class ProgramCompiler
         /// unit, an instruction dispatched), and its capture's length when it runs: a name of several groups reads their
         /// registers until it finds the defined one, work the pattern's own groups bound.
         /// </remarks>
-        // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=E689D9
-        // Broiler-Falsified-If: \k<n> is given another group than the ones the parser named n, a name of two groups is given one of them, or a reference under the i flag in force compares exactly
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=1; Fingerprint=E689D9
+        // Hairs-Falsified-If: \k<n> is given another group than the ones the parser named n, a name of two groups is given one of them, or a reference under the i flag in force compares exactly
+        // Hairs-Human:        PENDING
         private void AddReference(BackreferenceNode reference, Scope scope)
         {
             var first = _referenced.Count;
@@ -1058,9 +1058,9 @@ internal static class ProgramCompiler
         /// Adds the ranges of <paramref name="codePoints"/> to the program's classes, flattened into pairs, and answers how
         /// many there are; charged a unit per range before they are copied (<see cref="CompileSite.Program"/>).
         /// </summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=3F1ABA
-        // Broiler-Falsified-If: a range is copied before a unit is charged for it
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=3F1ABA
+        // Hairs-Falsified-If: a range is copied before a unit is charged for it
+        // Hairs-Human:        PENDING
         private int AddRanges(CodePointSet codePoints)
         {
             _account.Charge(CompileSite.Program, codePoints.RangeCount);
@@ -1077,8 +1077,8 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Appends an instruction, reading right to left when <paramref name="rightToLeft"/> is set, and answers its address.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=4759F7
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=4759F7
+        // Hairs-Human:        PENDING
         private int Add(RegexOp op, int a = 0, int b = 0, int c = 0, int cost = 1, bool rightToLeft = false)
         {
             _code.Add(new RegexInstruction(op, a, b, c, cost, rightToLeft));
@@ -1086,8 +1086,8 @@ internal static class ProgramCompiler
         }
 
         /// <summary>Rewrites the operands given of the instruction at <paramref name="address"/>.</summary>
-        // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E5AB5B
-        // Broiler-Human:        PENDING
+        // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=E5AB5B
+        // Hairs-Human:        PENDING
         private void Patch(int address, int? a = null, int? b = null, int? c = null)
         {
             var old = _code[address];

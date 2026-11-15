@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   5
 // Annotated:        5/5
 // Exempt:           3
@@ -50,19 +50,19 @@ namespace Broiler.Regex.Parsing;
 /// <see cref="Descend"/> before it lowers the tree, so a tree built under another limit is held to the caller's.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=E3A9A6
-// Broiler-Falsified-If: with a limit of 512, a pattern of 511 nested groups is refused, or one of 512 nested groups or 512 nested v-mode classes is accepted
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=E3A9A6
+// Hairs-Falsified-If: with a limit of 512, a pattern of 511 nested groups is refused, or one of 512 nested groups or 512 nested v-mode classes is accepted
+// Hairs-Human:        PENDING
 internal readonly struct RegexNesting
 {
     /// <summary>A limit of <paramref name="limit"/>, which the caller has checked against the documented range.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9D559A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9D559A
+    // Hairs-Human:        PENDING
     internal RegexNesting(int limit) => Limit = limit;
 
     /// <summary>The deepest depth admitted.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9A0DF3
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9A0DF3
+    // Hairs-Human:        PENDING
     internal int Limit { get; }
 
     /// <summary>
@@ -71,9 +71,9 @@ internal readonly struct RegexNesting
     /// <param name="depth">The depth of the level the descent leaves.</param>
     /// <param name="position">Where the level opens in the pattern, or -1 in a walk of the tree.</param>
     /// <exception cref="NestingLimitExceeded">The level would be deeper than <see cref="Limit"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=6580D7
-    // Broiler-Falsified-If: Descend(Limit - 1, p) throws, or Descend(Limit, p) returns instead of throwing
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D6; IP=None; Security=High; Resources=0; Fingerprint=6580D7
+    // Hairs-Falsified-If: Descend(Limit - 1, p) throws, or Descend(Limit, p) returns instead of throwing
+    // Hairs-Human:        PENDING
     internal int Descend(int depth, int position)
     {
         if (depth >= Limit)
@@ -86,8 +86,8 @@ internal readonly struct RegexNesting
     /// answer with <see cref="RegexDiagnosticCode.NestingLimit"/>, and the one the members that take no limit throw with
     /// at <see cref="BroilerRegex.MaximumNestingLimit"/>, whose diagnostic's argument names the limit.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C32C03
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=C32C03
+    // Hairs-Human:        PENDING
     internal const string RefusalMessage = "The pattern nests deeper than the nesting limit";
 
     /// <summary>
@@ -97,9 +97,9 @@ internal readonly struct RegexNesting
     /// validate entry's for the same refusal at <see cref="BroilerRegex.MaximumNestingLimit"/>
     /// (<see cref="RegexDiagnosticCode.NestingLimit"/>, task 2.8 of SJL-11.2), its message <see cref="RefusalMessage"/>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A5409A
-    // Broiler-Falsified-If: a pattern of 600 nested groups is refused by a constructor with a message other than the one Validate answers for it at MaximumNestingLimit
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A5409A
+    // Hairs-Falsified-If: a pattern of 600 nested groups is refused by a constructor with a message other than the one Validate answers for it at MaximumNestingLimit
+    // Hairs-Human:        PENDING
     internal static RegexSyntaxException AsSyntaxError(NestingLimitExceeded refusal)
         => new(RegexDiagnostic.Nesting(refusal.Position, BroilerRegex.MaximumNestingLimit, RefusalMessage));
 }
@@ -108,12 +108,12 @@ internal readonly struct RegexNesting
 /// A descent past the caller's nesting limit, thrown by <see cref="RegexNesting.Descend"/> to unwind a parse or a walk
 /// of the tree. It is the library's own and never leaves it: every public member that parses catches it.
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=9B9FA0
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=9B9FA0
+// Hairs-Human:        PENDING
 internal sealed class NestingLimitExceeded(int position) : Exception("The pattern nests deeper than the caller's nesting limit.")
 {
     /// <summary>Where the refused level opens in the pattern, or -1 when a walk of the tree refused it.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=74547A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=74547A
+    // Hairs-Human:        PENDING
     internal int Position { get; } = position;
 }

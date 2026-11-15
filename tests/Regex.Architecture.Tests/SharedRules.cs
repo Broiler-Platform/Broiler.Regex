@@ -777,7 +777,7 @@ internal static class SharedRules
     // SL8: assurance coverage.
 
     /// <summary>
-    /// SL8's structural half: the assurance configuration, <c>assurance.config.json</c> at the root, covers every
+    /// SL8's structural half: the assurance configuration, <c>hairs.config.json</c> at the root, covers every
     /// library SL8 holds, under the strict exemption predicate, with preprocessor directives forbidden, and hides
     /// no source of one. That every relevant unit carries its block, and that the artefacts are current, is the
     /// assurance tool's <c>check</c>, which CI runs.
@@ -790,7 +790,7 @@ internal static class SharedRules
             : [];
         var held = libraryProjects.ToList();
         foreach (var project in held.Where(p => !projects.Contains(p)))
-            yield return "assurance.config.json does not cover " + project;
+            yield return "hairs.config.json does not cover " + project;
 
         // An exclusion is accepted when it gives its reason and hides no file of a library SL8 holds. Broiler.Unicode
         // excludes generated tables that live in a library SL8 does not hold; this repository's one exclusion is a
@@ -802,15 +802,15 @@ internal static class SharedRules
         {
             var glob = exclusion.ValueKind == JsonValueKind.Object && exclusion.TryGetProperty("glob", out var g) ? g.GetString() ?? string.Empty : string.Empty;
             if (exclusion.ValueKind != JsonValueKind.Object || !exclusion.TryGetProperty("reason", out var reason) || string.IsNullOrWhiteSpace(reason.GetString()))
-                yield return "assurance.config.json excludes '" + glob + "' without a reason";
+                yield return "hairs.config.json excludes '" + glob + "' without a reason";
             if (glob.Length == 0 || glob[0] == '*' || held.Any(p => glob.StartsWith(p[..(p.IndexOf('/', StringComparison.Ordinal) + 1)], StringComparison.Ordinal)))
-                yield return "assurance.config.json excludes '" + glob + "', which can hide a unit of a library SL8 holds";
+                yield return "hairs.config.json excludes '" + glob + "', which can hide a unit of a library SL8 holds";
         }
 
         if (!root.TryGetProperty("forbidDirectives", out var forbid) || forbid.ValueKind != JsonValueKind.True)
-            yield return "assurance.config.json does not forbid preprocessor directives";
+            yield return "hairs.config.json does not forbid preprocessor directives";
         if (!root.TryGetProperty("exemptionPredicate", out var predicate) || predicate.GetString() != "strict")
-            yield return "assurance.config.json does not use the strict exemption predicate";
+            yield return "hairs.config.json does not use the strict exemption predicate";
     }
 
     /// <summary>SL8's completeness half: every source of a library SL8 holds is in the manifest's files array.</summary>

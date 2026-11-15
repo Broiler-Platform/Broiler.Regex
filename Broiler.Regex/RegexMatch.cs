@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   12
 // Annotated:        12/12
 // Exempt:           14
@@ -26,8 +26,8 @@ namespace Broiler.Regex;
 /// the JavaScript layer needs (<c>Success</c>, <c>Value</c>, <c>Index</c>, <c>Length</c>) for one element of a match's
 /// result (ECMA-262 §22.2.7.2, RegExpBuiltinExec, steps 33 and 34).
 /// </summary>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=2F0682
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=2F0682
+// Hairs-Human:        PENDING
 public sealed class RegexGroup
 {
     /// <summary>Whether the group participated in the match: false for a group the match did not reach, whose captured value is undefined.</summary>
@@ -62,9 +62,9 @@ public sealed class RegexGroup
         Name = name;
     }
 
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=247722
-    // Broiler-Falsified-If: an unmatched group reports Success as true, an Index other than -1, a non-empty Value, or a Number other than its own
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=247722
+    // Hairs-Falsified-If: an unmatched group reports Success as true, an Index other than -1, a non-empty Value, or a Number other than its own
+    // Hairs-Human:        PENDING
     internal static RegexGroup Unmatched(int number, string? name) => new(number, false, -1, 0, "", name);
 }
 
@@ -82,8 +82,8 @@ public sealed class RegexGroup
 /// answers the global iteration's next match where <c>BroilerRegex.Matches</c>'s <c>IEnumerable&lt;RegexMatch&gt;</c> did. Breaks
 /// of <c>0.1.0-preview.5</c>, listed with requirement R10 in <c>docs/suppressions.md</c>.
 /// </remarks>
-// Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=DA2CD8
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=DA2CD8
+// Hairs-Human:        PENDING
 public sealed class RegexMatch
 {
     /// <summary>The groups, group 0 first, none for a failed match: immutable, so nothing reachable from <see cref="Empty"/> can change (convention 7).</summary>
@@ -108,9 +108,9 @@ public sealed class RegexMatch
     /// The groups, group 0 (the whole match) first and then each capturing group in source order, each participating or
     /// not; none for a failed match. A span of the match's own array, which a caller cannot change.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4CAEDE
-    // Broiler-Falsified-If: a match of (a)(b)? on "a" answers other than two groups, group 0 first, or a caller can write a group through the span
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4CAEDE
+    // Hairs-Falsified-If: a match of (a)(b)? on "a" answers other than two groups, group 0 first, or a caller can write a group through the span
+    // Hairs-Human:        PENDING
     public ReadOnlySpan<RegexGroup> Groups => _groups.AsSpan();
 
     /// <summary>
@@ -124,15 +124,15 @@ public sealed class RegexMatch
     /// The no-match result, which every call that finds no match answers. Nothing reachable from it can change: its
     /// groups are an empty array (convention 7).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=166586
-    // Broiler-Falsified-If: RegexMatch.Empty reports Success as true, a non-empty Groups span or a group for a name
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=166586
+    // Hairs-Falsified-If: RegexMatch.Empty reports Success as true, a non-empty Groups span or a group for a name
+    // Hairs-Human:        PENDING
     public static readonly RegexMatch Empty = new(false, -1, 0, "", Array.Empty<RegexGroup>(), null);
 
     /// <summary>The failed match of a call that reached <paramref name="limit"/>, one shared instance for each ceiling.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=771ACF
-    // Broiler-Falsified-If: the match answered for a ceiling reports Success as true, a Limit of None or another ceiling's, or a non-empty Groups list
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=771ACF
+    // Hairs-Falsified-If: the match answered for a ceiling reports Success as true, a Limit of None or another ceiling's, or a non-empty Groups list
+    // Hairs-Human:        PENDING
     internal static RegexMatch Exceeded(RegexLimit limit) => limit switch
     {
         RegexLimit.Frames => FramesExceeded,
@@ -142,30 +142,30 @@ public sealed class RegexMatch
     };
 
     /// <summary>The failed match of a call that reached the frame ceiling.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A6FDF3
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=A6FDF3
+    // Hairs-Human:        PENDING
     private static readonly RegexMatch FramesExceeded = new(RegexLimit.Frames);
 
     /// <summary>The failed match of a call that reached the trail ceiling.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B18928
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=B18928
+    // Hairs-Human:        PENDING
     private static readonly RegexMatch TrailExceeded = new(RegexLimit.Trail);
 
     /// <summary>The failed match of a call that reached a step ceiling, which the string-bearing members do not set.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=83D4EE
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=83D4EE
+    // Hairs-Human:        PENDING
     private static readonly RegexMatch StepsExceeded = new(RegexLimit.Steps);
 
     /// <summary>A failed match naming <paramref name="limit"/>, with no groups, as <see cref="Empty"/> has none.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D49C0B
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=D49C0B
+    // Hairs-Human:        PENDING
     private RegexMatch(RegexLimit limit)
         : this(false, -1, 0, "", Array.Empty<RegexGroup>(), null) => Limit = limit;
 
     /// <summary>A match, or a failed one, of <paramref name="groups"/>, an array made for it alone and never written after.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=A43A57
-    // Broiler-Falsified-If: a match's groups change after it is answered, or its subject is not the one it was found in
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=1; Fingerprint=A43A57
+    // Hairs-Falsified-If: a match's groups change after it is answered, or its subject is not the one it was found in
+    // Hairs-Human:        PENDING
     internal RegexMatch(bool success, int index, int length, string value, RegexGroup[] groups, string? input)
     {
         Success = success;
@@ -194,9 +194,9 @@ public sealed class RegexMatch
     /// pattern's capture count.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 RegExpBuiltinExec; IP=None; Security=Low; Resources=1; Fingerprint=A8B0C7
-    // Broiler-Falsified-If: under (?:(?<n>a)|(?<n>b)) on "b" the name n answers group 1, a name no group of which participated answers null, or an undeclared name answers a group
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2 RegExpBuiltinExec; IP=None; Security=Low; Resources=1; Fingerprint=A8B0C7
+    // Hairs-Falsified-If: under (?:(?<n>a)|(?<n>b)) on "b" the name n answers group 1, a name no group of which participated answers null, or an undeclared name answers a group
+    // Hairs-Human:        PENDING
     public RegexGroup? GroupNamed(string name)
     {
         ArgumentNullException.ThrowIfNull(name);

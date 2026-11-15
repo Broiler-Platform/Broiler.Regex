@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   42
 // Annotated:        42/42
 // Exempt:           28
@@ -109,29 +109,29 @@ namespace Broiler.Regex.Engine;
 /// it.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
-// Broiler-Falsified-If: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=7D0010
+// Hairs-Falsified-If: a match over a subject of any length, or of a pattern of any nesting within the library's maximum, ends the process with a stack overflow, or a failed attempt leaves a register other than -1 for the next start position
+// Hairs-Human:        PENDING
 internal ref struct RegexMachine
 {
     /// <summary>The integers of one frame: the address to resume at, the position, the trail's height, the mark.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9E9389
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=9E9389
+    // Hairs-Human:        PENDING
     private const int FrameSize = 4;
 
     /// <summary>The mark of a frame that is no fast path's: a choice's, or a look-around's barrier.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4295E0
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4295E0
+    // Hairs-Human:        PENDING
     private const int Unmarked = -1;
 
     /// <summary>The integers of one trail cell: the register and the value it held.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=3A53FC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=3A53FC
+    // Hairs-Human:        PENDING
     private const int CellSize = 2;
 
     /// <summary>The units the meter is charged in, whole blocks before the work they pay for (decision D8).</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=5491AD
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Medium; Resources=0; Fingerprint=5491AD
+    // Hairs-Human:        PENDING
     internal const ulong Block = 512;
 
     /// <summary>
@@ -139,8 +139,8 @@ internal ref struct RegexMachine
     /// 256 KiB. A longer one, which only a call holding more than 16,384 frames or 32,768 trail cells needs, is allocated
     /// for the call alone and left to the collector when it ends, so that one call's peak does not stay pooled after it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=357418
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=357418
+    // Hairs-Human:        PENDING
     internal const int PooledLength = 1 << 16;
 
     private readonly RegexProgram _program;
@@ -203,8 +203,8 @@ internal ref struct RegexMachine
     private int _splitAt;
 
     /// <summary>A machine for one call of <paramref name="program"/> over <paramref name="subject"/>, charging <paramref name="meter"/> under <paramref name="ceilings"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=FBFF16
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=FBFF16
+    // Hairs-Human:        PENDING
     internal RegexMachine(RegexProgram program, ReadOnlySpan<char> subject, RegexWorkCharge? meter, RegexMatchCeilings ceilings)
     {
         _program = program;
@@ -227,9 +227,9 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Returns the rented arrays to the pool; the machine is not used after.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FBCED8
-    // Broiler-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FBCED8
+    // Hairs-Falsified-If: an array is returned to the pool twice, or a call's arrays stay out of the pool after it ends
+    // Hairs-Human:        PENDING
     internal void Release()
     {
         ArrayPool<int>.Shared.Return(_registers);
@@ -251,16 +251,16 @@ internal ref struct RegexMachine
     /// An attempt's first test that the scan made is not charged again, and not observed again. It
     /// is a <see cref="RegexWorkCharge"/> only so that the loop invokes no delegate type but the meter's.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=62AB7A
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=Low; Resources=0; Fingerprint=62AB7A
+    // Hairs-Human:        PENDING
     internal RegexWorkCharge? DispatchObserver { private get; init; }
 
     /// <summary>
     /// The units of work the call did: every instruction it dispatched, the one that reached a frame or trail ceiling
     /// included, and not the one the step ceiling refused.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=036C68
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=036C68
+    // Hairs-Human:        PENDING
     internal readonly ulong Spent => _spent;
 
     /// <summary>
@@ -277,9 +277,9 @@ internal ref struct RegexMachine
     /// step back is the caller's to take before it calls (<see cref="RegexProgram.Match"/>). A program with a first test
     /// skips, before each attempt, the positions that test refuses (the remarks' start-position scan).
     /// </remarks>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=0C72DD
-    // Broiler-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character when the program has no first test, under u a search starts inside a surrogate pair it stepped over, a read of a call that starts inside a pair takes the pair as one character, or an anchored call scans
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=6; Fingerprint=0C72DD
+    // Hairs-Falsified-If: an anchored call tries a position after its start, a search skips the position after the last character when the program has no first test, under u a search starts inside a surrogate pair it stepped over, a read of a call that starts inside a pair takes the pair as one character, or an anchored call scans
+    // Hairs-Human:        PENDING
     internal RegexStatus Run(int start, bool anchored, Span<int> slots)
     {
         _splitAt = _unicode && start > 0 && start < _subject.Length
@@ -329,9 +329,9 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/> with <paramref name="at"/> the position admitted; <see cref="Outcome.Failed"/> when
     /// no position before the subject's end is; <see cref="Outcome.Exceeded"/> at the step ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=2AA4B0
-    // Broiler-Falsified-If: a position is tested before its units are charged, a position whose character the first test admits is skipped, the scan passes the step ceiling, or under u it starts a test inside a surrogate pair it stepped over
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=2AA4B0
+    // Hairs-Falsified-If: a position is tested before its units are charged, a position whose character the first test admits is skipped, the scan passes the step ceiling, or under u it starts a test inside a surrogate pair it stepped over
+    // Hairs-Human:        PENDING
     private Outcome Scan(int test, ref int at)
     {
         var instruction = _code[test];
@@ -358,9 +358,9 @@ internal ref struct RegexMachine
     /// the test is neither made nor charged again. The instructions an attempt dispatches before its first test only
     /// write registers, so the attempt reaches that test at its start, once.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=0; Fingerprint=ACAF56
-    // Broiler-Falsified-If: an attempt the scan admitted makes or charges its first test again, or takes the scan's answer for a test other than its first
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=0; Fingerprint=ACAF56
+    // Hairs-Falsified-If: an attempt the scan admitted makes or charges its first test again, or takes the scan's answer for a test other than its first
+    // Hairs-Human:        PENDING
     private bool TakeScanned(int address, ref int position)
     {
         if (address != _scanned)
@@ -371,8 +371,8 @@ internal ref struct RegexMachine
     }
 
     /// <summary>How one attempt ended.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C1744
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4C1744
+    // Hairs-Human:        PENDING
     private enum Outcome
     {
         /// <summary>The program accepted.</summary>
@@ -391,9 +391,9 @@ internal ref struct RegexMachine
     /// frame; a positive look-around's barrier, reached so, fails in its turn and the frame below it is resumed; a marked
     /// frame takes its fast path's next way, or, with none left, fails in its turn too.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=BADA73
-    // Broiler-Falsified-If: an instruction is dispatched before its units are charged, the attempt's first test the scan made is charged again, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, a frame a look-around's body pushed is resumed after the look-around's close, or a marked frame resumes at its own instruction rather than after the instructions it owns
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2; IP=None; Security=High; Resources=8; Fingerprint=BADA73
+    // Hairs-Falsified-If: an instruction is dispatched before its units are charged, the attempt's first test the scan made is charged again, an instruction that fails resumes anywhere but at the newest frame that is not a positive look-around's barrier, a frame resumes with a register write made after it still in force, a frame a look-around's body pushed is resumed after the look-around's close, or a marked frame resumes at its own instruction rather than after the instructions it owns
+    // Hairs-Human:        PENDING
     private Outcome MatchFrom(int origin)
     {
         var pc = 0;
@@ -614,9 +614,9 @@ internal ref struct RegexMachine
     /// the units are spent, and when they pass what the meter has been paid, it is paid, before the work.
     /// </summary>
     /// <returns>False, with nothing spent and <see cref="Exceeded"/> naming the steps, when the step ceiling refuses them; the meter's exception, if it throws, propagates.</returns>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=417A4A
-    // Broiler-Falsified-If: the work is done before its units are charged, a refused cost stays spent, or a cost the meter has already been paid for charges it again
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=417A4A
+    // Hairs-Falsified-If: the work is done before its units are charged, a refused cost stays spent, or a cost the meter has already been paid for charges it again
+    // Hairs-Human:        PENDING
     private bool Afford(int cost)
     {
         _spent += (ulong)cost;
@@ -638,9 +638,9 @@ internal ref struct RegexMachine
     /// ECMA-262 §22.2.2.7.1), whether dispatched or read by a fast path; when it holds, <paramref name="position"/> moves
     /// past the character.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=1; Fingerprint=83A9CE
-    // Broiler-Falsified-If: a character instruction read by a run, an atom run or a class of strings answers other than the same instruction dispatched, or the position moves when the test fails
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=High; Resources=1; Fingerprint=83A9CE
+    // Hairs-Falsified-If: a character instruction read by a run, an atom run or a class of strings answers other than the same instruction dispatched, or the position moves when the test fails
+    // Hairs-Human:        PENDING
     private readonly bool AtomHolds(in RegexInstruction atom, ref int position)
     {
         if (!NextCharacter(position, atom.RightToLeft, out var character, out var step))
@@ -673,9 +673,9 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> after the characters taken; <see cref="Outcome.Failed"/>
     /// when a required character is missing; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=9C7EB7
-    // Broiler-Falsified-If: a greedy run that reaches the step ceiling while it takes its extra characters answers a match of fewer, a run examines a character it has not charged, a greedy run's frame gives a character back below its required ones, or a lazy run takes a character before it tries its continuation
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=9C7EB7
+    // Hairs-Falsified-If: a greedy run that reaches the step ceiling while it takes its extra characters answers a match of fewer, a run examines a character it has not charged, a greedy run's frame gives a character back below its required ones, or a lazy run takes a character before it tries its continuation
+    // Hairs-Human:        PENDING
     private Outcome EnterRun(in RegexInstruction run, int address, ref int position)
     {
         var atom = _code[address + 1];
@@ -715,9 +715,9 @@ internal ref struct RegexMachine
     /// (<see cref="TakeScanned"/>), and each later one charged its cost before it is read.
     /// </summary>
     /// <returns><see cref="Outcome.Matched"/> past the last atom, <see cref="Outcome.Failed"/> at the first that fails, or <see cref="Outcome.Exceeded"/>.</returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=High; Resources=2; Fingerprint=A6E8E4
-    // Broiler-Falsified-If: an atom run charges units other than its atoms dispatched one by one would, reads an atom after one has failed, or reads a later atom before charging it
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3; IP=None; Security=High; Resources=2; Fingerprint=A6E8E4
+    // Hairs-Falsified-If: an atom run charges units other than its atoms dispatched one by one would, reads an atom after one has failed, or reads a later atom before charging it
+    // Hairs-Human:        PENDING
     private Outcome Atoms(in RegexInstruction run, int address, ref int position)
     {
         for (var index = 1; index <= run.A; index++)
@@ -745,9 +745,9 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="end"/> where the way taken ends; <see cref="Outcome.Failed"/>
     /// when no way is left; <see cref="Outcome.Exceeded"/> at the step or frame ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=A53F2C
-    // Broiler-Falsified-If: the class tries its single characters before a string that matches, the empty string before its single characters, a string kept under another character than the one at the index, or leaves no frame for a way after the one it takes
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=3; Fingerprint=A53F2C
+    // Hairs-Falsified-If: the class tries its single characters before a string that matches, the empty string before its single characters, a string kept under another character than the one at the index, or leaves no frame for a way after the one it takes
+    // Hairs-Human:        PENDING
     private Outcome NextWayOfStrings(int address, int from, int member, out int end)
     {
         var table = _program.Strings(_code[address].A);
@@ -788,9 +788,9 @@ internal ref struct RegexMachine
     /// compare them; right to left, from its last character. Each character compared costs one unit, charged before it
     /// is read.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=4030D9
-    // Broiler-Falsified-If: right to left a string is compared from its first character, a character is read before it is charged, or under u a string's code point is compared with one unit of a surrogate pair
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=4030D9
+    // Hairs-Falsified-If: right to left a string is compared from its first character, a character is read before it is charged, or under u a string's code point is compared with one unit of a surrogate pair
+    // Hairs-Human:        PENDING
     private Outcome StringHolds(RegexStrings table, ReadOnlySpan<int> text, int from, out int end)
     {
         end = from;
@@ -818,9 +818,9 @@ internal ref struct RegexMachine
     /// instructions; <see cref="Outcome.Failed"/> when it has no way left, which fails in its turn; or
     /// <see cref="Outcome.Exceeded"/>.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=B7EB27
-    // Broiler-Falsified-If: a greedy run gives back two characters at one resumption, or one below its required characters, a lazy run takes more characters than its maximum, or a frame kept for a later way holds the position of the way taken
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=High; Resources=3; Fingerprint=B7EB27
+    // Hairs-Falsified-If: a greedy run gives back two characters at one resumption, or one below its required characters, a lazy run takes more characters than its maximum, or a frame kept for a later way holds the position of the way taken
+    // Hairs-Human:        PENDING
     private Outcome NextWay(int frame, out int position)
     {
         var address = _frames[frame];
@@ -856,9 +856,9 @@ internal ref struct RegexMachine
     /// left, the one that starts there, read as the run read it, and never past <paramref name="least"/>, where its required
     /// characters end.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=Medium; Resources=0; Fingerprint=4EAF6D
-    // Broiler-Falsified-If: under u a run of surrogate pairs gives back one unit of a pair, or a run that began inside a pair the call's start splits gives back past that start
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.3.1; IP=None; Security=Medium; Resources=0; Fingerprint=4EAF6D
+    // Hairs-Falsified-If: under u a run of surrogate pairs gives back one unit of a pair, or a run that began inside a pair the call's start splits gives back past that start
+    // Hairs-Human:        PENDING
     private readonly int Shorter(int end, int least, bool rightToLeft)
     {
         if (rightToLeft)
@@ -872,8 +872,8 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Puts the marked frame at <paramref name="frame"/>, just popped, back at its place, from <paramref name="position"/> with <paramref name="mark"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=AED4CB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=AED4CB
+    // Hairs-Human:        PENDING
     private void KeepFrame(int frame, int position, int mark)
     {
         _frames[frame + 1] = position;
@@ -885,17 +885,17 @@ internal ref struct RegexMachine
     /// The resume address of a frame that is a positive look-around's barrier: no address, as a positive look-around
     /// whose body has no way left to match fails.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=8D01FB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=8D01FB
+    // Hairs-Human:        PENDING
     private const int PositiveBarrier = -1;
 
     /// <summary>
     /// The resume field of a negative look-around's barrier that resumes at <paramref name="address"/>, -2 - address,
     /// below <see cref="PositiveBarrier"/> and every address; the same map takes the field back to the address.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=E4197B
-    // Broiler-Falsified-If: the field of a barrier resuming at address 0 is -1, the positive barrier's, or reads back as another address
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=0; Fingerprint=E4197B
+    // Hairs-Falsified-If: the field of a barrier resuming at address 0 is -1, the positive barrier's, or reads back as another address
+    // Hairs-Human:        PENDING
     private static int NegativeBarrier(int address) => -2 - address;
 
     /// <summary>
@@ -903,9 +903,9 @@ internal ref struct RegexMachine
     /// charges the meter the whole blocks that cover them, before the instruction they pay for is dispatched.
     /// </summary>
     /// <returns>False when the step ceiling refuses them; the meter's exception, if it throws, propagates.</returns>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=05547C
-    // Broiler-Falsified-If: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D8; IP=None; Security=High; Resources=1; Fingerprint=05547C
+    // Hairs-Falsified-If: the meter is charged anything but whole blocks, is charged after the work it pays for, or is charged for an instruction the step ceiling refused
+    // Hairs-Human:        PENDING
     private bool Pay()
     {
         if (_spent > _stepCeiling)
@@ -934,9 +934,9 @@ internal ref struct RegexMachine
     /// <see cref="Outcome.Matched"/>, with <paramref name="position"/> past the characters matched, in the instruction's direction;
     /// <see cref="Outcome.Failed"/>; or <see cref="Outcome.Exceeded"/>, when the length passes the step ceiling.
     /// </returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=6AA99F
-    // Broiler-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, under u a captured lone high surrogate matches the pair it would begin, or right to left the reference moves the index other than to where the characters it matched start
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.2; IP=None; Security=High; Resources=2; Fingerprint=6AA99F
+    // Hairs-Falsified-If: a reference to a group that did not participate fails, a capture's characters are compared before its length is charged, under u a captured lone high surrogate matches the pair it would begin, or right to left the reference moves the index other than to where the characters it matched start
+    // Hairs-Human:        PENDING
     private Outcome MatchReference(in RegexInstruction instruction, ref int position)
     {
         int from = -1, to = -1;
@@ -979,9 +979,9 @@ internal ref struct RegexMachine
     /// it, its width, negated right to left.
     /// </summary>
     /// <returns>False at the subject's end, or at its start right to left, where there is no character to read.</returns>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=0; Fingerprint=E19704
-    // Broiler-Falsified-If: a read right to left from index 0, or left to right from the subject's length, answers a character, or under u a read right to left from after a surrogate pair moves the index by one
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=0; Fingerprint=E19704
+    // Hairs-Falsified-If: a read right to left from index 0, or left to right from the subject's length, answers a character, or under u a read right to left from after a surrogate pair moves the index by one
+    // Hairs-Human:        PENDING
     private readonly bool NextCharacter(int position, bool rightToLeft, out int character, out int step)
     {
         if (rightToLeft ? position == 0 : position == _subject.Length)
@@ -1007,9 +1007,9 @@ internal ref struct RegexMachine
     /// The character at <paramref name="position"/>: a code unit, or under <c>u</c> and <c>v</c> a surrogate pair read as
     /// one code point, unless the call's start splits it (<see cref="_splitAt"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=D08EE3
-    // Broiler-Falsified-If: under u a high surrogate at the subject's last index reads past its end, without u a surrogate pair is read as one code point, or a pair the start splits is read as one
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=D08EE3
+    // Hairs-Falsified-If: under u a high surrogate at the subject's last index reads past its end, without u a surrogate pair is read as one code point, or a pair the start splits is read as one
+    // Hairs-Human:        PENDING
     private readonly int CharacterAt(int position, out int width)
     {
         var unit = _subject[position];
@@ -1029,9 +1029,9 @@ internal ref struct RegexMachine
     /// under <c>u</c> and <c>v</c> a surrogate pair read as one code point, unless the call's start splits it
     /// (<see cref="_splitAt"/>).
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=138731
-    // Broiler-Falsified-If: under u a low surrogate at index 0 reads before the subject, without u a surrogate pair ending at the position is read as one code point, or a pair the start splits is read as one
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=0; Fingerprint=138731
+    // Hairs-Falsified-If: under u a low surrogate at index 0 reads before the subject, without u a surrogate pair ending at the position is read as one code point, or a pair the start splits is read as one
+    // Hairs-Human:        PENDING
     private readonly int CharacterBefore(int position, out int width)
     {
         var unit = _subject[position - 1];
@@ -1051,9 +1051,9 @@ internal ref struct RegexMachine
     /// the character before it and of the character at it differ (§22.2.2.6.1), the word characters being class
     /// <paramref name="words"/>.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=1; Fingerprint=8F2123
-    // Broiler-Falsified-If: the empty subject's index 0 is reported a boundary, or the index between a and _ is
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.6; IP=None; Security=Medium; Resources=1; Fingerprint=8F2123
+    // Hairs-Falsified-If: the empty subject's index 0 is reported a boundary, or the index between a and _ is
+    // Hairs-Human:        PENDING
     private readonly bool AtWordEdge(int words, int position)
     {
         var before = position > 0 && InClass(words, CharacterBefore(position, out _));
@@ -1062,8 +1062,8 @@ internal ref struct RegexMachine
     }
 
     /// <summary>AdvanceStringIndex (ECMA-262 §22.2.7.3): the next start position, past a whole surrogate pair under <c>u</c> and <c>v</c>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=F83BCE
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.7.3; IP=None; Security=Low; Resources=0; Fingerprint=F83BCE
+    // Hairs-Human:        PENDING
     private readonly int NextStart(int position)
     {
         if (position + 1 >= _subject.Length || !_unicode)
@@ -1073,9 +1073,9 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Whether class <paramref name="index"/> holds <paramref name="codePoint"/>: a binary search over its ranges.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=DF3A25
-    // Broiler-Falsified-If: a code point equal to a range's low or high bound is reported absent, or the search reads more ranges than its class's weight plus one
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=DF3A25
+    // Hairs-Falsified-If: a code point equal to a range's low or high bound is reported absent, or the search reads more ranges than its class's weight plus one
+    // Hairs-Human:        PENDING
     private readonly bool InClass(int index, int codePoint)
     {
         var ranges = _program.ClassRanges(index);
@@ -1100,9 +1100,9 @@ internal ref struct RegexMachine
     /// its simple case folding under <c>u</c> and <c>v</c>, and without them the upper case of one code unit, kept when
     /// it is not one code unit or would move a character outside ASCII into it.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Medium; Resources=0; Fingerprint=AB7FCA
-    // Broiler-Falsified-If: without u, U+017F LATIN SMALL LETTER LONG S canonicalizes to S, or under u it does not canonicalize to s
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.3; IP=None; Security=Medium; Resources=0; Fingerprint=AB7FCA
+    // Hairs-Falsified-If: without u, U+017F LATIN SMALL LETTER LONG S canonicalizes to S, or under u it does not canonicalize to s
+    // Hairs-Human:        PENDING
     private readonly int Canonical(int character) => _unicode ? _folding!.SimpleFold(character) : _folding!.SimpleUpper(character);
 
     /// <summary>
@@ -1110,9 +1110,9 @@ internal ref struct RegexMachine
     /// CharacterSetMatcher's test under <c>i</c> (ECMA-262 §22.2.2.7.1), made by testing each code point of the
     /// character's case orbit, which the Unicode owner writes, every code point sharing its Canonicalize, itself included.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=1; Fingerprint=C0C750
-    // Broiler-Falsified-If: under u a class holding only U+212A KELVIN SIGN is reported not to hold k, or without u a class holding only s is reported to hold U+017F
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7.1; IP=None; Security=Medium; Resources=1; Fingerprint=C0C750
+    // Hairs-Falsified-If: under u a class holding only U+212A KELVIN SIGN is reported not to hold k, or without u a class holding only s is reported to hold U+017F
+    // Hairs-Human:        PENDING
     private readonly bool InClassIgnoringCase(int index, int character)
     {
         var count = _unicode ? _folding!.Orbit(character, _orbit) : _folding!.UpperOrbit(character, _orbit);
@@ -1126,16 +1126,16 @@ internal ref struct RegexMachine
     }
 
     /// <summary>ECMA-262's LineTerminator: LF, CR, U+2028 and U+2029.</summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s12.3; IP=None; Security=Low; Resources=0; Fingerprint=D4877B
-    // Broiler-Falsified-If: U+0085 NEXT LINE is reported as a line terminator
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s12.3; IP=None; Security=Low; Resources=0; Fingerprint=D4877B
+    // Hairs-Falsified-If: U+0085 NEXT LINE is reported as a line terminator
+    // Hairs-Human:        PENDING
     private static bool EndsLine(int codePoint) => codePoint is 0x0A or 0x0D or 0x2028 or 0x2029;
 
     /// <summary>Pushes a frame that resumes at <paramref name="resume"/> from <paramref name="position"/>, unless the frame ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=7464A8
-    // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=7464A8
+    // Hairs-Falsified-If: a call holds one frame more than its frame ceiling, or answers LimitExceeded holding fewer
+    // Hairs-Human:        PENDING
     private bool PushChoicePoint(int resume, int position) => PushMarkedFrame(resume, position, Unmarked);
 
     /// <summary>
@@ -1144,9 +1144,9 @@ internal ref struct RegexMachine
     /// reached.
     /// </summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the call already holds as many frames as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=55BDD9
-    // Broiler-Falsified-If: a call holds one frame more than its frame ceiling, answers LimitExceeded holding fewer, or a choice's frame is pushed with a mark
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=55BDD9
+    // Hairs-Falsified-If: a call holds one frame more than its frame ceiling, answers LimitExceeded holding fewer, or a choice's frame is pushed with a mark
+    // Hairs-Human:        PENDING
     private bool PushMarkedFrame(int address, int position, int mark)
     {
         if (_framesHeld == _frameCeiling)
@@ -1168,9 +1168,9 @@ internal ref struct RegexMachine
 
     /// <summary>Writes <paramref name="value"/> into register <paramref name="register"/>, keeping what it held on the trail, unless the trail ceiling is reached.</summary>
     /// <returns>False, with <see cref="Exceeded"/> set, when the write changes the register and the trail already holds as many cells as its ceiling admits.</returns>
-    // Broiler-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=46CC5B
-    // Broiler-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=High; Resources=4; Fingerprint=46CC5B
+    // Hairs-Falsified-If: a write that changes a register leaves no trail cell, so backtracking keeps the value of a path that failed, or the trail holds one cell more than its ceiling
+    // Hairs-Human:        PENDING
     private bool SetRegister(int register, int value)
     {
         var held = _registers[register];
@@ -1193,9 +1193,9 @@ internal ref struct RegexMachine
     }
 
     /// <summary>An array of at least <paramref name="length"/> holding the first <paramref name="used"/> integers of <paramref name="array"/>, which is given back.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=7F7A40
-    // Broiler-Falsified-If: a frame or a trail cell held before the growth reads back differently after it
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=3; Fingerprint=7F7A40
+    // Hairs-Falsified-If: a frame or a trail cell held before the growth reads back differently after it
+    // Hairs-Human:        PENDING
     private static int[] Grow(int[] array, int used, int length)
     {
         var grown = length <= PooledLength ? ArrayPool<int>.Shared.Rent(length) : GC.AllocateUninitializedArray<int>(length);
@@ -1205,9 +1205,9 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Gives a frame or trail array back to the shared pool, unless it is longer than <see cref="PooledLength"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=C6B65F
-    // Broiler-Falsified-If: an array longer than PooledLength is returned to the shared pool, or one of the pool's own is not
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=2; Fingerprint=C6B65F
+    // Hairs-Falsified-If: an array longer than PooledLength is returned to the shared pool, or one of the pool's own is not
+    // Hairs-Human:        PENDING
     private static void ReturnToPool(int[] array)
     {
         if (array.Length <= PooledLength)
@@ -1215,8 +1215,8 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Undoes every register write above trail height <paramref name="height"/>, newest first.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=688A23
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=688A23
+    // Hairs-Human:        PENDING
     private void UndoAbove(int height)
     {
         for (var cell = (_cellsHeld - 1) * CellSize; cell >= height * CellSize; cell -= CellSize)
@@ -1225,8 +1225,8 @@ internal ref struct RegexMachine
     }
 
     /// <summary>Writes the match's offsets: group 0 from <paramref name="origin"/> to the end, then each group's registers.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FE7591
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=FE7591
+    // Hairs-Human:        PENDING
     private readonly void WriteSlots(int origin, Span<int> slots)
     {
         slots[0] = origin;

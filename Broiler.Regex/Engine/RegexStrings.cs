@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   6
 // Annotated:        6/6
 // Exempt:           9
@@ -42,9 +42,9 @@ namespace Broiler.Regex.Engine;
 /// alternation would compare them.
 /// </para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=40E33A
-// Broiler-Falsified-If: two strings that begin with the same character are kept in an order other than the class's, a string is kept under a character other than its first, or right to left other than its last, or a program's two occurrences of the same strings read in the same direction get two tables
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.2.7; IP=None; Security=High; Resources=2; Fingerprint=40E33A
+// Hairs-Falsified-If: two strings that begin with the same character are kept in an order other than the class's, a string is kept under a character other than its first, or right to left other than its last, or a program's two occurrences of the same strings read in the same direction get two tables
+// Hairs-Human:        PENDING
 internal sealed class RegexStrings
 {
     /// <summary>The characters a kept string begins with (its last, right to left), sorted and distinct.</summary>
@@ -66,8 +66,8 @@ internal sealed class RegexStrings
     private readonly int[] _text;
 
     /// <summary>A table over the arrays given, which the caller hands over and does not keep.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=DEEA33
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=DEEA33
+    // Hairs-Human:        PENDING
     internal RegexStrings(int[] keys, int[] groupStarts, int[] members, int[] groupEnds, int[] textStarts, int[] text, bool rightToLeft, bool folded)
     {
         _keys = keys;
@@ -93,22 +93,22 @@ internal sealed class RegexStrings
     internal bool Folded { get; }
 
     /// <summary>The number of members: the candidate index past every string, where the class's single characters are tried.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=78ADB6
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=78ADB6
+    // Hairs-Human:        PENDING
     internal int Count => _members.Length;
 
     /// <summary>How many distinct characters strings begin with: the size of the search a lookup makes.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=272B61
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=272B61
+    // Hairs-Human:        PENDING
     internal int KeyCount => _keys.Length;
 
     /// <summary>
     /// The first member kept under <paramref name="key"/>, or <see cref="Count"/> when no string begins with it: a binary
     /// search over the keys.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=25B128
-    // Broiler-Falsified-If: a key equal to the first or the last of the sorted keys is reported absent, or a character no string begins with is given a member
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Medium; Resources=1; Fingerprint=25B128
+    // Hairs-Falsified-If: a key equal to the first or the last of the sorted keys is reported absent, or a character no string begins with is given a member
+    // Hairs-Human:        PENDING
     internal int FirstMember(int key)
     {
         var low = 0;
@@ -128,13 +128,13 @@ internal sealed class RegexStrings
     }
 
     /// <summary>The member after <paramref name="member"/> in its group, or <see cref="Count"/> after the group's last.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1235EC
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=1235EC
+    // Hairs-Human:        PENDING
     internal int NextMember(int member) => member + 1 < _groupEnds[member] ? member + 1 : _members.Length;
 
     /// <summary>The code points of the string at <paramref name="member"/>, as written.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0BF70C
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=0BF70C
+    // Hairs-Human:        PENDING
     internal ReadOnlySpan<int> Text(int member)
     {
         var number = _members[member];

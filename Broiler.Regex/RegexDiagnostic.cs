@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 // SPDX-License-Identifier: Apache-2.0
 //
-// Broiler Code Assurance
-// ----------------------
+// HAIRS Code Assurance
+// --------------------
 // Relevant units:   9
 // Annotated:        9/9
 // Exempt:           54
@@ -57,9 +57,9 @@ namespace Broiler.Regex;
 /// </para>
 /// <para><b>New in task 2.8 of SJL-11.2</b>, with the validate entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.</para>
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9 and ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=7C239A
-// Broiler-Falsified-If: two members share a number or a message identifier, or a member's number changes once published
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9 and ECMA-262 s22.2.1.1; IP=None; Security=Low; Resources=0; Fingerprint=7C239A
+// Hairs-Falsified-If: two members share a number or a message identifier, or a member's number changes once published
+// Hairs-Human:        PENDING
 public enum RegexDiagnosticCode
 {
     /// <summary>No refusal: the default value of a <see cref="RegexDiagnostic"/>.</summary>
@@ -366,9 +366,9 @@ public enum RegexDiagnosticCode
 /// and position -1 being its fields' defaults read through these members. New in task 2.8 of SJL-11.2, with the validate
 /// entry; fixed for <c>0.1.0-preview.6</c> by task 2.9 of SJL-11.2.
 /// </remarks>
-// Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=D31024
-// Broiler-Falsified-If: a diagnostic's MessageId is not its code's identifier, or the default value reports a code, an identifier or a position other than None, the empty string and -1
-// Broiler-Human:        PENDING
+// Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=D31024
+// Hairs-Falsified-If: a diagnostic's MessageId is not its code's identifier, or the default value reports a code, an identifier or a position other than None, the empty string and -1
+// Hairs-Human:        PENDING
 public readonly struct RegexDiagnostic
 {
     private readonly string? _message;
@@ -377,8 +377,8 @@ public readonly struct RegexDiagnostic
     private readonly int _positionPlusOne;
 
     /// <summary>A refusal of kind <paramref name="code"/> at <paramref name="position"/>.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4410FB
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=4410FB
+    // Hairs-Human:        PENDING
     internal RegexDiagnostic(RegexDiagnosticCode code, int position, string? argument, string message)
     {
         Code = code;
@@ -391,32 +391,32 @@ public readonly struct RegexDiagnostic
     public RegexDiagnosticCode Code { get; }
 
     /// <summary>The code's message identifier (<see cref="MessageIdOf"/>), or the empty string for no refusal.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=2AA998
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=2AA998
+    // Hairs-Human:        PENDING
     public string MessageId => MessageIdOf(Code);
 
     /// <summary>
     /// The code-unit offset the refusal names: into the pattern, or into the flags text for the codes of the flags; -1 for
     /// no refusal.
     /// </summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=F57EA0
-    // Broiler-Falsified-If: the default value answers a position other than -1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=F57EA0
+    // Hairs-Falsified-If: the default value answers a position other than -1
+    // Hairs-Human:        PENDING
     public int Position => _positionPlusOne - 1;
 
     /// <summary>The identifier's argument, as the code's documentation names it, or null when the code takes none.</summary>
     public string? Argument { get; }
 
     /// <summary>A default English rendering, which is no contract (convention 3): an engine renders its own from the identifier.</summary>
-    // Broiler-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=626861
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; IP=None; Security=Low; Resources=0; Fingerprint=626861
+    // Hairs-Human:        PENDING
     public string Message => _message ?? "";
 
     /// <summary>The message identifier of <paramref name="code"/>, the table <see cref="RegexDiagnosticCode"/> documents; the empty string for <see cref="RegexDiagnosticCode.None"/>.</summary>
     /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="code"/> is no member of <see cref="RegexDiagnosticCode"/>.</exception>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=0FCD51
-    // Broiler-Falsified-If: a code's identifier differs from the one its documentation names, or two codes share one
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D9; IP=None; Security=Low; Resources=0; Fingerprint=0FCD51
+    // Hairs-Falsified-If: a code's identifier differs from the one its documentation names, or two codes share one
+    // Hairs-Human:        PENDING
     public static string MessageIdOf(RegexDiagnosticCode code) => code switch
     {
         RegexDiagnosticCode.None => "",
@@ -473,8 +473,8 @@ public readonly struct RegexDiagnostic
     };
 
     /// <summary>The refusal of the nesting limit <paramref name="limit"/> at the level that opens at <paramref name="position"/>.</summary>
-    // Broiler-AI:           Origin=AI; Spec=JSD-0081 decision D7; IP=None; Security=Low; Resources=0; Fingerprint=F8B068
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=JSD-0081 decision D7; IP=None; Security=Low; Resources=0; Fingerprint=F8B068
+    // Hairs-Human:        PENDING
     internal static RegexDiagnostic Nesting(int position, int limit, string message) =>
         new(RegexDiagnosticCode.NestingLimit, position, limit.ToString(NumberFormatInfo.InvariantInfo), message);
 
@@ -483,9 +483,9 @@ public readonly struct RegexDiagnostic
     /// <paramref name="position"/> of a flags text (<see cref="Text.RegexFlagsText.Parse"/>), with the message
     /// <c>0.1.0-preview.4</c> gave each.
     /// </summary>
-    // Broiler-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=BE9012
-    // Broiler-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
-    // Broiler-Human:        PENDING
+    // Hairs-AI:           Origin=AI; Spec=ECMA-262 s22.2.3.3 RegExpInitialize and s22.2.3.4 ParsePattern; IP=None; Security=Low; Resources=0; Fingerprint=BE9012
+    // Hairs-Falsified-If: "gg" gives other than DuplicateFlag at 1 with the argument g, or "uv" other than UnicodeWithUnicodeSets at 1
+    // Hairs-Human:        PENDING
     internal static RegexDiagnostic OfFlags(RegexDiagnosticCode code, char unit, int position) => code switch
     {
         RegexDiagnosticCode.UnknownFlag => new(RegexDiagnosticCode.UnknownFlag, position, unit.ToString(),
