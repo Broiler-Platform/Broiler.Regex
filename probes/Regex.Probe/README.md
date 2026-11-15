@@ -17,6 +17,7 @@ is not packed. Since task 2.14 of SJL-11.2 it also runs bundle `sjl-11-001`'s pa
 | `Broiler.Regex.Probe [--report path]` | On a thread of 1 MiB, the smallest stack the corpus declares: the smoke population `smoke-1` (`ProbePopulation.cs`), the new backend's cases `engine-1` (`EnginePopulation.cs`) and the text helpers' populations `text-1` (`TextPopulation.cs`); the report to standard output and, with `--report`, to the file | 0; 2 on arguments it does not read |
 | `Broiler.Regex.Probe --adversarial corpus.tsv [--report path]` | Part C: every row of the adversarial corpus, each in a child process of the probe, against its declared status (below) | 0 when every row gives its declared status; 1 when a row differs, a child ends abnormally or a row waits; 2 on arguments or a corpus it cannot read |
 | `Broiler.Regex.Probe --vectors dir [--report path]` | Part D, since task 2.12: the pinned copy of Broiler.JS's regular-expression vectors in `dir` (`tests/Vectors`), its pin checked first, run through the library runner of `Broiler.Regex.Tests/Vectors/` on a 1 MiB thread (below) | 0 when every vector the rule holds to its `out` gives it; 1 when one does not; 2 on arguments, a pin it refuses or a file it cannot read |
+| `Broiler.Regex.Probe --test262 dir --unreadable list [--report path]` | Check B-2, since task 2.10: test262's literal syntax tests, `property-escapes/generated` and `unicodeSets/generated` in the checkout `dir`, run through the library runner of `Broiler.Regex.Tests/Test262Library/` on a 16 MiB thread, with the unreadable list `list` (`test262/library-unreadable.txt`; below) | 0 when every file passes and the list names exactly the files the runner cannot judge; 1 otherwise; 2 on arguments, or a checkout or list it cannot read |
 | `Broiler.Regex.Probe --engine-row corpus.tsv id` | Hidden: one row of the corpus in this process, on a thread of the corpus's declared stack; writes `id status` on standard output and `units n` on standard error | 0 when the row ran, whatever it answered; 3 when the corpus cannot be read or has no such row; a crash ends the process |
 
 Under the JIT the probe runs as `dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll`; under Native
@@ -163,4 +164,47 @@ in it, so the Native AOT run's report and the JIT run's are compared with `cmp`.
 dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --vectors tests/Vectors --report vectors-jit.txt
 probes/Regex.Probe/bin/Release/net10.0/linux-x64/publish/Broiler.Regex.Probe --vectors tests/Vectors --report vectors-aot.txt
 cmp vectors-jit.txt vectors-aot.txt
+```
+
+## test262, the library job (`--test262`)
+
+*Added 2026-11-15, at task 2.10 of SJL-11.2.* The rule's check B-2 asks for "this repository's runner over (i) every
+file under the two literal directories whose regular-expression literals the runner's declared grammar extracts - a
+negative syntax test's literal refused by the validate entry and by compile, a positive file's literals accepted - (ii)
+test/built-ins/RegExp/property-escapes/generated through its structured helpers, every listed code point matching and
+every other code point not, and (iii) test/built-ins/RegExp/unicodeSets/generated likewise; a file it cannot read is
+listed in test262/library-unreadable.txt with why; under the JIT and through the Native AOT probe, the two reports
+byte-identical". The runner's sources are `Broiler.Regex.Tests/Test262Library/*.cs`, which the probe's project file
+compiles in (`Test262Mode.cs` is the mode's own file) and `Test262LibraryRunnerTests` tests over sources it writes:
+- **The declared grammar** (`JavaScriptTokens.cs`) is population P2's `scan_javascript`
+  (`scripts/reference-arms/generate_population.py`) over UTF-16 code units, with two changes its summary states: a
+  literal's flags run over backslashes too, so an escape in them is refused by the flag parser, and a backslash before
+  a line terminator ends the body with no literal.
+- **A literal** is read by `BroilerRegex.Validate` over the flags' text and by `RegexFlagsText.Parse` then
+  `BroilerRegex.Compile`, at the nesting limit 512, with no compile budget and no meter; the two must agree. A
+  positive file passes when every literal is accepted, a negative one (`negative:` with `phase: parse` and `type:
+  SyntaxError`) when a literal is refused.
+- **A generated file** is read by `GeneratedReader` as `buildString`, `testPropertyEscapes`,
+  `testPropertyOfStrings`, `testExtendedCharacterClass`, `assert(!/.../.test("..."), ...)` and `$DONOTEVALUATE()`
+  statements and nothing else, and each call is run as `harness/regExpUtils.js` runs it: `regExp.test` is the offset
+  entry from index 0 under no step ceiling and the frame and trail maxima.
+- **The unreadable list** names every file the runner cannot judge, with why: a file with no literal the grammar
+  extracts (the literals of `eval`'s strings, lexical errors of the literal token), and a negative file whose
+  SyntaxError is not a literal's. A listed file is still run, and its reading is reported beside the reason; the run
+  fails when a file it cannot judge is not listed, when a listed file passes, and when a listed path is not in the
+  populations. *(Added 2026-11-15, after the review of the tail: each entry also gives the reading the runner gives the
+  file, `unreadable` or, for `S7.8.5_A2.2_T2.js` alone, `FAIL`, and the run fails when a listed file reads otherwise.
+  Before, a listed file was accepted with any reading but a pass.)*
+
+The report holds a line per file in ordinal order of the paths, the list's SHA-256, the policy and the counts, and no
+time, absolute path or machine, so the Native AOT run's report and the JIT run's are compared with `cmp`. The mode does
+not check the checkout's revision: CI's `test262-library` job checks the commit `ccaac100` and the tree of its `test/`,
+`c022917`, before the run. On linux-x64 locally (2026-11-15): 829 files, 203 literal files, 469 property-escape files and
+114 set files passing, 43 literal files listed; about 15 seconds under the JIT and 24 under Native AOT, the two reports
+one file.
+
+```sh
+dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --test262 <test262> --unreadable test262/library-unreadable.txt --report test262-library-jit.txt
+probes/Regex.Probe/bin/Release/net10.0/linux-x64/publish/Broiler.Regex.Probe --test262 <test262> --unreadable test262/library-unreadable.txt --report test262-library-aot.txt
+cmp test262-library-jit.txt test262-library-aot.txt
 ```

@@ -193,6 +193,78 @@ jobs:
             vectors-jit.txt
           if-no-files-found: warn
 
+  # Bundle sjl-11-001's check B-2, the host-free library job of decision D14 (task 2.10 of SJL-11.2; R5, R6 and R10 of
+  # docs/roadmap.md section 6): test262 at the pin, its commit and the git tree of its test/ checked first, through the
+  # library runner of Broiler.Regex.Tests/Test262Library/ in the probe's --test262 mode: (i) every literal the runner's
+  # declared grammar extracts from test/language/literals/regexp and test/annexB/language/literals/regexp, a negative
+  # file's refused by the validate entry and by compile and a positive file's accepted; (ii)
+  # test/built-ins/RegExp/property-escapes/generated and (iii) test/built-ins/RegExp/unicodeSets/generated through
+  # their structured helpers, as harness/regExpUtils.js runs them; a file it cannot read listed, with why, in
+  # test262/library-unreadable.txt, which must name exactly those. Under Native AOT and under the JIT, the two reports
+  # compared byte for byte per RID; any file that fails, or a list that is not exact, fails the step. The host job,
+  # B-1's test262-host, waits for Broiler.JS's SJL-11.5 branch (decision D35; docs/roadmap.md, task 2.10's record).
+  test262-library:
+    name: test262, the library job (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            rid: linux-x64
+            executable: Broiler.Regex.Probe
+          - os: windows-latest
+            rid: win-x64
+            executable: Broiler.Regex.Probe.exe
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      # The runner reads the files' bytes, and the pin check below reads git's objects: on the Windows runner, whose
+      # git converts line endings on checkout by default, test262 is checked out as committed, so the bytes read are
+      # the objects' (added 2026-11-15, after the review of the tail; the runner's own config on the runner only).
+      - name: Keep test262's line endings as committed
+        run: git config --global core.autocrlf false
+      - name: Check out test262 at the pin
+        uses: actions/checkout@v7
+        with:
+          repository: tc39/test262
+          ref: ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+          path: suite/test262
+          persist-credentials: false
+      - name: Check the pin
+        run: |
+          test "$(git -C suite/test262 rev-parse HEAD)" = ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+          test "$(git -C suite/test262 rev-parse HEAD:test)" = c022917030da8fbc09b7db8f9b7d55ccc5f5ebab
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish the probe with Native AOT
+        run: dotnet publish probes/Regex.Probe -c Release -r ${{ matrix.rid }} --nologo
+      - name: Run the library job under Native AOT
+        timeout-minutes: 15
+        run: |
+          ./probes/Regex.Probe/bin/Release/net10.0/${{ matrix.rid }}/publish/${{ matrix.executable }} --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-aot.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-aot.txt || true; exit $code; }
+      - name: Run it under the JIT, and compare
+        timeout-minutes: 15
+        run: |
+          dotnet build probes/Regex.Probe -c Release --nologo
+          dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-jit.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-jit.txt || true; exit $code; }
+          cmp test262-library-aot.txt test262-library-jit.txt
+      - name: Keep the reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test262-library-${{ matrix.rid }}
+          path: |
+            test262-library-aot.txt
+            test262-library-jit.txt
+          if-no-files-found: warn
+
   # Part C's two controls (bundle sjl-11-001's decision rule; task 2.14 of SJL-11.2), each a scratch build of the probe
   # that compiles the library's sources into it with one declared line changed in a copy under obj/
   # (probes/Regex.Probe/AdversarialControls.targets), never building Broiler.Regex.dll: (1) LimitExceeded naming steps

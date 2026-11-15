@@ -36,6 +36,10 @@
     <!-- The library runner of bundle sjl-11-001's part D, which Broiler.Regex.Tests holds and this probe runs in its
          vectors mode under the JIT and Native AOT (task 2.12; VectorsMode.cs). -->
     <Compile Include="..\..\Broiler.Regex.Tests\Vectors\*.cs" Link="Vectors\%(Filename)%(Extension)" />
+    <!-- The library runner of bundle sjl-11-001's check B-2, test262's literal syntax tests and generated property-escape
+         and set tests, which this probe runs in its test262 mode under the JIT and Native AOT (task 2.10;
+         Test262Mode.cs). -->
+    <Compile Include="..\..\Broiler.Regex.Tests\Test262Library\*.cs" Link="Test262Library\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <!-- Part C's two controls, scratch builds of this probe under -p:RegexAdversarialControl=steps or =nesting (task 2.14);
