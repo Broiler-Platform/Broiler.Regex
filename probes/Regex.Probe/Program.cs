@@ -19,7 +19,10 @@ namespace Broiler.Regex.Probe;
 /// each in a child process of this probe, and reports each against its declared status (<see cref="AdversarialMode"/>,
 /// bundle <c>sjl-11-001</c>'s part C). <c>--vectors dir [--report path]</c> runs the pinned copy of the regular-expression
 /// vectors in <c>dir</c>, its pin checked first, through the library runner of <c>Broiler.Regex.Tests/Vectors/</c>
-/// (<see cref="VectorsMode"/>, the bundle's part D). README.md beside this file describes every mode.
+/// (<see cref="VectorsMode"/>, the bundle's part D). <c>--test262 dir --unreadable list [--report path]</c> runs test262's
+/// literal syntax tests, <c>property-escapes/generated</c> and <c>unicodeSets/generated</c> in the checkout <c>dir</c>
+/// through the library runner of <c>Broiler.Regex.Tests/Test262Library/</c> (<see cref="Test262Mode"/>, the bundle's
+/// check B-2). README.md beside this file describes every mode.
 /// </remarks>
 internal static class Program
 {
@@ -31,6 +34,8 @@ internal static class Program
             return AdversarialMode.Run(args.AsSpan(1));
         if (args.Length > 0 && args[0] == "--vectors")
             return VectorsMode.Run(args.AsSpan(1));
+        if (args.Length > 0 && args[0] == "--test262")
+            return Test262Mode.Run(args.AsSpan(1));
 
         string? reportPath = null;
         for (var i = 0; i < args.Length; i++)

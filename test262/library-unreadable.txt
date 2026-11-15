@@ -1,0 +1,48 @@
+# Bundle sjl-11-001's check B-2 (task 2.10 of SJL-11.2): the files of the library job's populations that its runner
+# (Broiler.Regex.Tests/Test262Library/) cannot judge, each with why, at test262 ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+# (test/ tree c022917030da8fbc09b7db8f9b7d55ccc5f5ebab). The run fails when a file it cannot judge is missing here, when a
+# file named here passes, and when a path here is not in the populations; a listed file is still run and its reading
+# reported beside the reason. Each line: the path from the checkout's root, a tab, why.
+test/language/literals/regexp/7.8.5-1.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/7.8.5-1gs.js	positive and holds no literal: its `//` begins a comment, which is the test's point (an empty RegularExpressionBody is no literal)
+test/language/literals/regexp/7.8.5-2gs.js	positive and holds no literal: it calls the RegExp constructor with a string, the host's path
+test/language/literals/regexp/S7.8.5_A1.1_T2.js	the literals are built from every code unit and passed to eval, which the declared grammar does not read; the host's parse decides it
+test/language/literals/regexp/S7.8.5_A1.2_T1.js	negative for `/*`, which begins a comment and not a literal (RegularExpressionFirstChar excludes `*`): the grammar extracts no literal
+test/language/literals/regexp/S7.8.5_A1.2_T2.js	negative for a literal the escaped closing slash leaves unterminated on its line, a lexical error: the grammar extracts no literal
+test/language/literals/regexp/S7.8.5_A1.2_T3.js	negative for an empty RegularExpressionBody: `//` begins a comment, so the grammar extracts no literal
+test/language/literals/regexp/S7.8.5_A1.2_T4.js	negative for an empty RegularExpressionBody: `//` begins a comment, so the grammar extracts no literal
+test/language/literals/regexp/S7.8.5_A1.3_T1.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A1.3_T2.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.3_T3.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A1.3_T4.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.3_T5.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.3_T6.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.4_T2.js	the literals are built from every code unit and passed to eval, which the declared grammar does not read; the host's parse decides it
+test/language/literals/regexp/S7.8.5_A1.5_T1.js	negative for a backslash before a line terminator (RegularExpressionBackslashSequence), a lexical error of the token: the grammar extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A1.5_T2.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.5_T3.js	negative for a backslash before a line terminator (RegularExpressionBackslashSequence), a lexical error of the token: the grammar extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A1.5_T4.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.5_T5.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A1.5_T6.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.1_T2.js	the literals are built from every code unit and passed to eval, which the declared grammar does not read; the host's parse decides it
+test/language/literals/regexp/S7.8.5_A2.2_T1.js	negative for a literal the escaped closing slash leaves unterminated on its line, a lexical error: the grammar extracts no literal
+test/language/literals/regexp/S7.8.5_A2.2_T2.js	negative for `/a//.source`, the literal `/a/` followed by a `/` with no operand: the SyntaxError is the expression's, not the literal's, and the library accepts `/a/`
+test/language/literals/regexp/S7.8.5_A2.3_T1.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A2.3_T2.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.3_T3.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A2.3_T4.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.3_T5.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.3_T6.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.4_T2.js	the literals are built from every code unit and passed to eval, which the declared grammar does not read; the host's parse decides it
+test/language/literals/regexp/S7.8.5_A2.5_T1.js	negative for a backslash before a line terminator (RegularExpressionBackslashSequence), a lexical error of the token: the grammar extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A2.5_T2.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.5_T3.js	negative for a backslash before a line terminator (RegularExpressionBackslashSequence), a lexical error of the token: the grammar extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/S7.8.5_A2.5_T4.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.5_T5.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/S7.8.5_A2.5_T6.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/mongolian-vowel-separator-eval.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/named-groups/invalid-lone-surrogate-groupname.js	the literal is the text of a string passed to eval, which the declared grammar does not read; the host's parse decides it (task 2.10's host job)
+test/language/literals/regexp/regexp-first-char-no-line-separator.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/regexp-first-char-no-paragraph-separator.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/regexp-source-char-no-line-separator.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
+test/language/literals/regexp/regexp-source-char-no-paragraph-separator.js	negative for a line terminator in the literal's body, a lexical error of the RegularExpressionLiteral token: the grammar stops at the line terminator and extracts no literal, and no pattern reaches the library
