@@ -239,6 +239,23 @@ nothing here is a reading).* The note above reads "**The classification** is now
 - **Class (c) is still not empty**, and is smaller than under `@5` (the roadmap's record of the same date has the
   counts). Nothing is declared met.
 
+*Dated note, 2026-11-16, Broiler.VM's rows M10 to M15 (SJL-11.2; no rule file added or edited; nothing here is a
+reading).* The note above reads "**The classification** is now `classify.py` `@6`" and "The correspondence commit it
+reads is unchanged", that is `7c65a8fe`.
+- **The classification** is now `classify.py` `@7`, which reads Broiler.VM's correspondence at
+  **`44511066bfb38952c12c81557f56a34bd21ee41e`** (the merge of Broiler-Platform/Broiler.VM#212, the file's blob
+  `94b860cc00b71d2e142473a3685fdd92f1cccee4`): its rows M10 to M15, under the owner's decision D-jsexec, each read from
+  the row's text and tried after `@6`'s rows in the order the correspondence states. Rows M11 to M14 take an input only
+  where the arbiter's answer to the row's reading of the pattern is arm J's, up to row M10's names, and not the text's.
+  `classification.json` names that commit as `rows-read-from`; a correspondence without the rows is refused.
+- **Row B1's widening** names P3's `O06`, an input the arbiter cannot reach whose reduction shows no difference and
+  where neither side stopped at a bound it declares: option R keeps it class (c) whichever row names it, and `@7` gives
+  the widening no predicate.
+- **What the script does not yet do**: `run-reference-arms.sh` passes neither `--reduction` nor `--exclude`, as the
+  notes above say.
+- **Class (c) is still not empty**, and is smaller than under `@6` (the roadmap's record of the same date has the
+  counts). Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written

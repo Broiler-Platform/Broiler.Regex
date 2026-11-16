@@ -395,11 +395,14 @@ class RowsAddedTests(unittest.TestCase):
         self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[0], "c")
         d = diff("J", "exec", "\\u0130|a", "i", "match:0,1", "null", "a--")
         self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[:2], ("a", "M8"))
-        # P5 in tr-TR: each pattern against its own subject.
+        # P5 in tr-TR: each pattern against its own subject. (Since @7 the invariant run's difference on the same
+        # input is given, so that row M15, which takes `I` against `I` where the invariant culture answers as the text
+        # does, takes nothing here: the test reads row M8 alone, as it did at @5.)
+        invariant_differs = C.Context(letters=LETTERS, j_differences=frozenset({"x"}))
         for pattern, subject, row in (("I", "i", "M8"), ("[i]", "I", "M8"), ("I", "I", "-"), ("i", "i", "-")):
             d = diff("J.tr-TR", "exec", pattern, "i", "match:0,1", "null", subject)
             d["class"] = "P5"
-            self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[1], row, (pattern, subject))
+            self.assertEqual(C.classify(d, MATCH01, set(), invariant_differs)[1], row, (pattern, subject))
 
     def test_row_m9_is_its_one_input(self) -> None:
         d = diff("J", "exec", "(?<$x>){1,}?\\B|(?!\u212a)", "y", "match:2,2;2,2|$x=1",
@@ -436,6 +439,203 @@ class RowsAddedTests(unittest.TestCase):
         self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
         d = diff("J", "exec", "[\\w--I]", "iv", "match:1,2", "match:0,1", "IA")
         self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
+
+
+def arms_names(names) -> str:
+    """A match's names as the arms write them: each name escaped (escape_name) with its capture's index."""
+    return ",".join(f"{C.escape_name([ord(c) for c in name])}={group}" for name, group in names)
+
+
+def reading_gives(answers):
+    """A Context whose arbiter answers each reading by the table `answers` (reading text -> answer), else null, and
+    records the readings it was asked."""
+    asked = []
+
+    def reading(d, text):
+        asked.append(text)
+        return answers.get(text, "null")
+
+    context = C.Context(reading=reading)
+    context.asked = asked
+    return context
+
+
+ROWS_M10_TO_M15 = ("M10", "M11", "M12", "M13", "M14", "M15")
+
+
+class RowsM10ToM15Tests(unittest.TestCase):
+    """The predicates of @7 (2026-11-16), each over its row's own examples at Broiler.VM's 44511066 and inputs just
+    outside them; the arbiter's answer to a reading is given."""
+
+    def j(self, pattern, flags, s, arm, subject="ab", run="J", last=0):
+        return diff(run, "exec", pattern, flags, s, arm, subject, last)
+
+    def test_row_m10_reads_each_rewrite_where_the_row_names_it(self) -> None:
+        s = "match:0,1;0,1|" + arms_names([("$x", 1)])
+        # `$x` as `(?=$|\r)x` under m.
+        d = self.j("(?<$x>a)", "m", s, "match:0,1;0,1|" + arms_names([("(?=$|\\r)x", 1)]))
+        self.assertEqual(C.classify(d, C.canonical(s), set()), ("a", "M10", "a correction of Broiler.JS"))
+        # The same rewrite without m: no row names it; nor under m where a modifier group stands in the pattern.
+        self.assertEqual(C.classify(dict(d, flags="."), C.canonical(s), set())[0], "c")
+        self.assertEqual(C.classify(dict(d, pattern=encode("(?<$x>a)(?i:b)?")), C.canonical(s), set())[1], "-")
+        # `\z` with an inline modifier group and without m; not without the group.
+        z = "match:0,1;0,1|" + arms_names([("\\zx", 1)])
+        self.assertEqual(C.classify(self.j("(?<$x>a)(?i:b)?", ".", s, z), C.canonical(s), set())[1], "M10")
+        self.assertEqual(C.classify(self.j("(?<$x>a)", ".", s, z), C.canonical(s), set())[1], "-")
+        # The third anchor with a modifier group under m; not without the group.
+        nl = "match:0,1;0,1|" + arms_names([("(?=[\\n\\r\\u2028\\u2029]|\\z)x", 1)])
+        self.assertEqual(C.classify(self.j("(?<$x>a)(?-s:b)?", "m", s, nl), C.canonical(s), set())[1], "M10")
+        self.assertEqual(C.classify(self.j("(?<$x>a)", "m", s, nl), C.canonical(s), set())[1], "-")
+        # Another capture, another name, or under u: not this row's.
+        self.assertEqual(C.classify(dict(d, arm="match:0,1;1,1|" + arms_names([("(?=$|\\r)x", 1)])),
+                                    C.canonical(s), set())[1], "-")
+        self.assertEqual(C.classify(dict(d, arm="match:0,1;0,1|" + arms_names([("y", 1)])), C.canonical(s),
+                                    set())[1], "-")
+        self.assertFalse(C.group_name_rewritten(dict(d, flags="mu"), C.Context()))
+        # "At the same capture" is the same group: names swapped between two groups of equal spans are not taken.
+        two = "match:0,0;0,0;0,0|" + arms_names([("$a", 1), ("$b", 2)])
+        swapped = self.j("(?<$a>)(?<$b>)", "m", two, "match:0,0;0,0;0,0|" + arms_names(
+            [("(?=$|\\r)b", 1), ("(?=$|\\r)a", 2)]))
+        self.assertFalse(C.group_name_rewritten(swapped, C.Context()))
+        kept = dict(swapped, arm="match:0,0;0,0;0,0|" + arms_names([("(?=$|\\r)a", 1), ("(?=$|\\r)b", 2)]))
+        self.assertTrue(C.group_name_rewritten(kept, C.Context()))
+
+    def test_row_m10_reads_a_case_rewrite_from_the_canonicalize_class(self) -> None:
+        classes = {}
+        for members in ((0x3A0, 0x3C0, 0x3D6), (0x4B, 0x6B), (0x212A,), (0x58, 0x78), (0x2160, 0x2170)):
+            for unit in members:
+                classes[unit] = members
+        case = C.Context(canonicalize_class=lambda u: classes.get(u, (u,)),
+                         over_folds={0x4B, 0x6B, 0x212A}.__contains__)
+
+        def m10(name, rewritten, flags="i"):
+            s = "match:0,1;0,1|" + arms_names([(name, 1)])
+            d = self.j(f"(?<{name}>a)", flags, s, "match:0,1;0,1|" + arms_names([(rewritten, 1)]))
+            return C.classify(d, C.canonical(s), set(), case)[1]
+
+        # `π` as `[πΠϖ]` under i, its Canonicalize class with the letter first; not without i, nor in another order,
+        # nor as a class that is not its Canonicalize class.
+        self.assertEqual(m10("π", "[πΠϖ]"), "M10")
+        self.assertEqual(m10("π", "[πΠϖ]", "."), "-")
+        self.assertEqual(m10("π", "[πϖΠ]"), "-")
+        self.assertEqual(m10("π", "[πΠ]"), "-")
+        # A character of the name that is not a letter, whose class qualifies: U+2160 as `[Ⅰⅰ]`.
+        self.assertEqual(m10("\u2160", "[\u2160\u2170]"), "M10")
+        # `x`, whose class is ASCII alone, is not rewritten: neither as a class nor as `(?-i:…)`.
+        self.assertEqual(m10("x", "[xé]"), "-")
+        self.assertEqual(m10("x", "(?-i:x)"), "-")
+        self.assertEqual(m10("x", "(?-i:[\\x58\\x78])"), "-")
+        # `k`, which .NET's invariant lowercase folds with U+212A into another class: `(?-i:…)` over its class, each
+        # member as the translator escapes it; not as a class of ASCII letters, nor over another class.
+        self.assertEqual(m10("k", "(?-i:[\\x4b\\x6b])"), "M10")
+        self.assertEqual(m10("k", "[kK]"), "-")
+        self.assertEqual(m10("k", "(?-i:[kK])"), "-")
+        self.assertEqual(m10("k", "(?-i:[\\x4b\\x6b\\u212a])"), "-")
+        # Without the tables no letter reads as rewritten.
+        s = "match:0,1;0,1|" + arms_names([("π", 1)])
+        d = self.j("(?<π>a)", "i", s, "match:0,1;0,1|" + arms_names([("[πΠϖ]", 1)]))
+        self.assertFalse(C.group_name_rewritten(d, C.Context()))
+
+    def test_row_m11_reads_the_empty_iteration(self) -> None:
+        self.assertEqual(C.optional_group_reading("(a)?b"), "(?:(a)|)b")
+        self.assertEqual(C.optional_group_reading("(?<n>a|)??"), "(?:|(?<n>a|))")
+        self.assertEqual(C.optional_group_reading("((a)?){0,1}"), "(?:((?:(a)|))|)")
+        self.assertEqual(C.optional_group_reading("(?:a){0,1}?c"), "(?:|(?:a))c")
+        self.assertIsNone(C.optional_group_reading("(?=a)?b"))
+        self.assertIsNone(C.optional_group_reading("(a)*[(b)?]"))
+        # `(\D?^)?`: J keeps the empty iteration, the capture participates; the reading gives J's answer.
+        d = self.j("(\\D?^)?", ".", "match:0,0;-", "match:0,0;0,0", subject="")
+        context = reading_gives({"(?:(\\D?^)|)": C.canonical("match:0,0;0,0")})
+        self.assertEqual(C.classify(d, C.canonical("match:0,0;-"), set(), context)[1], "M11")
+        # The reading gives the text's answer, or another: the input stays (c).
+        same = reading_gives({"(?:(\\D?^)|)": C.canonical("match:0,0;-")})
+        self.assertEqual(C.classify(d, C.canonical("match:0,0;-"), set(), same)[0], "c")
+        self.assertEqual(C.classify(d, C.canonical("match:0,0;-"), set(), reading_gives({}))[0], "c")
+        # Under u the row reads nothing, and asks the arbiter nothing.
+        under_u = reading_gives({"(?:(\\D?^)|)": C.canonical("match:0,0;0,0")})
+        self.assertFalse(C.empty_iteration_kept(dict(d, flags="u"), under_u))
+        self.assertEqual(under_u.asked, [])
+
+    def test_row_m12_reads_property_escapes_and_bell_in_a_class(self) -> None:
+        def digits(name):
+            return list(range(0x30, 0x3A)) if name == "N" else [0x61]
+        self.assertEqual(C.property_reading("[\\p{N}]B", digits), "[\\u0030-\\u0039]B")
+        self.assertEqual(C.property_reading("[\\p{N}-a]", digits), "[\\u0030-\\u0039\\-a]")
+        self.assertEqual(C.property_reading("[\\p{N}-]", digits), "[\\u0030-\\u0039-]")
+        self.assertTrue(C.property_reading("[\\P{Ll}]", digits).startswith("[\\u0000-\\u0060\\u0062-"))
+        self.assertIsNone(C.property_reading("\\p{N}[a]", digits))
+        self.assertIsNone(C.property_reading("[\\p{Script=Greek}]", digits))
+        self.assertIsNone(C.property_reading("[\\p{Foo}]", digits))
+        self.assertEqual(C.bell_reading("[\\a]|cb"), "[\\x07]|cb")
+        self.assertIsNone(C.bell_reading("\\a[b]"))
+        d = self.j("[\\p{N}]B", ".", "null", "match:0,2", subject="1B")
+        context = reading_gives({"[\\u0030-\\u0039]B": C.canonical("match:0,2")})
+        context._category_units = digits
+        self.assertEqual(C.classify(d, "null", set(), context)[1], "M12")
+        self.assertEqual(C.classify(dict(d, flags="v"), "null", set(), context)[0], "c")
+        # Both kinds in the pattern: one reading, every such escape read; a reading with `\\a` left as the text has it,
+        # or the property escape left, takes nothing even where it gives J's answer.
+        mixed = self.j("[\\p{N}]|[\\a]", ".", "null", "match:0,1", subject="1")
+        partial = reading_gives({"[\\u0030-\\u0039]|[\\a]": C.canonical("match:0,1"),
+                                 "[\\p{N}]|[\\x07]": C.canonical("match:0,1")})
+        partial._category_units = digits
+        self.assertEqual(C.classify(mixed, "null", set(), partial)[0], "c")
+        self.assertEqual(partial.asked, ["[\\u0030-\\u0039]|[\\x07]"])
+        full = reading_gives({"[\\u0030-\\u0039]|[\\x07]": C.canonical("match:0,1")})
+        full._category_units = digits
+        self.assertEqual(C.classify(mixed, "null", set(), full)[1], "M12")
+        bell = self.j("[\\a]|cb", ".", "null", "match:0,1", subject="\x07")
+        self.assertEqual(C.classify(bell, "null", set(), reading_gives({"[\\x07]|cb": C.canonical("match:0,1")}))[1],
+                         "M12")
+
+    def test_row_m13_reads_a_subtraction(self) -> None:
+        self.assertEqual(C.subtraction_reading("[\\d-[^a]]"), "(?:(?![^a])[\\d])")
+        self.assertEqual(C.subtraction_reading("[\\W-\\s-[a]]"), "(?:(?![a])[\\W\\-\\s])")
+        self.assertEqual(C.subtraction_reading("[a-[b-[c]]]x"), "(?:(?!(?:(?![c])[b]))[a])x")
+        self.assertIsNone(C.subtraction_reading("[-[a]]"))
+        self.assertIsNone(C.subtraction_reading("[a-[b]c]"))
+        self.assertIsNone(C.subtraction_reading("[a-z]"))
+        d = self.j("[\\d-[^a]]", ".", "null", "match:0,1", subject="a")
+        self.assertEqual(C.classify(d, "null", set(), reading_gives(
+            {"(?:(?![^a])[\\d])": C.canonical("match:0,1")}))[1], "M13")
+        self.assertEqual(C.classify(d, "null", set(), reading_gives({}))[0], "c")
+
+    def test_row_m14_reads_an_escaped_dash(self) -> None:
+        self.assertEqual(C.dash_reading("[\\--é]"), "[\\-\\-é]")
+        self.assertEqual(C.dash_reading("[^\\--ı]x"), "[^\\-\\-ı]x")
+        self.assertIsNone(C.dash_reading("[\\--]"))
+        self.assertIsNone(C.dash_reading("\\--a"))
+        d = self.j("[\\--é]", ".", "match:0,1", "null", subject="b")
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), reading_gives({"[\\-\\-é]": "null"}))[1],
+                         "M14")
+
+    def test_row_m15_is_the_culture_on_i_and_capital_i(self) -> None:
+        d = diff("J.tr-TR", "exec", "I", "i", "match:0,1", "null", "i")
+        d["id"] = "P4-00817-i-09"
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), C.Context())[1], "M15")
+        # The invariant culture answers otherwise too: not this row's.
+        differs = C.Context(j_differences=frozenset({"P4-00817-i-09"}))
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), differs)[0], "c")
+        # Without i, under u, in the invariant run, or with U+0131 (row M2a's): not this row's.
+        for other in (dict(d, flags="."), dict(d, flags="iu"), dict(d, run="J"), dict(d, subject=encode("iı"))):
+            self.assertFalse(C.culture_casing_of_i(other, C.Context()), other)
+        # No i or I in the input.
+        self.assertFalse(C.culture_casing_of_i(dict(d, pattern=encode("k"), subject=encode("K")), C.Context()))
+
+    def test_rows_m10_to_m15_come_after_m9_in_the_correspondence_s_order(self) -> None:
+        names = [row for row, _, _, _ in C.ROWS]
+        self.assertEqual(names[names.index("M9") + 1:], list(ROWS_M10_TO_M15))
+        self.assertTrue(all(engine == "J" for row, engine, _, _ in C.ROWS if row in ROWS_M10_TO_M15))
+        self.assertEqual(C.CORRESPONDENCE["commit"], "44511066bfb38952c12c81557f56a34bd21ee41e")
+        self.assertEqual(C.CLASSIFIER_VERSION, "sjl-11-001-classification@7")
+
+    def test_an_input_row_m8_takes_stays_row_m8(self) -> None:
+        # `\B` beside U+0131 (a non-ASCII letter) under i: row M8's, which comes first; the arbiter is asked nothing.
+        d = diff("J", "exec", "\\BI", "i", "null", "match:1,2", "aı")
+        context = reading_gives({})
+        context.letters = LETTERS
+        self.assertEqual(C.classify(d, "null", set(), context)[1], "M8")
+        self.assertEqual(context.asked, [])
 
 
 class ReductionTests(unittest.TestCase):
@@ -667,6 +867,9 @@ ADDED_ROWS = {"S8a": "**Correction of Broiler.VM** (kind R; ...)", "S12": "**Cor
               "S13": "**Correction of Broiler.JS**; as row S12", "S14": "**Correction of Broiler.JS**; as row S12",
               "S15": "**Correction of Broiler.JS**; as row S12", "M8": "**Correction of Broiler.JS**; as row S12",
               "M9": "**Correction of Broiler.JS**; no test262 row is known to move for it"}
+# The rows added at Broiler.VM's 44511066 (@7), as their classes open.
+ADDED_ROWS.update({row: "**Correction of Broiler.JS**; no test262 row is known to move for it"
+                   for row in ROWS_M10_TO_M15})
 
 STUB_ROWS = {"S1": "Correction of Broiler.VM", "S2a": "Correction of Broiler.JS",
              "S5": "Broiler.JS: **correction of Broiler.JS**, by D-s5", "S7": "Correction of Broiler.JS",

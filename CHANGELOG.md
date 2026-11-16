@@ -160,6 +160,13 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     note that they are a known gap of the reference arms, not a verified agreement. The classifier `@6` lists their
     differences apart with `--exclude`. Written after the runs were seen, weaker evidence; class (c) is still not empty,
     and nothing is declared met (`docs/roadmap.md`, the record of the ruling).
+  - The reference arms' classifier `@7` (bundle `sjl-11-001`; process only, in neither the published package nor its
+    API, and not in `df5cfc2`): `scripts/reference-arms/classify.py` reads Broiler.VM's correspondence at `44511066`
+    (Broiler-Platform/Broiler.VM#212), with predicates for its rows M10 to M15, each read from the row's text; rows M11
+    to M14 ask the arbiter for its answer to the row's reading of the pattern. Row B1's widening for P3's `O06` has no
+    predicate: option R keeps that input class (c). The arms were classified again over task 2.13's retained
+    differences; class (c) is still not empty, and nothing is declared met (`docs/roadmap.md`, the record of rows M10
+    to M15).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
