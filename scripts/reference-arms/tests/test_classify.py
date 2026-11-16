@@ -504,6 +504,47 @@ class ReductionTests(unittest.TestCase):
             self.assertEqual(C.classify(d, "arbiter:exhausted", set(), C.Context(reduction=reduction))[0], "b'")
 
 
+class ExclusionTests(unittest.TestCase):
+    """The owner's ruling of 2026-11-16 on population P4 (reference-arms-revised-2026-11-16b.md): a listed pattern's
+    differences are excluded, under every flag set, by acceptance and by exec, a reduced case among them."""
+
+    def exclusion(self, pattern="(?:){4294967296}a"):
+        return C.Exclusion({"P4-00001": encode(pattern)})
+
+    def test_a_listed_pattern_is_excluded_everywhere_in_p4(self) -> None:
+        exclusion = self.exclusion()
+        for case_id, op, flags in (("P4-00001-none", "accept", ""), ("P4-00001-iv-03", "exec", "iv"),
+                                   ("P4-00001-y-15~p0", "exec", "y")):
+            d = diff("J", op, "(?:){4294967296}a", flags, "limit:steps", "null", "a")
+            d["id"] = case_id
+            self.assertIn(C.Exclusion.WHY, exclusion.excludes(d))
+            self.assertIn("P4-00001", exclusion.excludes(d))
+        d = diff("J", "exec", "(?:){4294967296}a", "", "limit:steps", "null", "a")
+        d["id"] = "P4-00002-none-00"
+        self.assertIsNone(exclusion.excludes(d))
+        # The ruling is P4's: the same id in another class is no listed pattern.
+        d["id"], d["class"] = "P4-00001-none-00", "P1"
+        self.assertIsNone(exclusion.excludes(d))
+
+    def test_a_listed_id_with_another_pattern_refuses(self) -> None:
+        d = diff("J", "exec", "(?:){4294967296}b", "", "limit:steps", "null", "a")
+        d["id"] = "P4-00001-none-00"
+        with self.assertRaises(C.ExclusionMismatch):
+            self.exclusion().excludes(d)
+
+    def test_the_listing_is_named_by_its_bytes(self) -> None:
+        import hashlib
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "p4-excluded.tsv"
+            path.write_text(f"# id\tpattern\tquantifier\tflags\nP4-00001\t{encode('(?:){4}a')}\t-\t.\n",
+                            encoding="utf-8")
+            exclusion = C.Exclusion.read(path)
+            self.assertEqual(exclusion.patterns, {"P4-00001": encode("(?:){4}a")})
+            self.assertEqual(exclusion.identity, {"rule": C.Exclusion.RULE, "name": "p4-excluded.tsv", "patterns": 1,
+                                                  "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+
+
 class CorrespondenceTests(unittest.TestCase):
     def test_a_missing_row_refuses(self) -> None:
         self.assertTrue(any("S1" in p for p in C.check_rows({})))
@@ -734,11 +775,49 @@ class PathIndependenceTests(unittest.TestCase):
         facts = __import__("json").loads(written[0])
         self.assertEqual(facts["rows-read-from"], C.CORRESPONDENCE)
         self.assertIsNone(facts["reduction"])
+        self.assertIsNone(facts["exclusion"])
         data = (self.scratch / "place-0" / "vm" / "docs" / "correspondence.md").read_bytes()
         self.assertEqual(facts["correspondence"], {
             "name": "correspondence.md", "sha256": __import__("hashlib").sha256(data).hexdigest(),
             "blob": self.subprocess.run(["git", "hash-object", "--stdin"], input=data, capture_output=True,
                                         check=True).stdout.decode().strip()})
+
+
+    def test_an_exclusion_lists_its_patterns_apart_and_asks_no_arbiter(self) -> None:
+        import json
+        from population_format import open_text
+        where = self.scratch / "place"
+        where.mkdir()
+        js, correspondence = self.inputs(where, None)
+        with open_text(where / "comparison" / "differences.tsv.gz", "wt") as out:
+            out.write("# id\tclass\top\trun\tpattern\tflags\tsubject\tlastIndex\tpolicy\tS\tarm\n")
+            out.write(f"P4-00001-none\tP4\taccept\tV\t{encode('(?<a>x)|(?<a>y)')}\t.\t-\t-\tdefault\taccept\t"
+                      "refuse:syntax\n")
+            out.write(f"P4-00002-none-00\tP4\texec\tJ\t{encode('a')}\t.\t{encode('b')}\t0\tdefault\tnull\t"
+                      "match:0,1\n")
+        listing = where / "p4-excluded.tsv"
+        listing.write_text(f"# id\tpattern\tquantifier\tflags\nP4-00002\t{encode('a')}\t-\t.\n", encoding="utf-8")
+        args = ["--comparison", str(where / "comparison"), "--runs", str(where / "runs"), "--broiler-js", str(js),
+                "--correspondence", str(correspondence), "--commit", "HEAD", "--unicode-pins", str(where),
+                "--cache", str(where / "cache.jsonl"), "--out", str(self.scratch / "out")]
+        # Without the exclusion the exec is class (c); with it, it is excluded, and no class (c) remains.
+        self.assertEqual(C.main(args), 1)
+        sys.modules.pop("regexpref", None)
+        (where / "cache.jsonl").unlink()
+        self.assertEqual(C.main(args + ["--exclude", str(listing)]), 0)
+        facts = json.loads((self.scratch / "out" / "classification.json").read_text(encoding="utf-8"))
+        self.assertEqual(facts["counts"], {"a": 1, "excluded": 1})
+        self.assertEqual(facts["by-class-row-run-population"]["excluded/-/J/P4"], 1)
+        self.assertEqual(facts["exclusion"]["patterns"], 1)
+        self.assertEqual(facts["exclusion"]["name"], "p4-excluded.tsv")
+        with open_text(self.scratch / "out" / "classified.tsv.gz") as handle:
+            line = [row for row in handle if row.startswith("P4-00002")][0].split("\t")
+        self.assertEqual(line[6:9], ["-", "excluded", "-"])
+        self.assertNotIn(encode("b"), (where / "cache.jsonl").read_text(encoding="utf-8"))
+        # A listed id whose pattern is not the comparison's refuses: another population.
+        sys.modules.pop("regexpref", None)
+        listing.write_text(f"# id\tpattern\tquantifier\tflags\nP4-00002\t{encode('c')}\t-\t.\n", encoding="utf-8")
+        self.assertEqual(C.main(args + ["--exclude", str(listing)]), 2)
 
 
 if __name__ == "__main__":
