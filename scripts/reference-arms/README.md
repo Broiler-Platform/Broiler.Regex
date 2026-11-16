@@ -146,6 +146,22 @@ the row's own correction, the direction of the difference and its construct, nev
 | M13 | J | *(@7)* as M11, the reading a class with `-[` after its first member as .NET's subtraction, `(?:(?![B])[A])` |
 | M14 | J | *(@7)* as M11, the reading `\--` before a member in a class as `\-\-` |
 | M15 | J | *(@7)* under `tr-TR` or `lt-LT`, the flag `i` without `u` or `v`, an exec both answer, `i` or `I` in the input and neither U+0130 nor U+0131, and no difference of run J (the invariant culture) on the same input |
+| M8 | J | *(@8, its note)* `\b` or `\B` outside a class as the text lexes a class without `v`: a class ends at its first unescaped `]`, a `[` inside it a member |
+| M12 | J | *(@8, its note)* the reading also writes a `-` right before `\p{…}` or `\P{…}` that follows `\d`, `\D`, `\w`, `\W`, `\s` or `\S` as `\-` |
+| M13 | J | *(@8, its note)* a nested class ends at its first `]`, even right after its `[` or `[^` (`[\w--\D--[^]]`) |
+| M15 | J | *(@8, its note)* or a difference of run J on the same input whose answer is S's match with only the names rewritten as row M10 reads them, at the same groups |
+| M16 | J | *(@8)* without `u` or `v`, an exec both answer, `\c` that no ASCII letter follows, a `GapScan` shape in the arbiter's tree of the pattern (a quantifier whose maximum is above 1 over a body that can match both the empty string and a character, or a capturing group or a back-reference inside a look-behind), and the arbiter's answer to the reading (each such `\c` as `\\`) is J's, up to row M10's names, and not S's |
+| M17 | J | *(@8)* without `u` or `v`, an exec both answer, a group name written with `\u{…}` outside a class, and the nullable shape above in the arbiter's tree |
+| M18 | J | *(@8)* without `u` or `v`, an exec both answer, `\k<…>` outside a class whose name, written with `\u{…}`, is the value of a group's name |
+| M19 | J | *(@8)* without `u` or `v`, an exec both answer, `\0` and one or two octal digits outside a class, inside the body of a quantifier of the nullable shape in the arbiter's tree |
+| M20 | J | *(@8)* without `u` or `v`, an exec both answer, in a class `\0`, one octal digit and `\d` |
+| M21 | J | *(@8)* without `u` or `v`, without `s` and with no modifier group, an exec both answer, `\S` in a class, and the arbiter's answer to the reading (`\S` as `\u0000-\u0008\u000E-\u001F\u0021-\uFFFF`, a `-` beside it as `\-`) is J's, up to row M10's names, and not S's |
+| M22 | J | *(@8)* without `u` or `v`, an exec both answer, `()` or `(?<name>)` outside a class under `+?` or `{1,}?`, and a `\|` outside every class and group |
+| M23 | J | *(@8)* under the flag `m`, without `u` or `v`, an exec both answer, `^` or `$` a member of a class, and the arbiter's answer to the reading (`^` as the characters `(?<=^\|\r)`, `$` as `(?=$\|\r)`) is J's, up to row M10's names, and not S's |
+| M24 | J | *(@8)* without `u` or `v`, under `s` or with a modifier group, an exec both answer, a back-reference in the arbiter's tree of the pattern |
+| M25 | J | *(@8)* under the flag `i`, without `u` or `v`, an exec both answer, a letter outside a class inside a modifier group that removes `i` whose Canonicalize class holds another member and a non-ASCII one, and the arbiter's answer to the reading (the letter as that class) is J's, up to row M10's names, and not S's |
+| M26 | J | *(@8)* under the flag `i`, without `u` or `v`, an exec both answer, `\W`, `\p{` or `\P{` in a class as the text lexes it without `v` |
+| B1 | J | *(@8, with `--reduction`, the revision of 2026-11-16c)* P3's `O06`, the input the row's widening names: the arbiter cannot reach it, the reduced case agrees with the arbiter, neither side stopped at a bound it declares, every other arm's run answers it as S does, and S's answer is the whole subject, as `whole_run_answer` gives it at the input and the reduced case's answer at the prefix: class (a) "beyond the arbiter, by row" |
 
 Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
 in arm J. (a') arm J, an exec both answer, under `i` without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a
@@ -243,3 +259,20 @@ one kind left as the text has it could take an input. The rows above are now the
 "At the review of @7"): row M10's Canonicalize class is the arbiter's (`Arbiter.canonicalize_class`), and its "one .NET's
 invariant lowercase folds into another Canonicalize class" stands as the pinned UCD's simple lowercase with U+0130 kept
 as itself (`Arbiter.over_folds`), .NET's table not being read. Over task 2.13's run the classification is the same bytes.
+
+*Dated note, 2026-11-16, after Broiler.VM's rows M16 to M26 of that day and the owner's ruling on P3's `O06`
+(`CLASSIFIER_VERSION` @8, written after task 2.13's runs, their classification by @5, @6 and @7 and the reduction of
+2026-11-15 were seen).* The note of @7 above reads "@7 reads it at Broiler.VM's
+`44511066bfb38952c12c81557f56a34bd21ee41e`" and "Row B1's widening is read but has no predicate: the arbiter cannot
+reach `O06`, its reduced case shows no difference and neither side stopped at a bound it declares, so option R keeps it
+class (c) before any row is read." @8 reads the correspondence at Broiler.VM's `626e4ed88afe8898724bda669e981cf7cf1b98b2`
+(Broiler-Platform/Broiler.VM#215's merge, the file's blob `d4605f5c`), whose rows M16 to M26 are new (decision
+D-jsrest) and whose rows M8, M12, M13 and M15 carry dated notes. The rows marked *(@8)* in the table are its
+predicates: the noted ones replace @7's in place, and M16 to M26 come after M15 in the correspondence's order. M16,
+M21, M23 and M25 ask the arbiter for its answer to the row's reading, as M11 to M14 do; M16, M17, M19 and M24 read the
+arbiter's tree of the pattern (`Arbiter.parse`). Where a row says "class", the pattern is lexed as the text lexes it
+without `v` (`text_tokens`). Row B1 is read by the rule's revision of 2026-11-16c
+([`reference-arms-revised-2026-11-16c.md`](../../docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md), the
+owner's ruling), with `--reduction` only: `classify.py` checks that the row's line holds its words naming the input
+and the mechanism (`check_beyond_rows`, exit 2 otherwise), and reads the other arms' answers from the runs directory
+`--runs` names. A run of @8 needs the correspondence at `626e4ed8` or later.

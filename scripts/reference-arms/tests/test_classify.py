@@ -623,11 +623,11 @@ class RowsM10ToM15Tests(unittest.TestCase):
         self.assertFalse(C.culture_casing_of_i(dict(d, pattern=encode("k"), subject=encode("K")), C.Context()))
 
     def test_rows_m10_to_m15_come_after_m9_in_the_correspondence_s_order(self) -> None:
+        # @8 (2026-11-16): rows M16 to M26 follow M15, so the slice after M9 ends at M15; the version and the
+        # correspondence commit, which this test read as @7's and 44511066, are asserted by RowsM16ToM26Tests.
         names = [row for row, _, _, _ in C.ROWS]
-        self.assertEqual(names[names.index("M9") + 1:], list(ROWS_M10_TO_M15))
+        self.assertEqual(names[names.index("M9") + 1:names.index("M15") + 1], list(ROWS_M10_TO_M15))
         self.assertTrue(all(engine == "J" for row, engine, _, _ in C.ROWS if row in ROWS_M10_TO_M15))
-        self.assertEqual(C.CORRESPONDENCE["commit"], "44511066bfb38952c12c81557f56a34bd21ee41e")
-        self.assertEqual(C.CLASSIFIER_VERSION, "sjl-11-001-classification@7")
 
     def test_an_input_row_m8_takes_stays_row_m8(self) -> None:
         # `\B` beside U+0131 (a non-ASCII letter) under i: row M8's, which comes first; the arbiter is asked nothing.
@@ -636,6 +636,282 @@ class RowsM10ToM15Tests(unittest.TestCase):
         context.letters = LETTERS
         self.assertEqual(C.classify(d, "null", set(), context)[1], "M8")
         self.assertEqual(context.asked, [])
+
+
+class Node:
+    """A stand-in for a node of the arbiter's tree: the predicates read a node's kind by its class's name."""
+
+    def __init__(self, **fields) -> None:
+        self.__dict__.update(fields)
+
+
+def node(kind_name, /, **fields):
+    return type(kind_name, (Node,), {})(**fields)
+
+
+def alternative(*terms):
+    return node("Disjunction", alternatives=[node("Alternative", terms=list(terms))])
+
+
+CHAR_A = node("Character", value=0x61)
+# `(\B|a){0,2}`'s body can match both the empty string and a character; `(a){0,2}`'s cannot match empty.
+NULLABLE = node("Quantified", atom=node("Group", disjunction=node("Disjunction", alternatives=[
+    node("Alternative", terms=[node("Assertion", assertion="B")]), node("Alternative", terms=[CHAR_A])])),
+    min=0, max=2)
+NOT_NULLABLE = node("Quantified", atom=node("Group", disjunction=alternative(CHAR_A)), min=0, max=2)
+ROWS_M16_TO_M26 = ("M16", "M17", "M18", "M19", "M20", "M21", "M22", "M23", "M24", "M25", "M26")
+
+
+class RowsM16ToM26Tests(unittest.TestCase):
+    """The predicates of @8 (2026-11-16), each over its row's own examples at Broiler.VM's 626e4ed8 and inputs just
+    outside them, and the notes on rows M8, M12, M13 and M15; the arbiter's answer to a reading and its tree are
+    given."""
+
+    def j(self, pattern, flags, s="null", arm="match:0,1", subject="ab", run="J"):
+        return diff(run, "exec", pattern, flags, s, arm, subject)
+
+    def tree(self, tree, answers=None):
+        context = reading_gives(answers or {})
+        context._parse = lambda text: tree
+        return context
+
+    def test_the_text_s_lexing_of_a_class(self) -> None:
+        tokens = [(t, inside) for _, t, inside, _ in C.text_tokens("[[a]\\b]")]
+        self.assertEqual(tokens, [("[", False), ("[", True), ("a", True), ("]", True), ("\\b", False), ("]", False)])
+        self.assertEqual([t for _, t, _, _ in C.text_tokens("[^^]")], ["[", "^NEG", "^", "]"])
+        self.assertEqual([(t, inside) for _, t, inside, _ in C.text_tokens("[]a")],
+                         [("[", False), ("]", True), ("a", False)])
+
+    def test_row_m8_s_note_lexes_a_class_as_the_text_does(self) -> None:
+        # `\b` after `[[a]` is outside a class as the text lexes it without v; @7's nesting found it inside.
+        self.assertTrue(C.boundary_outside_class("[[a]\\b]", False))
+        self.assertFalse(C.boundary_assertion("[[a]\\b]"))
+        self.assertFalse(C.boundary_outside_class("[[a]\\b]", True))
+        self.assertFalse(C.boundary_outside_class("[a\\b]", False))
+        d = diff("J", "exec", "[[a]\\bé]", "", "null", "match:0,1", "aé]")
+        self.assertEqual(C.classify(d, "null", set(), WITH_LETTERS)[:2], ("a", "M8"))
+        # Under v a class nests, and the row's `\b` is in it.
+        self.assertNotEqual(C.classify(dict(d, flags="v"), "null", set(), WITH_LETTERS)[1], "M8")
+
+    def test_row_m12_s_note_writes_the_dash_before_a_property_escape(self) -> None:
+        def digits(name):
+            return list(range(0x30, 0x3A)) if name == "N" else [0x61]
+        self.assertEqual(C.property_reading("[\\d-\\p{N}]", digits), "[\\d\\-\\u0030-\\u0039]")
+        self.assertEqual(C.property_reading("[\\W-\\P{N}]x", digits)[:6], "[\\W\\-\\")
+        # After a character, not a class escape, the dash is as @7 wrote it.
+        self.assertEqual(C.property_reading("[a-\\p{N}]", digits), "[a-\\u0030-\\u0039]")
+
+    def test_row_m13_s_note_ends_a_nested_class_at_its_first_bracket(self) -> None:
+        self.assertEqual(C.subtraction_reading("[\\w-\\D-[^]]"), "(?:(?![^])[\\w\\-\\D])")
+        self.assertEqual(C.subtraction_reading("[a-[]]"), "(?:(?![])[a])")
+        # A `-[` that is not the class's last element still gives no reading.
+        self.assertIsNone(C.subtraction_reading("[^\\W-[a]-İ]"))
+
+    def test_row_m15_s_note_reads_the_invariant_answer_up_to_row_m10_s_names(self) -> None:
+        classes = {0x3A0: (0x3A0, 0x3C0, 0x3D6), 0x3C0: (0x3A0, 0x3C0, 0x3D6), 0x3D6: (0x3A0, 0x3C0, 0x3D6)}
+        s = "match:0,2;-|" + arms_names([("π", 1)])
+        d = diff("J.tr-TR", "exec", "I(?<π>..\\b)*", "i", s, "null", "ii")
+        d["id"] = "P4-63252-i-09"
+        renamed = "match:0,2;-|" + arms_names([("[πΠϖ]", 1)])
+
+        def context(invariant):
+            return C.Context(j_differences=frozenset({d["id"]}), j_answers={d["id"]: invariant},
+                             canonicalize_class=lambda u: classes.get(u, (u,)))
+        self.assertEqual(C.classify(d, C.canonical(s), set(), context(renamed))[:2], ("a", "M15"))
+        # Run J's answer is another match, or no answer is held: not this row's.
+        self.assertEqual(C.classify(d, C.canonical(s), set(), context("match:0,1;-|" + arms_names(
+            [("[πΠϖ]", 1)])))[0], "c")
+        self.assertEqual(C.classify(d, C.canonical(s), set(), C.Context(j_differences=frozenset({d["id"]})))[0], "c")
+
+    def test_row_m16_reads_the_control_escape_in_gap_scan_s_shapes(self) -> None:
+        self.assertEqual(C.control_reading("\\c{0,2}[A\\c0]\\cJ"), "\\\\{0,2}[A\\\\0]\\cJ")
+        self.assertIsNone(C.control_reading("\\cJ[\\ca]"))
+        d = self.j("(\\c{0,2}a){0,2}", ".", "match:0,0", "match:0,1;0,1", subject="\\")
+        reading = {"(\\\\{0,2}a){0,2}": C.canonical("match:0,1;0,1")}
+        self.assertEqual(C.classify(d, C.canonical("match:0,0"), set(), self.tree(alternative(NULLABLE), reading))[1],
+                         "M16")
+        # The look-behind shape: a capturing group inside a look-behind.
+        behind = node("LookAround", ahead=False, negative=False, disjunction=alternative(
+            node("Group", number=1, name=None, disjunction=alternative(CHAR_A))))
+        self.assertEqual(C.classify(d, C.canonical("match:0,0"), set(), self.tree(alternative(behind), reading))[1],
+                         "M16")
+        # Neither shape: the pattern stays on .NET, and the row takes nothing; nor where the reading's answer is not J's.
+        self.assertEqual(C.classify(d, C.canonical("match:0,0"), set(), self.tree(alternative(NOT_NULLABLE),
+                                                                                  reading))[0], "c")
+        self.assertEqual(C.classify(d, C.canonical("match:0,0"), set(), self.tree(alternative(NULLABLE)))[0], "c")
+        self.assertFalse(C.control_escape_read_as_backslash(dict(d, flags="u"), self.tree(alternative(NULLABLE),
+                                                                                          reading)))
+
+    def test_rows_m17_and_m18_read_a_braced_name(self) -> None:
+        d = self.j(".(?<\\u{62}>\\xdf*|[\\D&&\\w])*[]{0,2}", "")
+        self.assertTrue(C.braced_name_in_nullable_repeat(d, self.tree(alternative(NULLABLE))))
+        self.assertFalse(C.braced_name_in_nullable_repeat(d, self.tree(alternative(NOT_NULLABLE))))
+        self.assertFalse(C.braced_name_in_nullable_repeat(self.j("(?<b>a)*", ""), self.tree(alternative(NULLABLE))))
+        self.assertFalse(C.braced_name_in_nullable_repeat(self.j("[(?<\\u{62}>]a*", ""),
+                                                          self.tree(alternative(NULLABLE))))
+        self.assertTrue(C.braced_name_reference(self.j("((?<b>.\\k<\\u{62}>{2}\\u03a3*?)*)$", ""), C.Context()))
+        # A reference whose name names no group, one written without `\u{…}`, or one in a class: not row M18's.
+        self.assertFalse(C.braced_name_reference(self.j("(?<b>.)\\k<\\u{63}>", ""), C.Context()))
+        self.assertFalse(C.braced_name_reference(self.j("(?<b>.)\\k<b>", ""), C.Context()))
+        self.assertFalse(C.braced_name_reference(self.j("(?<b>.)[\\k<\\u{62}>]", ""), C.Context()))
+
+    def test_rows_m19_and_m20_read_a_legacy_octal_escape(self) -> None:
+        self.assertEqual(C._octal_marked("(\\B\\07{0,2}){0,2}"), "(\\B\\uE000{0,2}){0,2}")
+        self.assertEqual(C._octal_marked("\\077a"), "\\uE000a")
+        self.assertIsNone(C._octal_marked("[\\07]\\0"))
+        marked = node("Quantified", atom=node("Group", disjunction=alternative(
+            node("Assertion", assertion="B"), node("Quantified", atom=node("Character", value=0xE000), min=0, max=2))),
+            min=0, max=2)
+        d = self.j("(\\B\\07{0,2}){0,2}", "d")
+        self.assertTrue(C.octal_in_nullable_repeat(d, self.tree(alternative(marked))))
+        # The escape outside the quantifier's body: not row M19's.
+        self.assertFalse(C.octal_in_nullable_repeat(d, self.tree(alternative(NULLABLE, node("Character",
+                                                                                            value=0xE000)))))
+        self.assertTrue(C.octal_before_digit_class(self.j("\\xa0|[\\07\\d]?", ""), C.Context()))
+        self.assertFalse(C.octal_before_digit_class(self.j("[\\077\\d]", ""), C.Context()))
+        self.assertFalse(C.octal_before_digit_class(self.j("\\07\\d", ""), C.Context()))
+
+    def test_row_m21_reads_the_non_white_space_class_escape(self) -> None:
+        nws = C.NON_WHITE_SPACE_AS_NET_READS
+        self.assertEqual(C.non_white_space_reading("[\\S\\xe9]*"), "[" + nws + "\\xe9]*")
+        self.assertEqual(C.non_white_space_reading("[a-\\S]"), "[a\\-" + nws + "]")
+        self.assertEqual(C.non_white_space_reading("[\\S-a]"), "[" + nws + "\\-a]")
+        self.assertIsNone(C.non_white_space_reading("\\S[a]"))
+        d = self.j("[\\S\\xe9]*", "", "match:0,0", "match:0,1", subject=" ")
+        reading = {"[" + nws + "\\xe9]*": C.canonical("match:0,1")}
+        self.assertEqual(C.classify(d, C.canonical("match:0,0"), set(), reading_gives(reading))[1], "M21")
+        # Under s, or with a modifier group, .NET has no RegexOptions.ECMAScript: not row M21's.
+        self.assertFalse(C.non_white_space_in_class(dict(d, flags="s"), reading_gives(reading)))
+        self.assertFalse(C.non_white_space_in_class(dict(d, pattern=encode("[\\S\\xe9]*(?i:a)?")),
+                                                    reading_gives(reading)))
+
+    def test_row_m22_reads_an_empty_group_under_a_lazy_quantifier(self) -> None:
+        self.assertTrue(C.empty_group_lazy(self.j("^\\u017f{1,}?|(?<\\u0061>)+?\\U00010428", ""), C.Context()))
+        self.assertTrue(C.empty_group_lazy(self.j("\\n(?<=^)\\u2028|(?:()+?){\\B", ""), C.Context()))
+        # One alternative, a `|` inside a group, or the group in a class: not row M22's.
+        self.assertFalse(C.empty_group_lazy(self.j("()+?a", ""), C.Context()))
+        self.assertFalse(C.empty_group_lazy(self.j("(a|()+?)", ""), C.Context()))
+        self.assertFalse(C.empty_group_lazy(self.j("[()+?]|a", ""), C.Context()))
+        self.assertFalse(C.empty_group_lazy(self.j("()*?|a", ""), C.Context()))
+
+    def test_row_m23_reads_an_anchor_in_a_class_under_m(self) -> None:
+        self.assertEqual(C.anchor_member_reading("[^^]"), "[^(?<=^|\\r)]")
+        self.assertEqual(C.anchor_member_reading("[a$]"), "[a(?=$|\\r)]")
+        self.assertIsNone(C.anchor_member_reading("^[^a]$"))
+        d = self.j("[^^]", "m", "match:0,1", "null", subject="(")
+        reading = {"[^(?<=^|\\r)]": "null"}
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), reading_gives(reading))[1], "M23")
+        self.assertEqual(C.classify(dict(d, flags="."), C.canonical("match:0,1"), set(), reading_gives(reading))[0],
+                         "c")
+
+    def test_row_m24_reads_a_back_reference_without_ecmascript(self) -> None:
+        reference = alternative(node("Group", number=1, name=None, disjunction=alternative()),
+                                node("Backreference", numbers=(1,), name=None))
+        d = self.j("()\\1a", "s", "match:0,1;0,0", "null", subject="a")
+        self.assertEqual(C.classify(d, C.canonical("match:0,1;0,0"), set(), self.tree(reference))[1], "M24")
+        self.assertTrue(C.backreference_without_ecmascript(dict(d, flags=".", pattern=encode("()\\1a(?i:b)?")),
+                                                           self.tree(reference)))
+        # Without s or a modifier group, or with no back-reference in the tree: not row M24's.
+        self.assertFalse(C.backreference_without_ecmascript(dict(d, flags="."), self.tree(reference)))
+        self.assertFalse(C.backreference_without_ecmascript(d, self.tree(alternative(CHAR_A))))
+
+    def test_row_m25_reads_a_letter_expanded_inside_a_group_without_i(self) -> None:
+        sigma = (0x3A3, 0x3C2, 0x3C3)
+
+        def classes(unit):
+            return sigma if unit in sigma else (unit,)
+        self.assertEqual(C.expanded_letter_reading("(?m-is:Σ)", classes), "(?m-is:[Σςσ])")
+        self.assertIsNone(C.expanded_letter_reading("Σ(?i:Σ)", classes))
+        self.assertIsNone(C.expanded_letter_reading("(?-i:x[Σ])", classes))
+        d = self.j("(?m-is:Σ)", "i", "null", "match:0,1", subject="σ")
+        context = reading_gives({"(?m-is:[Σςσ])": C.canonical("match:0,1")})
+        context._canonicalize_class = classes
+        self.assertEqual(C.classify(d, "null", set(), context)[1], "M25")
+        self.assertEqual(C.classify(dict(d, flags="."), "null", set(), context)[0], "c")
+
+    def test_row_m26_reads_a_class_under_i(self) -> None:
+        for pattern in ("[^\\xa0-\\W].", "[\\P{Ll}]", "s[\\W]{1,}K", "[\\B-\\s\\P{Ll}].+"):
+            self.assertTrue(C.class_folded_by_net(self.j(pattern, "i"), C.Context()), pattern)
+        for pattern, flags in (("[\\W]", "."), ("\\W", "i"), ("[\\p]", "i"), ("[\\W]", "iu")):
+            self.assertFalse(C.class_folded_by_net(self.j(pattern, flags), C.Context()), pattern)
+
+    def test_rows_m16_to_m26_come_after_m15_in_the_correspondence_s_order(self) -> None:
+        names = [row for row, _, _, _ in C.ROWS]
+        self.assertEqual(names[names.index("M15") + 1:], list(ROWS_M16_TO_M26))
+        self.assertTrue(all(engine == "J" for row, engine, _, _ in C.ROWS if row in ROWS_M16_TO_M26))
+        self.assertEqual(C.CORRESPONDENCE["commit"], "626e4ed88afe8898724bda669e981cf7cf1b98b2")
+        self.assertEqual(C.CLASSIFIER_VERSION, "sjl-11-001-classification@8")
+
+
+class BeyondByRowTests(unittest.TestCase):
+    """The rule's revision of 2026-11-16c (the owner's ruling on P3's `O06`): an input the arbiter cannot reach, named
+    by a row, classed by that row where the revision's three conditions hold."""
+
+    O06 = "a" * 10_000_001
+
+    def o06(self, run="J", s="match:0,10000001", arm="null", subject=None):
+        d = diff(run, "exec", "^[a]*$", "u", s, arm, self.O06 if subject is None else subject)
+        d["id"], d["class"] = "P3-O06", "P3"
+        return d
+
+    def context(self, others, prefix=999992, at_prefix=None):
+        answer = at_prefix or f"match:0,{prefix}"
+        prefixes = {"P3-O06": (prefix, C.parse_rendered(answer))}
+        reduction = C.Reduction(prefixes, {}, {f"P3-O06~p{prefix}": f"match:0,{prefix}"})
+        return C.Context(reduction=reduction, other_answers=lambda d: others)
+
+    def test_the_stated_check_of_condition_3(self) -> None:
+        self.assertEqual(C.whole_run_answer("^[a]*$", "u", [0x61] * 5, "0"), ("match", ((0, 5),), ()))
+        self.assertEqual(C.whole_run_answer("^[ab]*$", "", [0x61, 0x62, 0x62], "0"), ("match", ((0, 3),), ()))
+        self.assertEqual(C.whole_run_answer("^a*$", "d", [], "0"), ("match", ((0, 0),), ()))
+        for pattern, flags, subject in (("^[a]*$", "iu", [0x61]), ("^[a]*$", "mu", [0x61]), ("^[a]*$", "u", [0x62]),
+                                        ("^[^a]*$", "u", [0x62]), ("^[a-c]*$", "u", [0x62]), ("[a]*", "u", [0x61]),
+                                        ("^[a]+$", "u", [0x61])):
+            self.assertIsNone(C.whole_run_answer(pattern, flags, subject, "0"), (pattern, flags))
+        self.assertIsNone(C.whole_run_answer("^[a]*$", "gu", [0x61], "0"))
+
+    def test_o06_is_row_b1_s_where_every_condition_holds(self) -> None:
+        category, row, why = C.classify(self.o06(), "arbiter:exhausted", set(), self.context({"V": "match:0,10000001"}))
+        self.assertEqual((category, row), ("a", "B1"))
+        self.assertIn("beyond the arbiter, by row B1", why)
+        self.assertIn("P3-O06~p999992", why)
+        for run in ("J.tr-TR", "J.lt-LT"):
+            self.assertEqual(C.classify(self.o06(run), "arbiter:exhausted", set(),
+                                        self.context({"V": "match:0,10000001"}))[:2], ("a", "B1"))
+
+    def test_o06_stays_c_where_a_condition_fails(self) -> None:
+        agree = {"V": "match:0,10000001"}
+        # (2): no other arm answers, one answers otherwise, or one does not hold the case.
+        for others in ({}, {"V": "null"}, {"V": None}, {"V": "match:0,10000001", "V.x": "match:0,1"}):
+            self.assertEqual(C.classify(self.o06(), "arbiter:exhausted", set(), self.context(others))[:2], ("c", "-"))
+        # (3): S's answer is not the whole subject, or the prefix's agreed answer is not what the check gives there.
+        self.assertEqual(C.classify(self.o06(s="match:0,5"), "arbiter:exhausted", set(), self.context(agree))[0], "c")
+        self.assertEqual(C.classify(self.o06(), "arbiter:exhausted", set(), self.context(
+            agree, at_prefix="match:0,999991"))[0], "c")
+        # (1): an input no row names (a shorter run of `a`), or arm V's difference (B1 is read for arm J here).
+        self.assertEqual(C.classify(self.o06(s="match:0,40", subject="a" * 40), "arbiter:exhausted", set(),
+                                    self.context({"V": "match:0,40"}, prefix=17))[0], "c")
+        self.assertEqual(C.classify(self.o06(run="V"), "arbiter:exhausted", set(), self.context(
+            {"J": "match:0,10000001"}))[0], "c")
+        # Without the reduction, the rule as filed: class (c).
+        self.assertEqual(C.classify(self.o06(), "arbiter:exhausted", set(), C.Context(
+            other_answers=lambda d: agree))[0], "c")
+
+    def test_the_row_s_words_and_the_other_arms_answers_are_read(self) -> None:
+        import tempfile
+        from population_format import open_text
+        self.assertEqual(C.check_beyond_rows({"B1": "| B1 | " + B1_WORDS + " |"}), [])
+        self.assertTrue(C.check_beyond_rows({"B1": "| B1 | A greedy run | Correction of Broiler.JS |"}))
+        self.assertTrue(C.check_beyond_rows({}))
+        with tempfile.TemporaryDirectory() as tmp:
+            runs = Path(tmp)
+            for run, answer in (("S", "match:0,3"), ("V", "match:0,3"), ("J", "null"), ("J.tr-TR", "null")):
+                with open_text(runs / f"P3.{run}.tsv.gz", "wt") as out:
+                    out.write(f"# id\tanswer\tcharge\nP3-N01\tnull\t1\nP3-O06\t{answer}\t3\n")
+            d = self.o06(run="J.tr-TR")
+            self.assertEqual(C.other_arm_answers(runs, d), {"V": "match:0,3"})
+            d["id"] = "P3-O99"
+            self.assertEqual(C.other_arm_answers(runs, d), {"V": None})
 
 
 class ReductionTests(unittest.TestCase):
@@ -782,6 +1058,8 @@ class CorrespondenceTests(unittest.TestCase):
         if not path:
             self.skipTest("BROILER_VM_CORRESPONDENCE names no correspondence.md")
         self.assertEqual(C.check_rows(C.read_correspondence(Path(path))), [])
+        # @8: row B1's words naming P3's `O06` and the mechanism (the revision of 2026-11-16c's condition (1)).
+        self.assertEqual(C.check_beyond_rows(C.read_row_lines(Path(path))), [])
 
 
 class ExitStatusTests(unittest.TestCase):
@@ -870,6 +1148,15 @@ ADDED_ROWS = {"S8a": "**Correction of Broiler.VM** (kind R; ...)", "S12": "**Cor
 # The rows added at Broiler.VM's 44511066 (@7), as their classes open.
 ADDED_ROWS.update({row: "**Correction of Broiler.JS**; no test262 row is known to move for it"
                    for row in ROWS_M10_TO_M15})
+# The rows added at Broiler.VM's 626e4ed8 (@8), as their classes open; and row B1, whose widening the revision of
+# 2026-11-16c reads (its class, and its words naming P3's `O06` and the mechanism, as check_beyond_rows reads them).
+ADDED_ROWS.update({row: "**Correction of Broiler.JS and of Broiler.Regex's preview.4**; no test262 row is known to "
+                        "move for it" for row in ("M16", "M17", "M18", "M19")})
+ADDED_ROWS.update({row: "**Correction of Broiler.JS**; no test262 row is known to move for it"
+                   for row in ("M20", "M21", "M22", "M23", "M24", "M25", "M26")})
+B1_WORDS = ("reached `/^[a]*$/u` over 10,000,001 `a` (`P3-O06`) ...: the class's run ends at the budget's early exit "
+            "this row cites (R1). Broiler.JS: **correction of Broiler.JS and of Broiler.Regex's preview.4** (R1)")
+ADDED_ROWS["B1"] = B1_WORDS
 
 STUB_ROWS = {"S1": "Correction of Broiler.VM", "S2a": "Correction of Broiler.JS",
              "S5": "Broiler.JS: **correction of Broiler.JS**, by D-s5", "S7": "Correction of Broiler.JS",
