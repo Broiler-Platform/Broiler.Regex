@@ -26,6 +26,9 @@ def diff(run, op, pattern, flags, s, arm, subject="", last=0):
 
 MATCH01 = ("match", ((0, 1),), ())
 KELVIN = C.Context(case_pairs=frozenset((0x212A, 0x017F)))
+# Row M8's non-ASCII letters, as the arbiter's UCD gives them (Context.letters), for the code points these tests use.
+LETTERS = frozenset((0x00E9, 0x0130, 0x0131, 0x03A3, 0x03C2, 0x03C3, 0x1D400))
+WITH_LETTERS = C.Context(letters=LETTERS)
 
 
 def with_code(code):
@@ -116,7 +119,8 @@ class ClassifyTests(unittest.TestCase):
         self.assertEqual(C.classify(d, "null", set(), KELVIN)[:2], ("a", "M2"))
         d = diff("J", "exec", "\\b", "i", "null", "match:0,1", "\u00e9")
         # Not row M2's; since @4 row M8's (`\\b` beside a non-ASCII letter).
-        self.assertEqual(C.classify(d, "null", set(), KELVIN)[:2], ("a", "M8"))
+        kelvin_letters = C.Context(case_pairs=KELVIN.case_pairs, letters=LETTERS)
+        self.assertEqual(C.classify(d, "null", set(), kelvin_letters)[:2], ("a", "M8"))
         d = diff("J", "exec", "[a-z]", "iu", "null", "match:0,1", "\u212a")
         self.assertEqual(C.classify(d, "null", set(), KELVIN)[0], "c")
 
@@ -338,12 +342,18 @@ class RowsAddedTests(unittest.TestCase):
         d = diff("J", "exec", "c{4294967296}\\b", "iu", "null", "refuse:syntax", "c")
         d["class"] = "P1"
         self.assertEqual(C.classify(d, "null", set())[0], "c")
+        # (@5) ... and under i alone row S14 does not take it in S15's place.
+        d = diff("J", "exec", "c{4294967296}\\b", "i", "null", "refuse:syntax", "c")
+        d["class"] = "P1"
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
 
     def test_row_m8_reads_its_constructs(self) -> None:
         d = diff("J", "exec", "\\B|I\\b", "", "match:2,2", "match:1,1", "\u00e9I")
-        self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set())[:2], ("a", "M8"))
-        d = diff("J", "exec", "\\B|I\\b", "", "match:2,2", "match:1,1", "aI")
+        self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set(), WITH_LETTERS)[:2], ("a", "M8"))
+        # The letters are the arbiter's UCD's: a context without them reads no letter.
         self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set())[0], "c")
+        d = diff("J", "exec", "\\B|I\\b", "", "match:2,2", "match:1,1", "aI")
+        self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set(), WITH_LETTERS)[0], "c")
         d = diff("J", "exec", "\\BI", "i", "match:1,2", "null", "a\u0131")
         self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[:2], ("a", "M8"))
         d = diff("J", "exec", "k{0,2}[0\\q{}]_*", "v", "match:0,1", "match:0,0", "k")
@@ -356,6 +366,40 @@ class RowsAddedTests(unittest.TestCase):
         # A group name J translates is none of the row's constructs.
         d = diff("J", "exec", "(?<$x>$.{0,2}).*", "m", "match:0,0;0,0|$x=1", "match:0,0;0,0|y=1", "a")
         self.assertEqual(C.classify(d, ("match", ((0, 0), (0, 0)), (("$x", (0, 0)),)), set())[0], "c")
+
+    def test_row_m8_reads_its_constructs_where_they_bear_on_the_difference(self) -> None:
+        # (@5) The review's probe: the names alone differ, whatever the pattern and the subject hold.
+        names = ("match", ((0, 0), (0, 0)), (("$x", (0, 0)),))
+        for pattern, subject in (("(?<$x>$.{0,2}).*\\S", "\u00e9"), ("(?<$x>$.{0,2}).*\\d", "\ud83d"),
+                                 ("\\b(?<$x>$.{0,2}).*", "\u00e9"), ("(?<$x>$.{0,2}).*", "\u0130")):
+            d = diff("J", "exec", pattern, "im", "match:0,0;0,0|$x=1", "match:0,0;0,0|y=1", subject)
+            self.assertEqual(C.classify(d, names, set(), WITH_LETTERS)[0], "c", pattern)
+        # The complements, and \w, \d and \s without \b or \B, are not the row's.
+        for pattern in ("\\S", "\\W", "\\D", "\\w", "\\d", "\\s", "[\\B\\w]", "[\\S-\\x07B]"):
+            d = diff("J", "exec", pattern, "", "match:0,1", "null", "a\u00e9")
+            self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[0], "c", pattern)
+        # A code unit past ASCII that is no letter: a lone surrogate, an emoji, U+00A0.
+        for subject in ("\ud83da", "\U0001f600a", "\u00a0a"):
+            d = diff("J", "exec", "\\Ba", "", "null", "match:2,3", subject)
+            self.assertEqual(C.classify(d, "null", set(), WITH_LETTERS)[0], "c", repr(subject))
+        # A letter past ASCII, a pair read as one code point, beside the matches.
+        d = diff("J", "exec", "\\Ba", "", "null", "match:2,3", "\U0001d400a")
+        self.assertEqual(C.classify(d, "null", set(), WITH_LETTERS)[:2], ("a", "M8"))
+        # A letter away from both matches is not beside them, unless a look-around reads past the match.
+        d = diff("J", "exec", "a\\b", "", "match:0,1", "null", "ab-\u00e9")
+        self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[0], "c")
+        d = diff("J", "exec", "a\\b(?=.*b)", "", "match:0,1", "null", "ab-\u00e9")
+        self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[:2], ("a", "M8"))
+        # U+0130 or U+0131 under i: in the pattern, or beside the matches.
+        d = diff("J", "exec", "a", "i", "match:0,1", "null", "a--\u0130")
+        self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[0], "c")
+        d = diff("J", "exec", "\\u0130|a", "i", "match:0,1", "null", "a--")
+        self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[:2], ("a", "M8"))
+        # P5 in tr-TR: each pattern against its own subject.
+        for pattern, subject, row in (("I", "i", "M8"), ("[i]", "I", "M8"), ("I", "I", "-"), ("i", "i", "-")):
+            d = diff("J.tr-TR", "exec", pattern, "i", "match:0,1", "null", subject)
+            d["class"] = "P5"
+            self.assertEqual(C.classify(d, MATCH01, set(), WITH_LETTERS)[1], row, (pattern, subject))
 
     def test_row_m9_is_its_one_input(self) -> None:
         d = diff("J", "exec", "(?<$x>){1,}?\\B|(?!\u212a)", "y", "match:2,2;2,2|$x=1",
@@ -375,6 +419,11 @@ class RowsAddedTests(unittest.TestCase):
         # From lastIndex 0, no pair is split.
         d = diff("J", "exec", "[\\ud834\\udf06]", "gu", "match:0,1", "null", pair, 0)
         self.assertEqual(C.classify(d, MATCH01, set())[0], "c")
+        # (@5) The widening names two vectors: another pattern or other flags of the same shape are not read.
+        d = diff("J", "exec", "(.)", "gu", "match:1,2;0,2", "match:1,2;1,2", pair, 1)
+        self.assertEqual(C.classify(d, ("match", ((1, 2), (0, 2)), ()), set())[0], "c")
+        d = diff("J", "exec", "[\\ud834\\udf06x]", "gu", "match:1,2", "null", pair, 1)
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
 
     def test_row_s8a_is_v_keeping_word_folding(self) -> None:
         d = diff("V", "exec", "[\\w--I]", "iv", "match:1,2", "match:0,1", "IA")
@@ -555,6 +604,9 @@ def counted_exec(pattern, flags, subject, last_index, cutoff):
 class _Data:
     def orbit(self, unit):
         return {unit}
+
+    def general_category(self, cp):
+        return "Ll" if cp == 0xE9 else "Cn"
 
 
 def ucd():

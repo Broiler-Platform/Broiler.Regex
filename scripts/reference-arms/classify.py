@@ -34,12 +34,13 @@ docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16.md). A difference the
 "until reduced to an input it can". Given reduce.py's output for the comparison (DIR/reductions.tsv, the arms' runs
 over the reduced cases in DIR/runs, their comparison in DIR/comparison), such a difference is classed:
 - **as its reduced difference**, by this classifier, when the reduced case still differs in the same run, in the same
-  kinds of answer or in others ("an input whose reduced difference is another difference is classed as that
-  difference");
+  kinds of answer or in others ("an input whose reduced case differs, in the same kinds of answer or in others, is
+  classed as that difference", the filed revision's words);
 - **(b') "beyond the arbiter"**, listed with its prefix and both answers there, when S and the arm answer the reduced
   case alike, S's answer there is the arbiter's, and at the original input one side stopped at a bound it declares
   (S's step, frame or trail ceiling, arm V's allowance, or arm J's harness's stop, which the stop list holds:
-  DECLARED_STOPS);
+  DECLARED_STOPS; any `limit:harness` of arm J is read as the stop list's, which holds only while no case of the run
+  reached a backstop, a calibration's time limit or a crash: the run's facts do not say which stop it was);
 - **(c)** otherwise: the arbiter reaches no prefix of the subject (what it cannot reach is in the pattern), or the
   reduced case agrees but neither side stopped at a bound it declares, or the input was not reduced.
 Without `--reduction` no difference is (b'), and the classification reads the rule as filed.
@@ -51,10 +52,27 @@ row's (a sequence of at least B8_TERMS terms under u or v, which Broiler.Regex 0
 through once per term) and S's answer is the arbiter's, and class (b) under decision D10 otherwise; arm V's or S's is
 class (c), as neither declares a bound the harness's limit stands for.
 
+*Revised 2026-11-16, at the review of @4 and before any judged run (CLASSIFIER_VERSION @5).* Row M8's predicate read
+"`\\b`, `\\B`, `\\w`, `\\d`, `\\s` or their complements" in the pattern with "a code point past ASCII in the
+subject", and any difference of an exec both answer, the group names alone among them: it took 6,849 differences whose
+spans and captures agree and only the names differ (Broiler.JS's translator rewriting a name, which the roadmap's
+record of 2026-11-16 places outside the row's list), complements the row does not name, and subjects whose only
+non-ASCII units are lone surrogates or emoji. It now reads the row's list where it bears on the difference: never a
+difference of the group names alone; `\\b` or `\\B` outside a class with a non-ASCII letter (General_Category L in the
+arbiter's UCD, a pair read as one code point) in the subject beside what either side's match covers, or anywhere in it
+where the pattern has a look-around; U+0130 or U+0131 under `i` in the pattern or there; and P5's `I` and `[I]`
+against `i`, `i` and `[i]` against `I`, each with its own subject. "`\\w`, `\\d` and `\\s` beside them" is read as beside
+`\\b` and `\\B` (the plural "them"; "a non-ASCII letter" is singular), so the `\\b` and `\\B` limb holds them; the
+row's text does not settle it, and the reading "beside non-ASCII letters" is not taken. Row M4's widened predicate
+reads the widening's two vectors' patterns and flags alone, and row S14 no longer takes a bound past 2^31 - 1 that
+J refuses only under `i` where row S15 does not (outside P4). The reduction's paragraph above quoted the draft's
+words, "an input whose reduced difference is another difference is classed as that difference"; it now quotes the
+filed revision.
+
 *Revised 2026-11-16, after task 2.13's runs (unjudged), their classification and the reduction of 2026-11-15 were
-seen (CLASSIFIER_VERSION @4).* The correspondence is read at Broiler.VM's `7c65a8fe` (Broiler.VM#211's merge, the
-file's blob `f0f6f080`; CORRESPONDENCE below), which adds rows S8a, S12 to S15, M8 and M9 and widens M4 (decisions
-D-wiv and D-jsrows of JSD-0081, 2026-11-16). Predicates are added for those rows, each read from the row's own text;
+seen (CLASSIFIER_VERSION @4).* The correspondence is read at Broiler.VM's `7c65a8fe`
+(Broiler-Platform/Broiler.VM#211's merge, the file's blob `f0f6f080`; CORRESPONDENCE below), which adds rows S8a, S12
+to S15, M8 and M9 and widens M4 (decisions D-wiv and D-jsrows of JSD-0081, 2026-11-16). Predicates are added for those rows, each read from the row's own text;
 row S7's reaches the quantified `^`, `$` and `\\b` vectors its widening of 2026-11-01 names, row S8's the set-operator
 vectors row S12 leaves to it, and row M4's (J) the two vectors its widening of 2026-11-16 names. The predicates of
 @3 are unchanged and come first, so every difference @3 classed (a), (a') or (b) keeps its class and row. The option
@@ -105,7 +123,7 @@ if str(HERE) not in sys.path:
 
 from population_format import decode_units, open_text  # noqa: E402
 
-CLASSIFIER_VERSION = "sjl-11-001-classification@4"
+CLASSIFIER_VERSION = "sjl-11-001-classification@5"
 DEFAULT_CUTOFF = 1_000_000
 
 # The Broiler.VM commit whose correspondence.md this classifier's rows and words are read from (the rule's "rows the
@@ -239,6 +257,12 @@ class Arbiter:
             if orbit != set(preimages.get(table[unit], (unit,))):
                 out.add(unit)
         return out
+
+    def letters(self) -> frozenset:
+        """Row M8's non-ASCII letters: every code point past U+007F whose General_Category in the pinned UCD
+        (UnicodeData.txt, as the arbiter reads it) is Lu, Ll, Lt, Lm or Lo."""
+        data = self.r.ucd()
+        return frozenset(cp for cp in range(0x80, 0x110000) if data.general_category(cp).startswith("L"))
 
     def answer(self, pattern, flags, subject, last_index, op) -> str | tuple:
         key = (pattern, flags, subject if op == "exec" else None, last_index if op == "exec" else None)
@@ -814,25 +838,29 @@ def annex_b_refused(d, context) -> bool:
     "Refused only under `s`", "Refused only under `i`", "Refused only under `m`". The flags are read for the kinds: no
     flag, `s`, `i` or `m` alone, or other flags where the same run refused the same pattern with no flag (an acceptance
     difference of the comparison). "A quantifier bound past 2^31 - 1 that Broiler.JS refuses only under `i` is row
-    S15's", which comes first."""
+    S15's", which comes first; and since @5 such a bound under `i` that the comparison does not show refused without `i`
+    is not this row's where row S15 does not take it either (outside P4), so that the order of the rows does not decide
+    it."""
     if unicode_mode(d) or not arm_refuses_what_s_accepts(d):
+        return False
+    if (has_flag(d, "i") and bound_past_int32(units_text(d["pattern"]))
+            and not j_refuses_under(d, context, flags_without(d, "i"))):
         return False
     return d["flags"] in S14_ONE_FLAG or j_refuses_under(d, context, ".")
 
 
 DOTTED_DOTLESS_I = frozenset((0x0130, 0x0131))
-WORD_ESCAPES = re.compile(r"\\[bBwWdDsS]")
+LOOK_AROUND = re.compile(r"\(\?(?:=|!|<=|<!)")
 
 
-def class_escape_or_boundary(text: str) -> bool:
-    """Whether `\\b`, `\\B`, `\\w`, `\\d`, `\\s` or their complements is in the pattern (`\\b` outside a class, where it
-    is not the backspace)."""
+def boundary_assertion(text: str) -> bool:
+    """Whether `\\b` or `\\B` is in the pattern outside a class (in a class `\\b` is the backspace, and `\\B` is no
+    assertion)."""
     i, depth = 0, 0
     while i < len(text):
         ch = text[i]
         if ch == "\\":
-            escape = text[i:i + 2]
-            if WORD_ESCAPES.fullmatch(escape) and not (depth > 0 and escape == "\\b"):
+            if depth == 0 and text[i + 1:i + 2] in ("b", "B"):
                 return True
             i += 2
             continue
@@ -844,28 +872,75 @@ def class_escape_or_boundary(text: str) -> bool:
     return False
 
 
+def look_around(text: str) -> bool:
+    """Whether the pattern has a look-ahead or look-behind outside a class."""
+    return any(not _escaped(text, m.start()) and not _in_class_at(text, m.start()) for m in LOOK_AROUND.finditer(text))
+
+
 def empty_string_class(text: str) -> bool:
     """`\\q{}` in a class, `[A\\q{}]`."""
     return any(_in_class_at(text, m.start()) for m in re.finditer(r"\\q\{\}", text))
 
 
+def names_only(d) -> bool:
+    """Both sides match with the same spans and captures, and only the group names differ: Broiler.JS's translator
+    rewriting a name (`$x` under `m` as `(?=$|\\r)x`, `π` under `i` as `[πΠϖ]`), which row M8's list does not name."""
+    return (kind(d["S"]) == "match" and kind(d["arm"]) == "match"
+            and canonical(d["S"])[1] == canonical(d["arm"])[1])
+
+
+def code_point_at(units: list[int], i: int) -> int:
+    """The code point the code unit at `i` belongs to: a lead or a trail of a pair gives the pair's."""
+    u = units[i]
+    if 0xD800 <= u <= 0xDBFF and i + 1 < len(units) and 0xDC00 <= units[i + 1] <= 0xDFFF:
+        return 0x10000 + ((u - 0xD800) << 10) + (units[i + 1] - 0xDC00)
+    if 0xDC00 <= u <= 0xDFFF and i > 0 and 0xD800 <= units[i - 1] <= 0xDBFF:
+        return 0x10000 + ((units[i - 1] - 0xD800) << 10) + (u - 0xDC00)
+    return u
+
+
+def compared_positions(d, text: str, units: list[int]) -> range:
+    """The code units of the subject an exec's difference can turn on: from one before the earliest start of either
+    side's match to the latest end (an assertion at a position reads the unit before it and the unit at it), or the
+    whole subject where the pattern has a look-around, which reads past the match. Where both sides answer and differ,
+    a test the two engines answer differently lies on one side's matching path, which is inside its match."""
+    if look_around(text):
+        return range(len(units))
+    spans = [match_parts(answer)[0] for answer in (d["S"], d["arm"]) if kind(answer) == "match"]
+    start, end = min(s for s, _ in spans), max(e for _, e in spans)
+    return range(max(start - 1, 0), min(end + 1, len(units)))
+
+
+P5_TR_TR = {"I": "i", "[I]": "i", "i": "I", "[i]": "I"}
+
+
 def exec_answered_otherwise(d, context) -> bool:
-    """Row M8: "An `exec` both sides answer, where Broiler.JS answers otherwise", its inputs as the row lists them:
-    "`\\b` and `\\B` beside a non-ASCII letter ..., `\\w`, `\\d` and `\\s` beside them" (the escape in the pattern, a
-    code point past ASCII in the subject); "case-insensitive matches of U+0130 and U+0131 no row's pairs hold" (i, and
-    U+0130 or U+0131 in the input); "an empty `\\q{}` in a class under `v`"; and "under `tr-TR` P5's `I` and `[I]`
-    against `i` and `i` and `[i]` against `I`". Rows M2, M2a, M2b, M3, M4, M7 and B2 come first."""
-    if not both_answer_exec(d):
+    """Row M8: "An `exec` both sides answer, where Broiler.JS answers otherwise", its inputs as the row lists them,
+    each where it bears on the difference, and never a difference of the group names alone (names_only):
+    - "`\\b` and `\\B` beside a non-ASCII letter ..., `\\w`, `\\d` and `\\s` beside them": `\\b` or `\\B` outside a class,
+      and a letter past ASCII (General_Category L in the arbiter's UCD, Context.letters) at a compared position of the
+      subject (compared_positions). "Them" is read as `\\b` and `\\B` (plural, where "a non-ASCII letter" is singular),
+      so `\\w`, `\\d` and `\\s` add no input of their own; the complements `\\W`, `\\D` and `\\S` are not the row's;
+    - "case-insensitive matches of U+0130 and U+0131 no row's pairs hold (`\\BI` under `i`)": `i` in force, and U+0130 or
+      U+0131 in the pattern or at a compared position of the subject;
+    - "an empty `\\q{}` in a class under `v`";
+    - "under `tr-TR` P5's `I` and `[I]` against `i` and `i` and `[i]` against `I`", each pattern with its own subject.
+    Rows M2, M2a, M2b, M3, M4, M7 and B2 come first."""
+    if not both_answer_exec(d) or names_only(d):
         return False
     text = units_text(d["pattern"])
-    if class_escape_or_boundary(text) and any(u > 0x7F for u in decode_units(d["subject"])):
+    units = decode_units(d["subject"])
+    compared = compared_positions(d, text, units)
+    if boundary_assertion(text) and any(
+            code_point_at(units, i) > 0x7F and code_point_at(units, i) in context.letters for i in compared):
         return True
-    if mode(d, "i") and input_code_points(d) & DOTTED_DOTLESS_I:
+    if mode(d, "i") and (pattern_code_points(text) & DOTTED_DOTLESS_I
+                         or any(units[i] in DOTTED_DOTLESS_I for i in compared)):
         return True
     if has_flag(d, "v") and empty_string_class(text):
         return True
-    return (d["run"] == "J.tr-TR" and d["class"] == "P5" and mode(d, "i") and text in ("I", "[I]", "i", "[i]")
-            and units_text(d["subject"]) in ("i", "I"))
+    return (d["run"] == "J.tr-TR" and d["class"] == "P5" and mode(d, "i")
+            and P5_TR_TR.get(text) == units_text(d["subject"]))
 
 
 M9_INPUT = ("(?<$x>){1,}?\\B|(?!\u212a)", "y", "X\\", "2")
@@ -883,17 +958,25 @@ def match_parts(answer: str):
     return canonical(answer)[1] if answer.startswith("match:") else None
 
 
+M4_CAPTURE_VECTORS = frozenset({("(.)", frozenset("gdu"))})
+M4_NULL_VECTORS = frozenset({("[\\ud834\\udf06]", frozenset("gu")), ("[\U0001d306]", frozenset("gu"))})
+
+
 def half_pair_capture_or_null(d) -> bool:
     """Row M4's widening of 2026-11-16 (decision D-jsrows), Broiler.JS by the same start: "`(.)` under `gdu`, whose
     capture Broiler.JS gives as the trail alone where the text's is the pair" (both match at the same span, and a
     capture S gives from lastIndex - 1 J gives from lastIndex, the same end), and "`[\\ud834\\udf06]` under `gu`, which
-    it answers `null` where the text's answer is a match at index 1" (S matches at lastIndex, J answers null)."""
+    it answers `null` where the text's answer is a match at index 1" (S matches at lastIndex, J answers null). The
+    widening names those two vectors, so each shape is read with its vector's pattern and flags alone (@5)."""
     if not inside_pair(d) or not both_answer_exec(d):
         return False
     k = int(d["lastIndex"])
     s, arm = match_parts(d["S"]), match_parts(d["arm"])
+    vector = (units_text(d["pattern"]).lower(), frozenset("" if d["flags"] == "." else d["flags"]))
     if s is not None and arm is None:
-        return s[0][0] == k
+        return vector in M4_NULL_VECTORS and s[0][0] == k
+    if vector not in M4_CAPTURE_VECTORS:
+        return False
     if s is None or arm is None or s[0] != arm[0] or len(s) != len(arm):
         return False
     changed = [(a, b) for a, b in zip(s[1:], arm[1:]) if a != b]
@@ -974,13 +1057,16 @@ ENGINE_WORDS = {"V": "Broiler.VM", "J": "Broiler.JS"}
 
 
 class Context:
-    """What a predicate reads beyond the difference: the arbiter's reason for a refusal, row M2's case pairs, and arm
-    J's answers under the invariant culture (row M2a)."""
+    """What a predicate reads beyond the difference: the arbiter's reason for a refusal, row M2's case pairs, arm J's
+    answers under the invariant culture (row M2a), J's refusals in the comparison (rows S14 and S15), the reduction, and
+    the letters of the arbiter's UCD (row M8)."""
 
     def __init__(self, refusal_code=None, case_pairs=frozenset(), invariant=None, j_refused=frozenset(),
-                 reduction=None) -> None:
+                 reduction=None, letters=frozenset()) -> None:
         self._refusal_code = refusal_code
         self.case_pairs = case_pairs
+        # The code points past ASCII whose General_Category is a letter (L) in the arbiter's UCD (row M8).
+        self.letters = letters
         self.invariant = invariant or {}
         # (run, pattern, flags) of every acceptance difference where S accepts and arm J refuses (rows S14 and S15).
         self.j_refused = j_refused
@@ -1279,7 +1365,7 @@ def run(argv: list[str] | None = None) -> int:
         reduction = Reduction.read(args.reduction, args.cutoff)
     context = Context(lambda d: arbiter.refusal_code(d["pattern"], d["flags"]), frozenset(arbiter.case_pairs()),
                       invariant_answers(args.comparison / "differences.tsv.gz"),
-                      j_refusals(args.comparison / "differences.tsv.gz"), reduction)
+                      j_refusals(args.comparison / "differences.tsv.gz"), reduction, arbiter.letters())
     counts: Counter = Counter()
     by_row: Counter = Counter()
     header = None
