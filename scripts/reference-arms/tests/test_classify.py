@@ -50,28 +50,42 @@ class ClassifyTests(unittest.TestCase):
         d = diff("J", "exec", "(?<=a)*b", "", "refuse:syntax", "match:0,1", "b")
         self.assertEqual(C.classify(d, "refuse:syntax", set(), nothing)[:2], ("a", "S7"))
         d = diff("J", "accept", "(?<=a)b*", "", "refuse:syntax", "accept")
-        self.assertEqual(C.classify(d, "refuse:syntax", set(), nothing)[0], "c")
+        # Not row S7's; since @4 the reason is row S12's.
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), nothing)[:2], ("a", "S12"))
         # A quantified look-behind in a pattern the arbiter refuses for another reason: not the row's correction.
         d = diff("J", "accept", "(?<=a)*\\k<b>", "", "refuse:syntax", "accept")
-        self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("early:undefined-group-name"))[0], "c")
+        self.assertNotEqual(C.classify(d, "refuse:syntax", set(), with_code("early:undefined-group-name"))[1], "S7")
+        # ... and a reason row S13 names, which holds it since @4.
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("early:undefined-group-name"))[:2],
+                         ("a", "S13"))
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("early:quantifier-range"))[0], "c")
 
     def test_row_s7_holds_nothing_of_j_under_u(self) -> None:
-        # The row reads Broiler.JS under u "the same, every refusal early".
+        # The row reads Broiler.JS under u "the same, every refusal early". Since @4 row S12 holds the arms' P4
+        # inputs of the reason nothing to repeat, "the constructs of rows S7's and S8's subjects" among them.
         for pattern in ("(?<=a)*b", "(?i:a)", "\\u{110000}"):
             d = diff("J", "accept", pattern, "u", "refuse:syntax", "accept")
-            self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:nothing-to-repeat"))[0], "c")
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:nothing-to-repeat"))[:2],
+                             ("a", "S12"))
+            d["class"] = "P1"
+            self.assertNotEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:nothing-to-repeat"))[1],
+                                "S7")
 
     def test_a_j_refusal_is_no_row_s(self) -> None:
-        # J refusing what S and the arbiter accept is not a correction any of these rows records.
-        for pattern, flags in (("{", "i"), ("a$", ""), ("[a&&b]", "v"), ("(?<a>x)|(?<a>y)", "")):
+        # J refusing what S and the arbiter accept under u or v is not a correction any of these rows records (row
+        # S14, added at @4, holds J's refusals without u or v; row S15 a bound past 2^31 - 1 under i).
+        for pattern, flags in (("{", "u"), ("a$", "v"), ("[a&&b]", "v"), ("(?<a>x)|(?<a>y)", "u")):
             d = diff("J", "accept", pattern, flags, "accept", "refuse:syntax")
             self.assertEqual(C.classify(d, "accept", set(), KELVIN)[0], "c", pattern)
             d = diff("J", "exec", pattern, flags, "null", "refuse:syntax", "k\n")
             self.assertEqual(C.classify(d, "null", set(), KELVIN)[0], "c", pattern)
 
     def test_row_s1_is_not_a_correction_of_j(self) -> None:
-        d = diff("J", "accept", "(?<a>x)|(?<a>y)", "", "accept", "refuse:syntax")
+        d = diff("J", "accept", "(?<a>x)|(?<a>y)", "u", "accept", "refuse:syntax")
         self.assertEqual(C.classify(d, "accept", set())[0], "c")
+        # Without u or v, J's refusal of what the text accepts is row S14's (@4), not row S1's.
+        d = diff("J", "accept", "(?<a>x)|(?<a>y)", "", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S14"))
 
     def test_row_s2a_is_j_accepting_an_escaped_duplicate(self) -> None:
         duplicate = with_code("early:duplicate-group-name")
@@ -80,7 +94,7 @@ class ClassifyTests(unittest.TestCase):
         d = diff("J", "accept", "(?<a>x)(?<a>y)", "", "refuse:syntax", "accept")
         self.assertEqual(C.classify(d, "refuse:syntax", set(), duplicate)[0], "c")
         d = diff("J", "accept", "(?<\\u0061>x)(?<a>y){,2}", "v", "refuse:syntax", "accept")
-        self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:nothing-to-repeat"))[0], "c")
+        self.assertNotEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:nothing-to-repeat"))[1], "S2a")
 
     def test_row_s8_is_v_mode_syntax_j_accepts(self) -> None:
         d = diff("J", "accept", "[(]", "v", "refuse:syntax", "accept")
@@ -101,7 +115,8 @@ class ClassifyTests(unittest.TestCase):
         d = diff("J", "exec", "(?i:\\u212a)", "", "null", "match:0,1", "k")
         self.assertEqual(C.classify(d, "null", set(), KELVIN)[:2], ("a", "M2"))
         d = diff("J", "exec", "\\b", "i", "null", "match:0,1", "\u00e9")
-        self.assertEqual(C.classify(d, "null", set(), KELVIN)[0], "c")
+        # Not row M2's; since @4 row M8's (`\\b` beside a non-ASCII letter).
+        self.assertEqual(C.classify(d, "null", set(), KELVIN)[:2], ("a", "M8"))
         d = diff("J", "exec", "[a-z]", "iu", "null", "match:0,1", "\u212a")
         self.assertEqual(C.classify(d, "null", set(), KELVIN)[0], "c")
 
@@ -110,7 +125,8 @@ class ClassifyTests(unittest.TestCase):
         self.assertEqual(C.classify(d, "null", set())[:2], ("a", "M2a"))
         d["id"] = "same-under-invariant"
         same = C.Context(invariant={"same-under-invariant": "match:0,1"})
-        self.assertEqual(C.classify(d, "null", set(), same)[0], "c")
+        # Not row M2a's; since @4 row M8's ("case-insensitive matches of U+0130 and U+0131 no row's pairs hold").
+        self.assertEqual(C.classify(d, "null", set(), same)[:2], ("a", "M8"))
 
     def test_row_m3_reads_both_of_its_halves(self) -> None:
         # P1's matching:m3-end-of-input:0001, 0007, 0008: `$` without m before a final LF.
@@ -238,6 +254,207 @@ class ClassifyTests(unittest.TestCase):
         self.assertEqual(C.canonical("match:0,1;-;0,1|a=-"), ("match", ((0, 1), None, (0, 1)), (("a", None),)))
 
 
+class RowsAddedTests(unittest.TestCase):
+    """The predicates of @4 (2026-11-16), each over its row's own inputs at Broiler.VM's 7c65a8fe and inputs just
+    outside them."""
+
+    def test_row_s7_reaches_the_quantified_assertion_vectors(self) -> None:
+        nothing = with_code("grammar:nothing-to-repeat")
+        for pattern in ("^*", "$+", "\\b*", "^{2}"):
+            d = diff("J", "accept", pattern, "", "refuse:syntax", "accept")
+            d["class"] = "P1"
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), nothing)[:2], ("a", "S7"), pattern)
+            # The arms' P4 inputs of that reason are row S12's, by its text.
+            d["class"] = "P4"
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), nothing)[:2], ("a", "S12"), pattern)
+        # `\B*` is not in the widening's list, and `[\b]*` is a class.
+        for pattern in ("\\B*", "[\\b]*"):
+            d = diff("J", "accept", pattern, "", "refuse:syntax", "accept")
+            d["class"] = "P1"
+            self.assertNotEqual(C.classify(d, "refuse:syntax", set(), nothing)[1], "S7", pattern)
+
+    def test_row_s8_reaches_the_set_operator_vectors(self) -> None:
+        operator = with_code("grammar:class-set-operator")
+        d = diff("J", "accept", "[a-z&&b]", "v", "refuse:syntax", "accept")
+        d["class"] = "P1"
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), operator)[:2], ("a", "S8"))
+        d = diff("J", "exec", "[a-z&&[^aeiou]]", "v", "refuse:syntax", "match:0,1", "x")
+        d["class"] = "P1"
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), operator)[:2], ("a", "S8"))
+        d["class"] = "P4"
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), operator)[:2], ("a", "S12"))
+
+    def test_row_s12_reads_its_reasons_under_their_flags(self) -> None:
+        for pattern, flags, code in (("\\-", "v", "grammar:invalid-escape"), ("]", "u", "grammar:lone-syntax-character"),
+                                     ("[\\c]", "u", "grammar:invalid-class-escape"), ("a\\", "", "grammar:trailing-backslash"),
+                                     ("[a", "m", "grammar:unterminated-class"), ("(?\\u0069:a)", "u", "grammar:invalid-group"),
+                                     ("{", "v", "grammar:nothing-to-repeat")):
+            d = diff("J", "accept", pattern, flags, "refuse:syntax", "accept")
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code(code))[:2], ("a", "S12"), pattern)
+        # A reason the row names under u or v, without them; a reason it does not name; J refusing too.
+        for pattern, flags, code in (("\\-", "", "grammar:invalid-escape"), ("(?\\u0069:a)", "", "grammar:invalid-group"),
+                                     ("a{2,1}", "", "early:quantifier-range")):
+            d = diff("J", "accept", pattern, flags, "refuse:syntax", "accept")
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code(code))[0], "c", pattern)
+        d = diff("V", "accept", "a\\", "", "refuse:syntax", "accept")
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code("grammar:trailing-backslash"))[0], "c")
+
+    def test_row_s13_reads_its_early_errors(self) -> None:
+        d = diff("J", "exec", "\\2+\\x6b?", "v", "refuse:syntax", "null", "k")
+        past = with_code("early:decimal-escape-past-group-count")
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), past)[:2], ("a", "S13"))
+        d = diff("J", "exec", "\\2+\\x6b?", "", "refuse:syntax", "null", "k")
+        self.assertEqual(C.classify(d, "refuse:syntax", set(), past)[0], "c")
+        for code in ("early:class-range-out-of-order", "early:undefined-group-name", "early:invalid-braced-quantifier"):
+            d = diff("J", "accept", "x", "", "refuse:syntax", "accept")
+            self.assertEqual(C.classify(d, "refuse:syntax", set(), with_code(code))[:2], ("a", "S13"), code)
+
+    def test_row_s14_is_j_refusing_without_u_or_v(self) -> None:
+        for pattern, flags in (("\\p{L}", ""), ("[\\W-\\u2028]", "s"), ("[a-\\u00E9-0]", "i"), ("[S-^\\d]", "m")):
+            d = diff("J", "accept", pattern, flags, "accept", "refuse:syntax")
+            self.assertEqual(C.classify(d, "accept", set())[:2], ("a", "S14"), pattern)
+            d = diff("J", "exec", pattern, flags, "null", "refuse:syntax", "a")
+            self.assertEqual(C.classify(d, "null", set())[:2], ("a", "S14"), pattern)
+        # Under y, a kind only when the same run refused the pattern with no flag; under u, no kind of the row.
+        d = diff("J", "exec", "\\p{L}", "y", "null", "refuse:syntax", "a")
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
+        refused = C.Context(j_refused=frozenset({("J", d["pattern"], ".")}))
+        self.assertEqual(C.classify(d, "null", set(), refused)[:2], ("a", "S14"))
+        d = diff("J", "accept", "\\p{L}", "u", "accept", "refuse:syntax")
+        self.assertEqual(C.classify(d, "accept", set(), refused)[0], "c")
+
+    def test_row_s15_is_a_bound_past_int32_under_i(self) -> None:
+        for flags in ("i", "iu", "iv"):
+            d = diff("J", "exec", "c{4294967296}\\b", flags, "null", "refuse:syntax", "c")
+            self.assertEqual(C.classify(d, "null", set())[:2], ("a", "S15"), flags)
+            # Refused without i too: not the row's (under i alone, then row S14's kind refused with no flag).
+            without = C.Context(j_refused=frozenset({("J", d["pattern"], C.flags_without(d, "i"))}))
+            self.assertEqual(C.classify(d, "null", set(), without)[:2], ("a", "S14") if flags == "i" else ("c", "-"))
+        d = diff("J", "exec", "c{2147483647}\\b", "iu", "null", "refuse:syntax", "c")
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
+        d = diff("J", "exec", "[{4294967296}]", "iu", "null", "refuse:syntax", "c")
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
+        # Outside P4 the comparison does not show what J answers without i.
+        d = diff("J", "exec", "c{4294967296}\\b", "iu", "null", "refuse:syntax", "c")
+        d["class"] = "P1"
+        self.assertEqual(C.classify(d, "null", set())[0], "c")
+
+    def test_row_m8_reads_its_constructs(self) -> None:
+        d = diff("J", "exec", "\\B|I\\b", "", "match:2,2", "match:1,1", "\u00e9I")
+        self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set())[:2], ("a", "M8"))
+        d = diff("J", "exec", "\\B|I\\b", "", "match:2,2", "match:1,1", "aI")
+        self.assertEqual(C.classify(d, ("match", ((2, 2),), ()), set())[0], "c")
+        d = diff("J", "exec", "\\BI", "i", "match:1,2", "null", "a\u0131")
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[:2], ("a", "M8"))
+        d = diff("J", "exec", "k{0,2}[0\\q{}]_*", "v", "match:0,1", "match:0,0", "k")
+        self.assertEqual(C.classify(d, MATCH01, set())[:2], ("a", "M8"))
+        d = diff("J.tr-TR", "exec", "[I]", "i", "match:0,1", "null", "i")
+        d["class"] = "P5"
+        self.assertEqual(C.classify(d, MATCH01, set())[:2], ("a", "M8"))
+        d["run"] = "J"
+        self.assertEqual(C.classify(d, MATCH01, set())[0], "c")
+        # A group name J translates is none of the row's constructs.
+        d = diff("J", "exec", "(?<$x>$.{0,2}).*", "m", "match:0,0;0,0|$x=1", "match:0,0;0,0|y=1", "a")
+        self.assertEqual(C.classify(d, ("match", ((0, 0), (0, 0)), (("$x", (0, 0)),)), set())[0], "c")
+
+    def test_row_m9_is_its_one_input(self) -> None:
+        d = diff("J", "exec", "(?<$x>){1,}?\\B|(?!\u212a)", "y", "match:2,2;2,2|$x=1",
+                 "throw:ArgumentOutOfRangeException", "X\\", 2)
+        arbiter = ("match", ((2, 2), (2, 2)), (("$x", (2, 2)),))
+        self.assertEqual(C.classify(d, arbiter, set())[:2], ("a", "M9"))
+        d = diff("J", "exec", "(?<$x>){1,}?\\B", "y", "match:2,2;2,2|$x=1", "throw:ArgumentOutOfRangeException",
+                 "X\\", 2)
+        self.assertEqual(C.classify(d, arbiter, set())[0], "c")
+
+    def test_row_m4_reaches_its_widened_vectors(self) -> None:
+        pair = "\U0001d306"
+        d = diff("J", "exec", "(.)", "gdu", "match:1,2;0,2", "match:1,2;1,2", pair, 1)
+        self.assertEqual(C.classify(d, ("match", ((1, 2), (0, 2)), ()), set())[:2], ("a", "M4"))
+        d = diff("J", "exec", "[\\ud834\\udf06]", "gu", "match:1,2", "null", pair, 1)
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[:2], ("a", "M4"))
+        # From lastIndex 0, no pair is split.
+        d = diff("J", "exec", "[\\ud834\\udf06]", "gu", "match:0,1", "null", pair, 0)
+        self.assertEqual(C.classify(d, MATCH01, set())[0], "c")
+
+    def test_row_s8a_is_v_keeping_word_folding(self) -> None:
+        d = diff("V", "exec", "[\\w--I]", "iv", "match:1,2", "match:0,1", "IA")
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[:2], ("a", "S8a"))
+        d = diff("V", "exec", "[\\w--\\ud83d--\\S]?", "iv", "match:0,0", "match:0,1", "s")
+        self.assertEqual(C.classify(d, ("match", ((0, 0),), ()), set())[:2], ("a", "S8a"))
+        d = diff("V", "exec", "[\\w--I]", "v", "match:1,2", "match:0,1", "IA")
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
+        d = diff("V", "exec", "[\\w--I]", "iv", "match:1,2", "match:0,1", "_A")
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
+        d = diff("J", "exec", "[\\w--I]", "iv", "match:1,2", "match:0,1", "IA")
+        self.assertEqual(C.classify(d, ("match", ((1, 2),), ()), set())[0], "c")
+
+
+class ReductionTests(unittest.TestCase):
+    """Option R of the rule's revision of 2026-11-16, over reduce.py's output."""
+
+    def reduction(self, prefix, s_answer="null", reduced=None):
+        prefixes = {"x": None if prefix is None else (prefix, C.parse_rendered(s_answer))}
+        differences = {} if reduced is None else {(f"x~p{prefix}", "J"): reduced}
+        return C.Context(reduction=C.Reduction(prefixes, differences, {f"x~p{prefix}": s_answer}))
+
+    def test_a_stop_against_an_answer_the_prefix_confirms_is_b_prime(self) -> None:
+        d = diff("J", "exec", "(a+)+b", "", "limit:steps", "null", "a" * 40)
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(17))[0], "b'")
+        d = diff("V", "exec", "(a+)+b", "", "null", "limit:steps", "a" * 40)
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(17))[0], "b'")
+        # Without the reduction, the rule as filed: class (c).
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set())[0], "c")
+        # A bound option R does not name (arm V's ceiling, row B6) gives no (b').
+        d = diff("V", "exec", "(a+)+b", "", "null", "limit:ceiling", "a" * 40)
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(17))[0], "c")
+
+    def test_no_stop_or_no_prefix_or_no_reduction_stays_c(self) -> None:
+        d = diff("J", "exec", "^[a]*$", "u", "match:0,40", "null", "a" * 40)
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(17, "match:0,17"))[:2], ("c", "-"))
+        d = diff("J", "exec", "(?:\\b){4294967296}", "", "limit:steps", "null", "a")
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(None))[0], "c")
+        d["id"] = "not-reduced"
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(17))[0], "c")
+        # S's answer at the prefix not the arbiter's.
+        d = diff("J", "exec", "(a+)+b", "", "limit:steps", "null", "a" * 40)
+        context = self.reduction(17, "null")
+        context.reduction.prefixes["x"] = (17, ("match", ((0, 1),), ()))
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), context)[0], "c")
+
+    def test_a_reduced_difference_is_classed_as_itself(self) -> None:
+        d = diff("J", "exec", "\\p{L}", "s", "limit:steps", "refuse:syntax", "a" * 40)
+        reduced = diff("J", "exec", "\\p{L}", "s", "null", "refuse:syntax", "a" * 2)
+        reduced["id"] = "x~p2"
+        self.assertEqual(C.classify(d, "arbiter:exhausted", set(), self.reduction(2, "null", reduced))[:2],
+                         ("a", "S14"))
+
+    def test_the_reduction_is_read_from_its_files(self) -> None:
+        import json
+        import tempfile
+        from population_format import open_text
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            for sub in ("comparison", "runs", "population"):
+                (tmp / sub).mkdir()
+            (tmp / "reductions.tsv").write_text("# id\tclass\tlength\tlastIndex\tprefix\tarbiter\tprobes\n"
+                                                "x\tP4\t40\t0\t17\tnull\t6\ny\tP4\t3\t0\tnone\tarbiter:exhausted\t1\n",
+                                                encoding="utf-8")
+            with open_text(tmp / "comparison" / "differences.tsv.gz", "wt") as out:
+                out.write("# id\tclass\top\trun\tpattern\tflags\tsubject\tlastIndex\tpolicy\tS\tarm\n")
+            with open_text(tmp / "runs" / "P4.S.tsv.gz", "wt") as out:
+                out.write("# id\tanswer\tcharge\nx~p17\tnull\t0\n")
+            (tmp / "population" / "manifest.json").write_text(json.dumps({"reducer": "r@1", "cutoff": 5}),
+                                                               encoding="utf-8")
+            reduction = C.Reduction.read(tmp, 5)
+            self.assertEqual(reduction.prefixes, {"x": (17, "null"), "y": None})
+            self.assertEqual(reduction.s_answers, {"x~p17": "null"})
+            self.assertEqual(reduction.identity["reducer"], "r@1")
+            with self.assertRaises(ValueError):
+                C.Reduction.read(tmp, 6)
+            d = diff("J", "exec", "(a+)+b", "", "limit:steps", "null", "a" * 40)
+            self.assertEqual(C.classify(d, "arbiter:exhausted", set(), C.Context(reduction=reduction))[0], "b'")
+
+
 class CorrespondenceTests(unittest.TestCase):
     def test_a_missing_row_refuses(self) -> None:
         self.assertTrue(any("S1" in p for p in C.check_rows({})))
@@ -258,6 +475,7 @@ class CorrespondenceTests(unittest.TestCase):
                 "F3": "**Same in both** ...; and `(?x:a)`, accepted by Broiler.JS's constructor, a **correction of "
                       "Broiler.JS** that SJL-11.5 answers",
                 "B7": "policy", "U3": "Correction of Broiler.JS by data decision"}
+        rows.update(ADDED_ROWS)
         self.assertEqual(C.check_rows(rows), [])
         rows["S10"] = "Same in both"
         self.assertTrue(C.check_rows(rows))
@@ -351,6 +569,12 @@ def _canonicalize_bmp_preimages():
     return {}
 '''
 
+# The rows added at Broiler.VM's 7c65a8fe (@4), as their classes open.
+ADDED_ROWS = {"S8a": "**Correction of Broiler.VM** (kind R; ...)", "S12": "**Correction of Broiler.JS** (SJL-11.5's ...)",
+              "S13": "**Correction of Broiler.JS**; as row S12", "S14": "**Correction of Broiler.JS**; as row S12",
+              "S15": "**Correction of Broiler.JS**; as row S12", "M8": "**Correction of Broiler.JS**; as row S12",
+              "M9": "**Correction of Broiler.JS**; no test262 row is known to move for it"}
+
 STUB_ROWS = {"S1": "Correction of Broiler.VM", "S2a": "Correction of Broiler.JS",
              "S5": "Broiler.JS: **correction of Broiler.JS**, by D-s5", "S7": "Correction of Broiler.JS",
              "S8": "Correction of Broiler.JS",
@@ -364,7 +588,7 @@ STUB_ROWS = {"S1": "Correction of Broiler.VM", "S2a": "Correction of Broiler.JS"
              "B2": "Correction of Broiler.JS and of Broiler.Regex's preview.4", "S3": "policy", "B6": "policy",
              "B7": "policy", "B8": "Correction of Broiler.JS and of Broiler.Regex's preview.4",
              "F3": "`(?x:a)`, accepted by Broiler.JS's constructor, a **correction of Broiler.JS**",
-             "U3": "Correction of Broiler.JS by data decision"}
+             "U3": "Correction of Broiler.JS by data decision", **ADDED_ROWS}
 
 
 class PathIndependenceTests(unittest.TestCase):
@@ -456,6 +680,8 @@ class PathIndependenceTests(unittest.TestCase):
         self.assertNotIn(str(self.scratch).encode(), written[0])
         self.assertNotIn(b"vm/docs", written[0])
         facts = __import__("json").loads(written[0])
+        self.assertEqual(facts["rows-read-from"], C.CORRESPONDENCE)
+        self.assertIsNone(facts["reduction"])
         data = (self.scratch / "place-0" / "vm" / "docs" / "correspondence.md").read_bytes()
         self.assertEqual(facts["correspondence"], {
             "name": "correspondence.md", "sha256": __import__("hashlib").sha256(data).hexdigest(),
