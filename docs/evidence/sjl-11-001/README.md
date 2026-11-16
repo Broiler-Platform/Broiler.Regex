@@ -215,6 +215,10 @@ rules' list at the top names [`decision-rule.md`](decision-rule.md) and [`refere
 - **Class (c) is not empty** when the classifier `@4` and option R are read over task 2.13's retained comparison and
   the reduction of 2026-11-15 (the roadmap's record of 2026-11-16, which has the counts; this README holds none). No
   reading is taken and nothing is declared met.
+- *At the review of `@4` the same day*, the classification became `classify.py` `@5`, which reads row M8 of the same
+  correspondence only where its listed inputs bear on the difference (the second bullet above reads "`@4`"); the
+  correspondence commit it reads is unchanged. Class (c) is still not empty, and is larger than under `@4` (the
+  roadmap's note of the same date has the counts). Nothing is declared met.
 
 ## No figure
 

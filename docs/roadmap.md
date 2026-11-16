@@ -2538,7 +2538,8 @@ JSD-0081). Every choice below that the documents did not settle was taken as rec
 direction of 2026-10-18, "Please do all recommended decisions and skip waiting for review.", each with the alternative
 not taken. Nothing here is a reading of the bundle, no arm was run again, and nothing is declared met.*
 
-**What it builds**, in the order of the branch's commits (`sjl-11-2-arms`, from `b6580b8c`, Broiler.Regex#20's merge):
+**What it builds**, in the order of the branch's commits (`sjl-11-2-arms`, from `b6580b8c`,
+Broiler-Platform/Broiler.Regex#20's merge):
 - *The classifier `@4`* (`083e202`): [`scripts/reference-arms/classify.py`](../scripts/reference-arms/README.md) reads
   Broiler.VM's correspondence at **`7c65a8febacdcf8bda2d848d21ac2e7748696359`**, the merge of
   Broiler-Platform/Broiler.VM#211 (the file's blob `f0f6f0800d7d6336ab1c538bb7afd076a8a1fb2f`, last changed in
@@ -2686,6 +2687,56 @@ arms read NOT MET at the candidate reading (task 4.2).**
   difference the arbiter decides. Read with its list, row M8 does not name item 3's 10,864 (above).
 - The brief names "Broiler.Regex `origin/main` `b6580b8c`" and the push ref at `4fb36fc2`, an ancestor of it; both
   held when this record was written.
+
+*Dated note, 2026-11-16, at the review of the classifier `@4` (SJL-11.2; before any judged run; no arm was run again,
+and nothing is declared met).* The review found row M8's predicate wider than its row; the classifier is now `@5`
+(`4e8a917`), and the counts above are replaced as follows.
+- **Row M8.** The table above reads "`\b`, `\B`, `\w`, `\d`, `\s` or a complement in the pattern with a code point past
+  ASCII in the subject; `i` with U+0130 or U+0131 in the input; ...". It took 6,849 differences (243 pattern-flag pairs)
+  where S and J give the same spans and captures and only the group names differ, the translator's renaming that item
+  3 below places outside the row's list; the complements `\W`, `\D` and `\S`, which the row does not name (`\S` as a
+  range's end in `[\S-\07B]` among them); and subjects whose only units past ASCII are lone surrogates, emoji or
+  U+00A0. `@5` reads the row's list where it bears on the difference: never a difference of the group names alone;
+  `\b` or `\B` outside a class, with a letter past ASCII (General_Category L in the arbiter's UCD 17.0.0, a pair read as
+  one code point) in the subject from one unit before the earliest start of either side's match to the latest end, or
+  anywhere in it where the pattern has a look-around; `i` with U+0130 or U+0131 in the pattern or there; an empty
+  `\q{}` in a class under `v`; and in `tr-TR` P5's `I` and `[I]` against `i`, `i` and `[i]` against `I`, each with its
+  own subject. **Not settled by the row's text**: "`\w`, `\d` and `\s` beside them" is read as beside `\b` and `\B`
+  ("them" is plural; "a non-ASCII letter" is singular), so the `\b` and `\B` limb holds those inputs. *Not taken*:
+  "beside non-ASCII letters", which would add to row M8 2,183 of the differences below (171 pattern-flag pairs).
+- **Rows M4 and S14**, narrowed and moving nothing in this run: M4's widened predicate reads only the widening's two
+  vectors (`(.)` under `gdu`, `[𝌆]` under `gu`), and S14 no longer takes, in S15's place, a bound past
+  2^31 - 1 under `i` that the comparison does not show refused without `i` (outside P4). The classifier's docstring
+  now quotes the filed revision's clause, "an input whose reduced case differs, in the same kinds of answer or in
+  others, is classed as that difference", where it quoted the draft's "an input whose reduced difference is another
+  difference is classed as that difference"; the filed clause rewords the draft's, and the classifier reads it as
+  written. Its (b') reads any `limit:harness` of arm J as the stop list's stop, which holds only while no case reached
+  a backstop, a calibration's time limit or a crash; in this run every one of arm J's 2,648 (b') differences is S's
+  stop (`limit:steps` 2,552, `limit:trail` 96), none J's.
+- **The classification again** (2026-11-16, 09:12 to 09:13 UTC), by `@5` at `4e8a917` from a `git archive`, over the
+  same inputs as `@4`'s above, kept beside `@4`'s with a `hashes.txt` (no retained output written to):
+  **`classification.json` `eb1d8dd1d698c8bee86da53b40eda14ecd44679702280ab26c8c3d321a1a8f03`, `classified.tsv.gz`
+  `671d4b39ca52fb44ac6e4cc6be36a3b265c0a06a9c405949662b29bdb545a635`**, exit 1. Over the reduction's own comparison,
+  `classification.json` `bffc379e8aa7e63a1e541e6639db468a15aa88fd871a2f301c304d5214dabdf8` and `classified.tsv.gz`
+  `b71ed577…` (the bytes `@4` wrote), its six differences row S14's as before. Every difference changed only from M8
+  (a) to (c), 13,647 of them; no other class or row moved.
+- **The counts it replaces.** "(a) 1,875,164 ... M8 46,594" is now **(a) 1,861,517**, M8 **32,947**, the other rows
+  as listed; (a') 45, (b) 8,983 and (b') 2,661 are unchanged; "(c) 14,656" is now **(c) 28,303**, every one arm J's.
+- **What class (c) holds, replacing item 3** ("An exec both answer where J answers otherwise, outside row M8's list:
+  10,864 (3,880 inputs ...)"): items 1 (3,789) and 2 (3) are unchanged, and item 3 is now **24,511** (8,506 inputs and
+  1,308 pattern-flag pairs, all P4; 8,014 under the invariant culture, 8,488 under `tr-TR`, 8,009 under `lt-LT`). By
+  what differs: the group names alone 10,664 (326 pairs; 3,815 as before and 6,849 from M8); another match 6,717 (513;
+  3,285 from M8); a null against a match 3,686 (526; 1,542 from M8); the same match with a capture's participation
+  differing 3,444 (145; 1,971 from M8). Where item 3 says "the sentence alone, which would class these 10,864 (a) under
+  M8 (... `@4` classes 46,594)", read 24,511 and `@5`'s 32,947; the list of what the candidate reading waits on (its
+  item 2) and the list of disagreements read 24,511 for 10,864 likewise.
+- **The rule's revision** keeps its rule block, MET line and quote; its prose is corrected (`a30019b`): its draft was
+  written in the notes of Broiler.VM's stage, not in Broiler-Platform/Broiler.VM#211; alternative 2 asks only the
+  arbiter again; alternative 3 is titled as `@1` read it (either side's stop at a policy bound) and says that class (c)
+  still cannot empty under it (item 3 and P3's `O06` are no stops); and for the reduction of 2026-11-15 the
+  declaration follows its run.
+- What the candidate reading (task 4.2) waits on is otherwise as listed above. Class (c) is not empty, and nothing is
+  declared met.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
