@@ -2742,6 +2742,16 @@ and nothing is declared met).* The review found row M8's predicate wider than it
 [`reference-arms.md`](evidence/sjl-11-001/reference-arms.md)). Written after task 2.13's runs, their classification,
 the reduction of 2026-11-15 and the classification by `@5` above were seen. No arm was run again, no rule file was
 edited, and nothing is declared met.*
+*Corrected 2026-11-16, after review and before this record reached the default branch, with the revision it records
+(whose "Corrected before merge" quotes what changed there).* It read "**The 19 patterns, and the property that
+selects them.**" and "The revision states the exclusion by three limbs under one of a pattern's flag sets"; "*Choice
+taken*: limb (3), which reads the run as the ruling did, so that exactly the 19 the ruling names are excluded. *Not
+taken*: (1) and (2) alone, which would exclude 11 patterns the ruling does not name, none of whose differences is
+class (c); (1) alone (the drafted option P), 278."; "arm J 6,717 (2,339 in each culture)", where 3 × 2,339 is 7,017;
+and, of the brief's "are the 1,269 inputs no prefix reaches", "Those are their inputs no prefix reaches;". The arbiter
+reaches no prefix of 2,077 of the 19 patterns' 3,040 execs; the 1,269 are those of them that carry class (c)
+differences. The exclusion is now stated as the enumeration by id, the limbs being how the 19 were found. The ids,
+the listing and the classification are unchanged.
 
 **The ruling.** The record above put "the population question" to the owner as drafted option P, "not taken". The
 question put was whether the 19 P4 patterns, each with a quantifier minimum of 4,294,967,296, should be dropped from the
@@ -2765,14 +2775,17 @@ Broiler-Platform/Broiler.Regex#21's merge):
   the run's comparison; `scripts/reference-arms/p4-excluded.tsv`, the 19; the script tests (89, from 75) and the
   scripts' README.
 - *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
+- *The corrections after review*, before merge: the revision, this record, the bundle's README, the scripts' README,
+  the CHANGELOG and `exclusion.py`'s docstrings, as the note under this record's heading says; one blank line is
+  removed from the script tests. No result changed.
 
-**The 19 patterns, and the property that selects them.** By id: P4-01347, P4-01872, P4-02466, P4-09242, P4-11265,
-P4-11714, P4-14530, P4-17689, P4-18962, P4-29456, P4-29657, P4-30238, P4-33179, P4-40469, P4-42576, P4-54314, P4-58688,
-P4-63268, P4-65213 (each pattern, its flags and its quantifier are in the revision's table). Each quantifies with the
-minimum 4,294,967,296 an atom that can match the empty string (an anchor, `\b`, a look-around, an empty or optional
-group), which the arbiter's RepeatMatcher runs that many times before its empty check applies. The revision states the
-exclusion by three limbs under one of a pattern's flag sets, each checked over task 2.13's population and the arbiter
-at its cut-off by `exclusion.py select`:
+**The 19 patterns, enumerated, and the limbs they were found by.** By id: P4-01347, P4-01872, P4-02466, P4-09242,
+P4-11265, P4-11714, P4-14530, P4-17689, P4-18962, P4-29456, P4-29657, P4-30238, P4-33179, P4-40469, P4-42576, P4-54314,
+P4-58688, P4-63268, P4-65213 (each pattern, its flags and its quantifier are in the revision's table). Each quantifies
+with the minimum 4,294,967,296 an atom that can match the empty string (an anchor, `\b`, a look-around, an empty or
+optional group), which the arbiter's RepeatMatcher runs that many times before its empty check applies. The revision
+states the exclusion as that enumeration, and gives three limbs under one of a pattern's flag sets as how the 19 were
+found, each checked over task 2.13's population and the arbiter at its cut-off by `exclusion.py select`:
 - (1) that quantifier, read from the pattern under its flags: **278 P4 patterns** (2,326 pattern-flag pairs) and none
   in P1, P2, P3, P5, P6 or P7. "At least 2^32" and "at least the arbiter's cut-off" select the same;
 - (1) and (2), the arbiter reaching no prefix of one of its exec inputs, not even the shortest (asked of the 37,216
@@ -2781,10 +2794,12 @@ at its cut-off by `exclusion.py select`:
 - (1), (2) and (3), the comparison holding a stop against an answer there: **exactly the 19**, under 93 pattern-flag
   pairs, all without `u` or `v`.
 *Not settled by the brief's wording*, which asked for a property of the pattern "not by the run's results": no property
-found of the pattern and the arbiter alone selects exactly the 19; the narrowest, (1) and (2), selects 30. *Choice
-taken*: limb (3), which reads the run as the ruling did, so that exactly the 19 the ruling names are excluded. *Not
-taken*: (1) and (2) alone, which would exclude 11 patterns the ruling does not name, none of whose differences is
-class (c); (1) alone (the drafted option P), 278.
+found of the pattern and the arbiter alone selects exactly the 19; the narrowest, (1) and (2), selects 30. Limb (3)
+reads task 2.13's comparison, as the ruling did, so it is not a property of the pattern: with it the limbs select the
+19 ids and nothing else, and state nothing more than the ids. *Choice taken*: the exclusion is the enumeration of the
+19 by id, which is what the ruling names, with the three limbs as how they were found. *Offered to the owner*: (1) and
+(2), the narrowest property found that holds all 19 (the brief's fallback), which would exclude 11 patterns the ruling
+does not name, none of whose differences is class (c). *Not taken*: (1) alone (the drafted option P), 278.
 *Choice taken*: an excluded pattern is excluded under every flag set, by acceptance and by every exec, as "the 19 P4
 patterns" reads (P4's unit is the pattern drawn). *Not taken*: the 1,269 inputs alone, which moves the same class (c)
 differences and leaves the patterns' other 4,059 differences in their classes.
@@ -2800,7 +2815,7 @@ over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`), with 
 repository beside `@5`'s with a `hashes.txt` (no retained output written to): **`classification.json`
 `0c28d1f02b64538cee2513a9adaa998cefbe34431d78a7af672425ae44dbded9`, `classified.tsv.gz`
 `baeb11fc31890bb0d46dc80401a06293c1f91d0e23359d0768f0834206fb99ee`**, exit 1:
-- **excluded 8,970**: arm J 6,717 (2,339 in each culture) and arm V 1,953, the 19 patterns' every difference;
+- **excluded 8,970**: arm J 7,017 (2,339 in each culture) and arm V 1,953, the 19 patterns' every difference;
 - **(a) 1,860,854** (was 1,861,517: S12 561 and S8 102 excluded), **(a') 45**, **(b) 4,876** (was 8,983: D10 2,154 and
   B6 1,953 excluded), **(b') 2,250** (was 2,661: 411 excluded);
 - **(c) 24,514** (was 28,303: the 3,789 no prefix reaches excluded).
@@ -2818,7 +2833,10 @@ its six differences are P4-38461's, not excluded). Without `--exclude`, `@6` wri
 The record above's item 1 of class (c), "No prefix the arbiter reaches: 3,789", is now excluded by the ruling, listed
 apart and reported with every reading: **a known gap of the reference arms, not a verified agreement** (the revision's
 note). On its 1,269 inputs S stops at a ceiling it declares and arm V stops too (at its ceiling, or at its allowance
-with S's answer); only arm J answers.
+with S's answer); only arm J answers. The exclusion takes every flag set and input of the 19, so it also takes out of
+the judged population 663 class (a) corrections the arbiter confirmed (rows S12 561 and S8 102) and 411 class (b')
+differences settled at a prefix it reaches: they stay listed apart, but no longer count as verified corrections or
+admitted differences.
 
 **What the candidate reading (task 4.2) now waits on**, replacing the record above's list where it differs:
 1. **The owner on option R** (filed as recommended, weaker evidence). The population question is answered by the ruling.
@@ -2830,12 +2848,16 @@ with S's answer); only arm J answers.
    the harness's `Win32Exception`, and the owner's choice of the reading's commit and of the rule commit.
 
 **Where the brief, the sources and this repository differ, read at this record.**
-- The brief says the 19 patterns "are the 1,269 inputs no prefix reaches". Those are their inputs no prefix reaches;
-  the 19 patterns have 3,230 inputs (190 acceptance cases and 3,040 execs) under the ten flag sets, with 8,970
-  differences, all of which the exclusion takes.
+- The brief says the 19 patterns "are the 1,269 inputs no prefix reaches". The 1,269 are only their inputs no prefix
+  reaches that carry class (c) differences (the 3,789, all arm J's), the inputs of theirs on which `reduce.py` answered
+  `none`. The arbiter reaches no prefix of 2,077 of the 19 patterns' 3,040 execs, under every one of the ten flag sets
+  (480 of them under `u`, `v`, `iu` or `iv`); on the other 808 every side stops (656) or no arm differs from S (152).
+  The 19 patterns have 3,230 inputs (190 acceptance cases and 3,040 execs), with 8,970 differences, all of which the
+  exclusion takes.
 - The brief asks that the property select "exactly these 19 in P4 and nothing else in P1 to P5", by "a property of the
   pattern, not by the run's results": limb (1) selects 278, limbs (1) and (2) 30, and only with limb (3), which reads
-  the comparison, 19. None selects anything in P1 to P7.
+  the comparison, 19. None selects anything in P1 to P7. So the exclusion is the enumeration by id, and limbs (1) and
+  (2), the brief's "narrowest property that holds all 19", are put to the owner.
 - The brief's note asks that "S and arm V's answers on them are retained and still reported"; arm J's are too, and every
   difference of the 3,789 is arm J's.
 - The question put to the owner counted the 3,789 differences of arm J on the 1,269 inputs; on the same inputs arm V
