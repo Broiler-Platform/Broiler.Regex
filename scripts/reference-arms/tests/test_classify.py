@@ -702,8 +702,23 @@ class RowsM16ToM26Tests(unittest.TestCase):
         self.assertEqual(C.property_reading("[a-\\p{N}]", digits), "[a-\\u0030-\\u0039]")
 
     def test_row_m13_s_note_ends_a_nested_class_at_its_first_bracket(self) -> None:
-        self.assertEqual(C.subtraction_reading("[\\w-\\D-[^]]"), "(?:(?![^])[\\w\\-\\D])")
-        self.assertEqual(C.subtraction_reading("[a-[]]"), "(?:(?![])[a])")
+        # Right after a nested class's `[^`, under `RegexOptions.ECMAScript`, as the row's note at review narrows it.
+        self.assertEqual(C.subtraction_reading("[\\w-\\D-[^]]", True), "(?:(?![^])[\\w\\-\\D])")
+        # Without that option, and for a nested `[]` with it, the `]` is a member, as @7 read it: no reading.
+        self.assertIsNone(C.subtraction_reading("[\\w-\\D-[^]]"))
+        self.assertIsNone(C.subtraction_reading("[a-[]]", True))
+        self.assertIsNone(C.subtraction_reading("[a-[]]"))
+        d = self.j("[\\w-\\D-[^]]|\\S|\\s.", "d", "match:0,2", "match:0,1", subject="a]")
+        read = reading_gives({"(?:(?![^])[\\w\\-\\D])|\\S|\\s.": C.canonical("match:0,1")})
+        self.assertEqual(C.classify(d, C.canonical("match:0,2"), set(), read)[1], "M13")
+        # Under `s`, or with a modifier group in the pattern, the flags drop the option: not row M13's.
+        under_s = reading_gives({"(?:(?![^])[\\w\\-\\D])|\\S|\\s.": C.canonical("match:0,1")})
+        self.assertNotEqual(C.classify(dict(d, flags="s"), C.canonical("match:0,2"), set(), under_s)[1], "M13")
+        self.assertEqual(under_s.asked, [])
+        group = dict(d, pattern=encode("(?i:)[\\w-\\D-[^]]|\\S|\\s."))
+        with_group = reading_gives({"(?i:)(?:(?![^])[\\w\\-\\D])|\\S|\\s.": C.canonical("match:0,1")})
+        self.assertNotEqual(C.classify(group, C.canonical("match:0,2"), set(), with_group)[1], "M13")
+        self.assertNotIn("(?i:)(?:(?![^])[\\w\\-\\D])|\\S|\\s.", with_group.asked)
         # A `-[` that is not the class's last element still gives no reading.
         self.assertIsNone(C.subtraction_reading("[^\\W-[a]-İ]"))
 

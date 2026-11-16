@@ -74,7 +74,10 @@ blob `d4605f5c`; CORRESPONDENCE below), which adds rows M16 to M26 under decisio
 and M15 dated notes. The noted rows' predicates read their notes in place, so that a difference they take keeps its
 place in the row order: row M8 finds `\\b` and `\\B` outside a class lexed as the text lexes a class without `v`
 (text_tokens); row M12's reading writes a `-` right before a property escape that follows `\\d`, `\\D`, `\\w`, `\\W`,
-`\\s` or `\\S` as `\\-`; row M13's nested class ends at its first `]`, even right after its `[` or `[^`; row M15 takes
+`\\s` or `\\S` as `\\-`; row M13's nested class ends at its first `]`, "even right after its `[^`, under
+`RegexOptions.ECMAScript`", as the row's later note of that day (at that round's review) narrows the first note's "even
+right after its `[` or `[^`": the flags keep that option where they hold neither `u`, `v` nor `s` and the pattern no
+modifier group, and a nested `[]`, or a nested `[^]` without the option, is read as @7 read it; row M15 takes
 an input whose invariant run answers S's match up to row M10's names. Rows M16 to M26 come after M15, in the
 correspondence's order ("Rows M16 to M26 are read after M15, in order, so an input two of them take is the first's"),
 each read from its row's own text: M16, M21, M23 and M25 take an input only where the arbiter's answer to the row's
@@ -1517,13 +1520,16 @@ def _neutral_dashes(body: str) -> str:
     return "".join(out)
 
 
-def _net_class(text: str, i: int, nested_class: bool = False):
+def _net_class(text: str, i: int, nested_class: bool = False, ecmascript: bool = False):
     """The class that opens at text[i] == "[" as .NET's grammar reads it: (its reading, the index after it, whether it
     holds a subtraction), or None where `-[` is not followed, after the nested class, by the class's `]`.
     *(@8, row M13's note of 2026-11-16, decision D-jsrest: "the nested class, read as .NET reads it, ends at its first
     `]`, even right after its `[` or `[^`, so `[\\w--\\D--[^]]` reads `\\w`, `-` and the non-digits less every code
-    unit": a nested class (`nested_class`) ends there. @7 read a `]` right after a nested class's `[` or `[^` as a
-    member.)*"""
+    unit", which the row's later note of that day, at that round's review, narrows: "\"even right after its `[` or
+    `[^`\" reads \"even right after its `[^`, under `RegexOptions.ECMAScript`\": ... a nested `[]`, or a nested class
+    without that option, is not tested". A nested class (`nested_class`) that opens with `[^` ends at a `]` right
+    after it only where the difference's flags keep that option (`ecmascript`: class_subtraction); a nested `[]`, or a
+    nested `[^]` without it, is read as @7 read it, its `]` a member.)*"""
     j, negated = i + 1, False
     if text[j:j + 1] == "^":
         negated, j = True, j + 1
@@ -1534,10 +1540,10 @@ def _net_class(text: str, i: int, nested_class: bool = False):
             j += 2
             first = False
             continue
-        if ch == "]" and (not first or nested_class):
+        if ch == "]" and (not first or (nested_class and negated and ecmascript)):
             return "[" + ("^" if negated else "") + _neutral_dashes(text[start:j]) + "]", j + 1, False
         if ch == "-" and not first and text[j + 1:j + 2] == "[":
-            nested = _net_class(text, j + 1, True)
+            nested = _net_class(text, j + 1, True, ecmascript)
             if nested is None or text[nested[1]:nested[1] + 1] != "]":
                 return None
             members = "[" + ("^" if negated else "") + _neutral_dashes(text[start:j]) + "]"
@@ -1547,10 +1553,10 @@ def _net_class(text: str, i: int, nested_class: bool = False):
     return None
 
 
-def subtraction_reading(text: str) -> str | None:
+def subtraction_reading(text: str, ecmascript: bool = False) -> str | None:
     """Row M13's reading: "each such class written `(?:(?![B])[A])`, A the members before `-[` and B the nested class's,
     read the same way where it holds `-[` itself, with a `-` beside `\\d`, `\\D`, `\\w`, `\\W`, `\\s` or `\\S` in A
-    written `\\-`, as the translator writes it"; a class with no `-[` after its first member is left as written."""
+    written `\\-`, as the translator writes it"; a class with no `-[` after its first member is left as written. `ecmascript`: whether the difference's flags keep `RegexOptions.ECMAScript` (_net_class)."""
     out, i, changed = [], 0, False
     while i < len(text):
         ch = text[i]
@@ -1559,7 +1565,7 @@ def subtraction_reading(text: str) -> str | None:
             i += 2
             continue
         if ch == "[":
-            read = _net_class(text, i)
+            read = _net_class(text, i, ecmascript=ecmascript)
             if read and read[2]:
                 out.append(read[0])
                 i = read[1]
@@ -1577,9 +1583,14 @@ def subtraction_reading(text: str) -> str | None:
 def class_subtraction(d, context) -> bool:
     """Row M13: "Without `u` or `v`, a class that holds `-[` after its first member ...; an `exec` both sides answer,
     where Broiler.JS answers otherwise and the arbiter's answer to the pattern with each such class read as .NET reads
-    it ... is Broiler.JS's, up to row M10's names, and not the text's"."""
-    return (not unicode_mode(d) and both_answer_exec(d)
-            and answered_as_read(d, context, subtraction_reading(unit_text(d["pattern"]))))
+    it ... is Broiler.JS's, up to row M10's names, and not the text's". The flags keep `RegexOptions.ECMAScript`, as
+    row M13's note of 2026-11-16 at that round's review reads it, where they hold neither `u`, `v` nor `s` and the
+    pattern no modifier group (modifier_group_lexed), as rows M21 and M24 read the option's loss."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    ecmascript = not has_flag(d, "s") and not modifier_group_lexed(text)
+    return answered_as_read(d, context, subtraction_reading(text, ecmascript))
 
 
 def dash_reading(text: str) -> str | None:
