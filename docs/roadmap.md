@@ -3026,6 +3026,174 @@ above is corrected where the review found it wrong or `@7` read wider than its r
   ruling." and "4. **The run's procedure**: `run.sh` passes neither `--reduction` nor `--exclude`; the reading needs
   both after its comparison, with `reduce.py` run over it."
 
+*Dated record, 2026-11-16 (SJL-11.2: the owner's ruling on P3's `O06` filed, the reference arms' classifier reads
+Broiler.VM's rows M16 to M26, and the arms are classified again; bundle `sjl-11-001`'s
+[`reference-arms.md`](evidence/sjl-11-001/reference-arms.md)). Written after task 2.13's runs, their classification by
+`@5` to `@7` and the reduction of 2026-11-15 were seen. No arm was run again, no existing rule file was edited, and
+nothing is declared met.*
+
+**The owner's ruling on `O06`.** The record above's item 3 of "What the candidate reading (task 4.2) now waits on"
+reads "**P3's `O06`**, as above". The question put to the owner on 2026-11-16 was: "O06 is /^[a]*$/u matched against
+10,000,001 'a'. The library and the Broiler.VM regex engine both match the whole input; Broiler.JS answers null. The
+reference checker can't reach that length, but cut down to 999,992 characters, the library, Broiler.JS and the checker
+all agree on a full match. Broiler.VM's row B1 names Broiler.JS's cause: an early step-budget exit. The current rule
+still keeps it unclassified, because neither side stopped at a declared limit. How should the reference-arms rule read
+it?" The options were "Classify by its row" (recommended) and "Keep it unclassified". **The owner chose "Classify by
+its row"**, described as: "A dated rule revision lets an unreachable input be classed by the row that names it, but
+only if the row gives the mechanism, every other engine agrees with the library, and a stated check shows the
+library's answer is right. O06 becomes a Broiler.JS correction (class a, row B1)." That is the owner's own decision,
+not one taken under the direction of 2026-10-18. It is filed as
+[`reference-arms-revised-2026-11-16c.md`](evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md), the next name in
+the directory's convention. That file carries the clause drafted in Broiler.VM's stage notes word for word, as a last
+limb of option R's arbiter clause, with its conditions (1) to (3) checked against the ruling's words. It quotes whole
+option R's rule block and `reference-arms.md`, and says it was written after the runs were seen, so its decision is
+weaker evidence.
+
+**What the correspondence adds.** The record above's item 2 reads "**Broiler.VM on the 1,276** (rows for their
+mechanisms, or none, in which case they stay class (c))". Broiler.VM answered with rows of their own. Its
+correspondence at **`626e4ed88afe8898724bda669e981cf7cf1b98b2`** (the merge of Broiler-Platform/Broiler.VM#215, the
+file's blob `d4605f5cd1461137a3533e816d5bc2275434cce8`), under the owner's decision D-jsrest:
+- adds rows M16 to M26, one row to a mechanism of arm J's copy of Broiler.JS, read after M15 in order;
+- gives rows M8, M12, M13 and M15 dated notes;
+- names one pattern's inputs as no row's: `P4-47050-s-05`.
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-m16`, from `23deeb63`,
+Broiler-Platform/Broiler.Regex#23's merge):
+- *The revision* (`e845f6a`), above.
+- *The classifier `@8`* (`11e4899`): `scripts/reference-arms/classify.py` reads the correspondence at `626e4ed8`.
+  - The noted predicates of rows M8, M12, M13 and M15 replace `@7`'s in place.
+  - Rows M16 to M26 come after M15, in the correspondence's order.
+  - With `--reduction` it reads the revision of 2026-11-16c.
+  - The script tests go from 98 to 117, and the scripts' README gains a dated note.
+  - `@7`'s other predicates, the reduction's other outcomes and the exclusion are unchanged.
+- *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
+
+**The predicates, each from its row's text.** Every one reads arm J, without `u` or `v`, an `exec` both sides answer,
+and S's answer the arbiter's (the classifier reaches its rows only then). Where a row says "class", the pattern is
+lexed as the text lexes it without `v`: a class ends at its first unescaped `]`, and a `[` inside it is a member. The
+counts are the differences `@7` left in class (c) that each now takes:
+
+| Row | When the row takes an input, in its words | `@8` reads | Takes |
+|---|---|---|---:|
+| M8, by its note | "`\b` and `\B`" are read outside a class "as the text lexes a class without `v`" | row M8's predicate, with `\b` or `\B` found outside a class so lexed (under `v`, as `@7`) | 39 |
+| M12, by its note | "the row's reading also writes a `-` right before `\p{…}` or `\P{…}` that follows `\d`, `\D`, `\w`, `\W`, `\s` or `\S` as `\-`" | row M12's reading, with that `-` written `\-` | 39 |
+| M13, by its note | "the nested class, read as .NET reads it, ends at its first `]`, even right after its `[` or `[^`" | row M13's reading, a nested class so ended; a `-[` not last still gives no reading | 15 |
+| M15, by its note | "as the text does, up to row M10's names" | or run J's answer on the input is S's match with only the names rewritten as row M10 reads them, at the same groups | 1 |
+| M16 | "`\c` that no ASCII letter follows, in a pattern `TryRouteToBroiler` hands to ... preview.4 by one of `GapScan`'s shapes", where the arbiter's answer to the reading is Broiler.JS's | a shape in the arbiter's tree of the pattern (a quantifier whose maximum is above 1 over a body that can match both the empty string and a character, or a capturing group or a back-reference inside a look-behind); the reading: each such `\c` as `\\` | 261 |
+| M17 | "a group name written with `\u{…}` ..., in a pattern that holds a quantifier whose maximum is above 1 over a body that can match both the empty string and a character" | such a name outside a class, and that shape in the arbiter's tree | 222 |
+| M18 | "`\k<…>` whose name is written with `\u{…}` ... and names a group of the pattern" | outside a class, the name's value a group's | 219 |
+| M19 | "a legacy octal escape `\0` followed by an octal digit ... in the body of a quantifier whose maximum is above 1, over a body that can match both the empty string and a character" | the escape outside a class, found in that body of the arbiter's tree | 93 |
+| M20 | "in a class, a legacy octal escape `\0` and an octal digit right before `\d`" | `\0`, one octal digit and `\d` in a class | 18 |
+| M21 | "without `s` and with no modifier group in the pattern, `\S` in a class", where the arbiter's answer to the reading is Broiler.JS's | the reading: `\S` as `\u0000-\u0008\u000E-\u001F!-￿`, a `-` beside it as `\-` | 84 |
+| M22 | "a capturing group whose body is empty, `()` or `(?<name>)`, quantified by `+?` or `{1,}?`, in a pattern with more than one alternative" | such a group outside a class, and a `\|` outside every class and group | 90 |
+| M23 | "Under `m` ... `^` as a member of a class ... or `$` as a member of a class", where the arbiter's answer to the reading is Broiler.JS's | the flag `m`; the reading: `^` as the characters `(?<=^\|\r)`, `$` as `(?=$\|\r)` | 18 |
+| M24 | "under `s` or with a modifier group in the pattern, a back-reference to a group of the pattern" | a back-reference in the arbiter's tree | 57 |
+| M25 | "Under `i` ... inside a modifier group that removes `i` ..., a letter the translator expands", where the arbiter's answer to the reading is Broiler.JS's | the flag `i`; a letter outside a class; the reading: the letter as its Canonicalize class | 15 |
+| M26 | "Under `i` ... a class, lexed as the text lexes it without `v`, that holds `\W`, `\p{…}` or `\P{…}`" | the flag `i` | 102 |
+| B1, by the revision of 2026-11-16c | the row's widening: "`/^[a]*$/u` over 10,000,001 `a` (`P3-O06`)", "the class's run ends at the budget's early exit this row cites (R1)" | the row's one input; condition (2) from every other arm's run; condition (3) by the stated predicate `whole_run_answer` | 3 |
+
+**Checked against Broiler.VM's prototypes.** Broiler.VM's stage that filed the rows prototyped each predicate over
+`@7`'s class (c), outside every repository, with the counts above for M8 to M26 and 3 left over.
+- `@8` takes exactly each prototype's first-row set, difference for difference (1,273), with 0 mismatches.
+- With every predicate tried on every one of the 1,276, each difference is taken by exactly the prototype's rows.
+  Only row M12 and row M26 share differences: the 9 of `P4-36184` under `i`, which M12 holds by order.
+- Trying the rows that read the arbiter's answer to a reading (M16, M21, M23, M25) before those that read a construct
+  gives every difference the same first row as the correspondence's order.
+
+**The notes move nothing `@7` classed.** Every one of `@7`'s 1,900,233 lines outside the 1,276 is the same byte for
+byte under `@8`. Tried on every difference `@7` put in rows M8 to M15, each noted predicate still takes its own row's
+differences. The noted row M8 takes none of rows M9 to M15's. Later rows also take some of the differences of rows M8
+to M15, and order keeps those where they were.
+
+**The base answer, before anything changed.** The classifier `@7` (`23deeb63`'s `classify.py`, from a `git archive`)
+over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`), with `--reduction` over the reduction of
+2026-11-15 (`reductions.tsv` `b3e05301…`), `--exclude scripts/reference-arms/p4-excluded.tsv` and the correspondence at
+`44511066`, wrote **`classification.json` `7d0f71db4c8294b25d7ddec33e97878371a668ba8db540a2d56591633fdf1338` and
+`classified.tsv.gz` `6f5f0ee5…`, the retained bytes**, exit 1. Given the correspondence at `626e4ed8` instead, it
+wrote the same `classified.tsv.gz` and a `classification.json` (`c7d6e387…`) that differs only in the correspondence
+it names.
+
+**The classification again** (2026-11-16), by `@8` at `11e4899` from a `git archive`, over the same inputs with the
+correspondence at `626e4ed8`, kept outside the repository in this stage's notes with a `hashes.txt` (no retained
+output written to): **`classification.json` `dc77d7c97b0805b7a42d5198af2f8a3c095c361fe8a5285188dff4cc3e1df9be`,
+`classified.tsv.gz` `1741d5dc5abc62318e61d98cdaf00160382d3b6c2bde284da0c269f5d063e896`**, exit 1:
+- **(a) 1,885,365** (was 1,884,089). The new 1,276 are 94 under rows M8, M12, M13 and M15 by their notes, 1,179 under
+  rows M16 to M26, and 3 under row B1.
+- **(a') 45**, **(b) 4,876**, **(b') 2,250** and **excluded 8,970**, all as under `@7`.
+- **(c) 3** (was 1,279).
+
+Only class (c) differences moved, each to (a). Over the reduction's own comparison `@8` writes `classification.json`
+`7c6fb3a7…` and the same `classified.tsv.gz` as `@6` and `@7`, `b71ed577…`. Without `--exclude`, class (c) is 3,792
+(`classification.json` `19ea58aa…`, `classified.tsv.gz` `c94499e7…`): these 3 and the 3,789 the exclusion takes.
+
+**What class (c) still holds: 3 differences, arm J's, none a defect of S.** They are `P4-47050-s-05`, one input under
+each of arm J's three runs (the invariant culture, `tr-TR` and `lt-LT`): `[ſ-\w]|\ud83d*((?<=s* )|\D+?|[\W&&\s&&[-]])?\b|\f{1(?!)`
+under `s`. S and the arbiter answer `match:0,2;0,2`, and arm J `match:0,20;0,20`. No row names it.
+Broiler.VM's correspondence says why: written with its `\b` as look-arounds over the ASCII word characters, the
+pattern gives the text's answer in all three cultures, so `\b` under `s` is a necessary part of the cause, but "how
+.NET's `\b` differs on this input is not read".
+
+**What the candidate reading (task 4.2) would read on the arms today.** Class (c) is not empty, so by the rule, as filed
+or as revised, the reference arms would read **NOT MET** at a reading taken on these runs today. One thing keeps class
+(c) from emptying: `P4-47050-s-05`, which no classifier change can move until a row names it (Broiler.VM's to say), or
+the owner reads it otherwise. Nothing is declared met.
+
+**What the candidate reading (task 4.2) now waits on**, replacing the record above's list where it differs:
+1. **The owner on option R** (filed as recommended, weaker evidence). The revision of 2026-11-16c is written as a last
+   limb of option R's arbiter clause, and the owner's ruling reads `O06` under it.
+2. **Broiler.VM on `P4-47050-s-05`**: a row for its mechanism, or none, in which case its 3 differences stay class (c).
+3. **The run's procedure**: `run.sh` passes neither `--reduction` nor `--exclude`. The reading needs both after its
+   comparison, with `reduce.py` run over it, and the correspondence at `626e4ed8` or later.
+4. Still owed, from the roadmap's own list:
+   - the two negative controls of `reference-arms.md`;
+   - the host job (B-1), which waits for Broiler.JS's SJL-11.5 branch;
+   - CI green at the reading's commit (B-3);
+   - the reading's commit, and the rule commit the README names, both the owner's to choose;
+   - the harness's `Win32Exception` in `Harness.ProcessorTime`, the arms' owner's to fix before the reading.
+
+**Choices taken, each with its alternative.**
+- *The revision's place*: a new dated file, the clause as a last limb of option R's arbiter clause, read with
+  `--reduction`. *Not taken*: a flag of its own, or a class apart from (a) (the draft's "also possible" class (b'')).
+  The ruling says "class a".
+- *Condition (1)*: the row's one input, read by its pattern, flags and subject, and the row's own words checked in
+  the correspondence (the classifier refuses one without them). *Not taken*: reading the row's words alone, with no
+  input.
+- *Condition (2)*: every run of every other arm, from its answer file, holds the case and answers S's answer exactly,
+  and at least one does. *Not taken*: reading "no difference of another arm in the comparison", which cannot tell an
+  agreeing answer from a case not run.
+- *Condition (3)*: the stated predicate reads `^X*$` alone, X one ASCII letter or digit or a class of them, under no
+  `i`, `m`, `g` or `y`, over a subject X holds. It must give S's answer at the input and the reduced case's agreed
+  answer at the prefix. *Not taken*: a general predicate over any pattern, which would claim answers the classifier
+  cannot show.
+- *Rows M16 to M26 in the correspondence's order*. *Not taken*: the rows that read a construct after every reading row
+  (the correspondence's note on row M24 calls them "after every other row"). Over this run it gives the same rows.
+- *Row M16's `GapScan` shapes* read in the arbiter's tree of the pattern. Whether preview.4's own parse succeeds is not
+  read apart: the reading gives arm J's answer only where it does. *Not taken*: no shape at all (the prototype's), which
+  takes the same 261.
+- *Constructs outside a class* (rows M17, M18, M19 and M22), *a name's value* (row M18), *`\p{`/`\P{` with its brace*
+  (row M26), *a letter written as itself outside a class* (row M25), *the back-reference from the arbiter's tree*
+  (row M24) and *`\r` written as an escape* (row M23). *Not taken*: the prototype's wider or other forms, which take
+  the same sets here. The 3 left hold none of those constructs under those rows' flags, so no wider reading takes more.
+- *Row M15's note "at the same groups"*, as row M10 reads its names. *Not taken*: the span alone (the prototype's);
+  same set.
+- *One `@7` test* no longer asserts `@7`'s version and correspondence commit, which a new test asserts for `@8`. *Not
+  taken*: leaving it failing, or deleting it.
+- *The run kept in this stage's notes*, as `@7`'s is in its stage's. *Not taken*: writing it into `@7`'s folder.
+
+**Where the brief, the sources and this repository differ, read at this record.**
+- The brief says `@7`'s predicates "stay unchanged and come first, unless a note revises a row". The notes revise rows
+  M8, M12, M13 and M15, whose predicates keep their places in the order. Nothing `@7` classed moved.
+- The correspondence orders rows M16 to M26 "after M15, in order", and its note on row M24 says rows M17 to M20, M22,
+  M24 and M26 take an input "after every other row". Both orders give the same rows here.
+- Row M16's condition includes `TryRouteToBroiler` handing the pattern to preview.4, which needs preview.4's own parse
+  to succeed. `@8` reads `GapScan`'s shapes, not that parse. Broiler.VM's probe saw every one of the 261 routed.
+- Row B1 gives the mechanism "an inference ..., not traced in preview.4". Condition (1) asks that the row give it,
+  which it does; the ruling's question names it as "an early step-budget exit".
+- The ruling says "every other engine agrees with the library". The clause says "every other arm that implements the
+  operation answers the input as S does". An arm copies an engine, so they are read as one.
+- The brief asks `@7` to reproduce `7d0f71db…` byte for byte. It does with the correspondence at `44511066`, the file
+  that run read. With the file at `626e4ed8`, only `classification.json`'s correspondence differs.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

@@ -256,6 +256,32 @@ reads is unchanged", that is `7c65a8fe`.
 - **Class (c) is still not empty**, and is smaller than under `@6` (the roadmap's record of the same date has the
   counts). Nothing is declared met.
 
+*Dated note, 2026-11-16, the owner's ruling on P3's `O06` and Broiler.VM's rows M16 to M26 (SJL-11.2; a dated rule file
+added, no rule edited; nothing here is a reading).* The note above reads "**The classification** is now `classify.py`
+`@7`, which reads Broiler.VM's correspondence at **`44511066bfb38952c12c81557f56a34bd21ee41e`**" and "**Row B1's
+widening** names P3's `O06` ...: option R keeps it class (c) whichever row names it, and `@7` gives the widening no
+predicate".
+- **A third revision of the reference-arm rule** is filed beside the others:
+  [`reference-arms-revised-2026-11-16c.md`](reference-arms-revised-2026-11-16c.md). It records the owner's ruling of
+  2026-11-16 on `O06`, "Classify by its row", as the owner's own decision. An input the arbiter cannot reach may be
+  classed by the row that names it, where the row gives the input and the mechanism, every other arm answers the input
+  as S does, and a predicate the classifier states shows S's answer is the text's. It was written after task 2.13's
+  runs, their classification and the reduction were seen, so it is weaker evidence (`decision-rule.md`, "Revisions").
+  `reference-arms.md`, option R and the revision of 2026-11-16b are unchanged.
+- **The classification** is now `classify.py` `@8`, which reads Broiler.VM's correspondence at
+  **`626e4ed88afe8898724bda669e981cf7cf1b98b2`** (the merge of Broiler-Platform/Broiler.VM#215, the file's blob
+  `d4605f5cd1461137a3533e816d5bc2275434cce8`).
+  - It adds rows M16 to M26, under the owner's decision D-jsrest, each read from the row's text and tried after M15 in
+    the order the correspondence states.
+  - It reads the dated notes on rows M8, M12, M13 and M15 in place.
+  - With `--reduction`, it reads the revision of 2026-11-16c, by which row B1 holds `O06`.
+  - `classification.json` names that commit as `rows-read-from`. A correspondence without the rows, or without row
+    B1's words naming `O06` and its mechanism, is refused.
+- **What the script does not yet do**: `run-reference-arms.sh` passes neither `--reduction` nor `--exclude`, as the
+  notes above say.
+- **Class (c) is still not empty**, and is smaller than under `@7`: one pattern's inputs, which no row names (the
+  roadmap's record of the same date has the counts). Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
