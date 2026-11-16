@@ -11,7 +11,8 @@ quotes that file whole at its end (its blob `724943b3` on Broiler.Regex's `main`
 unedited. **Owner:** the Broiler.RegEx maintainer. **Reviewer:** none (EX-30). **It holds no figure**: the counts
 it moves are in the roadmap's record of 2026-11-16.
 
-**How it was taken.** It is option R of a draft written in Broiler.VM's stage of 2026-11-16 (Broiler.VM#211), filed
+**How it was taken.** It is option R of a draft written in the notes of Broiler.VM's stage of 2026-11-16, the stage of
+Broiler-Platform/Broiler.VM#211; the draft is not part of that pull request and was committed nowhere. It is filed
 here **as the recommended choice under the owner's standing direction of 2026-10-18**, "Please do all recommended
 decisions and skip waiting for review." It is not the owner's own decision: the owner may overturn it, and the
 alternatives below are recorded so that the owner can take one instead.
@@ -45,12 +46,13 @@ MET if and only if every operation ran over its whole population in S and in eve
 NOT MET otherwise.
 ```
 
-**How it is read.** By `scripts/reference-arms/classify.py` `@4` with `--reduction`, which reads `reduce.py`'s
-`reductions.tsv`, the arms' runs over the reduced cases and their comparison, and the arbiter's answer at each prefix
-as `reductions.tsv` records it (reduce.py asked the same arbiter at the same cut-off, which the reduction's manifest
-names). The reduction itself is not changed: the declared reduction above is `reduce.py`'s, so the reduction of
-2026-11-15 is read as it was run and is not run again. Every other clause of `reference-arms.md`, its "every other
-difference is class (c)" among them, stands as written.
+**How it is read.** By `scripts/reference-arms/classify.py` `@4`, and `@5` since its review, with `--reduction`, which
+reads `reduce.py`'s `reductions.tsv`, the arms' runs over the reduced cases and their comparison, and the arbiter's
+answer at each prefix as `reductions.tsv` records it (reduce.py asked the same arbiter at the same cut-off, which the
+reduction's manifest names). The reduction itself is not changed: the declared reduction above is `reduce.py`'s, so
+the reduction of 2026-11-15 is read as it was run and is not run again. For that reduction the declaration follows its
+run, which was seen before this file was written: that is part of why this revision is weaker evidence. Every other
+clause of `reference-arms.md`, its "every other difference is class (c)" among them, stands as written.
 
 ## Its effect, and what it leaves
 
@@ -78,12 +80,15 @@ difference is class (c)" among them, stands as written.
 2. **A larger cut-off for the listed inputs only**, declared by input before a run. The arbiter then decides them or
    does not, and those it decides are classed as usual. The inputs no prefix reaches cost the arbiter in the pattern
    (a quantifier minimum of 4,294,967,296 over a body that matches the empty string), so no practical cut-off reaches
-   them, and class (c) still cannot empty; the others need the arms run again at the new cut-off's inputs.
-3. **Reading S's stop at its own ceiling as class (b)** against an answer the arbiter cannot check, as the classifier
-   `@1` did. Its revision `@2` (2026-11-02, at task 2.13's review) refused it as a reading the arbiter clause does not
-   admit; the classifier's comment reads "An arbiter past its cut-off has checked nothing". It would empty class (c)
-   of every stop against an unchecked answer, those no prefix reaches among them, and would leave the inputs where
-   neither side stopped in class (c).
+   them, and class (c) still cannot empty. For the others only the arbiter is asked again, at the larger cut-off,
+   against the arms' answers already retained; no arm is run again.
+3. **Reading a stop at a policy bound, of either side, as class (b)** against an answer the arbiter cannot check, as
+   the classifier `@1` did. Its revision `@2` (2026-11-02, at task 2.13's review) refused it as a reading the arbiter
+   clause does not admit; the classifier's comment reads "An arbiter past its cut-off has checked nothing". It would
+   empty class (c) of every stop against an unchecked answer, those no prefix reaches among them, and would leave the
+   inputs where neither side stopped in class (c). Class (c) still cannot empty under it: the execs where Broiler.JS
+   answers otherwise outside the list of row M8 of Broiler.VM's correspondence, and P3's `O06`, where neither side
+   stopped, are not stops.
 
 ## The rule it revises, quoted whole
 
