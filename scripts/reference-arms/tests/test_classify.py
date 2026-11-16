@@ -782,7 +782,6 @@ class PathIndependenceTests(unittest.TestCase):
             "blob": self.subprocess.run(["git", "hash-object", "--stdin"], input=data, capture_output=True,
                                         check=True).stdout.decode().strip()})
 
-
     def test_an_exclusion_lists_its_patterns_apart_and_asks_no_arbiter(self) -> None:
         import json
         from population_format import open_text

@@ -8,9 +8,10 @@
         --unicode-pins DIR --comparison DIR --out FILE [--cutoff N] [--workers N] [--cache FILE]
 
 The owner excluded from P4 the 19 patterns whose arbiter cost is in the pattern and whose inputs keep class (c) from
-emptying (docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md). The revision states them by three limbs,
-each held under one of the pattern's flag sets, and lists them in p4-excluded.tsv beside this script, which
-`classify.py --exclude` reads:
+emptying (docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md). The revision's exclusion is their
+enumeration by id, in p4-excluded.tsv beside this script, which `classify.py --exclude` reads; the three limbs below,
+each held under one of the pattern's flag sets, are how the 19 were found, and this script writes the listing again
+from task 2.13's run:
 
 1. **The pattern's limb** (`empty_body_minimum`): read under the flags (u or v: the grammar of 22.2.1; otherwise
    Annex B's), the pattern quantifies with a braced minimum of at least MINIMUM (2^32 = 4,294,967,296) an atom that
@@ -21,11 +22,13 @@ each held under one of the pattern's flag sets, and lists them in p4-excluded.ts
 2. **The arbiter's limb**: on one of the pattern's exec inputs in the population, the arbiter at its cut-off reaches
    no prefix of the subject, not even the shortest: reduce.py's outcome `none`, the subject cut to the lastIndex under
    g or y and to the empty string otherwise. It is asked of every exec input of a pattern with the first limb.
-3. **The comparison's limb**: on one such input (both limbs held) the comparison holds a difference where one side
-   stops at a limit and the other answers (null or a match): the stop against an answer the arbiter cannot check,
-   which class (c) holds. This limb reads the run, as the ruling did: limbs 1 and 2 alone are the narrowest property
-   found of the pattern and the arbiter, and they hold for 11 patterns more, on whose unreachable inputs every side
-   stops or all answer alike, so that none of their differences is class (c); the ruling does not name them.
+3. **The run's limb**: on one such input (both limbs held) the comparison holds a difference where one side stops,
+   at a limit or by a crash (an answer `limit:...` or `crash:...`), and the other answers (null or a match): the stop
+   against an answer the arbiter cannot check, which class (c) holds. This limb reads the run, as the ruling did, and
+   is not a property of the pattern: with it the limbs select nothing but the ids. Limbs 1 and 2 alone are the
+   narrowest property found of the pattern and the arbiter, and they hold for 11 patterns more, on whose unreachable
+   inputs every side stops or all answer alike, so that none of their differences is class (c); the ruling does not
+   name them, and the revision puts that property to the owner.
 
 **select** reads every class of the population, applies the first limb to each distinct pattern and flags, asks the
 arbiter (classify.py's Arbiter, at the commit and cut-off given) the second for every exec input of those, reads the
@@ -343,8 +346,8 @@ def _differences(path: Path):
 
 
 def stop_against_answer(d) -> bool:
-    """The third limb's difference: one side stops at a limit (its own bound, or the harness's) and the other answers
-    the exec, null or a match."""
+    """The third limb's difference: one side stops, at a limit (its own bound, or the harness's) or by a crash, and the
+    other answers the exec, null or a match."""
     def stops(answer: str) -> bool:
         return answer.startswith(("limit:", "crash:"))
 

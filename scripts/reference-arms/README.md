@@ -14,7 +14,7 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 | `stops.py` | The stop list, from a calibration's timing files (`tests/ReferenceArms/README.md`, "The stop list, and the limits") |
 | `run.sh` | Every step in order, each logged with its command; it fails when a step fails, the classifier's crash among them; `--calibrate` writes a stop list instead |
 | `reduce.py` | The reduction of the inputs the arbiter cannot reach (written 2026-11-15): each such exec's subject cut to the longest prefix the arbiter reaches, written as a population the arms, the comparison and the classifier run over unchanged, and each difference read against its reduced case (its docstring) |
-| `exclusion.py` | The exclusion from P4 by the owner's ruling of 2026-11-16 (written that day): the pattern's limb read from the pattern's text, the arbiter's limb asked of every exec input of such a pattern, the comparison's limb (a stop against an answer there), and `select`, which writes the listing (its docstring) |
+| `exclusion.py` | The exclusion from P4 by the owner's ruling of 2026-11-16 (written that day): the limbs the 19 were found by, the pattern's limb read from the pattern's text, the arbiter's limb asked of every exec input of such a pattern, the run's limb (a stop against an answer there), and `select`, which writes the listing (its docstring) |
 | `p4-excluded.tsv` | The listing `exclusion.py select` wrote and `classify.py --exclude` reads: the 19 P4 patterns the ruling excludes, by id, pattern, quantifier and the flag sets where the three limbs hold |
 | `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit; the reduction's reading (added 2026-11-15); the exclusion and the filed listing (added 2026-11-16) |
 
@@ -197,7 +197,8 @@ or a crash, which the run's facts do not distinguish.
 
 *Dated note, 2026-11-16, after the owner's ruling of that day (`CLASSIFIER_VERSION` @6, written after task 2.13's
 runs, their classification and the reduction of 2026-11-15 were seen).* The owner excluded from population P4 the 19
-patterns whose arbiter cost is in the pattern
+patterns the ruling names, whose arbiter cost is in the pattern and whose inputs held class (c), enumerated by id in
+`p4-excluded.tsv`
 ([`reference-arms-revised-2026-11-16b.md`](../../docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md)).
 `classify.py --exclude p4-excluded.tsv` classes every difference of a listed pattern, under every flag set, by
 acceptance and by exec, a reduced case `~p` among them, as `excluded`: listed apart with both answers, counted apart
@@ -205,6 +206,7 @@ in `classification.json` (which names the listing by its file name, SHA-256 and 
 class, and the arbiter is not asked for it; a listed id whose pattern is not the comparison's refuses the run (exit
 2). Without `--exclude` @6 classes every difference as @5 did. `exclusion.py select --population DIR --broiler-js
 CHECKOUT --commit SHA --unicode-pins DIR --comparison DIR --out FILE [--workers N] [--cache FILE]` writes the listing
-from a population, the arbiter and the run's comparison; the pattern's and the arbiter's limbs alone select 11 patterns
-more, which the ruling does not name (the revision's "How the property was chosen"). `run.sh` passes neither `--reduction` nor `--exclude`: both are read after a
-comparison, as the roadmap's record of 2026-11-16 says.
+from a population, the arbiter and the run's comparison, as the 19 were found; the run's limb reads that comparison, so
+the listing, not the limbs, is the exclusion. The pattern's and the arbiter's limbs alone select 11 patterns more,
+which the ruling does not name (the revision's "How the 19 were found, and what the limbs select"). `run.sh` passes
+neither `--reduction` nor `--exclude`: both are read after a comparison, as the roadmap's record of 2026-11-16 says.

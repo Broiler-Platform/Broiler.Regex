@@ -54,13 +54,13 @@ through once per term) and S's answer is the arbiter's, and class (b) under deci
 class (c), as neither declares a bound the harness's limit stands for.
 
 **The exclusion** (`--exclude FILE`, the rule's revision of 2026-11-16 by the owner's ruling,
-docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md). FILE is exclusion.py's listing (p4-excluded.tsv):
-the P4 patterns whose arbiter cost is in the pattern. Every difference of a listed pattern, under every flag set, by
-acceptance and by every exec, a reduced case `~p` among them, is classed **excluded**: listed apart, "excluded from P4
-by the owner's ruling of 2026-11-16", neither (c) nor any admitted class, and the arbiter is not asked for it. A
-difference whose id names a listed pattern and whose pattern is not the one listed refuses the run (exit 2).
-classification.json names the listing by its file name, SHA-256 and count, and counts the excluded differences apart.
-Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
+docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md). FILE is exclusion.py's listing (p4-excluded.tsv): the
+19 P4 patterns the ruling names, by id, whose arbiter cost is in the pattern. Every difference of a listed pattern,
+under every flag set, by acceptance and by every exec, a reduced case `~p` among them, is classed **excluded**: listed
+apart, "excluded from P4 by the owner's ruling of 2026-11-16", neither (c) nor any admitted class, and the arbiter is
+not asked for it. A difference whose id names a listed pattern and whose pattern is not the one listed refuses the run
+(exit 2). classification.json names the listing by its file name, SHA-256 and count, and counts the excluded differences
+apart. Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
 
 *Revised 2026-11-16, after the owner's ruling of that day on population P4 (CLASSIFIER_VERSION @6).* The option
 `--exclude` (above) is added; no row, predicate, class or reading of the reduction changed, so without it @6 classes
