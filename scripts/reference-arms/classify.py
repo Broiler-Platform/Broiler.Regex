@@ -62,6 +62,37 @@ not asked for it. A difference whose id names a listed pattern and whose pattern
 (exit 2). classification.json names the listing by its file name, SHA-256 and count, and counts the excluded differences
 apart. Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
 
+*Revised 2026-11-16, after Broiler.VM's rows M16 to M26 of that day and the owner's ruling on P3's `O06`
+(CLASSIFIER_VERSION @8, written after task 2.13's runs, their classification by @5, @6 and @7 and the reduction of
+2026-11-15 were seen).* @7's paragraph below reads "the correspondence is now read at Broiler.VM's `44511066`
+(Broiler-Platform/Broiler.VM#212's merge, the file's blob `94b860cc`; CORRESPONDENCE below)" and "No predicate reads row
+B1's widening: `O06` is an input the arbiter cannot reach, whose reduced case shows no difference and where neither side
+stopped at a bound it declares, so the reduction classes it (c) before any row is read, as the rule's revision (option
+R) says ("without such a stop it stays class (c)"); the row names it, and it stays class (c)"; that paragraph is kept as
+written. The correspondence is now read at Broiler.VM's `626e4ed8` (Broiler-Platform/Broiler.VM#215's merge, the file's
+blob `d4605f5c`; CORRESPONDENCE below), which adds rows M16 to M26 under decision D-jsrest and gives rows M8, M12, M13
+and M15 dated notes. The noted rows' predicates read their notes in place, so that a difference they take keeps its
+place in the row order: row M8 finds `\\b` and `\\B` outside a class lexed as the text lexes a class without `v`
+(text_tokens); row M12's reading writes a `-` right before a property escape that follows `\\d`, `\\D`, `\\w`, `\\W`,
+`\\s` or `\\S` as `\\-`; row M13's nested class ends at its first `]`, "even right after its `[^`, under
+`RegexOptions.ECMAScript`", as the row's later note of that day (at that round's review) narrows the first note's "even
+right after its `[` or `[^`": the flags keep that option where they hold neither `u`, `v` nor `s` and the pattern no
+modifier group, and a nested `[]`, or a nested `[^]` without the option, is read as @7 read it; row M15 takes
+an input whose invariant run answers S's match up to row M10's names. Rows M16 to M26 come after M15, in the
+correspondence's order ("Rows M16 to M26 are read after M15, in order, so an input two of them take is the first's"),
+each read from its row's own text: M16, M21, M23 and M25 take an input only where the arbiter's answer to the row's
+reading is arm J's, up to row M10's names, and not the text's, as M11 to M14 do; M17 to M20, M22, M24 and M26 take it
+by its construct and condition, M16, M17 and M19 reading the arbiter's tree of the pattern (Context.parse) for
+`GapScan`'s shapes. The rule's revision of 2026-11-16c (docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md,
+the owner's ruling of that day on `O06`) is read with `--reduction`: an input the arbiter cannot reach, at whose
+reduced case S, the arm and the arbiter answer alike and at which neither side stopped at a bound it declares, is class
+(a) "beyond the arbiter, by row", under the row that names it (BEYOND_ROWS: row B1, P3's `O06`), where (1) the row
+names the input and the mechanism (BEYOND_ROWS' predicate reads the input the row names, and check_beyond_rows the row's
+words), (2) every other arm that implements the operation answers the input as S does (Context.other_answers, the
+runs' answer files), and (3) S's answer at the input is the answer the reduced case's agreed answer extends to, as the
+pattern requires (whole_run_answer, the predicate the revision's condition 3 asks the classifier to state); otherwise
+it stays class (c). @7's other predicates, the reduction's other outcomes and the exclusion are unchanged.
+
 *Revised 2026-11-16, after Broiler.VM's rows M10 to M15 of that day (CLASSIFIER_VERSION @7, written after task 2.13's
 runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* @4's paragraph below reads "The
 correspondence is read at Broiler.VM's `7c65a8fe` (Broiler-Platform/Broiler.VM#211's merge, the file's blob `f0f6f080`;
@@ -165,15 +196,15 @@ if str(HERE) not in sys.path:
 
 from population_format import decode_units, encode_units, open_text  # noqa: E402
 
-CLASSIFIER_VERSION = "sjl-11-001-classification@7"
+CLASSIFIER_VERSION = "sjl-11-001-classification@8"
 DEFAULT_CUTOFF = 1_000_000
 
 # The Broiler.VM commit whose correspondence.md this classifier's rows and words are read from (the rule's "rows the
 # correspondence names", reference-arms.md; the bundle README's run-reference-arms.sh --correspondence-commit).
 # classification.json names it beside the blob of the file a run was given, which may be a later one.
-CORRESPONDENCE = {"repository": "Broiler.VM", "commit": "44511066bfb38952c12c81557f56a34bd21ee41e",
+CORRESPONDENCE = {"repository": "Broiler.VM", "commit": "626e4ed88afe8898724bda669e981cf7cf1b98b2",
                   "path": "docs/evidence/sjl-11-001/correspondence.md",
-                  "blob": "94b860cc00b71d2e142473a3685fdd92f1cccee4"}
+                  "blob": "d4605f5cd1461137a3533e816d5bc2275434cce8"}
 
 
 # --------------------------------------------------------------------------------------------------
@@ -340,6 +371,19 @@ class Arbiter:
         """The arbiter's answer to a row's reading of the difference's pattern (one character per code unit), under its
         flags, at its subject and lastIndex: an exec, cached as any other."""
         return self.answer(encode_units([ord(c) for c in text]), d["flags"], d["subject"], d["lastIndex"], "exec")
+
+    def parse(self, text: str):
+        """Rows M16, M17, M19 and M24 (@8): the arbiter's tree of a pattern without `u` or `v` (one character per code
+        unit), as ParsePattern with Annex B reads it (regexpref.parse_pattern: its Disjunction, with the groups
+        counted and every back-reference resolved); None where the arbiter refuses the pattern."""
+        if not hasattr(self, "_trees"):
+            self._trees = {}
+        if text not in self._trees:
+            try:
+                self._trees[text] = self.r.parse_pattern([ord(c) for c in text], False, False).tree
+            except self.r.PatternSyntaxError:
+                self._trees[text] = None
+        return self._trees[text]
 
     def letters(self) -> frozenset:
         """Row M8's non-ASCII letters: every code point past U+007F whose General_Category in the pinned UCD
@@ -1008,13 +1052,17 @@ def exec_answered_otherwise(d, context) -> bool:
       U+0131 in the pattern or at a compared position of the subject;
     - "an empty `\\q{}` in a class under `v`";
     - "under `tr-TR` P5's `I` and `[I]` against `i` and `i` and `[i]` against `I`", each pattern with its own subject.
-    Rows M2, M2a, M2b, M3, M4, M7 and B2 come first."""
+    Rows M2, M2a, M2b, M3, M4, M7 and B2 come first.
+    *(@8, the row's note of 2026-11-16, decision D-jsrest: "`\\b` and `\\B`" are read outside a class "as the text
+    lexes a class without `v`, ending at its first unescaped `]`, a `[` inside it being a character" (text_tokens),
+    with `u` or without; under `v` as before (boundary_assertion), where a class nests. @7 read them with
+    boundary_assertion alone.)*"""
     if not both_answer_exec(d) or names_only(d):
         return False
     text = units_text(d["pattern"])
     units = decode_units(d["subject"])
     compared = compared_positions(d, text, units)
-    if boundary_assertion(text) and any(
+    if boundary_outside_class(text, has_flag(d, "v")) and any(
             code_point_at(units, i) > 0x7F and code_point_at(units, i) in context.letters for i in compared):
         return True
     if mode(d, "i") and (pattern_code_points(text) & DOTTED_DOTLESS_I
@@ -1354,6 +1402,8 @@ def empty_iteration_kept(d, context) -> bool:
 GENERAL_CATEGORIES = frozenset("L Lu Ll Lt Lm Lo M Mn Mc Me N Nd Nl No P Pc Pd Ps Pe Pi Pf Po S Sm Sc Sk So Z Zs Zl "
                                "Zp C Cc Cf Cs Co Cn".split())
 PROPERTY_IN_CLASS = re.compile(r"\\([pP])\{([A-Za-z]+)\}")
+# The class escapes a `-` before a property escape follows in row M12's note (@8), as property_reading writes them.
+CLASS_ESCAPES = frozenset(("\\d", "\\D", "\\w", "\\W", "\\s", "\\S"))
 
 
 def _units_as_ranges(units) -> str:
@@ -1374,13 +1424,18 @@ def _units_as_ranges(units) -> str:
 def property_reading(text: str, category_units) -> str | None:
     """Row M12's reading of `\\p{…}` and `\\P{…}` in a class: "each such `\\p{…}` written as the BMP code units of
     that General_Category in the arbiter's UCD (a one-letter name, every category it begins), each `\\P{…}` as the
-    other code units, a `-` right after either, not before `]`, as `\\-`". `category_units(name)` gives the units."""
+    other code units, a `-` right after either, not before `]`, as `\\-`". `category_units(name)` gives the units.
+    *(@8, the row's note of 2026-11-16, decision D-jsrest: "the row's reading also writes a `-` right before `\\p{…}` or
+    `\\P{…}` that follows `\\d`, `\\D`, `\\w`, `\\W`, `\\s` or `\\S` as `\\-`, as the translator writes it", so
+    `[\\n-\\w\\B\\d-\\P{N}]` reads `0-9`, `-` and the other code units. @7 left that `-` as written.)*"""
     out, i, in_class, changed = [], 0, False, False
     while i < len(text):
         ch = text[i]
         if ch == "\\" and i + 1 < len(text):
             m = PROPERTY_IN_CLASS.match(text, i) if in_class else None
             if m and m.group(2) in GENERAL_CATEGORIES:
+                if len(out) >= 2 and out[-1] == "-" and out[-2] in CLASS_ESCAPES:
+                    out[-1] = "\\-"
                 units = category_units(m.group(2))
                 if m.group(1) == "P":
                     inside = set(units)
@@ -1465,9 +1520,16 @@ def _neutral_dashes(body: str) -> str:
     return "".join(out)
 
 
-def _net_class(text: str, i: int):
+def _net_class(text: str, i: int, nested_class: bool = False, ecmascript: bool = False):
     """The class that opens at text[i] == "[" as .NET's grammar reads it: (its reading, the index after it, whether it
-    holds a subtraction), or None where `-[` is not followed, after the nested class, by the class's `]`."""
+    holds a subtraction), or None where `-[` is not followed, after the nested class, by the class's `]`.
+    *(@8, row M13's note of 2026-11-16, decision D-jsrest: "the nested class, read as .NET reads it, ends at its first
+    `]`, even right after its `[` or `[^`, so `[\\w--\\D--[^]]` reads `\\w`, `-` and the non-digits less every code
+    unit", which the row's later note of that day, at that round's review, narrows: "\"even right after its `[` or
+    `[^`\" reads \"even right after its `[^`, under `RegexOptions.ECMAScript`\": ... a nested `[]`, or a nested class
+    without that option, is not tested". A nested class (`nested_class`) that opens with `[^` ends at a `]` right
+    after it only where the difference's flags keep that option (`ecmascript`: class_subtraction); a nested `[]`, or a
+    nested `[^]` without it, is read as @7 read it, its `]` a member.)*"""
     j, negated = i + 1, False
     if text[j:j + 1] == "^":
         negated, j = True, j + 1
@@ -1478,10 +1540,10 @@ def _net_class(text: str, i: int):
             j += 2
             first = False
             continue
-        if ch == "]" and not first:
+        if ch == "]" and (not first or (nested_class and negated and ecmascript)):
             return "[" + ("^" if negated else "") + _neutral_dashes(text[start:j]) + "]", j + 1, False
         if ch == "-" and not first and text[j + 1:j + 2] == "[":
-            nested = _net_class(text, j + 1)
+            nested = _net_class(text, j + 1, True, ecmascript)
             if nested is None or text[nested[1]:nested[1] + 1] != "]":
                 return None
             members = "[" + ("^" if negated else "") + _neutral_dashes(text[start:j]) + "]"
@@ -1491,10 +1553,10 @@ def _net_class(text: str, i: int):
     return None
 
 
-def subtraction_reading(text: str) -> str | None:
+def subtraction_reading(text: str, ecmascript: bool = False) -> str | None:
     """Row M13's reading: "each such class written `(?:(?![B])[A])`, A the members before `-[` and B the nested class's,
     read the same way where it holds `-[` itself, with a `-` beside `\\d`, `\\D`, `\\w`, `\\W`, `\\s` or `\\S` in A
-    written `\\-`, as the translator writes it"; a class with no `-[` after its first member is left as written."""
+    written `\\-`, as the translator writes it"; a class with no `-[` after its first member is left as written. `ecmascript`: whether the difference's flags keep `RegexOptions.ECMAScript` (_net_class)."""
     out, i, changed = [], 0, False
     while i < len(text):
         ch = text[i]
@@ -1503,7 +1565,7 @@ def subtraction_reading(text: str) -> str | None:
             i += 2
             continue
         if ch == "[":
-            read = _net_class(text, i)
+            read = _net_class(text, i, ecmascript=ecmascript)
             if read and read[2]:
                 out.append(read[0])
                 i = read[1]
@@ -1521,9 +1583,14 @@ def subtraction_reading(text: str) -> str | None:
 def class_subtraction(d, context) -> bool:
     """Row M13: "Without `u` or `v`, a class that holds `-[` after its first member ...; an `exec` both sides answer,
     where Broiler.JS answers otherwise and the arbiter's answer to the pattern with each such class read as .NET reads
-    it ... is Broiler.JS's, up to row M10's names, and not the text's"."""
-    return (not unicode_mode(d) and both_answer_exec(d)
-            and answered_as_read(d, context, subtraction_reading(unit_text(d["pattern"]))))
+    it ... is Broiler.JS's, up to row M10's names, and not the text's". The flags keep `RegexOptions.ECMAScript`, as
+    row M13's note of 2026-11-16 at that round's review reads it, where they hold neither `u`, `v` nor `s` and the
+    pattern no modifier group (modifier_group_lexed), as rows M21 and M24 read the option's loss."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    ecmascript = not has_flag(d, "s") and not modifier_group_lexed(text)
+    return answered_as_read(d, context, subtraction_reading(text, ecmascript))
 
 
 def dash_reading(text: str) -> str | None:
@@ -1566,13 +1633,508 @@ def culture_casing_of_i(d, context) -> bool:
     U+0130 nor U+0131 (those are row M2a's), on which arm J under the invariant culture answers as the text does; an
     `exec` both sides answer, where Broiler.JS under the culture answers otherwise". The invariant culture's answer is
     the text's where the comparison holds no difference of run J for the same input (Context.invariant_differs). P5's
-    inputs row M8 names are that row's, which comes first. No arbiter call."""
+    inputs row M8 names are that row's, which comes first. No arbiter call.
+    *(@8, the row's note of 2026-11-16, decision D-jsrest: "on which arm J under the invariant culture answers as the
+    text does" reads "as the text does, up to row M10's names": where run J differs on the input, the input is still
+    the row's when run J's answer is S's match with only the names rewritten as row M10 reads them, at the same groups
+    (names_rewritten; Context.invariant_answer). @7 read no difference of run J alone.)*"""
     if d["run"] not in ("J.tr-TR", "J.lt-LT") or not both_answer_exec(d) or not has_flag(d, "i") or unicode_mode(d):
         return False
     points = input_code_points(d)
     if not points & ASCII_I or points & DOTTED_AND_DOTLESS:
         return False
-    return not context.invariant_differs(d)
+    if not context.invariant_differs(d):
+        return True
+    invariant = context.invariant_answer(d)
+    return invariant is not None and kind(invariant) == "match" and names_rewritten(
+        d, canonical(d["S"]), canonical(invariant), context, (name_indices(d["S"]), name_indices(invariant)))
+
+
+# --------------------------------------------------------------------------------------------------
+# The predicates added 2026-11-16 (@8), each read from its row's text at Broiler.VM's 626e4ed8 (decision D-jsrest of
+# JSD-0081, Broiler-Platform/Broiler.VM#215), whose note says: "Rows M16, M21, M23 and M25 take an input only where the
+# arbiter's answer to the row's reading is Broiler.JS's, up to row M10's names, and not the text's; rows M17 to M20,
+# M22, M24 and M26 by their construct and condition." Every one reads arm J, without `u` or `v`, an `exec` both sides
+# answer ("an `exec` both sides answer, where Broiler.JS answers otherwise"), and S's answer the arbiter's (the
+# classifier reaches its rows only then). Where a row says "class", the pattern is lexed as the text lexes it without
+# `v` (text_tokens): a class ends at its first unescaped `]`, and a `[` inside it is a character.
+
+def text_tokens(text: str):
+    """The pattern's tokens as the text lexes it without `v` (22.2.1 with Annex B): yields (index, token, in_class,
+    first), each escape one token of two characters (`\\c` and what follows it are two tokens), a class's negating `^`
+    the token `^NEG`, and `first` true for the token right after a class's `[` or `[^`. A class ends at its first
+    unescaped `]`, a `]` right after its `[` included (`[]` is the empty class), and a `[` inside it is a member."""
+    i, in_class, first = 0, False, False
+    while i < len(text):
+        ch = text[i]
+        if ch == "\\" and i + 1 < len(text):
+            yield i, text[i:i + 2], in_class, first
+            i += 2
+            first = False
+            continue
+        if not in_class and ch == "[":
+            yield i, ch, False, False
+            in_class, i = True, i + 1
+            if text[i:i + 1] == "^":
+                yield i, "^NEG", True, True
+                i += 1
+            first = True
+            continue
+        if in_class and ch == "]":
+            yield i, ch, True, first
+            in_class, first = False, False
+            i += 1
+            continue
+        yield i, ch, in_class, first
+        i += 1
+        first = False
+
+
+def boundary_outside_class(text: str, v: bool) -> bool:
+    """Row M8's `\\b` or `\\B` outside a class, as its note of 2026-11-16 (D-jsrest) lexes a class without `v`
+    (text_tokens); under `v`, where a class nests, as boundary_assertion reads it."""
+    if v:
+        return boundary_assertion(text)
+    return any(not in_class and token in ("\\b", "\\B") for _, token, in_class, _ in text_tokens(text))
+
+
+def _joined(tokens) -> str:
+    return "".join("^" if token == "^NEG" else token for token in tokens)
+
+
+def _can_match_empty(node) -> bool:
+    """Whether a node of the arbiter's tree can match the empty string, read from its kind alone: an assertion, a
+    look-around and a back-reference can; a character, `.` and a class cannot."""
+    name = type(node).__name__
+    if name in ("Character", "Dot", "ClassEscape", "ClassRanges", "SetClass"):
+        return False
+    if name in ("Group", "Modifiers"):
+        return _can_match_empty(node.disjunction)
+    if name == "Quantified":
+        return node.min == 0 or _can_match_empty(node.atom)
+    if name == "Alternative":
+        return all(_can_match_empty(term) for term in node.terms)
+    if name == "Disjunction":
+        return any(_can_match_empty(alternative) for alternative in node.alternatives)
+    return True
+
+
+def _can_match_character(node) -> bool:
+    """Whether a node of the arbiter's tree can match a character, read from its kind alone: a character, `.`, a class
+    with a member or negated, and a back-reference can; an assertion and a look-around cannot."""
+    name = type(node).__name__
+    if name in ("Assertion", "LookAround"):
+        return False
+    if name == "ClassRanges":
+        return bool(node.items) or node.invert
+    if name in ("Group", "Modifiers"):
+        return _can_match_character(node.disjunction)
+    if name == "Quantified":
+        return node.max != 0 and _can_match_character(node.atom)
+    if name == "Alternative":
+        return any(_can_match_character(term) for term in node.terms)
+    if name == "Disjunction":
+        return any(_can_match_character(alternative) for alternative in node.alternatives)
+    return True
+
+
+def _nodes(node):
+    yield node
+    for attribute in ("disjunction", "atom"):
+        child = getattr(node, attribute, None)
+        if child is not None:
+            yield from _nodes(child)
+    for attribute in ("terms", "alternatives"):
+        for child in getattr(node, attribute, None) or ():
+            yield from _nodes(child)
+
+
+def nullable_repeats(tree):
+    """`GapScan`'s nullable shape, as rows M16, M17 and M19 name it: each quantifier "whose maximum is above 1 over a
+    body that can match both the empty string and a character", in the arbiter's tree."""
+    return [n for n in _nodes(tree) if type(n).__name__ == "Quantified" and n.max > 1
+            and _can_match_empty(n.atom) and _can_match_character(n.atom)]
+
+
+def capture_in_look_behind(tree) -> bool:
+    """`GapScan`'s other shape, as row M16 names it: "a capturing group or a back-reference inside a look-behind"."""
+    return any(type(n).__name__ == "LookAround" and not n.ahead and any(
+        type(m).__name__ in ("Group", "Backreference") for m in _nodes(n.disjunction)) for n in _nodes(tree))
+
+
+def control_reading(text: str) -> str | None:
+    """Row M16's reading: "each such `\\c` written `\\\\`, the character after it kept", where no ASCII letter follows
+    the `\\c`, inside a class and outside one; None where the pattern holds no such `\\c`."""
+    out, changed = [], False
+    for i, token, _, _ in text_tokens(text):
+        if token == "\\c":
+            after = text[i + 2:i + 3]
+            if not (after.isascii() and after.isalpha()):
+                out.append("\\\\")
+                changed = True
+                continue
+        out.append(token)
+    return _joined(out) if changed else None
+
+
+def control_escape_read_as_backslash(d, context) -> bool:
+    """Row M16: "Without `u` or `v`, `\\c` that no ASCII letter follows, in a pattern `TryRouteToBroiler` hands to
+    Broiler.Regex `0.1.0-preview.4` by one of `GapScan`'s shapes (a capturing group or a back-reference inside a
+    look-behind, or a quantifier whose maximum is above 1 over a body that can match both the empty string and a
+    character) ...; an `exec` both sides answer, where Broiler.JS answers otherwise and the arbiter's answer to the
+    pattern with each such `\\c` read as preview.4 reads it (the reading in the Broiler.JS cell) is Broiler.JS's, up to
+    row M10's names, and not the text's". The shapes are read in the arbiter's tree of the pattern (nullable_repeats,
+    capture_in_look_behind); whether preview.4's own parse succeeds, which `TryRouteToBroiler` also needs, is not read
+    apart: the reading's answer is preview.4's only where it does."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    reading = control_reading(text)
+    if reading is None:
+        return False
+    tree = context.parse(text)
+    if tree is None or not (nullable_repeats(tree) or capture_in_look_behind(tree)):
+        return False
+    return answered_as_read(d, context, reading)
+
+
+def _group_names(text: str) -> list[str]:
+    """Each group name as written, `(?<name>` outside a class (text_tokens)."""
+    out = []
+    for i, token, in_class, _ in text_tokens(text):
+        if token == "(" and not in_class:
+            m = NAME.match(text, i)
+            if m:
+                out.append(m.group(1))
+    return out
+
+
+def braced_name_in_nullable_repeat(d, context) -> bool:
+    """Row M17: "Without `u` or `v`, a group name written with `\\u{…}` (`(?<\\u{62}>…)`), which the text accepts, in a
+    pattern that holds a quantifier whose maximum is above 1 over a body that can match both the empty string and a
+    character (`GapScan`'s nullable shape) ...; an `exec` both sides answer, where Broiler.JS answers otherwise". The
+    name is a group's outside a class; the shape is read in the arbiter's tree (nullable_repeats)."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    if not any("\\u{" in name for name in _group_names(text)):
+        return False
+    tree = context.parse(text)
+    return tree is not None and bool(nullable_repeats(tree))
+
+
+def braced_name_reference(d, context) -> bool:
+    """Row M18: "Without `u` or `v`, `\\k<…>` whose name is written with `\\u{…}` (`\\k<\\u{62}>`) and names a group of
+    the pattern ...; an `exec` both sides answer, where Broiler.JS answers otherwise". The reference stands outside a
+    class, and its name's value (decoded_name) is the value of a group's name."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    names = {decoded_name(name) for name in _group_names(text)}
+    for i, token, in_class, _ in text_tokens(text):
+        if token == "\\k" and not in_class:
+            m = re.match(r"<([^>]*)>", text[i + 2:])
+            if m and "\\u{" in m.group(1) and decoded_name(m.group(1)) in names:
+                return True
+    return False
+
+
+OCTAL = "01234567"
+OCTAL_MARK = 0xE000
+
+
+def _octal_marked(text: str) -> str | None:
+    """The pattern with each legacy octal escape `\\0` followed by an octal digit outside a class (B.1.2's
+    LegacyOctalEscapeSequence: `\\0` and one octal digit, or two) written `\\uE000`, one atom for one atom, so that
+    the arbiter's tree shows where it stands; None where there is none, or where the pattern holds U+E000 itself."""
+    if chr(OCTAL_MARK) in text:
+        return None
+    out, last, found = [], 0, False
+    for i, token, in_class, _ in text_tokens(text):
+        if token == "\\0" and not in_class and text[i + 2:i + 3] and text[i + 2] in OCTAL:
+            digits = 2 if text[i + 3:i + 4] and text[i + 3] in OCTAL else 1
+            out += [text[last:i], "\\uE000"]
+            last, found = i + 2 + digits, True
+    return "".join(out) + text[last:] if found else None
+
+
+def octal_in_nullable_repeat(d, context) -> bool:
+    """Row M19: "Without `u` or `v`, a legacy octal escape `\\0` followed by an octal digit (`\\07`) in the body of a
+    quantifier whose maximum is above 1, over a body that can match both the empty string and a character, as
+    `(\\B\\07{0,2}){0,2}`; an `exec` both sides answer, where Broiler.JS answers otherwise". Each such escape outside a
+    class is found in that body of the arbiter's tree (_octal_marked, nullable_repeats)."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    marked = _octal_marked(unit_text(d["pattern"]))
+    if marked is None:
+        return False
+    tree = context.parse(marked)
+    return tree is not None and any(
+        type(n).__name__ == "Character" and n.value == OCTAL_MARK for q in nullable_repeats(tree) for n in _nodes(q.atom))
+
+
+def octal_before_digit_class(d, context) -> bool:
+    """Row M20: "Without `u` or `v`, in a class, a legacy octal escape `\\0` and an octal digit right before `\\d`, as
+    `\\xa0|[\\07\\d]?`; an `exec` both sides answer, where Broiler.JS answers otherwise": `\\0`, one octal digit and
+    `\\d` (`[\\077\\d]`, whose escape .NET reads whole, is not it)."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    return any(in_class and token == "\\0" and re.match(r"[0-7]\\d", text[i + 2:]) is not None
+               for i, token, in_class, _ in text_tokens(text))
+
+
+def modifier_group_lexed(text: str) -> bool:
+    """Whether an inline modifier group, adding or removing a flag, stands outside a class (text_tokens)."""
+    for i, token, in_class, _ in text_tokens(text):
+        if token == "(" and not in_class:
+            m = MODIFIER_GROUP.match(text, i)
+            if m and (m.group(1) or m.group(2)):
+                return True
+    return False
+
+
+NON_WHITE_SPACE_AS_NET_READS = "\\u0000-\\u0008\\u000E-\\u001F\\u0021-\\uFFFF"
+
+
+def non_white_space_reading(text: str) -> str | None:
+    """Row M21's reading: "each such `\\S` written `\\u0000-\\u0008\\u000E-\\u001F\\u0021-\\uFFFF`, a `-` beside it
+    written `\\-`", for `\\S` in a class; None where there is none."""
+    tokens = list(text_tokens(text))
+    out, changed = [], False
+    for n, (_, token, in_class, _) in enumerate(tokens):
+        if in_class and token == "\\S":
+            if out and out[-1] == "-":
+                out[-1] = "\\-"
+            out.append(NON_WHITE_SPACE_AS_NET_READS)
+            changed = True
+            if n + 2 < len(tokens) and tokens[n + 1][1] == "-" and tokens[n + 2][1] != "]":
+                tokens[n + 1] = (tokens[n + 1][0], "\\-", True, False)
+            continue
+        out.append(token)
+    return _joined(out) if changed else None
+
+
+def non_white_space_in_class(d, context) -> bool:
+    """Row M21: "Without `u` or `v`, without `s` and with no modifier group in the pattern, `\\S` in a class ...; an
+    `exec` both sides answer, where Broiler.JS answers otherwise and the arbiter's answer to the pattern with each such
+    `\\S` read as .NET reads it (the reading in the Broiler.JS cell) is Broiler.JS's, up to row M10's names, and not
+    the text's"."""
+    if unicode_mode(d) or not both_answer_exec(d) or has_flag(d, "s"):
+        return False
+    text = unit_text(d["pattern"])
+    if modifier_group_lexed(text):
+        return False
+    return answered_as_read(d, context, non_white_space_reading(text))
+
+
+EMPTY_GROUP_LAZY = re.compile(r"\((?:\?<[^>=!]+>)?\)(?:\+\?|\{1,\}\?)")
+
+
+def empty_group_lazy(d, context) -> bool:
+    """Row M22: "Without `u` or `v`, a capturing group whose body is empty, `()` or `(?<name>)`, quantified by `+?` or
+    `{1,}?`, in a pattern with more than one alternative ...; an `exec` both sides answer, where Broiler.JS answers
+    otherwise": the group outside a class, and a `|` outside a class and outside every group."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    depth, alternatives, group = 0, False, False
+    for i, token, in_class, _ in text_tokens(text):
+        if in_class:
+            continue
+        if token == "(":
+            group = group or EMPTY_GROUP_LAZY.match(text, i) is not None
+            depth += 1
+        elif token == ")":
+            depth = max(0, depth - 1)
+        elif token == "|" and depth == 0:
+            alternatives = True
+    return group and alternatives
+
+
+def anchor_member_reading(text: str) -> str | None:
+    """Row M23's reading: "in a class, each such `^` written as the characters `(?<=^|\\r)` and each `$` as
+    `(?=$|\\r)`", a `^` that is a member (not the class's negation); None where there is none."""
+    out, changed = [], False
+    for _, token, in_class, _ in text_tokens(text):
+        if in_class and token == "^":
+            out.append("(?<=^|\\r)")
+            changed = True
+        elif in_class and token == "$":
+            out.append("(?=$|\\r)")
+            changed = True
+        else:
+            out.append(token)
+    return _joined(out) if changed else None
+
+
+def anchor_member_under_m(d, context) -> bool:
+    """Row M23: "Under `m`, without `u` or `v`, `^` as a member of a class anywhere but right after the class's opening
+    `[` ..., or `$` as a member of a class; an `exec` both sides answer, where Broiler.JS answers otherwise and the
+    arbiter's answer to the pattern with each such member read as the translator writes it (the reading in the
+    Broiler.JS cell) is Broiler.JS's, up to row M10's names, and not the text's". `m` is the flag."""
+    if unicode_mode(d) or not both_answer_exec(d) or not has_flag(d, "m"):
+        return False
+    return answered_as_read(d, context, anchor_member_reading(unit_text(d["pattern"])))
+
+
+def backreference_without_ecmascript(d, context) -> bool:
+    """Row M24: "Without `u` or `v`, under `s` or with a modifier group in the pattern, a back-reference to a group of
+    the pattern, `\\N` with N no more than the pattern's capturing groups or `\\k<name>` in a pattern with a named group
+    ...; an `exec` both sides answer, where Broiler.JS answers `null` or another match". The back-reference is one the
+    arbiter's tree holds (its parse reads `\\N` as one only where N is no more than the groups, and `\\k<name>` only in
+    a pattern with a named group)."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    if not (has_flag(d, "s") or modifier_group_lexed(text)):
+        return False
+    tree = context.parse(text)
+    return tree is not None and any(type(n).__name__ == "Backreference" for n in _nodes(tree))
+
+
+REMOVES_I = re.compile(r"\(\?[ims]*-([ims]*):")
+
+
+def expanded_letter_reading(text: str, canonicalize_class) -> str | None:
+    """Row M25's reading: "inside such a group, each such letter written as the class of its Canonicalize class", a
+    letter outside a class inside a modifier group that removes `i`, whose Canonicalize class (the arbiter's, without
+    `u` or `v`) holds another member and a non-ASCII one; None where there is none."""
+    out, stack, changed = [], [], False
+    for i, token, in_class, _ in text_tokens(text):
+        if not in_class and token == "(":
+            m = REMOVES_I.match(text, i)
+            stack.append(bool(m and "i" in m.group(1)))
+        elif not in_class and token == ")" and stack:
+            stack.pop()
+        elif not in_class and any(stack) and len(token) == 1 and token.isalpha():
+            members = tuple(canonicalize_class(ord(token)))
+            if len(members) > 1 and any(m > 0x7F for m in members):
+                out.append("[" + "".join(chr(m) for m in members) + "]")
+                changed = True
+                continue
+        out.append(token)
+    return _joined(out) if changed else None
+
+
+def letter_expanded_without_i(d, context) -> bool:
+    """Row M25: "Under `i`, without `u` or `v`, inside a modifier group that removes `i` (`(?-i:…)`, `(?m-is:…)`), a
+    letter the translator expands, one whose Canonicalize class holds another member and a non-ASCII one, as `Σ` in
+    `(?m-is:\\u03a3)`; an `exec` both sides answer, where Broiler.JS answers otherwise and the arbiter's answer to the
+    pattern with each such letter read as the translator writes it (the reading in the Broiler.JS cell) is Broiler.JS's,
+    up to row M10's names, and not the text's". `i` is the flag; the letter is one written as itself."""
+    if unicode_mode(d) or not both_answer_exec(d) or not has_flag(d, "i"):
+        return False
+    return answered_as_read(d, context, expanded_letter_reading(unit_text(d["pattern"]), context.canonicalize_class))
+
+
+def class_folded_by_net(d, context) -> bool:
+    """Row M26: "Under `i`, without `u` or `v`, a class, lexed as the text lexes it without `v`, that holds `\\W`,
+    `\\p{…}` or `\\P{…}` ...; an `exec` both sides answer, where Broiler.JS answers otherwise; rows M12 and M13 come
+    first where their readings give Broiler.JS's answer". `i` is the flag."""
+    if unicode_mode(d) or not both_answer_exec(d) or not has_flag(d, "i"):
+        return False
+    text = unit_text(d["pattern"])
+    return any(in_class and (token == "\\W" or token in ("\\p", "\\P") and text[i + 2:i + 3] == "{")
+               for i, token, in_class, _ in text_tokens(text))
+
+
+# --------------------------------------------------------------------------------------------------
+# The rule's revision of 2026-11-16c (docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md, the owner's
+# ruling of that day): an input the arbiter cannot reach, named by a row, classed by that row (@8).
+
+def whole_run_answer(pattern: str, flags: str, subject: list[int], last_index: str):
+    """Condition (3)'s stated check: the text's answer to `^X*$`, X one ASCII letter or digit or a class of them
+    (`[a]`, no negation, range or escape), under flags without `i`, `m`, `g` and `y` (so X is read as written, `^` and
+    `$` are the subject's ends and the exec starts at 0), over a subject every code unit of which X holds: a match of
+    the whole subject and no capture. `^` holds at 0; the greedy `*` (22.2.2.3, RepeatMatcher) first takes every unit,
+    X holding each; `$` (22.2.2.6) holds at the end, so the first path in the backtracking order succeeds. None for any
+    other pattern, flags or subject: no answer is claimed."""
+    m = re.fullmatch(r"\^(?:([0-9A-Za-z])|\[([0-9A-Za-z]+)\])\*\$", pattern)
+    if m is None or set(flags) & set("imgy") or last_index != "0":
+        return None
+    members = {ord(c) for c in (m.group(1) or m.group(2))}
+    if not set(subject) <= members:
+        return None
+    return ("match", ((0, len(subject)),), ())
+
+
+B1_INPUT = ("^[a]*$", "u", 0x61, 10_000_001, "0")
+
+
+def names_b1_input(d) -> bool:
+    """Row B1's widening of 2026-11-16 (decision D-jsexec): "Broiler.Regex's reference arms ... reached `/^[a]*$/u` over
+    10,000,001 `a` (`P3-O06`), which Broiler.JS answers `null` in every culture where S answers the whole input ...: the
+    class's run ends at the budget's early exit this row cites (R1), so `$` fails at every start (an inference from this
+    row's `/[a]*/u` and `/^a*$/u` answers, not traced in preview.4)". The row names that one input, by its pattern, flags
+    and subject, and the predicate reads it alone; the row's words are checked by check_beyond_rows."""
+    pattern, flags, unit, length, last_index = B1_INPUT
+    if d["op"] != "exec" or units_text(d["pattern"]) != pattern or d["flags"] != flags or d["lastIndex"] != last_index:
+        return False
+    subject = decode_units(d["subject"])
+    return len(subject) == length and set(subject) == {unit}
+
+
+# The rows an input the arbiter cannot reach is classed by (condition (1)): (row, the engine whose correction the row
+# records, the predicate that reads the input the row names, the words of the row's class that name that engine as
+# corrected, and the row's own words that name the input and the mechanism, which check_beyond_rows reads).
+BEYOND_ROWS = [
+    ("B1", "J", names_b1_input, "Broiler.JS: **correction of Broiler.JS and of Broiler.Regex's preview.4**",
+     ("`/^[a]*$/u` over 10,000,001 `a` (`P3-O06`)", "the class's run ends at the budget's early exit this row cites")),
+]
+
+
+def beyond_by_row(d, reduced_id: str, arbiter_answer, s_answer: str, context) -> tuple[str, str, str] | None:
+    """The revision of 2026-11-16c's clause, for an input the arbiter cannot reach whose reduced case shows no
+    difference (the arm answers it as S does) and at which neither side stopped at a bound it declares: class (a)
+    "beyond the arbiter, by row", under the row, where S's answer at the reduced case is the arbiter's and
+    (1) a row of BEYOND_ROWS for the arm's engine names the input and the mechanism;
+    (2) every other arm that implements the operation answers the input as S does: each other engine's run of the
+        population holds the case and answers S's answer (Context.other_answers), and at least one does;
+    (3) S's answer at the input is the text's by evidence other than the arbiter: whole_run_answer gives it at the
+        input, and gives the reduced case's agreed answer at the reduced subject.
+    None otherwise: the input stays class (c)."""
+    if canonical(harness_read(s_answer)) != arbiter_answer:
+        return None
+    engine = d["run"].split(".", 1)[0]
+    row = next((r for r, e, names, _, _ in BEYOND_ROWS if e == engine and names(d)), None)
+    if row is None:
+        return None
+    subject, flags = decode_units(d["subject"]), "" if d["flags"] == "." else d["flags"]
+    pattern = units_text(d["pattern"])
+    prefix = int(reduced_id.rsplit("~p", 1)[1])
+    at_input = whole_run_answer(pattern, flags, subject, d["lastIndex"])
+    if at_input is None or canonical(d["S"]) != at_input:
+        return None
+    if whole_run_answer(pattern, flags, subject[:prefix], d["lastIndex"]) != arbiter_answer:
+        return None
+    others = context.other_answers(d)
+    if not others or any(answer is None or harness_read(answer) != d["S"] for answer in others.values()):
+        return None
+    agreeing = ", ".join(f"run {run} {answer}" for run, answer in sorted(others.items()))
+    return ("a", row, f"beyond the arbiter, by row {row} (reference-arms-revised-2026-11-16c.md): at the prefix "
+            f"{reduced_id} S, the arm and the arbiter answer {s_answer}; the row names the input and the mechanism; "
+            f"every other arm answers the input as S does ({agreeing}); S's answer {d['S']} is the whole subject, as "
+            "the pattern requires over a subject its class holds")
+
+
+def other_arm_answers(runs: Path, d) -> dict[str, str | None]:
+    """Condition (2)'s answers: each run of an engine other than S and the difference's arm, in the runs directory's
+    answer files for the difference's population (`<population>.<run>.tsv.gz`), with its answer to the case (None
+    where the run does not hold it)."""
+    engine = d["run"].split(".", 1)[0]
+    out: dict[str, str | None] = {}
+    for path in sorted(runs.glob(f"{d['class']}.*.tsv.gz")):
+        run = path.name[len(d["class"]) + 1:-len(".tsv.gz")]
+        if run.split(".", 1)[0] in ("S", engine):
+            continue
+        out[run] = None
+        with open_text(path) as handle:
+            for line in handle:
+                if line.startswith(d["id"] + "\t"):
+                    out[run] = line.rstrip("\n").split("\t")[1]
+                    break
+    return out
 
 
 ROWS = [
@@ -1618,6 +2180,19 @@ ROWS = [
     ("M13", "J", class_subtraction, "Correction of Broiler.JS"),
     ("M14", "J", escaped_dash_starts_no_range, "Correction of Broiler.JS"),
     ("M15", "J", culture_casing_of_i, "Correction of Broiler.JS"),
+    # Added 2026-11-16 (@8), after M15 in the order the correspondence states ("Rows M16 to M26 are read after M15, in
+    # order, so an input two of them take is the first's"); rows M8, M12, M13 and M15 read their notes in place.
+    ("M16", "J", control_escape_read_as_backslash, "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("M17", "J", braced_name_in_nullable_repeat, "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("M18", "J", braced_name_reference, "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("M19", "J", octal_in_nullable_repeat, "Correction of Broiler.JS and of Broiler.Regex's preview.4"),
+    ("M20", "J", octal_before_digit_class, "Correction of Broiler.JS"),
+    ("M21", "J", non_white_space_in_class, "Correction of Broiler.JS"),
+    ("M22", "J", empty_group_lazy, "Correction of Broiler.JS"),
+    ("M23", "J", anchor_member_under_m, "Correction of Broiler.JS"),
+    ("M24", "J", backreference_without_ecmascript, "Correction of Broiler.JS"),
+    ("M25", "J", letter_expanded_without_i, "Correction of Broiler.JS"),
+    ("M26", "J", class_folded_by_net, "Correction of Broiler.JS"),
 ]
 
 # The rows that read a stop: they are read where one side stopped and the other answered, before the policy's (b).
@@ -1633,11 +2208,20 @@ class Context:
     the letters of the arbiter's UCD (row M8); since @7, the arbiter's answer to a reading of the pattern (rows M11 to
     M14), the BMP code units of a General_Category in the arbiter's UCD (row M12), the inputs where run J, under the
     invariant culture, differs from S (row M15), and a code unit's Canonicalize class and whether .NET's invariant
-    lowercase folds it into another (row M10)."""
+    lowercase folds it into another (row M10); since @8, run J's answer where it differs (row M15's note), the
+    arbiter's tree of a pattern (rows M16, M17, M19 and M24), and the other arms' answers to a case (the revision of
+    2026-11-16c's condition (2))."""
 
     def __init__(self, refusal_code=None, case_pairs=frozenset(), invariant=None, j_refused=frozenset(),
                  reduction=None, letters=frozenset(), reading=None, category_units=None,
-                 j_differences=frozenset(), canonicalize_class=None, over_folds=None) -> None:
+                 j_differences=frozenset(), canonicalize_class=None, over_folds=None, j_answers=None, parse=None,
+                 other_answers=None) -> None:
+        # The id of every difference of run J -> arm J's answer under the invariant culture (row M15's note, @8).
+        self.j_answers = j_answers or {}
+        # A pattern without u or v, one character per code unit -> the arbiter's tree, or None (@8).
+        self._parse = parse
+        # A difference -> {run: its answer to the case, or None} for each run of another engine (@8).
+        self._other_answers = other_answers
         self._refusal_code = refusal_code
         self.case_pairs = case_pairs
         # The code points past ASCII whose General_Category is a letter (L) in the arbiter's UCD (row M8).
@@ -1682,6 +2266,21 @@ class Context:
         if "~p" in d["id"] and self.reduction is not None:
             return (d["id"], "J") in self.reduction.differences
         return d["id"] in self.j_differences
+
+    def invariant_answer(self, d) -> str | None:
+        """Arm J's answer under the invariant culture where it differs from S's (row M15's note, @8), from the same
+        comparison as invariant_differs; None where none is held."""
+        if "~p" in d["id"] and self.reduction is not None:
+            reduced = self.reduction.differences.get((d["id"], "J"))
+            return None if reduced is None else harness_read(reduced["arm"])
+        answer = self.j_answers.get(d["id"])
+        return None if answer is None else harness_read(answer)
+
+    def parse(self, text: str):
+        return self._parse(text) if self._parse else None
+
+    def other_answers(self, d) -> dict:
+        return self._other_answers(d) if self._other_answers else {}
 
 
 # The bounds option R names, by the answer each writes: "S's step, frame or trail ceiling, arm V's allowance, or for
@@ -1758,6 +2357,11 @@ class Reduction:
             return ("b'", "-", f"beyond the arbiter: at the prefix {rid} S and the arm both answer {s_answer}, the "
                     f"arbiter's answer; at the input {sides[0]} stopped at a bound it declares")
         if not sides:
+            # The revision of 2026-11-16c (@8): such an input is classed by the row that names it, where the
+            # revision's three conditions hold (beyond_by_row); otherwise it stays class (c), as option R reads it.
+            beyond = beyond_by_row(d, rid, arb, s_answer, context)
+            if beyond is not None:
+                return beyond
             return ("c", "-", f"reduced to {rid}, where S and the arm agree ({s_answer}), but at the input neither "
                     "side stopped at a bound it declares")
         return "c", "-", f"reduced to {rid}, where S and the arm agree ({s_answer}) and the arbiter does not"
@@ -1847,6 +2451,36 @@ def check_rows(rows: dict[str, str]) -> list[str]:
                 problems.append(f"policy row {row} is not in the correspondence")
     if "U3" not in rows or "data decision" not in rows["U3"]:
         problems.append("row U3 is not the correspondence's data decision")
+    for row, engine, _, words, _ in BEYOND_ROWS:
+        cls = rows.get(row)
+        if cls is None:
+            problems.append(f"row {row} is not in the correspondence")
+        elif ENGINE_WORDS[engine] not in words or words not in cls:
+            problems.append(f"row {row}'s class does not name {ENGINE_WORDS[engine]} as corrected in the words "
+                            f"{words!r}: {cls.strip()[:120]}")
+    return problems
+
+
+def read_row_lines(path: Path) -> dict[str, str]:
+    """Each row of the correspondence with its whole line (@8: check_beyond_rows reads a row's own words)."""
+    lines = {}
+    for line in path.read_text(encoding="utf-8").split("\n"):
+        m = re.match(r"\| ([SMBFTU]\d+[a-z]?) \|", line)
+        if m:
+            lines.setdefault(m.group(1), line)
+    return lines
+
+
+def check_beyond_rows(lines: dict[str, str]) -> list[str]:
+    """The revision of 2026-11-16c's condition (1), read in the correspondence: each row of BEYOND_ROWS holds the
+    words that name its input and the mechanism by which the arm's answer at the input differs from its answer at the
+    prefix."""
+    problems = []
+    for row, _, _, _, named in BEYOND_ROWS:
+        line = lines.get(row, "")
+        for words in named:
+            if words not in line:
+                problems.append(f"row {row} does not name its input or mechanism in the words {words!r}")
     return problems
 
 
@@ -1954,6 +2588,12 @@ def j_differences(path: Path) -> frozenset:
     return frozenset(d["id"] for d in _rows(path) if d["run"] == "J")
 
 
+def j_answers(path: Path) -> dict[str, str]:
+    """Each difference of run J (arm J under the invariant culture) under `i` without `u` or `v`, the inputs row M15
+    reads, with arm J's answer (row M15's note, @8)."""
+    return {d["id"]: d["arm"] for d in _rows(path) if d["run"] == "J" and has_flag(d, "i") and not unicode_mode(d)}
+
+
 def invariant_answers(path: Path) -> dict[str, str]:
     """Arm J's answers under the invariant culture where they differ from S's, for the cases whose input holds
     U+0130 or U+0131 (row M2a reads them); a case not listed is one where that run answered as S did."""
@@ -2008,7 +2648,7 @@ def run(argv: list[str] | None = None) -> int:
     out = args.out or args.comparison
     out.mkdir(parents=True, exist_ok=True)
     rows = read_correspondence(args.correspondence)
-    problems = check_rows(rows)
+    problems = check_rows(rows) + check_beyond_rows(read_row_lines(args.correspondence))
     if problems:
         print("refused:\n  " + "\n  ".join(problems), file=sys.stderr)
         return 2
@@ -2025,7 +2665,8 @@ def run(argv: list[str] | None = None) -> int:
                       invariant_answers(args.comparison / "differences.tsv.gz"),
                       j_refusals(args.comparison / "differences.tsv.gz"), reduction, arbiter.letters(),
                       arbiter.reading, arbiter.category_units, j_differences(args.comparison / "differences.tsv.gz"),
-                      arbiter.canonicalize_class, arbiter.over_folds)
+                      arbiter.canonicalize_class, arbiter.over_folds, j_answers(args.comparison / "differences.tsv.gz"),
+                      arbiter.parse, lambda d: other_arm_answers(args.runs, d))
     counts: Counter = Counter()
     by_row: Counter = Counter()
     header = None

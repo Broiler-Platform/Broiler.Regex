@@ -167,6 +167,16 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     predicate: option R keeps that input class (c). The arms were classified again over task 2.13's retained
     differences; class (c) is still not empty, and nothing is declared met (`docs/roadmap.md`, the record of rows M10
     to M15).
+  - The reference-arm rule's revision of 2026-11-16c and the classifier `@8` (bundle `sjl-11-001`; process only, in
+    neither the published package nor its API, and not in `df5cfc2`).
+    - `docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md` records the owner's ruling on P3's `O06`: an
+      input the arbiter cannot reach is classed by the row that names it, under three stated conditions. It was
+      written after the runs were seen, so it is weaker evidence.
+    - `scripts/reference-arms/classify.py` `@8` reads Broiler.VM's correspondence at `626e4ed8`
+      (Broiler-Platform/Broiler.VM#215): predicates for rows M16 to M26, and the dated notes on rows M8, M12, M13 and
+      M15. With `--reduction` it reads the revision, by which row B1 holds `O06`.
+    - The arms were classified again over task 2.13's retained differences. Class (c) is still not empty, and nothing
+      is declared met (`docs/roadmap.md`, the record of the ruling on `O06` and rows M16 to M26).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
