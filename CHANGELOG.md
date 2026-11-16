@@ -142,6 +142,14 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     [`run-library-evidence.sh`](docs/evidence/sjl-11-001/run-library-evidence.sh) and
     [`run-reference-arms.sh`](docs/evidence/sjl-11-001/run-reference-arms.sh), each at one commit from a clean
     worktree. The host job waits for Broiler.JS's SJL-11.5 branch (`docs/roadmap.md`, the record of 2026-11-15).
+  - The reference arms' classifier `@4` and the reference-arm rule's revision of 2026-11-16 (bundle `sjl-11-001`;
+    process only, in neither the published package nor its API, and not in `df5cfc2`, which `0.1.0-preview.6` was
+    packed from): `scripts/reference-arms/classify.py` reads Broiler.VM's correspondence at `7c65a8fe`
+    (Broiler-Platform/Broiler.VM#211), with predicates for its rows S8a, S12 to S15, M8 and M9 and its widened rows S7,
+    S8 and M4, and with `--reduction` reads the reduction of the inputs the arbiter cannot reach as
+    [`reference-arms-revised-2026-11-16.md`](docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16.md) (option R,
+    written after the runs were seen, weaker evidence) does. The arms were classified again over task 2.13's retained
+    differences; class (c) is not empty, and nothing is declared met (`docs/roadmap.md`, the record of 2026-11-16).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
