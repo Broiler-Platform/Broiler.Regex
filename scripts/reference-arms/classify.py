@@ -4,7 +4,8 @@
 """Bundle sjl-11-001's classification of the comparison's differences, written before any judged run.
 
     python3 -I scripts/reference-arms/classify.py --comparison DIR --runs DIR --broiler-js CHECKOUT --commit SHA
-        --correspondence FILE --unicode-pins DIR [--cutoff N] [--out DIR] [--cache FILE]
+        --correspondence FILE --unicode-pins DIR [--cutoff N] [--out DIR] [--cache FILE] [--reduction DIR]
+        [--exclude FILE]
 
 It reads compare.py's differences.tsv.gz, asks the arbiter for each difference's input, and classes each difference
 as the rule's admitted classes read (docs/evidence/sjl-11-001/reference-arms.md):
@@ -52,6 +53,19 @@ row's (a sequence of at least B8_TERMS terms under u or v, which Broiler.Regex 0
 through once per term) and S's answer is the arbiter's, and class (b) under decision D10 otherwise; arm V's or S's is
 class (c), as neither declares a bound the harness's limit stands for.
 
+**The exclusion** (`--exclude FILE`, the rule's revision of 2026-11-16 by the owner's ruling,
+docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md). FILE is exclusion.py's listing (p4-excluded.tsv): the
+19 P4 patterns the ruling names, by id, whose arbiter cost is in the pattern. Every difference of a listed pattern,
+under every flag set, by acceptance and by every exec, a reduced case `~p` among them, is classed **excluded**: listed
+apart, "excluded from P4 by the owner's ruling of 2026-11-16", neither (c) nor any admitted class, and the arbiter is
+not asked for it. A difference whose id names a listed pattern and whose pattern is not the one listed refuses the run
+(exit 2). classification.json names the listing by its file name, SHA-256 and count, and counts the excluded differences
+apart. Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
+
+*Revised 2026-11-16, after the owner's ruling of that day on population P4 (CLASSIFIER_VERSION @6).* The option
+`--exclude` (above) is added; no row, predicate, class or reading of the reduction changed, so without it @6 classes
+every difference as @5 did.
+
 *Revised 2026-11-16, at the review of @4 and before any judged run (CLASSIFIER_VERSION @5).* Row M8's predicate read
 "`\\b`, `\\B`, `\\w`, `\\d`, `\\s` or their complements" in the pattern with "a code point past ASCII in the
 subject", and any difference of an exec both answer, the group names alone among them: it took 6,849 differences whose
@@ -96,7 +110,8 @@ It writes DIR/classification.json (the counts by class, row and run, the arbiter
 correspondence's file name, blob and SHA-256, and no path, so that it is the same wherever its inputs are) and
 DIR/classified.tsv.gz (each difference with its class, row, the arbiter's answer and why), and exits 0 when no
 difference is (c), 1 when one is, 2 when it refuses to run (a row it names is missing from the correspondence, or
-its class does not name the engine the predicate corrects, or an argument is wrong), and 3 when it fails (an
+its class does not name the engine the predicate corrects, or an argument is wrong, or `--exclude` lists a pattern id
+with another pattern than the comparison's), and 3 when it fails (an
 exception: an arbiter it cannot take from the checkout, a listing it cannot read); it writes classification.json last,
 so a run that does not end with 0 or 1 leaves none.
 """
@@ -123,7 +138,7 @@ if str(HERE) not in sys.path:
 
 from population_format import decode_units, open_text  # noqa: E402
 
-CLASSIFIER_VERSION = "sjl-11-001-classification@5"
+CLASSIFIER_VERSION = "sjl-11-001-classification@6"
 DEFAULT_CUTOFF = 1_000_000
 
 # The Broiler.VM commit whose correspondence.md this classifier's rows and words are read from (the rule's "rows the
@@ -1156,6 +1171,43 @@ class Reduction:
         return "c", "-", f"reduced to {rid}, where S and the arm agree ({s_answer}) and the arbiter does not"
 
 
+class Exclusion:
+    """The owner's ruling of 2026-11-16 on population P4 (reference-arms-revised-2026-11-16b.md), as exclusion.py's
+    listing names its patterns: a difference of a listed pattern is excluded, listed apart, and judged in no class."""
+
+    RULE = "reference-arms-revised-2026-11-16b.md (the owner's ruling of 2026-11-16)"
+    WHY = "excluded from P4 by the owner's ruling of 2026-11-16"
+
+    def __init__(self, patterns: dict[str, str], identity=None) -> None:
+        self.patterns = patterns
+        self.identity = identity or {}
+
+    @classmethod
+    def read(cls, path: Path) -> "Exclusion":
+        from exclusion import read_listing  # noqa: PLC0415
+        patterns = read_listing(path)
+        data = path.read_bytes()
+        return cls(patterns, {"rule": cls.RULE, "name": path.name, "sha256": hashlib.sha256(data).hexdigest(),
+                              "patterns": len(patterns)})
+
+    def excludes(self, d) -> str | None:
+        """Why the difference is excluded, or None. A listed id with another pattern refuses (ExclusionMismatch)."""
+        if d["class"] != "P4":
+            return None
+        from exclusion import pattern_id  # noqa: PLC0415
+        pid = pattern_id(d["id"])
+        listed = self.patterns.get(pid)
+        if listed is None:
+            return None
+        if listed != d["pattern"]:
+            raise ExclusionMismatch(f"{d['id']}: the exclusion lists {pid} with another pattern")
+        return f"{self.WHY}: pattern {pid}, whose arbiter cost is in the pattern"
+
+
+class ExclusionMismatch(Exception):
+    """The exclusion's listing and the comparison name one pattern id for two patterns: another population."""
+
+
 def _rows(path: Path):
     header = None
     with open_text(path) as handle:
@@ -1321,11 +1373,15 @@ def invariant_answers(path: Path) -> dict[str, str]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """The exit status: 0 no class (c), 1 a class (c) difference, 2 refused (or an argument argparse refuses), 3 failed."""
+    """The exit status: 0 no class (c), 1 a class (c) difference, 2 refused (or an argument argparse refuses, or an
+    exclusion that lists a pattern id for another pattern), 3 failed. An excluded difference is no class (c)."""
     try:
         return run(argv)
     except SystemExit:
         raise
+    except ExclusionMismatch as mismatch:
+        print(f"refused: {mismatch}", file=sys.stderr)
+        return 2
     except BaseException:  # noqa: BLE001 - every failure is exit 3, never the 1 of a class (c) difference
         traceback.print_exc()
         print("failed: the classification did not run to its end, and wrote no classification.json", file=sys.stderr)
@@ -1347,6 +1403,9 @@ def run(argv: list[str] | None = None) -> int:
                         "arbiter cannot reach by it")
     parser.add_argument("--cache", type=Path, help="a file of the arbiter's answers, read when it exists and written "
                         "after the run: an answer depends only on the input, the arbiter's commit and the cut-off")
+    parser.add_argument("--exclude", type=Path, help="exclusion.py's listing of the P4 patterns the owner's ruling of "
+                        "2026-11-16 excludes (scripts/reference-arms/p4-excluded.tsv): their differences are listed "
+                        "apart, in no class")
     args = parser.parse_args(argv)
     out = args.out or args.comparison
     out.mkdir(parents=True, exist_ok=True)
@@ -1363,6 +1422,7 @@ def run(argv: list[str] | None = None) -> int:
     reduction = None
     if args.reduction:
         reduction = Reduction.read(args.reduction, args.cutoff)
+    exclusion = Exclusion.read(args.exclude) if args.exclude else None
     context = Context(lambda d: arbiter.refusal_code(d["pattern"], d["flags"]), frozenset(arbiter.case_pairs()),
                       invariant_answers(args.comparison / "differences.tsv.gz"),
                       j_refusals(args.comparison / "differences.tsv.gz"), reduction, arbiter.letters())
@@ -1377,8 +1437,14 @@ def run(argv: list[str] | None = None) -> int:
                 continue
             d = dict(zip(header, line.rstrip("\n").split("\t")))
             d["S"], d["arm"] = harness_read(d["S"]), harness_read(d["arm"])
+            excluded = exclusion.excludes(d) if exclusion else None
             if controls.get(d["run"]) == d["id"]:
                 category, row, why = "unclassified", "-", "the negative control's planted difference"
+                arb = "-"
+            elif excluded:
+                # The owner's ruling: listed apart, judged in no class, and the arbiter, whose cost is in the pattern,
+                # is not asked.
+                category, row, why = "excluded", "-", excluded
                 arb = "-"
             elif both_stopped(d):
                 # Both sides stopped by their own bounds: the class does not read the arbiter, so it is not asked.
@@ -1395,6 +1461,7 @@ def run(argv: list[str] | None = None) -> int:
                                                             "blobs": arbiter.blobs, "cutoff": args.cutoff},
               "correspondence": correspondence_identity(args.correspondence), "rows-read-from": CORRESPONDENCE,
               "reduction": reduction.identity if reduction else None,
+              "exclusion": exclusion.identity if exclusion else None,
               "controls": controls, "counts": dict(sorted(counts.items())), "by-class-row-run-population": dict(sorted(by_row.items()))}
     (out / "classification.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if args.cache:

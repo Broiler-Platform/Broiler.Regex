@@ -152,6 +152,14 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     differences; class (c) is not empty, and nothing is declared met (`docs/roadmap.md`, the record of 2026-11-16).
     At its review the classifier became `@5`, which reads row M8's listed inputs only where they bear on the
     difference (never the group names alone), so more differences stay class (c) (the record's dated note).
+  - The owner's ruling of 2026-11-16 on population P4, filed as
+    [`reference-arms-revised-2026-11-16b.md`](docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md) (bundle
+    `sjl-11-001`; process only, in neither the published package nor its API, and not in `df5cfc2`): the 19 P4 patterns
+    the ruling names (whose arbiter cost is in the pattern and whose inputs held class (c)) are excluded, enumerated by
+    id in `scripts/reference-arms/p4-excluded.tsv` and found by `scripts/reference-arms/exclusion.py`, with the owner's
+    note that they are a known gap of the reference arms, not a verified agreement. The classifier `@6` lists their
+    differences apart with `--exclude`. Written after the runs were seen, weaker evidence; class (c) is still not empty,
+    and nothing is declared met (`docs/roadmap.md`, the record of the ruling).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
