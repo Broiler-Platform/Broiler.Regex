@@ -140,6 +140,12 @@ the row's own correction, the direction of the difference and its construct, nev
 | S14 | J | *(@4)* without `u` or `v`, J refuses what S accepts, under no flag, `s`, `i` or `m` alone, or under other flags where the same run refused the pattern with no flag; *(@5)* not a bound past 2^31 - 1 under `i` that the comparison does not show refused without `i` |
 | M8 | J | *(@5)* an exec both answer, not with the group names alone differing: `\b` or `\B` outside a class and a non-ASCII letter (the arbiter's UCD) in the subject beside either side's match, or anywhere in it under a look-around; `i` and U+0130 or U+0131 in the pattern or beside the matches; an empty `\q{}` in a class under `v`; or in `tr-TR` P5's `I` and `[I]` against `i`, `i` and `[i]` against `I` |
 | M9 | J | *(@4)* the row's one input, `(?<$x>){1,}?\B\|(?!\u212A)` under `y` from 2 of `X\`, J throwing `ArgumentOutOfRangeException` |
+| M10 | J | *(@7)* without `u` or `v`, an exec both match with the same captures and only the names differ, each name S gives that J does not rewritten in J's at the same capture: `$` as `(?=$\|\r)` under `m`, as `\z` with an inline modifier group and without `m`, as `(?=[\n\r\u2028\u2029]\|\z)` with one under `m`; under `i` a letter as a class that holds it, another member and a non-ASCII one (`[πΠϖ]`), or as `(?-i:…)` over its class |
+| M11 | J | *(@7)* without `u` or `v`, an exec both answer, a group (not a look-around) quantified by `?`, `??`, `{0,1}` or `{0,1}?`, and the arbiter's answer to the row's reading (`(G)?` as `(?:(G)\|)`, `(G)??` as `(?:\|(G))`) is J's, up to row M10's names, and not S's |
+| M12 | J | *(@7)* as M11, the reading `\p{…}` or `\P{…}` in a class (a General_Category name) as the BMP code units of that category in the arbiter's UCD or the others, a `-` after it as `\-`, and `\a` in a class as `\x07` |
+| M13 | J | *(@7)* as M11, the reading a class with `-[` after its first member as .NET's subtraction, `(?:(?![B])[A])` |
+| M14 | J | *(@7)* as M11, the reading `\--` before a member in a class as `\-\-` |
+| M15 | J | *(@7)* under `tr-TR` or `lt-LT`, the flag `i` without `u` or `v`, an exec both answer, `i` or `I` in the input and neither U+0130 nor U+0131, and no difference of run J (the invariant culture) on the same input |
 
 Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
 in arm J. (a') arm J, an exec both answer, under `i` without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a
@@ -210,3 +216,17 @@ from a population, the arbiter and the run's comparison, as the 19 were found; t
 the listing, not the limbs, is the exclusion. The pattern's and the arbiter's limbs alone select 11 patterns more,
 which the ruling does not name (the revision's "How the 19 were found, and what the limbs select"). `run.sh` passes
 neither `--reduction` nor `--exclude`: both are read after a comparison, as the roadmap's record of 2026-11-16 says.
+
+*Dated note, 2026-11-16, after Broiler.VM's rows M10 to M15 of that day (`CLASSIFIER_VERSION` @7, written after task
+2.13's runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* The paragraphs above read
+the correspondence at `7c65a8fe`. @7 reads it at Broiler.VM's `44511066bfb38952c12c81557f56a34bd21ee41e`
+(Broiler-Platform/Broiler.VM#212's merge, the file's blob `94b860cc`; `classify.py`'s `CORRESPONDENCE`), whose rows M10 to
+M15 are new (decision D-jsexec), whose row M8 carries a dated note, and whose row B1 is widened for P3's `O06`. The rows
+marked *(@7)* in the table are its predicates, each read from the row's text and tried after @6's, in the order the
+correspondence states, so that every difference @6 classed keeps its class and row and an input two of them take is the
+first's. Rows M11 to M14 ask the arbiter for its answer to the row's reading of the pattern under the difference's
+flags, subject and lastIndex (`Arbiter.reading`, cached with its other answers): a construct the input holds whose
+reading does not give J's answer takes nothing. Row M10 reads the names alone, and row M15 the comparison. Row B1's
+widening is read but has no predicate: the arbiter cannot reach `O06`, its reduced case shows no difference and neither
+side stopped at a bound it declares, so option R keeps it class (c) before any row is read. A run of @7 needs the
+correspondence at `44511066` or later: an earlier one lacks rows M10 to M15, and the classifier refuses it (exit 2).
