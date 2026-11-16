@@ -2531,6 +2531,213 @@ changing both and `edfb2d8` changing `decision-rule.md` only.
 `origin/main` was fetched to it at 16:56, before the record above. The brief's and the record's order, the candidate
 reading before the owner's publication of `0.1.0-preview.6` (D13), was overtaken by that publication (above).
 
+*Dated record, 2026-11-16 (SJL-11.2: the reference arms' classifier reads Broiler.VM's rows of 2026-11-16, the
+reference-arm rule's revision on the inputs the arbiter cannot reach, and the arms classified again; bundle
+`sjl-11-001`'s [`reference-arms.md`](evidence/sjl-11-001/reference-arms.md); decisions D-wiv and D-jsrows of Broiler.VM's
+JSD-0081). Every choice below that the documents did not settle was taken as recommended under the owner's standing
+direction of 2026-10-18, "Please do all recommended decisions and skip waiting for review.", each with the alternative
+not taken. Nothing here is a reading of the bundle, no arm was run again, and nothing is declared met.*
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-arms`, from `b6580b8c`,
+Broiler-Platform/Broiler.Regex#20's merge):
+- *The classifier `@4`* (`083e202`): [`scripts/reference-arms/classify.py`](../scripts/reference-arms/README.md) reads
+  Broiler.VM's correspondence at **`7c65a8febacdcf8bda2d848d21ac2e7748696359`**, the merge of
+  Broiler-Platform/Broiler.VM#211 (the file's blob `f0f6f0800d7d6336ab1c538bb7afd076a8a1fb2f`, last changed in
+  `225b5533`), and names that commit in `classification.json` as `rows-read-from`, beside the blob of the file a run is
+  given; predicates for rows S8a, S12, S13, S14, S15, M8 and M9, and rows S7's, S8's and M4's reaching the vectors those
+  rows name; the option `--reduction`; the script tests (74, from 60) and the scripts' README.
+- *The rule's revision* (`c58c3f8`):
+  [`reference-arms-revised-2026-11-16.md`](evidence/sjl-11-001/reference-arms-revised-2026-11-16.md), option R.
+- *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
+
+**The predicates, each read from its row's text at `7c65a8fe`.** The predicates of `@3` are unchanged and come first,
+so a difference `@3` classed keeps its class and row; each new predicate reads the row's direction (which side refuses,
+or that both answer and differ) and the construct or reason the row names.
+
+| Row | Arm | What the predicate reads | Where the row's text does not settle it |
+|---|---|---|---|
+| S7 | J | as `@3`, and a P1 vector without `u` or `v` J accepts and S refuses, a quantified `^`, `$` or `\b`, the arbiter's reason nothing to repeat (the widening of 2026-11-01) | P1 alone: row S12 names the vectors as S7's and holds the arms' P4 inputs of that reason |
+| S8 | J | as `@3`, and a P1 vector under `v` J accepts and S refuses for `grammar:class-set-operator` (`[a-z&&b]`, `[a-z&&[^aeiou]]`) | P1 alone, for the same reason |
+| M4 | J | as `@3`, and from a lastIndex inside a pair, J's capture from the trail where S's holds the pair (`(.)` under `gdu`), or J's null where S matches at lastIndex (`[𝌆]` under `gu`) | the widening names two vectors; the predicate reads their two shapes |
+| S8a | V | under `iv`, `\w` the first operand of a class difference (`[\w--`, alone or nested), an exec both answer, V matching code units S's answer does not take, among them a letter `A`-`Z`, `a`-`z`, U+017F or U+212A | the flags as written (`i` and `v`), not a modifier |
+| S12 | J | J accepts what S refuses, the arbiter's reason one of the row's eight, under the flags the row names for it (`invalid-escape`, `lone-syntax-character`, `invalid-class-escape` under `u` or `v`; `class-set-operator` under `v`; `invalid-group` under `u`); not the vectors rows S7 and S8 hold | the reason alone for nothing to repeat: among the distinct pattern-flag pairs it takes under `u` or `v`, 2,449 quantify a look-around, which the row's parenthesis does not list and its sentence "take the constructs of rows S7's and S8's subjects ... this row holds them" does |
+| S13 | J | J accepts what S refuses, the arbiter's reason one of the row's six, under the flags it names (`decimal-escape-past-group-count` under `u` or `v`, `negated-class-with-strings` under `v`) | none found |
+| S15 | J | in P4, under `i`, J refuses what S accepts, a braced bound past 2^31 - 1 outside a class, and no acceptance difference of the same pattern in the same run under the flags less `i` | "accepts without `i`" is read from the comparison, which holds J's refusals only where S accepts; so P4 alone, whose every pattern runs under `""`, `u` and `v` as under `i`, `iu` and `iv` |
+| S14 | J | without `u` or `v`, J refuses what S accepts, under no flag, `s`, `i` or `m` alone, or under other flags where the same run refused the same pattern with no flag | the row's four kinds are read by their flags, not by the constructs it gives as examples; "by B.1.2" is read as the grammar without `u` or `v` |
+| M8 | J | an exec both answer, J otherwise, and one of the row's listed inputs: `\b`, `\B`, `\w`, `\d`, `\s` or a complement in the pattern with a code point past ASCII in the subject; `i` with U+0130 or U+0131 in the input; an empty `\q{}` in a class under `v`; P5's `I`, `[I]`, `i`, `[i]` under `i` against `i` or `I` in `tr-TR` | **not settled**: the row's sentence "An `exec` both sides answer, where Broiler.JS answers otherwise" is followed by a list; read with its list (below) |
+| M9 | J | the row's one input, J's `ArgumentOutOfRangeException` against S's answer | none |
+
+**The base answer: the read path unchanged.** Before anything changed, the classifier `@3` (`b6580b8c`'s
+`classify.py`) was run over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`, the full run of
+2026-11-15 at `07d7825`) with the correspondence at `292ae6b` (blob `d7323aec…`), out of place: it wrote
+**`classification.json` `614399f118f1870fa4e951495e70a42c3e051ce60072663396b9ab72f1c7c444` and `classified.tsv.gz`
+`a03b9973191e969c41c107f8bbf1d80c0bdf1950729623a5e4b9968bea69da61`, the retained files byte for byte** (a 376,172,
+a' 45, b 8,983, c 1,516,309, exit 1). A first try wrote another `classification.json` (`5a81ceb3…`) and the same
+`classified.tsv.gz`: the correspondence's copy was named `correspondence-292ae6b.md`, and `classification.json` names
+the file by its name. Run with a copy named `correspondence.md`, it gave the retained bytes.
+
+**The classification again** (2026-11-16, 08:32 to 08:33 UTC), by `@4` at `083e202` from a `git archive`, over the
+same retained comparison and arm runs, with the correspondence at `7c65a8fe` (as `correspondence.md`) and
+`--reduction` over the reduction of 2026-11-15 (`reductions.tsv` `b3e05301…`; the arbiter's answers read from the
+reproduction's cache, which holds only answers that depend on the input, the arbiter's commit and the cut-off):
+**`classification.json` `5308b6fe9cda22c472e0a4515d13de02a55c92cf1c979a31ebec7c64270cb1bd`, `classified.tsv.gz`
+`ecae396f4c3a6a4743a3bdcf61909da9d5d5867e5470ab78a2f8e4502f40d8bb`**, exit 1:
+- **(a) 1,875,164**: `@3`'s 376,172 by its rows unchanged, and 1,498,992 that `@3` left in class (c): S12 760,775,
+  S14 437,325, S13 252,195, M8 46,594, S15 2,057, S8a 22 (arm V), S7 9, S8 6, M4 6, M9 3;
+- **(a') 45** and **(b) 8,983**, `@3`'s unchanged;
+- **(b') 2,661**, option R's "beyond the arbiter": arm J 2,648 (S at its step ceiling 2,552 or its trail ceiling 96,
+  against J's answer, which S and J both give at the prefix and the arbiter confirms there) and arm V 13 (S at its step
+  ceiling against V's answer 8, V at its allowance against S's answer 5);
+- **(c) 14,656**, below.
+The classifier was also run over the reduction's own comparison (its six differences): all six are row S14's
+(`classification.json` `c594b12c…`, `classified.tsv.gz` `b71ed577…`). Both outputs are kept beside the old ones,
+outside the repository as the runs' files are, with a `hashes.txt` of every file written; no retained output was
+written to. A check over every difference with the arbiter's answers `@3` recorded showed each of `@3`'s (a), (a') and
+(b) differences in the same class and row under `@4`.
+
+**The reduction, read under the revision.** Option R declares `reduce.py`'s own reduction (a prefix the arbiter reaches
+with one more code unit past it, found by bisection from the lastIndex the exec reads, at the same cut-off), so the
+reduction of 2026-11-15 is read as it was run and **is not run again**. Its outcomes now read: the 6 differences
+reduced to another difference are row S14's (a), as their reduced difference is; of the 2,664 whose difference does not
+survive, 2,661 are (b') and 3 stay (c); the 3,789 with no prefix the arbiter reaches stay (c).
+
+**What class (c) still holds: 14,656 differences, every one arm J's, none a defect of S.**
+1. **No prefix the arbiter reaches: 3,789** (1,269 inputs of 19 P4 patterns; 1,263 under the invariant culture,
+   1,268 under `tr-TR`, 1,258 under `lt-LT`). Each pattern quantifies, with a minimum of 4,294,967,296, a body that
+   matches the empty string, so the arbiter's cost is in the pattern and no cut of the subject reduces it; S stops at
+   its ceilings and J answers. They stay (c) under option R, and under every alternative but the third.
+2. **P3's `O06`, 3** (one per culture): `^[a]*$` under `u` over 10,000,001 `a`, S's match against J's null. At the
+   prefix of 999,992 units S, J and the arbiter agree, but at the input neither side stopped at a bound it declares, so
+   option R's proviso does not hold: J's null is a wrong answer the arbiter cannot reach, not a stop.
+3. **An exec both answer where J answers otherwise, outside row M8's list: 10,864** (3,880 inputs, all P4; 3,492
+   under the invariant culture and `lt-LT` each, 3,880 under `tr-TR`). By what differs: the group names alone, 3,815
+   (203 pattern-flag pairs: Broiler.JS's translator rewrites a name, `$x` under `m` or a modifier as
+   `(?=$|\r)x`, `π` under `i` as `[πΠϖ]`); another match, 3,432 (323: `\12` and
+   `\p{Lu}` without `u`, `i+` under `i`, among them); a null against a match, 2,144 (439); the same match with a
+   capture's participation differing, 1,473 (91: an optional group that matched empty). Row M8's sentence "An `exec`
+   both sides answer, where Broiler.JS answers otherwise" would hold them all; its list ("`\b` and `\B` beside a
+   non-ASCII letter ..., `\w`, `\d` and `\s` beside them, case-insensitive matches of U+0130 and U+0131 no row's pairs
+   hold ..., an empty `\q{}` in a class under `v` ... and under `tr-TR` P5's `I` and `[I]` ...") does not name them.
+   *Choice taken*: the predicate reads the list, as every predicate since `@2` reads its row's construct and not a
+   direction alone. *Not taken*: the sentence alone, which would class these 10,864 (a) under M8 (Broiler.VM's stage
+   counted 57,458 there; `@4` classes 46,594). Whether row M8 holds them is Broiler.VM's to say, by a dated widening
+   of the row or a row of its own.
+Where the arbiter answers (items 2's prefix and 3), S's answer is the arbiter's; where it does not (item 1), S stops at
+a ceiling it declares.
+
+**The population question, drafted and put to the owner (not taken).** Class (c)'s item 1 empties only if population
+P4 is read without the patterns whose arbiter cost is in the pattern itself. *Drafted option P*, as a dated revision of
+the rule's P4 line: "P4 ... excluding a pattern drawn with a quantifier whose minimum is at least the arbiter's
+cut-off over a body that can match the empty string, read from the pattern's text; the excluded patterns are listed
+with the population's manifest". Its extent is not measured here: of P4's 65,536 patterns, 2,105 hold a braced minimum
+of 1,000,000 or more, the 19 among them, and how many of those 2,105 have a body that can match the empty string was not
+computed. A narrower form lists the 19 patterns by identifier, which chooses them by their outcome. Either changes the
+population after its run was seen, so it would be weaker evidence still, and it is the owner's to take or refuse, not a
+recommended choice here. **Without it, or another reading the owner takes, class (c) cannot empty, and the reference
+arms read NOT MET at the candidate reading (task 4.2).**
+
+**What the candidate reading (task 4.2) now waits on**, none of it decided here:
+1. **The owner on the rule**: confirming or overturning option R (filed as recommended, weaker evidence), and taking or
+   refusing option P above. Without option P, or alternative 3 of the revision, class (c) keeps item 1.
+2. **Broiler.VM on row M8**: whether its row holds item 3's 10,864 differences (a dated widening, or a new row). Until
+   then they are class (c).
+3. **P3's `O06`** (item 2): no row and no reading of the rule takes it; it needs the owner's reading of option R's
+   proviso, or a row of Broiler.VM's correspondence for J's null there, or the arbiter reaching the input.
+4. **The run's procedure under the revision**: `run-reference-arms.sh` runs `run.sh`, which neither runs `reduce.py`
+   nor passes `--reduction` to the classifier; the reading needs both after its comparison, and the arms run over the
+   reduced population with the stop list, as the record of 2026-11-15 lists.
+5. Still owed from the records of 2026-11-15: the two negative controls of `reference-arms.md`, taken beside the
+   script's run; the host job (check B-1), which waits for Broiler.JS's SJL-11.5 branch; CI green at the reading's
+   commit (B-3); the harness's `Win32Exception` in `Harness.ProcessorTime`, the arms' owner's to fix before the
+   reading; the owner's choice of the reading's commit (`df5cfc2`, from which `0.1.0-preview.6` was published, or a
+   later one) and of the rule commit the README names (`fca7a6d` or `e568b88`).
+
+**The choices taken**, each the recommended one, with the alternative not taken:
+1. *Option R filed as the rule's revision* (the brief's direction). Not taken: alternatives 1 to 3 of the file, each
+   recorded there with its effect.
+2. *The declared reduction worded as `reduce.py`'s*: "a prefix the arbiter reaches with one more code unit past it,
+   found by bisection". The draft read "the longest prefix the arbiter reaches", which `reduce.py` finds only where the
+   arbiter's cost grows with the prefix. Not taken: the draft's words, under which the reduction would have to be shown
+   to find the longest prefix, or run again.
+3. *Option R's (b') reads the bounds the draft names*: S's step, frame and trail ceilings, arm V's allowance and arm J's
+   harness's stop. Not taken: arm V's ceilings (row B6) and a refusal for nesting, which the draft does not name; no
+   input of the reduction stops at them.
+4. *Row M8 read with its list* (above). Not taken: its first sentence alone.
+5. *Rows S7's and S8's widenings read for P1 alone*, as row S12's text divides them. Not taken: the constructs in any
+   population, which would move P4's differences from S12 to S7 and S8, against S12's "this row holds them".
+6. *Row S14's kinds read by flags; row S15's "accepts without `i`" read from the comparison, in P4 alone.* Not taken:
+   S14 by its first sentence alone, which would also take J's refusals under `y` or `d` alone that the comparison does
+   not show refused with no flag (none in this run).
+7. *The new classification kept outside the repository*, beside the old one, as the runs' files are (validation
+   principle 5). Not taken: committing it, which the bundle's README reserves for a reading.
+8. *The CHANGELOG item under `0.1.0-preview.6`*, as the item of 2026-11-15 is, process only and in neither the
+   published package nor its API. Not taken: a new heading, which the owner's open question on the reading's version
+   would decide.
+
+**Where the brief, the sources and this repository differ, read at this record.**
+- The draft's option R names "the longest prefix the arbiter reaches"; `reduce.py`'s docstring finds "a length m* the
+  arbiter reaches with m* + 1 past it", the longest only where the cost grows (choice 2). The scripts' README's row for
+  `reduce.py` (2026-11-15) also says "the longest prefix"; it is left as written.
+- The draft quotes `decision-rule.md`'s "Revisions" as one line; the file wraps it after "quoting this one whole and".
+  The words are the same.
+- The draft says alternative 3 was refused by "the review of task 2.13 ... because 'an arbiter past its cut-off has
+  checked nothing'". Those words are the classifier's comment (`@2`, 2026-11-02), not the review's record here; the
+  revision quotes the comment.
+- Broiler.VM's records of 2026-11-16 read rows S8a, S12 to S15, M8 and M9, with S7, S8 and M4, as naming every
+  difference the arbiter decides. Read with its list, row M8 does not name item 3's 10,864 (above).
+- The brief names "Broiler.Regex `origin/main` `b6580b8c`" and the push ref at `4fb36fc2`, an ancestor of it; both
+  held when this record was written.
+
+*Dated note, 2026-11-16, at the review of the classifier `@4` (SJL-11.2; before any judged run; no arm was run again,
+and nothing is declared met).* The review found row M8's predicate wider than its row; the classifier is now `@5`
+(`4e8a917`), and the counts above are replaced as follows.
+- **Row M8.** The table above reads "`\b`, `\B`, `\w`, `\d`, `\s` or a complement in the pattern with a code point past
+  ASCII in the subject; `i` with U+0130 or U+0131 in the input; ...". It took 6,849 differences (243 pattern-flag pairs)
+  where S and J give the same spans and captures and only the group names differ, the translator's renaming that item
+  3 below places outside the row's list; the complements `\W`, `\D` and `\S`, which the row does not name (`\S` as a
+  range's end in `[\S-\07B]` among them); and subjects whose only units past ASCII are lone surrogates, emoji or
+  U+00A0. `@5` reads the row's list where it bears on the difference: never a difference of the group names alone;
+  `\b` or `\B` outside a class, with a letter past ASCII (General_Category L in the arbiter's UCD 17.0.0, a pair read as
+  one code point) in the subject from one unit before the earliest start of either side's match to the latest end, or
+  anywhere in it where the pattern has a look-around; `i` with U+0130 or U+0131 in the pattern or there; an empty
+  `\q{}` in a class under `v`; and in `tr-TR` P5's `I` and `[I]` against `i`, `i` and `[i]` against `I`, each with its
+  own subject. **Not settled by the row's text**: "`\w`, `\d` and `\s` beside them" is read as beside `\b` and `\B`
+  ("them" is plural; "a non-ASCII letter" is singular), so the `\b` and `\B` limb holds those inputs. *Not taken*:
+  "beside non-ASCII letters", which would add to row M8 2,183 of the differences below (171 pattern-flag pairs).
+- **Rows M4 and S14**, narrowed and moving nothing in this run: M4's widened predicate reads only the widening's two
+  vectors (`(.)` under `gdu`, `[𝌆]` under `gu`), and S14 no longer takes, in S15's place, a bound past
+  2^31 - 1 under `i` that the comparison does not show refused without `i` (outside P4). The classifier's docstring
+  now quotes the filed revision's clause, "an input whose reduced case differs, in the same kinds of answer or in
+  others, is classed as that difference", where it quoted the draft's "an input whose reduced difference is another
+  difference is classed as that difference"; the filed clause rewords the draft's, and the classifier reads it as
+  written. Its (b') reads any `limit:harness` of arm J as the stop list's stop, which holds only while no case reached
+  a backstop, a calibration's time limit or a crash; in this run every one of arm J's 2,648 (b') differences is S's
+  stop (`limit:steps` 2,552, `limit:trail` 96), none J's.
+- **The classification again** (2026-11-16, 09:12 to 09:13 UTC), by `@5` at `4e8a917` from a `git archive`, over the
+  same inputs as `@4`'s above, kept beside `@4`'s with a `hashes.txt` (no retained output written to):
+  **`classification.json` `eb1d8dd1d698c8bee86da53b40eda14ecd44679702280ab26c8c3d321a1a8f03`, `classified.tsv.gz`
+  `671d4b39ca52fb44ac6e4cc6be36a3b265c0a06a9c405949662b29bdb545a635`**, exit 1. Over the reduction's own comparison,
+  `classification.json` `bffc379e8aa7e63a1e541e6639db468a15aa88fd871a2f301c304d5214dabdf8` and `classified.tsv.gz`
+  `b71ed577…` (the bytes `@4` wrote), its six differences row S14's as before. Every difference changed only from M8
+  (a) to (c), 13,647 of them; no other class or row moved.
+- **The counts it replaces.** "(a) 1,875,164 ... M8 46,594" is now **(a) 1,861,517**, M8 **32,947**, the other rows
+  as listed; (a') 45, (b) 8,983 and (b') 2,661 are unchanged; "(c) 14,656" is now **(c) 28,303**, every one arm J's.
+- **What class (c) holds, replacing item 3** ("An exec both answer where J answers otherwise, outside row M8's list:
+  10,864 (3,880 inputs ...)"): items 1 (3,789) and 2 (3) are unchanged, and item 3 is now **24,511** (8,506 inputs and
+  1,308 pattern-flag pairs, all P4; 8,014 under the invariant culture, 8,488 under `tr-TR`, 8,009 under `lt-LT`). By
+  what differs: the group names alone 10,664 (326 pairs; 3,815 as before and 6,849 from M8); another match 6,717 (513;
+  3,285 from M8); a null against a match 3,686 (526; 1,542 from M8); the same match with a capture's participation
+  differing 3,444 (145; 1,971 from M8). Where item 3 says "the sentence alone, which would class these 10,864 (a) under
+  M8 (... `@4` classes 46,594)", read 24,511 and `@5`'s 32,947; the list of what the candidate reading waits on (its
+  item 2) and the list of disagreements read 24,511 for 10,864 likewise.
+- **The rule's revision** keeps its rule block, MET line and quote; its prose is corrected (`a30019b`): its draft was
+  written in the notes of Broiler.VM's stage, not in Broiler-Platform/Broiler.VM#211; alternative 2 asks only the
+  arbiter again; alternative 3 is titled as `@1` read it (either side's stop at a policy bound) and says that class (c)
+  still cannot empty under it (item 3 and P3's `O06` are no stops); and for the reduction of 2026-11-15 the
+  declaration follows its run.
+- What the candidate reading (task 4.2) waits on is otherwise as listed above. Class (c) is not empty, and nothing is
+  declared met.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

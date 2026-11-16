@@ -128,6 +128,16 @@ the row's own correction, the direction of the difference and its construct, nev
 | B2 | J | under `u` or `v`, a nested quantifier, S's match against J's null or later start |
 | B8 | J | under `u` or `v`, the harness's stop of J against S's answer, the pattern a sequence of 10,000 terms or more |
 | F3 | J | J accepts what S refuses, a modifiers group with a letter that is no modifier, `(?x:a)` (decision D-widen) |
+| S7 | J | *(@4)* a P1 vector without `u` or `v` J accepts: a quantified `^`, `$` or `\b`, the arbiter's reason nothing to repeat (the row's widening of 2026-11-01) |
+| S8 | J | *(@4)* a P1 vector under `v` J accepts, the arbiter's reason `grammar:class-set-operator` (`[a-z&&b]`, which row S12 leaves to S8) |
+| M4 | J | *(@4)* from a lastIndex inside a pair: J's capture from the trail where S's holds the pair, or J's null where S matches at lastIndex (the row's widening of 2026-11-16); *(@5)* only for the widening's two vectors, `(.)` under `gdu` and `[\ud834\udf06]` under `gu` |
+| S8a | V | *(@4)* under `iv`, `\w` the first operand of a class difference, V's match taking a letter `A`-`Z`, `a`-`z`, U+017F or U+212A S's answer does not |
+| S12 | J | *(@4)* J accepts what S refuses, the arbiter's reason one of the row's `grammar:` reasons under the flags the row names for it; not the P1 vectors rows S7 and S8 hold |
+| S13 | J | *(@4)* J accepts what S refuses, the arbiter's reason one of the row's `early:` reasons under the flags the row names for it |
+| S15 | J | *(@4)* in P4, under `i`, J refuses what S accepts, a quantifier bound past 2^31 - 1, and the comparison holds no refusal of the same pattern by the same run without `i` |
+| S14 | J | *(@4)* without `u` or `v`, J refuses what S accepts, under no flag, `s`, `i` or `m` alone, or under other flags where the same run refused the pattern with no flag; *(@5)* not a bound past 2^31 - 1 under `i` that the comparison does not show refused without `i` |
+| M8 | J | *(@5)* an exec both answer, not with the group names alone differing: `\b` or `\B` outside a class and a non-ASCII letter (the arbiter's UCD) in the subject beside either side's match, or anywhere in it under a look-around; `i` and U+0130 or U+0131 in the pattern or beside the matches; an empty `\q{}` in a class under `v`; or in `tr-TR` P5's `I` and `[I]` against `i`, `i` and `[i]` against `I` |
+| M9 | J | *(@4)* the row's one input, `(?<$x>){1,}?\B\|(?!\u212A)` under `y` from 2 of `X\`, J throwing `ArgumentOutOfRangeException` |
 
 Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
 in arm J. (a') arm J, an exec both answer, under `i` without `u` or `v` where a code point Unicode 16.0 or 17.0 gave a
@@ -156,3 +166,29 @@ came first, and row B8 was not read. The correspondence is read at Broiler.VM's 
 2.12 retired, and rows B8 and F3 are new.)* *(Revised 2026-11-02 at the review of task
 2.13, before any judged run: the predicates read only a flag or a character, rows S1 and S2b were read for arm J, and
 class (b) admitted "the arbiter past its cut-off"; `classify.py`'s docstring quotes what changed.)*
+
+*Dated note, 2026-11-16 (`CLASSIFIER_VERSION` @4, written after task 2.13's runs, their classification and the
+reduction of 2026-11-15 were seen).* The paragraphs above describe @3. @4 reads the correspondence at Broiler.VM's
+`7c65a8febacdcf8bda2d848d21ac2e7748696359` (Broiler-Platform/Broiler.VM#211's merge; `classify.py`'s `CORRESPONDENCE`, which
+`classification.json` names as `rows-read-from` beside the blob of the file a run is given), whose rows S8a, S12 to
+S15, M8 and M9 are new and M4 is widened; the rows marked *(@4)* in the table are its predicates, each read from the
+row's text, after @3's so that every difference @3 classed keeps its class and row. `classify.py --reduction DIR` reads
+`reduce.py`'s output for the comparison as the rule's revision of 2026-11-16 (option R,
+[`reference-arms-revised-2026-11-16.md`](../../docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16.md)) does: a
+difference the arbiter cannot reach is classed as its reduced difference when the reduced case still differs; class
+(b') "beyond the arbiter" when S and the arm agree at the prefix, S's answer there is the arbiter's and one side
+stopped at the input at a bound it declares; and (c) otherwise, an input no prefix reaches among them. Without
+`--reduction` no difference is (b'). `run.sh` does not pass it: the reduction is run after a comparison, as the
+roadmap's record of 2026-11-15 says.
+
+*Dated note, 2026-11-16, at the review of @4 (`CLASSIFIER_VERSION` @5, before any judged run).* The table's row M8
+read, at @4, "an exec both answer: `\b`, `\B`, `\w`, `\d`, `\s` or a complement in the pattern and a code point past
+ASCII in the subject; `i` and U+0130 or U+0131 in the input; ...". That took differences where only the group names
+differ, complements the row does not name, and subjects whose only non-ASCII units are surrogates or emoji. @5 reads
+the row's list where it bears on the difference (the row above, and `classify.py`'s docstring): the letters are the
+General_Category L code points of the arbiter's UCD (`Arbiter.letters`); "beside" is a code unit from one before the
+earliest start of either side's match to the latest end, or the whole subject where the pattern has a look-around;
+and "`\w`, `\d` and `\s` beside them" is read as beside `\b` and `\B`, which the row's text does not settle. Rows M4
+and S14 are narrowed as their rows above say; no other row changed. With `--reduction`, an arm J `limit:harness` is
+read as the stop list's stop: that holds only while no case of the run reached a backstop, a calibration's time limit
+or a crash, which the run's facts do not distinguish.

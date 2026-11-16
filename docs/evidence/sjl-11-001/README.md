@@ -193,6 +193,33 @@ corrected here, as [`docs/roadmap.md`](../../roadmap.md)'s note of the same date
   895 were reduced to an input it reaches where the difference does not survive: they stay in class (c) only under a
   reading of the rule's "until reduced" its owner decides (the roadmap's note).
 
+*Dated note, 2026-11-16 (SJL-11.2; a dated rule file added, no rule edited; nothing here is a reading).* The table
+above lists "`run-reference-arms.sh`: the arms, the population, the comparison and the classification", and the
+rules' list at the top names [`decision-rule.md`](decision-rule.md) and [`reference-arms.md`](reference-arms.md) only.
+- **A revision of the reference-arm rule** is filed beside them:
+  [`reference-arms-revised-2026-11-16.md`](reference-arms-revised-2026-11-16.md), option R, which says how class (c)
+  reads an input the arbiter cannot reach once the declared reduction (`scripts/reference-arms/reduce.py`) has run, and
+  adds a class (b') "beyond the arbiter". It was written after task 2.13's runs, their classification and the
+  reduction of 2026-11-15 were seen, so its decision is weaker evidence (`decision-rule.md`, "Revisions"); it was filed
+  as the recommended choice under the owner's standing direction of 2026-10-18 and is the owner's to confirm or
+  overturn. `reference-arms.md` is unchanged.
+- **The classification** is now `scripts/reference-arms/classify.py` `@4`, which reads Broiler.VM's correspondence at
+  **`7c65a8febacdcf8bda2d848d21ac2e7748696359`** (the merge of Broiler-Platform/Broiler.VM#211, the file's blob
+  `f0f6f0800d7d6336ab1c538bb7afd076a8a1fb2f`): its rows S8a, S12 to S15, M8 and M9 and its widened rows S7, S8 and M4.
+  `classification.json` names that commit as `rows-read-from`, beside the blob of the correspondence a run is given.
+  With `--reduction`, it reads the revision's option R.
+- **What the script does not yet do.** `run-reference-arms.sh` runs `scripts/reference-arms/run.sh`, whose
+  classification step reads the rule as filed: it runs neither `reduce.py` nor the classifier with `--reduction`. A
+  reading under the revision needs both after the comparison, as [`docs/roadmap.md`](../../roadmap.md)'s record of
+  2026-11-16 lists among what the candidate reading (task 4.2) waits on.
+- **Class (c) is not empty** when the classifier `@4` and option R are read over task 2.13's retained comparison and
+  the reduction of 2026-11-15 (the roadmap's record of 2026-11-16, which has the counts; this README holds none). No
+  reading is taken and nothing is declared met.
+- *At the review of `@4` the same day*, the classification became `classify.py` `@5`, which reads row M8 of the same
+  correspondence only where its listed inputs bear on the difference (the second bullet above reads "`@4`"); the
+  correspondence commit it reads is unchanged. Class (c) is still not empty, and is larger than under `@4` (the
+  roadmap's note of the same date has the counts). Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
