@@ -3077,7 +3077,7 @@ counts are the differences `@7` left in class (c) that each now takes:
 |---|---|---|---:|
 | M8, by its note | "`\b` and `\B`" are read outside a class "as the text lexes a class without `v`" | row M8's predicate, with `\b` or `\B` found outside a class so lexed (under `v`, as `@7`) | 39 |
 | M12, by its note | "the row's reading also writes a `-` right before `\p{…}` or `\P{…}` that follows `\d`, `\D`, `\w`, `\W`, `\s` or `\S` as `\-`" | row M12's reading, with that `-` written `\-` | 39 |
-| M13, by its note | "the nested class, read as .NET reads it, ends at its first `]`, even right after its `[` or `[^`" | row M13's reading, a nested class so ended; a `-[` not last still gives no reading | 15 |
+| M13, by its notes | "the nested class, read as .NET reads it, ends at its first `]`, even right after its `[` or `[^`", which the row's later note narrows: "\"even right after its `[` or `[^`\" reads \"even right after its `[^`, under `RegexOptions.ECMAScript`\"" | row M13's reading, a nested class that opens with `[^` ended at a `]` right after it where the flags keep that option (no `s` and no modifier group); a nested `[]`, or one without the option, read as `@7` read it; a `-[` not last still gives no reading | 15 |
 | M15, by its note | "as the text does, up to row M10's names" | or run J's answer on the input is S's match with only the names rewritten as row M10 reads them, at the same groups | 1 |
 | M16 | "`\c` that no ASCII letter follows, in a pattern `TryRouteToBroiler` hands to ... preview.4 by one of `GapScan`'s shapes", where the arbiter's answer to the reading is Broiler.JS's | a shape in the arbiter's tree of the pattern (a quantifier whose maximum is above 1 over a body that can match both the empty string and a character, or a capturing group or a back-reference inside a look-behind); the reading: each such `\c` as `\\` | 261 |
 | M17 | "a group name written with `\u{…}` ..., in a pattern that holds a quantifier whose maximum is above 1 over a body that can match both the empty string and a character" | such a name outside a class, and that shape in the arbiter's tree | 222 |
@@ -3193,6 +3193,26 @@ the owner reads it otherwise. Nothing is declared met.
   operation answers the input as S does". An arm copies an engine, so they are read as one.
 - The brief asks `@7` to reproduce `7d0f71db…` byte for byte. It does with the correspondence at `44511066`, the file
   that run read. With the file at `626e4ed8`, only `classification.json`'s correspondence differs.
+
+*Note of 2026-11-16, at the review of `@8` (before any judged run; the tag unchanged, nothing declared met).* The record
+above is corrected where the review found `@8` reading wider than its row; what it read before is quoted here.
+- *Row M13's notes.* The table's cell read "the nested class, read as .NET reads it, ends at its first `]`, even right
+  after its `[` or `[^`" and "row M13's reading, a nested class so ended". The row's later note of that day, at that
+  round's review, reads "\"even right after its `[` or `[^`\" reads \"even right after its `[^`, under
+  `RegexOptions.ECMAScript`\"" and says "a nested `[]`, or a nested class without that option, is not tested". `@8`
+  ended every nested class at a `]` right after its `[` or `[^`, with no flag check, so row M13 would take a difference
+  of `[\w--[]]` on `a]`, with or without `s`, where `@7` gave no reading (a probe with the arbiter; no such input is in
+  the runs). `@8` now ends a nested class there only where it opens with `[^` and
+  the flags keep the option: no `u`, `v` or `s`, and no modifier group in the pattern, as rows M21 and M24 read its
+  loss. Otherwise the `]` is a member, as `@7` read it. The scripts' README and the classifier's `@8` paragraph quoted
+  the first note's words and are corrected the same way.
+- The classification was taken again at the fix (`a9aedb6`, from a `git archive`, over the same inputs and from a copy
+  of the run at `11e4899`'s arbiter cache), kept beside that run in this stage's notes with its own `hashes.txt`. Its
+  three classifications, their logs, the residual listing, and the prototype and overlap checks are the same bytes as at
+  `11e4899` (`classification.json` `dc77d7c9…`, `classified.tsv.gz` `1741d5dc…`). The 15 differences row M13's notes
+  take are all `P4-36132`'s, under no flag, `d`, `i`, `m` or `y`, which keep the option, and none holds a nested `[]`.
+- The record's header reads "their classification by `@5` to `@7`". It reads "by `@3` to `@7`", as the revision of
+  2026-11-16c says: `@3` classified task 2.13's runs as well.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
