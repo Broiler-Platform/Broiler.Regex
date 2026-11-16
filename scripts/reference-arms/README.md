@@ -140,9 +140,9 @@ the row's own correction, the direction of the difference and its construct, nev
 | S14 | J | *(@4)* without `u` or `v`, J refuses what S accepts, under no flag, `s`, `i` or `m` alone, or under other flags where the same run refused the pattern with no flag; *(@5)* not a bound past 2^31 - 1 under `i` that the comparison does not show refused without `i` |
 | M8 | J | *(@5)* an exec both answer, not with the group names alone differing: `\b` or `\B` outside a class and a non-ASCII letter (the arbiter's UCD) in the subject beside either side's match, or anywhere in it under a look-around; `i` and U+0130 or U+0131 in the pattern or beside the matches; an empty `\q{}` in a class under `v`; or in `tr-TR` P5's `I` and `[I]` against `i`, `i` and `[i]` against `I` |
 | M9 | J | *(@4)* the row's one input, `(?<$x>){1,}?\B\|(?!\u212A)` under `y` from 2 of `X\`, J throwing `ArgumentOutOfRangeException` |
-| M10 | J | *(@7)* without `u` or `v`, an exec both match with the same captures and only the names differ, each name S gives that J does not rewritten in J's at the same capture: `$` as `(?=$\|\r)` under `m`, as `\z` with an inline modifier group and without `m`, as `(?=[\n\r\u2028\u2029]\|\z)` with one under `m`; under `i` a letter as a class that holds it, another member and a non-ASCII one (`[πΠϖ]`), or as `(?-i:…)` over its class |
+| M10 | J | *(@7)* without `u` or `v`, an exec both match with the same captures and only the names differ, each name S gives that J does not rewritten in J's at the same capture (the same group): `$` as `(?=$\|\r)` under `m` with no inline modifier group, as `\z` with one and without `m`, as `(?=[\n\r\u2028\u2029]\|\z)` with one under `m`; under `i` a character of the name as its Canonicalize class in the arbiter's tables, the character first, where that class holds another member and a non-ASCII one (`[πΠϖ]`), or as `(?-i:…)` over that class, each member escaped as the translator escapes it, where .NET's invariant lowercase folds the character into another class (`k` as `(?-i:[\x4b\x6b])`) |
 | M11 | J | *(@7)* without `u` or `v`, an exec both answer, a group (not a look-around) quantified by `?`, `??`, `{0,1}` or `{0,1}?`, and the arbiter's answer to the row's reading (`(G)?` as `(?:(G)\|)`, `(G)??` as `(?:\|(G))`) is J's, up to row M10's names, and not S's |
-| M12 | J | *(@7)* as M11, the reading `\p{…}` or `\P{…}` in a class (a General_Category name) as the BMP code units of that category in the arbiter's UCD or the others, a `-` after it as `\-`, and `\a` in a class as `\x07` |
+| M12 | J | *(@7)* as M11, one reading with every such escape read: `\p{…}` or `\P{…}` in a class (a General_Category name) as the BMP code units of that category in the arbiter's UCD or the others, a `-` after it as `\-`, and `\a` in a class as `\x07` |
 | M13 | J | *(@7)* as M11, the reading a class with `-[` after its first member as .NET's subtraction, `(?:(?![B])[A])` |
 | M14 | J | *(@7)* as M11, the reading `\--` before a member in a class as `\-\-` |
 | M15 | J | *(@7)* under `tr-TR` or `lt-LT`, the flag `i` without `u` or `v`, an exec both answer, `i` or `I` in the input and neither U+0130 nor U+0131, and no difference of run J (the invariant culture) on the same input |
@@ -218,8 +218,10 @@ which the ruling does not name (the revision's "How the 19 were found, and what 
 neither `--reduction` nor `--exclude`: both are read after a comparison, as the roadmap's record of 2026-11-16 says.
 
 *Dated note, 2026-11-16, after Broiler.VM's rows M10 to M15 of that day (`CLASSIFIER_VERSION` @7, written after task
-2.13's runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* The paragraphs above read
-the correspondence at `7c65a8fe`. @7 reads it at Broiler.VM's `44511066bfb38952c12c81557f56a34bd21ee41e`
+2.13's runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* The note of @4 above reads
+"@4 reads the correspondence at Broiler.VM's `7c65a8febacdcf8bda2d848d21ac2e7748696359` (Broiler-Platform/Broiler.VM#211's
+merge; `classify.py`'s `CORRESPONDENCE`, which `classification.json` names as `rows-read-from` beside the blob of the
+file a run is given)", and the notes of @5 and @6 left it so. @7 reads it at Broiler.VM's `44511066bfb38952c12c81557f56a34bd21ee41e`
 (Broiler-Platform/Broiler.VM#212's merge, the file's blob `94b860cc`; `classify.py`'s `CORRESPONDENCE`), whose rows M10 to
 M15 are new (decision D-jsexec), whose row M8 carries a dated note, and whose row B1 is widened for P3's `O06`. The rows
 marked *(@7)* in the table are its predicates, each read from the row's text and tried after @6's, in the order the
@@ -230,3 +232,14 @@ reading does not give J's answer takes nothing. Row M10 reads the names alone, a
 widening is read but has no predicate: the arbiter cannot reach `O06`, its reduced case shows no difference and neither
 side stopped at a bound it declares, so option R keeps it class (c) before any row is read. A run of @7 needs the
 correspondence at `44511066` or later: an earlier one lacks rows M10 to M15, and the classifier refuses it (exit 2).
+
+*Dated note, 2026-11-16, at the review of @7 (the tag unchanged, before any judged run).* The table's row M10 read, as
+first written, "`$` as `(?=$\|\r)` under `m`" and "under `i` a letter as a class that holds it, another member and a
+non-ASCII one (`[πΠϖ]`), or as `(?-i:…)` over its class"; that took `x` as `[xé]` or `(?-i:x)`, which the row says is
+not rewritten, `(?=$\|\r)` where a modifier group stands in the pattern, and names swapped between groups of equal
+spans, and left out a character of a name that is not a letter, as U+2160. Row M12 read "as M11, the reading `\p{…}`
+or `\P{…}` in a class ... and `\a` in a class as `\x07`", each kind read alone and then together, so a reading with
+one kind left as the text has it could take an input. The rows above are now the predicates (`classify.py`'s docstring,
+"At the review of @7"): row M10's Canonicalize class is the arbiter's (`Arbiter.canonicalize_class`), and its "one .NET's
+invariant lowercase folds into another Canonicalize class" stands as the pinned UCD's simple lowercase with U+0130 kept
+as itself (`Arbiter.over_folds`), .NET's table not being read. Over task 2.13's run the classification is the same bytes.
