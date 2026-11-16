@@ -2738,6 +2738,109 @@ and nothing is declared met).* The review found row M8's predicate wider than it
 - What the candidate reading (task 4.2) waits on is otherwise as listed above. Class (c) is not empty, and nothing is
   declared met.
 
+*Dated record, 2026-11-16 (SJL-11.2: the owner's ruling on population P4, filed and applied; bundle `sjl-11-001`'s
+[`reference-arms.md`](evidence/sjl-11-001/reference-arms.md)). Written after task 2.13's runs, their classification,
+the reduction of 2026-11-15 and the classification by `@5` above were seen. No arm was run again, no rule file was
+edited, and nothing is declared met.*
+
+**The ruling.** The record above put "the population question" to the owner as drafted option P, "not taken". The
+question put was whether the 19 P4 patterns, each with a quantifier minimum of 4,294,967,296, should be dropped from the
+test population, since the arbiter can never decide them however far the subject is reduced and their 1,269 inputs
+(3,789 differences) otherwise keep class (c) from emptying. **The owner answered on 2026-11-16: "You can exclude with
+note regarding the 19 patterns".** It is the owner's own decision, not a choice taken under the standing direction of
+2026-10-18. The record above's item 1 of "What the candidate reading (task 4.2) now waits on" reads "taking or refusing
+option P above": the owner took an exclusion of the 19, worded below; confirming or overturning option R is still the
+owner's.
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-p4`, from `f1816df9`,
+Broiler-Platform/Broiler.Regex#21's merge):
+- *The rule's revision* (`059958f`):
+  [`reference-arms-revised-2026-11-16b.md`](evidence/sjl-11-001/reference-arms-revised-2026-11-16b.md), the next name
+  in the directory's convention. It quotes the ruling, says it was written after the runs were seen (weaker evidence
+  by `decision-rule.md`'s "Revisions"), quotes `reference-arms.md` whole and option R's clause on the inputs no prefix
+  reaches, states the exclusion and lists the 19 by id, and carries the owner's note on them.
+- *The classifier `@6` and the listing* (`1012735`): `scripts/reference-arms/classify.py --exclude`, which lists every
+  difference of a listed P4 pattern apart as `excluded` (neither class (c) nor an admitted class, the arbiter not
+  asked); `scripts/reference-arms/exclusion.py`, whose `select` writes the listing from a population, the arbiter and
+  the run's comparison; `scripts/reference-arms/p4-excluded.tsv`, the 19; the script tests (89, from 75) and the
+  scripts' README.
+- *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
+
+**The 19 patterns, and the property that selects them.** By id: P4-01347, P4-01872, P4-02466, P4-09242, P4-11265,
+P4-11714, P4-14530, P4-17689, P4-18962, P4-29456, P4-29657, P4-30238, P4-33179, P4-40469, P4-42576, P4-54314, P4-58688,
+P4-63268, P4-65213 (each pattern, its flags and its quantifier are in the revision's table). Each quantifies with the
+minimum 4,294,967,296 an atom that can match the empty string (an anchor, `\b`, a look-around, an empty or optional
+group), which the arbiter's RepeatMatcher runs that many times before its empty check applies. The revision states the
+exclusion by three limbs under one of a pattern's flag sets, each checked over task 2.13's population and the arbiter
+at its cut-off by `exclusion.py select`:
+- (1) that quantifier, read from the pattern under its flags: **278 P4 patterns** (2,326 pattern-flag pairs) and none
+  in P1, P2, P3, P5, P6 or P7. "At least 2^32" and "at least the arbiter's cut-off" select the same;
+- (1) and (2), the arbiter reaching no prefix of one of its exec inputs, not even the shortest (asked of the 37,216
+  exec inputs of the 278 under the flags where (1) holds): **30 patterns**, the 19 and 11 more on whose unreachable
+  inputs every side stops (class (b), rows B6 and D10) or all answer alike;
+- (1), (2) and (3), the comparison holding a stop against an answer there: **exactly the 19**, under 93 pattern-flag
+  pairs, all without `u` or `v`.
+*Not settled by the brief's wording*, which asked for a property of the pattern "not by the run's results": no property
+found of the pattern and the arbiter alone selects exactly the 19; the narrowest, (1) and (2), selects 30. *Choice
+taken*: limb (3), which reads the run as the ruling did, so that exactly the 19 the ruling names are excluded. *Not
+taken*: (1) and (2) alone, which would exclude 11 patterns the ruling does not name, none of whose differences is
+class (c); (1) alone (the drafted option P), 278.
+*Choice taken*: an excluded pattern is excluded under every flag set, by acceptance and by every exec, as "the 19 P4
+patterns" reads (P4's unit is the pattern drawn). *Not taken*: the 1,269 inputs alone, which moves the same class (c)
+differences and leaves the patterns' other 4,059 differences in their classes.
+
+**The base answer, before anything changed.** The classifier `@5` (`f1816df9`'s `classify.py`, from a `git archive`)
+over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`), with `--reduction` over the reduction of
+2026-11-15 (`reductions.tsv` `b3e05301…`) and the correspondence at `7c65a8fe` (blob `f0f6f080…`), wrote
+**`classification.json` `eb1d8dd1d698c8bee86da53b40eda14ecd44679702280ab26c8c3d321a1a8f03` and `classified.tsv.gz`
+`671d4b39…`, the retained bytes** (and over the reduction's comparison `bffc379e…` and `b71ed577…`), exit 1.
+
+**The classification again** (2026-11-16), by `@6` at `1012735` from a `git archive`, over the same inputs, with
+`--reduction` and `--exclude scripts/reference-arms/p4-excluded.tsv` (SHA-256 `3e2e080b…`), kept outside the
+repository beside `@5`'s with a `hashes.txt` (no retained output written to): **`classification.json`
+`0c28d1f02b64538cee2513a9adaa998cefbe34431d78a7af672425ae44dbded9`, `classified.tsv.gz`
+`baeb11fc31890bb0d46dc80401a06293c1f91d0e23359d0768f0834206fb99ee`**, exit 1:
+- **excluded 8,970**: arm J 6,717 (2,339 in each culture) and arm V 1,953, the 19 patterns' every difference;
+- **(a) 1,860,854** (was 1,861,517: S12 561 and S8 102 excluded), **(a') 45**, **(b) 4,876** (was 8,983: D10 2,154 and
+  B6 1,953 excluded), **(b') 2,250** (was 2,661: 411 excluded);
+- **(c) 24,514** (was 28,303: the 3,789 no prefix reaches excluded).
+Every difference not of the 19 patterns has `@5`'s class, row and reason byte for byte; every one of theirs changed only
+to `excluded`. Over the reduction's own comparison `@6` writes `classification.json`
+`f58000d716d5de92d0dfb11eca22d6d9bec95e627ff68df65651216d9566f5f2` and `classified.tsv.gz` `b71ed577…` (`@5`'s bytes:
+its six differences are P4-38461's, not excluded). Without `--exclude`, `@6` writes `@5`'s `classified.tsv.gz`
+`671d4b39…` byte for byte, and `exclusion.py select` at `1012735` writes the filed listing byte for byte.
+
+**What class (c) still holds: 24,514 differences, every one arm J's, none a defect of S.**
+1. **An exec both answer where J answers otherwise, outside row M8's list: 24,511** (P4; 8,014 under the invariant
+   culture, 8,488 under `tr-TR`, 8,009 under `lt-LT`), item 3 of the note above, unchanged. Whether row M8 or a row of
+   their own holds them is Broiler.VM's to say; until one does they are class (c).
+2. **P3's `O06`, 3**, unchanged: no row and no reading of the rule takes it.
+The record above's item 1 of class (c), "No prefix the arbiter reaches: 3,789", is now excluded by the ruling, listed
+apart and reported with every reading: **a known gap of the reference arms, not a verified agreement** (the revision's
+note). On its 1,269 inputs S stops at a ceiling it declares and arm V stops too (at its ceiling, or at its allowance
+with S's answer); only arm J answers.
+
+**What the candidate reading (task 4.2) now waits on**, replacing the record above's list where it differs:
+1. **The owner on option R** (filed as recommended, weaker evidence). The population question is answered by the ruling.
+2. **Broiler.VM on the 24,511** (row M8 widened, or rows of their own).
+3. **P3's `O06`**, as above.
+4. **The run's procedure**: `run.sh` passes neither `--reduction` nor `--exclude`; the reading needs both after its
+   comparison, with `reduce.py` run over it.
+5. Still owed, as listed above: the two negative controls, the host job (B-1), CI green at the reading's commit (B-3),
+   the harness's `Win32Exception`, and the owner's choice of the reading's commit and of the rule commit.
+
+**Where the brief, the sources and this repository differ, read at this record.**
+- The brief says the 19 patterns "are the 1,269 inputs no prefix reaches". Those are their inputs no prefix reaches;
+  the 19 patterns have 3,230 inputs (190 acceptance cases and 3,040 execs) under the ten flag sets, with 8,970
+  differences, all of which the exclusion takes.
+- The brief asks that the property select "exactly these 19 in P4 and nothing else in P1 to P5", by "a property of the
+  pattern, not by the run's results": limb (1) selects 278, limbs (1) and (2) 30, and only with limb (3), which reads
+  the comparison, 19. None selects anything in P1 to P7.
+- The brief's note asks that "S and arm V's answers on them are retained and still reported"; arm J's are too, and every
+  difference of the 3,789 is arm J's.
+- The question put to the owner counted the 3,789 differences of arm J on the 1,269 inputs; on the same inputs arm V
+  has 1,104 more differences (V at its ceiling, S at its own), class (b) under row B6 by `@5`, now excluded with them.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

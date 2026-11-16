@@ -220,6 +220,25 @@ rules' list at the top names [`decision-rule.md`](decision-rule.md) and [`refere
   correspondence commit it reads is unchanged. Class (c) is still not empty, and is larger than under `@4` (the
   roadmap's note of the same date has the counts). Nothing is declared met.
 
+*Dated note, 2026-11-16, the owner's ruling on population P4 (SJL-11.2; a dated rule file added, no rule edited;
+nothing here is a reading).* The note above reads "**The classification** is now `scripts/reference-arms/classify.py`
+`@4`" and, at its review, "`@5`".
+- **A second revision of the reference-arm rule** is filed beside the others:
+  [`reference-arms-revised-2026-11-16b.md`](reference-arms-revised-2026-11-16b.md), which records the owner's ruling
+  of 2026-11-16, "You can exclude with note regarding the 19 patterns", as the owner's own decision. It excludes from
+  P4 the patterns whose arbiter cost is in the pattern, stated by three limbs and listed by id in
+  `scripts/reference-arms/p4-excluded.tsv`, and carries the owner's note on them: a known gap of the reference arms,
+  not a verified agreement, their answers kept and reported outside the judged population. It was written after task
+  2.13's runs, their classification and the reduction were seen, so it is weaker evidence (`decision-rule.md`,
+  "Revisions"). `reference-arms.md` and option R are unchanged.
+- **The classification** is now `classify.py` `@6`: with `--exclude`, the excluded patterns' differences are listed
+  apart, in no class and not class (c); without it, `@6` classes as `@5`. The correspondence commit it reads is
+  unchanged.
+- **What the script does not yet do**: `run-reference-arms.sh` passes neither `--reduction` nor `--exclude`, as the
+  note above says of the first.
+- **Class (c) is still not empty**, and is smaller than under `@5` (the roadmap's record of the same date has the
+  counts). Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
