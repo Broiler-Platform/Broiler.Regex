@@ -63,7 +63,9 @@ not asked for it. A difference whose id names a listed pattern and whose pattern
 apart. Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
 
 *Revised 2026-11-16, after Broiler.VM's rows M10 to M15 of that day (CLASSIFIER_VERSION @7, written after task 2.13's
-runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* The correspondence is read at
+runs, their classification by @5 and @6 and the reduction of 2026-11-15 were seen).* @4's paragraph below reads "The
+correspondence is read at Broiler.VM's `7c65a8fe` (Broiler-Platform/Broiler.VM#211's merge, the file's blob `f0f6f080`;
+CORRESPONDENCE below)"; that paragraph is kept as written, and the correspondence is now read at
 Broiler.VM's `44511066` (Broiler-Platform/Broiler.VM#212's merge, the file's blob `94b860cc`; CORRESPONDENCE below),
 which adds rows M10 to M15 under decision D-jsexec, gives row M8 a dated note, and widens row B1 for P3's `O06`.
 Predicates are added for M10 to M15, each read from its row's own text, after @6's rows and in the order the
@@ -75,6 +77,17 @@ culture from the comparison. No predicate reads row B1's widening: `O06` is an i
 reduced case shows no difference and where neither side stopped at a bound it declares, so the reduction classes it (c)
 before any row is read, as the rule's revision (option R) says ("without such a stop it stays class (c)"); the row
 names it, and it stays class (c). @6's predicates, the reduction and the exclusion are unchanged.
+*At the review of @7, the same day, before any judged run (the tag unchanged).* The paragraph above read "each rewrite
+where the row names it" with a letter's rewrite read as "a class that holds it, or `(?-i:…)` over one", and row M12 read
+"The property escapes and `\\a` are each read alone, then together; a reading that gives arm J's answer takes the
+input". Row M10 now reads each character of a name, not only a letter, against its Canonicalize class in the arbiter's
+tables (Context.canonicalize_class): a class rewrite is that class with the character first, as the translator writes
+it, only where it holds another member and a non-ASCII one; `(?-i:…)` is that class, each member escaped as the
+translator escapes it, only for a character .NET's invariant lowercase folds into another class (Context.over_folds,
+whose lowercase is the pinned UCD's, U+0130 kept as itself: a stand-in, .NET's table is not read); `(?=$|\\r)` only
+where no inline modifier group stands in the pattern; and "the same capture" as the same group index, not the span
+alone (the arbiter's answer to a reading reports no index, so rows M11 to M14 read the span). Row M12 asks one reading,
+every such escape read. Over task 2.13's run each takes the same differences as before.
 
 *Revised 2026-11-16, after the owner's ruling of that day on population P4 (CLASSIFIER_VERSION @6).* The option
 `--exclude` (above) is added; no row, predicate, class or reading of the reduction changed, so without it @6 classes
@@ -287,6 +300,32 @@ class Arbiter:
             if orbit != set(preimages.get(table[unit], (unit,))):
                 out.add(unit)
         return out
+
+    def canonicalize_class(self, unit: int) -> tuple[int, ...]:
+        """Row M10's "Canonicalize class" of a code unit: every BMP code unit Canonicalize without u or v (22.2.2.7.3,
+        the arbiter's `_canonicalize_bmp`) maps where it maps the unit, ascending."""
+        table = self.r._canonicalize_bmp()
+        return self.r._canonicalize_bmp_preimages().get(table[unit], (unit,))
+
+    def over_folds(self, unit: int) -> bool:
+        """Row M10's "one .NET's invariant lowercase folds into another Canonicalize class": a BMP code unit whose
+        lowercase group (the units whose lowercase is its lowercase) holds a unit of another Canonicalize class. .NET's
+        invariant lowercase is not read here; it stands as the pinned UCD's simple lowercase (UnicodeData.txt), with
+        U+0130 kept as itself, as .NET's invariant casing is known to keep it (inferred, not read in .NET's source)."""
+        if not hasattr(self, "_over_folding"):
+            data, table = self.r.ucd(), self.r._canonicalize_bmp()
+
+            def lower(u: int) -> int:
+                return u if u == 0x130 else data.simple_lower.get(u, u)
+
+            groups: dict[int, set[int]] = {}
+            for u in range(0x10000):
+                if not 0xD800 <= u <= 0xDFFF:
+                    groups.setdefault(lower(u), set()).add(u)
+            self._over_folding = frozenset(
+                u for u in range(0x10000) if not 0xD800 <= u <= 0xDFFF
+                and any(table[v] != table[u] for v in groups[lower(u)]))
+        return unit in self._over_folding
 
     def category_units(self, name: str) -> list[int]:
         """Row M12's reading: the BMP code units whose General_Category in the pinned UCD is `name` (a two-letter
@@ -1098,61 +1137,74 @@ def arms_name(name: str) -> str:
 
 
 def anchor_rewrite_named(d, rewrite: str) -> bool:
-    """Whether the row names that rewrite of `$` for the input's flags and pattern."""
-    text = units_text(d["pattern"])
+    """Whether the row names that rewrite of `$` for the input's flags and pattern: `(?=$|\\r)` under `m` with no
+    inline modifier group, `\\z` with one and without `m`, the third anchor with one under `m`."""
+    group = modifier_group(units_text(d["pattern"]))
     if rewrite == "(?=$|\\r)":
-        return has_flag(d, "m")
+        return has_flag(d, "m") and not group
     if rewrite == "\\z":
-        return modifier_group(text) and not has_flag(d, "m")
-    return modifier_group(text) and has_flag(d, "m")
+        return group and not has_flag(d, "m")
+    return group and has_flag(d, "m")
 
 
-def case_rewrite_named(d, letter: str, rewrite: str) -> bool:
-    """Whether the row names that rewrite of a letter: under `i`, "a character of the name the translator's case
-    expansion rewrites: one whose Canonicalize class holds another member and a non-ASCII one, as `π`", written as
-    that class (`[πΠϖ]`, GetCaseFoldEquivalents), "or one .NET's invariant lowercase folds into another Canonicalize
-    class", written `(?-i:…)` over its Canonicalize class (GetNonUnicodeOverFoldClass, the second path the row
-    cites)."""
+def _translator_unit_escape(unit: int) -> str:
+    """A code unit as arm J's translator writes it in a neutralized class (AppendUnicodeEscape): `\\xhh` up to U+00FF,
+    `\\uhhhh` above, lower-case hex."""
+    return f"\\x{unit:02x}" if unit <= 0xFF else f"\\u{unit:04x}"
+
+
+def case_rewrites(d, ch: str, context) -> list[str]:
+    """The rewrites of a character of a name the row names, as arm J's translator writes them: under `i`, "a character
+    of the name the translator's case expansion rewrites: one whose Canonicalize class holds another member and a
+    non-ASCII one, as `π`", by a class of them, the character first and the others ascending (`[πΠϖ]`,
+    GetCaseFoldEquivalents, AppendWithEquivalents), "or one .NET's invariant lowercase folds into another Canonicalize
+    class", by `(?-i:…)` over its Canonicalize class, each member escaped (GetNonUnicodeOverFoldClass,
+    AppendNeutralizedClass). The class is the arbiter's Canonicalize without u or v (Context.canonicalize_class); a
+    character whose class is ASCII alone, as `x`, has none. Any character of the name is read, not only a letter."""
     if not has_flag(d, "i"):
-        return False
-    if rewrite.startswith("(?-i:"):
-        return True
-    members = set(rewrite[1:-1])
-    return letter in members and len(members) > 1 and any(ord(c) > 0x7F for c in members)
+        return []
+    unit = ord(ch)
+    members = context.canonicalize_class(unit)
+    out = []
+    if len(members) > 1 and any(m > 0x7F for m in members):
+        out.append("[" + ch + "".join(chr(m) for m in members if m != unit) + "]")
+    if context.over_folds(unit):
+        body = "".join(_translator_unit_escape(m) for m in members)
+        out.append("(?-i:" + (body if len(members) == 1 else "[" + body + "]") + ")")
+    return out
 
 
-def rewritten_name(d, s_name: str, arm_name: str) -> bool:
-    """Row M10: arm J's name is S's with each `$` written as one of the translator's anchors and each letter as itself,
-    a class that holds it, or `(?-i:…)` over one, each rewrite where the row names it; and the two differ."""
+def rewritten_name(d, s_name: str, arm_name: str, context) -> bool:
+    """Row M10: arm J's name is S's with each `$` written as one of the translator's anchors and each other character
+    as itself or as one of its rewrites (case_rewrites), each rewrite where the row names it; and the two differ."""
     s, arm = arms_name(s_name), arms_name(arm_name)
     if s == arm:
         return False
     parts = []
     for ch in s:
-        e = re.escape(ch)
         if ch == "$":
-            parts.append("(" + "|".join(re.escape(a) for a in M10_ANCHORS) + ")")
-        elif ch.isalpha():
-            parts.append(f"({e}|\\[[^\\]]*{e}[^\\]]*\\]|\\(\\?-i:(?:{e}|\\[[^\\]]*{e}[^\\]]*\\])\\))")
+            forms = [a for a in M10_ANCHORS if anchor_rewrite_named(d, a)]
         else:
-            parts.append(e)
-    m = re.fullmatch("".join(parts), arm)
-    if m is None:
-        return False
-    rewrites = iter(m.groups())
-    for ch in s:
-        if ch == "$" and not anchor_rewrite_named(d, next(rewrites)):
+            forms = [ch] + case_rewrites(d, ch, context)
+        if not forms:
             return False
-        if ch != "$" and ch.isalpha():
-            rewrite = next(rewrites)
-            if rewrite != ch and not case_rewrite_named(d, ch, rewrite):
-                return False
-    return True
+        parts.append("(?:" + "|".join(re.escape(f) for f in forms) + ")")
+    return re.fullmatch("".join(parts), arm) is not None
 
 
-def names_rewritten(d, s_canonical, arm_canonical) -> bool:
+def name_indices(answer: str) -> dict:
+    """An arm's match answer's names, each with the index of its capture as the answer writes it."""
+    if not answer.startswith("match:"):
+        return {}
+    names = answer[6:].partition("|")[2]
+    return dict(entry.rpartition("=")[::2] for entry in names.split(",")) if names else {}
+
+
+def names_rewritten(d, s_canonical, arm_canonical, context, indices=None) -> bool:
     """Both match with the same captures, and every name S gives that arm J does not is one J gives rewritten, at the
-    same capture (rewritten_name); at least one differs."""
+    same capture (rewritten_name); at least one differs. With `indices` (S's names and J's, each to its capture's
+    index), "the same capture" is the same group, not only the same span; an arbiter's answer to a reading (rows M11 to
+    M14) reports no index, so there the span is read."""
     if not (isinstance(s_canonical, tuple) and isinstance(arm_canonical, tuple)):
         return False
     if s_canonical[1] != arm_canonical[1]:
@@ -1163,7 +1215,8 @@ def names_rewritten(d, s_canonical, arm_canonical) -> bool:
     if not missing or len(missing) != len(extra):
         return False
     for name, capture in missing.items():
-        if not any(rewritten_name(d, name, other) and at == capture for other, at in extra.items()):
+        if not any(at == capture and (indices is None or indices[0].get(name) == indices[1].get(other))
+                   and rewritten_name(d, name, other, context) for other, at in extra.items()):
             return False
     return all(arm_names[k] == v for k, v in s_names.items() if k in arm_names)
 
@@ -1175,7 +1228,8 @@ def group_name_rewritten(d, context) -> bool:
     name".
     No arbiter call: S's answer is the arbiter's, and the row reads the names."""
     return (not unicode_mode(d) and both_answer_exec(d)
-            and names_rewritten(d, canonical(d["S"]), canonical(d["arm"])))
+            and names_rewritten(d, canonical(d["S"]), canonical(d["arm"]), context,
+                                (name_indices(d["S"]), name_indices(d["arm"]))))
 
 
 def answered_as_read(d, context, reading: str | None) -> bool:
@@ -1186,7 +1240,7 @@ def answered_as_read(d, context, reading: str | None) -> bool:
         return False
     answer = context.reading(d, reading)
     arm = canonical(d["arm"])
-    return answer != canonical(d["S"]) and (answer == arm or names_rewritten(d, answer, arm))
+    return answer != canonical(d["S"]) and (answer == arm or names_rewritten(d, answer, arm, context))
 
 
 def _class_end(text: str, i: int) -> int:
@@ -1377,15 +1431,14 @@ def class_escape_read_by_net(d, context) -> bool:
     """Row M12: "Without `u` or `v`, in a class, `\\p{…}` or `\\P{…}` with a General_Category name .NET knows ...,
     or `\\a`, ...; an `exec` both sides answer, where Broiler.JS answers otherwise and the arbiter's answer to the
     pattern with each such escape read as .NET reads it ... is Broiler.JS's, up to row M10's names, and not the
-    text's". The property escapes and `\\a` are each read alone, then together; a reading that gives arm J's answer
-    takes the input."""
+    text's". One reading is asked: every such escape the pattern holds read, the property escapes and `\\a` together
+    where it holds both kinds; a reading with one kind still written as the text has it takes nothing."""
     if unicode_mode(d) or not both_answer_exec(d):
         return False
     text = unit_text(d["pattern"])
     properties = property_reading(text, context.category_units)
-    bell = bell_reading(text)
-    both = bell_reading(properties) if properties is not None and bell is not None else None
-    return any(answered_as_read(d, context, reading) for reading in (properties, bell, both))
+    reading = bell_reading(properties if properties is not None else text)
+    return answered_as_read(d, context, reading if reading is not None else properties)
 
 
 CLASS_ESCAPE_LETTERS = frozenset("dDwWsS")
@@ -1578,12 +1631,13 @@ class Context:
     """What a predicate reads beyond the difference: the arbiter's reason for a refusal, row M2's case pairs, arm J's
     answers under the invariant culture (row M2a), J's refusals in the comparison (rows S14 and S15), the reduction, and
     the letters of the arbiter's UCD (row M8); since @7, the arbiter's answer to a reading of the pattern (rows M11 to
-    M14), the BMP code units of a General_Category in the arbiter's UCD (row M12), and the inputs where run J, under the
-    invariant culture, differs from S (row M15)."""
+    M14), the BMP code units of a General_Category in the arbiter's UCD (row M12), the inputs where run J, under the
+    invariant culture, differs from S (row M15), and a code unit's Canonicalize class and whether .NET's invariant
+    lowercase folds it into another (row M10)."""
 
     def __init__(self, refusal_code=None, case_pairs=frozenset(), invariant=None, j_refused=frozenset(),
                  reduction=None, letters=frozenset(), reading=None, category_units=None,
-                 j_differences=frozenset()) -> None:
+                 j_differences=frozenset(), canonicalize_class=None, over_folds=None) -> None:
         self._refusal_code = refusal_code
         self.case_pairs = case_pairs
         # The code points past ASCII whose General_Category is a letter (L) in the arbiter's UCD (row M8).
@@ -1600,6 +1654,11 @@ class Context:
         self._category_units = category_units
         # The ids of every difference of run J, arm J under the invariant culture (row M15).
         self.j_differences = j_differences
+        # A BMP code unit -> its Canonicalize class without u or v, ascending (row M10); and whether .NET's invariant
+        # lowercase folds it into another Canonicalize class (row M10's second path). Without them no letter of a name
+        # reads as rewritten.
+        self._canonicalize_class = canonicalize_class
+        self._over_folds = over_folds
 
     def refusal_code(self, d):
         return self._refusal_code(d) if self._refusal_code else None
@@ -1610,6 +1669,12 @@ class Context:
 
     def category_units(self, name: str) -> list[int]:
         return self._category_units(name) if self._category_units else []
+
+    def canonicalize_class(self, unit: int) -> tuple[int, ...]:
+        return tuple(self._canonicalize_class(unit)) if self._canonicalize_class else (unit,)
+
+    def over_folds(self, unit: int) -> bool:
+        return bool(self._over_folds(unit)) if self._over_folds else False
 
     def invariant_differs(self, d) -> bool:
         """Whether arm J under the invariant culture answers the same input otherwise than S: a difference of run J in
@@ -1959,7 +2024,8 @@ def run(argv: list[str] | None = None) -> int:
     context = Context(lambda d: arbiter.refusal_code(d["pattern"], d["flags"]), frozenset(arbiter.case_pairs()),
                       invariant_answers(args.comparison / "differences.tsv.gz"),
                       j_refusals(args.comparison / "differences.tsv.gz"), reduction, arbiter.letters(),
-                      arbiter.reading, arbiter.category_units, j_differences(args.comparison / "differences.tsv.gz"))
+                      arbiter.reading, arbiter.category_units, j_differences(args.comparison / "differences.tsv.gz"),
+                      arbiter.canonicalize_class, arbiter.over_folds)
     counts: Counter = Counter()
     by_row: Counter = Counter()
     header = None

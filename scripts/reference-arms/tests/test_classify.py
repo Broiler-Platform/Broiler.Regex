@@ -475,8 +475,9 @@ class RowsM10ToM15Tests(unittest.TestCase):
         # `$x` as `(?=$|\r)x` under m.
         d = self.j("(?<$x>a)", "m", s, "match:0,1;0,1|" + arms_names([("(?=$|\\r)x", 1)]))
         self.assertEqual(C.classify(d, C.canonical(s), set()), ("a", "M10", "a correction of Broiler.JS"))
-        # The same rewrite without m: no row names it.
+        # The same rewrite without m: no row names it; nor under m where a modifier group stands in the pattern.
         self.assertEqual(C.classify(dict(d, flags="."), C.canonical(s), set())[0], "c")
+        self.assertEqual(C.classify(dict(d, pattern=encode("(?<$x>a)(?i:b)?")), C.canonical(s), set())[1], "-")
         # `\z` with an inline modifier group and without m; not without the group.
         z = "match:0,1;0,1|" + arms_names([("\\zx", 1)])
         self.assertEqual(C.classify(self.j("(?<$x>a)(?i:b)?", ".", s, z), C.canonical(s), set())[1], "M10")
@@ -485,23 +486,55 @@ class RowsM10ToM15Tests(unittest.TestCase):
         nl = "match:0,1;0,1|" + arms_names([("(?=[\\n\\r\\u2028\\u2029]|\\z)x", 1)])
         self.assertEqual(C.classify(self.j("(?<$x>a)(?-s:b)?", "m", s, nl), C.canonical(s), set())[1], "M10")
         self.assertEqual(C.classify(self.j("(?<$x>a)", "m", s, nl), C.canonical(s), set())[1], "-")
-        # `π` as `[πΠϖ]` under i; not without i, nor as a class of ASCII letters alone.
-        pi = "match:0,1;0,1|" + arms_names([("π", 1)])
-        pi_j = "match:0,1;0,1|" + arms_names([("[πΠϖ]", 1)])
-        self.assertEqual(C.classify(self.j("(?<π>a)", "i", pi, pi_j), C.canonical(pi), set())[1], "M10")
-        self.assertEqual(C.classify(self.j("(?<π>a)", ".", pi, pi_j), C.canonical(pi), set())[1], "-")
-        k = "match:0,1;0,1|" + arms_names([("k", 1)])
-        self.assertEqual(C.classify(self.j("(?<k>a)", "i", k, "match:0,1;0,1|" + arms_names([("[kK]", 1)])),
-                                    C.canonical(k), set())[1], "-")
-        # `(?-i:…)` over a letter's class, the second path, under i.
-        self.assertEqual(C.classify(self.j("(?<k>a)", "i", k, "match:0,1;0,1|" + arms_names([("(?-i:[kK])", 1)])),
-                                    C.canonical(k), set())[1], "M10")
         # Another capture, another name, or under u: not this row's.
         self.assertEqual(C.classify(dict(d, arm="match:0,1;1,1|" + arms_names([("(?=$|\\r)x", 1)])),
                                     C.canonical(s), set())[1], "-")
         self.assertEqual(C.classify(dict(d, arm="match:0,1;0,1|" + arms_names([("y", 1)])), C.canonical(s),
                                     set())[1], "-")
         self.assertFalse(C.group_name_rewritten(dict(d, flags="mu"), C.Context()))
+        # "At the same capture" is the same group: names swapped between two groups of equal spans are not taken.
+        two = "match:0,0;0,0;0,0|" + arms_names([("$a", 1), ("$b", 2)])
+        swapped = self.j("(?<$a>)(?<$b>)", "m", two, "match:0,0;0,0;0,0|" + arms_names(
+            [("(?=$|\\r)b", 1), ("(?=$|\\r)a", 2)]))
+        self.assertFalse(C.group_name_rewritten(swapped, C.Context()))
+        kept = dict(swapped, arm="match:0,0;0,0;0,0|" + arms_names([("(?=$|\\r)a", 1), ("(?=$|\\r)b", 2)]))
+        self.assertTrue(C.group_name_rewritten(kept, C.Context()))
+
+    def test_row_m10_reads_a_case_rewrite_from_the_canonicalize_class(self) -> None:
+        classes = {}
+        for members in ((0x3A0, 0x3C0, 0x3D6), (0x4B, 0x6B), (0x212A,), (0x58, 0x78), (0x2160, 0x2170)):
+            for unit in members:
+                classes[unit] = members
+        case = C.Context(canonicalize_class=lambda u: classes.get(u, (u,)),
+                         over_folds={0x4B, 0x6B, 0x212A}.__contains__)
+
+        def m10(name, rewritten, flags="i"):
+            s = "match:0,1;0,1|" + arms_names([(name, 1)])
+            d = self.j(f"(?<{name}>a)", flags, s, "match:0,1;0,1|" + arms_names([(rewritten, 1)]))
+            return C.classify(d, C.canonical(s), set(), case)[1]
+
+        # `π` as `[πΠϖ]` under i, its Canonicalize class with the letter first; not without i, nor in another order,
+        # nor as a class that is not its Canonicalize class.
+        self.assertEqual(m10("π", "[πΠϖ]"), "M10")
+        self.assertEqual(m10("π", "[πΠϖ]", "."), "-")
+        self.assertEqual(m10("π", "[πϖΠ]"), "-")
+        self.assertEqual(m10("π", "[πΠ]"), "-")
+        # A character of the name that is not a letter, whose class qualifies: U+2160 as `[Ⅰⅰ]`.
+        self.assertEqual(m10("\u2160", "[\u2160\u2170]"), "M10")
+        # `x`, whose class is ASCII alone, is not rewritten: neither as a class nor as `(?-i:…)`.
+        self.assertEqual(m10("x", "[xé]"), "-")
+        self.assertEqual(m10("x", "(?-i:x)"), "-")
+        self.assertEqual(m10("x", "(?-i:[\\x58\\x78])"), "-")
+        # `k`, which .NET's invariant lowercase folds with U+212A into another class: `(?-i:…)` over its class, each
+        # member as the translator escapes it; not as a class of ASCII letters, nor over another class.
+        self.assertEqual(m10("k", "(?-i:[\\x4b\\x6b])"), "M10")
+        self.assertEqual(m10("k", "[kK]"), "-")
+        self.assertEqual(m10("k", "(?-i:[kK])"), "-")
+        self.assertEqual(m10("k", "(?-i:[\\x4b\\x6b\\u212a])"), "-")
+        # Without the tables no letter reads as rewritten.
+        s = "match:0,1;0,1|" + arms_names([("π", 1)])
+        d = self.j("(?<π>a)", "i", s, "match:0,1;0,1|" + arms_names([("[πΠϖ]", 1)]))
+        self.assertFalse(C.group_name_rewritten(d, C.Context()))
 
     def test_row_m11_reads_the_empty_iteration(self) -> None:
         self.assertEqual(C.optional_group_reading("(a)?b"), "(?:(a)|)b")
@@ -540,6 +573,17 @@ class RowsM10ToM15Tests(unittest.TestCase):
         context._category_units = digits
         self.assertEqual(C.classify(d, "null", set(), context)[1], "M12")
         self.assertEqual(C.classify(dict(d, flags="v"), "null", set(), context)[0], "c")
+        # Both kinds in the pattern: one reading, every such escape read; a reading with `\\a` left as the text has it,
+        # or the property escape left, takes nothing even where it gives J's answer.
+        mixed = self.j("[\\p{N}]|[\\a]", ".", "null", "match:0,1", subject="1")
+        partial = reading_gives({"[\\u0030-\\u0039]|[\\a]": C.canonical("match:0,1"),
+                                 "[\\p{N}]|[\\x07]": C.canonical("match:0,1")})
+        partial._category_units = digits
+        self.assertEqual(C.classify(mixed, "null", set(), partial)[0], "c")
+        self.assertEqual(partial.asked, ["[\\u0030-\\u0039]|[\\x07]"])
+        full = reading_gives({"[\\u0030-\\u0039]|[\\x07]": C.canonical("match:0,1")})
+        full._category_units = digits
+        self.assertEqual(C.classify(mixed, "null", set(), full)[1], "M12")
         bell = self.j("[\\a]|cb", ".", "null", "match:0,1", subject="\x07")
         self.assertEqual(C.classify(bell, "null", set(), reading_gives({"[\\x07]|cb": C.canonical("match:0,1")}))[1],
                          "M12")
