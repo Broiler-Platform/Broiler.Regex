@@ -282,6 +282,23 @@ predicate".
 - **Class (c) is still not empty**, and is smaller than under `@7`: one pattern's inputs, which no row names (the
   roadmap's record of the same date has the counts). Nothing is declared met.
 
+*Dated note, 2026-11-17, Broiler.VM's row M27 (SJL-11.2; no rule edited; nothing here is a reading).* The note above
+reads "**The classification** is now `classify.py` `@8`, which reads Broiler.VM's correspondence at
+**`626e4ed88afe8898724bda669e981cf7cf1b98b2`**" and "**Class (c) is still not empty**, and is smaller than under `@7`:
+one pattern's inputs, which no row names".
+- **The classification** is now `classify.py` `@9`, which reads Broiler.VM's correspondence at
+  **`5e90bfe485aad60b3637d9f69e54ed71adcd73af`** (the merge of Broiler-Platform/Broiler.VM#216, the file's blob
+  `2831290201cca3fb6b524a9be8680755eb566f37`).
+  - It adds row M27, under the owner's decision D-jsrest, read from the row's text and tried after M26, as the row
+    says. The row names the mechanism of the inputs the note above leaves to no row.
+  - `@8`'s predicates, the reduction, the revision of 2026-11-16c and the exclusion are unchanged.
+  - `classification.json` names that commit as `rows-read-from`. A correspondence without row M27 is refused.
+- **What the script does not yet do**: `run-reference-arms.sh` passes neither `--reduction` nor `--exclude`, as the
+  notes above say.
+- **Class (c) is empty** on task 2.13's runs, with `--reduction` and `--exclude`, for the first time (the roadmap's
+  record of the same date has the counts). That is not a reading: it was taken on the retained runs, after they were
+  seen, and it reads option R, which waits on the owner, and the revisions filed under it. Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written

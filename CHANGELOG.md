@@ -177,6 +177,12 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
       M15. With `--reduction` it reads the revision, by which row B1 holds `O06`.
     - The arms were classified again over task 2.13's retained differences. Class (c) is still not empty, and nothing
       is declared met (`docs/roadmap.md`, the record of the ruling on `O06` and rows M16 to M26).
+  - The reference arms' classifier `@9` (bundle `sjl-11-001`; process only, in neither the published package nor its
+    API, and not in `df5cfc2`): `scripts/reference-arms/classify.py` reads Broiler.VM's correspondence at `5e90bfe4`
+    (Broiler-Platform/Broiler.VM#216), with a predicate for its row M27, read from the row's text and tried after M26.
+    The arms were classified again over task 2.13's retained differences, with `--reduction` and `--exclude`: class
+    (c) is empty for the first time. That is not a reading, and nothing is declared met (`docs/roadmap.md`, the record
+    of row M27).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or
