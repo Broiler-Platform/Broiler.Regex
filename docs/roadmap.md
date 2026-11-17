@@ -3214,6 +3214,126 @@ above is corrected where the review found `@8` reading wider than its row; what 
 - The record's header reads "their classification by `@5` to `@7`". It reads "by `@3` to `@7`", as the revision of
   2026-11-16c says: `@3` classified task 2.13's runs as well.
 
+*Dated record, 2026-11-17 (SJL-11.2: the reference arms' classifier reads Broiler.VM's row M27, and the arms are
+classified again; bundle `sjl-11-001`'s [`reference-arms.md`](evidence/sjl-11-001/reference-arms.md)). Written after
+task 2.13's runs, their classification by `@3` to `@8` and the reduction of 2026-11-15 were seen. No arm was run again,
+no rule file was edited, and nothing is declared met.*
+
+**What the correspondence adds.** The record of 2026-11-16 above (the ruling on `O06` and rows M16 to M26) lists, as
+item 2 of what the candidate reading waits on, "**Broiler.VM on `P4-47050-s-05`**: a row for its mechanism, or none, in
+which case its 3 differences stay class (c)". Broiler.VM answered with a row. Its correspondence at
+**`5e90bfe485aad60b3637d9f69e54ed71adcd73af`** (the merge of Broiler-Platform/Broiler.VM#216, the file's blob
+`2831290201cca3fb6b524a9be8680755eb566f37`), under the owner's decision D-jsrest:
+- adds row M27, a correction of Broiler.JS: without `RegexOptions.ECMAScript`, .NET makes a loop over `\D`, or over a
+  negated class of ASCII word characters, atomic before `\b`, and greedy where it was lazy;
+- says it is "read after row M26, so an input row M8 takes by its list stays row M8's";
+- reads the mechanism in arm J's copy and in .NET's source at dotnet/runtime `v10.0.15`, checked by runs outside
+  either repository.
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-m27`, from `9dd15fc4`,
+Broiler-Platform/Broiler.Regex#24's merge):
+- *The classifier `@9`* (`d1a0e81`): `scripts/reference-arms/classify.py` reads the correspondence at `5e90bfe4`.
+  - Row M27's predicate comes after M26.
+  - The script tests go from 117 to 125, and the scripts' README gains the row and a dated note.
+  - `@8`'s predicates, the reduction, the revision of 2026-11-16c and the exclusion are unchanged.
+- *A group that does not capture* (`0ecf6dc`): the arbiter's tree writes `(?:…)` as a modifier group that adds and
+  removes no flag, so `d1a0e81` reached the loop only through a capturing group, as the prototype did. The predicate
+  now reads both as the row's "groups (capturing or not ...)".
+- *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
+
+**The predicate, from the row's text.** It started from the predicate Broiler.VM's stage prototyped over `@8`, and is
+read no wider than the row:
+
+| The row's words | `@9` reads (`loop_made_atomic_before_boundary`) |
+|---|---|
+| "Without `u` or `v`, under `s` or with a modifier group in the pattern (one the text lexes, as rows M21 and M24 read it)" | arm J; neither `u` nor `v`; the flag `s`, or `modifier_group_lexed` |
+| "a quantifier with a minimum of 1 or more and no maximum (`+` or `{n,}`, lazy or not) over `\D`, or over a negated class, lexed as the text lexes it without `v`, whose members are ASCII letters, digits, `_`, `\d` or ranges within `0-9`, `A-Z` or `a-z`" | in the arbiter's tree (`Context.parse`), a quantifier with that minimum and no maximum over a `\D`, or over a negated class every member of which is such a character, such a range or `\d` |
+| "the quantifier is a term of an alternative, or, through groups (capturing or not; not a look-around or a modifier group) and quantifiers whose maximum is 1, the last term of an alternative of such a term" | the loop ends a term, so reached |
+| "and the term after it in that alternative is `\b`, or a group or positive look-ahead of one alternative, or a quantifier with a minimum of 1 or more, that begins with `\b`" | the next term begins with `\b`, so read; a group is a group, capturing or not, and not a modifier group that adds or removes a flag |
+| "an `exec` both sides answer, where Broiler.JS answers otherwise and the arbiter's answer to the pattern with each such quantifier read as .NET runs it (the reading in the Broiler.JS cell) is Broiler.JS's, up to row M10's names, and not the text's" | `answered_as_read` over the reading: each such loop written greedy and followed by `(?!X)`, X its atom (`\D+?` as `\D+(?!\D)`); the tree's loops are paired with the text's one for one, and where they do not pair there is no reading and the row takes nothing |
+| "read after row M26" | the last of `ROWS` |
+
+**Checked against Broiler.VM's prototype.** Over every one of arm J's 1,896,055 differences in task 2.13's comparison,
+`@9`'s predicate, at `d1a0e81` and at `0ecf6dc`, fires on the same 51 as the prototype, gives the same reading on each,
+and takes the same 48: the 3 `@8` left in class (c), and 45 `@8` puts in row M8. In the classifier's order, row M8 keeps
+those 45, so row M27 takes the 3 and moves nothing else. Broiler.VM's notes inferred that in-order take and did not run
+it. This run shows it.
+
+**The base answer, before anything changed.** The classifier `@8` (`9dd15fc4`'s `classify.py`, from a `git archive`)
+over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`), with `--reduction` over the reduction of
+2026-11-15 (`reductions.tsv` `b3e05301…`), `--exclude scripts/reference-arms/p4-excluded.tsv` and the correspondence at
+`626e4ed8`, wrote **`classification.json` `dc77d7c97b0805b7a42d5198af2f8a3c095c361fe8a5285188dff4cc3e1df9be` and
+`classified.tsv.gz` `1741d5dc5abc62318e61d98cdaf00160382d3b6c2bde284da0c269f5d063e896`, the retained bytes**, and the
+same log, exit 1. Given the correspondence at `5e90bfe4` instead, it wrote the same `classified.tsv.gz`, and a
+`classification.json` (`28b83f7f…`) that differs only in the correspondence it names.
+
+**The classification again** (2026-11-17), by `@9` at `d1a0e81` from a `git archive`, over the same inputs with the
+correspondence at `5e90bfe4`, from a copy of the `@8` run's arbiter cache. It is kept outside the repository, beside the
+`@8` run in the stages' notes, with a `hashes.txt`; no retained output was written to. It wrote
+**`classification.json` `d6ca3a14537b1413ca39c40d49fa510a21ac9185bb99cd10bbc145d2fe7e5a8d` and `classified.tsv.gz`
+`5dd1a9607d58d4b5515ee1721d24a8b7bfddb22b2cc1e11fc66c1870613ab652`**, exit 0:
+
+| Class | `@8` | `@9` |
+|---|---:|---:|
+| (a) | 1,885,365 | 1,885,368 |
+| (a') | 45 | 45 |
+| (b) | 4,876 | 4,876 |
+| (b') | 2,250 | 2,250 |
+| excluded | 8,970 | 8,970 |
+| **(c)** | **3** | **0** |
+
+- Row M27 takes `P4-47050-s-05` in J, `J.tr-TR` and `J.lt-LT`, the 3 `@8` left in class (c), and nothing else.
+- The other 1,901,506 lines are the same byte for byte as `@8`'s.
+- Over the reduction's own comparison, `@9` writes the same `classified.tsv.gz` as `@6` to `@8`, `b71ed577…`; its
+  `classification.json` (`e485c93e…`) differs from `@8`'s only in the version and the correspondence it names.
+- Taken again at `0ecf6dc`, over the same inputs and from the same copy of the cache, the three classifications,
+  their logs and the checks against `@8` and the prototype are the same bytes as at `d1a0e81`.
+- Without `--exclude`, class (c) is 3,789 (`classification.json` `366fd308…`, `classified.tsv.gz` `65905687…`): the
+  differences the exclusion takes, and no other.
+
+**Class (c) is empty, for the first time.** On task 2.13's runs, with `--reduction` and `--exclude`, every difference is
+in an admitted class or excluded, and the classifier exits 0. This is not a reading, and nothing is declared met:
+- The run was taken on the retained runs, after they were seen. It is not the candidate reading at its commit.
+- It reads the rule as revised: option R and its revision of 2026-11-16c (the reduction's (b') and row B1's `O06`),
+  and the owner's ruling on P4 (the exclusion). Option R waits on the owner's confirmation.
+
+**What the candidate reading (task 4.2) still waits on**, replacing the record of 2026-11-16 above's list where it
+differs (its item 2, Broiler.VM on `P4-47050-s-05`, is answered by row M27):
+1. **The owner on option R**, filed as recommended, so weaker evidence. The revision of 2026-11-16c is written as a
+   last limb of option R's arbiter clause.
+2. **The run's procedure**: `run.sh` passes neither `--reduction` nor `--exclude`. The reading needs both after its
+   comparison, with `reduce.py` run over it, and the correspondence at `5e90bfe4` or later.
+3. **The two negative controls** of `reference-arms.md`.
+4. **The host job** (B-1), which waits for Broiler.JS's SJL-11.5 branch.
+5. **CI green at the reading's commit** (B-3).
+6. **The reading's commit**, and the rule commit the README names, both the owner's to choose.
+7. **The harness's `Win32Exception`** in `Harness.ProcessorTime`, the arms' owner's to fix before the reading.
+
+**Choices taken, each with its alternative.**
+- *A group that begins with `\b`* is a group, capturing or not, as Broiler.VM's predicate reads it ("a `Group`, or a
+  positive look-ahead, of one alternative"). *Not taken*: a modifier group that adds or removes a flag there too, which
+  the row's words "a group" do not exclude. No input of these runs turns on it.
+- *No reading where the tree's loops and the text's do not pair one for one* (a class member written as an escape, as
+  `[^\x30]`), so the row takes nothing there. *Not taken*: reading such members as the characters they name, which
+  would need a writer of the reading from the tree. No input of these runs turns on it.
+- *The run kept in this stage's notes*, beside `@8`'s in its stage's, as each run before it. *Not taken*: writing it
+  into `@8`'s folder.
+- *One `@8` test* no longer asserts `@8`'s version and correspondence commit, which a new test asserts for `@9`. *Not
+  taken*: leaving it failing, or deleting it.
+
+**Where the brief and the sources differ, read at this record.**
+- The brief says Broiler.VM's `proto.tsv` and `exp3.tsv` "hold the prototype's take: in the classifier's order, exactly
+  the 3 class (c) differences". They hold the 51 differences the construct fires on alone. Broiler.VM's notes infer the
+  in-order take of 3 and say it was not run. `@9`'s run gives it.
+- Broiler.VM's predicate reads "for a `Group` (capturing or not)", and the row "through groups (capturing or not; not
+  a look-around or a modifier group)". The arbiter's tree writes `(?:…)` as a modifier group with no flag, not as a
+  `Group`, so the prototype, and `@9` at `d1a0e81`, read only capturing groups. `0ecf6dc` reads both. The take over
+  these runs is the same.
+- The brief asks `@8` to reproduce `dc77d7c9…` byte for byte. It does with the correspondence at `626e4ed8`, the file
+  that run read. With the file at `5e90bfe4`, only `classification.json`'s correspondence differs.
+- The brief's list of what task 4.2 waits on names "the reading's commit". The roadmap's list names the rule commit
+  beside it, and this record keeps both.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
