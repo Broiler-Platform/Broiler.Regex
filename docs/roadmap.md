@@ -3239,6 +3239,8 @@ Broiler-Platform/Broiler.Regex#24's merge):
 - *A group that does not capture* (`0ecf6dc`): the arbiter's tree writes `(?:…)` as a modifier group that adds and
   removes no flag, so `d1a0e81` reached the loop only through a capturing group, as the prototype did. The predicate
   now reads both as the row's "groups (capturing or not ...)".
+- *At review* (`6e87fd8`): a script test pins a loop inside a look-behind (below), so the script tests are 126; the
+  scripts' README row M27 and its dated note say what a group is. `classify.py` is unchanged.
 - *The records*, with this one: the bundle's README (a dated note) and the CHANGELOG (process only).
 
 **The predicate, from the row's text.** It started from the predicate Broiler.VM's stage prototyped over `@8`, and is
@@ -3288,8 +3290,11 @@ correspondence at `5e90bfe4`, from a copy of the `@8` run's arbiter cache. It is
   `classification.json` (`e485c93e…`) differs from `@8`'s only in the version and the correspondence it names.
 - Taken again at `0ecf6dc`, over the same inputs and from the same copy of the cache, the three classifications,
   their logs and the checks against `@8` and the prototype are the same bytes as at `d1a0e81`.
-- Without `--exclude`, class (c) is 3,789 (`classification.json` `366fd308…`, `classified.tsv.gz` `65905687…`): the
-  differences the exclusion takes, and no other.
+- Without `--exclude`, class (c) is 3,789 (`classification.json` `366fd308…`, `classified.tsv.gz` `65905687…`). All
+  3,789 are among the 8,970 differences the exclusion takes, and no other difference is in class (c). Without
+  `--exclude` the 8,970 are 3,789 (c), 4,107 (b), 663 (a) and 411 (b').
+- `classification.json`'s `counts` names only the classes that hold a difference, so with (c) empty it has no `"c"`
+  key, rather than `"c": 0`. The exit code reads the same: 0 where no (c) is counted.
 
 **Class (c) is empty, for the first time.** On task 2.13's runs, with `--reduction` and `--exclude`, every difference is
 in an admitted class or excluded, and the classifier exits 0. This is not a reading, and nothing is declared met:
@@ -3316,6 +3321,15 @@ differs (its item 2, Broiler.VM on `P4-47050-s-05`, is answered by row M27):
 - *No reading where the tree's loops and the text's do not pair one for one* (a class member written as an escape, as
   `[^\x30]`), so the row takes nothing there. *Not taken*: reading such members as the characters they name, which
   would need a writer of the reading from the tree. No input of these runs turns on it.
+- *A loop before `\b` inside a look-behind is named and read*, as the row's text reads it: "the quantifier is a term
+  of an alternative" makes no exception for the alternatives of a look-behind, so `(?<=\D+?\b)x` reads
+  `(?<=\D+(?!\D)\b)x`. .NET makes no such loop atomic: at dotnet/runtime `v10.0.15`, `FindAndMakeLoopsAtomic`
+  stops at a node under `RegexOptions.RightToLeft`, as a look-behind's contents are, and `CanBeMadeAtomic` refuses where
+  the options differ. Only the arbiter's answer to the reading (`answered_as_read`) keeps the row from taking such an
+  input. *Not taken*: reading the row narrower than its text. No input of these runs turns on it: the construct fires
+  on the 51 inputs of `P4-47050` and `P4-63913`, whose one look-behind, `(?<=s* )`, holds no such loop. A script test
+  pins the behaviour. Unlike the two choices above, which read the row no wider than its words, here the row's words
+  are wider than .NET; it is to be raised with Broiler.VM, so that the row can say "not inside a look-behind".
 - *The run kept in this stage's notes*, beside `@8`'s in its stage's, as each run before it. *Not taken*: writing it
   into `@8`'s folder.
 - *One `@8` test* no longer asserts `@8`'s version and correspondence commit, which a new test asserts for `@9`. *Not
