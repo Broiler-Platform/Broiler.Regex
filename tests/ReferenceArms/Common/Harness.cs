@@ -228,14 +228,20 @@ internal static class Harness
         return total;
     }
 
-    /// <summary>The worker's processor time, user and system, all its threads; zero once it has exited.</summary>
+    /// <summary>
+    /// The worker's processor time, user and system, all its threads; zero once it has exited. A worker can exit while
+    /// this reads it: .NET then throws <see cref="InvalidOperationException"/> when it has seen the exit, and
+    /// <see cref="System.ComponentModel.Win32Exception"/> when the process was reaped between its check and its read of
+    /// the process's statistics (on Linux, /proc/PID/stat), which before 2026-11-17 ended the supervisor's reading
+    /// thread and with it the arm's run (docs/roadmap.md, the record of 2026-11-15). Both read as the exit they are.
+    /// </summary>
     private static TimeSpan ProcessorTime(System.Diagnostics.Process process)
     {
         try
         {
             return process.TotalProcessorTime;
         }
-        catch (InvalidOperationException)
+        catch (Exception e) when (e is InvalidOperationException or System.ComponentModel.Win32Exception)
         {
             return TimeSpan.Zero;
         }

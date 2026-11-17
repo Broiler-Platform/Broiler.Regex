@@ -183,6 +183,17 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     The arms were classified again over task 2.13's retained differences, with `--reduction` and `--exclude`: class
     (c) is empty for the first time. That is not a reading, and nothing is declared met (`docs/roadmap.md`, the record
     of row M27).
+  - The owner's confirmation of option R, and the reference arms' run procedure, negative controls and harness
+    (bundle `sjl-11-001`; process only, in neither the published package nor its API, and not in `df5cfc2`).
+    - The owner confirmed option R on 2026-11-17, as the owner's own decision; no rule file was added or edited.
+    - `scripts/reference-arms/run.sh` classifies as the rule was filed, runs the declared reduction
+      (`scripts/reference-arms/reduce.py`), and classifies with `--reduction` and `--exclude`; it then takes the two
+      negative controls of `reference-arms.md` with `scripts/reference-arms/controls.py`, and fails a run whose control
+      is not reported unclassified, or whose changed result, read with no control case named, is not class (c). Over task 2.13's retained differences it writes the `@9` classification byte for
+      byte. `classify.py` is unchanged.
+    - The arms' harness reads a worker's processor time where the worker may have exited, so a `Win32Exception` no
+      longer ends a run; the arms' answers are unchanged.
+    - Nothing is declared met (`docs/roadmap.md`, the records of 2026-11-17).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

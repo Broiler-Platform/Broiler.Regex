@@ -52,7 +52,11 @@ read under `g` or `y` and is 0 otherwise, a lastIndex past the subject is `null`
 its matcher as its engine does, in the copied members below. Argument conversion, lastIndex's writes, the protocols
 and error construction stay in the engines and are not compared.
 
-**Workers.** Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
+**Workers.** *(Dated note, 2026-11-17: the supervisor's reading of a worker's processor time, `Harness.ProcessorTime`,
+read an exit only as .NET's `InvalidOperationException`; a worker reaped between .NET's check and its read of the
+process's statistics threw `Win32Exception` instead, in the supervisor's reading thread, which ended the run (the
+roadmap's record of 2026-11-15). Both now read as the exit, zero processor time, as the method's summary always said.
+No answer depends on it.)* Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
 depend on the machine), one worker process of the arm per range, each case on a thread of 16 MiB, the stack
 Broiler.JS's shell gives a script (`SH/Program.cs:128`). A case the harness stops, loses or skips is answered
 `limit:harness`, one answer whichever it was; a new worker takes the range from the next case. Every worker runs
@@ -160,6 +164,13 @@ case's answer itself (`Harness.Planted`: a match's first capture ends one unit l
 list the difference unclassified. The copies are never committed. *(Until the review of 2026-11-02 the harness
 appended "`#negative-control` to that case's answer", a marker the classifier's canonical form stripped, so the
 planted answer was not a changed result; the classifier no longer strips anything.)*
+
+*Dated note, 2026-11-17 (before the candidate reading, task 4.2).* Until then the controls were taken by hand, from
+scratch worktrees (`docs/roadmap.md`, the records of task 2.13). `scripts/reference-arms/run.sh` now takes both after
+every full run, and `--controls-only` over an earlier one, with `scripts/reference-arms/controls.py`: the copy is made
+of this directory's `Common/` and `V/` or `J/` with the files they build from, under the run's `OUT/controls/`, its
+`NEGATIVE-CONTROL` line given the case and nothing else; it is built, run once over its class (P4 for V, P1 for J) and
+removed. The cases are task 2.13's, `P4-01234-u-05` and `P1-regexp:matching:m1-notes:0001`, unless the run names others.
 
 ## The fast-path differential
 

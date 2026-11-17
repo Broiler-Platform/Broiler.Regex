@@ -8,6 +8,15 @@
 # population, runs every arm (J under the invariant culture, tr-TR and lt-LT), compares, classifies and runs the
 # fast-path differential, each step logged with its command as the first line.
 #
+# Since 2026-11-17 (SJL-11.2, before the candidate reading) the run.sh of a commit from then on also classifies as the
+# rule as revised reads it, and takes the two negative controls (its header): the comparison classified as the rule was
+# filed (run/comparison), the declared reduction over it (run/reduction: reduce.py, the arms over the reduced cases,
+# their comparison and classification), the classification with --reduction and --exclude
+# scripts/reference-arms/p4-excluded.tsv (run/classification, the one the rule as revised reads), and the controls of
+# reference-arms.md, a copy of arm V over P4 and one of arm J over P1, each reported unclassified or the run fails
+# (run/controls). This script lists those directories' files too. A commit before then runs the run.sh it has, which
+# does none of it; the README's note of 2026-11-17 says what a reading at such a commit needs.
+#
 #   docs/evidence/sjl-11-001/run-reference-arms.sh COMMIT OUT \
 #       --test262 DIR --unicode DIR --broiler-js DIR --broiler-vm DIR --correspondence-commit SHA \
 #       [--js-commit SHA] [--unicode-commit SHA] [--classes P1,...]
@@ -33,8 +42,12 @@
 #
 # COMMIT is checked out as a detached worktree under OUT (git worktree add --detach), so the arms are built from a clean
 # tree, and removed at the end with its build output. Exit: 0 when run.sh ends with exit 0 (a class (c) difference is
-# not a failure: the classifier's exit 1 is kept in OUT/run/logs/classify.log, as run.sh keeps it); 1 when an input
-# check or a step fails, or run.sh fails; 2 on arguments it does not read.
+# not a failure: the classifier's exit 1 is kept in its log, as run.sh keeps it); 1 when an input check or a step
+# fails, or run.sh fails; 2 on arguments it does not read. The classification the rule as revised reads, and its exit,
+# are in OUT/run/classification and OUT/run/logs/classify-revised.log; OUT/run/logs/classify.log holds the
+# classification as filed (OUT/run/comparison), kept for comparison, which a commit before 2026-11-17 writes alone.
+# The last line names that log and the negative controls taken (OUT/run/controls/ARM/control.json; corrected
+# 2026-11-17, at review: these lines named classify.log as the classification's exit).
 set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 
@@ -166,10 +179,19 @@ args=("$out/run" --test262 "$test262" --unicode "$unicode" --broiler-js "$js" --
 [ -n "$classes" ] && args+=(--classes "$classes")
 step run-sh bash "$tree/scripts/reference-arms/run.sh" "${args[@]}"
 
-# The listings and every file they come from, by SHA-256; timing/ is the run's and is not listed (nothing compares it).
+# The listings and every file they come from, by SHA-256; a timing/ directory is the run's and is not listed (nothing
+# compares it), nor are the symbolic links the controls compare through (each names a file listed here), nor the arbiter
+# cache (answers the classifications share, which decide nothing they do not).
 listed=()
-for d in population runs comparison fast-paths; do
+for d in population runs comparison reduction classification controls fast-paths; do
   [ -d "$out/run/$d" ] && listed+=("$d")
 done
-(cd "$out/run" && find "${listed[@]}" -type f ! -path 'runs/timing/*' | LC_ALL=C sort | xargs sha256sum) > "$out/digests.sha256"
-echo "done: $out (digests.sha256; the classification's exit in run/logs/classify.log)"
+(cd "$out/run" && find "${listed[@]}" -type f ! -path '*/timing/*' | LC_ALL=C sort | xargs sha256sum) > "$out/digests.sha256"
+log=run/logs/classify.log
+if [ -f "$out/run/logs/classify-revised.log" ]; then log=run/logs/classify-revised.log; fi
+taken=""
+for f in "$out"/run/controls/*/control.json; do
+  if [ -f "$f" ]; then taken="$taken $(basename "$(dirname "$f")")"; fi
+done
+taken=${taken# }
+echo "done: $out (digests.sha256; the classification's exit in $log; negative controls taken: ${taken:-none})"

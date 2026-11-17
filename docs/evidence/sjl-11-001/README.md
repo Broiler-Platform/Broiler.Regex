@@ -299,6 +299,62 @@ one pattern's inputs, which no row names".
   record of the same date has the counts). That is not a reading: it was taken on the retained runs, after they were
   seen, and it reads option R, which waits on the owner, and the revisions filed under it. Nothing is declared met.
 
+*Dated note, 2026-11-17, the owner's confirmation of option R (SJL-11.2; no rule file added or edited; nothing here is
+a reading).* The note of 2026-11-16 above says of
+[`reference-arms-revised-2026-11-16.md`](reference-arms-revised-2026-11-16.md), option R, that "it was filed as the
+recommended choice under the owner's standing direction of 2026-10-18 and is the owner's to confirm or overturn", and
+the note of 2026-11-17 above says the classification "reads option R, which waits on the owner". The owner has ruled.
+- **The question put**, verbatim: "With the classifier reading row M27 (Broiler.Regex#25), no unclassified difference
+  (class c) remains. One outstanding item for the candidate reading is option R, the reference-arms rule revision I
+  filed on 2026-11-16 as the recommended choice. It puts an input the reference checker can't reach into class (b′)
+  "beyond the arbiter" when three things hold: cut down to a length the checker can reach, the library and the other
+  engine agree; the library's answer there is the checker's; and at full length one side stopped at a limit it
+  declares. That covers 2,250 differences, and your O06 ruling builds on it. Do you confirm option R?" The options were
+  "Confirm option R" (recommended) and "Overturn option R".
+- **The owner chose "Confirm option R"** on 2026-11-17, described as: "Recorded as your own decision. The 2,250 stay in
+  class (b′), and the candidate reading no longer waits on this."
+- **That is the owner's own decision.** Option R's file says "It is not the owner's own decision: the owner may
+  overturn it"; from this date it is read as the owner's own decision, confirmed, and is not rewritten. The file stays
+  unedited, as do [`reference-arms.md`](reference-arms.md) and the revisions of 2026-11-16b and 16c, which build on it.
+  The confirmation changes no clause, so no dated rule file is added: the bundle's "Revisions" rule
+  ([`decision-rule.md`](decision-rule.md)) asks for a new dated file for a rule revised, and the owner's earlier rulings
+  have one each (16b and 16c) because each changed a clause.
+- **It is still weaker evidence.** Option R was written after task 2.13's runs, their classification and the reduction
+  of 2026-11-15 were seen (its header; `decision-rule.md`, "Revisions"); the owner's confirmation does not change when
+  it was written. The 2,250 differences it holds in class (b') are those of the classification by `@9` over task
+  2.13's runs (the roadmap's record of row M27), which is not a reading.
+- Nothing is declared met. [`docs/roadmap.md`](../../roadmap.md)'s record of the same date has the ruling and what the
+  candidate reading (task 4.2) still waits on.
+
+*Dated note, 2026-11-17, task 4.2's preparations (SJL-11.2; no rule file added or edited; nothing here is a reading).*
+The notes of 2026-11-16 and 2026-11-17 above say "**What the script does not yet do**: `run-reference-arms.sh` passes
+neither `--reduction` nor `--exclude`", and the note of 2026-11-15 says "`run-reference-arms.sh` does not take
+[`reference-arms.md`](reference-arms.md)'s two negative controls ... They are owed at the candidate reading."
+- **The script now does both**, through the commit's `scripts/reference-arms/run.sh`, which it runs. After the
+  comparison the run classifies as the rule was filed (`run/comparison`), runs the declared reduction over that
+  classification (`run/reduction`), and classifies with `--reduction` and `--exclude
+  scripts/reference-arms/p4-excluded.tsv` (`run/classification`, the classification the rule as revised reads). It then
+  takes the two negative controls, a copy of arm V over P4 and one of arm J over P1, each run once and removed; a
+  control the comparison does not report, or the classifier does not list unclassified, fails the run (`run/controls`).
+  So does one whose changed answer, read with no control case named, is not class (c), or whose revert (the run's own
+  answers) does not classify as the run does for its class (both added at review, the same day). The digests list the
+  new directories, and the script's last line names the classification's log and the controls taken. A commit before this note runs the `run.sh` it has, which does none of it.
+- **Shown, not read.** Over task 2.13's retained differences and reduction, from a clean tree, the procedure wrote the
+  `@9` classification byte for byte (`classification.json` `d6ca3a14…`, `classified.tsv.gz` `5dd1a960…`), class (c)
+  empty. Both controls were reported unclassified, and each one's changed answer, read with no control case named, is
+  class (c). [`docs/roadmap.md`](../../roadmap.md)'s record of the same date has the runs and their digests. None is a
+  reading or retained here (validation principle 5).
+- **The harness's `Win32Exception`**, which ended one run of 2026-11-15 and one of this stage's base runs, is fixed in
+  the arms' harness (`tests/ReferenceArms/Common/Harness.cs`). The arms' answers over P1 to P3 are unchanged.
+- **The reading's commit.** `0.1.0-preview.6` was published from `df5cfc2`, and the library is unchanged since. The
+  roadmap records, under the owner's standing direction of 2026-10-18, the recommended reading at `df5cfc2` (the
+  published bits) with a later commit's scripts, jobs and classifier run against it, and the alternative, a later
+  commit published as `0.1.0-preview.7`. The note of 2026-11-15 above leaves the rule commit (`fca7a6d` or `e568b88`)
+  to the owner or this bundle's reviewer, and so does this one.
+- **The candidate reading still waits on** the host job (B-1, which needs Broiler.JS's SJL-11.5 branch, decision D35),
+  CI green at the reading's commit (B-3), the reading's commit and the rule commit, and the reading itself. Nothing is
+  declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
