@@ -62,6 +62,19 @@ not asked for it. A difference whose id names a listed pattern and whose pattern
 (exit 2). classification.json names the listing by its file name, SHA-256 and count, and counts the excluded differences
 apart. Without `--exclude` no difference is excluded, and the classification reads the rule without the ruling.
 
+*Revised 2026-11-17, after Broiler.VM's row M27 of 2026-11-16 (CLASSIFIER_VERSION @9, written after task 2.13's runs,
+their classification by @3 to @8 and the reduction of 2026-11-15 were seen).* @8's paragraph below reads "The
+correspondence is now read at Broiler.VM's `626e4ed8` (Broiler-Platform/Broiler.VM#215's merge, the file's blob
+`d4605f5c`; CORRESPONDENCE below)"; that paragraph is kept as written. The correspondence is now read at Broiler.VM's
+`5e90bfe4` (Broiler-Platform/Broiler.VM#216's merge, the file's blob `28312902`; CORRESPONDENCE below), which adds row
+M27 under decision D-jsrest: a loop over `\\D`, or over a negated class of ASCII word characters, right before `\\b`
+without `RegexOptions.ECMAScript`, which .NET makes atomic. Its predicate (loop_made_atomic_before_boundary) is read
+from the row's text and no wider, and comes after M26, as the row says ("read after row M26, so an input row M8 takes
+by its list stays row M8's"). Like M16, M21, M23 and M25 it takes an input only where the arbiter's answer to the row's
+reading (each such loop written greedy and followed by `(?!X)`, X its atom) is arm J's, up to row M10's names, and not
+the text's; it reads the loop and the `\\b` after it in the arbiter's tree of the pattern (Context.parse). @8's
+predicates, the reduction, the revision of 2026-11-16c and the exclusion are unchanged.
+
 *Revised 2026-11-16, after Broiler.VM's rows M16 to M26 of that day and the owner's ruling on P3's `O06`
 (CLASSIFIER_VERSION @8, written after task 2.13's runs, their classification by @5, @6 and @7 and the reduction of
 2026-11-15 were seen).* @7's paragraph below reads "the correspondence is now read at Broiler.VM's `44511066`
@@ -196,15 +209,15 @@ if str(HERE) not in sys.path:
 
 from population_format import decode_units, encode_units, open_text  # noqa: E402
 
-CLASSIFIER_VERSION = "sjl-11-001-classification@8"
+CLASSIFIER_VERSION = "sjl-11-001-classification@9"
 DEFAULT_CUTOFF = 1_000_000
 
 # The Broiler.VM commit whose correspondence.md this classifier's rows and words are read from (the rule's "rows the
 # correspondence names", reference-arms.md; the bundle README's run-reference-arms.sh --correspondence-commit).
 # classification.json names it beside the blob of the file a run was given, which may be a later one.
-CORRESPONDENCE = {"repository": "Broiler.VM", "commit": "626e4ed88afe8898724bda669e981cf7cf1b98b2",
+CORRESPONDENCE = {"repository": "Broiler.VM", "commit": "5e90bfe485aad60b3637d9f69e54ed71adcd73af",
                   "path": "docs/evidence/sjl-11-001/correspondence.md",
-                  "blob": "d4605f5cd1461137a3533e816d5bc2275434cce8"}
+                  "blob": "2831290201cca3fb6b524a9be8680755eb566f37"}
 
 
 # --------------------------------------------------------------------------------------------------
@@ -373,9 +386,9 @@ class Arbiter:
         return self.answer(encode_units([ord(c) for c in text]), d["flags"], d["subject"], d["lastIndex"], "exec")
 
     def parse(self, text: str):
-        """Rows M16, M17, M19 and M24 (@8): the arbiter's tree of a pattern without `u` or `v` (one character per code
-        unit), as ParsePattern with Annex B reads it (regexpref.parse_pattern: its Disjunction, with the groups
-        counted and every back-reference resolved); None where the arbiter refuses the pattern."""
+        """Rows M16, M17, M19 and M24 (@8), and M27 (@9): the arbiter's tree of a pattern without `u` or `v` (one
+        character per code unit), as ParsePattern with Annex B reads it (regexpref.parse_pattern: its Disjunction, with
+        the groups counted and every back-reference resolved); None where the arbiter refuses the pattern."""
         if not hasattr(self, "_trees"):
             self._trees = {}
         if text not in self._trees:
@@ -2040,6 +2053,162 @@ def class_folded_by_net(d, context) -> bool:
 
 
 # --------------------------------------------------------------------------------------------------
+# The predicate added 2026-11-17 (@9), read from row M27's text at Broiler.VM's 5e90bfe4 (decision D-jsrest of JSD-0081,
+# Broiler-Platform/Broiler.VM#216), starting from the predicate Broiler.VM's stage prototyped over @8. Like rows M16,
+# M21, M23 and M25 it takes an input only where the arbiter's answer to the row's reading is arm J's, up to row M10's
+# names, and not the text's (answered_as_read); it is "read after row M26, so an input row M8 takes by its list stays
+# row M8's". It reads the arbiter's tree of the pattern (Context.parse) for the loop and the `\\b` after it.
+
+WORD_RUNS = ((0x30, 0x39), (0x41, 0x5A), (0x61, 0x7A), (0x5F, 0x5F))
+
+
+def _within_one_word_run(first: int, last: int) -> bool:
+    return any(low <= first <= last <= high for low, high in WORD_RUNS)
+
+
+def _class_member_value(member):
+    """A class member's code unit where it is a Character of the arbiter's tree, else None."""
+    return member.value if type(member).__name__ == "Character" else None
+
+
+def negated_word_class(atom) -> bool:
+    """Row M27's atom, in the arbiter's tree: "`\\D`, or ... a negated class ... whose members are ASCII letters,
+    digits, `_`, `\\d` or ranges within `0-9`, `A-Z` or `a-z`": a ClassEscape `D`, or an inverted ClassRanges with a
+    member, every member a Character of `0-9`, `A-Z`, `a-z` or `_`, a range of two Characters within one of `0-9`,
+    `A-Z` and `a-z`, or a ClassEscape `d`."""
+    name = type(atom).__name__
+    if name == "ClassEscape":
+        return atom.kind == "D"
+    if name != "ClassRanges" or not atom.invert or not atom.items:
+        return False
+    for item in atom.items:
+        if isinstance(item, tuple):
+            first, last = (_class_member_value(member) for member in item)
+            if first is None or last is None or not _within_one_word_run(first, last):
+                return False
+        elif type(item).__name__ == "Character":
+            if not _within_one_word_run(item.value, item.value):
+                return False
+        elif not (type(item).__name__ == "ClassEscape" and item.kind == "d"):
+            return False
+    return True
+
+
+def word_set_loop(node) -> bool:
+    """Row M27's quantifier: "a minimum of 1 or more and no maximum (`+` or `{n,}`, lazy or not)" over its atom."""
+    return (type(node).__name__ == "Quantified" and node.min >= 1 and node.max == float("inf")
+            and negated_word_class(node.atom))
+
+
+def loop_ends(node) -> list:
+    """The loops a term ends with, as row M27 reaches them: the term itself if it is such a loop; "through groups
+    (capturing or not; not a look-around or a modifier group) and quantifiers whose maximum is 1, the last term of an
+    alternative of such a term"."""
+    name = type(node).__name__
+    if word_set_loop(node):
+        return [node]
+    if name == "Group":
+        return [loop for alternative in node.disjunction.alternatives if alternative.terms
+                for loop in loop_ends(alternative.terms[-1])]
+    if name == "Quantified" and node.max == 1:
+        return loop_ends(node.atom)
+    return []
+
+
+def begins_with_word_boundary(node) -> bool:
+    """Row M27's term after the loop: "`\\b`, or a group or positive look-ahead of one alternative, or a quantifier with
+    a minimum of 1 or more, that begins with `\\b`"; a group is a Group of the arbiter's tree (capturing or not), as
+    the predicate Broiler.VM prototyped reads it."""
+    name = type(node).__name__
+    if name == "Assertion":
+        return getattr(node, "kind", None) == "b"
+    if name == "Group" or (name == "LookAround" and node.ahead and not node.negative):
+        alternatives = node.disjunction.alternatives
+        return (len(alternatives) == 1 and bool(alternatives[0].terms)
+                and begins_with_word_boundary(alternatives[0].terms[0]))
+    if name == "Quantified" and node.min >= 1:
+        return begins_with_word_boundary(node.atom)
+    return False
+
+
+def loops_before_word_boundary(tree) -> list:
+    """Every loop row M27 names: one that ends a term of an alternative whose next term begins with `\\b`."""
+    loops = []
+    for node in _nodes(tree):
+        if type(node).__name__ == "Alternative":
+            for term, following in zip(node.terms, node.terms[1:]):
+                if begins_with_word_boundary(following):
+                    loops += loop_ends(term)
+    return loops
+
+
+LOOP_QUANTIFIER = re.compile(r"(\+|\{(\d+),\})(\?)?")
+NEGATED_WORD_BODY = re.compile(r"(?:[0-9A-Za-z_]|\\d|[0-9]-[0-9]|[A-Z]-[A-Z]|[a-z]-[a-z])+")
+
+
+def text_loops(text: str) -> list:
+    """Row M27's loops as the text writes them, in order: (start, end, atom, quantifier) for `\\D` outside a class, or
+    a negated class, lexed as the text lexes it without `v` (text_tokens), whose body is ASCII letters, digits, `_`,
+    `\\d` or ranges within `0-9`, `A-Z` or `a-z`, quantified by `+` or `{n,}` with n at least 1, lazy or not."""
+    loops = []
+    tokens = list(text_tokens(text))
+    for k, (i, token, in_class, _) in enumerate(tokens):
+        atom = None
+        if not in_class and token == "\\D":
+            atom, end = token, i + 2
+        elif not in_class and token == "[" and k + 1 < len(tokens) and tokens[k + 1][1] == "^NEG":
+            end = _class_end(text, i)
+            if NEGATED_WORD_BODY.fullmatch(text[i + 2:end - 1]):
+                atom = text[i:end]
+        if atom is None:
+            continue
+        m = LOOP_QUANTIFIER.match(text, end)
+        if m and (m.group(2) is None or int(m.group(2)) >= 1):
+            loops.append((i, m.end(), atom, m.group(1)))
+    return loops
+
+
+def atomic_loop_reading(text: str, tree) -> str | None:
+    """Row M27's reading: "each such quantifier written greedy and followed by `(?!X)`, X its atom, so `\\D+?` reads
+    `\\D+(?!\\D)`". The tree's loops (word_set_loop, in the order the text writes them) are paired with the text's
+    (text_loops) one for one; None where the row names no loop, or where they do not pair, so that the row takes
+    nothing there."""
+    named = loops_before_word_boundary(tree)
+    if not named:
+        return None
+    in_tree = [node for node in _nodes(tree) if word_set_loop(node)]
+    in_text = text_loops(text)
+    if len(in_tree) != len(in_text):
+        return None
+    out, at = [], 0
+    for node, (start, end, atom, quantifier) in zip(in_tree, in_text):
+        if any(node is loop for loop in named):
+            out.append(text[at:start] + atom + quantifier + "(?!" + atom + ")")
+            at = end
+    out.append(text[at:])
+    return "".join(out)
+
+
+def loop_made_atomic_before_boundary(d, context) -> bool:
+    """Row M27: "Without `u` or `v`, under `s` or with a modifier group in the pattern (one the text lexes, as rows M21
+    and M24 read it), a quantifier with a minimum of 1 or more and no maximum (`+` or `{n,}`, lazy or not) over `\\D`,
+    or over a negated class, lexed as the text lexes it without `v`, whose members are ASCII letters, digits, `_`, `\\d`
+    or ranges within `0-9`, `A-Z` or `a-z`, standing right before `\\b` ...; an `exec` both sides answer, where
+    Broiler.JS answers otherwise and the arbiter's answer to the pattern with each such quantifier read as .NET runs it
+    (the reading in the Broiler.JS cell) is Broiler.JS's, up to row M10's names, and not the text's". `s` is the flag;
+    the loop and the `\\b` are read in the arbiter's tree (loops_before_word_boundary)."""
+    if unicode_mode(d) or not both_answer_exec(d):
+        return False
+    text = unit_text(d["pattern"])
+    if not (has_flag(d, "s") or modifier_group_lexed(text)):
+        return False
+    tree = context.parse(text)
+    if tree is None:
+        return False
+    return answered_as_read(d, context, atomic_loop_reading(text, tree))
+
+
+# --------------------------------------------------------------------------------------------------
 # The rule's revision of 2026-11-16c (docs/evidence/sjl-11-001/reference-arms-revised-2026-11-16c.md, the owner's
 # ruling of that day): an input the arbiter cannot reach, named by a row, classed by that row (@8).
 
@@ -2193,6 +2362,9 @@ ROWS = [
     ("M24", "J", backreference_without_ecmascript, "Correction of Broiler.JS"),
     ("M25", "J", letter_expanded_without_i, "Correction of Broiler.JS"),
     ("M26", "J", class_folded_by_net, "Correction of Broiler.JS"),
+    # Added 2026-11-17 (@9), after M26 as row M27 says ("read after row M26, so an input row M8 takes by its list stays
+    # row M8's").
+    ("M27", "J", loop_made_atomic_before_boundary, "Correction of Broiler.JS"),
 ]
 
 # The rows that read a stop: they are read where one side stopped and the other answered, before the policy's (b).
@@ -2209,8 +2381,8 @@ class Context:
     M14), the BMP code units of a General_Category in the arbiter's UCD (row M12), the inputs where run J, under the
     invariant culture, differs from S (row M15), and a code unit's Canonicalize class and whether .NET's invariant
     lowercase folds it into another (row M10); since @8, run J's answer where it differs (row M15's note), the
-    arbiter's tree of a pattern (rows M16, M17, M19 and M24), and the other arms' answers to a case (the revision of
-    2026-11-16c's condition (2))."""
+    arbiter's tree of a pattern (rows M16, M17, M19 and M24, and since @9 row M27), and the other arms' answers to a
+    case (the revision of 2026-11-16c's condition (2))."""
 
     def __init__(self, refusal_code=None, case_pairs=frozenset(), invariant=None, j_refused=frozenset(),
                  reduction=None, letters=frozenset(), reading=None, category_units=None,

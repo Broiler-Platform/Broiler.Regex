@@ -851,11 +851,157 @@ class RowsM16ToM26Tests(unittest.TestCase):
             self.assertFalse(C.class_folded_by_net(self.j(pattern, flags), C.Context()), pattern)
 
     def test_rows_m16_to_m26_come_after_m15_in_the_correspondence_s_order(self) -> None:
+        # @9 (2026-11-17): row M27 follows M26, so the slice after M15 ends at M26; the version and the correspondence
+        # commit, which this test read as @8's and 626e4ed8, are asserted by RowM27Tests.
         names = [row for row, _, _, _ in C.ROWS]
-        self.assertEqual(names[names.index("M15") + 1:], list(ROWS_M16_TO_M26))
+        self.assertEqual(names[names.index("M15") + 1:names.index("M26") + 1], list(ROWS_M16_TO_M26))
         self.assertTrue(all(engine == "J" for row, engine, _, _ in C.ROWS if row in ROWS_M16_TO_M26))
-        self.assertEqual(C.CORRESPONDENCE["commit"], "626e4ed88afe8898724bda669e981cf7cf1b98b2")
-        self.assertEqual(C.CLASSIFIER_VERSION, "sjl-11-001-classification@8")
+
+
+INFINITY = float("inf")
+NON_DIGIT = node("ClassEscape", kind="D")
+BOUNDARY = node("Assertion", kind="b")
+
+
+def loop(atom, minimum=1, maximum=INFINITY, greedy=False):
+    return node("Quantified", atom=atom, min=minimum, max=maximum, greedy=greedy)
+
+
+def negated(*items):
+    return node("ClassRanges", items=list(items), invert=True)
+
+
+def char(c):
+    return node("Character", value=ord(c))
+
+
+def group(*terms):
+    return node("Group", number=1, name=None, disjunction=alternative(*terms))
+
+
+class RowM27Tests(unittest.TestCase):
+    """The predicate of @9 (2026-11-17), row M27 at Broiler.VM's 5e90bfe4, over the row's own examples and inputs just
+    outside them; the arbiter's tree and its answer to a reading are given."""
+
+    def j(self, pattern, flags, s, arm, subject, run="J"):
+        return diff(run, "exec", pattern, flags, s, arm, subject)
+
+    def context(self, tree, answers=None):
+        context = reading_gives(answers or {})
+        context._parse = lambda text: tree
+        return context
+
+    def test_the_row_s_atoms_and_loops(self) -> None:
+        # `\D`, or a negated class of ASCII letters, digits, `_`, `\d` or ranges within 0-9, A-Z or a-z.
+        for atom in (NON_DIGIT, negated((char("0"), char("9"))), negated(char("_"), node("ClassEscape", kind="d")),
+                     negated((char("a"), char("z")), (char("A"), char("Z")), char("5"))):
+            self.assertTrue(C.word_set_loop(loop(atom)), atom.__dict__)
+        # Not a class escape other than `\D`, a class not negated, a non-word member, a range across runs or a class
+        # escape in a range; nor a loop with a minimum of 0 or a maximum.
+        for atom in (node("ClassEscape", kind="d"), node("ClassEscape", kind="W"),
+                     node("ClassRanges", items=[char("a")], invert=False), negated(char("!")),
+                     negated((char("0"), char("z"))), negated((node("ClassEscape", kind="d"), char("z"))), negated()):
+            self.assertFalse(C.word_set_loop(loop(atom)), atom.__dict__)
+        self.assertFalse(C.word_set_loop(loop(NON_DIGIT, minimum=0)))
+        self.assertFalse(C.word_set_loop(loop(NON_DIGIT, maximum=5)))
+        self.assertTrue(C.word_set_loop(loop(NON_DIGIT, minimum=2, greedy=True)))
+
+    def test_the_loop_is_reached_through_groups_and_optional_terms(self) -> None:
+        lazy = loop(NON_DIGIT)
+        # `\ud83d*((?<=s* )|\D+?|...)?\b`: through an optional group's alternatives to the last term of each.
+        optional = loop(node("Group", number=1, name=None, disjunction=node("Disjunction", alternatives=[
+            node("Alternative", terms=[node("LookAround", ahead=False, negative=False, disjunction=alternative())]),
+            node("Alternative", terms=[lazy])])), minimum=0, maximum=1, greedy=True)
+        self.assertEqual(C.loops_before_word_boundary(alternative(optional, BOUNDARY)), [lazy])
+        self.assertEqual(C.loops_before_word_boundary(alternative(node("Group", number=0, name=None,
+                                                                       disjunction=alternative(char("a"), lazy)),
+                                                                  BOUNDARY)), [lazy])
+        # Not through a look-around, a modifier group or a repeated group, and not a loop that is not the last term.
+        for term in (node("LookAround", ahead=True, negative=False, disjunction=alternative(lazy)),
+                     node("Modifiers", add="i", remove="", disjunction=alternative(lazy)),
+                     loop(group(lazy), minimum=0, maximum=2), group(lazy, char("a"))):
+            self.assertEqual(C.loops_before_word_boundary(alternative(term, BOUNDARY)), [], term.__dict__)
+
+    def test_the_term_after_the_loop_begins_with_a_word_boundary(self) -> None:
+        lazy = loop(NON_DIGIT)
+        for after in (BOUNDARY, group(BOUNDARY, char("a")),
+                      node("LookAround", ahead=True, negative=False, disjunction=alternative(BOUNDARY)),
+                      loop(group(BOUNDARY), minimum=1, maximum=3)):
+            self.assertEqual(C.loops_before_word_boundary(alternative(lazy, after)), [lazy], after.__dict__)
+        for after in (node("Assertion", kind="B"), char("a"),
+                      node("LookAround", ahead=True, negative=True, disjunction=alternative(BOUNDARY)),
+                      node("LookAround", ahead=False, negative=False, disjunction=alternative(BOUNDARY)),
+                      node("Group", number=1, name=None, disjunction=node("Disjunction", alternatives=[
+                          node("Alternative", terms=[BOUNDARY]), node("Alternative", terms=[char("a")])])),
+                      loop(group(BOUNDARY), minimum=0, maximum=1)):
+            self.assertEqual(C.loops_before_word_boundary(alternative(lazy, after)), [], after.__dict__)
+
+    def test_the_row_s_reading(self) -> None:
+        self.assertEqual(C.atomic_loop_reading("\\D+?\\b", alternative(loop(NON_DIGIT), BOUNDARY)), "\\D+(?!\\D)\\b")
+        tree = alternative(loop(negated((char("0"), char("9"))), minimum=2), BOUNDARY)
+        self.assertEqual(C.atomic_loop_reading("[^0-9]{2,}?\\b", tree), "[^0-9]{2,}(?![^0-9])\\b")
+        # Only the loops before `\b` are read; another loop of the row's atoms is left as written.
+        tree = alternative(loop(NON_DIGIT, greedy=True), char("a"), loop(NON_DIGIT, greedy=True), BOUNDARY)
+        self.assertEqual(C.atomic_loop_reading("\\D+a\\D+\\b", tree), "\\D+a\\D+(?!\\D)\\b")
+        # No loop before `\b`, or the tree's loops and the text's do not pair one for one: no reading.
+        self.assertIsNone(C.atomic_loop_reading("\\D+a\\b", alternative(loop(NON_DIGIT), char("a"), BOUNDARY)))
+        self.assertIsNone(C.atomic_loop_reading("[^\\x30]+\\b", alternative(loop(negated(char("0"))), BOUNDARY)))
+        self.assertEqual(C.text_loops("[^a-z_\\d]{1,}?x\\D{0,}[\\D]+"), [(0, 14, "[^a-z_\\d]", "{1,}")])
+
+    def test_row_m27_takes_an_input_whose_reading_gives_arm_j_s_answer(self) -> None:
+        # `\D+?\b` on `a!b`: the text's lazy loop stops before `!`; .NET's atomic loop runs to the end.
+        tree = alternative(loop(NON_DIGIT), BOUNDARY)
+        d = self.j("\\D+?\\b", "s", "match:0,1", "match:0,3", "a!b")
+        answers = {"\\D+(?!\\D)\\b": C.canonical("match:0,3")}
+        context = self.context(tree, answers)
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), context)[:2], ("a", "M27"))
+        self.assertEqual(context.asked, ["\\D+(?!\\D)\\b"])
+        for run in ("J.tr-TR", "J.lt-LT"):
+            self.assertEqual(C.classify(dict(d, run=run), C.canonical("match:0,1"), set(),
+                                        self.context(tree, answers))[1], "M27")
+        # With a modifier group the text lexes, and no `s`: RegexOptions.ECMAScript is dropped too.
+        grouped = self.j("\\D+?\\b(?i:x)?", ".", "match:0,1", "match:0,3", "a!b")
+        tree_grouped = alternative(loop(NON_DIGIT), BOUNDARY, loop(node("Modifiers", add="i", remove="",
+                                                                     disjunction=alternative(char("x"))), 0, 1))
+        self.assertEqual(C.classify(grouped, C.canonical("match:0,1"), set(), self.context(
+            tree_grouped, {"\\D+(?!\\D)\\b(?i:x)?": C.canonical("match:0,3")}))[1], "M27")
+
+    def test_row_m27_takes_nothing_outside_its_condition(self) -> None:
+        tree = alternative(loop(NON_DIGIT), BOUNDARY)
+        answers = {"\\D+(?!\\D)\\b": C.canonical("match:0,3")}
+        d = self.j("\\D+?\\b", "s", "match:0,1", "match:0,3", "a!b")
+        # Without `s` or a modifier group (`(?i:` inside a class is none), under `u` or `v`, or not an exec both answer.
+        for other in (dict(d, flags="."), dict(d, flags="m"), dict(d, pattern=encode("\\D+?\\b[(?i:x)]?")),
+                      dict(d, flags="su"), dict(d, flags="sv"), dict(d, arm="limit:harness")):
+            self.assertFalse(C.loop_made_atomic_before_boundary(other, self.context(tree, answers)), other)
+        # The reading's answer is not arm J's, or is the text's.
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), self.context(tree))[0], "c")
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), self.context(
+            tree, {"\\D+(?!\\D)\\b": C.canonical("match:0,1")}))[0], "c")
+        # A refused pattern (no tree), or a tree with no loop before `\b`.
+        self.assertFalse(C.loop_made_atomic_before_boundary(d, self.context(None, answers)))
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), self.context(
+            alternative(loop(NON_DIGIT), node("Assertion", kind="B")), answers))[0], "c")
+        # Arm V is not the row's.
+        self.assertEqual(C.classify(dict(d, run="V"), C.canonical("match:0,1"), set(), self.context(tree, answers))[0],
+                         "c")
+
+    def test_an_input_row_m8_takes_stays_row_m8(self) -> None:
+        # `\D+\b` beside U+00E9 (a non-ASCII letter) under s: row M8's, which comes first; the arbiter is asked nothing.
+        d = self.j("\\D+\\b", "s", "match:0,1", "match:0,3", "é!b")
+        context = self.context(alternative(loop(NON_DIGIT, greedy=True), BOUNDARY),
+                               {"\\D+(?!\\D)\\b": C.canonical("match:0,3")})
+        context.letters = LETTERS
+        self.assertEqual(C.classify(d, C.canonical("match:0,1"), set(), context)[1], "M8")
+        self.assertEqual(context.asked, [])
+
+    def test_row_m27_comes_after_m26(self) -> None:
+        names = [row for row, _, _, _ in C.ROWS]
+        self.assertEqual(names[-2:], ["M26", "M27"])
+        self.assertEqual([engine for row, engine, _, _ in C.ROWS if row == "M27"], ["J"])
+        self.assertEqual(C.CORRESPONDENCE["commit"], "5e90bfe485aad60b3637d9f69e54ed71adcd73af")
+        self.assertEqual(C.CORRESPONDENCE["blob"], "2831290201cca3fb6b524a9be8680755eb566f37")
+        self.assertEqual(C.CLASSIFIER_VERSION, "sjl-11-001-classification@9")
 
 
 class BeyondByRowTests(unittest.TestCase):
@@ -1169,6 +1315,8 @@ ADDED_ROWS.update({row: "**Correction of Broiler.JS and of Broiler.Regex's previ
                         "move for it" for row in ("M16", "M17", "M18", "M19")})
 ADDED_ROWS.update({row: "**Correction of Broiler.JS**; no test262 row is known to move for it"
                    for row in ("M20", "M21", "M22", "M23", "M24", "M25", "M26")})
+# The row added at Broiler.VM's 5e90bfe4 (@9), as its class opens.
+ADDED_ROWS["M27"] = "**Correction of Broiler.JS**; no test262 row is known to move for it"
 B1_WORDS = ("reached `/^[a]*$/u` over 10,000,001 `a` (`P3-O06`) ...: the class's run ends at the budget's early exit "
             "this row cites (R1). Broiler.JS: **correction of Broiler.JS and of Broiler.Regex's preview.4** (R1)")
 ADDED_ROWS["B1"] = B1_WORDS

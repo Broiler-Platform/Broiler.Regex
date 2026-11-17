@@ -161,6 +161,7 @@ the row's own correction, the direction of the difference and its construct, nev
 | M24 | J | *(@8)* without `u` or `v`, under `s` or with a modifier group, an exec both answer, a back-reference in the arbiter's tree of the pattern |
 | M25 | J | *(@8)* under the flag `i`, without `u` or `v`, an exec both answer, a letter outside a class inside a modifier group that removes `i` whose Canonicalize class holds another member and a non-ASCII one, and the arbiter's answer to the reading (the letter as that class) is J's, up to row M10's names, and not S's |
 | M26 | J | *(@8)* under the flag `i`, without `u` or `v`, an exec both answer, `\W`, `\p{` or `\P{` in a class as the text lexes it without `v` |
+| M27 | J | *(@9)* without `u` or `v`, under `s` or with a modifier group the text lexes, an exec both answer, in the arbiter's tree of the pattern a quantifier with a minimum of 1 or more and no maximum (`+` or `{n,}`, lazy or not) over `\D` or a negated class whose members are ASCII letters, digits, `_`, `\d` or ranges within `0-9`, `A-Z` or `a-z`, which ends a term (through groups, not a look-around or a modifier group, and quantifiers whose maximum is 1) whose next term begins with `\b` (itself, or a group or positive look-ahead of one alternative, or a quantifier with a minimum of 1 or more, that begins with it), and the arbiter's answer to the reading (each such quantifier greedy and followed by `(?!X)`, X its atom: `\D+?` as `\D+(?!\D)`) is J's, up to row M10's names, and not S's; tried after M26, so an input row M8 takes stays row M8's |
 | B1 | J | *(@8, with `--reduction`, the revision of 2026-11-16c)* P3's `O06`, the input the row's widening names: the arbiter cannot reach it, the reduced case agrees with the arbiter, neither side stopped at a bound it declares, every other arm's run answers it as S does, and S's answer is the whole subject, as `whole_run_answer` gives it at the input and the reduced case's answer at the prefix: class (a) "beyond the arbiter, by row" |
 
 Row S1 is not a correction of Broiler.JS (its class names Broiler.VM and preview.4), and row S2b's literal path is not
@@ -276,3 +277,15 @@ without `v` (`text_tokens`). Row B1 is read by the rule's revision of 2026-11-16
 owner's ruling), with `--reduction` only: `classify.py` checks that the row's line holds its words naming the input
 and the mechanism (`check_beyond_rows`, exit 2 otherwise), and reads the other arms' answers from the runs directory
 `--runs` names. A run of @8 needs the correspondence at `626e4ed8` or later.
+
+*Dated note, 2026-11-17, after Broiler.VM's row M27 of 2026-11-16 (`CLASSIFIER_VERSION` @9, written after task 2.13's
+runs, their classification by @3 to @8 and the reduction of 2026-11-15 were seen).* The note of @8 above reads "@8
+reads the correspondence at Broiler.VM's `626e4ed88afe8898724bda669e981cf7cf1b98b2`" and "A run of @8 needs the
+correspondence at `626e4ed8` or later." @9 reads it at Broiler.VM's `5e90bfe485aad60b3637d9f69e54ed71adcd73af`
+(Broiler-Platform/Broiler.VM#216's merge, the file's blob `28312902`), whose row M27 is new (decision D-jsrest): a loop
+over `\D`, or over a negated class of ASCII word characters, right before `\b` without `RegexOptions.ECMAScript`, which
+.NET makes atomic. The row marked *(@9)* in the table is its predicate (`loop_made_atomic_before_boundary`), tried after
+M26 as the row says. It reads the loop and the `\b` in the arbiter's tree of the pattern (`Arbiter.parse`) and asks the
+arbiter for its answer to the row's reading, as M16, M21, M23 and M25 do; where the tree's loops and the text's do not
+pair one for one it gives no reading, and the row takes nothing. Every other predicate, the reduction, the revision of
+2026-11-16c and the exclusion are @8's. A run of @9 needs the correspondence at `5e90bfe4` or later.
