@@ -926,6 +926,19 @@ class RowM27Tests(unittest.TestCase):
                      loop(group(lazy), minimum=0, maximum=2), group(lazy, char("a"))):
             self.assertEqual(C.loops_before_word_boundary(alternative(term, BOUNDARY)), [], term.__dict__)
 
+    def test_a_loop_inside_a_look_behind_is_named_as_the_row_reads(self) -> None:
+        # Pinned at review, 2026-11-17: the row's "the quantifier is a term of an alternative" makes no exception for
+        # the alternatives of a look-behind, so @9 names a loop before `\b` there and reads it, though .NET, which
+        # runs a look-behind right to left, makes no such loop atomic (FindAndMakeLoopsAtomic at v10.0.15). Only
+        # answered_as_read keeps the row from taking such an input; no input of task 2.13's runs has the shape.
+        for negative, text, reading in ((False, "(?<=\\D+?\\b)x", "(?<=\\D+(?!\\D)\\b)x"),
+                                        (True, "(?<!\\D+\\b)x", "(?<!\\D+(?!\\D)\\b)x")):
+            lazy = loop(NON_DIGIT, greedy=negative)
+            tree = alternative(node("LookAround", ahead=False, negative=negative,
+                                    disjunction=alternative(lazy, BOUNDARY)), char("x"))
+            self.assertEqual(C.loops_before_word_boundary(tree), [lazy], text)
+            self.assertEqual(C.atomic_loop_reading(text, tree), reading)
+
     def test_the_term_after_the_loop_begins_with_a_word_boundary(self) -> None:
         lazy = loop(NON_DIGIT)
         for after in (BOUNDARY, group(BOUNDARY, char("a")),
