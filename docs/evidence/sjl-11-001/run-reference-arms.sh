@@ -42,8 +42,12 @@
 #
 # COMMIT is checked out as a detached worktree under OUT (git worktree add --detach), so the arms are built from a clean
 # tree, and removed at the end with its build output. Exit: 0 when run.sh ends with exit 0 (a class (c) difference is
-# not a failure: the classifier's exit 1 is kept in OUT/run/logs/classify.log, as run.sh keeps it); 1 when an input
-# check or a step fails, or run.sh fails; 2 on arguments it does not read.
+# not a failure: the classifier's exit 1 is kept in its log, as run.sh keeps it); 1 when an input check or a step
+# fails, or run.sh fails; 2 on arguments it does not read. The classification the rule as revised reads, and its exit,
+# are in OUT/run/classification and OUT/run/logs/classify-revised.log; OUT/run/logs/classify.log holds the
+# classification as filed (OUT/run/comparison), kept for comparison, which a commit before 2026-11-17 writes alone.
+# The last line names that log and the negative controls taken (OUT/run/controls/ARM/control.json; corrected
+# 2026-11-17, at review: these lines named classify.log as the classification's exit).
 set -euo pipefail
 export PYTHONDONTWRITEBYTECODE=1
 
@@ -183,4 +187,11 @@ for d in population runs comparison reduction classification controls fast-paths
   [ -d "$out/run/$d" ] && listed+=("$d")
 done
 (cd "$out/run" && find "${listed[@]}" -type f ! -path '*/timing/*' | LC_ALL=C sort | xargs sha256sum) > "$out/digests.sha256"
-echo "done: $out (digests.sha256; the classification's exit in run/logs/classify.log)"
+log=run/logs/classify.log
+if [ -f "$out/run/logs/classify-revised.log" ]; then log=run/logs/classify-revised.log; fi
+taken=""
+for f in "$out"/run/controls/*/control.json; do
+  if [ -f "$f" ]; then taken="$taken $(basename "$(dirname "$f")")"; fi
+done
+taken=${taken# }
+echo "done: $out (digests.sha256; the classification's exit in $log; negative controls taken: ${taken:-none})"

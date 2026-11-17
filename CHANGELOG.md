@@ -189,7 +189,7 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     - `scripts/reference-arms/run.sh` classifies as the rule was filed, runs the declared reduction
       (`scripts/reference-arms/reduce.py`), and classifies with `--reduction` and `--exclude`; it then takes the two
       negative controls of `reference-arms.md` with `scripts/reference-arms/controls.py`, and fails a run whose control
-      is not reported unclassified. Over task 2.13's retained differences it writes the `@9` classification byte for
+      is not reported unclassified, or whose changed result, read with no control case named, is not class (c). Over task 2.13's retained differences it writes the `@9` classification byte for
       byte. `classify.py` is unchanged.
     - The arms' harness reads a worker's processor time where the worker may have exited, so a `Win32Exception` no
       longer ends a run; the arms' answers are unchanged.

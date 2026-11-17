@@ -5,7 +5,7 @@
 
     python3 -I -B scripts/reference-arms/controls.py copy --root REPO --arm V|J --case ID --out DIR
     python3 -I -B scripts/reference-arms/controls.py assemble --runs DIR --control DIR --arm V|J --class P4|P1 --out DIR
-    python3 -I -B scripts/reference-arms/controls.py check --dir DIR --arm V|J --class P4|P1 --case ID
+    python3 -I -B scripts/reference-arms/controls.py check --dir DIR --arm V|J --class P4|P1 --case ID --main DIR
 
 reference-arms.md's negative control reads "a copy of arm V with one result changed for one input of P4, and a copy of
 arm J with one result changed for one input of P1, each run once; the comparison reports each as a difference and does
@@ -23,21 +23,30 @@ refuses a Program.cs with no such comment or more than one, and a case id the li
 **assemble** writes two runs directories of symbolic links into DIR (--out), for the class the control runs over:
 `control-runs`, every run of the class from the run's DIR (--runs) but the arm's, which is the control copy's
 (--control: its answers and its run file), and `revert-runs`, every run of the class as the run has it, the arm's
-own among them: the comparison without the change. run.sh compares each (DIR/control, DIR/revert), classifies each
-as the run's classification is taken (`--reduction`, `--exclude`), and classifies the control's comparison once more
-against the revert's run files (DIR/blind): the same changed answer with no control case named, as a changed result
-nobody declared would be read.
+own among them: the comparison without the change. The revert is the run's own answers, linked, not an arm run again
+without the change; so its classification is the run's for that class, and condition 6 below holds it so. run.sh
+compares each (DIR/control, DIR/revert), classifies each as the run's classification is taken (`--reduction`,
+`--exclude`), and classifies the control's comparison once more against the revert's run files (DIR/blind): the same
+changed answer with no control case named, as a changed result nobody declared would be read.
 
-**check** reads DIR (the directory assemble wrote into, with the three classifications) and holds the control **reported unclassified** when every one of these is so, and exits 1
-naming each that is not:
+**check** reads DIR (the directory assemble wrote into, with the three classifications) and the run's classification
+(--main, run.sh's OUT/classification), and holds the control **reported unclassified** when every one of these is so,
+and exits 1 naming each that is not:
 1. the control copy's run file names the case, and the revert's does not;
 2. the control copy's answers differ from the arm's in the run in one line, the case's, and in nothing else;
 3. the control's comparison is the revert's with one line more, the case's for the arm's run (the case is no
    difference in the revert: S and the arm agree on it there);
 4. the control's classification is the revert's with that one line more, listed `unclassified`, and its
-   classification.json names the case among its controls.
-It writes DIR/control.json: each condition, the class the blind classification gives the case, and the counts of the
-control's, the revert's and the blind classification.
+   classification.json names the case among its controls;
+5. (added 2026-11-17, at review) the blind classification is the revert's with that one line more, in class (c), its
+   counts are the revert's with one more in (c), and its classification.json names no control: the changed result,
+   undeclared, makes the classification fail, so that conditions 1 to 4 cannot hold only because the run file names
+   the case (the classifier lists a named case unclassified before it reads anything else);
+6. (added 2026-11-17, at review) the revert's classification is the run's (--main) restricted to the class, line for
+   line: reverted, the classification is the run's own, and passes where the run's does (no (c) in that class).
+It writes DIR/control.json: each condition, the class the blind classification gives the case, the counts of the
+control's, the revert's and the blind classification, and the class (c) differences of the class in the revert and
+in the run.
 """
 
 from __future__ import annotations
@@ -47,6 +56,7 @@ import json
 import os
 import shutil
 import sys
+from itertools import zip_longest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -127,6 +137,21 @@ def control_case(path: Path):
     return json.loads(path.read_text(encoding="utf-8")).get("control-case")
 
 
+def plus_one_c(counts: dict) -> dict:
+    """classification.json's counts with one more difference in class (c); counts names no class it holds none of."""
+    result = dict(counts)
+    result["c"] = result.get("c", 0) + 1
+    return result
+
+
+def of_class(path: Path, klass: str):
+    """The lines of a classified.tsv.gz whose class (its second column) is klass, in order, read one at a time."""
+    with open_text(path) as handle:
+        for line in handle:
+            if not line.startswith("#") and fields(line)[1] == klass:
+                yield line.rstrip("\n")
+
+
 def check(args) -> int:
     d, arm, case = args.dir, args.arm, args.case
     problems: list[str] = []
@@ -175,11 +200,36 @@ def check(args) -> int:
     if summary.get("controls", {}).get(arm) != case:
         problems.append(f"the control's classification.json names the controls {summary.get('controls')}")
 
-    # Recorded, not a condition: how the change reads when no control case is named.
-    blind = [line for line in lines(d / "blind" / "classified.tsv.gz") if fields(line)[0] == case and fields(line)[3] == arm]
+    # 5. Unnamed, the same change is class (c): the classification fails.
+    unnamed_lines = lines(d / "blind" / "classified.tsv.gz")
+    blind = [line for line in unnamed_lines if fields(line)[0] == case and fields(line)[3] == arm]
     found["blind"] = [{"class": fields(x)[7], "row": fields(x)[8], "why": fields(x)[9]} for x in blind]
-    for name in ("control", "revert", "blind"):
-        found[f"counts-{name}"] = json.loads((d / name / "classification.json").read_text(encoding="utf-8"))["counts"]
+    summaries = {name: json.loads((d / name / "classification.json").read_text(encoding="utf-8"))
+                 for name in ("control", "revert", "blind")}
+    for name, value in summaries.items():
+        found[f"counts-{name}"] = value["counts"]
+    if len(blind) != 1 or fields(blind[0])[7] != "c":
+        problems.append(f"the blind classification gives the case {[fields(x)[7] for x in blind]}, not class (c)")
+    if [line for line in unnamed_lines if line not in blind] != reverted:
+        problems.append("the blind classification differs from the revert's in more than the case's line")
+    if summaries["blind"]["counts"] != plus_one_c(summaries["revert"]["counts"]):
+        problems.append(f"the blind classification counts {summaries['blind']['counts']}, not the revert's with one "
+                        "more in class (c)")
+    if summaries["blind"].get("controls"):
+        problems.append(f"the blind classification names the controls {summaries['blind'].get('controls')}")
+    del unnamed_lines
+
+    # 6. Reverted, the classification is the run's for the class.
+    main_c = revert_c = 0
+    same = True
+    for ours, run in zip_longest(reverted, of_class(args.main / "classified.tsv.gz", args.klass)):
+        same = same and ours == run
+        revert_c += ours is not None and fields(ours)[7] == "c"
+        main_c += run is not None and fields(run)[7] == "c"
+    found["c-revert"], found["c-run"] = revert_c, main_c
+    if not same:
+        problems.append(f"the revert's classification is not the run's restricted to {args.klass}, line for line")
+
     found["problems"] = problems
     found["reported-unclassified"] = not problems
     (d / "control.json").write_text(json.dumps(found, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -207,6 +257,7 @@ def main(argv: list[str] | None = None) -> int:
     k.add_argument("--arm", required=True, choices=("V", "J"))
     k.add_argument("--class", dest="klass", required=True)
     k.add_argument("--case", required=True)
+    k.add_argument("--main", required=True, type=Path)
     args = parser.parse_args(argv)
     return {"copy": copy, "assemble": assemble, "check": check}[args.mode](args)
 

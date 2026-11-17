@@ -146,6 +146,8 @@ class RunShClassifierTests(unittest.TestCase):
         self.assertIn("control V not taken: the run holds no P4 of arm V", result.stderr)
         self.assertIn("control J not taken: the run holds no P1 of arm J", result.stderr)
         self.assertFalse(self.calls.exists())
+        # Added 2026-11-17, at review: the last line names the controls taken, so a reading need not look for them.
+        self.assertTrue(result.stdout.rstrip("\n").endswith("(negative controls taken: none)"), result.stdout)
 
 
 if __name__ == "__main__":

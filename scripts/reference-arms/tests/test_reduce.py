@@ -79,12 +79,16 @@ class ReduceTests(unittest.TestCase):
                   + "P4-1\tP4\t30\t0\t20\tnull\t5\n")
             manifest = reduced / "population" / "manifest.json"
             manifest.parent.mkdir(parents=True)
-            manifest.write_text(json.dumps({"inputs": 1, "differences": 2}), encoding="utf-8")
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 2, "cutoff": 1_000_000}), encoding="utf-8")
             args = ["check", "--comparison", str(comparison), "--reduced", str(reduced)]
             self.assertEqual(0, R.main(args))
-            manifest.write_text(json.dumps({"inputs": 1, "differences": 3}), encoding="utf-8")
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 3, "cutoff": 1_000_000}), encoding="utf-8")
             self.assertEqual(1, R.main(args))
-            manifest.write_text(json.dumps({"inputs": 1, "differences": 2}), encoding="utf-8")
+            # Added at review: a reduction taken under another cut-off is not this run's.
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 2, "cutoff": 500_000}), encoding="utf-8")
+            self.assertEqual(1, R.main(args))
+            self.assertEqual(0, R.main(args + ["--cutoff", "500000"]))
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 2, "cutoff": 1_000_000}), encoding="utf-8")
             write(reduced / "reductions.tsv", "# id\tclass\tlength\tlastIndex\tprefix\tarbiter\tprobes\n"
                   + "P4-2\tP4\t30\t0\t20\tnull\t5\n")
             self.assertEqual(1, R.main(args))

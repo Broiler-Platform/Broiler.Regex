@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: 2026 Broiler Platform contributors
 # SPDX-License-Identifier: Apache-2.0
 """The negative controls' script (controls.py), from hand-made runs and classifications. Written 2026-11-17, with the
-controls' step of run.sh; the arms' copies are built and run over a real population only."""
+controls' step of run.sh; the arms' copies are built and run over a real population only. Added the same day, at
+review: the blind classification must give the case class (c), and the revert's classification must be the run's for
+the class (check's conditions 5 and 6)."""
 
 from __future__ import annotations
 
@@ -33,6 +35,8 @@ CLASSIFIED = "# id\tclass\top\trun\tS\tarm\tarbiter\tcategory\trow\twhy\n"
 REVERT_DIFFERENCE = "P4-2\tP4\texec\tV\t0061\t.\t0061\t0\tdefault\tnull\tmatch:0,1\n"
 PLANTED_DIFFERENCE = "P4-1\tP4\texec\tV\t0061\t.\t0061\t0\tdefault\tmatch:0,0\tmatch:0,1\n"
 REVERT_CLASSIFIED = "P4-2\tP4\texec\tV\tnull\tmatch:0,1\tnull\ta\tM4\tw\n"
+OTHER_CLASS = "P1-9\tP1\texec\tJ\tnull\tmatch:0,1\tnull\tb\tD1\tw\n"
+BLIND_PLANTED = "P4-1\tP4\texec\tV\tmatch:0,0\tmatch:0,1\tmatch:0,0\tc\t-\tw\n"
 
 
 def write(path: Path, text: str) -> None:
@@ -100,22 +104,32 @@ class CheckTests(unittest.TestCase):
         self.assertEqual(0, K.main(["assemble", "--runs", str(runs), "--control", str(control), "--arm", "V",
                                     "--class", "P4", "--out", str(self.dir)]))
 
-    def classify(self, name: str, differences: str, classified: str, controls: dict) -> None:
+    def classify(self, name: str, differences: str, classified: str, controls: dict, counts: dict | None = None) -> None:
         write(self.dir / name / "differences.tsv.gz", DIFFERENCES + differences)
         write(self.dir / name / "classified.tsv.gz", CLASSIFIED + classified)
-        counts = {"a": 1}
+        counts = counts or {"a": 1}
         (self.dir / name / "classification.json").write_text(json.dumps({"controls": controls, "counts": counts}),
                                                             encoding="utf-8")
 
-    def check(self, planted_class: str = "unclassified", extra: str = "") -> tuple[int, dict]:
+    def main_classification(self, classified: str) -> None:
+        """The run's classification as revised (run.sh's OUT/classification), every class's lines."""
+        write(self.root / "main" / "classified.tsv.gz", CLASSIFIED + classified)
+
+    def run_check(self) -> tuple[int, dict]:
+        status = K.main(["check", "--dir", str(self.dir), "--arm", "V", "--class", "P4", "--case", "P4-1",
+                         "--main", str(self.root / "main")])
+        return status, json.loads((self.dir / "control.json").read_text(encoding="utf-8"))
+
+    def check(self, planted_class: str = "unclassified", extra: str = "", blind: str = BLIND_PLANTED,
+              blind_counts: dict | None = None, main: str = OTHER_CLASS + REVERT_CLASSIFIED) -> tuple[int, dict]:
         planted = f"P4-1\tP4\texec\tV\tmatch:0,0\tmatch:0,1\t-\t{planted_class}\t-\tw\n"
         self.classify("control", REVERT_DIFFERENCE + PLANTED_DIFFERENCE, REVERT_CLASSIFIED + planted + extra,
-                      {"V": "P4-1"})
+                      {"V": "P4-1"}, {"a": 1, "unclassified": 1})
         self.classify("revert", REVERT_DIFFERENCE, REVERT_CLASSIFIED, {})
-        self.classify("blind", REVERT_DIFFERENCE + PLANTED_DIFFERENCE,
-                      REVERT_CLASSIFIED + "P4-1\tP4\texec\tV\tmatch:0,0\tmatch:0,1\tmatch:0,0\tc\t-\tw\n", {})
-        status = K.main(["check", "--dir", str(self.dir), "--arm", "V", "--class", "P4", "--case", "P4-1"])
-        return status, json.loads((self.dir / "control.json").read_text(encoding="utf-8"))
+        self.classify("blind", REVERT_DIFFERENCE + PLANTED_DIFFERENCE, REVERT_CLASSIFIED + blind, {},
+                      blind_counts or {"a": 1, "c": 1})
+        self.main_classification(main)
+        return self.run_check()
 
     def test_assemble_swaps_the_arm_s_answers_and_run_file_only(self) -> None:
         control, revert = self.dir / "control-runs", self.dir / "revert-runs"
@@ -132,6 +146,7 @@ class CheckTests(unittest.TestCase):
         self.assertEqual(0, status, found["problems"])
         self.assertTrue(found["reported-unclassified"])
         self.assertEqual([{"class": "c", "row": "-", "why": "w"}], found["blind"])
+        self.assertEqual((0, 0), (found["c-revert"], found["c-run"]))
 
     def test_a_control_classified_fails(self) -> None:
         status, found = self.check(planted_class="c")
@@ -148,10 +163,44 @@ class CheckTests(unittest.TestCase):
         self.classify("control", REVERT_DIFFERENCE, REVERT_CLASSIFIED + planted, {"V": "P4-1"})
         self.classify("revert", REVERT_DIFFERENCE, REVERT_CLASSIFIED, {})
         self.classify("blind", REVERT_DIFFERENCE, REVERT_CLASSIFIED, {})
-        status = K.main(["check", "--dir", str(self.dir), "--arm", "V", "--class", "P4", "--case", "P4-1"])
-        found = json.loads((self.dir / "control.json").read_text(encoding="utf-8"))
+        self.main_classification(REVERT_CLASSIFIED)
+        status, found = self.run_check()
         self.assertEqual(1, status)
         self.assertIn("holds 0 differences of the case", " ".join(found["problems"]))
+
+    def test_a_change_the_classifier_absorbs_unnamed_fails(self) -> None:
+        # Added at review: named, the case is listed unclassified whatever the classifier would make of it, so the
+        # blind classification is what shows the change fails the classification. Here it reads class (a), row M1.
+        status, found = self.check(blind="P4-1\tP4\texec\tV\tmatch:0,0\tmatch:0,1\tmatch:0,1\ta\tM1\tw\n",
+                                   blind_counts={"a": 2})
+        self.assertEqual(1, status)
+        problems = " ".join(found["problems"])
+        self.assertIn("gives the case ['a'], not class (c)", problems)
+        self.assertIn("not the revert's with one more in class (c)", problems)
+        self.assertFalse(found["reported-unclassified"])
+
+    def test_a_change_excluded_unnamed_fails(self) -> None:
+        status, found = self.check(blind="P4-1\tP4\texec\tV\tmatch:0,0\tmatch:0,1\t-\texcluded\t-\tw\n",
+                                   blind_counts={"a": 1, "excluded": 1})
+        self.assertEqual(1, status)
+        self.assertIn("not class (c)", " ".join(found["problems"]))
+
+    def test_blind_counts_must_be_the_revert_s_with_one_more_c(self) -> None:
+        status, found = self.check(blind_counts={"a": 1, "c": 2})
+        self.assertEqual(1, status)
+        self.assertEqual(["the blind classification counts {'a': 1, 'c': 2}, "
+                          "not the revert's with one more in class (c)"], found["problems"])
+
+    def test_a_revert_other_than_the_run_s_classification_fails(self) -> None:
+        status, found = self.check(main=OTHER_CLASS + REVERT_CLASSIFIED.replace("\ta\tM4", "\tc\t-"))
+        self.assertEqual(1, status)
+        self.assertEqual(["the revert's classification is not the run's restricted to P4, line for line"],
+                         found["problems"])
+        self.assertEqual((0, 1), (found["c-revert"], found["c-run"]))
+        # A line of the class the revert does not hold.
+        more = "P4-5\tP4\texec\tV\tnull\tmatch:0,1\tnull\ta\tM4\tw\n"
+        status, found = self.check(main=OTHER_CLASS + REVERT_CLASSIFIED + more)
+        self.assertEqual(1, status)
 
     def test_a_copy_that_changed_another_answer_fails(self) -> None:
         write(self.root / "control-copy" / "P4.V.tsv.gz",

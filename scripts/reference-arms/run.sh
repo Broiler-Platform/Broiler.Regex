@@ -13,9 +13,9 @@
 # OUT receives the population, the arms' answers, the comparison and the classification; nothing is written into the
 # repository but the arms' build output (tests/ReferenceArms/*/bin, obj). Each step's command is the first line of its
 # log in OUT/logs. The script stops, with exit 1, at the first step that fails. The classifier's exit 1 (a class (c)
-# difference) is not a failure of the script and is kept in its log; its exit 2 (it refused) or 3 (it failed), or a
-# classification that leaves no classification.json, is. The fast-path differential's exit 1 (a disagreement) is
-# kept the same way; any other failure of it fails the script. --classify-only runs the classification alone (below),
+# difference) is not a failure of the script and is kept in its log (the script exits 0 and says so on stderr, below);
+# its exit 2 (it refused) or 3 (it failed), or a classification that leaves no classification.json, is. The fast-path
+# differential's exit 1 (a disagreement) is kept the same way; any other failure of it fails the script. --classify-only runs the classification alone (below),
 # over the comparison an earlier run left in OUT.
 #
 # The classification (revised 2026-11-17, SJL-11.2, before the candidate reading; until then the script stopped at the
@@ -28,8 +28,10 @@
 #      over the reduced population with the same stop list, compare.py over their answers, classify.py over that
 #      comparison (with --exclude), and reduce.py read (outcomes.tsv, outcomes.json);
 #   3. classify.py with --reduction OUT/reduction and --exclude scripts/reference-arms/p4-excluded.tsv (OUT/
-#      classification: classification.json, classified.tsv.gz): the classification the rule as revised reads, and the
-#      one whose exit the script reports.
+#      classification: classification.json, classified.tsv.gz): the classification the rule as revised reads, logged
+#      in OUT/logs/classify-revised.log (1's log, OUT/logs/classify.log, holds the classification as filed, kept for
+#      comparison). When it exits 1 the script says "class (c) differences" on stderr, naming its classification.json,
+#      and still exits 0: a class (c) difference is the classification's finding, not a failure of the run.
 # Every classification shares one arbiter cache, OUT/arbiter-cache.jsonl.gz (an answer depends only on the input, the
 # arbiter's commit and the cut-off), and each one's exit is read as the paragraph above says; the script says "class
 # (c) differences" after 3 only. --classify-only runs 1 to 3 over the comparison an earlier run left in OUT; it reads the
@@ -43,10 +45,13 @@
 # the copy is built and run once over its class, the copy is removed, and the class's runs with the copy's answers
 # (control) and with the arm's own (revert) are compared and classified as in 3, the control's comparison once more
 # against the revert's run files (blind: no control case named); controls.py check then holds the control reported
-# unclassified, or fails the script (OUT/controls/ARM/control.json). The cases are task 2.13's, P4-01234-u-05 for V and
+# unclassified, or fails the script (OUT/controls/ARM/control.json): named, the case is listed unclassified; unnamed
+# (blind), it is class (c); and the revert, the run's own answers, classifies as OUT/classification does for that class
+# (its conditions; the last two added 2026-11-17, at review). The cases are task 2.13's, P4-01234-u-05 for V and
 # P1-regexp:matching:m1-notes:0001 for J, unless --control-v or --control-j names another. A control whose class the
-# run does not hold (a partial run) is not taken, and its log says so. --controls-only takes them over an earlier run
-# in OUT that holds the classification of 3.
+# run does not hold (a partial run) is not taken, and its log says so; the last line the script writes, "done: OUT",
+# names the controls taken (added 2026-11-17, at review). --controls-only takes them over an earlier run in OUT that
+# holds the classification of 3.
 #
 # The arms read the stop list tests/ReferenceArms/stops.tsv: a case it holds is answered as the harness's stop without
 # running, and every other case runs to its end under backstops (tests/ReferenceArms/Common/Limits.cs), so that no
@@ -176,7 +181,8 @@ classification() {
   [ "$classified_status" -eq 0 ] || echo "class (c) differences: see $out/classification/classification.json" >&2
 }
 
-# The two negative controls, each over its class.
+# The two negative controls, each over its class; taken lists those taken.
+taken=()
 controls() {
   local arm klass id dir
   for spec in "V P4 $control_v" "J P1 $control_j"; do
@@ -204,7 +210,8 @@ controls() {
     classify_into "control-$arm-classify-revert" "$dir/revert" --comparison "$dir/revert" --runs "$dir/revert-runs" "${revised[@]}"
     classify_into "control-$arm-classify-blind" "$dir/blind" --comparison "$dir/control" --runs "$dir/revert-runs" "${revised[@]}"
     step "control-$arm-check" python3 -I -B scripts/reference-arms/controls.py check --dir "$dir" --arm "$arm" \
-      --class "$klass" --case "$id"
+      --class "$klass" --case "$id" --main "$out/classification"
+    taken+=("$arm")
   done
 }
 
@@ -225,7 +232,7 @@ if [ "$only" = controls ]; then
   [ -s "$out/classification/classification.json" ] || { echo "no classification in $out: --controls-only reads a run's" >&2; exit 1; }
   controls
   unlisted_stops
-  echo "done: $out"
+  echo "done: $out (negative controls taken: ${taken[*]:-none})"
   exit 0
 fi
 
@@ -271,4 +278,4 @@ if [ -f "$out/population/P4.tsv.gz" ]; then
 fi
 controls
 unlisted_stops
-echo "done: $out"
+echo "done: $out (negative controls taken: ${taken[*]:-none})"

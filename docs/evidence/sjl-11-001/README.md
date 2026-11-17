@@ -336,7 +336,9 @@ neither `--reduction` nor `--exclude`", and the note of 2026-11-15 says "`run-re
   scripts/reference-arms/p4-excluded.tsv` (`run/classification`, the classification the rule as revised reads). It then
   takes the two negative controls, a copy of arm V over P4 and one of arm J over P1, each run once and removed; a
   control the comparison does not report, or the classifier does not list unclassified, fails the run (`run/controls`).
-  The digests list the new directories. A commit before this note runs the `run.sh` it has, which does none of it.
+  So does one whose changed answer, read with no control case named, is not class (c), or whose revert (the run's own
+  answers) does not classify as the run does for its class (both added at review, the same day). The digests list the
+  new directories, and the script's last line names the classification's log and the controls taken. A commit before this note runs the `run.sh` it has, which does none of it.
 - **Shown, not read.** Over task 2.13's retained differences and reduction, from a clean tree, the procedure wrote the
   `@9` classification byte for byte (`classification.json` `d6ca3a14…`, `classified.tsv.gz` `5dd1a960…`), class (c)
   empty. Both controls were reported unclassified, and each one's changed answer, read with no control case named, is
