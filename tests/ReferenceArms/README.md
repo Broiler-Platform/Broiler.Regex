@@ -52,7 +52,11 @@ read under `g` or `y` and is 0 otherwise, a lastIndex past the subject is `null`
 its matcher as its engine does, in the copied members below. Argument conversion, lastIndex's writes, the protocols
 and error construction stay in the engines and are not compared.
 
-**Workers.** Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
+**Workers.** *(Dated note, 2026-11-17: the supervisor's reading of a worker's processor time, `Harness.ProcessorTime`,
+read an exit only as .NET's `InvalidOperationException`; a worker reaped between .NET's check and its read of the
+process's statistics threw `Win32Exception` instead, in the supervisor's reading thread, which ended the run (the
+roadmap's record of 2026-11-15). Both now read as the exit, zero processor time, as the method's summary always said.
+No answer depends on it.)* Each class's cases are split into 6 contiguous ranges (`Limits.Workers`, fixed, so that the ranges do not
 depend on the machine), one worker process of the arm per range, each case on a thread of 16 MiB, the stack
 Broiler.JS's shell gives a script (`SH/Program.cs:128`). A case the harness stops, loses or skips is answered
 `limit:harness`, one answer whichever it was; a new worker takes the range from the next case. Every worker runs
