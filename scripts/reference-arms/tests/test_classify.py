@@ -916,6 +916,10 @@ class RowM27Tests(unittest.TestCase):
         self.assertEqual(C.loops_before_word_boundary(alternative(node("Group", number=0, name=None,
                                                                        disjunction=alternative(char("a"), lazy)),
                                                                   BOUNDARY)), [lazy])
+        # A group that does not capture, `(?:…)`, which the arbiter's tree writes as a Modifiers with no flag.
+        self.assertEqual(C.loops_before_word_boundary(alternative(node("Modifiers", add="", remove="",
+                                                                       disjunction=alternative(lazy)), BOUNDARY)),
+                         [lazy])
         # Not through a look-around, a modifier group or a repeated group, and not a loop that is not the last term.
         for term in (node("LookAround", ahead=True, negative=False, disjunction=alternative(lazy)),
                      node("Modifiers", add="i", remove="", disjunction=alternative(lazy)),
@@ -926,14 +930,16 @@ class RowM27Tests(unittest.TestCase):
         lazy = loop(NON_DIGIT)
         for after in (BOUNDARY, group(BOUNDARY, char("a")),
                       node("LookAround", ahead=True, negative=False, disjunction=alternative(BOUNDARY)),
-                      loop(group(BOUNDARY), minimum=1, maximum=3)):
+                      loop(group(BOUNDARY), minimum=1, maximum=3),
+                      node("Modifiers", add="", remove="", disjunction=alternative(BOUNDARY))):
             self.assertEqual(C.loops_before_word_boundary(alternative(lazy, after)), [lazy], after.__dict__)
         for after in (node("Assertion", kind="B"), char("a"),
                       node("LookAround", ahead=True, negative=True, disjunction=alternative(BOUNDARY)),
                       node("LookAround", ahead=False, negative=False, disjunction=alternative(BOUNDARY)),
                       node("Group", number=1, name=None, disjunction=node("Disjunction", alternatives=[
                           node("Alternative", terms=[BOUNDARY]), node("Alternative", terms=[char("a")])])),
-                      loop(group(BOUNDARY), minimum=0, maximum=1)):
+                      loop(group(BOUNDARY), minimum=0, maximum=1),
+                      node("Modifiers", add="i", remove="", disjunction=alternative(BOUNDARY))):
             self.assertEqual(C.loops_before_word_boundary(alternative(lazy, after)), [], after.__dict__)
 
     def test_the_row_s_reading(self) -> None:

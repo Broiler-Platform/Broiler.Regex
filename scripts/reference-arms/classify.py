@@ -2100,6 +2100,14 @@ def word_set_loop(node) -> bool:
             and negated_word_class(node.atom))
 
 
+def plain_group(node) -> bool:
+    """A group, capturing or not, and not a look-around or a modifier group: in the arbiter's tree a Group (capturing),
+    or a Modifiers that adds and removes no flag, which is how regexpref.parse_pattern writes `(?:…)` (an empty
+    modifier group `(?-:…)` is an early error)."""
+    name = type(node).__name__
+    return name == "Group" or (name == "Modifiers" and not node.add and not node.remove)
+
+
 def loop_ends(node) -> list:
     """The loops a term ends with, as row M27 reaches them: the term itself if it is such a loop; "through groups
     (capturing or not; not a look-around or a modifier group) and quantifiers whose maximum is 1, the last term of an
@@ -2107,7 +2115,7 @@ def loop_ends(node) -> list:
     name = type(node).__name__
     if word_set_loop(node):
         return [node]
-    if name == "Group":
+    if plain_group(node):
         return [loop for alternative in node.disjunction.alternatives if alternative.terms
                 for loop in loop_ends(alternative.terms[-1])]
     if name == "Quantified" and node.max == 1:
@@ -2117,12 +2125,12 @@ def loop_ends(node) -> list:
 
 def begins_with_word_boundary(node) -> bool:
     """Row M27's term after the loop: "`\\b`, or a group or positive look-ahead of one alternative, or a quantifier with
-    a minimum of 1 or more, that begins with `\\b`"; a group is a Group of the arbiter's tree (capturing or not), as
-    the predicate Broiler.VM prototyped reads it."""
+    a minimum of 1 or more, that begins with `\\b`"; a group is one plain_group reads (capturing or not, not a
+    modifier group), as Broiler.VM's predicate reads it ("a `Group`, or a positive look-ahead, of one alternative")."""
     name = type(node).__name__
     if name == "Assertion":
         return getattr(node, "kind", None) == "b"
-    if name == "Group" or (name == "LookAround" and node.ahead and not node.negative):
+    if plain_group(node) or (name == "LookAround" and node.ahead and not node.negative):
         alternatives = node.disjunction.alternatives
         return (len(alternatives) == 1 and bool(alternatives[0].terms)
                 and begins_with_word_boundary(alternatives[0].terms[0]))
