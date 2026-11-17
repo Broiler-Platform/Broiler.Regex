@@ -8,6 +8,15 @@
 # population, runs every arm (J under the invariant culture, tr-TR and lt-LT), compares, classifies and runs the
 # fast-path differential, each step logged with its command as the first line.
 #
+# Since 2026-11-17 (SJL-11.2, before the candidate reading) the run.sh of a commit from then on also classifies as the
+# rule as revised reads it, and takes the two negative controls (its header): the comparison classified as the rule was
+# filed (run/comparison), the declared reduction over it (run/reduction: reduce.py, the arms over the reduced cases,
+# their comparison and classification), the classification with --reduction and --exclude
+# scripts/reference-arms/p4-excluded.tsv (run/classification, the one the rule as revised reads), and the controls of
+# reference-arms.md, a copy of arm V over P4 and one of arm J over P1, each reported unclassified or the run fails
+# (run/controls). This script lists those directories' files too. A commit before then runs the run.sh it has, which
+# does none of it; the README's note of 2026-11-17 says what a reading at such a commit needs.
+#
 #   docs/evidence/sjl-11-001/run-reference-arms.sh COMMIT OUT \
 #       --test262 DIR --unicode DIR --broiler-js DIR --broiler-vm DIR --correspondence-commit SHA \
 #       [--js-commit SHA] [--unicode-commit SHA] [--classes P1,...]
@@ -166,10 +175,12 @@ args=("$out/run" --test262 "$test262" --unicode "$unicode" --broiler-js "$js" --
 [ -n "$classes" ] && args+=(--classes "$classes")
 step run-sh bash "$tree/scripts/reference-arms/run.sh" "${args[@]}"
 
-# The listings and every file they come from, by SHA-256; timing/ is the run's and is not listed (nothing compares it).
+# The listings and every file they come from, by SHA-256; a timing/ directory is the run's and is not listed (nothing
+# compares it), nor are the symbolic links the controls compare through (each names a file listed here), nor the arbiter
+# cache (answers the classifications share, which decide nothing they do not).
 listed=()
-for d in population runs comparison fast-paths; do
+for d in population runs comparison reduction classification controls fast-paths; do
   [ -d "$out/run/$d" ] && listed+=("$d")
 done
-(cd "$out/run" && find "${listed[@]}" -type f ! -path 'runs/timing/*' | LC_ALL=C sort | xargs sha256sum) > "$out/digests.sha256"
+(cd "$out/run" && find "${listed[@]}" -type f ! -path '*/timing/*' | LC_ALL=C sort | xargs sha256sum) > "$out/digests.sha256"
 echo "done: $out (digests.sha256; the classification's exit in run/logs/classify.log)"

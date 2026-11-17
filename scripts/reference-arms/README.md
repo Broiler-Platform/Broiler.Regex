@@ -16,7 +16,8 @@ The scripts of [`docs/evidence/sjl-11-001/reference-arms.md`](../../docs/evidenc
 | `reduce.py` | The reduction of the inputs the arbiter cannot reach (written 2026-11-15): each such exec's subject cut to the longest prefix the arbiter reaches, written as a population the arms, the comparison and the classifier run over unchanged, and each difference read against its reduced case (its docstring) |
 | `exclusion.py` | The exclusion from P4 by the owner's ruling of 2026-11-16 (written that day): the limbs the 19 were found by, the pattern's limb read from the pattern's text, the arbiter's limb asked of every exec input of such a pattern, the run's limb (a stop against an answer there), and `select`, which writes the listing (its docstring) |
 | `p4-excluded.tsv` | The listing `exclusion.py select` wrote and `classify.py --exclude` reads: the 19 P4 patterns the ruling excludes, by id, pattern, quantifier and the flag sets where the three limbs hold |
-| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit; the reduction's reading (added 2026-11-15); the exclusion and the filed listing (added 2026-11-16) |
+| `controls.py` | The two negative controls of `reference-arms.md` (written 2026-11-17): the control copy of an arm, the runs it is compared through, and the check that the comparison reports its case and the classifier lists it unclassified (its docstring) |
+| `tests/` | SplitMix64 against its published outputs; the format, the readers and P4's draws; the classifier; `run.sh`'s reading of the classifier's exit; the reduction's reading (added 2026-11-15); the exclusion and the filed listing (added 2026-11-16); `run.sh`'s three classifications, the reduction's check and the controls (added 2026-11-17) |
 
 ## Commands
 
@@ -33,6 +34,10 @@ python3 -I -B scripts/reference-arms/classify.py --comparison OUT/comparison --r
     --broiler-js <Broiler.JS checkout> --commit <the commit the bundle names> \
     --correspondence <Broiler.VM>/docs/evidence/sjl-11-001/correspondence.md \
     --unicode-pins <Broiler.Unicode>/data/unicode/pins
+#   since 2026-11-17 run.sh then runs the reduction (reduce.py prefixes, the arms over OUT/reduction/population,
+#   compare.py, classify.py, reduce.py read), classify.py again with --reduction OUT/reduction
+#   --exclude scripts/reference-arms/p4-excluded.tsv --out OUT/classification, and the negative controls (controls.py);
+#   its header gives every command
 ```
 
 ## The files
@@ -294,3 +299,22 @@ tree writes as a modifier group that adds and removes no flag (`plain_group`); a
 flag is not one. As the row's text reads, a loop before `\b` in the alternatives of a look-behind is named and read too,
 though .NET, which runs a look-behind right to left, makes no such loop atomic; only the arbiter's answer to the reading
 keeps the row from taking such an input, and no input of task 2.13's runs has the shape. A script test pins it.
+
+*Dated note, 2026-11-17, before the candidate reading (task 4.2; no classifier change, `CLASSIFIER_VERSION` stays @9).*
+The notes above read "`run.sh` does not pass it: the reduction is run after a comparison, as the roadmap's record of
+2026-11-15 says" (@4) and "`run.sh` passes neither `--reduction` nor `--exclude`: both are read after a comparison, as
+the roadmap's record of 2026-11-16 says" (@6). It now does both, as the rule's revisions read the classification
+(option R, which the owner confirmed on 2026-11-17, and the revisions of 2026-11-16b and 16c), in three steps after the
+comparison, each logged with its command: `classify.py` as the rule was filed, into `OUT/comparison` as before; the
+reduction into `OUT/reduction` (`reduce.py prefixes` over that classification, the arms over the reduced cases with the
+stop list, `compare.py`, `classify.py` with `--exclude`, `reduce.py read`); and `classify.py` with `--reduction
+OUT/reduction` and `--exclude scripts/reference-arms/p4-excluded.tsv` into `OUT/classification`, the classification the
+rule as revised reads and whose exit `run.sh` reports. The three share one arbiter cache. `--classify-only` runs the
+three over an earlier run's comparison and reads an earlier run's `OUT/reduction` only where `reduce.py check` (new, it
+writes nothing) finds it lists the inputs that comparison leaves unreachable. Then, after the fast-path differential,
+`run.sh` takes the two negative controls with `controls.py` (new): a copy of arm V over P4 and one of arm J over P1,
+each made as `tests/ReferenceArms/README.md`'s "The negative controls" says, built, run once and removed; the class's
+comparison with the copy's answers and with the arm's own, each classified as above, and the copy's once more with no
+control case named; and the check that the comparison reports the case and the classifier lists it unclassified and
+nothing else changed, which fails the run when it does not hold. `--controls-only` takes them over an earlier run.
+`classify.py` is unchanged.

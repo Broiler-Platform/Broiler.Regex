@@ -60,6 +60,35 @@ class ReduceTests(unittest.TestCase):
             outcomes = {line[0]: (line[8], line[9]) for line in lines}
             self.assertEqual({"P4-1": ("reduced", "b"), "P4-2": ("agrees", "-"), "P4-3": ("no-prefix", "-")}, outcomes)
 
+    def test_check_finds_a_reduction_of_this_comparison_or_of_another(self) -> None:
+        # Added 2026-11-17, with run.sh's reduction step: --classify-only reads an earlier reduction only when it is
+        # this comparison's.
+        import json  # noqa: PLC0415
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            comparison, reduced = root / "comparison", root / "reduced"
+            write(comparison / "differences.tsv.gz", DIFFERENCES
+                  + "P4-1\tP4\texec\tJ\t0061\t.\t0061*30\t0\tdefault\tlimit:steps\tnull\n"
+                  + "P4-1\tP4\texec\tJ.tr-TR\t0061\t.\t0061*30\t0\tdefault\tlimit:steps\tnull\n"
+                  + "P4-4\tP4\texec\tJ\t0064\t.\t0064\t0\tdefault\tnull\tmatch:0,1\n")
+            write(comparison / "classified.tsv.gz", CLASSIFIED
+                  + "P4-1\tP4\texec\tJ\tlimit:steps\tnull\tarbiter:exhausted\tc\t-\tw\n"
+                  + "P4-1\tP4\texec\tJ.tr-TR\tlimit:steps\tnull\tarbiter:exhausted\tc\t-\tw\n"
+                  + "P4-4\tP4\texec\tJ\tnull\tmatch:0,1\tnull\tc\t-\tw\n")
+            write(reduced / "reductions.tsv", "# id\tclass\tlength\tlastIndex\tprefix\tarbiter\tprobes\n"
+                  + "P4-1\tP4\t30\t0\t20\tnull\t5\n")
+            manifest = reduced / "population" / "manifest.json"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 2}), encoding="utf-8")
+            args = ["check", "--comparison", str(comparison), "--reduced", str(reduced)]
+            self.assertEqual(0, R.main(args))
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 3}), encoding="utf-8")
+            self.assertEqual(1, R.main(args))
+            manifest.write_text(json.dumps({"inputs": 1, "differences": 2}), encoding="utf-8")
+            write(reduced / "reductions.tsv", "# id\tclass\tlength\tlastIndex\tprefix\tarbiter\tprobes\n"
+                  + "P4-2\tP4\t30\t0\t20\tnull\t5\n")
+            self.assertEqual(1, R.main(args))
+
 
 if __name__ == "__main__":
     unittest.main()

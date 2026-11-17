@@ -165,6 +165,13 @@ list the difference unclassified. The copies are never committed. *(Until the re
 appended "`#negative-control` to that case's answer", a marker the classifier's canonical form stripped, so the
 planted answer was not a changed result; the classifier no longer strips anything.)*
 
+*Dated note, 2026-11-17 (before the candidate reading, task 4.2).* Until then the controls were taken by hand, from
+scratch worktrees (`docs/roadmap.md`, the records of task 2.13). `scripts/reference-arms/run.sh` now takes both after
+every full run, and `--controls-only` over an earlier one, with `scripts/reference-arms/controls.py`: the copy is made
+of this directory's `Common/` and `V/` or `J/` with the files they build from, under the run's `OUT/controls/`, its
+`NEGATIVE-CONTROL` line given the case and nothing else; it is built, run once over its class (P4 for V, P1 for J) and
+removed. The cases are task 2.13's, `P4-01234-u-05` and `P1-regexp:matching:m1-notes:0001`, unless the run names others.
+
 ## The fast-path differential
 
 `FastPaths/` compiles the library's own sources (named by item, not copied) into itself, as the internal compiler has

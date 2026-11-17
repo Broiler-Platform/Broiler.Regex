@@ -6,6 +6,7 @@
     python3 -I -B scripts/reference-arms/reduce.py prefixes --comparison DIR --broiler-js CHECKOUT --commit SHA
         --unicode-pins DIR --out DIR [--cutoff N] [--workers N]
     python3 -I -B scripts/reference-arms/reduce.py read --comparison DIR --reduced DIR
+    python3 -I -B scripts/reference-arms/reduce.py check --comparison DIR --reduced DIR
 
 The rule's arbiter clause reads "a difference the arbiter cannot reach in its step cut-off is class (c) until reduced
 to an input it can" (reference-arms.md), and docs/roadmap.md's record of task 2.13 asks that each such input be
@@ -40,6 +41,11 @@ OUT/outcomes.tsv and OUT/outcomes.json:
   not survive the reduction, so the input stays one the arbiter cannot reach".)
 - `no-prefix`: the arbiter reaches no prefix, not even the shortest: what it cannot reach is in the pattern, which
   this reduction does not change.
+
+**check** (added 2026-11-17, with run.sh's reduction step; it writes nothing and changes no reduction): whether DIR
+--reduced is the reduction of the comparison: its reductions.tsv lists exactly the inputs `prefixes` takes from that
+comparison's classification, and its manifest counts the same inputs and differences. Exit 0 when it is, 1 when it is
+not. run.sh's `--classify-only` reads a reduction an earlier run left only when it is.
 """
 
 from __future__ import annotations
@@ -196,6 +202,23 @@ def read(args) -> int:
     return 0
 
 
+def check(args) -> int:
+    """Whether args.reduced is the reduction of args.comparison: the same inputs, and the manifest's counts."""
+    differences = unreachable_differences(args.comparison)
+    wanted = {d["id"] for d in differences}
+    listed = {r["id"] for r in rows(args.reduced / "reductions.tsv")}
+    manifest = json.loads((args.reduced / "population" / "manifest.json").read_text(encoding="utf-8"))
+    problems = []
+    if listed != wanted:
+        problems.append(f"reductions.tsv lists {len(listed)} inputs, the comparison leaves {len(wanted)} unreachable; "
+                        f"{len(listed - wanted)} listed and not left, {len(wanted - listed)} left and not listed")
+    if manifest.get("inputs") != len(wanted) or manifest.get("differences") != len(differences):
+        problems.append(f"the manifest counts {manifest.get('inputs')} inputs and {manifest.get('differences')} "
+                        f"differences, the comparison {len(wanted)} and {len(differences)}")
+    print(json.dumps({"inputs": len(wanted), "differences": len(differences), "problems": problems}, sort_keys=True))
+    return 1 if problems else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="mode", required=True)
@@ -210,8 +233,11 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("read")
     r.add_argument("--comparison", required=True, type=Path)
     r.add_argument("--reduced", required=True, type=Path)
+    k = sub.add_parser("check")
+    k.add_argument("--comparison", required=True, type=Path)
+    k.add_argument("--reduced", required=True, type=Path)
     args = parser.parse_args(argv)
-    return prefixes(args) if args.mode == "prefixes" else read(args)
+    return {"prefixes": prefixes, "read": read, "check": check}[args.mode](args)
 
 
 if __name__ == "__main__":
