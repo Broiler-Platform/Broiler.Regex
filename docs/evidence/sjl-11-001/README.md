@@ -373,8 +373,16 @@ host job (B-1, which needs Broiler.JS's SJL-11.5 branch, decision D35)".
   among them; the roadmap's record has the runs, a planted regression among them, and the choices taken with their
   alternatives.
 - **The job has not run in CI**, and B-1 is read from CI's run at the reading's commit (B-3); part B's control is a
-  reading's. [`run-library-evidence.sh`](run-library-evidence.sh) records B-1 as not run, with a reason now out of date
-  ("it waits for Broiler.JS's SJL-11.5 branch"); B-1 is CI's, and the script is unchanged.
+  reading's. [`run-library-evidence.sh`](run-library-evidence.sh) records B-1 as not run, as before. Its header said
+  B-1 "waits for Broiler.JS's SJL-11.5 branch", and the log it writes for B-1 (`logs/test262-host.log`) said that "no
+  commit is named, because Broiler.JS's SJL-11.5 branch ... does not exist yet"; both were out of date and are
+  corrected at the review of this work. A reading taken at an earlier commit keeps the old text in that log.
+- **At review**, the population is fixed by the verdict, not by the job's script alone:
+  [`compare.py`](../../../scripts/test262-host/compare.py) holds B-1's population as decision-rule.md words it, plus
+  staging's RegExp directory, and is red on a run that leaves out any of those paths or whose files listing
+  `regexp-duplicate-named-groups` are not the 19 it declares at the pin; its tests hold that copy to the rule's line
+  and the workflow's sparse checkout to it. Broiler.JS's commit must stay reachable until a dated record moves it,
+  since `publish.yml` runs the job too.
 - **The candidate reading still waits on** CI green at the reading's commit (B-3), the reading's commit (recommended
   `df5cfc2` with this tree's scripts and jobs) and the rule commit, and the reading itself. Nothing is declared met.
 
