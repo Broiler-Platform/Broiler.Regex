@@ -6,6 +6,7 @@
     python3 -I scripts/test262-host/compare.py --report test262-host.json --exit CODE \\
         --expected test262/host-expected-failures.txt --suite SUITE --suite-ref SHA \\
         --population test/built-ins/RegExp ... [--require PATH ...] [--summary FILE]
+    python3 -I scripts/test262-host/compare.py --print-population
 
 Written 2026-11-17, at task 2.10 of SJL-11.2 (the host job, CI's test262-host). The report is the JSON that
 Broiler.JS's scripts/compliance/run_test262.py writes with --output; CODE is that runner's exit. B-1
@@ -27,11 +28,16 @@ script holds the report to that, and to the run it was asked for:
   passes is a list that is no longer exact;
 - each entry of the list: three tab-separated fields, the path, the host member (one of the five B-1 names) and why,
   not empty; no path twice; and no entry for a file listing regexp-duplicate-named-groups, every row of which must pass;
-- every file of the population whose front matter lists regexp-duplicate-named-groups passes, and each --require path
-  (the four files task 2.6 of SJL-11.2 left to this job) is in the population, lists the feature and passes.
+- every file of the population whose front matter lists regexp-duplicate-named-groups passes, and each of REQUIRED
+  (the four files task 2.6 of SJL-11.2 left to this job) and of the --require paths is in the population, lists the
+  feature and passes;
+- the population holds every path of POPULATION, B-1's population as decision-rule.md words it and staging's RegExp
+  directory, and the files listing the feature are as many as FEATURE_FILES declares for the suite commit (added
+  2026-11-17, at the review of the host job, so that the population is fixed here and not only by the caller).
 
 It prints each failure as a line beginning FAIL, then a summary, and exits 0 when the report holds and 1 otherwise
-(2 for a usage error or an unreadable input). Standard library only.
+(2 for a usage error or an unreadable input). With --print-population alone it prints POPULATION, one path a line, for
+run.sh to run. Standard library only.
 """
 
 from __future__ import annotations
@@ -43,6 +49,47 @@ import sys
 from pathlib import Path
 
 FEATURE = "regexp-duplicate-named-groups"
+
+# B-1's population, copied from docs/evidence/sjl-11-001/decision-rule.md, part B's line "population: test262 at the
+# pin, the paths ...", its braces expanded (added 2026-11-17, at the review of the host job). The run's --population
+# must hold every path of it, so that a narrower run, asked for by run.sh or by the workflow's sparse checkout, is red;
+# tests/test_compare.py reads the rule's line and holds this copy to it.
+B1_POPULATION = (
+    "test/built-ins/RegExp",
+    "test/language/literals/regexp",
+    "test/annexB/built-ins/RegExp",
+    "test/annexB/language/literals/regexp",
+    "test/built-ins/RegExpStringIteratorPrototype",
+    "test/built-ins/String/prototype/match",
+    "test/built-ins/String/prototype/matchAll",
+    "test/built-ins/String/prototype/replace",
+    "test/built-ins/String/prototype/replaceAll",
+    "test/built-ins/String/prototype/search",
+    "test/built-ins/String/prototype/split",
+)
+# The one extension of B-1's population: staging's directory of RegExp, which holds three of test262's nineteen files of
+# regexp-duplicate-named-groups at the pin, one of them among the four below (task 2.6's record in docs/roadmap.md: the
+# host job judges all nineteen). B-1 names no staging path; a file of it that fails turns the job red as any other does.
+EXTENSION = ("test/staging/built-ins/RegExp",)
+POPULATION = B1_POPULATION + EXTENSION
+
+# The four files task 2.6's test leaves to this job: their assertions read the host's GetSubstitution or split. Each
+# must be in the population, list the feature and pass, whatever --require adds.
+REQUIRED = (
+    "test/built-ins/RegExp/named-groups/duplicate-names-replace.js",
+    "test/built-ins/RegExp/named-groups/duplicate-names-replaceall.js",
+    "test/built-ins/RegExp/named-groups/duplicate-names-split.js",
+    "test/staging/built-ins/RegExp/named-groups/duplicate-named-groups-replace.js",
+)
+
+# How many files of POPULATION list FEATURE, at each test262 commit the job may run at (counted 2026-11-17 at the pin,
+# with grep and this script's front-matter reader alike: 13 under test/built-ins/RegExp, 1 under
+# test/annexB/built-ins/RegExp, 2 under String.prototype's match and 3 under staging). A run at a commit not named here
+# is red, so a pin that moves brings its count with it, and a population that loses a file of the feature is red even
+# when it holds every path above.
+FEATURE_FILES = {
+    "ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e": 19,
+}
 
 # B-1's own words for the host's members, in the order it gives them.
 HOST_MEMBERS = (
@@ -152,6 +199,11 @@ def check(report: dict, exit_code: int, expected: dict[str, tuple[str, str]], su
     requested = sorted(path.strip("/") for path in report.get("requestedPaths") or [])
     if requested != sorted(path.strip("/") for path in population):
         failures.append(f"FAIL the run's requested paths {requested} are not the population {sorted(population)}")
+    given = {path.strip("/") for path in population}
+    for path in POPULATION:
+        if path not in given:
+            failures.append(f"FAIL the population leaves out {path}, a path of B-1's population or its extension")
+    required = list(REQUIRED) + [path for path in required if path.strip("/") not in REQUIRED]
 
     rows: dict[str, list[dict]] = {}
     for row in report.get("results") or []:
@@ -207,6 +259,13 @@ def check(report: dict, exit_code: int, expected: dict[str, tuple[str, str]], su
         statuses = [row.get("status") for row in rows.get(path, [])]
         if not statuses or any(status != "passed" for status in statuses):
             failures.append(f"FAIL {path}: lists {FEATURE}, and its rows are {statuses or 'none'}, not passed")
+    declared = FEATURE_FILES.get(suite_ref)
+    if declared is None:
+        failures.append(f"FAIL no count of the files listing {FEATURE} is declared for test262 {suite_ref}")
+    elif len(feature_files) != declared:
+        failures.append(
+            f"FAIL {len(feature_files)} files of the population list {FEATURE}, not the {declared} declared for "
+            f"test262 {suite_ref}")
     for path in required:
         path = path.strip("/")
         if path not in file_set:
@@ -227,14 +286,19 @@ def check(report: dict, exit_code: int, expected: dict[str, tuple[str, str]], su
 
 
 def main(argv: list[str] | None = None) -> int:
+    if (sys.argv[1:] if argv is None else argv) == ["--print-population"]:
+        sys.stdout.write("".join(path + "\n" for path in POPULATION))
+        return 0
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--report", required=True, type=Path, help="run_test262.py's --output JSON")
     parser.add_argument("--exit", required=True, type=int, dest="exit_code", help="run_test262.py's exit")
     parser.add_argument("--expected", required=True, type=Path, help="test262/host-expected-failures.txt")
     parser.add_argument("--suite", required=True, type=Path, help="the test262 checkout the run read")
     parser.add_argument("--suite-ref", required=True, help="the test262 commit the run must name")
-    parser.add_argument("--population", required=True, nargs="+", help="the paths the run was asked for")
-    parser.add_argument("--require", action="append", default=[], help="a file of the feature that must pass")
+    parser.add_argument("--population", required=True, nargs="+",
+                        help="the paths the run was asked for; they must hold POPULATION")
+    parser.add_argument("--require", action="append", default=[],
+                        help="a file of the feature that must pass, besides REQUIRED")
     parser.add_argument("--summary", type=Path, help="also write the failures and the summary here")
     args = parser.parse_args(argv)
 

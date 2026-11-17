@@ -7,13 +7,16 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 HERE = Path(__file__).resolve().parents[1]
+ROOT = HERE.parents[1]
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
@@ -24,6 +27,7 @@ DUPLICATE = "/*---\nfeatures: [regexp-duplicate-named-groups]\n---*/\n"
 PLAIN = "/*---\nfeatures: [Symbol.replace]\n---*/\n"
 HEADER = "# The host's expected failures.\n"
 REALM = "test/built-ins/RegExp/proto-from-ctor-realm.js"
+REPLACEALL = "test/built-ins/RegExp/named-groups/duplicate-names-replaceall.js"
 
 
 class CompareTests(unittest.TestCase):
@@ -31,9 +35,15 @@ class CompareTests(unittest.TestCase):
         self.scratch = tempfile.TemporaryDirectory()
         self.root = Path(self.scratch.name)
         self.suite = self.root / "suite"
+        # Every directory of B-1's population and its extension is in the hand-made suite, as in the job's sparse
+        # checkout; the four files compare.py requires list the feature, and FEATURE_FILES is set to their count.
+        for directory in C.POPULATION:
+            (self.suite / directory).mkdir(parents=True, exist_ok=True)
         files = {
             REALM: PLAIN,
             "test/built-ins/RegExp/named-groups/duplicate-names-replace.js": DUPLICATE,
+            REPLACEALL: DUPLICATE,
+            "test/built-ins/RegExp/named-groups/duplicate-names-split.js": DUPLICATE,
             "test/built-ins/RegExp/named-groups/plain.js": PLAIN,
             "test/built-ins/RegExp/named-groups/module_FIXTURE.js": PLAIN,
             "test/staging/built-ins/RegExp/named-groups/duplicate-named-groups-replace.js":
@@ -42,13 +52,17 @@ class CompareTests(unittest.TestCase):
         for path, text in files.items():
             (self.suite / path).parent.mkdir(parents=True, exist_ok=True)
             (self.suite / path).write_text(text, encoding="utf-8")
-        self.population = ["test/built-ins/RegExp", "test/staging/built-ins/RegExp"]
-        self.required = ["test/built-ins/RegExp/named-groups/duplicate-names-replace.js",
-                         "test/staging/built-ins/RegExp/named-groups/duplicate-named-groups-replace.js"]
+        self.population = list(C.POPULATION)
+        self.required: list[str] = []
+        counts = mock.patch.dict(C.FEATURE_FILES, {REF: 4}, clear=True)
+        counts.start()
+        self.addCleanup(counts.stop)
         self.expected = HEADER + f"{REALM}\tthe RegExp object\tthe constructor's prototype from another realm\n"
         self.rows = {
             REALM: "failed",
             "test/built-ins/RegExp/named-groups/duplicate-names-replace.js": "passed",
+            REPLACEALL: "passed",
+            "test/built-ins/RegExp/named-groups/duplicate-names-split.js": "passed",
             "test/built-ins/RegExp/named-groups/plain.js": "passed",
             "test/staging/built-ins/RegExp/named-groups/duplicate-named-groups-replace.js": "passed",
         }
@@ -78,7 +92,7 @@ class CompareTests(unittest.TestCase):
     def test_the_expected_run_is_green(self) -> None:
         code, out = self.run_compare()
         self.assertEqual(0, code, out)
-        self.assertIn("test262-host: green; 4 files, 4 rows, 3 passed, 1 failing of 1 listed; 2 files list", out)
+        self.assertIn("test262-host: green; 6 files, 6 rows, 5 passed, 1 failing of 1 listed; 4 files list", out)
         self.assertEqual(out, (self.root / "summary.txt").read_text(encoding="utf-8"))
 
     def test_a_failure_the_list_does_not_name_is_red(self) -> None:
@@ -177,9 +191,102 @@ class CompareTests(unittest.TestCase):
         self.assertIn("the runner exited 134", out)
 
     def test_an_unreadable_input_is_a_usage_error(self) -> None:
-        self.population.append("test/built-ins/RegExpStringIteratorPrototype")
+        self.population.append("test/built-ins/Array")
         code, _ = self.run_compare()
         self.assertEqual(2, code)
+
+    def test_a_population_narrower_than_b1s_is_red(self) -> None:
+        # The review's case: run.sh and the sparse checkout narrowed together, the report asking for the same paths.
+        self.population = ["test/built-ins/RegExp", "test/staging/built-ins/RegExp"]
+        code, out = self.run_compare()
+        self.assertEqual(1, code, out)
+        for path in C.POPULATION:
+            if path not in self.population:
+                self.assertIn(f"FAIL the population leaves out {path}, a path of B-1's population", out)
+        self.population = [path for path in C.POPULATION if path != "test/staging/built-ins/RegExp"]
+        code, out = self.run_compare()
+        self.assertEqual(1, code, out)
+        self.assertIn("FAIL the population leaves out test/staging/built-ins/RegExp", out)
+
+    def test_the_required_files_are_compares_own(self) -> None:
+        del self.rows[REPLACEALL]
+        (self.suite / REPLACEALL).unlink()
+        code, out = self.run_compare()
+        self.assertEqual(1, code)
+        self.assertIn(f"FAIL {REPLACEALL}: required, but not in the population", out)
+        self.assertIn("3 files of the population list regexp-duplicate-named-groups, not the 4 declared", out)
+
+    def test_the_count_of_the_features_files_is_declared_per_suite_commit(self) -> None:
+        with mock.patch.dict(C.FEATURE_FILES, {REF: 19}, clear=True):
+            code, out = self.run_compare()
+        self.assertEqual(1, code)
+        self.assertIn(f"FAIL 4 files of the population list regexp-duplicate-named-groups, not the 19 declared for "
+                      f"test262 {REF}", out)
+        with mock.patch.dict(C.FEATURE_FILES, {}, clear=True):
+            code, out = self.run_compare()
+        self.assertEqual(1, code)
+        self.assertIn(f"FAIL no count of the files listing regexp-duplicate-named-groups is declared for test262 {REF}",
+                      out)
+
+    def test_print_population(self) -> None:
+        out = io.StringIO()
+        with redirect_stdout(out):
+            code = C.main(["--print-population"])
+        self.assertEqual(0, code)
+        self.assertEqual(list(C.POPULATION), out.getvalue().splitlines())
+
+
+def job(workflow: str, name: str) -> str:
+    """One job's block of a workflow, read as text (the standard library has no YAML reader)."""
+    match = re.search(rf"^  {re.escape(name)}:\n(.*?)(?=^  [A-Za-z0-9_-]+:\n|\Z)", workflow, re.MULTILINE | re.DOTALL)
+    if match is None:
+        raise AssertionError(f"no job {name} in ci.yml")
+    return match.group(1)
+
+
+class SourcesTests(unittest.TestCase):
+    """compare.py's constants held to the rule's words and to the workflow (added 2026-11-17, at the review of the host
+    job), so that narrowing the population, in any one place, turns a test or the job red."""
+
+    def test_b1_population_is_the_rules(self) -> None:
+        rule = (ROOT / "docs/evidence/sjl-11-001/decision-rule.md").read_text(encoding="utf-8")
+        part_b = rule[rule.index("## Part B"):rule.index("## Part C")]
+        line = next(line for line in part_b.split("\n") if line.startswith("population: test262 at the pin"))
+        paths: list[str] = []
+        for word in re.findall(r"test/[A-Za-z/-]+(?:\{[A-Za-z,]+\})?", line):
+            if "{" in word:
+                stem, names = word.split("{")
+                paths += [stem + name for name in names.rstrip("}").split(",")]
+            else:
+                paths.append(word)
+        self.assertEqual(11, len(paths), line)
+        self.assertEqual(list(C.B1_POPULATION), paths)
+        self.assertEqual(C.B1_POPULATION + ("test/staging/built-ins/RegExp",), C.POPULATION)
+
+    def test_the_required_files_are_in_the_population(self) -> None:
+        self.assertEqual(4, len(C.REQUIRED))
+        for path in C.REQUIRED:
+            self.assertTrue(any(path.startswith(directory + "/") for directory in C.POPULATION), path)
+
+    def test_the_workflow_checks_out_the_population_at_the_library_jobs_pin(self) -> None:
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        host = job(workflow, "test262-host")
+        library = job(workflow, "test262-library")
+        sparse = re.search(r"sparse-checkout: \|\n((?:            \S.*\n)+)", host)
+        self.assertIsNotNone(sparse)
+        checked_out = {line.strip() for line in sparse.group(1).split("\n") if line.strip()}
+        self.assertLessEqual(set(C.POPULATION) | {"harness"}, checked_out)
+        commit = re.search(r"TEST262_COMMIT: ([0-9a-f]{40})\n", host).group(1)
+        tree = re.search(r"TEST262_TREE: ([0-9a-f]{40})\n", host).group(1)
+        self.assertEqual([commit], re.findall(r"ref: ([0-9a-f]{40})\n", library))
+        self.assertEqual([commit], re.findall(r'rev-parse HEAD\)" = ([0-9a-f]{40})\n', library))
+        self.assertEqual([tree], re.findall(r'rev-parse HEAD:test\)" = ([0-9a-f]{40})\n', library))
+        self.assertIn(commit, C.FEATURE_FILES)
+
+    def test_run_sh_asks_compare_py_for_the_population(self) -> None:
+        script = (HERE / "run.sh").read_text(encoding="utf-8")
+        self.assertIn("compare.py --print-population", script)
+        self.assertNotRegex(script, r"(?m)^\s+test/(built-ins|language|annexB|staging)/")
 
 
 if __name__ == "__main__":

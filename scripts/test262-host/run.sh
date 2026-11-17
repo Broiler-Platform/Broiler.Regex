@@ -19,37 +19,12 @@
 #   5. checks the shell was built against the candidate: the restored package came from OUT/feed, and the
 #      Broiler.Regex.dll beside BroilerJS.dll is, byte for byte, the one in the packed .nupkg;
 #   6. runs Broiler.JS's scripts/compliance/run_test262.py with --include-negative and no minifier (the original
-#      variant) over the population below, at the test262 pin, under TZ=UTC;
+#      variant) over compare.py's POPULATION, at the test262 pin, under TZ=UTC;
 #   7. holds its report to test262/host-expected-failures.txt with scripts/test262-host/compare.py (B-1's verdict).
 # It exits with compare.py's exit (0 green, 1 red, 2 an unreadable input), or 3 when a step before the run fails.
 # OUT holds the feed, the packages, run_test262.py's report (test262-host.json), its log, the candidate's record
 # (candidate.txt) and the verdict (summary.txt). Written 2026-11-17, at task 2.10 of SJL-11.2.
 set -uo pipefail
-
-# B-1's population (docs/evidence/sjl-11-001/decision-rule.md, part B), and staging's directory of RegExp, which holds
-# three of test262's nineteen files of regexp-duplicate-named-groups (task 2.6's record in docs/roadmap.md: the host
-# job judges all nineteen).
-POPULATION=(
-  test/built-ins/RegExp
-  test/language/literals/regexp
-  test/annexB/built-ins/RegExp
-  test/annexB/language/literals/regexp
-  test/built-ins/RegExpStringIteratorPrototype
-  test/built-ins/String/prototype/match
-  test/built-ins/String/prototype/matchAll
-  test/built-ins/String/prototype/replace
-  test/built-ins/String/prototype/replaceAll
-  test/built-ins/String/prototype/search
-  test/built-ins/String/prototype/split
-  test/staging/built-ins/RegExp
-)
-# The four files task 2.6's test leaves to this job: their assertions read the host's GetSubstitution or split.
-REQUIRED=(
-  test/built-ins/RegExp/named-groups/duplicate-names-replace.js
-  test/built-ins/RegExp/named-groups/duplicate-names-replaceall.js
-  test/built-ins/RegExp/named-groups/duplicate-names-split.js
-  test/staging/built-ins/RegExp/named-groups/duplicate-named-groups-replace.js
-)
 
 js="" js_commit="" suite="" suite_commit="" suite_tree="" out="" workers=4
 while [ $# -gt 0 ]; do
@@ -68,6 +43,11 @@ for value in "$js" "$js_commit" "$suite" "$suite_commit" "$suite_tree" "$out"; d
   [ -n "$value" ] || { echo "usage: see the header of $0" >&2; exit 3; }
 done
 [ -f Broiler.Regex/Broiler.Regex.csproj ] || { echo "run from the repository's root" >&2; exit 3; }
+# B-1's population and its one extension, staging's directory of RegExp, and the four files task 2.6's test leaves to
+# this job, are compare.py's POPULATION and REQUIRED (since 2026-11-17, at the review of the host job: the verdict, not
+# this script, fixes them, and its tests hold POPULATION to decision-rule.md's words). The run asks for POPULATION.
+mapfile -t POPULATION < <(python3 -I scripts/test262-host/compare.py --print-population)
+[ "${#POPULATION[@]}" -gt 0 ] || { echo "compare.py printed no population" >&2; exit 3; }
 repo=$(pwd)
 js=$(cd "$js" && pwd) && suite=$(cd "$suite" && pwd) || exit 3
 fail() { echo "::error::test262-host: $*"; exit 3; }
@@ -165,8 +145,6 @@ tail -3 "$out/run_test262.log"
 echo "run_test262.py exited $code"
 
 echo "== 7. B-1's verdict"
-required_args=()
-for path in "${REQUIRED[@]}"; do required_args+=(--require "$path"); done
 python3 -I "$repo/scripts/test262-host/compare.py" --report "$out/test262-host.json" --exit "$code" \
   --expected "$repo/test262/host-expected-failures.txt" --suite "$suite" --suite-ref "$suite_commit" \
-  --population "${POPULATION[@]}" "${required_args[@]}" --summary "$out/summary.txt"
+  --population "${POPULATION[@]}" --summary "$out/summary.txt"

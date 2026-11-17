@@ -277,7 +277,11 @@ jobs:
   # scripts/test262-host/compare.py. The job fails on a row that fails or times out and is not listed, on a listed file
   # that does not fail, on a file the runner skips or drops, and on any row of a file listing
   # regexp-duplicate-named-groups that does not pass, the four task 2.6 left to this job named. About 10 minutes
-  # locally on four cores, most of it the run.
+  # locally on four cores, most of it the run. The population, the four files and the count of the feature's files at
+  # the test262 pin are compare.py's (POPULATION, REQUIRED, FEATURE_FILES), and the verdict's tests hold them to
+  # decision-rule.md, the sparse checkout below to the population, and TEST262_COMMIT and TEST262_TREE to the library
+  # job's pin. publish.yml calls this workflow, so the job gates a publish too: BROILER_JS_COMMIT must stay reachable
+  # in Broiler.JS (its branch or a kept ref) until a dated record moves it (both added 2026-11-17, at the review).
   test262-host:
     name: test262, the host job (Broiler.JS)
     runs-on: ubuntu-24.04
@@ -290,8 +294,12 @@ jobs:
       run:
         shell: bash
     steps:
+      # No credential is kept in this checkout either: the job runs Broiler.JS's build and runner in the same workspace,
+      # and nothing in it needs git credentials (added 2026-11-17, at the review of the host job).
       - name: Check out
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Check out Broiler.JS at the pin
         uses: actions/checkout@v7
         with:
