@@ -194,6 +194,13 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     - The arms' harness reads a worker's processor time where the worker may have exited, so a `Win32Exception` no
       longer ends a run; the arms' answers are unchanged.
     - Nothing is declared met (`docs/roadmap.md`, the records of 2026-11-17).
+  - test262's host job (task 2.10, 2026-11-17; bundle `sjl-11-001`'s check B-1; process only, in neither the published
+    package nor its API, and not in `df5cfc2`): CI's `test262-host` job and `scripts/test262-host/`, which pack the
+    commit's library as the version Broiler.JS pins into a local feed listed first, build Broiler.JS's shell at
+    `f690836d` (its SJL-11.5 branch) against it, run test262's RegExp population through Broiler.JS's runner with
+    negative tests, and hold the report to `test262/host-expected-failures.txt`, which names one file of the RegExp
+    object; every file of duplicate named groups must pass. The job has not run in CI, and nothing is declared met
+    (`docs/roadmap.md`, the record of the host job).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

@@ -3572,6 +3572,156 @@ and the harness's `Win32Exception` (items 2, 3 and 1 above; corrected at review,
 - The brief's recommended reading runs "the scripts and classifier of a later commit" against `df5cfc2`. Neither script
   can today: each runs one commit's tree, and `df5cfc2` has no `test262-library` job for B-3 (item 4 above).
 
+*Dated record, 2026-11-17 (SJL-11.2: task 2.10's host job, bundle `sjl-11-001`'s check B-1, against Broiler.JS's
+SJL-11.5 branch; decisions D14 and D35). No rule file was edited, no library source changed, and nothing is declared
+met. The job has not run in CI: this branch opens no pull request.*
+
+**The Broiler.JS commit.** Decision D14 reads: the host job "checks out Broiler.JS at a retained commit named by a dated
+record in this file", and "The retained commit is the branch of SJL-11.5 until it merges, then Broiler.JS's default
+branch; no commit is named yet". This record names it: **`f690836dba19ded358aacc4b6edb9c8107a53ccf`**, the head of
+Broiler.JS's branch `sjl-11-5` on 2026-11-17 (`git ls-remote`), ten commits on the first-parent line from `6fda6ca4`
+(Broiler-Platform/Broiler.JS#1119's merge), where it leaves Broiler.JS's `main`, and not merged. It routes every regular
+expression through Broiler.Regex and pins `0.1.0-preview.6` (its `Directory.Packages.props`). The record of 2026-11-15
+above says the shell "cannot take `0.1.0-preview.6` without SJL-11.5's adapter", and that check B-1 "waits for
+Broiler.JS's SJL-11.5 branch"; the branch now exists (decision D35 asked for it early). When it merges, D14's retained
+commit becomes Broiler.JS's default branch, and a later dated record names that commit and moves the job's pin.
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-host`, from `14c1c999`,
+Broiler-Platform/Broiler.Regex#26's merge):
+- *The job's script and its verdict* (`4d220ec`): [`scripts/test262-host/run.sh`](../scripts/test262-host/run.sh),
+  `scripts/test262-host/compare.py` and its tests (13), and
+  [`test262/host-expected-failures.txt`](../test262/host-expected-failures.txt). That commit also took two compiled
+  Python files by mistake; `1fd10d5` and `3be21f5` remove them, and `.gitignore` names `__pycache__/`.
+- *CI's `test262-host` job* (`2f3a0aa`), in `.github/workflows/ci.yml`, beside the library job; the library job's
+  comment, which said the host job waits for the branch, points to it.
+- *The records*, with this one: a dated note in the bundle's README and the CHANGELOG (process only).
+
+**The job** (`test262-host`, ubuntu-24.04, 60 minutes at most). It checks Broiler.JS out at the commit above, named in
+the job's environment as `BROILER_JS_COMMIT` (depth 2, as Broiler.JS's own test262 action fetches it), and test262 at
+the library job's pin `ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e`, the harness and the population's directories only
+(a sparse checkout). It runs the verdict's tests, then `scripts/test262-host/run.sh`, which:
+1. checks the pins: Broiler.JS's `HEAD`, test262's `HEAD` and the git tree of its `test/`
+   (`c022917030da8fbc09b7db8f9b7d55ccc5f5ebab`, the library job's);
+2. packs this commit's `Broiler.Regex` as the version that Broiler.JS commit pins, read from its
+   `Directory.Packages.props` (`0.1.0-preview.6`), into a local feed;
+3. writes Broiler.JS's `NuGet.config` in the job's checkout so that the feed is listed first and is the only source of
+   `Broiler.Regex` (package source mapping), nuget.org every other package, and restores into an empty packages folder;
+4. builds Broiler.JS's shell, `Broiler.JS/Broiler.JavaScript` (`BroilerJS.dll`), in Release, as Broiler.JS's test262
+   action builds it;
+5. checks the shell was built against the candidate: the restored package's source is the feed, and the
+   `Broiler.Regex.dll` beside `BroilerJS.dll` is byte for byte the one in the packed `.nupkg`;
+6. runs Broiler.JS's `scripts/compliance/run_test262.py` with `--include-negative`, `--minifier none` (the original
+   variant), four workers, its default 30-second limit per test and `TZ=UTC`, over part B's population
+   (`test/built-ins/RegExp`, `test/language/literals/regexp`, `test/annexB/built-ins/RegExp`,
+   `test/annexB/language/literals/regexp`, `test/built-ins/RegExpStringIteratorPrototype` and
+   `test/built-ins/String/prototype/{match,matchAll,replace,replaceAll,search,split}`) and staging's
+   `test/staging/built-ins/RegExp`;
+7. holds the report to `test262/host-expected-failures.txt` with `compare.py`. The job fails on a row that fails or
+   times out and is not listed, on a listed file whose row does not fail or time out, on a listed path the population
+   does not hold, on a file the runner skips or leaves without a row, on a run that is not the one asked for (the suite
+   commit, negative tests, the variant, the requested paths, an exit that disagrees with the rows), on an entry that does
+   not name one of B-1's five host members, and on any row of a file listing `regexp-duplicate-named-groups` that does
+   not pass; the four files task 2.6 left to it are required by name.
+
+It keeps the report, the runner's log, the candidate's record and the verdict as an artifact.
+
+**The candidate package: a local pack, by B-1's words.** B-1 reads "packs this commit's Broiler.Regex as the version
+that commit pins into a local feed listed first", and D14 "packs this commit's package into a local feed listed first".
+- *Taken*: this commit's library packed in the job as `0.1.0-preview.6`, the version `f690836d` pins.
+- *Not taken*: the published `0.1.0-preview.6` from nuget.org, `df5cfc2`'s bits. It would judge the published package
+  and not the commit, so a library change after `df5cfc2` would never reach the job.
+- The two are not the same bytes, from the same library sources (the record above: unchanged since `df5cfc2`): the
+  published package's `Broiler.Regex.dll` has SHA-256 `dbc27afef07fe8ed44d8f926fc6937ebaaf59cdbaa0aa384fbeae01de9803947`,
+  and no local pack gave it; the local packs below gave a different DLL in each working copy (the build is not
+  reproducible across paths). This machine's NuGet cache already held the published package, and restore takes a cached
+  package of the same version whatever the sources say; that is why the job restores into an empty folder and checks
+  the DLL beside the shell against the one it packed (step 5).
+
+**The expected-failures list** names one file, from a local run of the job's commands:
+`test/built-ins/RegExp/proto-from-ctor-realm.js`, host member "the RegExp object". `Reflect.construct(RegExp, [], C)`,
+with `C` a function of another realm whose `prototype` is null, must take the prototype from `C`'s realm
+(GetPrototypeFromConstructor, step 4); Broiler.JS takes it from the running realm. The object is allocated by the host
+before any pattern is read, and the pattern is empty. It is the one file Broiler.JS's own runs of the branch fail. All
+19 files listing `regexp-duplicate-named-groups` pass, among them the four task 2.6's test left to this job
+(`duplicate-names-replace.js`, `duplicate-names-replaceall.js`, `duplicate-names-split.js` and staging's
+`duplicate-named-groups-replace.js`).
+
+*Shown locally* (linux-x64, four cores; every run behind the machine's shared build lock and hard idle gate, the
+working copies on `/dev/shm`; Broiler.JS fetched at `f690836d` and test262 at the pin, sparse, as the job checks them
+out):
+- *The filing run*, from the working tree before the first commit, with the list empty: 2,547 files, 2,546 passing,
+  one failing, the file above; the verdict red on it alone, and green when the report was read again with the list
+  as filed. The run took 454 seconds, the test262 run most of it.
+- *At `2f3a0aa`*, the job's commit, from a clean `git archive`, three runs of `run.sh` in a row:
+  - *the commit as it is*: green, exit 0; 2,547 files, the listed file failing and every other passing; the shell held
+    the DLL it packed, restored from the feed; 437 seconds;
+  - *a planted regression*: a scratch copy of the archive whose parser accepts `\k<name>` to an undeclared name under
+    `u` (`!_unicode &&` added to the undeclared-name check of `RegexParser.Parse`, part B's control; never committed):
+    **red, exit 1**, on exactly the five files `named-groups/invalid-dangling-groupname{,-2,-3,-4,-without-group}-u.js`
+    of `test/language/literals/regexp`, each a negative test whose literal the shell now accepts, so the test's
+    `$DONOTEVALUATE()` runs; the other 2,541 as before; 442 seconds;
+  - *the revert*: the same scratch copy with the file restored, the copy then byte for byte the archive: green, exit 0,
+    as the commit; 443 seconds.
+
+  The copies, Broiler.JS's working copies, the feeds and the packages were removed after each run; nothing of them is
+  retained in the repository.
+
+**B-1's state.** The job exists, and its commands give the verdict above locally. B-1 is read from CI's run at the
+reading's commit (B-3), and its control ("a scratch commit of this repository, never merged, that accepts \k<name> to
+an undeclared name under u; B-1 or B-2 must turn red") is a reading's; neither was taken here. Nothing is declared met.
+
+**What the candidate reading (task 4.2) still waits on**, replacing the list of the record above:
+1. **CI green at the reading's commit** (B-3), the library job and the host job among the jobs.
+2. **The reading's commit and the rule commit**: recommended, the owner's to overturn, `df5cfc2` (the published bits)
+   with this tree's scripts and jobs run against it (the record above, item 4), and the rule commit the README names
+   (`fca7a6d` or `e568b88`). The host job packs the tree it runs in, so at a later commit whose library tree is
+   `df5cfc2`'s it judges `df5cfc2`'s library, as B-3 at that commit would.
+3. **The reading itself**: both scripts at the reading's commit, from a clean tree, on an idle machine, with both
+   negative controls taken in the run, and part B's control.
+
+Answered since that list: item 1, the host job (B-1), which now exists.
+
+**Network.** `Broiler-Platform/Broiler.JS` is public (the GitHub API's `visibility`), and `git ls-remote` reaches
+`f690836d` with no credential. The job checks it out with `actions/checkout`'s default token, under the workflow's
+`permissions: contents: read`, and keeps no credential (`persist-credentials: false`). No secret is added.
+
+**Choices taken, each with its alternative.**
+- *The local pack* (above). *Not taken*: the published package.
+- *Part B's whole population, and staging's RegExp directory.* *Not taken*: the brief's list (`RegExp`,
+  `literals/regexp` and the six `String.prototype` methods), which leaves out three of part B's directories; or part
+  B's population alone, which leaves three of the 19 files of duplicate named groups unjudged, one of them among the
+  four task 2.6 left to this job.
+- *A skipped file, or one the report has no row for, fails the job.* *Not taken*: B-1's words alone ("no row fails or
+  times out"), under which a file the runner skips would pass unseen. None is skipped today.
+- *The host member held to B-1's five names.* *Not taken*: free text, which no check could hold to "the host's".
+- *ubuntu-24.04 alone.* *Not taken*: windows-latest as well. B-1 names no platform, and Broiler.JS runs its own test262
+  on ubuntu-24.04.
+- *The job's commands in one script*, run by CI and locally alike. *Not taken*: inline steps, which a local run could
+  only copy.
+- *test262's population directories alone* (a sparse checkout), the commit and the `test/` tree checked. *Not taken*:
+  the whole suite, as the library job checks it out.
+- *In a publish run* (`publish.yml` calls this workflow), the job packs as Broiler.JS's pinned version, not the version
+  being published, as B-1 says. *Not taken*: packing as the publish version, which `f690836d` does not pin, so its
+  restore would not find it.
+
+**Where the brief and the sources differ, read at this record.**
+- The brief lists the job's population as test262's "`RegExp` and `literals/regexp` directories, plus `String.prototype`
+  match, matchAll, replace, replaceAll, search and split". B-1 runs part B's population, which adds
+  `test/annexB/built-ins/RegExp`, `test/annexB/language/literals/regexp` and
+  `test/built-ins/RegExpStringIteratorPrototype`; neither names staging, which holds three of the 19 files task 2.6's
+  record says the host job judges. The job runs all of them.
+- The brief asks to pick the package "by B-1's words" between nuget.org's `0.1.0-preview.6` and a local pack. B-1 and
+  D14 both name the local pack; their words leave no choice, and the alternative is recorded as not taken.
+- The brief says the branch's "first parent is `6fda6ca4`". `f690836d`'s first parent is `7eeba1eb`; `6fda6ca4` is
+  where the branch's first-parent line leaves Broiler.JS's `main`, ten commits down.
+- The brief asks the job be shown failing "on a regression by a planted defect in a scratch copy". That is part B's
+  control, which the rule takes at a reading, in CI; the run above is local, the same plant, and not that control.
+- B-1 says the job "builds BroilerJS in Release". The job builds the shell's project, which builds `BroilerJS.dll` and
+  the projects it references, as Broiler.JS's own test262 action does, not Broiler.JS's whole solution.
+- [`run-library-evidence.sh`](evidence/sjl-11-001/run-library-evidence.sh) still records check B-1 as "not run here; it
+  waits for Broiler.JS's SJL-11.5 branch". It does not run B-1, which the rule reads from CI; the reason it gives is
+  out of date, and the script is left as it is here.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
