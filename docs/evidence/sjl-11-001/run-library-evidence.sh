@@ -36,7 +36,9 @@
 #   the probe's default report, its publish with Native AOT with no warning and no managed assembly beside the image,
 #     and the reports of its four modes under Native AOT and the JIT, compared byte for byte: the default population
 #     [E-2], --adversarial [C], --vectors [D] and --test262 [B-2]
-#   check B-1, the host job: not run here; it waits for Broiler.JS's SJL-11.5 branch (decision D35)
+#   check B-1, the host job: not run here; the rule reads it from CI's test262-host job at the reading's commit (B-3),
+#     whose commands are scripts/test262-host/run.sh (corrected 2026-11-17: the line said it waits for Broiler.JS's
+#     SJL-11.5 branch, which docs/roadmap.md's record of 2026-11-17 names, decision D35)
 #   the pack, package validation against the baseline the project names [E-4]
 #   the declared fuzz session, and the planted-defect control [E-5]
 #   the assurance check, as the commit's CI job runs it: with hairs.config.json, from the cleaned tree, dotnet tool
@@ -203,8 +205,8 @@ check test262-library-same "check B-2's two reports are one file" same test262-l
 {
   echo "# not run: check B-1, the host job test262-host"
   echo "# It builds Broiler.JS's shell, at the commit docs/roadmap.md names by a dated record, against this commit's"
-  echo "# package; no commit is named, because Broiler.JS's SJL-11.5 branch, which decision D35 makes the retained"
-  echo "# commit, does not exist yet. The rule reads B-1 from CI's run at the reading's commit."
+  echo "# package. The rule reads B-1 from CI's run at the reading's commit (B-3); CI's test262-host job runs"
+  echo "# scripts/test262-host/run.sh, which this script does not run."
 } > "$out/logs/test262-host.log"
 printf 'test262-host\tnot run\t-\n' >> "$out/steps.tsv"
 
