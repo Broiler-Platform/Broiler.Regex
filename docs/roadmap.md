@@ -3379,6 +3379,163 @@ all recommended decisions and skip waiting for review."), as option R's file say
 `--exclude`), the two negative controls, the host job, CI at the reading's commit, the reading's commit and the rule
 commit, and the harness's `Win32Exception`.
 
+*Dated record, 2026-11-17 (SJL-11.2: task 4.2's preparations, the run's procedure, the two negative controls and the
+harness's `Win32Exception`; bundle `sjl-11-001`'s [`reference-arms.md`](evidence/sjl-11-001/reference-arms.md) and its
+revisions). Written after task 2.13's runs, their classification by `@3` to `@9` and the reduction of 2026-11-15 were
+seen. No rule file was edited, no library source changed, the arms were run over P1 to P3 only, and nothing is
+declared met.*
+
+**What it builds**, in the order of the branch's commits (`sjl-11-2-42prep`, from `fdf8c52c`,
+Broiler-Platform/Broiler.Regex#25's merge):
+- *The owner's confirmation of option R* (`bfdfd57`): the record above, and a dated note in the bundle's README.
+- *The harness* (`dbc476d`): `Harness.ProcessorTime` (`tests/ReferenceArms/Common/Harness.cs`) reads
+  `Win32Exception` as the exit it is, as it read `InvalidOperationException`: zero processor time. Test code only.
+- *The run's procedure and the negative controls* (`cc16180`), in `scripts/reference-arms/run.sh`, which
+  `run-reference-arms.sh` runs from the reading commit's tree:
+  - after the comparison, three classifications, each logged with its command: as the rule was filed
+    (`OUT/comparison`, as before); the declared reduction over it (`OUT/reduction`: `reduce.py prefixes`, the arms over
+    the reduced cases with the stop list, `compare.py`, `classify.py --exclude`, `reduce.py read`); and `classify.py
+    --reduction OUT/reduction --exclude scripts/reference-arms/p4-excluded.tsv` (`OUT/classification`), the one the
+    rule as revised reads and whose exit the script reports. The three share one arbiter cache;
+  - `--classify-only` runs the three over an earlier run's comparison. It reads an earlier run's reduction only where
+    `reduce.py check` (new; it writes nothing) finds it lists the inputs that comparison leaves unreachable;
+  - after the fast-path differential, the two negative controls, with `scripts/reference-arms/controls.py` (new): a
+    copy of arm V over P4 and one of arm J over P1, each made as `tests/ReferenceArms/README.md` says (the
+    `NEGATIVE-CONTROL` line given the case, nothing else), built, run once and removed. The class's runs with the
+    copy's answers (*control*) and with the arm's own (*revert*) are compared and classified as above, and the
+    control's comparison once more against the revert's run files (*blind*: no control case named). The check holds the
+    control reported unclassified when the copy changed the case's answer alone, the comparison reports the case and
+    nothing else changes, and the classifier lists it unclassified and every other line as the revert's; otherwise the
+    run fails. A control whose class a partial run lacks is not taken, and its log says so. `--controls-only` takes
+    them over an earlier run;
+  - `run-reference-arms.sh` lists the new directories' files in `digests.sha256`;
+  - the script tests go from 126 to 142. `classify.py` is unchanged, `@9`.
+- *The records*, with this one: a dated note in the bundle's README and the CHANGELOG (process only).
+
+**The base answers, before anything changed** (the stage's notes keep them):
+- `@9` at `fdf8c52` (a `git archive`) over task 2.13's retained comparison (`differences.tsv.gz` `0a8345fd…`), with
+  `--reduction` over the reduction of 2026-11-15 (`reductions.tsv` `b3e05301…`), `--exclude` and the correspondence at
+  `5e90bfe4`, wrote **`classification.json` `d6ca3a14…` and `classified.tsv.gz` `5dd1a960…`**, exit 0, the `@9` run's
+  bytes.
+- `run-reference-arms.sh` at `fdf8c52` over P1, P2 and P3 (the inputs of the record of 2026-11-15, the correspondence
+  at `5e90bfe4`). **Its first try stopped in arm J**: an unhandled `Win32Exception` ("Unable to retrieve the specified
+  information about the process or thread. It may have exited or may be privileged.") from `Harness.ProcessorTime`
+  (`Harness.cs:236`), called from the supervisor's reading thread (`:284`). The second try passed in 88 seconds; its
+  classification, as filed, holds 4 differences in class (c): P3's `O06` in J's three cultures and P1's
+  `budget/k-catastrophic/0001` in V.
+
+**1. The harness's `Win32Exception`.** A worker reaped between .NET's check that it runs and its read of
+`/proc/PID/stat` throws `Win32Exception`, not `InvalidOperationException`.
+- *A reproduction* outside the repository links `Common/Harness.cs` and calls `ProcessorTime` in a tight loop on each
+  of 3,000 workers (`/bin/true`, 4 at a time) until it exits. With `fdf8c52`'s harness, 1,217 of the 3,000 threw
+  `Win32Exception` out of `ProcessorTime`. With `dbc476d`'s, none did. Each was built behind the machine's idle gate,
+  with no warning.
+- *The arms' outputs are unchanged*: `run-reference-arms.sh` at `cc16180` over P1 to P3 (172 seconds, exit 0) lists
+  every file the base's run lists. Of those 28, 25 are the same bytes, the 15 answer files and the classification as
+  filed among them. `population/manifest.json`, `runs/run.S.json` and `comparison/summary.json` differ only where they
+  name the commit.
+
+**2. The run's procedure, reproducing the `@9` classification.** `run.sh --classify-only` at `cc16180`, from a clean
+detached worktree, over task 2.13's retained run (its population and runs read through symbolic links, its
+`differences.tsv.gz` copied) and a copy of the retained reduction, with the correspondence at `5e90bfe4` and an empty
+arbiter cache. No arm was run. It exited 0 after 2,380 seconds:
+- *As filed* (`OUT/comparison`): a 1,886,022, a' 45, b 8,983, **c 6,459**: the 6,459 differences over 2,166 inputs the
+  record of 2026-11-15 reduced. `reduce.py check` found the retained reduction to be that comparison's.
+- *The reduction's own comparison* (`--exclude`): `classification.json` `e485c93e…` and `classified.tsv.gz`
+  `b71ed577…`, the `@9` run's bytes. Its `outcomes.json` is the retained one; `outcomes.tsv` differs in the reduced
+  cases' class and row columns, which the retained one took from `@3`.
+- *As revised* (`OUT/classification`): **`classification.json` `d6ca3a14537b1413ca39c40d49fa510a21ac9185bb99cd10bbc145d2fe7e5a8d`
+  and `classified.tsv.gz` `5dd1a9607d58d4b5515ee1721d24a8b7bfddb22b2cc1e11fc66c1870613ab652`, the `@9` classification
+  byte for byte**: a 1,885,368, a' 45, b 4,876, b' 2,250, excluded 8,970, no (c).
+- *The full procedure over P1 to P3*, in `run-reference-arms.sh`'s run at `cc16180` above, which had to run the arms:
+  the reduction took the 2 inputs the classification as filed leaves unreachable there and reduced them to the
+  prefixes the retained reduction lists (`budget/k-catastrophic/0001` at 17 code units, `O06` at 999,992). The
+  classification as revised holds a 1,003, a' 9, b 15, b' 1 and no (c), `O06` in row B1 by the revision of
+  2026-11-16c.
+
+**3. The two negative controls.** `run.sh --controls-only` at `cc16180` over the same retained run (540 seconds,
+exit 0, behind the idle gate), and arm J's again in the P1-to-P3 run above, with the same bytes:
+
+| | V over P4, `P4-01234-u-05` | J over P1, `P1-regexp:matching:m1-notes:0001` |
+|---|---|---|
+| The copy's answers against the arm's | one line: `match:0,1` for `match:0,0` | one line: `match:0,2` for `match:0,1` |
+| The comparison | the revert's and the case's line | the revert's and the case's line |
+| *Control* (the case named) | **unclassified** 1; a 1,883,909, b 4,861, b' 2,249, excluded 8,970; exit 0 | **unclassified** 1; a 440, a' 9, b 15, b' 1; exit 0 |
+| *Blind* (no case named) | **c 1**, the case, "arm V is wrong by the arbiter and no row of the correspondence names the input"; exit 1 | **c 1**, the case, the same reason for arm J; exit 1 |
+| *Revert* (the arm's own answers) | no difference at the case; no (c); exit 0 | no difference at the case; no (c); exit 0 |
+| `control.json` | reported unclassified | reported unclassified |
+
+Each revert's classification is the run's classification as revised restricted to the class, line for line
+(1,899,989 lines for P4, 465 for P1). Each copy was removed after its run, and nothing of them is retained in the
+repository. A one-result change is caught: named as the control, it is listed unclassified, as the rule asks; unnamed,
+it is class (c) and the classification exits 1; reverted, the classification passes.
+
+**4. The reading's commit.** `0.1.0-preview.6` was published from `df5cfc2` (2026-11-15), and the library is unchanged
+since: `Broiler.Regex/`, `Directory.Build.props`, `Directory.Packages.props`, `NuGet.config` and `eng/` are the same
+at `df5cfc2` and at this record's commit. Under the owner's direction of 2026-10-18 ("Please do all recommended
+decisions and skip waiting for review."), recorded as the recommended reading, the owner's to overturn:
+- *Recommended*: take the reading at **`df5cfc2`**, the published bits, with the scripts, the CI jobs and the
+  classifier of a later commit run against it. `df5cfc2` itself holds neither script, no `test262-library` job and the
+  classifier `@3`. As written, `run-reference-arms.sh` and `run-library-evidence.sh` run one commit's tree, so the
+  reading would state how the later commit's scripts read `df5cfc2`'s library (for example, at the later commit with
+  the library's tree checked equal to `df5cfc2`'s), and CI's B-3 would be read at the later commit for the same tree.
+- *Alternative*: read a later commit, whose own scripts and jobs are in its tree, and publish it as
+  `0.1.0-preview.7`. That needs the owner's publish run and a version step, and gives a package of the same library
+  source under a new version.
+
+The rule commit is still the README's question (its note of 2026-11-15): `fca7a6d` or `e568b88`.
+
+**What the candidate reading (task 4.2) still waits on**, replacing the record of row M27's list:
+1. **The host job** (B-1), which needs Broiler.JS's SJL-11.5 branch (decision D35).
+2. **CI green at the reading's commit** (B-3).
+3. **The reading's commit and the rule commit**: the recommendation above, the owner's to overturn, and the rule commit
+   the README names.
+4. **The reading itself**: both scripts at the reading's commit, from a clean tree, on an idle machine, with both
+   negative controls taken in the run.
+
+Answered since that list: option R (the owner's confirmation above), the run's procedure, the two negative controls
+and the harness's `Win32Exception` (items 2, 1 and 3 above).
+
+**Choices taken, each with its alternative.**
+- *The confirmation recorded by a dated note* in the README and this roadmap, no rule file added. *Not taken*: a short
+  dated rule file recording it, which the bundle's "Revisions" rule asks only of a clause revised.
+- *Three classifications, each in its own directory*: the one as filed kept in `OUT/comparison`, as before. *Not
+  taken*: writing only the classification as revised, which leaves the reduction's input unrecorded.
+- *`--classify-only` reads an earlier reduction, checked*, and runs one where there is none. *Not taken*: running the
+  reduction every time, which runs the arms.
+- *One arbiter cache for the three classifications and the controls'*. *Not taken*: none, which asks the arbiter for
+  every answer twice (about 40 minutes each over task 2.13's run).
+- *The reduction's comparison classified with `--exclude`*, as the records of `@6` to `@9` did. *Not taken*: as filed,
+  as the retained one was by `@3`. The classification as revised does not read it.
+- *The controls in `run.sh`*, after every full run, with task 2.13's cases. *Not taken*: a script apart, or new cases.
+- *A control not reported unclassified fails the run.* *Not taken*: recording it only; the rule's MET needs both
+  reported unclassified.
+- *The blind classification recorded, not a condition*. *Not taken*: requiring class (c) there, which the rule does
+  not ask.
+- *The copy made of the files the arm builds from*, under the run's `OUT`. *Not taken*: a scratch worktree, as task
+  2.13 did, which needs a git checkout of the run's commit.
+- *The harness reads `Win32Exception` as the exit*. *Not taken*: checking `HasExited` first, which leaves the race; or
+  catching every exception, which would hide a fault of the harness.
+- *The fix shown by a reproduction outside the repository*. *Not taken*: a committed test, which the arms, executables
+  with no test project, have no place for.
+- *The recommended reading at `df5cfc2`*, under the standing direction. *Not taken*: a later commit published as
+  `0.1.0-preview.7`.
+
+**Where the brief and the sources differ, read at this record.**
+- The brief asks that each control "make the classification fail (class (c) non-empty, or the run's exit non-zero)
+  and then pass when reverted". `reference-arms.md` asks that "the comparison reports each as a difference and does
+  not classify it", and its MET that both be "reported unclassified": named as the control, the case is listed
+  unclassified and the classification exits 0. The scripts keep the rule's reading. The blind classification shows
+  the failure the brief names (class (c) 1, exit 1), and the revert the pass.
+- The brief says `run-reference-arms.sh` "runs `reduce.py` and passes `--reduction` and `--exclude`". It runs the
+  commit's `scripts/reference-arms/run.sh`, which does; `run-reference-arms.sh` changes only its header and its digest
+  listing.
+- The brief says the arms are not re-run unless the script must. The reproduction ran none. The harness's proof needs
+  P1 to P3, and the procedure's full path runs the arms over the reduced cases, so the P1-to-P3 run did both. The V
+  control is over P4 by the rule: its copy, and nothing else, was run over the retained P4 population.
+- The brief's recommended reading runs "the scripts and classifier of a later commit" against `df5cfc2`. Neither script
+  can today: each runs one commit's tree, and `df5cfc2` has no `test262-library` job for B-3 (item 4 above).
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
