@@ -3348,6 +3348,37 @@ differs (its item 2, Broiler.VM on `P4-47050-s-05`, is answered by row M27):
 - The brief's list of what task 4.2 waits on names "the reading's commit". The roadmap's list names the rule commit
   beside it, and this record keeps both.
 
+*Dated record, 2026-11-17 (SJL-11.2: the owner confirms option R; bundle `sjl-11-001`'s
+[`reference-arms-revised-2026-11-16.md`](evidence/sjl-11-001/reference-arms-revised-2026-11-16.md)). No rule file was
+added or edited, no arm was run, and nothing is declared met.*
+
+**The question put to the owner**, verbatim: "With the classifier reading row M27 (Broiler.Regex#25), no unclassified
+difference (class c) remains. One outstanding item for the candidate reading is option R, the reference-arms rule
+revision I filed on 2026-11-16 as the recommended choice. It puts an input the reference checker can't reach into class
+(b′) "beyond the arbiter" when three things hold: cut down to a length the checker can reach, the library and the
+other engine agree; the library's answer there is the checker's; and at full length one side stopped at a limit it
+declares. That covers 2,250 differences, and your O06 ruling builds on it. Do you confirm option R?" The options were
+"Confirm option R" (recommended) and "Overturn option R".
+
+**The owner chose "Confirm option R"** on 2026-11-17, described as: "Recorded as your own decision. The 2,250 stay in
+class (b′), and the candidate reading no longer waits on this."
+
+**That is the owner's own decision**, no longer a choice taken under the standing direction of 2026-10-18 ("Please do
+all recommended decisions and skip waiting for review."), as option R's file says it was filed. What it settles:
+- Item 1 of the list above, "**The owner on option R**, filed as recommended, so weaker evidence", is answered. The
+  revision of 2026-11-16c, written as a last limb of option R's arbiter clause, and the owner's ruling on `O06` under it
+  stand on a confirmed clause.
+- The 2,250 differences `@9` holds in class (b') over task 2.13's runs stay there.
+- Option R's file, `reference-arms.md` and the revisions of 2026-11-16b and 16c are not edited. The confirmation changes
+  no clause, so no dated rule file is added; the bundle's README records it by a dated note, and option R's sentence "It
+  is not the owner's own decision: the owner may overturn it" is read, from this date, as overtaken by the ruling.
+- Option R stays weaker evidence: it was written after task 2.13's runs, their classification and the reduction were
+  seen, and the confirmation does not change that.
+
+**Not settled by it**: items 2 to 7 of the list above, the run's procedure (`run.sh` passes neither `--reduction` nor
+`--exclude`), the two negative controls, the host job, CI at the reading's commit, the reading's commit and the rule
+commit, and the harness's `Win32Exception`.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

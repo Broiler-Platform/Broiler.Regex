@@ -299,6 +299,33 @@ one pattern's inputs, which no row names".
   record of the same date has the counts). That is not a reading: it was taken on the retained runs, after they were
   seen, and it reads option R, which waits on the owner, and the revisions filed under it. Nothing is declared met.
 
+*Dated note, 2026-11-17, the owner's confirmation of option R (SJL-11.2; no rule file added or edited; nothing here is
+a reading).* The note of 2026-11-16 above says of
+[`reference-arms-revised-2026-11-16.md`](reference-arms-revised-2026-11-16.md), option R, that "it was filed as the
+recommended choice under the owner's standing direction of 2026-10-18 and is the owner's to confirm or overturn", and
+the note of 2026-11-17 above says the classification "reads option R, which waits on the owner". The owner has ruled.
+- **The question put**, verbatim: "With the classifier reading row M27 (Broiler.Regex#25), no unclassified difference
+  (class c) remains. One outstanding item for the candidate reading is option R, the reference-arms rule revision I
+  filed on 2026-11-16 as the recommended choice. It puts an input the reference checker can't reach into class (b′)
+  "beyond the arbiter" when three things hold: cut down to a length the checker can reach, the library and the other
+  engine agree; the library's answer there is the checker's; and at full length one side stopped at a limit it
+  declares. That covers 2,250 differences, and your O06 ruling builds on it. Do you confirm option R?" The options were
+  "Confirm option R" (recommended) and "Overturn option R".
+- **The owner chose "Confirm option R"** on 2026-11-17, described as: "Recorded as your own decision. The 2,250 stay in
+  class (b′), and the candidate reading no longer waits on this."
+- **That is the owner's own decision.** Option R's file says "It is not the owner's own decision: the owner may
+  overturn it"; from this date it is read as the owner's own decision, confirmed, and is not rewritten. The file stays
+  unedited, as do [`reference-arms.md`](reference-arms.md) and the revisions of 2026-11-16b and 16c, which build on it.
+  The confirmation changes no clause, so no dated rule file is added: the bundle's "Revisions" rule
+  ([`decision-rule.md`](decision-rule.md)) asks for a new dated file for a rule revised, and the owner's earlier rulings
+  have one each (16b and 16c) because each changed a clause.
+- **It is still weaker evidence.** Option R was written after task 2.13's runs, their classification and the reduction
+  of 2026-11-15 were seen (its header; `decision-rule.md`, "Revisions"); the owner's confirmation does not change when
+  it was written. The 2,250 differences it holds in class (b') are those of the classification by `@9` over task
+  2.13's runs (the roadmap's record of row M27), which is not a reading.
+- Nothing is declared met. [`docs/roadmap.md`](../../roadmap.md)'s record of the same date has the ruling and what the
+  candidate reading (task 4.2) still waits on.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
