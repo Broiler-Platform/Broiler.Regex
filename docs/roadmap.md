@@ -4262,6 +4262,78 @@ blocks both cut-overs (risk D10's stop)" on both cut-overs, as far as part A goe
 Nothing else is decided: SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on their own holds, H1 and H2,
 their base runs, and the owner's other open items.
 
+*Dated note, 2026-11-18, the owner's answers on publication (D13) and on the candidate reading's four decisions (no
+rule file and no retained file changed; no reading changed).* The owner answered two questions on 2026-11-18. Each
+answer is the owner's own, not one taken under the owner's direction of 2026-10-18. Each is quoted verbatim, with the
+alternative not taken, beside the record lines it answers. Nothing here is a reading, and nothing is declared met or
+accepted.
+
+**Answer 1: publication (D13).** The record of part A's witnesses lists under "**What task 4.2 now waits on**": "1.
+**The owner on publication (D13).** `0.1.0-preview.6` was published from `df5cfc2` before the candidate reading, which
+read its sources and not its bytes. Whether to keep it, publish another version after a reading, or neither, is the
+owner's question." Decision D13 of Broiler.VM's JSD-0081 reads "`0.2.0-preview.1` is published to nuget.org only with
+the owner's approval, as the earlier previews were", and its note of 2026-11-01 reads "`0.2.0-preview.1`" as "the
+version of the `0.1.0-preview.N` stream that carries the whole SJL-11 surface, `0.1.0-preview.6` or after". This
+roadmap's note of 2026-11-01 on the version (below, under decision D12) reads "Publication stays the owner's, after the
+candidate reading (D13)".
+- *Asked*: "D13: Broiler.Regex 0.1.0-preview.6 was published from df5cfc2 before the candidate reading. The reading
+  judged its sources, which are identical to the reading's commit 49d7be1f, not the package bytes. Broiler.JS pins
+  preview.6, so a new version would have to be pinned before SJL-11.5's base runs. What should happen?"
+- *Chosen*: "Keep preview.6" — "No new Regex release. Both cut-overs use preview.6, whose library sources the reading
+  judged."
+- *Not taken*: "Publish preview.7 first" — "You publish a new Regex version after the reading. Broiler.JS moves its pin
+  before the SJL-11.5 base is taken, and Broiler.VM admits that version."
+- *What it settles.* D13 is settled by the owner: there is no new release of Broiler.Regex for the cut-overs. SJL-11.5
+  in Broiler.JS and SJL-11.4 in Broiler.VM both use `0.1.0-preview.6`, packed from `df5cfc2`. Its library sources are
+  the ones the candidate reading judged: `Broiler.Regex/` and the props are the same git trees at `df5cfc2` and at
+  `49d7be1f` (the record of the candidate reading, "**The commits**"). The published bytes stay unread, as that record
+  says ("**The reading judges the sources, not the published bytes.**"). The package was published before the
+  candidate reading, so D13's order "after the candidate reading" was not followed (the dated note of 2026-11-15 on the
+  tail's record); the owner keeps it as published. This work publishes nothing and dispatches no workflow, and no
+  version file changes. The waiting list's item 1 is answered.
+
+**Answer 2: the candidate reading's four decisions.** The same list reads: "2. **The owner on the decisions and
+readings of the candidate reading**, any of which the owner can overturn: the reading's commit, with its departure from
+`decision-rule.md`'s line "taken at the commit `0.1.0-preview.6` is packed from"; the rule commit; the session's
+reading of class (b)'s vector clause; and class (c)'s "both runs are retained", whose pre-fix run is not retained."
+- *Asked*: "The Broiler.Regex candidate reading rests on four session decisions that you can overturn: (1) reading at
+  49d7be1f instead of the packed-from commit df5cfc2 (same library sources); (2) the rule commit e568b88; (3) the
+  session's reading of class (b)'s vector clause, made after the runs were seen; (4) class (c)'s pre-fix run is not
+  retained, and its rerun matches byte for byte. Do you confirm them?"
+- *Chosen*: "Confirm all four" — "A dated note records your confirmation, and task 4.2 then waits only on D13 and the
+  scratch branch's deletion."
+- *Not taken*: "I want to look first" — "Nothing is recorded now. I send you a short summary of each one so you can
+  rule on them separately."
+
+The record of the candidate reading reads, of its two commits: "They are this session's recommended decisions, not the
+owner's own words, and the owner can overturn either." From this date each of the four below is read as the owner's
+own decision, confirmed. The record lines are not rewritten.
+- *The reading's commit, `49d7be1f`, with its departure from the packed-from line.* The record reads "1. **The
+  reading's commit is `49d7be1f3ef148f9c262f0e52b8c360c07fd838d`**" and "**This departs from a line of the rule.**
+  `decision-rule.md`'s dated note of 2026-11-01 reads "The candidate reading is read as taken at the commit
+  `0.1.0-preview.6` is packed from", which is `df5cfc2`. The reading is taken at `49d7be1f`, which is not that commit.
+  [...] The owner can overturn this departure with the decision." Confirmed: the candidate reading, and part A's second
+  reading with it, are readings at `49d7be1f`, and the departure stands as the owner's. `decision-rule.md`'s line is
+  not rewritten.
+- *The rule commit, `e568b88`.* The record reads "2. **The rule commit is `e568b88248c7de5dd75210e22cd357197108e644`**
+  (the merge of Broiler-Platform/Broiler.Regex#6)", with "*Not taken*: `fca7a6d`, the branch commit that first added
+  the bundle". Confirmed: the rule commit is `e568b88`.
+- *The session's reading of class (b)'s vector clause.* The record reads "**This is the session's reading of class
+  (b)'s vector clause, made after the runs were seen**, under the owner's direction of 2026-10-18. Its alternative is in
+  the choices below; under it the arms would read NOT MET. The owner can overturn it." Confirmed: the clause is read as
+  that record reads it. It stays a reading made after the runs were seen.
+- *Class (c)'s unretained pre-fix run.* The record reads "The pre-fix run is not retained: the bundle README says
+  "nothing of that run is retained here" (validation principle 5), and no record names where its files are. The MET
+  line does not name the clause, so the arms' reading stands on the MET line. Whether the unretained pre-fix run bears
+  on it is the owner's to decide." Confirmed: the unretained pre-fix run does not bear on the arms' reading, and the
+  rerun the reading's comparison matches byte for byte stands. The rule's "both runs are retained" is not rewritten and
+  stays not met as written.
+
+By these answers the waiting list's items 1 and 2 are answered. The reference arms keep their reading, read MET on the
+retained runs, and parts A to E keep theirs. Nothing else is decided: SJL-11.5 in Broiler.JS and SJL-11.4 in
+Broiler.VM still wait on their own holds and on their base runs. What task 4.2 now waits on is in the note
+below.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
