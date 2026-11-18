@@ -386,6 +386,100 @@ host job (B-1, which needs Broiler.JS's SJL-11.5 branch, decision D35)".
 - **The candidate reading still waits on** CI green at the reading's commit (B-3), the reading's commit (recommended
   `df5cfc2` with this tree's scripts and jobs) and the rule commit, and the reading itself. Nothing is declared met.
 
+*Dated note, 2026-11-18, the candidate reading (task 4.2 of SJL-11.2; no rule file added or edited). This note
+supersedes three lines above.*
+- The note of 2026-11-15 says "**No reading's commit is named yet**: the candidate reading's is the commit
+  `0.1.0-preview.6` is packed from (task 4.2)". Its review note says "No reading's commit is named yet; whether the
+  candidate reading is taken at `df5cfc2` or at a later commit, packed as a later version, is the owner's question and
+  is not decided here".
+- The review note also says of the rule commit, `fca7a6d` or `e568b88`: "Which this README names is left to the owner
+  or this bundle's reviewer".
+
+**The two commits.** Both decisions are taken under the owner's direction of 2026-10-18 ("Please do all recommended
+decisions and skip waiting for review"). They are recommended decisions, not the owner's own words, and the owner can
+overturn either. [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-18 gives each decision's alternatives.
+- **The reading's commit is `49d7be1f3ef148f9c262f0e52b8c360c07fd838d`** (Broiler-Platform/Broiler.Regex#27's merge).
+  - Its `Broiler.Regex/`, `Directory.Build.props`, `Directory.Packages.props`, `NuGet.config` and `eng/` are the same
+    git trees as at `df5cfc2`, the commit `0.1.0-preview.6` was published from.
+  - So the reading reads the published package's sources with this tree's scripts, runner and jobs. It does not read
+    the published bytes: no local build reproduces the published DLL.
+  - *Not taken*: `df5cfc2`, which has neither script nor the test262 jobs; and a `0.1.0-preview.7`, whose publication
+    is the owner's (D13).
+- **The rule commit is `e568b88248c7de5dd75210e22cd357197108e644`** (Broiler-Platform/Broiler.Regex#6's merge), whose
+  rule files are `edfb2d8`'s. Every `rule` block is the same at the reading's commit. Broiler.VM's half of this bundle
+  and bundles `sjl-12-001` and `sjl-13-001` name the merge in the same way.
+  - *Not taken*: `fca7a6d`.
+
+**The reading's files.** The table above reads "`manifest.json`: every retained file by its SHA-256, and the commits
+read | With the first reading" and "One directory of logs per reading, each step's command the first line of its log |
+At each reading". This is the first reading:
+- [`candidate-reading/`](candidate-reading/) is its directory:
+  - `library-evidence/`: `run-library-evidence.sh 49d7be1f`, linux-x64, exit 0, every step as the rule expects;
+  - `reference-arms/`: `run-reference-arms.sh 49d7be1f` over all seven classes, with both negative controls, exit 0;
+  - `ci/`: CI's push run at the reading's commit and part B's control runs, with their API answers, job logs and
+    reports;
+  - `part-b-control/`: the control's record, plant and deciding logs.
+- [`manifest.json`](manifest.json) names every retained file by its SHA-256 and size, and the commits and CI runs
+  read. Each file kept out is named by its digest, with where it was and why: the populations, the arms' answers and
+  the listings (by digest and line count, as `reference-arms.md`'s "How it is read" says), the packages, and the
+  inputs' copies.
+
+**CI's runs.**
+- Run 44206505415 is the push to `main` at `49d7be1f`: 14 of 14 jobs green. B-1 is the host job 134473694801. B-2 is
+  the library jobs 134473694923 (linux-x64) and 134473695064 (win-x64).
+- Part B's control was taken in CI under the owner's permission of 2026-11-18 ("Allow scratch branch").
+  - The plant is `deac674`, on the scratch branch `sjl-11-2-control-b`. Its run, 44237117988, is red: B-1
+    134575819645 and B-2 134575819815 and 134575819759 are red on the five
+    `named-groups/invalid-dangling-groupname*-u.js` files.
+  - The revert is `d0dd222`, whose tree is `49d7be1f`'s. Its run, 44238736222, is green on 14 of 14 jobs.
+  - The branch could not be deleted (the session's remote refused the delete). It stays on GitHub at `d0dd222`,
+    unmerged and with no pull request, for the owner to delete.
+
+**The reading's results** (counts are results, written here at this reading):
+- *Part A*: 2,644 library tests, 49 architecture tests and 11 fuzz-target tests, none failed.
+- *Part B*:
+  - the host job ran 2,547 files, and only the one listed file fails;
+  - all 19 files of duplicate named groups pass;
+  - the library job's report is the same file under the JIT and Native AOT on both RIDs, with 0 failed and 43 files
+    listed unreadable.
+- *Part C*: 65 rows give their declared status in both modes on both RIDs, none ends abnormally, and both controls
+  are reported (17 rows and 15 rows).
+- *Part D*:
+  - 1,420 vectors; no normative or divergence vector differs;
+  - 18 of 18 status vectors give their status, and all 85 implementation-defined vectors are reported;
+  - 27 vectors of six named ops of the object model are listed as not implemented;
+  - the two modes' reports are one file per RID.
+- *Part E*: the build and publish report no warning, the 29 suppressions are listed, and the fuzz session found
+  nothing in 24,000 iterations while its control found the plant. The assurance check finds no violation, and turned
+  red on drift in the control's run.
+- *The reference arms*:
+  - 1,901,509 differences, byte for byte task 2.13's comparison;
+  - as filed: a 1,886,022, a' 45, b 8,983, c 6,459;
+  - after the declared reduction (byte for byte that of 2026-11-15) and the exclusion, as revised: a 1,885,368, a' 45,
+    b 4,876, b' 2,250, excluded 8,970, **no class (c)**;
+  - both negative controls reported unclassified. Each control's changed answer, read with no control case named, is
+    class (c), exit 1, and each revert classifies as the run does.
+
+**The reading, per part**, by [`decision-rule.md`](decision-rule.md) and the reference-arm rule as revised:
+- **Part A: read NOT MET.** The tests pass, but the rule's MET also needs "each witness was watched failing once". Its
+  "How it is read" decides that "by the retained run of its witness failing once; a check whose witness was not seen
+  failing is not met". The manifest names no run of any part A witness failing, and "a file the manifest does not name
+  decides nothing".
+- **Part B: read MET on the retained runs**: B-1 to B-3 on run 44206505415, and the control on runs 44237117988 and
+  44238736222.
+- **Part C: read MET on the retained runs**: the probe's adversarial reports and part C's controls job, run
+  44206505415.
+- **Part D: read MET on the retained runs**: the probe's vector reports, run 44206505415.
+- **Part E: read MET on the retained runs**: E-1 to E-7 on run 44206505415's jobs and the local run's logs. For E-6's
+  drift control, the assurance job of the control's run.
+- **The reference arms: read MET on the retained runs**, on `reference-arms/run/classification/classification.json`
+  and both `controls/*/control.json`. That is under the rule as revised: option R, confirmed by the owner, and the
+  owner's rulings filed as 16b and 16c. Each revision is weaker evidence by its own header.
+- **Part A's NOT MET blocks both cut-overs** (risk D10's stop). Nothing else is declared met or accepted. The gate waits
+  on part A's witnesses and on the owner: publication (D13), the decisions above, and the scratch branch.
+  [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-18 has the runs, the readings in full and the choices
+  taken.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
