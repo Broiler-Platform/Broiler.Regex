@@ -212,6 +212,18 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     retained run of its witness failing (part B's control run), and A-1's and A-4's in-test witnesses each cover one
     half of their check. The other checks have none. No rule, script or library source changed (`docs/roadmap.md`,
     the record of the candidate reading).
+  - Part A's witnesses and its second reading (task 4.2, 2026-11-18; bundle `sjl-11-001`; process only, in neither the
+    published package nor its API, and not in `df5cfc2`). By the owner's choice of 2026-11-18, "Take witnesses, re-read
+    A", a dated rule file, `docs/evidence/sjl-11-001/decision-rule-revised-2026-11-18.md`, lets part A alone be read a
+    second time at `49d7be1f` once every clause of A-1 to A-11 has a retained witness run. It was committed before any
+    run and is weaker evidence; `decision-rule.md` is unedited. Each clause without a witness had its defect planted in
+    the library's sources of a throwaway local copy of `49d7be1f`, never pushed, and its deciding tests run against it
+    in Release; the runs, every attempt among them, are retained in `docs/evidence/sjl-11-001/part-a-witnesses/` with
+    their own manifest. Every clause has a witness, and part A reads MET on the retained runs at that second reading.
+    The entry above reads "Part A reads NOT MET, and that blocks both cut-overs"; that reading stays on record as the
+    candidate reading's. By the revision, part A no longer blocks the cut-overs by the rule's line; they still wait on
+    their own holds and on the owner's items. No library source, test, script or workflow changed
+    (`docs/roadmap.md`, the record of part A's witnesses).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

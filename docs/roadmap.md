@@ -4068,6 +4068,142 @@ answered by the runs and decisions above; item 3's reading is this one):
 - The library run's output and test262 copy were on `/dev/shm` (the first try, before the rule of the brief's second
   addendum). Its retained logs name those paths.
 
+*Dated record, 2026-11-18 (SJL-11.2: task 4.2, part A's witnesses, and part A read a second time at `49d7be1f`, under
+the owner's choice of the same date). A dated rule file was added; no rule file was edited, and no library source,
+test, script or workflow of this repository changed. The reading of part A below is the only judgement this record
+makes, and nothing beyond it is declared met or accepted.*
+
+The record above lists under "**What task 4.2 still waits on**": "1. **Part A's witnesses** for the checks and clauses
+that have none: A-2, A-3 and A-6 to A-11 whole, A-1's charging halves, A-4's nesting check and stack clauses, and A-5's
+clauses other than `\k<name>` (the bundle README's table). Each needs a retained run of its witness failing once,
+named in a later reading's manifest, or the owner's reading of how the roadmap's accounts stand for them. Until then
+part A reads NOT MET at the candidate reading, and the cut-overs stay blocked." This record answers that item; the list
+at its end replaces that list.
+
+**The owner's choice.** The question put on 2026-11-18, verbatim: "The Broiler.Regex candidate reading at 49d7be1f reads
+part A NOT MET. Every part A test passes, but the rule also needs a retained run of each check's witness failing once.
+Only A-5's \k clause has one, from part B's control. A-1 and A-4 have in-test witnesses for half of each check. Seven
+checks (A-2, A-3, A-6 to A-10) have none, and A-11 has none either. Parts B to E and the reference arms read MET. Under
+the rule, part A's NOT MET blocks both cut-overs: SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM. How should part A
+go forward?" The owner chose **"Take witnesses, re-read A"**: "A dated revision lets part A alone be read again at
+49d7be1f, once every missing witness has a retained run of it failing. Nothing else in the rule changes. For each check,
+I plant its defect in a local scratch worktree (no pushes), run its witness test, keep the red log and the revert, then
+read part A again. Parts B to E and the arms keep their readings." Not taken: "Read the prose accounts" and "Leave it NOT
+MET", quoted in the revision. It is the owner's own decision.
+
+**What was done, in this order.**
+1. **The revision**, [`decision-rule-revised-2026-11-18.md`](evidence/sjl-11-001/decision-rule-revised-2026-11-18.md),
+   committed (`30d8f8a`) before any plant was made or run. It quotes `decision-rule.md` whole and leaves it unedited. It
+   names 35 clauses, A-1.1 to A-11.3, split at the checks' ";", each with the tests that decide it, and keeps the
+   candidate reading's witnesses for A-1.5, A-4.1 and A-5.6. A witness run is a plant in the library's sources alone,
+   in a throwaway copy of `49d7be1f`'s tree, with `Broiler.Regex.Tests` built in Release from it and run; a clause is
+   witnessed if one of its deciding tests fails and is named in the run's log. The revert is the candidate reading's
+   own passing logs. It is weaker evidence, written after the candidate reading was seen.
+2. **The witness runs**, 36 attempts for the 32 other clauses, taken locally on linux-x64 between 10:23 and 10:57 UTC,
+   one at a time behind the hard idle gate and its lock, each in `git archive 49d7be1f` extracted on disk under
+   `/home/user/rx-wit-plants/` and deleted after its run. Each built in Release with `--disable-build-servers` (every
+   build exit 0) and ran `dotnet test` filtered to the clause's deciding test classes, with a trx. They are retained in
+   [`part-a-witnesses/`](evidence/sjl-11-001/part-a-witnesses/) (`eb15cb9`), with a manifest of the bundle manifest's
+   shape: 510 files by SHA-256, LF only, and 3 over 2 MB by digest only (A-4.4's first test log and trx, and its second
+   trx). Each attempt's `note.md` says what the plant breaks and which tests failed; `failures.json` lists them.
+
+| Clause | Attempt | The plant (the file it changes) | Failed of the run's tests | Read |
+|---|---|---|---|---|
+| A-1.1 | 1 | the meter is charged after the work it pays for: Pay charges the whole blocks the units already spent fill (rounding down), not the blocks that cover them, so the meter trails the work by up to a block (`Engine/RegexMachine.cs`) | 56 of 109 | witness: 4 deciding test(s) named failing |
+| A-1.2 | 1 | the per-start reset: the units a call has spent are set back to zero before each next start position's attempt, so the step ceiling and the meter read one attempt's work, not the call's (`Engine/RegexMachine.cs`) | 47 of 109 | witness: 2 deciding test(s) named failing |
+| A-1.3 | 1 | LimitExceeded naming steps is answered NoMatch (part C's control 1's line, as probes/Regex.Probe/AdversarialControls.targets declares it, applied to the library's source) (`Engine/RegexProgram.cs`) | 38 of 145 | witness: 5 deciding test(s) named failing |
+| A-1.4 | 1 | a meter that throws at its budget does not propagate: the machine catches the meter's exception and answers LimitExceeded naming steps (`Engine/RegexMachine.cs`) | 1 of 109 | witness: 1 deciding test(s) named failing |
+| A-2.1 | 1 | a property escape's expansion is charged one unit whatever the ranges its set holds, not one per range (RegexUnicode.ToCodePointSet) (`Unicode/RegexUnicode.cs`) | 8 of 105 | witness: 2 deciding test(s) named failing |
+| A-2.2 | 1 | the compile budget is ignored: an account is made with no budget whatever the caller passes, so no compilation is refused at its budget (`CompileCharge.cs`) | 17 of 173 | witness: 4 deciding test(s) named failing |
+| A-3.1 | 1 | the frame and trail ceilings are the library's, not the caller's: the machine takes the engines' defaults whatever ceilings the call passes (`Engine/RegexMachine.cs`) | 13 of 36 | witness: 2 deciding test(s) named failing |
+| A-3.2 | 1 | the trail ceiling, when reached, is answered LimitExceeded naming the frames, not the trail (`Engine/RegexMachine.cs`) | 23 of 36 | witness: 4 deciding test(s) named failing |
+| A-4.2 | 1 | the nesting check removed: the caller's limit is never reached by a descent (part C's control 2's line, as probes/Regex.Probe/AdversarialControls.targets declares it, applied to the library's source) (`Parsing/RegexNesting.cs`) | 2 of 2 | not counted |
+| A-4.2 | 2 | the nesting check admits one level past the caller's limit: a descent is refused only when it would go two levels past it (`Parsing/RegexNesting.cs`) | 59 of 159 | witness: 7 deciding test(s) named failing |
+| A-4.3 | 1 | a nesting limit above the documented maximum is accepted, read as the maximum, rather than refused (`BroilerRegex.cs`) | 1 of 28 | witness: 1 deciding test(s) named failing |
+| A-4.4 | 1 | the parser's descent needs more stack than the smallest declared stack holds: each Disjunction it reads takes a 4 KiB frame and asks whether the stack has room, so a pattern at the nesting maximum does not complete on a 1 MiB thread (`Parsing/RegexParser.cs`) | 109 of 140 | not counted |
+| A-4.4 | 2 | the parser's descent needs more stack than the smallest declared stack holds: each Disjunction it reads takes a 64 KiB frame and asks whether the stack has room, so a pattern at the nesting maximum does not complete on a 1 MiB thread (`Parsing/RegexParser.cs`) | 109 of 140 | witness: 3 deciding test(s) named failing |
+| A-5.1 | 1 | the Script values Katakana_Or_Hiragana and Hrkt are refused (`Unicode/RegexUnicode.cs`) | 0 of 67 | a failed attempt: no test failed |
+| A-5.1 | 2 | the Script values Katakana_Or_Hiragana and Hrkt are refused where the parser decides a property escape's name, RegexUnicode.ClassifyProperty (`Unicode/RegexUnicode.cs`) | 9 of 67 | witness: 3 deciding test(s) named failing |
+| A-5.2 | 1 | a property name refused as written is tried again without an Is prefix, so \p{IsLetter} and \p{IsScript=Greek} are accepted (`Unicode/RegexUnicode.cs`) | 0 of 67 | a failed attempt: no test failed |
+| A-5.2 | 2 | a lone property name refused as written is tried again without an Is prefix, so \p{IsLetter} is accepted: in ClassifyProperty, which decides the name, and in ResolveProperty, which expands it (`Unicode/RegexUnicode.cs`) | 2 of 67 | witness: 1 deciding test(s) named failing |
+| A-5.3 | 1 | a group name's later code points are validated by EcmaScriptLexical's IdentifierPart or as a hyphen, so (?<a-b>x) is accepted (`Parsing/RegexParser.cs`) | 8 of 60 | witness: 2 deciding test(s) named failing |
+| A-5.4 | 1 | under u and v a four-digit lead-surrogate escape followed by a braced escape of a trail surrogate is joined into one code point (row S10's defect) (`Parsing/RegexParser.cs`) | 8 of 60 | witness: 1 deciding test(s) named failing |
+| A-5.5 | 1 | \0's lookahead reads char.IsDigit, any Unicode decimal digit, not the ASCII digits alone (0.1.0-preview.4's defect) (`Parsing/RegexParser.cs`) | 4 of 40 | witness: 1 deciding test(s) named failing |
+| A-5.7 | 1 | Annex B's legacy octal escape is read under u and v too (`Parsing/RegexParser.cs`) | 10 of 221 | witness: 2 deciding test(s) named failing |
+| A-6.1 | 1 | a repeated group name is never refused: the check of MightBothParticipate is made unreachable (`Parsing/RegexParser.cs`) | 8 of 44 | witness: 2 deciding test(s) named failing |
+| A-6.2 | 1 | a reference to a duplicated name reads only the first group of the name, not the one that participated (`Compiling/ProgramCompiler.cs`) | 10 of 38 | witness: 2 deciding test(s) named failing |
+| A-6.3 | 1 | a name maps to the first group of the name whatever the slots say, not to the group that participated (`RegexGroupNames.cs`) | 11 of 44 | witness: 2 deciding test(s) named failing |
+| A-7 | 1 | the offset entry's anchored argument depends on the y flag: a sticky pattern is matched anchored whatever the argument (`BroilerRegex.cs`) | 1 of 11 | witness: 1 deciding test(s) named failing |
+| A-8 | 1 | every call allocates an array of the program's slot count, which grows with the capture count (`Engine/RegexProgram.cs`) | 12 of 69 | witness: 4 deciding test(s) named failing |
+| A-9.1 | 1 | flag parsing never refuses a duplicate flag (`Text/RegexFlagsText.cs`) | 8 of 29 | witness: 5 deciding test(s) named failing |
+| A-9.2 | 1 | RegExp.escape leaves @ as itself, though EncodeForRegExpEscape's otherPunctuators list it (`Text/RegexEscaper.cs`) | 5 of 18 | witness: 5 deciding test(s) named failing |
+| A-9.3 | 1 | the source getter leaves a solidus outside a class as itself, where EscapeRegExpPattern escapes it (`Text/RegexEscaper.cs`) | 16 of 22 | witness: 8 deciding test(s) named failing |
+| A-10.1 | 1 | the library takes a second package dependency, Broiler.Unicode.Tables, and reads a member of it (`Broiler.Regex.csproj`, `WitnessPlantA101.cs`) | 1 of 17 | witness: 1 deciding test(s) named failing |
+| A-10.2 | 1 | the library declares a type named CaseFolding (`Unicode/CaseFolding.cs`) | 1 of 17 | witness: 1 deciding test(s) named failing |
+| A-10.3 | 1 | the case folding is read from the first provider the process hands the library, kept in a static field, not from each caller's tables (`Unicode/RegexUnicode.cs`) | 11 of 17 | witness: 2 deciding test(s) named failing |
+| A-10.4 | 1 | the library declares a data version of its own, a constant UnicodeVersion (`Unicode/RegexUnicode.cs`) | 1 of 17 | witness: 1 deciding test(s) named failing |
+| A-11.1 | 1 | an escaped astral group name read without u throws ArgumentOutOfRangeException, as RegexParser.ReadGroupName did in 0.1.0-preview.4 (`Parsing/RegexParser.cs`) | 12 of 213 | witness: 2 deciding test(s) named failing |
+| A-11.2 | 1 | every call of every program shares one static register array instead of renting its own, so concurrent calls on shared instances overwrite each other's registers (`Engine/RegexMachine.cs`) | 3 of 123 | witness: 3 deciding test(s) named failing |
+| A-11.3 | 1 | the validate entry answers a refusal's status with the default diagnostic: no code, no message identifier and no position (`BroilerRegex.cs`) | 96 of 153 | witness: 3 deciding test(s) named failing |
+
+**Part A's second reading at `49d7be1f`**, under the revision: every check passes at the reading (the candidate
+reading's logs, unchanged), and every clause has a retained witness run, 32 taken here and 3 the candidate reading
+found. **Part A: read MET on the retained runs.** The table clause by clause is in the bundle README's note of the same
+date. The candidate reading's part A NOT MET stays on record as that reading's. Parts B to E and the reference arms
+keep their candidate readings, MET on the retained runs, unchanged.
+
+**What it bears on**, by the rule's words and the revision's. The rule's line "A part NOT MET at the candidate reading
+blocks both cut-overs (risk D10's stop)" is unchanged; the revision reads that, for part A alone, the reading this line
+reads at the candidate reading's commit is part A's second reading, and "if it reads MET, part A no longer blocks the
+cut-overs by that line". So no part read at the candidate reading blocks the cut-overs by that line. Nothing more is
+lifted: the revision says "Nothing else of either engine's cut-over is decided here", and the rule's "What this file
+does not decide" names "**Either engine's cut-over**". SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on
+their own holds, H1 and H2, which this repository's records do not decide, and on the owner's items below.
+
+**What task 4.2 now waits on**, replacing the record above's list:
+1. **The owner on publication (D13).** `0.1.0-preview.6` was published from `df5cfc2` before the candidate reading,
+   which read its sources and not its bytes.
+2. **The owner on the decisions and readings of the candidate reading**, any of which the owner can overturn: the
+   reading's commit, with its departure from `decision-rule.md`'s line "taken at the commit `0.1.0-preview.6` is packed
+   from"; the rule commit; the session's reading of class (b)'s vector clause; and class (c)'s "both runs are
+   retained", whose pre-fix run is not retained.
+3. **The scratch branch `sjl-11-2-control-b`**, for the owner to delete.
+4. **The owner may review this revision's wording**: the choice is the owner's own; the clause list, the tests named
+   for each clause and the two clauses read on their closest plant (A-4.4's Native AOT half, A-10.1's version) are
+   this record's.
+
+**Choices taken, each with its alternative.**
+- *The unit split at ";"*, as the owner's choice and the brief say; a check without ";" (A-7, A-8) is one clause.
+  *Not taken*: splitting at commas too, which would split A-8 and A-5.4 into halves the rule's text does not separate.
+- *Deciding tests named by method* where a class decides more than one clause. *Not taken*: whole classes for every
+  clause, under which a plant of one clause could witness another.
+- *DecimalEscapeTests for A-5.5 and, with NamedReferenceTests and ValidateEntryTests, for A-5.7, and GroupNameTests'
+  `An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown` for A-11.1*: no class the candidate reading's table
+  lists under A-5 holds a test of `\0`'s lookahead, and the test A-11.1's parenthesis names is in an A-5 class. *Not
+  taken*: holding to the table's classes, which would leave A-5.5 with no deciding test.
+- *Runs filtered to the deciding classes.* *Not taken*: the whole assembly each time, which the revision allows and
+  which would add failures that decide nothing.
+- *A sibling manifest*, `part-a-witnesses/manifest.json`. *Not taken*: extending `manifest.json`, the candidate
+  reading's retained record, which names that reading and its date.
+- *Every attempt kept, two not counted*: A-4.2's first run ended with xUnit's fatal error before its population ran,
+  which the rule's "a step that stopped before the end of its population is void" reads, and A-4.4's first test log is
+  over 2 MB, kept by digest only. *Not taken*: counting either, or discarding them.
+- *A-4.4's plant asks `RuntimeHelpers.EnsureSufficientExecutionStack`*, which rule C5 forbids the library, so that the
+  shortage is an exception the test names. *Not taken*: a plant that overflows the stack, which ends the test host and
+  names no test.
+- *Part C's two control lines reused* as the plants of A-1.3 and of A-4.2's first attempt, written into the copy's
+  library source. *Not taken*: a new plant for each.
+- *Local runs.* *Not taken*: CI runs on a scratch branch, which the owner's choice ("a local scratch worktree (no
+  pushes)") excludes.
+
+**Where the brief and the sources differ, read at this record.**
+- The brief names `49d7be1f` as "Broiler-Platform/Broiler.Regex#28's merge". `49d7be1f` is #27's merge, the reading's
+  commit; #28's merge, which carries the candidate reading's records, is `662f3499`, `main` when this work began.
+- The brief asks for the plants of "a stack-size clause, the Native AOT probe clause of A-4, the IL call-graph clause".
+  The IL call-graph clause is A-4.1, which keeps its in-test witness and takes no plant; the stack clause is A-4.4.
+- The brief asks to extend `manifest.json` "by the repository's tooling". The repository holds no manifest tool; the
+  sibling manifest was written by `part-a-witnesses/scripts/retain.py`, and `verify.py` beside it checks both.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
