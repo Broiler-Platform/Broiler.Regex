@@ -1,0 +1,21 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:49:58.583249802 +0000
+@@ -100,7 +100,7 @@
+         ArgumentNullException.ThrowIfNull(tables);
+         _properties = new UnicodeProperties(tables);
+         _stringProperties = new UnicodeStringProperties(tables);
+-        _folding = new UnicodeCaseFolding(tables);
++        _folding = s_witnessPlantFolding ??= new UnicodeCaseFolding(tables); // witness plant A-10.3
+         _lexical = new EcmaScriptLexical(_properties);
+         _maxOrbit = Math.Max(_folding.MaxOrbit, _folding.MaxUpperOrbit);
+         Account = charge ?? new CompileCharge(null, null);
+@@ -111,6 +111,8 @@
+     // Hairs-Human:        PENDING
+     internal CompileCharge Account { get; }
+ 
++    private static UnicodeCaseFolding? s_witnessPlantFolding; // witness plant A-10.3
++
+     // ----- Canonicalize (§22.2.2.7.3) -----------------------------------------
+ 
+     /// <summary>

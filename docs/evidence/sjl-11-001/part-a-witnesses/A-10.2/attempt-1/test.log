@@ -1,0 +1,16 @@
+Test run for /home/user/rx-wit-plants/A-10.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.87]     Broiler.Regex.Tests.ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version [FAIL]
+  Failed Broiler.Regex.Tests.ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version [10 ms]
+  Error Message:
+   Assert.DoesNotContain() Failure: Filter matched in collection
+                                                                                                     ↓ (pos 18)
+Collection: [···, typeof(Broiler.Regex.RegexSyntaxException), typeof(Broiler.Regex.RegexWorkCharge), typeof(Broiler.Regex.Unicode.CaseFolding), typeof(Broiler.Regex.Unicode.RegexUnicode), typeof(Broiler.Regex.Unicode.PropertyKind), ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version() in /home/user/rx-wit-plants/A-10.2-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 132
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-10.2-1/results/test.trx
+
+Failed!  - Failed:     1, Passed:    16, Skipped:     0, Total:    17, Duration: 241 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

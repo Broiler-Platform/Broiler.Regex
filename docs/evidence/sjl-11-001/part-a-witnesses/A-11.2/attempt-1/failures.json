@@ -1,0 +1,29 @@
+{
+ "run": "A-11.2-1",
+ "clause": "A-11.2",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 3,
+  "passed": 120,
+  "skipped": 0,
+  "total": 123
+ },
+ "deciding-tests-failed": [
+  "ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does",
+  "ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does",
+  "EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does": 1,
+  "ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does": 1,
+  "EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Engine/RegexMachine.cs"
+ ],
+ "library-sources-sha256": "8756a829dfd715b939685406251ded9cae0bebd06eaf5cfdb9957ee81036156c",
+ "reading": "witness"
+}

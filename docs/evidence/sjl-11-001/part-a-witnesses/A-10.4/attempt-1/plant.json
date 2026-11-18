@@ -1,0 +1,12 @@
+{
+ "clause": "A-10.4",
+ "what": "the library declares a data version of its own, a constant UnicodeVersion",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "    internal CompileCharge Account { get; }\n",
+   "replacement": "    internal CompileCharge Account { get; }\n\n    /// <summary>Witness plant A-10.4: a data version of the library's own.</summary>\n    internal const string UnicodeVersion = \"17.0.0\";\n"
+  }
+ ],
+ "classes": "ProviderDataTests"
+}

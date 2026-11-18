@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b7798467-fdce-4c72-92ee-ce1f09b6a033" name="@vm 2026-11-18 10:50:26" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:50:26.8492859+00:00" queuing="2026-11-18T10:50:26.8492860+00:00" start="2026-11-18T10:50:24.5369082+00:00" finish="2026-11-18T10:50:27.0213502+00:00" />
+  <TestSettings name="default" id="acc07e93-541d-400a-a2ed-e1fbaab1add9">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_50_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2aae2982-2676-43c4-96bc-2cad4f94e0a2" testId="cb80bc1c-ec8e-f7c0-a7ef-b736394c9ad3" testName="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;[ſ]&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.9085398+00:00" endTime="2026-11-18T10:50:26.9092687+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2aae2982-2676-43c4-96bc-2cad4f94e0a2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 109
+   at InvokeStub_ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="45334300-58e7-4c0e-9b16-f83de5b809cb" testId="95ed19cb-9820-9fe7-099e-339cfbcda859" testName="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;ſ&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.9061731+00:00" endTime="2026-11-18T10:50:26.9073584+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45334300-58e7-4c0e-9b16-f83de5b809cb">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 109
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="07488d70-5105-466a-ba6c-1ac52c70a6d6" testId="1f737626-c797-46a5-7511-7464efa25aae" testName="Broiler.Regex.Tests.ProviderDataTests.Every_code_point_simple_folding_moves_is_Cased" computerName="vm" duration="00:00:00.0700000" startTime="2026-11-18T10:50:26.8340392+00:00" endTime="2026-11-18T10:50:26.9044755+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="07488d70-5105-466a-ba6c-1ac52c70a6d6" />
+    <UnitTestResult executionId="96b2e078-bb42-495a-b64f-ea44538574a7" testId="74d2fa9b-054b-249b-61ab-a4f3b8e1f33b" testName="Broiler.Regex.Tests.ProviderDataTests.A_provider_of_another_Unicode_version_is_refused_when_a_pattern_is_compiled" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.8265957+00:00" endTime="2026-11-18T10:50:26.8278407+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96b2e078-bb42-495a-b64f-ea44538574a7" />
+    <UnitTestResult executionId="86ec8ec0-b0f8-4c3b-8b83-07e12a2fd4c2" testId="9d823f91-c63f-168b-d9b4-3c9208883182" testName="Broiler.Regex.Tests.ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version" computerName="vm" duration="00:00:00.0280000" startTime="2026-11-18T10:50:26.6652499+00:00" endTime="2026-11-18T10:50:26.7097943+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86ec8ec0-b0f8-4c3b-8b83-07e12a2fd4c2" />
+    <UnitTestResult executionId="8f1eeabf-c30b-40c6-a3dd-0413ab5e5c50" testId="d23314af-4717-afff-8c0d-fa068f153078" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;ſ&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;, index: 0)" computerName="vm" duration="00:00:00.0270000" startTime="2026-11-18T10:50:26.7216776+00:00" endTime="2026-11-18T10:50:26.7489507+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8f1eeabf-c30b-40c6-a3dd-0413ab5e5c50" />
+    <UnitTestResult executionId="640af070-238d-45ff-902f-4d09529b116a" testId="19a33480-a6f7-62af-68e6-2b3747b1a733" testName="Broiler.Regex.Tests.ProviderDataTests.The_members_of_UnicodeCharSets_that_read_no_table_stay_public" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:50:26.9098666+00:00" endTime="2026-11-18T10:50:26.9140804+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="640af070-238d-45ff-902f-4d09529b116a" />
+    <UnitTestResult executionId="97052eab-9c05-436f-afeb-aa9c17618a44" testId="3386c92a-a7cf-cd59-bb24-ad49d1abc37b" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{RGI_Emoji}&quot;, flags: &quot;v&quot;, subject: &quot;a\ud83d\udc4d\ud83c\udffdb&quot;, index: 1)" computerName="vm" duration="00:00:00.0310000" startTime="2026-11-18T10:50:26.7804980+00:00" endTime="2026-11-18T10:50:26.8122063+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97052eab-9c05-436f-afeb-aa9c17618a44">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="10955ab2-f687-408d-af5d-ff5f466881d1" testId="75812bd4-533f-bfbc-4c55-641c01b5a4b1" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{Script=Greek}+&quot;, flags: &quot;u&quot;, subject: &quot;123αβ&quot;, index: 3)" computerName="vm" duration="00:00:00.0110000" startTime="2026-11-18T10:50:26.7495505+00:00" endTime="2026-11-18T10:50:26.7743291+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="10955ab2-f687-408d-af5d-ff5f466881d1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9db45a6c-a6c3-4a58-8949-65eda6aa7fa4" testId="131999e0-c4e5-63c7-19f6-12bfdbba23cb" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\w&quot;, flags: &quot;iu&quot;, subject: &quot;K&quot;, index: 0)" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:50:26.7751403+00:00" endTime="2026-11-18T10:50:26.7801409+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9db45a6c-a6c3-4a58-8949-65eda6aa7fa4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3923182b-01f4-4c2e-83de-0f2b6893ff1a" testId="f83ece86-4e2b-7405-ceff-273847f2744e" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{Lu}&quot;, flags: &quot;u&quot;, subject: &quot;aB&quot;, index: 1)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.8227487+00:00" endTime="2026-11-18T10:50:26.8235061+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3923182b-01f4-4c2e-83de-0f2b6893ff1a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ad48da0e-8e5b-4ba3-9632-41e386690ca4" testId="09a3274d-5c5c-0f8e-99cb-d39e31617247" testName="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;K&quot;, flags: &quot;i&quot;, subject: &quot;k&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.9077144+00:00" endTime="2026-11-18T10:50:26.9082670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad48da0e-8e5b-4ba3-9632-41e386690ca4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 109
+   at InvokeStub_ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f2d6fd5f-3482-4a27-8864-ac07e7a65e2b" testId="3a42edba-47ab-ac32-df84-d9c370940639" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;k&quot;, flags: &quot;i&quot;, subject: &quot;K&quot;, index: 0)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.8126032+00:00" endTime="2026-11-18T10:50:26.8133672+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2d6fd5f-3482-4a27-8864-ac07e7a65e2b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8a86de49-6ca2-41aa-b89f-ef265c260228" testId="2feb5fc7-85b3-83c5-9945-9f89b28047f0" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{ASCII_Hex_Digit}+&quot;, flags: &quot;u&quot;, subject: &quot;xyzF0&quot;, index: 3)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.8248624+00:00" endTime="2026-11-18T10:50:26.8253086+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a86de49-6ca2-41aa-b89f-ef265c260228">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="76471c00-231a-4e94-8bf0-db16606df8b1" testId="7c74b48d-1997-40f6-e9bd-82fbde85a29b" testName="Broiler.Regex.Tests.ProviderDataTests.A_complement_under_vi_holds_only_code_points_that_fold_to_themselves" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:50:26.8283776+00:00" endTime="2026-11-18T10:50:26.8333434+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76471c00-231a-4e94-8bf0-db16606df8b1" />
+    <UnitTestResult executionId="8535e946-9fd5-49d7-b78a-ffd0acda5e6a" testId="3d0c2c69-7f4d-6b75-a3f3-4c1b1a6c6dd6" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\s&quot;, flags: &quot;&quot;, subject: &quot;a　&quot;, index: 1)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:50:26.8237712+00:00" endTime="2026-11-18T10:50:26.8245562+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8535e946-9fd5-49d7-b78a-ffd0acda5e6a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd3d98f5-0f4f-404b-b42a-2d0ce262f541" testId="fb81ca62-0d74-8d06-c8c7-26f7094005d3" testName="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;[^a]&quot;, flags: &quot;vi&quot;, subject: &quot;Aab&quot;, index: 2)" computerName="vm" duration="00:00:00.0080000" startTime="2026-11-18T10:50:26.8136805+00:00" endTime="2026-11-18T10:50:26.8224220+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd3d98f5-0f4f-404b-b42a-2d0ce262f541">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Item not found in set
+Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+Not found: FoldData</Message>
+          <StackTrace>   at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index) in /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs:line 76
+   at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\s&quot;, flags: &quot;&quot;, subject: &quot;a　&quot;, index: 1)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="3d0c2c69-7f4d-6b75-a3f3-4c1b1a6c6dd6">
+      <Execution id="8535e946-9fd5-49d7-b78a-ffd0acda5e6a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.Every_code_point_simple_folding_moves_is_Cased" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="1f737626-c797-46a5-7511-7464efa25aae">
+      <Execution id="07488d70-5105-466a-ba6c-1ac52c70a6d6" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="Every_code_point_simple_folding_moves_is_Cased" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\w&quot;, flags: &quot;iu&quot;, subject: &quot;K&quot;, index: 0)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="131999e0-c4e5-63c7-19f6-12bfdbba23cb">
+      <Execution id="9db45a6c-a6c3-4a58-8949-65eda6aa7fa4" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;ſ&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;, index: 0)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d23314af-4717-afff-8c0d-fa068f153078">
+      <Execution id="8f1eeabf-c30b-40c6-a3dd-0413ab5e5c50" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="9d823f91-c63f-168b-d9b4-3c9208883182">
+      <Execution id="86ec8ec0-b0f8-4c3b-8b83-07e12a2fd4c2" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="The_library_references_the_provider_alone_and_carries_no_table_or_data_version" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;K&quot;, flags: &quot;i&quot;, subject: &quot;k&quot;)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="09a3274d-5c5c-0f8e-99cb-d39e31617247">
+      <Execution id="ad48da0e-8e5b-4ba3-9632-41e386690ca4" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_match_reads_its_case_folding_from_the_callers_tables" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_complement_under_vi_holds_only_code_points_that_fold_to_themselves" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7c74b48d-1997-40f6-e9bd-82fbde85a29b">
+      <Execution id="76471c00-231a-4e94-8bf0-db16606df8b1" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_complement_under_vi_holds_only_code_points_that_fold_to_themselves" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{Lu}&quot;, flags: &quot;u&quot;, subject: &quot;aB&quot;, index: 1)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f83ece86-4e2b-7405-ceff-273847f2744e">
+      <Execution id="3923182b-01f4-4c2e-83de-0f2b6893ff1a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{ASCII_Hex_Digit}+&quot;, flags: &quot;u&quot;, subject: &quot;xyzF0&quot;, index: 3)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="2feb5fc7-85b3-83c5-9945-9f89b28047f0">
+      <Execution id="8a86de49-6ca2-41aa-b89f-ef265c260228" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{Script=Greek}+&quot;, flags: &quot;u&quot;, subject: &quot;123αβ&quot;, index: 3)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="75812bd4-533f-bfbc-4c55-641c01b5a4b1">
+      <Execution id="10955ab2-f687-408d-af5d-ff5f466881d1" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;[^a]&quot;, flags: &quot;vi&quot;, subject: &quot;Aab&quot;, index: 2)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="fb81ca62-0d74-8d06-c8c7-26f7094005d3">
+      <Execution id="dd3d98f5-0f4f-404b-b42a-2d0ce262f541" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;[ſ]&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="cb80bc1c-ec8e-f7c0-a7ef-b736394c9ad3">
+      <Execution id="2aae2982-2676-43c4-96bc-2cad4f94e0a2" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_match_reads_its_case_folding_from_the_callers_tables" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;k&quot;, flags: &quot;i&quot;, subject: &quot;K&quot;, index: 0)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="3a42edba-47ab-ac32-df84-d9c370940639">
+      <Execution id="f2d6fd5f-3482-4a27-8864-ac07e7a65e2b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: &quot;\\p{RGI_Emoji}&quot;, flags: &quot;v&quot;, subject: &quot;a\ud83d\udc4d\ud83c\udffdb&quot;, index: 1)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="3386c92a-a7cf-cd59-bb24-ad49d1abc37b">
+      <Execution id="97052eab-9c05-436f-afeb-aa9c17618a44" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.The_members_of_UnicodeCharSets_that_read_no_table_stay_public" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="19a33480-a6f7-62af-68e6-2b3747b1a733">
+      <Execution id="640af070-238d-45ff-902f-4d09529b116a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="The_members_of_UnicodeCharSets_that_read_no_table_stay_public" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: &quot;ſ&quot;, flags: &quot;iu&quot;, subject: &quot;S&quot;)" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="95ed19cb-9820-9fe7-099e-339cfbcda859">
+      <Execution id="45334300-58e7-4c0e-9b16-f83de5b809cb" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_match_reads_its_case_folding_from_the_callers_tables" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.ProviderDataTests.A_provider_of_another_Unicode_version_is_refused_when_a_pattern_is_compiled" storage="/home/user/rx-wit-plants/a-10.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="74d2fa9b-054b-249b-61ab-a4f3b8e1f33b">
+      <Execution id="96b2e078-bb42-495a-b64f-ea44538574a7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.ProviderDataTests" name="A_provider_of_another_Unicode_version_is_refused_when_a_pattern_is_compiled" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="cb80bc1c-ec8e-f7c0-a7ef-b736394c9ad3" executionId="2aae2982-2676-43c4-96bc-2cad4f94e0a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95ed19cb-9820-9fe7-099e-339cfbcda859" executionId="45334300-58e7-4c0e-9b16-f83de5b809cb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f737626-c797-46a5-7511-7464efa25aae" executionId="07488d70-5105-466a-ba6c-1ac52c70a6d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="74d2fa9b-054b-249b-61ab-a4f3b8e1f33b" executionId="96b2e078-bb42-495a-b64f-ea44538574a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9d823f91-c63f-168b-d9b4-3c9208883182" executionId="86ec8ec0-b0f8-4c3b-8b83-07e12a2fd4c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d23314af-4717-afff-8c0d-fa068f153078" executionId="8f1eeabf-c30b-40c6-a3dd-0413ab5e5c50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="19a33480-a6f7-62af-68e6-2b3747b1a733" executionId="640af070-238d-45ff-902f-4d09529b116a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3386c92a-a7cf-cd59-bb24-ad49d1abc37b" executionId="97052eab-9c05-436f-afeb-aa9c17618a44" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75812bd4-533f-bfbc-4c55-641c01b5a4b1" executionId="10955ab2-f687-408d-af5d-ff5f466881d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="131999e0-c4e5-63c7-19f6-12bfdbba23cb" executionId="9db45a6c-a6c3-4a58-8949-65eda6aa7fa4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f83ece86-4e2b-7405-ceff-273847f2744e" executionId="3923182b-01f4-4c2e-83de-0f2b6893ff1a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="09a3274d-5c5c-0f8e-99cb-d39e31617247" executionId="ad48da0e-8e5b-4ba3-9632-41e386690ca4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a42edba-47ab-ac32-df84-d9c370940639" executionId="f2d6fd5f-3482-4a27-8864-ac07e7a65e2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2feb5fc7-85b3-83c5-9945-9f89b28047f0" executionId="8a86de49-6ca2-41aa-b89f-ef265c260228" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c74b48d-1997-40f6-e9bd-82fbde85a29b" executionId="76471c00-231a-4e94-8bf0-db16606df8b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d0c2c69-7f4d-6b75-a3f3-4c1b1a6c6dd6" executionId="8535e946-9fd5-49d7-b78a-ffd0acda5e6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb81ca62-0d74-8d06-c8c7-26f7094005d3" executionId="dd3d98f5-0f4f-404b-b42a-2d0ce262f541" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="17" executed="17" passed="6" failed="11" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.25]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.44]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.64]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:01.87]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.87]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.87]       Not found: FoldData
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.88]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.88]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.88]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.88]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.88]       Not found: FoldData
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.88]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.90]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.90]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.90]       Not found: FoldData
+[xUnit.net 00:00:01.90]       Stack Trace:
+[xUnit.net 00:00:01.90]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.90]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.90]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.90]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.90]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.90]       Not found: FoldData
+[xUnit.net 00:00:01.90]       Stack Trace:
+[xUnit.net 00:00:01.90]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.90]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.90]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.91]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.91]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.91]       Not found: FoldData
+[xUnit.net 00:00:01.91]       Stack Trace:
+[xUnit.net 00:00:01.91]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.91]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.91]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.91]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.91]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.91]       Not found: FoldData
+[xUnit.net 00:00:01.91]       Stack Trace:
+[xUnit.net 00:00:01.91]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.91]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.91]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.92]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.92]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.92]       Not found: FoldData
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.92]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.92]       Assert.Contains() Failure: Item not found in set
+[xUnit.net 00:00:01.92]       Set:       [PropertyLayout, PropertyRanges, PropertySets, PropertyLoneNames, PropertyLoneNameIndex, ···]
+[xUnit.net 00:00:01.92]       Not found: FoldData
+[xUnit.net 00:00:01.92]       Stack Trace:
+[xUnit.net 00:00:01.92]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(76,0): at Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(String pattern, String flags, String subject, Int32 index)
+[xUnit.net 00:00:01.92]            at InvokeStub_ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(Object, Span`1)
+[xUnit.net 00:00:01.92]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.00]       Assert.False() Failure
+[xUnit.net 00:00:02.00]       Expected: False
+[xUnit.net 00:00:02.00]       Actual:   True
+[xUnit.net 00:00:02.00]       Stack Trace:
+[xUnit.net 00:00:02.00]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(109,0): at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.00]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.00]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.00]       Assert.False() Failure
+[xUnit.net 00:00:02.00]       Expected: False
+[xUnit.net 00:00:02.00]       Actual:   True
+[xUnit.net 00:00:02.00]       Stack Trace:
+[xUnit.net 00:00:02.00]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(109,0): at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.00]            at InvokeStub_ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(Object, Span`1)
+[xUnit.net 00:00:02.00]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.00]       Assert.False() Failure
+[xUnit.net 00:00:02.00]       Expected: False
+[xUnit.net 00:00:02.00]       Actual:   True
+[xUnit.net 00:00:02.00]       Stack Trace:
+[xUnit.net 00:00:02.00]         /home/user/rx-wit-plants/A-10.3-1/tree/Broiler.Regex.Tests/ProviderDataTests.cs(109,0): at Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.00]            at InvokeStub_ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(Object, Span`1)
+[xUnit.net 00:00:02.00]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.03]   Finished:    Broiler.Regex.Tests (ID = '78ca8f48660a9015095d885a0ad9129503a6a815100bb44aa95f336f6b316c9c')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.7828128+00:00">
+        <Text>[xUnit.net 00:00:01.87]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\p{Script=Greek}+", flags: "u", subject: "123αβ", index: 3) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.7875828+00:00">
+        <Text>[xUnit.net 00:00:01.88]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\w", flags: "iu", subject: "K", index: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8132708+00:00">
+        <Text>[xUnit.net 00:00:01.90]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\p{RGI_Emoji}", flags: "v", subject: "a\ud83d\udc4d\ud83c\udffdb", index: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8139884+00:00">
+        <Text>[xUnit.net 00:00:01.90]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "k", flags: "i", subject: "K", index: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8234029+00:00">
+        <Text>[xUnit.net 00:00:01.91]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "[^a]", flags: "vi", subject: "Aab", index: 2) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8241960+00:00">
+        <Text>[xUnit.net 00:00:01.91]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\p{Lu}", flags: "u", subject: "aB", index: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8252384+00:00">
+        <Text>[xUnit.net 00:00:01.91]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\s", flags: "", subject: "a　", index: 1) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.8548675+00:00">
+        <Text>[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider(pattern: "\\p{ASCII_Hex_Digit}+", flags: "u", subject: "xyzF0", index: 3) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.9082279+00:00">
+        <Text>[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: "ſ", flags: "iu", subject: "S") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.9088800+00:00">
+        <Text>[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: "K", flags: "i", subject: "k") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:50:26.9104664+00:00">
+        <Text>[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables(pattern: "[ſ]", flags: "iu", subject: "S") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

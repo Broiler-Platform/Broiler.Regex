@@ -1,0 +1,25 @@
+{
+ "run": "A-5.2-2",
+ "clause": "A-5.2",
+ "attempt": 2,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 2,
+  "passed": 65,
+  "skipped": 0,
+  "total": 67
+ },
+ "deciding-tests-failed": [
+  "PropertyNameTests.A_lone_name_spelled_otherwise_is_refused"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "PropertyNameTests.A_lone_name_spelled_otherwise_is_refused": 2
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "54e9ac305d9a19a2ca226e5da89a6ff0a4f71e6070548b346a0f62c5d5a42bb3",
+ "reading": "witness"
+}

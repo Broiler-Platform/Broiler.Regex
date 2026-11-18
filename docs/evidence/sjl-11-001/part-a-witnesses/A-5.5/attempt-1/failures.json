@@ -1,0 +1,25 @@
+{
+ "run": "A-5.5-1",
+ "clause": "A-5.5",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 4,
+  "passed": 36,
+  "skipped": 0,
+  "total": 40
+ },
+ "deciding-tests-failed": [
+  "DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit": 4
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexParser.cs"
+ ],
+ "library-sources-sha256": "87cf19286c9e3b6f3cefed380277f77b93dfed60aebd5654e91309cba4d27736",
+ "reading": "witness"
+}

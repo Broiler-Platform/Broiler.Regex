@@ -1,0 +1,27 @@
+{
+ "run": "A-4.2-1",
+ "clause": "A-4.2",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 2,
+  "passed": 0,
+  "skipped": 0,
+  "total": 2
+ },
+ "deciding-tests-failed": [
+  "NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level",
+  "NestingLimitTests.The_parser_answers_what_it_reads_first"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level": 1,
+  "NestingLimitTests.The_parser_answers_what_it_reads_first": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexNesting.cs"
+ ],
+ "library-sources-sha256": "d9f489eff3d50d94420fd362b27cca183a858255e33c7ad43b1a0955e1a4f0f3",
+ "reading": "not counted"
+}

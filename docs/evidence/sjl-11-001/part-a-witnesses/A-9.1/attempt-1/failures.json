@@ -1,0 +1,33 @@
+{
+ "run": "A-9.1-1",
+ "clause": "A-9.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 8,
+  "passed": 21,
+  "skipped": 0,
+  "total": 29
+ },
+ "deciding-tests-failed": [
+  "FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length",
+  "FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic",
+  "FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit",
+  "FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it",
+  "FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length": 1,
+  "FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic": 1,
+  "FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit": 4,
+  "FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it": 1,
+  "FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Text/RegexFlagsText.cs"
+ ],
+ "library-sources-sha256": "b733da1fe79a55825698e44936838aa1130d951efd832da19c96d8df099790c0",
+ "reading": "witness"
+}

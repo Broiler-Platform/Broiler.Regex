@@ -1,0 +1,116 @@
+Test run for /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone [FAIL]
+[xUnit.net 00:00:02.11]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [FAIL]
+[xUnit.net 00:00:02.12]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [FAIL]
+[xUnit.net 00:00:02.36]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [FAIL]
+[xUnit.net 00:00:02.59]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [FAIL]
+[xUnit.net 00:00:02.62]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [FAIL]
+  Failed Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match [15 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Frames)
+Actual:   Tuple (NoMatch, None)
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match() in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 244
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Trail)
+Actual:   Tuple (Match, None)
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone() in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 53
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [21 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [8 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [242 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [129 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [92 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [26 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.65]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [FAIL]
+[xUnit.net 00:00:02.74]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [FAIL]
+[xUnit.net 00:00:02.74]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.74]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.75]     Broiler.Regex.Tests.CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once [FAIL]
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [32 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [85 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   no frame ceiling was reached
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 180
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Frames)
+Actual:   Tuple (Match, None)
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once() in /home/user/rx-wit-plants/A-3.1-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 31
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-3.1-1/results/test.trx
+
+Failed!  - Failed:    13, Passed:    23, Skipped:     0, Total:    36, Duration: 1 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

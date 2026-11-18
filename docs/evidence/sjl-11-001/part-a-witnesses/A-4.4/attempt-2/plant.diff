@@ -1,0 +1,13 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+--- a/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 10:57:10.198956345 +0000
+@@ -320,6 +320,9 @@
+     // Hairs-Human:        PENDING
+     private RegexNode ParseDisjunction()
+     {
++        Span<byte> witnessPlantA44 = stackalloc byte[65536]; // witness plant A-4.4, attempt 2
++        witnessPlantA44[_pos & 65535] = 1;
++        System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();
+         // Disjunction :: Alternative | Disjunction: each Alternative after a '|' begins a new region of this Disjunction,
+         // which a group of a name repeated in it is checked against (MightBothParticipate, §22.2.1.4).
+         _disjunctions.Add((_pos, _pos));

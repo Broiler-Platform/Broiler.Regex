@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+--- a/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 10:41:16.894898873 +0000
+@@ -612,7 +612,7 @@
+                 // §22.2.1.1: two GroupSpecifiers may share a name only when MightBothParticipate is false for them
+                 // (§22.2.1.4), the names compared as decoded, so (?<a>x)(?<\u0061>y) repeats the name a and is refused,
+                 // and (?<a>x)|(?<\u0061>y) is admitted (requirement R6).
+-                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier))
++                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier) && name.Length < 0) // witness plant A-6.1
+                     throw Refuse(RegexDiagnosticCode.DuplicateGroupName, open, "Duplicate capture group name '" + name + "'", name);
+                 _latestGroupOf[name] = open;
+                 if (!_groupsByName.TryGetValue(name, out var named))

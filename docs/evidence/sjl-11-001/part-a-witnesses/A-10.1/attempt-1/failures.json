@@ -1,0 +1,26 @@
+{
+ "run": "A-10.1-1",
+ "clause": "A-10.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 16,
+  "skipped": 0,
+  "total": 17
+ },
+ "deciding-tests-failed": [
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Broiler.Regex.csproj",
+  "Broiler.Regex/WitnessPlantA101.cs"
+ ],
+ "library-sources-sha256": "f5da34d05690034c96d20547e068c867687d49f75c222b5a8b41236912cb68e8",
+ "reading": "witness"
+}

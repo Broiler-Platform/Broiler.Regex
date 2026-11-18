@@ -1,0 +1,12 @@
+{
+ "clause": "A-1.4",
+ "what": "a meter that throws at its budget does not propagate: the machine catches the meter's exception and answers LimitExceeded naming steps",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "        _meter!(blocks * Block);\n",
+   "replacement": "        try { _meter!(blocks * Block); } catch (Exception) { Exceeded = RegexLimit.Steps; return false; } // witness plant A-1.4\n"
+  }
+ ],
+ "classes": "ChargingTests"
+}

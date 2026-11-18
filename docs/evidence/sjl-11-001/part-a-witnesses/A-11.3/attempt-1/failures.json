@@ -1,0 +1,36 @@
+{
+ "run": "A-11.3-1",
+ "clause": "A-11.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 96,
+  "passed": 57,
+  "skipped": 0,
+  "total": 153
+ },
+ "deciding-tests-failed": [
+  "ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition",
+  "ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position",
+  "ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException"
+ ],
+ "other-tests-failed": [
+  "ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002",
+  "ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry",
+  "ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations"
+ ],
+ "failed-cases": {
+  "ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition": 1,
+  "ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002": 14,
+  "ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position": 75,
+  "ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException": 1,
+  "ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry": 4,
+  "ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/BroilerRegex.cs"
+ ],
+ "library-sources-sha256": "8c54e08efa6097ed42f3461c826dfe0f653a872be5be23e9301f10d414270dc0",
+ "reading": "witness"
+}

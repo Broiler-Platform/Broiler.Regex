@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexNesting.cs b/Broiler.Regex/Parsing/RegexNesting.cs
+--- a/Broiler.Regex/Parsing/RegexNesting.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexNesting.cs	2026-11-18 10:55:29.672931952 +0000
+@@ -76,7 +76,7 @@
+     // Hairs-Human:        PENDING
+     internal int Descend(int depth, int position)
+     {
+-        if (depth >= Limit)
++        if (depth > Limit) // witness plant A-4.2, attempt 2
+             throw new NestingLimitExceeded(position);
+         return depth + 1;
+     }

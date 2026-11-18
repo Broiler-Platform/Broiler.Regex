@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.1",
+ "what": "the Script values Katakana_Or_Hiragana and Hrkt are refused",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "        if (value != null)\n        {\n            return _properties.TryResolve(name, value, out var pair)",
+   "replacement": "        if (value is \"Katakana_Or_Hiragana\" or \"Hrkt\") // witness plant A-5.1\n            return null;\n        if (value != null)\n        {\n            return _properties.TryResolve(name, value, out var pair)"
+  }
+ ],
+ "classes": "PropertyNameTests"
+}

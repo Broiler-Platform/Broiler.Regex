@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Engine/RegexProgram.cs b/Broiler.Regex/Engine/RegexProgram.cs
+--- a/Broiler.Regex/Engine/RegexProgram.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexProgram.cs	2026-11-18 10:23:06.718686678 +0000
+@@ -216,7 +216,7 @@
+         try
+         {
+             status = machine.Run(start, anchored, mine);
+-            limit = machine.Exceeded;
++            limit = machine.Exceeded; if (limit == RegexLimit.Steps) { status = RegexStatus.NoMatch; limit = RegexLimit.None; } // witness plant A-1.3
+             units = machine.Spent;
+             return status;
+         }

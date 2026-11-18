@@ -1,0 +1,14 @@
+diff -ruN a/Broiler.Regex/Engine/RegexMachine.cs b/Broiler.Regex/Engine/RegexMachine.cs
+--- a/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 10:31:18.403622749 +0000
+@@ -213,8 +213,8 @@
+         _unicode = program.Unicode;
+         _meter = meter;
+         _stepCeiling = ceilings.Steps ?? ulong.MaxValue;
+-        _frameCeiling = ceilings.Frames;
+-        _trailCeiling = ceilings.Trail;
++        _frameCeiling = RegexMatchCeilings.EngineFrames; // witness plant A-3.1
++        _trailCeiling = RegexMatchCeilings.EngineTrail; // witness plant A-3.1
+         _paid = meter is null ? ulong.MaxValue : 0;
+         _threshold = Math.Min(_paid, _stepCeiling);
+         _folding = program.Folding;

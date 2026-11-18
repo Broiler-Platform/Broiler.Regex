@@ -1,0 +1,13 @@
+{
+ "clause": "A-4.2",
+ "attempt": 2,
+ "what": "the nesting check admits one level past the caller's limit: a descent is refused only when it would go two levels past it (attempt 1 removed the check, and its run ended with xUnit's fatal TestPipelineException after two deciding tests had failed, before the classes' population was run)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexNesting.cs",
+   "anchor": "        if (depth >= Limit)\n",
+   "replacement": "        if (depth > Limit) // witness plant A-4.2, attempt 2\n"
+  }
+ ],
+ "classes": "NestingLimitTests,NestingMaximumTests"
+}

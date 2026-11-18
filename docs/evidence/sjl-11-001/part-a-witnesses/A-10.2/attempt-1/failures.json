@@ -1,0 +1,25 @@
+{
+ "run": "A-10.2-1",
+ "clause": "A-10.2",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 16,
+  "skipped": 0,
+  "total": 17
+ },
+ "deciding-tests-failed": [
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/CaseFolding.cs"
+ ],
+ "library-sources-sha256": "85c4b9cfeef4ed8e9cc3a5b7222686c33ec6b0a23687084d25049a4f8cc85c24",
+ "reading": "witness"
+}

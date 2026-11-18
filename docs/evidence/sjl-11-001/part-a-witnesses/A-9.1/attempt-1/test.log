@@ -1,0 +1,83 @@
+Test run for /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.86]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic(text: "gig", code: DuplicateFlag, position: 2, argument: "g", messageId: "regexp.flags.duplicate") [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length [FAIL]
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic(text: "gig", code: DuplicateFlag, position: 2, argument: "g", messageId: "regexp.flags.duplicate") [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: SyntaxError
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic(String text, RegexDiagnosticCode code, Int32 position, String argument, String messageId) in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 82
+   at InvokeStub_FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar [89 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar() in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 249
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length [7 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (DuplicateFlag, None, 8)
+Actual:   Tuple (UnicodeWithUnicodeSets, None, 7)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length() in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 195
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.24]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "vuv", status: DuplicateFlag, flags: None, position: 2) [FAIL]
+[xUnit.net 00:00:02.24]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "gg", status: DuplicateFlag, flags: None, position: 1) [FAIL]
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "vuv", status: DuplicateFlag, flags: None, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (DuplicateFlag, None, 2)
+Actual:   Tuple (UnicodeWithUnicodeSets, None, 2)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(String text, RegexDiagnosticCode status, RegexFlags flags, Int32 position) in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 188
+   at InvokeStub_FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "gg", status: DuplicateFlag, flags: None, position: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (DuplicateFlag, None, 1)
+Actual:   Tuple (None, Global, -1)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(String text, RegexDiagnosticCode status, RegexFlags flags, Int32 position) in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 188
+   at InvokeStub_FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "gimg", status: DuplicateFlag, flags: None, position: 3) [FAIL]
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "uvu", status: DuplicateFlag, flags: None, position: 2) [FAIL]
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "gimg", status: DuplicateFlag, flags: None, position: 3) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (DuplicateFlag, None, 3)
+Actual:   Tuple (None, Global | IgnoreCase | Multiline, -1)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(String text, RegexDiagnosticCode status, RegexFlags flags, Int32 position) in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 188
+   at InvokeStub_FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(text: "uvu", status: DuplicateFlag, flags: None, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (DuplicateFlag, None, 2)
+Actual:   Tuple (UnicodeWithUnicodeSets, None, 2)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(String text, RegexDiagnosticCode status, RegexFlags flags, Int32 position) in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 188
+   at InvokeStub_FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it [FAIL]
+  Failed Broiler.Regex.Tests.FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it [3 ms]
+  Error Message:
+   dd: (None, HasIndices, -1) where the specification reads (DuplicateFlag, None, 1)
+  Stack Trace:
+     at Broiler.Regex.Tests.FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it() in /home/user/rx-wit-plants/A-9.1-1/tree/Broiler.Regex.Tests/FlagsTextTests.cs:line 164
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-9.1-1/results/test.trx
+
+Failed!  - Failed:     8, Passed:    21, Skipped:     0, Total:    29, Duration: 498 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

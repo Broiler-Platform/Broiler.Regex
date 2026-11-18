@@ -1,0 +1,34 @@
+{
+ "run": "A-4.4-1",
+ "clause": "A-4.4",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 109,
+  "passed": 31,
+  "skipped": 0,
+  "total": 140
+ },
+ "deciding-tests-failed": [
+  "NestingMaximumTests.A_pattern_at_the_maximum_matches_on_a_1_MiB_stack",
+  "NestingMaximumTests.A_pattern_at_the_maximum_of_a_shape_the_old_matcher_did_not_prove_matches_on_a_1_MiB_stack",
+  "NestingMaximumTests.A_pattern_at_the_maximum_parses_and_compiles_on_a_1_MiB_stack"
+ ],
+ "other-tests-failed": [
+  "NestingMaximumTests.A_pattern_far_past_the_maximum_is_refused_on_a_1_MiB_stack",
+  "NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack"
+ ],
+ "failed-cases": {
+  "NestingMaximumTests.A_pattern_at_the_maximum_matches_on_a_1_MiB_stack": 21,
+  "NestingMaximumTests.A_pattern_at_the_maximum_of_a_shape_the_old_matcher_did_not_prove_matches_on_a_1_MiB_stack": 15,
+  "NestingMaximumTests.A_pattern_at_the_maximum_parses_and_compiles_on_a_1_MiB_stack": 36,
+  "NestingMaximumTests.A_pattern_far_past_the_maximum_is_refused_on_a_1_MiB_stack": 1,
+  "NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack": 36
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexParser.cs"
+ ],
+ "library-sources-sha256": "8901e8682a88adef36d903873509ef87210ad2d4dcd41939e9053c4e29d32ee2",
+ "reading": "not counted"
+}

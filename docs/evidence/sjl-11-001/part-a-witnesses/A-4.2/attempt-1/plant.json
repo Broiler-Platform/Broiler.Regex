@@ -1,0 +1,12 @@
+{
+ "clause": "A-4.2",
+ "what": "the nesting check removed: the caller's limit is never reached by a descent (part C's control 2's line, as probes/Regex.Probe/AdversarialControls.targets declares it, applied to the library's source)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexNesting.cs",
+   "anchor": "        if (depth >= Limit)\n",
+   "replacement": "        if (depth >= Limit && \"witness plant A-4.2: the nesting check removed\".Length < 0)\n"
+  }
+ ],
+ "classes": "NestingLimitTests,NestingMaximumTests"
+}

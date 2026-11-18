@@ -1,0 +1,127 @@
+Test run for /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.70]     Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{sc=Hrkt}$", flags: "u") [FAIL]
+[xUnit.net 00:00:01.71]     Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{Script=Katakana_Or_Hiragana}$", flags: "u") [FAIL]
+[xUnit.net 00:00:01.71]     Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{scx=Hrkt}$", flags: "v") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(flags: "v") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(flags: "u") [FAIL]
+  Failed Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{sc=Hrkt}$", flags: "u") [26 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Unknown Unicode property escape \p{sc=Hrkt}
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ResolvePropertyEscape(Boolean allowStrings, Boolean& negated, Boolean& strings) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1748
+   at Broiler.Regex.Parsing.RegexParser.ReadPropertyEscapeSet() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1688
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 767
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 297
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{Script=Katakana_Or_Hiragana}$", flags: "u") [1 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Unknown Unicode property escape \p{Script=Katakana_Or_Hiragana}
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ResolvePropertyEscape(Boolean allowStrings, Boolean& negated, Boolean& strings) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1748
+   at Broiler.Regex.Parsing.RegexParser.ReadPropertyEscapeSet() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1688
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 767
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 297
+   at InvokeStub_PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(pattern: "^\\p{scx=Hrkt}$", flags: "v") [1 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Unknown Unicode property escape \p{scx=Hrkt}
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ResolvePropertyEscape(Boolean allowStrings, Boolean& negated, Boolean& strings) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1748
+   at Broiler.Regex.Parsing.RegexParser.ReadPropertyOperand(Boolean allowStrings) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1013
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 764
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(String pattern, String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 297
+   at InvokeStub_PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(flags: "v") [199 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["Script=Hrkt", "Script=Katakana_Or_Hiragana", "Script_Extensions=Hrkt", "Script_Extensions=Katakana_Or_Hiragana", "sc=Hrkt", ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 141
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(flags: "u") [165 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["Script=Hrkt", "Script=Katakana_Or_Hiragana", "Script_Extensions=Hrkt", "Script_Extensions=Katakana_Or_Hiragana", "sc=Hrkt", ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(String flags) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 141
+   at InvokeStub_PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.38]     Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{Script=Katakana_Or_Hiragana}", flags: "u", accepted: True) [FAIL]
+[xUnit.net 00:00:02.38]     Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{Script_Extensions=Katakana_Or_Hiragana}", flags: "v", accepted: True) [FAIL]
+  Failed Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{Script=Katakana_Or_Hiragana}", flags: "u", accepted: True) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 289
+   at InvokeStub_PropertyNameTests.The_probe_cases_get_the_specification_answer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{Script_Extensions=Katakana_Or_Hiragana}", flags: "v", accepted: True) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 289
+   at InvokeStub_PropertyNameTests.The_probe_cases_get_the_specification_answer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.39]     Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{sc=Hrkt}", flags: "u", accepted: True) [FAIL]
+  Failed Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{sc=Hrkt}", flags: "u", accepted: True) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 289
+   at InvokeStub_PropertyNameTests.The_probe_cases_get_the_specification_answer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.42]     Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{scx=Hrkt}", flags: "u", accepted: True) [FAIL]
+  Failed Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(pattern: "\\p{scx=Hrkt}", flags: "u", accepted: True) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.PropertyNameTests.The_probe_cases_get_the_specification_answer(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-5.1-2/tree/Broiler.Regex.Tests/PropertyNameTests.cs:line 289
+   at InvokeStub_PropertyNameTests.The_probe_cases_get_the_specification_answer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-5.1-2/results/test.trx
+
+Failed!  - Failed:     9, Passed:    58, Skipped:     0, Total:    67, Duration: 2 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

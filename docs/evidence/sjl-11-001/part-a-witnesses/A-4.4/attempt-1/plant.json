@@ -1,0 +1,12 @@
+{
+ "clause": "A-4.4",
+ "what": "the parser's descent needs more stack than the smallest declared stack holds: each Disjunction it reads takes a 4 KiB frame and asks whether the stack has room, so a pattern at the nesting maximum does not complete on a 1 MiB thread",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "    private RegexNode ParseDisjunction()\n    {\n",
+   "replacement": "    private RegexNode ParseDisjunction()\n    {\n        Span<byte> witnessPlantA44 = stackalloc byte[4096]; // witness plant A-4.4\n        witnessPlantA44[_pos & 4095] = 1;\n        System.Runtime.CompilerServices.RuntimeHelpers.EnsureSufficientExecutionStack();\n"
+  }
+ ],
+ "classes": "NestingMaximumTests,StackDepthGuardTests"
+}

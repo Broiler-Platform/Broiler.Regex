@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/CompileCharge.cs b/Broiler.Regex/CompileCharge.cs
+--- a/Broiler.Regex/CompileCharge.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/CompileCharge.cs	2026-11-18 10:30:41.617735107 +0000
+@@ -151,7 +151,7 @@
+     internal CompileCharge(RegexWorkCharge? meter, ulong? budget)
+     {
+         _meter = meter;
+-        _budget = budget ?? ulong.MaxValue;
++        _budget = ulong.MaxValue; // witness plant A-2.2
+         _paid = meter is null ? ulong.MaxValue : 0;
+         _threshold = Math.Min(_paid, _budget);
+     }

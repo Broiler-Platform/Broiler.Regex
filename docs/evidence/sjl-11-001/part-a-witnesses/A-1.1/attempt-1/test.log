@@ -1,0 +1,507 @@
+Test run for /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.91]     Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", subject: "aaaaaaaaaaaa") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "x", subject: "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"···) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", subject: "aaaaaaaaaaaa") [10 ms]
+  Error Message:
+   k = 1: 0 charged for 1 units
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(String pattern, String subject) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 549
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "x", subject: "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"···) [1 ms]
+  Error Message:
+   k = 1: 0 charged for 1 units
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(String pattern, String subject) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 549
+   at InvokeStub_ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(a+)+b", subject: "aaaaaaaaac") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(?:(a)|b)*c", subject: "abababababababababababababababx") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "\\p{L}+\\d", subject: "abcdefghijklmnopqrstuvwxyz!") [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<!b(a+)+)c", flags: "", subject: "aaaaaaaaaaaaaaaaaaaaaaaac", start: 0, anchored: False, steps: 5000) [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\p{Ll}--[q]]{2})\\d", flags: "iv", subject: "aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\p{Nd}\\p{No}]+x", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\q{ab|b}])\\p{RGI_Emoji_Flag_Sequence}", flags: "v", subject: "ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "q", flags: "", subject: "pppppppppppppppppppppppppppppppppppppppppppppppppp"···, start: 0, anchored: False, steps: 1500) [FAIL]
+[xUnit.net 00:00:01.97]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "", subject: "xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxy"···, start: 0, anchored: False, steps: null) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(a+)+b", subject: "aaaaaaaaac") [1 ms]
+  Error Message:
+   k = 1: 0 charged for 1 units
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(String pattern, String subject) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 549
+   at InvokeStub_ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "(?:(a)|b)*c", subject: "abababababababababababababababx") [1 ms]
+  Error Message:
+   k = 1: 0 charged for 1 units
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(String pattern, String subject) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 549
+   at InvokeStub_ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(pattern: "\\p{L}+\\d", subject: "abcdefghijklmnopqrstuvwxyz!") [1 ms]
+  Error Message:
+   k = 10: 0 charged for 10 units
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(String pattern, String subject) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 549
+   at InvokeStub_ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<!b(a+)+)c", flags: "", subject: "aaaaaaaaaaaaaaaaaaaaaaaac", start: 0, anchored: False, steps: 5000) [28 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\p{Ll}--[q]]{2})\\d", flags: "iv", subject: "aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2aB1Q2"···, start: 0, anchored: False, steps: null) [5 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 12", "dispatch 4: 0 charged before unit 13", "dispatch 5: 0 charged before unit 14"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\p{Nd}\\p{No}]+x", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 8", "dispatch 2: 0 charged before unit 16", "dispatch 3: 0 charged before unit 24", "dispatch 4: 0 charged before unit 32", "dispatch 5: 0 charged before unit 40"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\q{ab|b}])\\p{RGI_Emoji_Flag_Sequence}", flags: "v", subject: "ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab🇯ab"···, start: 0, anchored: False, steps: null) [13 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "q", flags: "", subject: "pppppppppppppppppppppppppppppppppppppppppppppppppp"···, start: 0, anchored: False, steps: 1500) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "", subject: "xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxy"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.97]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(a+)+b", flags: "", subject: "aaaaaaaaac", start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:01.97]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(\\w+)\\s\\1(?:\\s\\1)*$", flags: "i", subject: "Word wORD Word wORD Word wORD Word wORD Word wORD "···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:01.97]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b)*c", flags: "", subject: "ababababababababababababababx", start: 3, anchored: True, steps: null) [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[^\\W\\d]+[^k]x", flags: "i", subject: "KkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKk"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", flags: "", subject: "\naBKazx1\naBKazx1\naBKazx1\naBKazx1\naBKazx1\naBKazx1\na"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "x", flags: "", subject: "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\p{L}+\\d", flags: "u", subject: "abcdefghijklmnopqrstuvwxyz!", start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=\\b(\\w+)\\s\\1)\\b", flags: "i", subject: "Word wORD Word wORD Word wORD Word wORD Word wORD "···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(a+)+b", flags: "", subject: "aaaaaaaaaaaaaac", start: 0, anchored: False, steps: 7777) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(a+)+b", flags: "", subject: "aaaaaaaaac", start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(\\w+)\\s\\1(?:\\s\\1)*$", flags: "i", subject: "Word wORD Word wORD Word wORD Word wORD Word wORD "···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 9", "dispatch 2: 0 charged before unit 10", "dispatch 3: 0 charged before unit 11", "dispatch 4: 0 charged before unit 20", "dispatch 5: 0 charged before unit 29"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b)*c", flags: "", subject: "ababababababababababababababx", start: 3, anchored: True, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[^\\W\\d]+[^k]x", flags: "i", subject: "KkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKkKk"···, start: 0, anchored: False, steps: null) [210 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 9", "dispatch 2: 0 charged before unit 10", "dispatch 3: 0 charged before unit 19", "dispatch 4: 0 charged before unit 28", "dispatch 5: 0 charged before unit 37"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=(?s:.)\\1(?i:[a-c]k)(a)[^\\d])x", flags: "", subject: "\naBKazx1\naBKazx1\naBKazx1\naBKazx1\naBKazx1\naBKazx1\na"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 3", "dispatch 3: 0 charged before unit 4", "dispatch 4: 0 charged before unit 6", "dispatch 5: 0 charged before unit 7"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "x", flags: "", subject: "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\p{L}+\\d", flags: "u", subject: "abcdefghijklmnopqrstuvwxyz!", start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 10", "dispatch 2: 0 charged before unit 11", "dispatch 3: 0 charged before unit 21", "dispatch 4: 0 charged before unit 31", "dispatch 5: 0 charged before unit 41"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=\\b(\\w+)\\s\\1)\\b", flags: "i", subject: "Word wORD Word wORD Word wORD Word wORD Word wORD "···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 15", "dispatch 4: 0 charged before unit 16", "dispatch 5: 0 charged before unit 17"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(a+)+b", flags: "", subject: "aaaaaaaaaaaaaac", start: 0, anchored: False, steps: 7777) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b)*c", flags: "", subject: "abababababababababababababababx", start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\w*?[\\q{xyz|xy|x}]{2}", flags: "v", subject: "axbxycaxbxycaxbxycaxbxycaxbxycaxbxycaxbxycaxbxycax"···, start: 0, anchored: False, steps: 3000) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\d]{2,}?x|ab)\\w*cd", flags: "", subject: "12xyzcdabq12xyzcdabq12xyzcdabq12xyzcdabq12xyzcdabq"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:[\\p{L}\\p{Nd}]|K)+\\u212A", flags: "iu", subject: "aB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſk"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\u{1F600}b", flags: "u", subject: "😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀"···, start: 1, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[a-z]+?\\d", flags: "", subject: "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.42]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\q{abc|ab|}x]+y", flags: "vi", subject: "ABcXabABcXabABcXabABcXabABcXabABcXabABcXabABcXabAB"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.42]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{Mn}\\p{Mc}\\p{Nd}]"···, flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\s\\S]*\\u{1F600}", flags: "u", subject: "😀baxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···, start: 1, anchored: False, steps: null) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b)*c", flags: "", subject: "abababababababababababababababx", start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\w*?[\\q{xyz|xy|x}]{2}", flags: "v", subject: "axbxycaxbxycaxbxycaxbxycaxbxycaxbxycaxbxycaxbxycax"···, start: 0, anchored: False, steps: 3000) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=[\\d]{2,}?x|ab)\\w*cd", flags: "", subject: "12xyzcdabq12xyzcdabq12xyzcdabq12xyzcdabq12xyzcdabq"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:[\\p{L}\\p{Nd}]|K)+\\u212A", flags: "iu", subject: "aB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſkaB1ſk"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 41"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\u{1F600}b", flags: "u", subject: "😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀a😀"···, start: 1, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[a-z]+?\\d", flags: "", subject: "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"···, start: 0, anchored: False, steps: null) [38 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\q{abc|ab|}x]+y", flags: "vi", subject: "ABcXabABcXabABcXabABcXabABcXabABcXabABcXabABcXabAB"···, start: 0, anchored: False, steps: null) [187 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{Mn}\\p{Mc}\\p{Nd}]"···, flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: null) [6 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 10", "dispatch 2: 0 charged before unit 11", "dispatch 3: 0 charged before unit 21", "dispatch 4: 0 charged before unit 31", "dispatch 5: 0 charged before unit 41"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[\\s\\S]*\\u{1F600}", flags: "u", subject: "😀baxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"···, start: 1, anchored: False, steps: null) [2 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "^(?:\\b\\w+\\B\\w\\b\\W?)+$", flags: "m", subject: "ab cd\nef gh ab cd\nef gh ab cd\nef gh ab cd\nef gh ab"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\b\\w+\\b", flags: "iu", subject: "ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK"···, start: 2, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", flags: "", subject: "aaaaaaaaaaaa", start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.44]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=(.)).\\1", flags: "u", subject: "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"···, start: 1, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a"···, flags: "", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: 20000) [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", flags: "", subject: "Ab\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?=(\\w))\\1(?!\\d)|(?<=\\d)\\d)+!", flags: "u", subject: "ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b){2,4}c", flags: "", subject: "ababababababababababababababababababababababababab"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<w>a+)\\k<w>b", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: 2000) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "^(?:\\b\\w+\\B\\w\\b\\W?)+$", flags: "m", subject: "ab cd\nef gh ab cd\nef gh ab cd\nef gh ab cd\nef gh ab"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 9"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "\\b\\w+\\b", flags: "iu", subject: "ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK- ſK"···, start: 2, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 5", "dispatch 2: 0 charged before unit 6", "dispatch 3: 0 charged before unit 15", "dispatch 4: 0 charged before unit 20", "dispatch 5: 0 charged before unit 25"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)b", flags: "", subject: "aaaaaaaaaaaa", start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<=(.)).\\1", flags: "u", subject: "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"···, start: 1, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a)(a"···, flags: "", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: 20000) [23 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?i:a(?-i:b))(?m:$\\n^)(?s:.))+x", flags: "", subject: "Ab\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb\n\nAB\n\nAb"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?=(\\w))\\1(?!\\d)|(?<=\\d)\\d)+!", flags: "u", subject: "ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(a)|b){2,4}c", flags: "", subject: "ababababababababababababababababababababababababab"···, start: 0, anchored: False, steps: null) [2 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?<w>a+)\\k<w>b", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 0, anchored: False, steps: 2000) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:x|y)z", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 17, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?<a>x)|(?<a>y)|z)+\\k<a>!", flags: "i", subject: "zYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzY"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", flags: "iv", subject: "gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH"···, start: 0, anchored: False, steps: null) [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "abc", flags: "i", subject: "ABC", anchored: True, expected: "1 2 3") [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "abc", flags: "i", subject: "xABC", anchored: False, expected: "1 2 3 4") [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "(a)b", flags: "i", subject: "xAB", anchored: False, expected: "1 2 5") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a+b", flags: "i", subject: "xAAB", anchored: False, expected: "1 2 4 5 6") [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:x|y)z", flags: "u", subject: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"···, start: 17, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "(?:(?<a>x)|(?<a>y)|z)+\\k<a>!", flags: "i", subject: "zYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzYyxzY"···, start: 0, anchored: False, steps: null) [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 1", "dispatch 2: 0 charged before unit 2", "dispatch 3: 0 charged before unit 3", "dispatch 4: 0 charged before unit 4", "dispatch 5: 0 charged before unit 5"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(pattern: "[[\\p{Lu}--[A-F]]\\d]+\\P{Ll}", flags: "iv", subject: "gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH7gH"···, start: 0, anchored: False, steps: null) [3 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["dispatch 1: 0 charged before unit 10", "dispatch 2: 0 charged before unit 11", "dispatch 3: 0 charged before unit 21", "dispatch 4: 0 charged before unit 31", "dispatch 5: 0 charged before unit 41"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(String pattern, String flags, String subject, Int32 start, Boolean anchored, Nullable`1 steps) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 312
+   at InvokeStub_ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "abc", flags: "i", subject: "ABC", anchored: True, expected: "1 2 3") [5 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 3 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "abc", flags: "i", subject: "xABC", anchored: False, expected: "1 2 3 4") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 3 units", "read 4: 0 charged for 4 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "(a)b", flags: "i", subject: "xAB", anchored: False, expected: "1 2 5") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 5 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a+b", flags: "i", subject: "xAAB", anchored: False, expected: "1 2 4 5 6") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 4 units", "read 4: 0 charged for 5 units", "read 5: 0 charged for 6 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "b", flags: "i", subject: "aab", anchored: False, expected: "1 2 3") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "[\\q{ab}c]", flags: "vi", subject: "C", anchored: True, expected: "1 2") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "[\\q{abc|ab}]x", flags: "vi", subject: "ABX", anchored: True, expected: "1 2 3 4 5 6 7") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a+?b", flags: "i", subject: "AAB", anchored: True, expected: "2 3 4 5") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a{2,}", flags: "i", subject: "AAAb", anchored: True, expected: "2 3 4 5") [FAIL]
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "b", flags: "i", subject: "aab", anchored: False, expected: "1 2 3") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 3 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "[\\q{ab}c]", flags: "vi", subject: "C", anchored: True, expected: "1 2") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "[\\q{abc|ab}]x", flags: "vi", subject: "ABX", anchored: True, expected: "1 2 3 4 5 6 7") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 1 units", "read 2: 0 charged for 2 units", "read 3: 0 charged for 3 units", "read 4: 0 charged for 4 units", "read 5: 0 charged for 5 units", ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a+?b", flags: "i", subject: "AAB", anchored: True, expected: "2 3 4 5") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 2 units", "read 2: 0 charged for 3 units", "read 3: 0 charged for 4 units", "read 4: 0 charged for 5 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(pattern: "a{2,}", flags: "i", subject: "AAAb", anchored: True, expected: "2 3 4 5") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 1: 0 charged for 2 units", "read 2: 0 charged for 3 units", "read 3: 0 charged for 4 units", "read 4: 0 charged for 5 units"]
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(String pattern, String flags, String subject, Boolean anchored, String expected) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 456
+   at InvokeStub_ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset [11 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset() in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 609
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.59]     Broiler.Regex.Tests.ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan [6 ms]
+  Error Message:
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan() in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 583
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.83]     Broiler.Regex.Tests.ChargingTests.The_first_charge_comes_before_the_first_instruction [FAIL]
+[xUnit.net 00:00:02.83]     Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "^(.{600})\\1$", flags: "ius", fromTheEnd: False) [FAIL]
+[xUnit.net 00:00:02.83]     Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "^(.{600})\\1$", flags: "is", fromTheEnd: False) [FAIL]
+[xUnit.net 00:00:02.83]     Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "(?<=^\\1(.{600}))", flags: "is", fromTheEnd: True) [FAIL]
+  Failed Broiler.Regex.Tests.ChargingTests.The_first_charge_comes_before_the_first_instruction [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [512]
+Actual:   [0]
+           ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.The_first_charge_comes_before_the_first_instruction() in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 560
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "^(.{600})\\1$", flags: "ius", fromTheEnd: False) [1 ms]
+  Error Message:
+   1024 charged when the reference's first character was compared, through unit 1205
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(String pattern, String flags, Boolean fromTheEnd) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 373
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "^(.{600})\\1$", flags: "is", fromTheEnd: False) [1 ms]
+  Error Message:
+   1024 charged when the reference's first character was compared, through unit 1205
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(String pattern, String flags, Boolean fromTheEnd) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 373
+   at InvokeStub_ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(pattern: "(?<=^\\1(.{600}))", flags: "is", fromTheEnd: True) [1 ms]
+  Error Message:
+   1024 charged when the reference's first character was compared, through unit 1205
+  Stack Trace:
+     at Broiler.Regex.Tests.ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(String pattern, String flags, Boolean fromTheEnd) in /home/user/rx-wit-plants/A-1.1-1/tree/Broiler.Regex.Tests/ChargingTests.cs:line 373
+   at InvokeStub_ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-1.1-1/results/test.trx
+
+Failed!  - Failed:    56, Passed:    53, Skipped:     0, Total:   109, Duration: 1 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

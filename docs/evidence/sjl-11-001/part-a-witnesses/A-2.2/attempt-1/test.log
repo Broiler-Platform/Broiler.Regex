@@ -1,0 +1,186 @@
+Test run for /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{RGI_Emoji}\\q{abc|de}]x\\p{RGI_Emoji}", flags: "vi") [FAIL]
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "abc", flags: "") [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{RGI_Emoji}\\q{abc|de}]x\\p{RGI_Emoji}", flags: "vi") [105 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "abc", flags: "") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.26]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "(a|b)*c\\d+", flags: "u") [FAIL]
+[xUnit.net 00:00:02.26]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[冁兾养典兵兲兯公兩兦兣兠兝党兗兔兑兎克先充兂儿儼儹儶儳儰儭優儧儤儡儞儛儘儕儒儏儌儉儆儃儀僽僺僷僴僱"···, flags: "") [FAIL]
+[xUnit.net 00:00:02.26]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}\\p{N}_]+", flags: "u") [FAIL]
+[xUnit.net 00:00:02.26]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\w\\b\\s\\S\\W", flags: "iu") [FAIL]
+[xUnit.net 00:00:02.26]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\p{L}", flags: "u") [FAIL]
+[xUnit.net 00:00:02.27]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}&&[^\\p{Lu}]]", flags: "vi") [FAIL]
+[xUnit.net 00:00:02.29]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}--\\p{Lu}]", flags: "v") [FAIL]
+[xUnit.net 00:00:02.29]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\p{RGI_Emoji}", flags: "v") [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "(a|b)*c\\d+", flags: "u") [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[冁兾养典兵兲兯公兩兦兣兠兝党兗兔兑兎克先充兂儿儼儹儶儳儰儭優儧儤儡儞儛儘儕儒儏儌儉儆儃儀僽僺僷僴僱"···, flags: "") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}\\p{N}_]+", flags: "u") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\w\\b\\s\\S\\W", flags: "iu") [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\p{L}", flags: "u") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}&&[^\\p{Lu}]]", flags: "vi") [16 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "[\\p{L}--\\p{Lu}]", flags: "v") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(pattern: "\\p{RGI_Emoji}", flags: "v") [10 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(String pattern, String flags) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 154
+   at InvokeStub_CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.41]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V04") [FAIL]
+  Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V04") [202 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "V04 limit:compile"
+Actual:   "V04 ok"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+   at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.04]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V05") [FAIL]
+  Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V05") [290 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "V05 limit:compile"
+Actual:   "V05 ok"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+   at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.56]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V03") [FAIL]
+  Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V03") [101 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "V03 limit:compile"
+Actual:   "V03 ok"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+   at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.82]     Broiler.Regex.Tests.CompileChargingTests.The_budget_and_the_nesting_limit_each_answer_their_own_dimension_in_the_order_the_work_meets_them [FAIL]
+[xUnit.net 00:00:04.83]     Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_of_zero_is_a_broken_precondition_and_the_constructors_take_neither_budget_nor_meter [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.The_budget_and_the_nesting_limit_each_answer_their_own_dimension_in_the_order_the_work_meets_them [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Compile
+Actual:   Nesting
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.The_budget_and_the_nesting_limit_each_answer_their_own_dimension_in_the_order_the_work_meets_them() in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 225
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_of_zero_is_a_broken_precondition_and_the_constructors_take_neither_budget_nor_meter [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.A_compile_budget_of_zero_is_a_broken_precondition_and_the_constructors_take_neither_budget_nor_meter() in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 247
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:06.00]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V01") [FAIL]
+  Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V01") [94 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "V01 limit:compile"
+Actual:   "V01 ok"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+   at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:08.28]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V02") [FAIL]
+  Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "V02") [122 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "V02 limit:compile"
+Actual:   "V02 ok"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /home/user/rx-wit-plants/A-2.2-1/tree/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+   at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-2.2-1/results/test.trx
+
+Failed!  - Failed:    17, Passed:   156, Skipped:     0, Total:   173, Duration: 7 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

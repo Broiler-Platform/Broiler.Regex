@@ -1,0 +1,12 @@
+{
+ "clause": "A-3.2",
+ "what": "the trail ceiling, when reached, is answered LimitExceeded naming the frames, not the trail",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "            Exceeded = RegexLimit.Trail;\n",
+   "replacement": "            Exceeded = RegexLimit.Frames; // witness plant A-3.2\n"
+  }
+ ],
+ "classes": "CeilingTests"
+}

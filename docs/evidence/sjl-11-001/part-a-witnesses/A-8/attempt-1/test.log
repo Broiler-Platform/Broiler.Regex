@@ -1,0 +1,432 @@
+Test run for /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:03.37]     Broiler.Regex.Tests.EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count [FAIL]
+  Failed Broiler.Regex.Tests.EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count [56 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count() in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 89
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.42]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "classes under iu and word edges") [FAIL]
+[xUnit.net 00:00:03.45]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "references") [FAIL]
+[xUnit.net 00:00:03.47]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "look-ahead") [FAIL]
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "classes under iu and word edges") [52 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "references") [23 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "look-ahead") [18 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.12]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "look-behind") [FAIL]
+[xUnit.net 00:00:05.14]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "references under i") [FAIL]
+[xUnit.net 00:00:05.17]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "negative look-ahead") [FAIL]
+[xUnit.net 00:00:05.19]     Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "named references under u") [FAIL]
+[xUnit.net 00:00:05.20]     Broiler.Regex.Tests.EntryTests.A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back [FAIL]
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "look-behind") [1 s]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "references under i") [28 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "negative look-ahead") [20 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [48, 48, 48, 48, 48, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [48, 48, 48, 48, 48, ···]
+                       ↑ (pos 0)
+[1]: Item:  [192, 192, 192, 192, 192, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [192, 192, 192, 192, 192, ···]
+                       ↑ (pos 0)
+[2]: Item:  [1632, 1632, 1632, 1632, 1632, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [1632, 1632, 1632, 1632, 1632, ···]
+                       ↑ (pos 0)
+[3]: Item:  [16032, 16032, 16032, 16032, 16032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [16032, 16032, 16032, 16032, 16032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(shape: "named references under u") [23 ms]
+  Error Message:
+   Assert.All() Failure: 4 out of 4 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[2]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[3]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(String shape) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 145
+   at InvokeStub_EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.EntryTests.A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1632
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back() in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 167
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:05.27]     Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count [FAIL]
+[xUnit.net 00:00:05.30]     Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(group: "(a)", count: 16384, least: 0) [FAIL]
+[xUnit.net 00:00:05.42]     Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(group: "(?:a|bc)", count: 16384, least: 0) [FAIL]
+  Failed Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count [38 ms]
+  Error Message:
+   Assert.All() Failure: 8 out of 8 items in the collection did not pass.
+[0]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[1]: Item:  [40, 40, 40, 40, 40, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [40, 40, 40, 40, 40, ···]
+                       ↑ (pos 0)
+[2]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[3]: Item:  [112, 112, 112, 112, 112, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [112, 112, 112, 112, 112, ···]
+                       ↑ (pos 0)
+[4]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[5]: Item:  [832, 832, 832, 832, 832, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [832, 832, 832, 832, 832, ···]
+                       ↑ (pos 0)
+[6]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+[7]: Item:  [8032, 8032, 8032, 8032, 8032, ···]
+     Error: Assert.Equal() Failure: Collections differ
+                       ↓ (pos 0)
+            Expected: [0, 0, 0, 0, 0, ···]
+            Actual:   [8032, 8032, 8032, 8032, 8032, ···]
+                       ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count() in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/PublicEntryTests.cs:line 145
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(group: "(a)", count: 16384, least: 0) [30 ms]
+  Error Message:
+   Assert.All() Failure: 2 out of 2 items in the collection did not pass.
+[0]: Item:  [131104, 131104, 131104, 131104, 131104, ···]
+     Error: Assert.All() Failure: 10 out of 10 items in the collection did not pass.
+            [0]: Item:  131104
+                 Error: 131104 bytes in a call
+            [1]: Item:  131104
+                 Error: 131104 bytes in a call
+            [2]: Item:  131104
+                 Error: 131104 bytes in a call
+            [3]: Item:  131104
+                 Error: 131104 bytes in a call
+            [4]: Item:  131104
+                 Error: 131104 bytes in a call
+            [5]: Item:  131104
+                 Error: 131104 bytes in a call
+            [6]: Item:  131104
+                 Error: 131104 bytes in a call
+            [7]: Item:  131104
+                 Error: 131104 bytes in a call
+            [8]: Item:  131104
+                 Error: 131104 bytes in a call
+            [9]: Item:  131104
+                 Error: 131104 bytes in a call
+[1]: Item:  [131104, 131104, 131104, 131104, 131104, ···]
+     Error: Assert.All() Failure: 10 out of 10 items in the collection did not pass.
+            [0]: Item:  131104
+                 Error: 131104 bytes in a call
+            [1]: Item:  131104
+                 Error: 131104 bytes in a call
+            [2]: Item:  131104
+                 Error: 131104 bytes in a call
+            [3]: Item:  131104
+                 Error: 131104 bytes in a call
+            [4]: Item:  131104
+                 Error: 131104 bytes in a call
+            [5]: Item:  131104
+                 Error: 131104 bytes in a call
+            [6]: Item:  131104
+                 Error: 131104 bytes in a call
+            [7]: Item:  131104
+                 Error: 131104 bytes in a call
+            [8]: Item:  131104
+                 Error: 131104 bytes in a call
+            [9]: Item:  131104
+                 Error: 131104 bytes in a call
+  Stack Trace:
+     at Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(String group, Int32 count, Int32 least) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/PublicEntryTests.cs:line 178
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(group: "(?:a|bc)", count: 16384, least: 0) [37 ms]
+  Error Message:
+   Assert.All() Failure: 2 out of 2 items in the collection did not pass.
+[0]: Item:  [32, 32, 32, 32, 32, ···]
+     Error: Assert.All() Failure: 10 out of 10 items in the collection did not pass.
+            [0]: Item:  32
+                 Error: 32 bytes in a call
+            [1]: Item:  32
+                 Error: 32 bytes in a call
+            [2]: Item:  32
+                 Error: 32 bytes in a call
+            [3]: Item:  32
+                 Error: 32 bytes in a call
+            [4]: Item:  32
+                 Error: 32 bytes in a call
+            [5]: Item:  32
+                 Error: 32 bytes in a call
+            [6]: Item:  32
+                 Error: 32 bytes in a call
+            [7]: Item:  32
+                 Error: 32 bytes in a call
+            [8]: Item:  32
+                 Error: 32 bytes in a call
+            [9]: Item:  32
+                 Error: 32 bytes in a call
+[1]: Item:  [32, 32, 32, 32, 32, ···]
+     Error: Assert.All() Failure: 10 out of 10 items in the collection did not pass.
+            [0]: Item:  32
+                 Error: 32 bytes in a call
+            [1]: Item:  32
+                 Error: 32 bytes in a call
+            [2]: Item:  32
+                 Error: 32 bytes in a call
+            [3]: Item:  32
+                 Error: 32 bytes in a call
+            [4]: Item:  32
+                 Error: 32 bytes in a call
+            [5]: Item:  32
+                 Error: 32 bytes in a call
+            [6]: Item:  32
+                 Error: 32 bytes in a call
+            [7]: Item:  32
+                 Error: 32 bytes in a call
+            [8]: Item:  32
+                 Error: 32 bytes in a call
+            [9]: Item:  32
+                 Error: 32 bytes in a call
+  Stack Trace:
+     at Broiler.Regex.Tests.PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(String group, Int32 count, Int32 least) in /home/user/rx-wit-plants/A-8-1/tree/Broiler.Regex.Tests/PublicEntryTests.cs:line 178
+   at InvokeStub_PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-8-1/results/test.trx
+
+Failed!  - Failed:    12, Passed:    57, Skipped:     0, Total:    69, Duration: 3 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

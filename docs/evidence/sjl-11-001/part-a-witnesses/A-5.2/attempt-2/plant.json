@@ -1,0 +1,18 @@
+{
+ "clause": "A-5.2",
+ "attempt": 2,
+ "what": "a lone property name refused as written is tried again without an Is prefix, so \\p{IsLetter} is accepted: in ClassifyProperty, which decides the name, and in ResolveProperty, which expands it (attempt 1 changed ResolveProperty alone, which the parser reaches only for a name ClassifyProperty accepted)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "        return _stringProperties.TryResolve(name, out _) ? PropertyKind.Strings : PropertyKind.Unknown;\n",
+   "replacement": "        if (_stringProperties.TryResolve(name, out _))\n            return PropertyKind.Strings;\n        return name.Length > 2 && name.StartsWith(\"Is\", StringComparison.Ordinal) ? ClassifyProperty(name[2..], value) : PropertyKind.Unknown; // witness plant A-5.2, attempt 2\n"
+  },
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "            return ResolveStringProperty(property);\n\n        return null;\n",
+   "replacement": "            return ResolveStringProperty(property);\n\n        return name.Length > 2 && name.StartsWith(\"Is\", StringComparison.Ordinal) ? ResolveProperty(name[2..], value) : null; // witness plant A-5.2, attempt 2\n"
+  }
+ ],
+ "classes": "PropertyNameTests"
+}

@@ -1,0 +1,13 @@
+{
+ "clause": "A-5.1",
+ "attempt": 2,
+ "what": "the Script values Katakana_Or_Hiragana and Hrkt are refused where the parser decides a property escape's name, RegexUnicode.ClassifyProperty (attempt 1 changed ResolveProperty, which the parser calls only after ClassifyProperty has accepted the name, so it refused nothing)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "        if (value != null)\n            return _properties.TryResolve(name, value, out _) ? PropertyKind.CodePoints : PropertyKind.Unknown;\n",
+   "replacement": "        if (value is \"Katakana_Or_Hiragana\" or \"Hrkt\") // witness plant A-5.1, attempt 2\n            return PropertyKind.Unknown;\n        if (value != null)\n            return _properties.TryResolve(name, value, out _) ? PropertyKind.CodePoints : PropertyKind.Unknown;\n"
+  }
+ ],
+ "classes": "PropertyNameTests"
+}

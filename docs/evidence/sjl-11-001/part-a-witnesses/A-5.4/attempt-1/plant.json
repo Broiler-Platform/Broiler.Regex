@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.4",
+ "what": "under u and v a four-digit lead-surrogate escape followed by a braced escape of a trail surrogate is joined into one code point (row S10's defect)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "                return char.ConvertToUtf32((char)hi, (char)lo);\n            }\n        }\n\n        return hi;\n",
+   "replacement": "                return char.ConvertToUtf32((char)hi, (char)lo);\n            }\n        }\n\n        if (unicodeMode && hi is >= 0xD800 and <= 0xDBFF && Peek() == '\\\\' && PeekAt(1) == 'u' && PeekAt(2) == '{') // witness plant A-5.4\n        {\n            var save = _pos;\n            _pos++;\n            var braced = ReadUnicodeEscape(unicodeMode: true);\n            if (braced is >= 0xDC00 and <= 0xDFFF)\n                return char.ConvertToUtf32((char)hi, (char)braced);\n            _pos = save;\n        }\n\n        return hi;\n"
+  }
+ ],
+ "classes": "GroupNameTests"
+}

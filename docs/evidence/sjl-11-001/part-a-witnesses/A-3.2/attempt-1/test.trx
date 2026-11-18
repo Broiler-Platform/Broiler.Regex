@@ -1,0 +1,689 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="558849f3-ca3c-41dd-8d2b-8bc2fd50a17f" name="@vm 2026-11-18 10:32:47" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:32:47.9566340+00:00" queuing="2026-11-18T10:32:47.9566341+00:00" start="2026-11-18T10:32:45.6263650+00:00" finish="2026-11-18T10:32:48.8747485+00:00" />
+  <TestSettings name="default" id="eb26cad0-ef0f-4522-8296-f62582e08529">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_32_47" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="822540d8-3aba-4d3e-bfb2-cd2c81e51e77" testId="28017ade-b95a-1780-0d1f-b4bfd25413ef" testName="Broiler.Regex.Tests.CeilingTests.The_engines_defaults_are_decision_D10_s" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:32:47.8384073+00:00" endTime="2026-11-18T10:32:47.8436420+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="822540d8-3aba-4d3e-bfb2-cd2c81e51e77" />
+    <UnitTestResult executionId="b3e8fde4-478a-4245-9020-d05529487ff2" testId="69bc5afa-bc20-26d5-7a22-df9302eb6316" testName="Broiler.Regex.Tests.CeilingTests.A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares" computerName="vm" duration="00:00:00.0120000" startTime="2026-11-18T10:32:48.0593941+00:00" endTime="2026-11-18T10:32:48.0721559+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3e8fde4-478a-4245-9020-d05529487ff2" />
+    <UnitTestResult executionId="e5adefcc-4a35-4151-9e39-55bbc0b10903" testId="4a74a33e-2855-c878-703e-cc10557711a9" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?=(?:(a)|b)*c)&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.2029977+00:00" endTime="2026-11-18T10:32:48.2045777+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5adefcc-4a35-4151-9e39-55bbc0b10903">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dae18de3-0caf-4dd6-8d84-dae1d443ba92" testId="173ddab7-5e4e-1e23-af5a-0b89ac7db1de" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_below_one_or_a_frame_or_trail_ceiling_above_its_maximum_is_a_broken_precondition" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:32:48.7431439+00:00" endTime="2026-11-18T10:32:48.7474551+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dae18de3-0caf-4dd6-8d84-dae1d443ba92" />
+    <UnitTestResult executionId="e9c8f08d-1f60-4457-b2ad-dc6dd7cd7046" testId="5b9483a7-1bb2-20d4-c762-67437368aa1b" testName="Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.4063841+00:00" endTime="2026-11-18T10:32:48.4076032+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9c8f08d-1f60-4457-b2ad-dc6dd7cd7046">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Trail)
+Actual:   Tuple (LimitExceeded, Frames)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 53
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0403324f-ed4f-4cdf-8e06-cd735a5b593a" testId="5b49b10c-3cba-1bed-09ac-f1716c067a80" testName="Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration" computerName="vm" duration="00:00:00.1110000" startTime="2026-11-18T10:32:47.9322860+00:00" endTime="2026-11-18T10:32:48.0573283+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0403324f-ed4f-4cdf-8e06-cd735a5b593a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Trail
+Actual:   Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 78
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="818fcdf3-881e-42e4-be53-2ef250af2d0d" testId="c1d799bb-0906-75ab-2e51-21a7e898f842" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:(a+)+b|a*c)&quot;, subject: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaac&quot;)" computerName="vm" duration="00:00:00.0330000" startTime="2026-11-18T10:32:47.8502555+00:00" endTime="2026-11-18T10:32:47.8839444+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="818fcdf3-881e-42e4-be53-2ef250af2d0d" />
+    <UnitTestResult executionId="f118809c-02a3-420a-95fb-fcfd3afd193d" testId="14bf8698-707c-9ca7-77aa-4855b0552453" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;^(?!(?:(a+)+b|a*c))&quot;, flags: &quot;u&quot;, subject: &quot;aaaaaaac&quot;)" computerName="vm" duration="00:00:00.0720000" startTime="2026-11-18T10:32:48.0774359+00:00" endTime="2026-11-18T10:32:48.1499380+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f118809c-02a3-420a-95fb-fcfd3afd193d">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dfcc10e2-c23c-406f-9778-57a3a0cb4f0a" testId="08cf01fb-0fd2-cdca-f3bc-87c912c647b9" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?&lt;=\\1(a+))b&quot;, flags: &quot;i&quot;, subject: &quot;aaaaaaaaab&quot;)" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:32:48.4087967+00:00" endTime="2026-11-18T10:32:48.4138682+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dfcc10e2-c23c-406f-9778-57a3a0cb4f0a">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9d4d6e61-9b77-406c-94dc-a19022d84d2b" testId="3a6fd22f-aec8-d071-b427-38ae8a01ff71" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?!(?:a|ab)*d)a&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.6053502+00:00" endTime="2026-11-18T10:32:48.6059365+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d4d6e61-9b77-406c-94dc-a19022d84d2b">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ea8b6d37-5267-4ce2-9dfa-4ff8d9e91783" testId="dd860659-4d18-17db-1005-fac0e88fb90f" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a+)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:32:47.9201631+00:00" endTime="2026-11-18T10:32:47.9254324+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea8b6d37-5267-4ce2-9dfa-4ff8d9e91783" />
+    <UnitTestResult executionId="eb1d8c90-dbff-4c7e-883f-287d95f5f22e" testId="8c1212ff-61d2-9931-e801-1fd7445c4120" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(a+)+\\1b&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaa&quot;)" computerName="vm" duration="00:00:00.0740000" startTime="2026-11-18T10:32:48.4154399+00:00" endTime="2026-11-18T10:32:48.4900495+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb1d8c90-dbff-4c7e-883f-287d95f5f22e">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8a5337c9-a6c8-42fa-a7a5-d5567907282f" testId="bef2049c-1eda-95ff-df81-681fc5de93c0" testName="Broiler.Regex.Tests.CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:32:48.0732823+00:00" endTime="2026-11-18T10:32:48.0766404+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a5337c9-a6c8-42fa-a7a5-d5567907282f" />
+    <UnitTestResult executionId="af65bbea-b35d-444f-b4bf-5d5269b742a3" testId="6b2402a8-6d5e-e42a-1361-a0ea49c4d3f9" testName="Broiler.Regex.Tests.CeilingTests.A_run_holds_one_frame_and_writes_no_trail_cell_whatever_its_length" computerName="vm" duration="00:00:00.1350000" startTime="2026-11-18T10:32:48.6068778+00:00" endTime="2026-11-18T10:32:48.7420623+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af65bbea-b35d-444f-b4bf-5d5269b742a3" />
+    <UnitTestResult executionId="61acf86e-8fd0-43bc-9e2d-4d80a6192312" testId="97aa1507-46c4-c856-2316-fceef4a19ea5" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;^(?!(?:(a+)+b|a*c))&quot;, flags: &quot;u&quot;, subject: &quot;aaaaaaac&quot;)" computerName="vm" duration="00:00:00.0180000" startTime="2026-11-18T10:32:48.5473546+00:00" endTime="2026-11-18T10:32:48.5657697+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61acf86e-8fd0-43bc-9e2d-4d80a6192312">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5dd7a0e5-c022-47b1-806c-6f501fe4245f" testId="f6e9513e-32b4-fd53-647e-deb1200658b2" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?=(?:(a)|b)*c)&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.4142184+00:00" endTime="2026-11-18T10:32:48.4150754+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dd7a0e5-c022-47b1-806c-6f501fe4245f">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7d23b2e9-3743-4568-a2a4-6bdd1c51a0e7" testId="0be9c104-cc17-8249-4ad9-c6c5411d46f9" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?&lt;=\\1(a+))b&quot;, flags: &quot;i&quot;, subject: &quot;aaaaaaaaab&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:32:48.4029352+00:00" endTime="2026-11-18T10:32:48.4056203+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d23b2e9-3743-4568-a2a4-6bdd1c51a0e7">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b794704d-0ec3-4c8e-98c2-f973f242f5be" testId="150f4aba-b532-94c6-f471-968f12ae657a" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?!(?:a|ab)*d)a&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.1503602+00:00" endTime="2026-11-18T10:32:48.1522957+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b794704d-0ec3-4c8e-98c2-f973f242f5be">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3e834491-b6bf-4aa7-ae88-a0ce5dad245b" testId="e7d36f4f-ba3b-0068-15d1-f4b2b1e04567" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:a+)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:32:47.9149293+00:00" endTime="2026-11-18T10:32:47.9198902+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e834491-b6bf-4aa7-ae88-a0ce5dad245b" />
+    <UnitTestResult executionId="fbedceb3-5664-4970-9141-66de6a18e155" testId="822a9f57-a30e-6260-9bbc-e8b1688b0d61" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(a+)+\\1b&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaa&quot;)" computerName="vm" duration="00:00:00.0420000" startTime="2026-11-18T10:32:48.3590648+00:00" endTime="2026-11-18T10:32:48.4023621+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fbedceb3-5664-4970-9141-66de6a18e155">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0de63c21-c640-4fea-bdd4-7f2a7b18ce62" testId="3fa85a74-c47f-af12-8808-2624c9804d5c" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a|aa)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" computerName="vm" duration="00:00:00.0120000" startTime="2026-11-18T10:32:47.8844852+00:00" endTime="2026-11-18T10:32:47.8975027+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0de63c21-c640-4fea-bdd4-7f2a7b18ce62" />
+    <UnitTestResult executionId="1f3f7af7-80a8-48a7-b17b-8cca2772fda7" testId="e4a2a845-1506-7330-2843-57bc6da0cd31" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;$(?&lt;!(?:b(a+)+|ca*))&quot;, flags: &quot;u&quot;, subject: &quot;caaaaaaa&quot;)" computerName="vm" duration="00:00:00.0100000" startTime="2026-11-18T10:32:48.3475881+00:00" endTime="2026-11-18T10:32:48.3585856+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1f3f7af7-80a8-48a7-b17b-8cca2772fda7">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="16e2397d-877b-4818-b5f1-a435bba4f09e" testId="f76d93c8-ffbf-ad11-f1a6-ac0bfe92b31a" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;$(?&lt;=(?:b(a+)+|ca*))&quot;, flags: &quot;&quot;, subject: &quot;caaaaaaa&quot;)" computerName="vm" duration="00:00:00.0190000" startTime="2026-11-18T10:32:48.4905494+00:00" endTime="2026-11-18T10:32:48.5106712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16e2397d-877b-4818-b5f1-a435bba4f09e">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b0a6ed9c-5948-4819-80de-75b418261452" testId="b92c062d-dd87-67a1-37c7-2399f4c1500d" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;^(?=(?:(a+)+b|a*c))&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaac&quot;)" computerName="vm" duration="00:00:00.0420000" startTime="2026-11-18T10:32:48.2048756+00:00" endTime="2026-11-18T10:32:48.2479526+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0a6ed9c-5948-4819-80de-75b418261452">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="285aadac-f97e-41f5-a537-3baf0ba76a66" testId="582ae95a-5202-2de0-33fd-253f7892e5bd" testName="Broiler.Regex.Tests.CeilingTests.The_step_ceiling_is_reached_at_the_unit_past_it" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:32:47.8444041+00:00" endTime="2026-11-18T10:32:47.8481402+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="285aadac-f97e-41f5-a537-3baf0ba76a66" />
+    <UnitTestResult executionId="ff9cfd34-7d2b-4550-a4ed-73a04f5babc8" testId="ebf36617-7e74-6d34-dbc0-dff0404d4818" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;$(?&lt;!(?:b(a+)+|ca*))&quot;, flags: &quot;u&quot;, subject: &quot;caaaaaaa&quot;)" computerName="vm" duration="00:00:00.0190000" startTime="2026-11-18T10:32:48.5662427+00:00" endTime="2026-11-18T10:32:48.5863599+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff9cfd34-7d2b-4550-a4ed-73a04f5babc8">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="38d31504-0ab0-4b33-8817-7d13df724e01" testId="7563f17e-12e7-256c-8b48-ebb1d3810563" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;$(?&lt;=(?:b(a+)+|ca*))&quot;, flags: &quot;&quot;, subject: &quot;caaaaaaa&quot;)" computerName="vm" duration="00:00:00.0420000" startTime="2026-11-18T10:32:48.1598902+00:00" endTime="2026-11-18T10:32:48.2026445+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="38d31504-0ab0-4b33-8817-7d13df724e01">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1335045e-7319-4ec3-a203-7675fbddcf01" testId="cbbdedb9-1858-07ec-e5d5-e9804a139ac3" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?:(a)|b)*(?!\\1)c&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababc&quot;)" computerName="vm" duration="00:00:00.0980000" startTime="2026-11-18T10:32:48.2483143+00:00" endTime="2026-11-18T10:32:48.3467174+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1335045e-7319-4ec3-a203-7675fbddcf01">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9877a263-f9dd-4faf-a936-d18715b9ae06" testId="b8bac065-5a22-fa20-bd77-3122dd231f1e" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?&quot;···, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;···)" computerName="vm" duration="00:00:00.0160000" startTime="2026-11-18T10:32:47.8978794+00:00" endTime="2026-11-18T10:32:47.9145780+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9877a263-f9dd-4faf-a936-d18715b9ae06" />
+    <UnitTestResult executionId="be13dc30-d93f-43bb-8462-96125956e754" testId="cecc7de8-b321-c4ad-db0f-2fa2ae5e4fc2" testName="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a*)*b&quot;, subject: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaac&quot;)" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:32:47.9257309+00:00" endTime="2026-11-18T10:32:47.9316339+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be13dc30-d93f-43bb-8462-96125956e754" />
+    <UnitTestResult executionId="fe15857f-6107-4fa0-ba57-8e4d019a9f11" testId="c923ac8f-3a6c-4397-a910-3f0ec8ebbbd4" testName="Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.7483297+00:00" endTime="2026-11-18T10:32:48.7493203+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fe15857f-6107-4fa0-ba57-8e4d019a9f11">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Trail)
+Actual:   Tuple (LimitExceeded, Frames)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 245
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e47b50a4-b37c-42b7-8281-a635e29b5c58" testId="7f5a77d4-9740-bb1c-9e6a-92fc3bf98f4d" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(\\w+)\\s\\1\\b&quot;, flags: &quot;i&quot;, subject: &quot;Word wORD wordy word WORD&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:32:48.5111216+00:00" endTime="2026-11-18T10:32:48.5117854+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e47b50a4-b37c-42b7-8281-a635e29b5c58">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3a995a54-83b4-4258-8c02-40b2423240f7" testId="1045260d-16b0-d03d-5705-0cdb0a1d7a3f" testName="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(\\w+)\\s\\1\\b&quot;, flags: &quot;i&quot;, subject: &quot;Word wORD wordy word WORD&quot;)" computerName="vm" duration="00:00:00.0060000" startTime="2026-11-18T10:32:48.1525889+00:00" endTime="2026-11-18T10:32:48.1595225+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a995a54-83b4-4258-8c02-40b2423240f7">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8171c872-93a7-46c7-8a67-5ed72d4b4972" testId="599e322d-53f9-9cbb-deee-1ea7b6660a7d" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_the_call_never_reaches_costs_nothing" computerName="vm" duration="00:00:00.0370000" startTime="2026-11-18T10:32:47.7788881+00:00" endTime="2026-11-18T10:32:47.8299494+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8171c872-93a7-46c7-8a67-5ed72d4b4972" />
+    <UnitTestResult executionId="916b515e-e83d-463c-90b7-d336a9e6f83e" testId="03c151ae-ee51-0b7b-7b52-9a01046f1e97" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;^(?=(?:(a+)+b|a*c))&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaac&quot;)" computerName="vm" duration="00:00:00.0170000" startTime="2026-11-18T10:32:48.5868439+00:00" endTime="2026-11-18T10:32:48.6048417+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="916b515e-e83d-463c-90b7-d336a9e6f83e">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a00c8b19-5987-484f-ab44-eaff90bf9fba" testId="5364db95-3583-5aa8-4182-91e4885f1792" testName="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?:(a)|b)*(?!\\1)c&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababc&quot;)" computerName="vm" duration="00:00:00.0340000" startTime="2026-11-18T10:32:48.5120937+00:00" endTime="2026-11-18T10:32:48.5468931+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a00c8b19-5987-484f-ab44-eaff90bf9fba">
+      <Output>
+        <ErrorInfo>
+          <Message>Trail 1: Frames</Message>
+          <StackTrace>   at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:a+)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e7d36f4f-ba3b-0068-15d1-f4b2b1e04567">
+      <Execution id="3e834491-b6bf-4aa7-ae88-a0ce5dad245b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="5b9483a7-1bb2-20d4-c762-67437368aa1b">
+      <Execution id="e9c8f08d-1f60-4457-b2ad-dc6dd7cd7046" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?&lt;=\\1(a+))b&quot;, flags: &quot;i&quot;, subject: &quot;aaaaaaaaab&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0be9c104-cc17-8249-4ad9-c6c5411d46f9">
+      <Execution id="7d23b2e9-3743-4568-a2a4-6bdd1c51a0e7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;$(?&lt;!(?:b(a+)+|ca*))&quot;, flags: &quot;u&quot;, subject: &quot;caaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="ebf36617-7e74-6d34-dbc0-dff0404d4818">
+      <Execution id="ff9cfd34-7d2b-4550-a4ed-73a04f5babc8" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(\\w+)\\s\\1\\b&quot;, flags: &quot;i&quot;, subject: &quot;Word wORD wordy word WORD&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="1045260d-16b0-d03d-5705-0cdb0a1d7a3f">
+      <Execution id="3a995a54-83b4-4258-8c02-40b2423240f7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?:(a)|b)*(?!\\1)c&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="cbbdedb9-1858-07ec-e5d5-e9804a139ac3">
+      <Execution id="1335045e-7319-4ec3-a203-7675fbddcf01" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a+)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="dd860659-4d18-17db-1005-fac0e88fb90f">
+      <Execution id="ea8b6d37-5267-4ce2-9dfa-4ff8d9e91783" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(\\w+)\\s\\1\\b&quot;, flags: &quot;i&quot;, subject: &quot;Word wORD wordy word WORD&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7f5a77d4-9740-bb1c-9e6a-92fc3bf98f4d">
+      <Execution id="e47b50a4-b37c-42b7-8281-a635e29b5c58" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_the_call_never_reaches_costs_nothing" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="599e322d-53f9-9cbb-deee-1ea7b6660a7d">
+      <Execution id="8171c872-93a7-46c7-8a67-5ed72d4b4972" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_the_call_never_reaches_costs_nothing" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?!(?:a|ab)*d)a&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="150f4aba-b532-94c6-f471-968f12ae657a">
+      <Execution id="b794704d-0ec3-4c8e-98c2-f973f242f5be" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:(a+)+b|a*c)&quot;, subject: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c1d799bb-0906-75ab-2e51-21a7e898f842">
+      <Execution id="818fcdf3-881e-42e4-be53-2ef250af2d0d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?:a|aa)(?&quot;···, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;···)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="b8bac065-5a22-fa20-bd77-3122dd231f1e">
+      <Execution id="9877a263-f9dd-4faf-a936-d18715b9ae06" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;^(?!(?:(a+)+b|a*c))&quot;, flags: &quot;u&quot;, subject: &quot;aaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="14bf8698-707c-9ca7-77aa-4855b0552453">
+      <Execution id="f118809c-02a3-420a-95fb-fcfd3afd193d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="5b49b10c-3cba-1bed-09ac-f1716c067a80">
+      <Execution id="0403324f-ed4f-4cdf-8e06-cd735a5b593a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;$(?&lt;=(?:b(a+)+|ca*))&quot;, flags: &quot;&quot;, subject: &quot;caaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f76d93c8-ffbf-ad11-f1a6-ac0bfe92b31a">
+      <Execution id="16e2397d-877b-4818-b5f1-a435bba4f09e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;$(?&lt;!(?:b(a+)+|ca*))&quot;, flags: &quot;u&quot;, subject: &quot;caaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e4a2a845-1506-7330-2843-57bc6da0cd31">
+      <Execution id="1f3f7af7-80a8-48a7-b17b-8cca2772fda7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;^(?=(?:(a+)+b|a*c))&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="b92c062d-dd87-67a1-37c7-2399f4c1500d">
+      <Execution id="b0a6ed9c-5948-4819-80de-75b418261452" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?:(a)|b)*(?!\\1)c&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="5364db95-3583-5aa8-4182-91e4885f1792">
+      <Execution id="a00c8b19-5987-484f-ab44-eaff90bf9fba" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a*)*b&quot;, subject: &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="cecc7de8-b321-c4ad-db0f-2fa2ae5e4fc2">
+      <Execution id="be13dc30-d93f-43bb-8462-96125956e754" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(a+)+\\1b&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="822a9f57-a30e-6260-9bbc-e8b1688b0d61">
+      <Execution id="fbedceb3-5664-4970-9141-66de6a18e155" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="69bc5afa-bc20-26d5-7a22-df9302eb6316">
+      <Execution id="b3e8fde4-478a-4245-9020-d05529487ff2" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match(pattern: &quot;(a|aa)+b&quot;, subject: &quot;baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="3fa85a74-c47f-af12-8808-2624c9804d5c">
+      <Execution id="0de63c21-c640-4fea-bdd4-7f2a7b18ce62" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;(?=(?:(a)|b)*c)&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="4a74a33e-2855-c878-703e-cc10557711a9">
+      <Execution id="e5adefcc-4a35-4151-9e39-55bbc0b10903" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.The_step_ceiling_is_reached_at_the_unit_past_it" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="582ae95a-5202-2de0-33fd-253f7892e5bd">
+      <Execution id="285aadac-f97e-41f5-a537-3baf0ba76a66" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="The_step_ceiling_is_reached_at_the_unit_past_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?!(?:a|ab)*d)a&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="3a6fd22f-aec8-d071-b427-38ae8a01ff71">
+      <Execution id="9d4d6e61-9b77-406c-94dc-a19022d84d2b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: &quot;$(?&lt;=(?:b(a+)+|ca*))&quot;, flags: &quot;&quot;, subject: &quot;caaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7563f17e-12e7-256c-8b48-ebb1d3810563">
+      <Execution id="38d31504-0ab0-4b33-8817-7d13df724e01" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;^(?!(?:(a+)+b|a*c))&quot;, flags: &quot;u&quot;, subject: &quot;aaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="97aa1507-46c4-c856-2316-fceef4a19ea5">
+      <Execution id="61acf86e-8fd0-43bc-9e2d-4d80a6192312" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;^(?=(?:(a+)+b|a*c))&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaac&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="03c151ae-ee51-0b7b-7b52-9a01046f1e97">
+      <Execution id="916b515e-e83d-463c-90b7-d336a9e6f83e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c923ac8f-3a6c-4397-a910-3f0ec8ebbbd4">
+      <Execution id="fe15857f-6107-4fa0-ba57-8e4d019a9f11" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_below_one_or_a_frame_or_trail_ceiling_above_its_maximum_is_a_broken_precondition" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="173ddab7-5e4e-1e23-af5a-0b89ac7db1de">
+      <Execution id="dae18de3-0caf-4dd6-8d84-dae1d443ba92" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_below_one_or_a_frame_or_trail_ceiling_above_its_maximum_is_a_broken_precondition" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.The_engines_defaults_are_decision_D10_s" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="28017ade-b95a-1780-0d1f-b4bfd25413ef">
+      <Execution id="822540d8-3aba-4d3e-bfb2-cd2c81e51e77" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="The_engines_defaults_are_decision_D10_s" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(a+)+\\1b&quot;, flags: &quot;&quot;, subject: &quot;aaaaaaa&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="8c1212ff-61d2-9931-e801-1fd7445c4120">
+      <Execution id="eb1d8c90-dbff-4c7e-883f-287d95f5f22e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?&lt;=\\1(a+))b&quot;, flags: &quot;i&quot;, subject: &quot;aaaaaaaaab&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="08cf01fb-0fd2-cdca-f3bc-87c912c647b9">
+      <Execution id="dfcc10e2-c23c-406f-9778-57a3a0cb4f0a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: &quot;(?=(?:(a)|b)*c)&quot;, flags: &quot;&quot;, subject: &quot;ababababababababababababc&quot;)" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f6e9513e-32b4-fd53-647e-deb1200658b2">
+      <Execution id="5dd7a0e5-c022-47b1-806c-6f501fe4245f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.A_run_holds_one_frame_and_writes_no_trail_cell_whatever_its_length" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6b2402a8-6d5e-e42a-1361-a0ea49c4d3f9">
+      <Execution id="af65bbea-b35d-444f-b4bf-5d5269b742a3" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="A_run_holds_one_frame_and_writes_no_trail_cell_whatever_its_length" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once" storage="/home/user/rx-wit-plants/a-3.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="bef2049c-1eda-95ff-df81-681fc5de93c0">
+      <Execution id="8a5337c9-a6c8-42fa-a7a5-d5567907282f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.CeilingTests" name="The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="28017ade-b95a-1780-0d1f-b4bfd25413ef" executionId="822540d8-3aba-4d3e-bfb2-cd2c81e51e77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69bc5afa-bc20-26d5-7a22-df9302eb6316" executionId="b3e8fde4-478a-4245-9020-d05529487ff2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a74a33e-2855-c878-703e-cc10557711a9" executionId="e5adefcc-4a35-4151-9e39-55bbc0b10903" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="173ddab7-5e4e-1e23-af5a-0b89ac7db1de" executionId="dae18de3-0caf-4dd6-8d84-dae1d443ba92" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b9483a7-1bb2-20d4-c762-67437368aa1b" executionId="e9c8f08d-1f60-4457-b2ad-dc6dd7cd7046" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b49b10c-3cba-1bed-09ac-f1716c067a80" executionId="0403324f-ed4f-4cdf-8e06-cd735a5b593a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1d799bb-0906-75ab-2e51-21a7e898f842" executionId="818fcdf3-881e-42e4-be53-2ef250af2d0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14bf8698-707c-9ca7-77aa-4855b0552453" executionId="f118809c-02a3-420a-95fb-fcfd3afd193d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="08cf01fb-0fd2-cdca-f3bc-87c912c647b9" executionId="dfcc10e2-c23c-406f-9778-57a3a0cb4f0a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a6fd22f-aec8-d071-b427-38ae8a01ff71" executionId="9d4d6e61-9b77-406c-94dc-a19022d84d2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd860659-4d18-17db-1005-fac0e88fb90f" executionId="ea8b6d37-5267-4ce2-9dfa-4ff8d9e91783" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c1212ff-61d2-9931-e801-1fd7445c4120" executionId="eb1d8c90-dbff-4c7e-883f-287d95f5f22e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bef2049c-1eda-95ff-df81-681fc5de93c0" executionId="8a5337c9-a6c8-42fa-a7a5-d5567907282f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b2402a8-6d5e-e42a-1361-a0ea49c4d3f9" executionId="af65bbea-b35d-444f-b4bf-5d5269b742a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97aa1507-46c4-c856-2316-fceef4a19ea5" executionId="61acf86e-8fd0-43bc-9e2d-4d80a6192312" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6e9513e-32b4-fd53-647e-deb1200658b2" executionId="5dd7a0e5-c022-47b1-806c-6f501fe4245f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0be9c104-cc17-8249-4ad9-c6c5411d46f9" executionId="7d23b2e9-3743-4568-a2a4-6bdd1c51a0e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="150f4aba-b532-94c6-f471-968f12ae657a" executionId="b794704d-0ec3-4c8e-98c2-f973f242f5be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e7d36f4f-ba3b-0068-15d1-f4b2b1e04567" executionId="3e834491-b6bf-4aa7-ae88-a0ce5dad245b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="822a9f57-a30e-6260-9bbc-e8b1688b0d61" executionId="fbedceb3-5664-4970-9141-66de6a18e155" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fa85a74-c47f-af12-8808-2624c9804d5c" executionId="0de63c21-c640-4fea-bdd4-7f2a7b18ce62" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4a2a845-1506-7330-2843-57bc6da0cd31" executionId="1f3f7af7-80a8-48a7-b17b-8cca2772fda7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f76d93c8-ffbf-ad11-f1a6-ac0bfe92b31a" executionId="16e2397d-877b-4818-b5f1-a435bba4f09e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b92c062d-dd87-67a1-37c7-2399f4c1500d" executionId="b0a6ed9c-5948-4819-80de-75b418261452" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="582ae95a-5202-2de0-33fd-253f7892e5bd" executionId="285aadac-f97e-41f5-a537-3baf0ba76a66" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ebf36617-7e74-6d34-dbc0-dff0404d4818" executionId="ff9cfd34-7d2b-4550-a4ed-73a04f5babc8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7563f17e-12e7-256c-8b48-ebb1d3810563" executionId="38d31504-0ab0-4b33-8817-7d13df724e01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cbbdedb9-1858-07ec-e5d5-e9804a139ac3" executionId="1335045e-7319-4ec3-a203-7675fbddcf01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8bac065-5a22-fa20-bd77-3122dd231f1e" executionId="9877a263-f9dd-4faf-a936-d18715b9ae06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cecc7de8-b321-c4ad-db0f-2fa2ae5e4fc2" executionId="be13dc30-d93f-43bb-8462-96125956e754" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c923ac8f-3a6c-4397-a910-3f0ec8ebbbd4" executionId="fe15857f-6107-4fa0-ba57-8e4d019a9f11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f5a77d4-9740-bb1c-9e6a-92fc3bf98f4d" executionId="e47b50a4-b37c-42b7-8281-a635e29b5c58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1045260d-16b0-d03d-5705-0cdb0a1d7a3f" executionId="3a995a54-83b4-4258-8c02-40b2423240f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="599e322d-53f9-9cbb-deee-1ea7b6660a7d" executionId="8171c872-93a7-46c7-8a67-5ed72d4b4972" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="03c151ae-ee51-0b7b-7b52-9a01046f1e97" executionId="916b515e-e83d-463c-90b7-d336a9e6f83e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5364db95-3583-5aa8-4182-91e4885f1792" executionId="a00c8b19-5987-484f-ab44-eaff90bf9fba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="36" executed="36" passed="13" failed="23" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.26]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.37]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.61]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:02.00]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.00]       Expected: Trail
+[xUnit.net 00:00:02.00]       Actual:   Frames
+[xUnit.net 00:00:02.00]       Stack Trace:
+[xUnit.net 00:00:02.01]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(78,0): at Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration()
+[xUnit.net 00:00:02.01]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.01]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.09]       Trail 1: Frames
+[xUnit.net 00:00:02.09]       Stack Trace:
+[xUnit.net 00:00:02.09]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.09]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.09]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.09]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.09]       Trail 1: Frames
+[xUnit.net 00:00:02.09]       Stack Trace:
+[xUnit.net 00:00:02.09]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.09]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.09]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.09]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.10]       Trail 1: Frames
+[xUnit.net 00:00:02.10]       Stack Trace:
+[xUnit.net 00:00:02.10]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.10]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.10]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.10]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.14]       Trail 1: Frames
+[xUnit.net 00:00:02.14]       Stack Trace:
+[xUnit.net 00:00:02.14]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.14]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.14]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.14]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.15]       Trail 1: Frames
+[xUnit.net 00:00:02.15]       Stack Trace:
+[xUnit.net 00:00:02.15]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.15]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.15]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.15]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.19]       Trail 1: Frames
+[xUnit.net 00:00:02.19]       Stack Trace:
+[xUnit.net 00:00:02.19]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.19]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.19]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.19]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.29]       Trail 1: Frames
+[xUnit.net 00:00:02.29]       Stack Trace:
+[xUnit.net 00:00:02.29]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.29]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.29]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.29]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.30]       Trail 1: Frames
+[xUnit.net 00:00:02.30]       Stack Trace:
+[xUnit.net 00:00:02.30]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.30]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.30]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.30]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.34]       Trail 1: Frames
+[xUnit.net 00:00:02.34]       Stack Trace:
+[xUnit.net 00:00:02.34]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.34]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.34]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.34]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.35]       Trail 1: Frames
+[xUnit.net 00:00:02.35]       Stack Trace:
+[xUnit.net 00:00:02.35]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.35]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(204,0): at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.35]            at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+[xUnit.net 00:00:02.35]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.35]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.35]       Expected: Tuple (LimitExceeded, Trail)
+[xUnit.net 00:00:02.35]       Actual:   Tuple (LimitExceeded, Frames)
+[xUnit.net 00:00:02.35]       Stack Trace:
+[xUnit.net 00:00:02.35]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(53,0): at Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone()
+[xUnit.net 00:00:02.35]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.35]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.36]       Trail 1: Frames
+[xUnit.net 00:00:02.36]       Stack Trace:
+[xUnit.net 00:00:02.36]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.36]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.36]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.36]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.36]       Trail 1: Frames
+[xUnit.net 00:00:02.36]       Stack Trace:
+[xUnit.net 00:00:02.36]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.36]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.36]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.36]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.43]       Trail 1: Frames
+[xUnit.net 00:00:02.43]       Stack Trace:
+[xUnit.net 00:00:02.43]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.43]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.43]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.43]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.45]       Trail 1: Frames
+[xUnit.net 00:00:02.45]       Stack Trace:
+[xUnit.net 00:00:02.45]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.45]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.45]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.45]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.46]       Trail 1: Frames
+[xUnit.net 00:00:02.46]       Stack Trace:
+[xUnit.net 00:00:02.46]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.46]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.46]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.46]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.49]       Trail 1: Frames
+[xUnit.net 00:00:02.49]       Stack Trace:
+[xUnit.net 00:00:02.49]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.49]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.49]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.49]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.51]       Trail 1: Frames
+[xUnit.net 00:00:02.51]       Stack Trace:
+[xUnit.net 00:00:02.51]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.51]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.51]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.51]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.53]       Trail 1: Frames
+[xUnit.net 00:00:02.53]       Stack Trace:
+[xUnit.net 00:00:02.53]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.53]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.53]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.53]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.55]       Trail 1: Frames
+[xUnit.net 00:00:02.55]       Stack Trace:
+[xUnit.net 00:00:02.55]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.55]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.55]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.55]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.55]       Trail 1: Frames
+[xUnit.net 00:00:02.55]       Stack Trace:
+[xUnit.net 00:00:02.55]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(224,0): at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full)
+[xUnit.net 00:00:02.55]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(181,0): at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject)
+[xUnit.net 00:00:02.55]            at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+[xUnit.net 00:00:02.55]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.69]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.69]       Expected: Tuple (LimitExceeded, Trail)
+[xUnit.net 00:00:02.69]       Actual:   Tuple (LimitExceeded, Frames)
+[xUnit.net 00:00:02.69]       Stack Trace:
+[xUnit.net 00:00:02.69]         /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs(245,0): at Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match()
+[xUnit.net 00:00:02.69]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.69]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.72]   Finished:    Broiler.Regex.Tests (ID = 'c13941f1b1568e50d98545d16859d14b35843dde4924abb8c0470ea90a716133')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.0638319+00:00">
+        <Text>[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.1515760+00:00">
+        <Text>[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.1531722+00:00">
+        <Text>[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.1606659+00:00">
+        <Text>[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.2039493+00:00">
+        <Text>[xUnit.net 00:00:02.14]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?&lt;=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.2054896+00:00">
+        <Text>[xUnit.net 00:00:02.15]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.2493473+00:00">
+        <Text>[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.3489184+00:00">
+        <Text>[xUnit.net 00:00:02.29]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.3596396+00:00">
+        <Text>[xUnit.net 00:00:02.30]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?&lt;!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4042532+00:00">
+        <Text>[xUnit.net 00:00:02.34]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4065019+00:00">
+        <Text>[xUnit.net 00:00:02.35]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?&lt;=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4082755+00:00">
+        <Text>[xUnit.net 00:00:02.35]     Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4149483+00:00">
+        <Text>[xUnit.net 00:00:02.36]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?&lt;=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4158366+00:00">
+        <Text>[xUnit.net 00:00:02.36]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.4913682+00:00">
+        <Text>[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.5117806+00:00">
+        <Text>[xUnit.net 00:00:02.45]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?&lt;=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.5206848+00:00">
+        <Text>[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.5481289+00:00">
+        <Text>[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.5668344+00:00">
+        <Text>[xUnit.net 00:00:02.51]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.5875571+00:00">
+        <Text>[xUnit.net 00:00:02.53]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?&lt;!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.6083986+00:00">
+        <Text>[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.6091176+00:00">
+        <Text>[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:32:48.7509342+00:00">
+        <Text>[xUnit.net 00:00:02.69]     Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

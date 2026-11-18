@@ -1,0 +1,25 @@
+{
+ "run": "A-7-1",
+ "clause": "A-7",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 10,
+  "skipped": 0,
+  "total": 11
+ },
+ "deciding-tests-failed": [
+  "PublicEntryTests.The_anchored_argument_is_independent_of_the_y_flag"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "PublicEntryTests.The_anchored_argument_is_independent_of_the_y_flag": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/BroilerRegex.cs"
+ ],
+ "library-sources-sha256": "81c040656dd1aa5574bfebe1c1183e80a02cccb5f65a5f7beb225e29812cc897",
+ "reading": "witness"
+}

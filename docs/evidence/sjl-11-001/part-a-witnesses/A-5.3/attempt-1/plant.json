@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.3",
+ "what": "a group name's later code points are validated by EcmaScriptLexical's IdentifierPart or as a hyphen, so (?<a-b>x) is accepted",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "            if (first ? !_data.IsIdentifierStart(codePoint) : !_data.IsIdentifierPart(codePoint))\n",
+   "replacement": "            if (first ? !_data.IsIdentifierStart(codePoint) : !_data.IsIdentifierPart(codePoint) && codePoint != '-') // witness plant A-5.3\n"
+  }
+ ],
+ "classes": "GroupNameTests"
+}

@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.5",
+ "what": "\\0's lookahead reads char.IsDigit, any Unicode decimal digit, not the ASCII digits alone (0.1.0-preview.4's defect)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "            case '0' when !char.IsAsciiDigit(PeekAt(1)): _pos++; return 0;\n",
+   "replacement": "            case '0' when !char.IsDigit(PeekAt(1)): _pos++; return 0; // witness plant A-5.5\n"
+  }
+ ],
+ "classes": "DecimalEscapeTests"
+}

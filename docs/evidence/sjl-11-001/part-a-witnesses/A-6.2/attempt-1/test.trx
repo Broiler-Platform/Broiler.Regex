@@ -1,0 +1,508 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="700836e8-5df6-4f7a-b814-d161d651af44" name="@vm 2026-11-18 10:42:56" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:42:56.9679469+00:00" queuing="2026-11-18T10:42:56.9679470+00:00" start="2026-11-18T10:42:54.5587058+00:00" finish="2026-11-18T10:42:58.3544650+00:00" />
+  <TestSettings name="default" id="0964336c-73ca-4d1c-b402-0261bc37eb50">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_42_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b780ed66-514f-4338-973c-f7c0a94b4d46" testId="c65a7c22-6957-bbdd-e7ec-89c7b95ecc71" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;iu&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9714758+00:00" endTime="2026-11-18T10:42:56.9724412+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b780ed66-514f-4338-973c-f7c0a94b4d46" />
+    <UnitTestResult executionId="08da1ef8-736b-4bce-81ad-246fc4f9aa4c" testId="40f8e05f-1e45-41c6-e48e-5dbe15092f20" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;^(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z){2}\\k&lt;a&gt;$&quot;, flags: &quot;&quot;, subject: &quot;xzx&quot;, expected: &quot;nomatch&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:57.0004656+00:00" endTime="2026-11-18T10:42:57.0006088+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="08da1ef8-736b-4bce-81ad-246fc4f9aa4c" />
+    <UnitTestResult executionId="d02e706b-b243-4c80-a290-1a7ca8d2e44c" testId="81b26bf2-f05f-79cf-eafe-8eff448bdc00" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots" computerName="vm" duration="00:00:00.0100000" startTime="2026-11-18T10:42:56.9376939+00:00" endTime="2026-11-18T10:42:56.9626603+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d02e706b-b243-4c80-a290-1a7ca8d2e44c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+              ↓ (pos 1)
+Expected: [0, 2, -1, -1, 0, ···]
+Actual:   [0, 1, -1, -1, 0, ···]
+              ↑ (pos 1)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots() in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 309
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b71febea-d1fa-4391-8783-7b97879c453e" testId="c2895b4c-fc0c-2693-2a6d-4239c723a59b" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;iv&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9262285+00:00" endTime="2026-11-18T10:42:56.9289354+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b71febea-d1fa-4391-8783-7b97879c453e" />
+    <UnitTestResult executionId="b98ee340-1358-4685-874f-5f510083d00d" testId="9678cf3e-660d-e69d-900a-6624af8e6249" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;iu&quot;, subject: &quot;Xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9895654+00:00" endTime="2026-11-18T10:42:56.9912167+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b98ee340-1358-4685-874f-5f510083d00d" />
+    <UnitTestResult executionId="71ba573b-152f-4f1c-a787-6ba2f59717c0" testId="14418e40-41a1-a7fe-091d-76067bd333bb" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.Every_group_of_a_name_in_one_thousand_alternatives_is_read_by_its_reference" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:42:56.9753736+00:00" endTime="2026-11-18T10:42:56.9803546+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71ba573b-152f-4f1c-a787-6ba2f59717c0" />
+    <UnitTestResult executionId="297d3baa-1920-4ce1-acf9-8286a9940aa4" testId="c0a76bcd-1623-ff51-1c97-dae22f93cd96" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;&quot;, subject: &quot;xyz&quot;, expected: &quot;nomatch&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9946691+00:00" endTime="2026-11-18T10:42:56.9953084+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="297d3baa-1920-4ce1-acf9-8286a9940aa4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "nomatch"
+Actual:   "match 2,3 - 1,2"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="681cf730-4d8c-4a6f-a275-21a83dd3175f" testId="847f6da7-0166-8595-b486-e9e3624f7e5a" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;\\u{1F600})|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;v&quot;, subject: &quot;y\ud83d\ude00y&quot;, expected: &quot;nomatch&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9915987+00:00" endTime="2026-11-18T10:42:56.9927305+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="681cf730-4d8c-4a6f-a275-21a83dd3175f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "nomatch"
+Actual:   "match 0,1 - 0,1"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b487dca7-7bfd-42f9-aa28-be4a23f75a19" testId="46455498-b7d6-aee9-9d73-7c286a44a3e9" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;i&quot;)" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:42:56.9197491+00:00" endTime="2026-11-18T10:42:56.9229324+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b487dca7-7bfd-42f9-aa28-be4a23f75a19" />
+    <UnitTestResult executionId="2ec69680-7a9e-4126-8f14-fa5294ac572b" testId="fa4ac8f6-78fe-a033-6b60-6ddacdcf42ae" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;i&quot;, subject: &quot;yY&quot;, expected: &quot;match 0,2 - 0,1&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:57.0012983+00:00" endTime="2026-11-18T10:42:57.0015805+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ec69680-7a9e-4126-8f14-fa5294ac572b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                   ↓ (pos 8)
+Expected: "match 0,2 - 0,1"
+Actual:   "match 0,1 - 0,1"
+                   ↑ (pos 8)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="356b6933-b13b-4c78-a8f7-5b2602abc7b7" testId="e8736d80-6189-4ae2-0fea-eea7c0663302" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z)+\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;zyy&quot;, expected: &quot;match 0,3 - 1,2&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9956571+00:00" endTime="2026-11-18T10:42:56.9962169+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="356b6933-b13b-4c78-a8f7-5b2602abc7b7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                       ↓ (pos 12)
+Expected: "match 0,3 - 1,2"
+Actual:   "match 0,3 - 2,3"
+                       ↑ (pos 12)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1870f20b-4498-4f9f-96d0-ece567a7c335" testId="e1680d86-f9b5-780a-d383-82f13c2e5f45" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))&quot;, flags: &quot;&quot;, subject: &quot;y&quot;, expected: &quot;match 0,1 - 0,1&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9943081+00:00" endTime="2026-11-18T10:42:56.9944482+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1870f20b-4498-4f9f-96d0-ece567a7c335" />
+    <UnitTestResult executionId="a231286e-d104-492d-89d4-1839c84fcb39" testId="38d12603-3cf8-bf2a-825a-4a662b69f9ab" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_result_maps_each_name_to_the_group_that_participated_and_lists_the_names_in_source_order" computerName="vm" duration="00:00:00.0310000" startTime="2026-11-18T10:42:56.8767430+00:00" endTime="2026-11-18T10:42:56.9088107+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a231286e-d104-492d-89d4-1839c84fcb39" />
+    <UnitTestResult executionId="d801fb90-4c27-4c53-9f1d-9d22f92b78f1" testId="f56326ed-d9ef-d208-9ee2-9411afaf234c" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;u&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9740097+00:00" endTime="2026-11-18T10:42:56.9749941+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d801fb90-4c27-4c53-9f1d-9d22f92b78f1" />
+    <UnitTestResult executionId="e1648aa3-2ba4-41a8-9029-0944d7b13a63" testId="0f950927-c5c9-9c26-2b4e-3f010ebdca95" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_is_compared_as_decoded_so_differently_spelled_names_that_decode_alike_are_one_name" computerName="vm" duration="00:00:00.0380000" startTime="2026-11-18T10:42:56.8152609+00:00" endTime="2026-11-18T10:42:56.8679126+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1648aa3-2ba4-41a8-9029-0944d7b13a63" />
+    <UnitTestResult executionId="6e5033d6-44fd-4c7a-a071-4edc9364e9ae" testId="0613649f-d2c2-9ee2-9a52-d53e6f2ef715" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:42:56.9810344+00:00" endTime="2026-11-18T10:42:56.9860442+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e5033d6-44fd-4c7a-a071-4edc9364e9ae">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ at index 0
+                           ↓ (pos 16)
+Expected: "Backreference 0,2"
+Actual:   "Backreference 0,1"
+                           ↑ (pos 16)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit() in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 319
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4d6440a0-5bc1-41e3-ab87-593b81736e5a" testId="41de99b2-0e17-c89c-da7f-01d0a0e57978" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9293905+00:00" endTime="2026-11-18T10:42:56.9317465+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d6440a0-5bc1-41e3-ab87-593b81736e5a" />
+    <UnitTestResult executionId="1fa64dd0-8f6f-444d-9c43-d350dafe0c2d" testId="7980ee09-8426-1bb6-c7c1-3a124808d177" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xyx&quot;, expected: &quot;nomatch&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9984393+00:00" endTime="2026-11-18T10:42:56.9986870+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1fa64dd0-8f6f-444d-9c43-d350dafe0c2d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "nomatch"
+Actual:   "match 1,2 - 1,2"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bd15b5ee-ce1b-4433-9610-bdaf38d6a9d5" testId="d7c61525-0399-e1e7-1e15-d33ce23dd336" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?:(?&lt;x&gt;a)|(?&lt;x&gt;b))\\k&lt;x&gt;){2}&quot;, flags: &quot;&quot;, subject: &quot;abab&quot;, expected: &quot;nomatch&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9989916+00:00" endTime="2026-11-18T10:42:56.9993582+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd15b5ee-ce1b-4433-9610-bdaf38d6a9d5" />
+    <UnitTestResult executionId="55bffa35-7aff-416f-8d88-3b9bfee55a78" testId="6959a6a4-ec6c-fb93-62fe-af4ec59fbb51" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;yy&quot;, expected: &quot;match 0,2 - 0,1&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9931985+00:00" endTime="2026-11-18T10:42:56.9935050+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55bffa35-7aff-416f-8d88-3b9bfee55a78">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                   ↓ (pos 8)
+Expected: "match 0,2 - 0,1"
+Actual:   "match 0,1 - 0,1"
+                   ↑ (pos 8)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cbf62190-7c4f-4dc5-b1ca-665438b05ad2" testId="54644b49-6e83-d152-32a6-ef646df9c50c" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?=(?&lt;a&gt;x))|(?&lt;a&gt;y))\\k&lt;a&gt;x&quot;, flags: &quot;&quot;, subject: &quot;xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9937907+00:00" endTime="2026-11-18T10:42:56.9940020+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbf62190-7c4f-4dc5-b1ca-665438b05ad2" />
+    <UnitTestResult executionId="f94b9f08-0135-48fc-bcf3-9a02209c261a" testId="4c485db0-2856-d422-6140-f07129fc3133" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;ms&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9347629+00:00" endTime="2026-11-18T10:42:56.9371331+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f94b9f08-0135-48fc-bcf3-9a02209c261a" />
+    <UnitTestResult executionId="a7ada1b8-fa28-4a3d-9917-7f9342dfdedd" testId="d55246d2-46dd-66bf-229d-a7de088529de" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;v&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9321266+00:00" endTime="2026-11-18T10:42:56.9345136+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7ada1b8-fa28-4a3d-9917-7f9342dfdedd" />
+    <UnitTestResult executionId="8dc656d1-03b5-42fb-ac08-5a72f6cad7ba" testId="f60f67f9-6992-4dc5-b752-a23102ab7066" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;i&quot;, subject: &quot;Yyz&quot;, expected: &quot;match 2,3 - 1,2&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9996572+00:00" endTime="2026-11-18T10:42:56.9998022+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8dc656d1-03b5-42fb-ac08-5a72f6cad7ba" />
+    <UnitTestResult executionId="3156fd1a-c0fa-4f3d-8427-a708520453a3" testId="68dab251-c4dd-998e-2f47-86273d6fa3ed" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:57.0008784+00:00" endTime="2026-11-18T10:42:57.0010097+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3156fd1a-c0fa-4f3d-8427-a708520453a3" />
+    <UnitTestResult executionId="8d9508d1-4d13-4f6f-a9b3-13d9b5aeac1d" testId="99236c1d-c884-6759-7154-21acce28a89f" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;\\u{1F600})|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;u&quot;, subject: &quot;\ud83d\ude00\ud83d\ude00&quot;, expected: &quot;match 0,4 0,2 -&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9980503+00:00" endTime="2026-11-18T10:42:56.9982055+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d9508d1-4d13-4f6f-a9b3-13d9b5aeac1d" />
+    <UnitTestResult executionId="1459550c-f517-4b9e-83b5-3d21604d85b5" testId="56055a96-7e0e-ea9f-374e-88f68675e757" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9649641+00:00" endTime="2026-11-18T10:42:56.9673141+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1459550c-f517-4b9e-83b5-3d21604d85b5" />
+    <UnitTestResult executionId="27958949-d19f-4869-a24f-08eb35684002" testId="2d3670fc-83a5-2d27-5c04-c95f44f860a2" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees" computerName="vm" duration="00:00:01.2240000" startTime="2026-11-18T10:42:57.0020628+00:00" endTime="2026-11-18T10:42:58.2268658+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27958949-d19f-4869-a24f-08eb35684002" />
+    <UnitTestResult executionId="3f8a4935-0216-4760-ac89-c96c6f851e3b" testId="26bf8155-9939-ca51-97bc-0c580efc3c91" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;iv&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9727018+00:00" endTime="2026-11-18T10:42:56.9737218+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f8a4935-0216-4760-ac89-c96c6f851e3b" />
+    <UnitTestResult executionId="02111500-9c05-4bde-89b0-24aedad9afff" testId="e4995adc-4423-0506-18a4-dc3ac3b995a7" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?:(?&lt;x&gt;a)|(?&lt;x&gt;b))\\k&lt;x&gt;){2}&quot;, flags: &quot;&quot;, subject: &quot;aabb&quot;, expected: &quot;match 0,4 - 2,3&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9965387+00:00" endTime="2026-11-18T10:42:56.9968005+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02111500-9c05-4bde-89b0-24aedad9afff">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                   ↓ (pos 8)
+Expected: "match 0,4 - 2,3"
+Actual:   "match 0,3 - 2,3"
+                   ↑ (pos 8)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6e02b6c9-7607-4dbf-928e-0bb1f44bfa68" testId="6a484889-37c1-6ca4-8a58-3f2cb7a98c15" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;i&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9703096+00:00" endTime="2026-11-18T10:42:56.9712466+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e02b6c9-7607-4dbf-928e-0bb1f44bfa68" />
+    <UnitTestResult executionId="24420124-79ee-4360-b785-bb1e4cb8d96a" testId="5ee2d086-b46d-6eef-1487-f952367e807c" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;v&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9690518+00:00" endTime="2026-11-18T10:42:56.9700366+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24420124-79ee-4360-b785-bb1e4cb8d96a" />
+    <UnitTestResult executionId="89ef35f8-ea21-4185-b5a7-c98761ee3e70" testId="2b564db6-e761-5a2b-c359-7a95e1167907" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;iu&quot;)" computerName="vm" duration="00:00:00.0080000" startTime="2026-11-18T10:42:56.9108313+00:00" endTime="2026-11-18T10:42:56.9193679+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89ef35f8-ea21-4185-b5a7-c98761ee3e70" />
+    <UnitTestResult executionId="cea3a6cd-7e5f-4bd7-a66a-a413fad8f835" testId="243a9d84-2311-db79-aecb-93f07ae7b13e" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;ms&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9676316+00:00" endTime="2026-11-18T10:42:56.9687338+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cea3a6cd-7e5f-4bd7-a66a-a413fad8f835" />
+    <UnitTestResult executionId="c580ecc6-91ab-4fda-a393-625c8f80b58a" testId="7f68d946-80ac-711c-a7e6-cd4e5e5fb8da" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xyyx&quot;, expected: &quot;match 1,3 - 1,2&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9973284+00:00" endTime="2026-11-18T10:42:56.9976763+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c580ecc6-91ab-4fda-a393-625c8f80b58a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                   ↓ (pos 8)
+Expected: "match 1,3 - 1,2"
+Actual:   "match 1,2 - 1,2"
+                   ↑ (pos 8)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 252
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a90c5ed2-8efa-4b41-bbe9-be9e20e17595" testId="abfb6751-402b-32ae-36da-c23a9f15f964" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;^(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z){2}\\k&lt;a&gt;$&quot;, flags: &quot;&quot;, subject: &quot;xz&quot;, expected: &quot;match 0,2 - -&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:56.9872164+00:00" endTime="2026-11-18T10:42:56.9891771+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a90c5ed2-8efa-4b41-bbe9-be9e20e17595" />
+    <UnitTestResult executionId="cf881a4c-8352-4709-8685-b8954ebde857" testId="b102b5d1-13d3-b600-f5ff-d50e09ad7fff" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;&quot;, subject: &quot;yyz&quot;, expected: &quot;match 2,3 - 1,2&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:42:57.0001126+00:00" endTime="2026-11-18T10:42:57.0002573+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf881a4c-8352-4709-8685-b8954ebde857" />
+    <UnitTestResult executionId="3a01ee1b-5734-41c9-89ab-bd5675369ef8" testId="0c284663-7052-d5cb-b794-28f9e9d64063" testName="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;u&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:42:56.9232629+00:00" endTime="2026-11-18T10:42:56.9259249+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a01ee1b-5734-41c9-89ab-bd5675369ef8" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="56055a96-7e0e-ea9f-374e-88f68675e757">
+      <Execution id="1459550c-f517-4b9e-83b5-3d21604d85b5" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.Every_group_of_a_name_in_one_thousand_alternatives_is_read_by_its_reference" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="14418e40-41a1-a7fe-091d-76067bd333bb">
+      <Execution id="71ba573b-152f-4f1c-a787-6ba2f59717c0" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="Every_group_of_a_name_in_one_thousand_alternatives_is_read_by_its_reference" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z)+\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;zyy&quot;, expected: &quot;match 0,3 - 1,2&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e8736d80-6189-4ae2-0fea-eea7c0663302">
+      <Execution id="356b6933-b13b-4c78-a8f7-5b2602abc7b7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;i&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="46455498-b7d6-aee9-9d73-7c286a44a3e9">
+      <Execution id="b487dca7-7bfd-42f9-aa28-be4a23f75a19" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_result_maps_each_name_to_the_group_that_participated_and_lists_the_names_in_source_order" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="38d12603-3cf8-bf2a-825a-4a662b69f9ab">
+      <Execution id="a231286e-d104-492d-89d4-1839c84fcb39" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_result_maps_each_name_to_the_group_that_participated_and_lists_the_names_in_source_order" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;\\u{1F600})|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;v&quot;, subject: &quot;y\ud83d\ude00y&quot;, expected: &quot;nomatch&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="847f6da7-0166-8595-b486-e9e3624f7e5a">
+      <Execution id="681cf730-4d8c-4a6f-a275-21a83dd3175f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;yy&quot;, expected: &quot;match 0,2 - 0,1&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6959a6a4-ec6c-fb93-62fe-af4ec59fbb51">
+      <Execution id="55bffa35-7aff-416f-8d88-3b9bfee55a78" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;v&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d55246d2-46dd-66bf-229d-a7de088529de">
+      <Execution id="a7ada1b8-fa28-4a3d-9917-7f9342dfdedd" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;i&quot;, subject: &quot;yY&quot;, expected: &quot;match 0,2 - 0,1&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="fa4ac8f6-78fe-a033-6b60-6ddacdcf42ae">
+      <Execution id="2ec69680-7a9e-4126-8f14-fa5294ac572b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;^(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z){2}\\k&lt;a&gt;$&quot;, flags: &quot;&quot;, subject: &quot;xzx&quot;, expected: &quot;nomatch&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="40f8e05f-1e45-41c6-e48e-5dbe15092f20">
+      <Execution id="08da1ef8-736b-4bce-81ad-246fc4f9aa4c" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;&quot;, subject: &quot;yyz&quot;, expected: &quot;match 2,3 - 1,2&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="b102b5d1-13d3-b600-f5ff-d50e09ad7fff">
+      <Execution id="cf881a4c-8352-4709-8685-b8954ebde857" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;u&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f56326ed-d9ef-d208-9ee2-9411afaf234c">
+      <Execution id="d801fb90-4c27-4c53-9f1d-9d22f92b78f1" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))&quot;, flags: &quot;&quot;, subject: &quot;y&quot;, expected: &quot;match 0,1 - 0,1&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e1680d86-f9b5-780a-d383-82f13c2e5f45">
+      <Execution id="1870f20b-4498-4f9f-96d0-ece567a7c335" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;^(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z){2}\\k&lt;a&gt;$&quot;, flags: &quot;&quot;, subject: &quot;xz&quot;, expected: &quot;match 0,2 - -&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="abfb6751-402b-32ae-36da-c23a9f15f964">
+      <Execution id="a90c5ed2-8efa-4b41-bbe9-be9e20e17595" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;i&quot;, subject: &quot;Yyz&quot;, expected: &quot;match 2,3 - 1,2&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f60f67f9-6992-4dc5-b752-a23102ab7066">
+      <Execution id="8dc656d1-03b5-42fb-ac08-5a72f6cad7ba" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="41de99b2-0e17-c89c-da7f-01d0a0e57978">
+      <Execution id="4d6440a0-5bc1-41e3-ab87-593b81736e5a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;iv&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c2895b4c-fc0c-2693-2a6d-4239c723a59b">
+      <Execution id="b71febea-d1fa-4391-8783-7b97879c453e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;\\u{1F600})|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;u&quot;, subject: &quot;\ud83d\ude00\ud83d\ude00&quot;, expected: &quot;match 0,4 0,2 -&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="99236c1d-c884-6759-7154-21acce28a89f">
+      <Execution id="8d9508d1-4d13-4f6f-a9b3-13d9b5aeac1d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?=(?&lt;a&gt;x))|(?&lt;a&gt;y))\\k&lt;a&gt;x&quot;, flags: &quot;&quot;, subject: &quot;xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="54644b49-6e83-d152-32a6-ef646df9c50c">
+      <Execution id="cbf62190-7c4f-4dc5-b1ca-665438b05ad2" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;iv&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="26bf8155-9939-ca51-97bc-0c580efc3c91">
+      <Execution id="3f8a4935-0216-4760-ac89-c96c6f851e3b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;ms&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="4c485db0-2856-d422-6140-f07129fc3133">
+      <Execution id="f94b9f08-0135-48fc-bcf3-9a02209c261a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="2d3670fc-83a5-2d27-5c04-c95f44f860a2">
+      <Execution id="27958949-d19f-4869-a24f-08eb35684002" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xyx&quot;, expected: &quot;nomatch&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7980ee09-8426-1bb6-c7c1-3a124808d177">
+      <Execution id="1fa64dd0-8f6f-444d-9c43-d350dafe0c2d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="68dab251-c4dd-998e-2f47-86273d6fa3ed">
+      <Execution id="3156fd1a-c0fa-4f3d-8427-a708520453a3" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?:(?&lt;x&gt;a)|(?&lt;x&gt;b))\\k&lt;x&gt;){2}&quot;, flags: &quot;&quot;, subject: &quot;aabb&quot;, expected: &quot;match 0,4 - 2,3&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e4995adc-4423-0506-18a4-dc3ac3b995a7">
+      <Execution id="02111500-9c05-4bde-89b0-24aedad9afff" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?:(?&lt;x&gt;a)|(?&lt;x&gt;b))\\k&lt;x&gt;){2}&quot;, flags: &quot;&quot;, subject: &quot;abab&quot;, expected: &quot;nomatch&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d7c61525-0399-e1e7-1e15-d33ce23dd336">
+      <Execution id="bd15b5ee-ce1b-4433-9610-bdaf38d6a9d5" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;iu&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c65a7c22-6957-bbdd-e7ec-89c7b95ecc71">
+      <Execution id="b780ed66-514f-4338-973c-f7c0a94b4d46" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;i&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6a484889-37c1-6ca4-8a58-3f2cb7a98c15">
+      <Execution id="6e02b6c9-7607-4dbf-928e-0bb1f44bfa68" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;ms&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="243a9d84-2311-db79-aecb-93f07ae7b13e">
+      <Execution id="cea3a6cd-7e5f-4bd7-a66a-a413fad8f835" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;iu&quot;, subject: &quot;Xx&quot;, expected: &quot;match 0,2 0,1 -&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="9678cf3e-660d-e69d-900a-6624af8e6249">
+      <Execution id="b98ee340-1358-4685-874f-5f510083d00d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z&quot;, flags: &quot;&quot;, subject: &quot;xyz&quot;, expected: &quot;nomatch&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c0a76bcd-1623-ff51-1c97-dae22f93cd96">
+      <Execution id="297d3baa-1920-4ce1-acf9-8286a9940aa4" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: &quot;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;&quot;, flags: &quot;&quot;, subject: &quot;xyyx&quot;, expected: &quot;match 1,3 - 1,2&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7f68d946-80ac-711c-a7e6-cd4e5e5fb8da">
+      <Execution id="c580ecc6-91ab-4fda-a393-625c8f80b58a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_matches_the_group_that_participated" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0613649f-d2c2-9ee2-9a52-d53e6f2ef715">
+      <Execution id="6e5033d6-44fd-4c7a-a071-4edc9364e9ae" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="81b26bf2-f05f-79cf-eafe-8eff448bdc00">
+      <Execution id="d02e706b-b243-4c80-a290-1a7ca8d2e44c" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="The_participating_group_comes_from_the_offset_entry_s_slots" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;u&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0c284663-7052-d5cb-b794-28f9e9d64063">
+      <Execution id="3a01ee1b-5734-41c9-89ab-bd5675369ef8" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: &quot;v&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="5ee2d086-b46d-6eef-1487-f952367e807c">
+      <Execution id="24420124-79ee-4360-b785-bb1e4cb8d96a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted(flags: &quot;iu&quot;)" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="2b564db6-e761-5a2b-c359-7a95e1167907">
+      <Execution id="89ef35f8-ea21-4185-b5a7-c98761ee3e70" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_repeated_only_across_alternatives_that_cannot_both_participate_is_admitted" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_is_compared_as_decoded_so_differently_spelled_names_that_decode_alike_are_one_name" storage="/home/user/rx-wit-plants/a-6.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0f950927-c5c9-9c26-2b4e-3f010ebdca95">
+      <Execution id="e1648aa3-2ba4-41a8-9029-0944d7b13a63" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.DuplicateNamedGroupTests" name="A_name_is_compared_as_decoded_so_differently_spelled_names_that_decode_alike_are_one_name" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c65a7c22-6957-bbdd-e7ec-89c7b95ecc71" executionId="b780ed66-514f-4338-973c-f7c0a94b4d46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40f8e05f-1e45-41c6-e48e-5dbe15092f20" executionId="08da1ef8-736b-4bce-81ad-246fc4f9aa4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="81b26bf2-f05f-79cf-eafe-8eff448bdc00" executionId="d02e706b-b243-4c80-a290-1a7ca8d2e44c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2895b4c-fc0c-2693-2a6d-4239c723a59b" executionId="b71febea-d1fa-4391-8783-7b97879c453e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9678cf3e-660d-e69d-900a-6624af8e6249" executionId="b98ee340-1358-4685-874f-5f510083d00d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14418e40-41a1-a7fe-091d-76067bd333bb" executionId="71ba573b-152f-4f1c-a787-6ba2f59717c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c0a76bcd-1623-ff51-1c97-dae22f93cd96" executionId="297d3baa-1920-4ce1-acf9-8286a9940aa4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="847f6da7-0166-8595-b486-e9e3624f7e5a" executionId="681cf730-4d8c-4a6f-a275-21a83dd3175f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46455498-b7d6-aee9-9d73-7c286a44a3e9" executionId="b487dca7-7bfd-42f9-aa28-be4a23f75a19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa4ac8f6-78fe-a033-6b60-6ddacdcf42ae" executionId="2ec69680-7a9e-4126-8f14-fa5294ac572b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e8736d80-6189-4ae2-0fea-eea7c0663302" executionId="356b6933-b13b-4c78-a8f7-5b2602abc7b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1680d86-f9b5-780a-d383-82f13c2e5f45" executionId="1870f20b-4498-4f9f-96d0-ece567a7c335" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="38d12603-3cf8-bf2a-825a-4a662b69f9ab" executionId="a231286e-d104-492d-89d4-1839c84fcb39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f56326ed-d9ef-d208-9ee2-9411afaf234c" executionId="d801fb90-4c27-4c53-9f1d-9d22f92b78f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0f950927-c5c9-9c26-2b4e-3f010ebdca95" executionId="e1648aa3-2ba4-41a8-9029-0944d7b13a63" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0613649f-d2c2-9ee2-9a52-d53e6f2ef715" executionId="6e5033d6-44fd-4c7a-a071-4edc9364e9ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41de99b2-0e17-c89c-da7f-01d0a0e57978" executionId="4d6440a0-5bc1-41e3-ab87-593b81736e5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7980ee09-8426-1bb6-c7c1-3a124808d177" executionId="1fa64dd0-8f6f-444d-9c43-d350dafe0c2d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7c61525-0399-e1e7-1e15-d33ce23dd336" executionId="bd15b5ee-ce1b-4433-9610-bdaf38d6a9d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6959a6a4-ec6c-fb93-62fe-af4ec59fbb51" executionId="55bffa35-7aff-416f-8d88-3b9bfee55a78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54644b49-6e83-d152-32a6-ef646df9c50c" executionId="cbf62190-7c4f-4dc5-b1ca-665438b05ad2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c485db0-2856-d422-6140-f07129fc3133" executionId="f94b9f08-0135-48fc-bcf3-9a02209c261a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d55246d2-46dd-66bf-229d-a7de088529de" executionId="a7ada1b8-fa28-4a3d-9917-7f9342dfdedd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f60f67f9-6992-4dc5-b752-a23102ab7066" executionId="8dc656d1-03b5-42fb-ac08-5a72f6cad7ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="68dab251-c4dd-998e-2f47-86273d6fa3ed" executionId="3156fd1a-c0fa-4f3d-8427-a708520453a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="99236c1d-c884-6759-7154-21acce28a89f" executionId="8d9508d1-4d13-4f6f-a9b3-13d9b5aeac1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56055a96-7e0e-ea9f-374e-88f68675e757" executionId="1459550c-f517-4b9e-83b5-3d21604d85b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d3670fc-83a5-2d27-5c04-c95f44f860a2" executionId="27958949-d19f-4869-a24f-08eb35684002" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="26bf8155-9939-ca51-97bc-0c580efc3c91" executionId="3f8a4935-0216-4760-ac89-c96c6f851e3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4995adc-4423-0506-18a4-dc3ac3b995a7" executionId="02111500-9c05-4bde-89b0-24aedad9afff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6a484889-37c1-6ca4-8a58-3f2cb7a98c15" executionId="6e02b6c9-7607-4dbf-928e-0bb1f44bfa68" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ee2d086-b46d-6eef-1487-f952367e807c" executionId="24420124-79ee-4360-b785-bb1e4cb8d96a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b564db6-e761-5a2b-c359-7a95e1167907" executionId="89ef35f8-ea21-4185-b5a7-c98761ee3e70" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="243a9d84-2311-db79-aecb-93f07ae7b13e" executionId="cea3a6cd-7e5f-4bd7-a66a-a413fad8f835" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f68d946-80ac-711c-a7e6-cd4e5e5fb8da" executionId="c580ecc6-91ab-4fda-a393-625c8f80b58a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abfb6751-402b-32ae-36da-c23a9f15f964" executionId="a90c5ed2-8efa-4b41-bbe9-be9e20e17595" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b102b5d1-13d3-b600-f5ff-d50e09ad7fff" executionId="cf881a4c-8352-4709-8685-b8954ebde857" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c284663-7052-d5cb-b794-28f9e9d64063" executionId="3a01ee1b-5734-41c9-89ab-bd5675369ef8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="38" executed="38" passed="28" failed="10" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.21]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.53]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.75]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:02.03]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:02.03]                     ↓ (pos 1)
+[xUnit.net 00:00:02.03]       Expected: [0, 2, -1, -1, 0, ···]
+[xUnit.net 00:00:02.03]       Actual:   [0, 1, -1, -1, 0, ···]
+[xUnit.net 00:00:02.03]                     ↑ (pos 1)
+[xUnit.net 00:00:02.03]       Stack Trace:
+[xUnit.net 00:00:02.03]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(309,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots()
+[xUnit.net 00:00:02.03]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.03]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.04]       Assert.Equal() Failure: Collections differ at index 0
+[xUnit.net 00:00:02.04]                                  ↓ (pos 16)
+[xUnit.net 00:00:02.04]       Expected: "Backreference 0,2"
+[xUnit.net 00:00:02.04]       Actual:   "Backreference 0,1"
+[xUnit.net 00:00:02.04]                                  ↑ (pos 16)
+[xUnit.net 00:00:02.04]       Stack Trace:
+[xUnit.net 00:00:02.04]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(319,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit()
+[xUnit.net 00:00:02.04]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.04]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                  ↓ (pos 0)
+[xUnit.net 00:00:02.05]       Expected: "nomatch"
+[xUnit.net 00:00:02.05]       Actual:   "match 0,1 - 0,1"
+[xUnit.net 00:00:02.05]                  ↑ (pos 0)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                          ↓ (pos 8)
+[xUnit.net 00:00:02.05]       Expected: "match 0,2 - 0,1"
+[xUnit.net 00:00:02.05]       Actual:   "match 0,1 - 0,1"
+[xUnit.net 00:00:02.05]                          ↑ (pos 8)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                  ↓ (pos 0)
+[xUnit.net 00:00:02.05]       Expected: "nomatch"
+[xUnit.net 00:00:02.05]       Actual:   "match 2,3 - 1,2"
+[xUnit.net 00:00:02.05]                  ↑ (pos 0)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                              ↓ (pos 12)
+[xUnit.net 00:00:02.05]       Expected: "match 0,3 - 1,2"
+[xUnit.net 00:00:02.05]       Actual:   "match 0,3 - 2,3"
+[xUnit.net 00:00:02.05]                              ↑ (pos 12)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                          ↓ (pos 8)
+[xUnit.net 00:00:02.05]       Expected: "match 0,4 - 2,3"
+[xUnit.net 00:00:02.05]       Actual:   "match 0,3 - 2,3"
+[xUnit.net 00:00:02.05]                          ↑ (pos 8)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.05]                          ↓ (pos 8)
+[xUnit.net 00:00:02.05]       Expected: "match 1,3 - 1,2"
+[xUnit.net 00:00:02.05]       Actual:   "match 1,2 - 1,2"
+[xUnit.net 00:00:02.05]                          ↑ (pos 8)
+[xUnit.net 00:00:02.05]       Stack Trace:
+[xUnit.net 00:00:02.05]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.05]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.05]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.06]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.06]                  ↓ (pos 0)
+[xUnit.net 00:00:02.06]       Expected: "nomatch"
+[xUnit.net 00:00:02.06]       Actual:   "match 1,2 - 1,2"
+[xUnit.net 00:00:02.06]                  ↑ (pos 0)
+[xUnit.net 00:00:02.06]       Stack Trace:
+[xUnit.net 00:00:02.06]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.06]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.06]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.06]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.06]                          ↓ (pos 8)
+[xUnit.net 00:00:02.06]       Expected: "match 0,2 - 0,1"
+[xUnit.net 00:00:02.06]       Actual:   "match 0,1 - 0,1"
+[xUnit.net 00:00:02.06]                          ↑ (pos 8)
+[xUnit.net 00:00:02.06]       Stack Trace:
+[xUnit.net 00:00:02.06]         /home/user/rx-wit-plants/A-6.2-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs(252,0): at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected)
+[xUnit.net 00:00:02.06]            at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+[xUnit.net 00:00:02.06]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.32]   Finished:    Broiler.Regex.Tests (ID = 'd1fca2ed19b785128ead65fa9dc6be271f5c4dff4f788a69f0e3faab4469f191')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9851333+00:00">
+        <Text>[xUnit.net 00:00:02.02]     Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9904056+00:00">
+        <Text>[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9955049+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;\\u{1F600})|(?&lt;a&gt;y))\\k&lt;a&gt;", flags: "v", subject: "y\ud83d\ude00y", expected: "nomatch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9955599+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;", flags: "", subject: "yy", expected: "match 0,2 - 0,1") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9959866+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?&lt;=\\k&lt;a&gt;(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)))z", flags: "", subject: "xyz", expected: "nomatch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:56.9968034+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;x)|(?&lt;a&gt;y)|z)+\\k&lt;a&gt;", flags: "", subject: "zyy", expected: "match 0,3 - 1,2") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:57.0081814+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?:(?&lt;x&gt;a)|(?&lt;x&gt;b))\\k&lt;x&gt;){2}", flags: "", subject: "aabb", expected: "match 0,4 - 2,3") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:57.0082052+00:00">
+        <Text>[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;", flags: "", subject: "xyyx", expected: "match 1,3 - 1,2") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:57.0085919+00:00">
+        <Text>[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;", flags: "", subject: "xyx", expected: "nomatch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:42:57.0149517+00:00">
+        <Text>[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?&lt;a&gt;x)|(?&lt;a&gt;y))\\k&lt;a&gt;", flags: "i", subject: "yY", expected: "match 0,2 - 0,1") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

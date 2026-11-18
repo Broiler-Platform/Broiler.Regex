@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:36:55.732673957 +0000
+@@ -439,7 +439,7 @@
+         if (_stringProperties.TryResolve(name, out var property))
+             return ResolveStringProperty(property);
+ 
+-        return null;
++        return name.Length > 2 && name.StartsWith("Is", StringComparison.Ordinal) ? ResolveProperty(name[2..], value) : null; // witness plant A-5.2
+     }
+ 
+     /// <summary>

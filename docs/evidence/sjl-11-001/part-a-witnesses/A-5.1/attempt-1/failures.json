@@ -1,0 +1,21 @@
+{
+ "run": "A-5.1-1",
+ "clause": "A-5.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 0,
+ "totals": {
+  "failed": 0,
+  "passed": 67,
+  "skipped": 0,
+  "total": 67
+ },
+ "deciding-tests-failed": [],
+ "other-tests-failed": [],
+ "failed-cases": {},
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "d140d54697a93ce315adddafb751874d658f707852c3532edc9a8d91d1a21cd3",
+ "reading": "failed attempt"
+}

@@ -1,0 +1,767 @@
+Test run for /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.81]     Broiler.Regex.Tests.NestingLimitTests.Every_kind_of_level_counts_toward_one_depth [FAIL]
+  Failed Broiler.Regex.Tests.NestingLimitTests.Every_kind_of_level_counts_toward_one_depth [48 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.Every_kind_of_level_counts_toward_one_depth() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 91
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 198
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.39]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind capturing alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.40]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing group") [FAIL]
+[xUnit.net 00:00:02.41]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "named alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.42]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "mixed alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.42]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v intersection") [FAIL]
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.44]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.44]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier sequence") [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind capturing alternation of sequences") [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing group") [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "named alternation of sequences") [13 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "mixed alternation of sequences") [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v intersection") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "alternation of sequences") [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier alternation of sequences") [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier sequence") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.45]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences with b"···) [FAIL]
+[xUnit.net 00:00:02.45]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "alternation") [FAIL]
+[xUnit.net 00:00:02.45]     Broiler.Regex.Tests.NestingLimitTests.A_class_adds_a_level_under_v_only [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "named") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "negative look-ahead") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?i:") [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences with b"···) [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "alternation") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_class_adds_a_level_under_v_only [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_class_adds_a_level_under_v_only() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 73
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "named") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "negative look-ahead") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?i:") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "class") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?!") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "named") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?-i:") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?<=") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?=") [FAIL]
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "class") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated alternation of sequences") [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?!") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "named") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?-i:") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?<=") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?=") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?:") [FAIL]
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?<!") [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?m-s:") [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "groups over v classes") [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level [FAIL]
+[xUnit.net 00:00:02.47]     Broiler.Regex.Tests.NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "non-capturing") [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated non-capturing group") [FAIL]
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?:") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?<!") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: "(?m-s:") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(String kind) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 62
+   at InvokeStub_NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "groups over v classes") [8 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 101
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error [3 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 152
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind alternation of sequences") [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "non-capturing") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated non-capturing group") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier") [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of optional sequences") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "sequence") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind capturing alternation of sequences wit"···) [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing sequence") [FAIL]
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences with b"···) [FAIL]
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifiers over v classes") [FAIL]
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences") [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifier") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of optional sequences") [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "sequence") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind capturing alternation of sequences wit"···) [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing sequence") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences with b"···) [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "modifiers over v classes") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v union") [FAIL]
+[xUnit.net 00:00:02.53]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "vi complemented property") [FAIL]
+[xUnit.net 00:00:02.53]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "unicode capturing") [FAIL]
+[xUnit.net 00:00:02.54]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with assertions") [FAIL]
+[xUnit.net 00:00:02.54]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences") [FAIL]
+[xUnit.net 00:00:02.54]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-ahead sequence") [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "vi class") [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v union") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "vi complemented property") [25 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "unicode capturing") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with assertions") [4 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "repeated capturing alternation of sequences") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-ahead sequence") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "vi class") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing alternation of sequences with back-refer"···) [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing look-behind") [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v class") [FAIL]
+[xUnit.net 00:00:02.56]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-ahead") [FAIL]
+[xUnit.net 00:00:02.56]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v complement") [FAIL]
+[xUnit.net 00:00:02.56]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "optional capturing group") [FAIL]
+[xUnit.net 00:00:02.56]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing") [FAIL]
+[xUnit.net 00:00:02.57]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind") [FAIL]
+[xUnit.net 00:00:02.57]     Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v subtraction") [FAIL]
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing look-behind") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v class") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-ahead") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v complement") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "optional capturing group") [2 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "capturing") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "look-behind") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(shape: "v subtraction") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass16_0.<One_level_past_the_maximum_is_refused_on_a_1_MiB_stack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 253
+   at Broiler.Regex.Tests.NestingMaximumTests.<>c__DisplayClass11_0.<OnASmallStack>b__0() in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 175
+--- End of stack trace from previous location ---
+   at Broiler.Regex.Tests.NestingMaximumTests.OnASmallStack(Action body) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 185
+   at Broiler.Regex.Tests.NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(String shape) in /home/user/rx-wit-plants/A-4.2-2/tree/Broiler.Regex.Tests/NestingMaximumTests.cs:line 251
+   at InvokeStub_NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-4.2-2/results/test.trx
+
+Failed!  - Failed:    59, Passed:   100, Skipped:     0, Total:   159, Duration: 1 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

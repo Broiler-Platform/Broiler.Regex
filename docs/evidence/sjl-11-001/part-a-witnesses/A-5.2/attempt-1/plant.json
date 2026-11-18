@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.2",
+ "what": "a property name refused as written is tried again without an Is prefix, so \\p{IsLetter} and \\p{IsScript=Greek} are accepted",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "            return ResolveStringProperty(property);\n\n        return null;\n",
+   "replacement": "            return ResolveStringProperty(property);\n\n        return name.Length > 2 && name.StartsWith(\"Is\", StringComparison.Ordinal) ? ResolveProperty(name[2..], value) : null; // witness plant A-5.2\n"
+  }
+ ],
+ "classes": "PropertyNameTests"
+}

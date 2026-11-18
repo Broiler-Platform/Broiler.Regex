@@ -1,0 +1,12 @@
+{
+ "clause": "A-1.2",
+ "what": "the per-start reset: the units a call has spent are set back to zero before each next start position's attempt, so the step ceiling and the meter read one attempt's work, not the call's",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "                return RegexStatus.NoMatch;\n\n            at = NextStart(at);",
+   "replacement": "                return RegexStatus.NoMatch;\n\n            _spent = 0; // witness plant A-1.2\n            at = NextStart(at);"
+  }
+ ],
+ "classes": "ChargingTests"
+}

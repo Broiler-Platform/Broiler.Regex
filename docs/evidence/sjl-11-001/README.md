@@ -566,6 +566,172 @@ revised:
   [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-18 has the runs, the readings in full and the choices
   taken.
 
+*Dated note, 2026-11-18, part A read a second time at `49d7be1f` (task 4.2 of SJL-11.2; a dated rule file added, no
+rule edited; the candidate reading's retained files unchanged).* The note above reads "**Part A: read NOT MET.** The
+tests pass, but the rule's MET also needs "each witness was watched failing once"", and ends "**Part A's NOT MET blocks
+both cut-overs** (risk D10's stop). Nothing else is declared met or accepted. The gate waits on part A's witnesses and
+on the owner." This note adds part A's second reading; it does not rewrite the first, which stays on record as the
+candidate reading's.
+- **The owner's choice.** Asked on 2026-11-18 how part A should go forward, the owner chose "Take witnesses, re-read
+  A": "A dated revision lets part A alone be read again at 49d7be1f, once every missing witness has a retained run of it
+  failing. Nothing else in the rule changes. For each check, I plant its defect in a local scratch worktree (no pushes),
+  run its witness test, keep the red log and the revert, then read part A again. Parts B to E and the arms keep their
+  readings." The question and the options not taken are quoted in full in the revision.
+- **The revision** is [`decision-rule-revised-2026-11-18.md`](decision-rule-revised-2026-11-18.md), the first dated
+  revision of `decision-rule.md`, which stays unedited. Its only change: part A alone may be read a second time at the
+  candidate reading's commit, from the candidate reading's retained test logs and witness runs taken after it, once
+  every clause of every check A-1 to A-11 has a retained witness run. It names the clauses (A-1.1 to A-11.3, split at
+  the checks' ";") with the tests that decide each, and defines a witness run, the revert and what is read. It was
+  committed before any witness run was taken, and written after the candidate reading was seen, so **its decision is
+  weaker evidence**.
+- **The witness runs** are retained in [`part-a-witnesses/`](part-a-witnesses/), with their own
+  [`manifest.json`](part-a-witnesses/manifest.json) of the bundle manifest's shape, every file by SHA-256 and the
+  files over 2 MB by digest only. Each clause the candidate reading left without a witness had a plant made in the
+  library's sources alone, in a throwaway copy of `git archive 49d7be1f` on disk, and `Broiler.Regex.Tests` built in
+  Release from that copy and run, filtered to the clause's deciding test classes, locally on linux-x64; no plant was
+  pushed and each copy was deleted after its run. Each attempt's folder holds the plant (`plant.json`, `plant.diff`),
+  the SHA-256 listing of the copy's library sources, the build and test logs, the trx, the exit codes, the gate's
+  records, `failures.json` and a note. The revert is the candidate reading's own test logs, all passing; each copy's
+  library sources differ from `49d7be1f`'s listing (`part-a-witnesses/base/`) only in the files its plant names.
+- **Every attempt is kept.** A-5.1's and A-5.2's first plants changed `RegexUnicode.ResolveProperty`, which the parser
+  reaches only after `ClassifyProperty` has decided the name, and refused nothing: failed attempts. A-4.2's first run
+  named two deciding tests failing and then ended with xUnit's fatal `TestPipelineException` before its population was
+  run, and A-4.4's first test log is over 2 MB, kept by digest: neither is counted. Each of the four clauses has a
+  second attempt that witnesses it.
+- **Two clauses take the closest plant, not the whole clause**, as the revision says: A-4.4's "in the Native AOT probe"
+  is not a test of the assembly, and its plant is a parser descent that needs more stack than the 1 MiB thread holds,
+  which the deciding tests under the JIT are written to catch; A-10.1's "at the version above" is a pin outside the
+  library's sources, and its plant is a second package dependency, the half the deciding test reads. Each note says so.
+
+**Part A's second reading, clause by clause**, under the revision (the deciding tests are the revision's table's; the
+candidate reading's result is its test logs' totals, 0 failed, read for each test as the note above reads them):
+
+| Clause | Deciding test classes | At the candidate reading | Its witness run, and the deciding tests its log names failing |
+|---|---|---|---|
+| A-1.1 | `ChargingTests` | passed | `A-1.1/attempt-1`: `ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared`, `ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work`, `ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read`, `ChargingTests.The_first_charge_comes_before_the_first_instruction` |
+| A-1.2 | `ChargingTests` | passed | `A-1.2/attempt-1`: `ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan`, `ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset` |
+| A-1.3 | `CeilingTests`, `ChargingTests` | passed | `A-1.3/attempt-1`: `CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match`, `CeilingTests.The_step_ceiling_is_reached_at_the_unit_past_it`, `ChargingTests.A_scan_stopped_by_its_step_ceiling_has_tested_only_the_positions_it_paid_for`, `ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it`, `ChargingTests.An_anchored_call_makes_no_scan_and_a_scan_stops_at_the_step_ceiling` |
+| A-1.4 | `ChargingTests` | passed | `A-1.4/attempt-1`: `ChargingTests.A_meter_that_throws_at_its_budget_propagates_and_the_program_answers_a_fresh_call_as_a_new_one_does` |
+| A-1.5 | `MeterMetadataTests` | passed | The candidate reading's: in the test, run every time (architecture tests). No new plant. |
+| A-2.1 | `CompileChargingTests` | passed | `A-2.1/attempt-1`: `CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches`, `CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read` |
+| A-2.2 | `AdversarialCorpusTests`, `CompileChargingTests` | passed | `A-2.2/attempt-1`: `AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process`, `CompileChargingTests.A_compile_budget_admits_the_work_it_covers_and_refuses_one_unit_less`, `CompileChargingTests.A_compile_budget_of_zero_is_a_broken_precondition_and_the_constructors_take_neither_budget_nor_meter`, `CompileChargingTests.The_budget_and_the_nesting_limit_each_answer_their_own_dimension_in_the_order_the_work_meets_them` |
+| A-3.1 | `CeilingTests` | passed | `A-3.1/attempt-1`: `CeilingTests.The_frame_ceiling_is_reached_one_frame_past_what_the_match_holds_at_once`, `CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone` |
+| A-3.2 | `CeilingTests` | passed | `A-3.2/attempt-1`: `CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure`, `CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match`, `CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone`, `CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself` |
+| A-4.1 | `MatcherRecursionTests` | passed | The candidate reading's: in the test, run every time (architecture tests). No new plant. |
+| A-4.2 | `NestingLimitTests`, `NestingMaximumTests` | passed | `A-4.2/attempt-1`: not counted, as its note says; `A-4.2/attempt-2`: `NestingLimitTests.A_class_adds_a_level_under_v_only`, `NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more`, `NestingLimitTests.Every_kind_of_level_counts_toward_one_depth`, `NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level`, `NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error`, `NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack`, `NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for` |
+| A-4.3 | `NestingLimitTests` | passed | `A-4.3/attempt-1`: `NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum` |
+| A-4.4 | `NestingMaximumTests`, `StackDepthGuardTests` | passed | `A-4.4/attempt-1`: not counted, as its note says; `A-4.4/attempt-2`: `NestingMaximumTests.A_pattern_at_the_maximum_matches_on_a_1_MiB_stack`, `NestingMaximumTests.A_pattern_at_the_maximum_of_a_shape_the_old_matcher_did_not_prove_matches_on_a_1_MiB_stack`, `NestingMaximumTests.A_pattern_at_the_maximum_parses_and_compiles_on_a_1_MiB_stack` |
+| A-5.1 | `PropertyNameTests` | passed | `A-5.1/attempt-1`: a failed attempt, no test failed; `A-5.1/attempt-2`: `PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted`, `PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has`, `PropertyNameTests.The_probe_cases_get_the_specification_answer` |
+| A-5.2 | `PropertyNameTests` | passed | `A-5.2/attempt-1`: a failed attempt, no test failed; `A-5.2/attempt-2`: `PropertyNameTests.A_lone_name_spelled_otherwise_is_refused` |
+| A-5.3 | `GroupNameTests` | passed | `A-5.3/attempt-1`: `GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode`, `GroupNameTests.The_probe_cases_get_the_specification_answer` |
+| A-5.4 | `GroupNameTests` | passed | `A-5.4/attempt-1`: `GroupNameTests.A_braced_escape_never_joins_a_surrogate_pair` |
+| A-5.5 | `DecimalEscapeTests` | passed | `A-5.5/attempt-1`: `DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit` |
+| A-5.6 | `NamedReferenceTests`, `ValidateEntryTests` | passed | The candidate reading's: part B's control run 44237117988, Release jobs 134575819708 and 134575819702 (`candidate-reading/ci/job-logs/`). No new plant. |
+| A-5.7 | `DecimalEscapeTests`, `NamedReferenceTests`, `ValidateEntryTests` | passed | `A-5.7/attempt-1`: `DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error`, `ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002` |
+| A-6.1 | `DuplicateNamedGroupTests`, `RegexGroupNamesTests` | passed | `A-6.1/attempt-1`: `DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group`, `DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees` |
+| A-6.2 | `DuplicateNamedGroupTests` | passed | `A-6.2/attempt-1`: `DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_is_one_instruction_reading_every_group_of_the_name_at_one_unit`, `DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated` |
+| A-6.3 | `DuplicateNamedGroupTests`, `RegexGroupNamesTests` | passed | `A-6.3/attempt-1`: `DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots`, `RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots` |
+| A-7 | `PublicEntryTests` | passed | `A-7/attempt-1`: `PublicEntryTests.The_anchored_argument_is_independent_of_the_y_flag` |
+| A-8 | `DuplicateNamedGroupTests`, `EntryTests`, `PublicEntryTests`, `RegexGroupNamesTests` | passed | `A-8/attempt-1`: `EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count`, `EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count`, `PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count`, `PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays` |
+| A-9.1 | `FlagsTextTests` | passed | `A-9.1/attempt-1`: `FlagsTextTests.A_refusal_is_decided_by_the_ninth_code_unit_whatever_the_length`, `FlagsTextTests.A_refusal_is_the_syntax_status_with_the_validate_entry_s_diagnostic`, `FlagsTextTests.A_refusal_names_its_kind_and_the_code_unit`, `FlagsTextTests.Every_string_of_up_to_three_code_units_over_the_flags_and_strangers_reads_as_the_specification_reads_it`, `FlagsTextTests.The_throwing_reader_answers_as_before_through_the_same_grammar` |
+| A-9.2 | `EscapeStringTests` | passed | `A-9.2/attempt-1`: `EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did`, `EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says`, `EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it`, `EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say`, `EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects` |
+| A-9.3 | `PatternSourceTests` | passed | `A-9.3/attempt-1`: `PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask`, `PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them`, `PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class`, `PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators`, `PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode`, `PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties`, `PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects`, `PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading` |
+| A-10.1 | `ProviderDataTests` | passed | `A-10.1/attempt-1`: `ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version` |
+| A-10.2 | `ProviderDataTests` | passed | `A-10.2/attempt-1`: `ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version` |
+| A-10.3 | `ProviderDataTests` | passed | `A-10.3/attempt-1`: `ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables`, `ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider` |
+| A-10.4 | `ProviderDataTests` | passed | `A-10.4/attempt-1`: `ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version` |
+| A-11.1 | `GroupNameTests`, `ValidateEntryTests` | passed | `A-11.1/attempt-1`: `GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown`, `ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations` |
+| A-11.2 | `CompileChargingTests`, `ConcurrentUseTests`, `EntryTests`, `FirstUseConcurrencyTests` | passed | `A-11.2/attempt-1`: `ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does`, `ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does`, `EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone` |
+| A-11.3 | `ValidateEntryTests` | passed | `A-11.3/attempt-1`: `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`, `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException` (its log also names `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position` failing, a test the revision's A-5.6 row names and its A-11.3 row's exclusion leaves to A-5.6: the dated note on review below) |
+
+- **Part A: read MET on the retained runs**, at its second reading at `49d7be1f`, under the revision of 2026-11-18:
+  every check passes at the reading (the candidate reading's logs, unchanged), and every clause of A-1 to A-11 has a
+  retained witness run, 32 of them taken after the candidate reading and 3 the candidate reading found. The revision's
+  decision is weaker evidence, as its header says. Parts B to E and the reference arms keep their candidate readings,
+  unchanged.
+- **What it bears on**, in the rule's words and the revision's. The rule reads "A part NOT MET at the candidate reading
+  blocks both cut-overs (risk D10's stop)", unchanged. The revision reads: "For part A alone, the reading that line
+  reads at the candidate reading's commit is, from this file's date, part A's second reading: if it reads MET, part A
+  no longer blocks the cut-overs by that line". So part A no longer blocks the cut-overs by that line; parts B to E read
+  MET at the candidate reading. That is all it lifts: the revision also says "Nothing else of either engine's cut-over
+  is decided here", and the rule's "What this file does not decide" names "**Either engine's cut-over**". The
+  cut-overs still wait on their own holds, H1 and H2, which this bundle does not decide, and on the owner's open items:
+  publication (D13); the departure from the rule's packed-from line (the reading's commit); the session's reading of
+  class (b)'s vector clause; class (c)'s unretained pre-fix run; and the scratch branch `sjl-11-2-control-b`'s
+  deletion. Nothing else is declared met or accepted.
+  [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-18 on part A's witnesses has the runs and the choices taken.
+
+*Dated note, 2026-11-18, on review of part A's second reading (the revision, every rule file and every retained file
+unchanged; the reading unchanged).* Two places in the note above are corrected, each quoted here, and the review's
+other findings are recorded for the owner.
+- **A-11.3's deciding tests.** The table above read, in A-11.3's last cell, "`A-11.3/attempt-1`:
+  `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`,
+  `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`,
+  `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException`". The
+  revision's A-11.3 row names its deciding tests as "`ValidateEntryTests`, every test not named above for A-5.6, A-5.7
+  or A-11.1", and its A-5.6 row names `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`;
+  the same A-11.3 row then lists that test "among them". The row contradicts itself. By its exclusion clause that test
+  decides A-5.6, not A-11.3, and it is not counted for A-11.3 here. A-11.3 is witnessed by the two other deciding tests
+  its run's log names failing, `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`
+  and `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException`, neither
+  named for A-5.6, A-5.7 or A-11.1; the cell now says so. The attempt's retained `note.md` and `failures.json`, and
+  `part-a-witnesses/scripts/deciding.py`, whose A-11.3 exclusion leaves that test out, count it for A-11.3; they stay
+  unedited as retained files, and this note is how they are read. The row's wording is an item for the owner.
+- **What it bears on.** The bullet above read "So part A no longer blocks the cut-overs by that line, and no part read
+  at the candidate reading does." Part A's candidate reading is NOT MET and stays on record, and the revision points
+  the line at part A's second reading only; neither rule file says that no part blocks. It now reads "So part A no
+  longer blocks the cut-overs by that line; parts B to E read MET at the candidate reading."
+- **The blocking line, for the owner.** The revision lists "A part NOT MET at the candidate reading blocks both
+  cut-overs (risk D10's stop)" under "What it does not change", and under "How it is read" says that, for part A
+  alone, "the reading that line reads at the candidate reading's commit is, from this file's date, part A's second
+  reading". Read literally, the unchanged line still reads the candidate reading's NOT MET; the lift rests on the
+  revision's reading of that line, which its "What it revises" does not list. The owner's question framed part A's NOT
+  MET as what blocks the cut-overs, and the choice was to read part A again, so this note reads the lift as the
+  owner's intent. Whether the owner confirms it, and whether a later dated note names it among the revisions, is the
+  owner's.
+- **"Not counted", for the owner.** The revision reads "a clause is witnessed if and only if at least one of its
+  deciding tests fails in a retained witness run and is named failing in that run's test log", and names no attempt
+  "not counted". A-4.2's first attempt names two deciding tests failing before xUnit's fatal error, so by the
+  revision's words alone it would witness A-4.2. A-4.4's first test log is kept by its digest only, as the revision's
+  "a file over 2 MB by its digest only" allows. Setting both aside, the first by `decision-rule.md`'s "a step that
+  stopped before the end of its population is void" and the second because its log is not kept in the bundle, is the
+  session's own stricter reading, beyond the revision's text, made after the runs were seen; it is not a category the
+  revision defines. Each of the two clauses is witnessed by its second attempt either way.
+- **Guarantees with no plant of their own, for the owner.** The unit is the ";"-separated clause, so a clause that
+  states more than one guarantee is witnessed by a plant of one of them. A-1.4: the plant stops the meter's exception
+  from propagating, not the fresh call's answer. A-4.4: a pattern at the maximum under the JIT; not the flat sequence
+  of part C's class F, whose `StackDepthGuardTests` did not fail, nor the Native AOT probe. A-6.1: the "refused
+  otherwise" half, not the "accepted" half. A-8: the allocation half;
+  `PublicEntryTests.The_entry_s_signature_carries_no_string_and_answers_a_status` did not fail. A-9.1: the duplicate
+  flag, not the unknown flag or u with v. A-10.1: the second dependency, not the version pin. By the revision's
+  definition the retained runs witness these clauses, and not each guarantee in them; the evidence for the halves
+  listed is weaker.
+- **A result in the revision, for the owner.** Its header reads "**It holds no figure**", and its section "The
+  clauses" reads "Every test named passed at the reading: the candidate reading's logs carry totals per assembly, 0
+  failed". That is a result of the candidate reading, which `decision-rule.md`'s "Counts are results, not rules" puts
+  in this README. The revision stays unedited, since it was committed before the runs.
+- **Files kept by digest only.** A-4.4's first test log and trx and its second trx are named in
+  `part-a-witnesses/manifest.json` at the session's scratch directory, which a restart can clear; their digests are
+  recorded there. The retained test logs and scripts of `part-a-witnesses/` name that scratch path, as produced. None
+  of these decides a clause.
+
+*Dated note, 2026-11-18, the owner's ruling on the blocking line (no rule file and no retained file changed; part A's
+second reading unchanged).* The note on review above names, among the owner's wording items, "the blocking line, which
+the revision lists as unchanged while it points the line, for part A, at the second reading", read there "as the
+owner's intent". The owner was asked: "Part A of the Broiler.Regex reading now reads MET at its second reading (32
+witnesses taken, 3 already on record, none missing). But the 2026-11-18 revision kept the rule's line "A part NOT MET
+at the candidate reading blocks both cut-overs" unchanged, and the candidate reading's part A NOT MET stays on record.
+Read strictly, the block would never lift. Should part A's MET at its second reading lift that block for both
+cut-overs (SJL-11.5 in Broiler.JS, SJL-11.4 in Broiler.VM)?" The owner answered "Yes, the second reading lifts it" —
+"A dated note records your reading: the block on both cut-overs is lifted as far as part A goes. The cut-overs still
+wait on their own holds (H1, H2), their base runs, and your open items." The alternative not taken was "No, keep the
+block" — "Both cut-overs stay blocked by the candidate reading's part A NOT MET. Only the end reading or a further
+revision could lift the block." This is the owner's own ruling, not one taken under the owner's direction of
+2026-10-18. By it, part A's MET at its second reading lifts the block of "A part NOT MET at the candidate reading
+blocks both cut-overs (risk D10's stop)" on both cut-overs, as far as part A goes; that wording item is answered.
+Nothing else is decided: SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on their own holds, H1 and H2,
+their base runs, and the owner's other open items.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written

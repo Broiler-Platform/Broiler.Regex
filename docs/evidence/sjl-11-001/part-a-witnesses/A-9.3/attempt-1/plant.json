@@ -1,0 +1,12 @@
+{
+ "clause": "A-9.3",
+ "what": "the source getter leaves a solidus outside a class as itself, where EscapeRegExpPattern escapes it",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Text/RegexEscaper.cs",
+   "anchor": "            if (unit == '/' && !inClass)\n",
+   "replacement": "            if (unit == '/' && !inClass && pattern.Length < 0) // witness plant A-9.3\n"
+  }
+ ],
+ "classes": "PatternSourceTests"
+}

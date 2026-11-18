@@ -1,0 +1,12 @@
+{
+ "clause": "A-8",
+ "what": "every call allocates an array of the program's slot count, which grows with the capture count",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexProgram.cs",
+   "anchor": "        var mine = slots[..SlotCount];\n",
+   "replacement": "        var mine = slots[..SlotCount];\n        GC.KeepAlive(new int[SlotCount]); // witness plant A-8\n"
+  }
+ ],
+ "classes": "PublicEntryTests,EntryTests,DuplicateNamedGroupTests,RegexGroupNamesTests"
+}

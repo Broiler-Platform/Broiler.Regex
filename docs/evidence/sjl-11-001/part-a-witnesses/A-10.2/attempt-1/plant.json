@@ -1,0 +1,13 @@
+{
+ "clause": "A-10.2",
+ "what": "the library declares a type named CaseFolding",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/CaseFolding.cs",
+   "new": true,
+   "anchor": "",
+   "replacement": "namespace Broiler.Regex.Unicode;\n\n/// <summary>Witness plant A-10.2: a type of the name check A-10 says is absent.</summary>\ninternal static class CaseFolding\n{\n}\n"
+  }
+ ],
+ "classes": "ProviderDataTests"
+}

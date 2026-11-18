@@ -1,0 +1,22 @@
+{
+ "clause": "A-11.2",
+ "what": "every call of every program shares one static register array instead of renting its own, so concurrent calls on shared instances overwrite each other's registers",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "        _registers = ArrayPool<int>.Shared.Rent(program.RegisterCount);\n",
+   "replacement": "        _registers = s_witnessPlantRegisters is { } shared && shared.Length >= program.RegisterCount ? shared : (s_witnessPlantRegisters = new int[Math.Max(64, program.RegisterCount)]); // witness plant A-11.2\n"
+  },
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "        ArrayPool<int>.Shared.Return(_registers);\n",
+   "replacement": "        // witness plant A-11.2: the shared registers are not returned to the pool\n"
+  },
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "    private readonly RegexWorkCharge? _meter;\n",
+   "replacement": "    private readonly RegexWorkCharge? _meter;\n\n    private static int[]? s_witnessPlantRegisters; // witness plant A-11.2\n"
+  }
+ ],
+ "classes": "ConcurrentUseTests,FirstUseConcurrencyTests,EntryTests,CompileChargingTests"
+}

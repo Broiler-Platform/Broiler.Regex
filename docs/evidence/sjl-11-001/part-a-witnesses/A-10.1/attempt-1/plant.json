@@ -1,0 +1,18 @@
+{
+ "clause": "A-10.1",
+ "what": "the library takes a second package dependency, Broiler.Unicode.Tables, and reads a member of it",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Broiler.Regex.csproj",
+   "anchor": "    <PackageReference Include=\"Broiler.Unicode.Algorithms\" />\n",
+   "replacement": "    <PackageReference Include=\"Broiler.Unicode.Algorithms\" />\n    <PackageReference Include=\"Broiler.Unicode.Tables\" /><!-- witness plant A-10.1 -->\n"
+  },
+  {
+   "file": "Broiler.Regex/WitnessPlantA101.cs",
+   "new": true,
+   "anchor": "",
+   "replacement": "namespace Broiler.Regex;\n\n/// <summary>Witness plant A-10.1: a member read from a second package.</summary>\ninternal static class WitnessPlantA101\n{\n    /// <summary>The second package's tables.</summary>\n    internal static object Tables => Broiler.Unicode.Tables.UnicodeTables.Instance;\n}\n"
+  }
+ ],
+ "classes": "ProviderDataTests"
+}

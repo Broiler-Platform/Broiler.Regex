@@ -1,0 +1,10 @@
+diff -ruN a/Broiler.Regex/Unicode/CaseFolding.cs b/Broiler.Regex/Unicode/CaseFolding.cs
+--- a/Broiler.Regex/Unicode/CaseFolding.cs	1970-01-01 00:00:00.000000000 +0000
++++ b/Broiler.Regex/Unicode/CaseFolding.cs	2026-11-18 10:49:09.076409085 +0000
+@@ -0,0 +1,6 @@
++namespace Broiler.Regex.Unicode;
++
++/// <summary>Witness plant A-10.2: a type of the name check A-10 says is absent.</summary>
++internal static class CaseFolding
++{
++}

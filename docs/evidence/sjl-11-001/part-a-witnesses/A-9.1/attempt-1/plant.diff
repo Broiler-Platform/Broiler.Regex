@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Text/RegexFlagsText.cs b/Broiler.Regex/Text/RegexFlagsText.cs
+--- a/Broiler.Regex/Text/RegexFlagsText.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Text/RegexFlagsText.cs	2026-11-18 10:45:53.942073743 +0000
+@@ -95,7 +95,7 @@
+             var flag = FlagOf(text[at]);
+             if (flag == RegexFlags.None)
+                 return Refuse(RegexDiagnosticCode.UnknownFlag, text, at, out flags, out diagnostic);
+-            if ((seen & flag) != 0)
++            if ((seen & flag) != 0 && flag == RegexFlags.None) // witness plant A-9.1
+                 return Refuse(RegexDiagnosticCode.DuplicateFlag, text, at, out flags, out diagnostic);
+ 
+             seen |= flag;

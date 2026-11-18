@@ -1,0 +1,38 @@
+Test run for /home/user/rx-wit-plants/A-11.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:04.06]     Broiler.Regex.Tests.ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does [FAIL]
+  Failed Broiler.Regex.Tests.ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does [2 s]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["case 11: nomatch where one thread answers 1,4 - 1,"···, "case 11: 0,2 - 1,2 4,4 a=1 a=2 b=3  where one thre"···, "case 12: 0,4 - 1,2 4,4  where one thread answers 0"···, "case 11: 0,1 0,0 1,2 - a=1 a=2 b=3  where one thre"···, "case 11: 1,2 0,0 1,2 - a=1 a=2 b=3  where one thre"···, ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does() in /home/user/rx-wit-plants/A-11.2-1/tree/Broiler.Regex.Tests/ConcurrentUseTests.cs:line 214
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:04.43]     Broiler.Regex.Tests.ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does [FAIL]
+  Failed Broiler.Regex.Tests.ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does [376 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["case 6: 4,9  where one thread answers 1,9 ", "case 9: 4,4 - -  where one thread answers 4,4 0,1 "···, "case 10: 3,10 - 8,10 month=2 year=1  where one thr"···, "case 11: 0,1 - - - a=1 a=2 b=3  where one thread a"···, "case 9: IndexOutOfRangeException: Index was outsid"···, ···]
+  Stack Trace:
+     at Broiler.Regex.Tests.ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does() in /home/user/rx-wit-plants/A-11.2-1/tree/Broiler.Regex.Tests/ConcurrentUseTests.cs:line 154
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:07.01]     Broiler.Regex.Tests.EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone [FAIL]
+  Failed Broiler.Regex.Tests.EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone [37 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                         ↓ (pos 14)
+Expected: "match 0,3 1,2 - - units 41"
+Actual:   "match 0,3 1,2 1,-1 - units 41"
+                         ↑ (pos 14)
+  Stack Trace:
+     at Broiler.Regex.Tests.EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone() in /home/user/rx-wit-plants/A-11.2-1/tree/Broiler.Regex.Tests/EntryTests.cs:line 223
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-11.2-1/results/test.trx
+
+Failed!  - Failed:     3, Passed:   120, Skipped:     0, Total:   123, Duration: 7 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
