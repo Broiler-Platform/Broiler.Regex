@@ -1,0 +1,29 @@
+{
+ "run": "A-5.1-2",
+ "clause": "A-5.1",
+ "attempt": 2,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 9,
+  "passed": 58,
+  "skipped": 0,
+  "total": 67
+ },
+ "deciding-tests-failed": [
+  "PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted",
+  "PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has",
+  "PropertyNameTests.The_probe_cases_get_the_specification_answer"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "PropertyNameTests.Every_name_and_value_the_tables_admit_is_accepted": 2,
+  "PropertyNameTests.Katakana_Or_Hiragana_is_a_value_no_code_point_has": 3,
+  "PropertyNameTests.The_probe_cases_get_the_specification_answer": 4
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "75ee13c3430c0ed672c89000d690894eae0adbdaebc04e3d15a3537c607f2250",
+ "reading": "witness"
+}

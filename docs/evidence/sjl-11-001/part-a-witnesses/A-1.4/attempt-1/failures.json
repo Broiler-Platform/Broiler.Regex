@@ -1,0 +1,25 @@
+{
+ "run": "A-1.4-1",
+ "clause": "A-1.4",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 108,
+  "skipped": 0,
+  "total": 109
+ },
+ "deciding-tests-failed": [
+  "ChargingTests.A_meter_that_throws_at_its_budget_propagates_and_the_program_answers_a_fresh_call_as_a_new_one_does"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ChargingTests.A_meter_that_throws_at_its_budget_propagates_and_the_program_answers_a_fresh_call_as_a_new_one_does": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Engine/RegexMachine.cs"
+ ],
+ "library-sources-sha256": "82b6f00181ffaa4da8df2b1bc11f4d4140ac74c40b95f51cf2d6d682fb921a82",
+ "reading": "witness"
+}

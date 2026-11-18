@@ -1,0 +1,12 @@
+{
+ "clause": "A-9.2",
+ "what": "RegExp.escape leaves @ as itself, though EncodeForRegExpEscape's otherPunctuators list it",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Text/RegexEscaper.cs",
+   "anchor": "    private const string OtherPunctuators = \",-=<>#&!%:;@~'`\\\"\";",
+   "replacement": "    private const string OtherPunctuators = \",-=<>#&!%:;~'`\\\"\"; // witness plant A-9.2"
+  }
+ ],
+ "classes": "EscapeStringTests"
+}

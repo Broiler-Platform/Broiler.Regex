@@ -1,0 +1,11 @@
+diff -ruN a/Broiler.Regex/Engine/RegexMachine.cs b/Broiler.Regex/Engine/RegexMachine.cs
+--- a/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 10:29:10.465899303 +0000
+@@ -311,6 +311,7 @@
+             if (anchored || at >= _subject.Length)
+                 return RegexStatus.NoMatch;
+ 
++            _spent = 0; // witness plant A-1.2
+             at = NextStart(at);
+         }
+     }

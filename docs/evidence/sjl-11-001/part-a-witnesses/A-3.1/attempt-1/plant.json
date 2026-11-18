@@ -1,0 +1,12 @@
+{
+ "clause": "A-3.1",
+ "what": "the frame and trail ceilings are the library's, not the caller's: the machine takes the engines' defaults whatever ceilings the call passes",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "        _frameCeiling = ceilings.Frames;\n        _trailCeiling = ceilings.Trail;\n",
+   "replacement": "        _frameCeiling = RegexMatchCeilings.EngineFrames; // witness plant A-3.1\n        _trailCeiling = RegexMatchCeilings.EngineTrail; // witness plant A-3.1\n"
+  }
+ ],
+ "classes": "CeilingTests"
+}

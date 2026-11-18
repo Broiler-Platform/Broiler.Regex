@@ -1,0 +1,27 @@
+{
+ "run": "A-2.1-1",
+ "clause": "A-2.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 8,
+  "passed": 97,
+  "skipped": 0,
+  "total": 105
+ },
+ "deciding-tests-failed": [
+  "CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches",
+  "CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches": 3,
+  "CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read": 5
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "4209efcff79e565363c58d228505c321bca254a48cc20f9eae35a0f89e3de701",
+ "reading": "witness"
+}

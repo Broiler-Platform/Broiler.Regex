@@ -1,0 +1,12 @@
+{
+ "clause": "A-2.2",
+ "what": "the compile budget is ignored: an account is made with no budget whatever the caller passes, so no compilation is refused at its budget",
+ "edits": [
+  {
+   "file": "Broiler.Regex/CompileCharge.cs",
+   "anchor": "        _budget = budget ?? ulong.MaxValue;\n",
+   "replacement": "        _budget = ulong.MaxValue; // witness plant A-2.2\n"
+  }
+ ],
+ "classes": "AdversarialCorpusTests,CompileChargingTests"
+}

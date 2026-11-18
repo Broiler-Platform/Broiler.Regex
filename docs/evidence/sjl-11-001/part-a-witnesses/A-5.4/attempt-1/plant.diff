@@ -1,0 +1,20 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+--- a/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 10:38:51.196368378 +0000
+@@ -1666,6 +1666,16 @@
+             }
+         }
+ 
++        if (unicodeMode && hi is >= 0xD800 and <= 0xDBFF && Peek() == '\\' && PeekAt(1) == 'u' && PeekAt(2) == '{') // witness plant A-5.4
++        {
++            var save = _pos;
++            _pos++;
++            var braced = ReadUnicodeEscape(unicodeMode: true);
++            if (braced is >= 0xDC00 and <= 0xDFFF)
++                return char.ConvertToUtf32((char)hi, (char)braced);
++            _pos = save;
++        }
++
+         return hi;
+     }
+ 

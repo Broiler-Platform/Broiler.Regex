@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/BroilerRegex.cs b/Broiler.Regex/BroilerRegex.cs
+--- a/Broiler.Regex/BroilerRegex.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/BroilerRegex.cs	2026-11-18 10:34:40.024666544 +0000
+@@ -341,7 +341,7 @@
+         ArgumentNullException.ThrowIfNull(pattern);
+         Text.RegexFlagsText.CheckDefined(flags);
+         ArgumentOutOfRangeException.ThrowIfLessThan(nestingLimit, 1);
+-        ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);
++        nestingLimit = Math.Min(nestingLimit, MaximumNestingLimit); // witness plant A-4.3
+         if (compileBudget == 0)
+             throw new ArgumentOutOfRangeException(nameof(compileBudget), "A compile budget, when there is one, is at least one unit.");
+ 

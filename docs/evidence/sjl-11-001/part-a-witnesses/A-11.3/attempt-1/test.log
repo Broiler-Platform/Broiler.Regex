@@ -1,0 +1,969 @@
+Test run for /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "v") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "u") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "") [FAIL]
+[xUnit.net 00:00:01.93]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "i") [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "(?!a){2}", code: QuantifiedAssertion, position: 5) [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\a", code: InvalidIdentityEscape, position: 1) [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\c1", code: InvalidControlEscape, position: 2) [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "(?=a)*", code: QuantifiedAssertion, position: 5) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "v") [34 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 333
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "u") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 333
+   at InvokeStub_ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 333
+   at InvokeStub_ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "i") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 333
+   at InvokeStub_ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "(?!a){2}", code: QuantifiedAssertion, position: 5) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifiedAssertion
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\a", code: InvalidIdentityEscape, position: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidIdentityEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\c1", code: InvalidControlEscape, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidControlEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "(?=a)*", code: QuantifiedAssertion, position: 5) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifiedAssertion
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\u12", code: InvalidHexEscape, position: 4) [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "a]", code: LoneSyntaxCharacter, position: 1) [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "}", code: LoneSyntaxCharacter, position: 0) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "[\\8]", code: InvalidIdentityEscape, position: 2) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "[\\c]", code: InvalidControlEscape, position: 3) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\01", code: InvalidIdentityEscape, position: 1) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\ka", code: NamedReferenceWithoutName, position: 2) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\xg", code: InvalidHexEscape, position: 2) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\p", code: PropertyEscapeWithoutBrace, position: 2) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\u12", code: InvalidHexEscape, position: 4) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidHexEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "a]", code: LoneSyntaxCharacter, position: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LoneSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "}", code: LoneSyntaxCharacter, position: 0) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LoneSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "[\\8]", code: InvalidIdentityEscape, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidIdentityEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "[\\c]", code: InvalidControlEscape, position: 3) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidControlEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\01", code: InvalidIdentityEscape, position: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidIdentityEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\ka", code: NamedReferenceWithoutName, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NamedReferenceWithoutName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\xg", code: InvalidHexEscape, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidHexEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\p", code: PropertyEscapeWithoutBrace, position: 2) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: PropertyEscapeWithoutBrace
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "{", code: LoneSyntaxCharacter, position: 0) [FAIL]
+[xUnit.net 00:00:01.96]     Broiler.Regex.Tests.ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition [FAIL]
+[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "{", code: LoneSyntaxCharacter, position: 0) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LoneSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 313
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Broiler.Regex.RegexDiagnostic
+Actual:   Broiler.Regex.RegexDiagnostic
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition() in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 473
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException [5 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+Expected: ""
+Actual:   "Unexpected ')' in pattern"
+           ↑ (pos 0)
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException() in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 428
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "{2}", flags: "", code: BracedQuantifierWithoutAtom, position: 0, argument: null) [FAIL]
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "*a", flags: "", code: NothingToRepeat, position: 0, argument: "*") [FAIL]
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-\\p{L}]", flags: "u", code: ClassRangeEndpointIsClass, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\x4g", flags: "u", code: InvalidHexEscape, position: 3, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "{2}", flags: "", code: BracedQuantifierWithoutAtom, position: 0, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BracedQuantifierWithoutAtom
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "*a", flags: "", code: NothingToRepeat, position: 0, argument: "*") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NothingToRepeat
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-\\p{L}]", flags: "u", code: ClassRangeEndpointIsClass, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassRangeEndpointIsClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\x4g", flags: "u", code: InvalidHexEscape, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidHexEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "x[\\u0062-\\u0061]", flags: "u", code: ClassRangeOutOfOrder, position: 2, argument: "\\u0062-\\u0061") [FAIL]
+[xUnit.net 00:00:02.04]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i-i:a)", flags: "", code: ModifierAddedAndRemoved, position: 5, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\a", flags: "u", code: InvalidIdentityEscape, position: 1, argument: "a") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\qa]", flags: "v", code: ClassStringDisjunctionWithoutBrace, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{ASCII=Y}", flags: "u", code: UnknownPropertyName, position: 1, argument: "ASCII=Y") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)\\k", flags: "", code: NamedReferenceWithoutName, position: 9, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "]", flags: "u", code: LoneSyntaxCharacter, position: 0, argument: "]") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\c1", flags: "u", code: InvalidControlEscape, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?-:a)", flags: "", code: ModifiersEmpty, position: 3, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "x[\\u0062-\\u0061]", flags: "u", code: ClassRangeOutOfOrder, position: 2, argument: "\\u0062-\\u0061") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassRangeOutOfOrder
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i-i:a)", flags: "", code: ModifierAddedAndRemoved, position: 5, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ModifierAddedAndRemoved
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\a", flags: "u", code: InvalidIdentityEscape, position: 1, argument: "a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidIdentityEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\qa]", flags: "v", code: ClassStringDisjunctionWithoutBrace, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassStringDisjunctionWithoutBrace
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{ASCII=Y}", flags: "u", code: UnknownPropertyName, position: 1, argument: "ASCII=Y") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownPropertyName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)\\k", flags: "", code: NamedReferenceWithoutName, position: 9, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NamedReferenceWithoutName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "]", flags: "u", code: LoneSyntaxCharacter, position: 0, argument: "]") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LoneSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\c1", flags: "u", code: InvalidControlEscape, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidControlEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?-:a)", flags: "", code: ModifiersEmpty, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ModifiersEmpty
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?ii:a)", flags: "", code: ModifierRepeated, position: 3, argument: "i") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&b--c]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a", flags: "v", code: UnterminatedClass, position: 0, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<\\u00G1>a)", flags: "", code: InvalidHexEscape, position: 7, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k<b>(?<a>x)", flags: "u", code: UndefinedGroupName, position: 0, argument: "b") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a\\x41>.)", flags: "", code: GroupNameInvalidEscape, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i)a", flags: "", code: InvalidGroup, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)(?<a>y)", flags: "", code: DuplicateGroupName, position: 7, argument: "a") [FAIL]
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a[z-a]]", flags: "v", code: ClassRangeOutOfOrder, position: 3, argument: "z-a") [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?ii:a)", flags: "", code: ModifierRepeated, position: 3, argument: "i") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ModifierRepeated
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&b--c]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetMixedOperators
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a", flags: "v", code: UnterminatedClass, position: 0, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<\\u00G1>a)", flags: "", code: InvalidHexEscape, position: 7, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidHexEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k<b>(?<a>x)", flags: "u", code: UndefinedGroupName, position: 0, argument: "b") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a\\x41>.)", flags: "", code: GroupNameInvalidEscape, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: GroupNameInvalidEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i)a", flags: "", code: InvalidGroup, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidGroup
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)(?<a>y)", flags: "", code: DuplicateGroupName, position: 7, argument: "a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: DuplicateGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a[z-a]]", flags: "v", code: ClassRangeOutOfOrder, position: 3, argument: "z-a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassRangeOutOfOrder
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a|+", flags: "", code: NothingToRepeat, position: 2, argument: "+") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[(]", flags: "v", code: ClassSetUnescapedSyntaxCharacter, position: 1, argument: "(") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(a)\\2", flags: "u", code: BackreferenceOutOfRange, position: 4, argument: "2") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{RGI_Emoji}", flags: "u", code: PropertyOfStringsOutsideUnicodeSets, position: 1, argument: "RGI_Emoji") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a-b>.)", flags: "", code: GroupNameInvalidPart, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a\\", flags: "", code: TrailingBackslash, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a|{1,}", flags: "", code: BracedQuantifierWithoutAtom, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<>.)", flags: "", code: EmptyGroupName, position: 3, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a|+", flags: "", code: NothingToRepeat, position: 2, argument: "+") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NothingToRepeat
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[(]", flags: "v", code: ClassSetUnescapedSyntaxCharacter, position: 1, argument: "(") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetUnescapedSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(a)\\2", flags: "u", code: BackreferenceOutOfRange, position: 4, argument: "2") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BackreferenceOutOfRange
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{RGI_Emoji}", flags: "u", code: PropertyOfStringsOutsideUnicodeSets, position: 1, argument: "RGI_Emoji") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: PropertyOfStringsOutsideUnicodeSets
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a-b>.)", flags: "", code: GroupNameInvalidPart, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: GroupNameInvalidPart
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a\\", flags: "", code: TrailingBackslash, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: TrailingBackslash
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a|{1,}", flags: "", code: BracedQuantifierWithoutAtom, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: BracedQuantifierWithoutAtom
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<>.)", flags: "", code: EmptyGroupName, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: EmptyGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&", flags: "v", code: UnterminatedClass, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[z-a]", flags: "", code: ClassRangeOutOfOrder, position: 1, argument: "z-a") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{41", flags: "u", code: InvalidBracedEscape, position: 5, argument: null) [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)(?<\\u0061>y)", flags: "u", code: DuplicateGroupName, position: 7, argument: "a") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\P{RGI_Emoji}", flags: "v", code: NegatedPropertyOfStrings, position: 1, argument: "RGI_Emoji") [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{110000}", flags: "u", code: CodePointOutOfRange, position: 8, argument: null) [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&&b]", flags: "v", code: ClassSetAmpersandAfterIntersection, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{L", flags: "u", code: UnterminatedPropertyEscape, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a)", flags: "", code: UnmatchedParenthesis, position: 1, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&", flags: "v", code: UnterminatedClass, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[z-a]", flags: "", code: ClassRangeOutOfOrder, position: 1, argument: "z-a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassRangeOutOfOrder
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{41", flags: "u", code: InvalidBracedEscape, position: 5, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidBracedEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)(?<\\u0061>y)", flags: "u", code: DuplicateGroupName, position: 7, argument: "a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: DuplicateGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\P{RGI_Emoji}", flags: "v", code: NegatedPropertyOfStrings, position: 1, argument: "RGI_Emoji") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NegatedPropertyOfStrings
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{110000}", flags: "u", code: CodePointOutOfRange, position: 8, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: CodePointOutOfRange
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a&&&b]", flags: "v", code: ClassSetAmpersandAfterIntersection, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetAmpersandAfterIntersection
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{L", flags: "u", code: UnterminatedPropertyEscape, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedPropertyEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a)", flags: "", code: UnmatchedParenthesis, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnmatchedParenthesis
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\pL", flags: "u", code: PropertyEscapeWithoutBrace, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)\\k<\\u0062>", flags: "", code: UndefinedGroupName, position: 7, argument: "b") [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{gc=Greek}", flags: "v", code: UnknownPropertyValue, position: 1, argument: "gc=Greek") [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a{", flags: "v", code: LoneSyntaxCharacter, position: 1, argument: "{") [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[^\\q{ab}--\\q{ab}]", flags: "v", code: NegatedClassMayContainStrings, position: 0, argument: null) [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a!!b]", flags: "v", code: ClassSetReservedDoublePunctuator, position: 2, argument: "!!") [FAIL]
+[xUnit.net 00:00:02.07]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i-ss:a)", flags: "", code: ModifierRepeated, position: 5, argument: "s") [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?:(?<a>x)|(?<a>y))(?<a>z)", flags: "", code: DuplicateGroupName, position: 19, argument: "a") [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\pL", flags: "u", code: PropertyEscapeWithoutBrace, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: PropertyEscapeWithoutBrace
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a>x)\\k<\\u0062>", flags: "", code: UndefinedGroupName, position: 7, argument: "b") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UndefinedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{gc=Greek}", flags: "v", code: UnknownPropertyValue, position: 1, argument: "gc=Greek") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownPropertyValue
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a{", flags: "v", code: LoneSyntaxCharacter, position: 1, argument: "{") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LoneSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[^\\q{ab}--\\q{ab}]", flags: "v", code: NegatedClassMayContainStrings, position: 0, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NegatedClassMayContainStrings
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a!!b]", flags: "v", code: ClassSetReservedDoublePunctuator, position: 2, argument: "!!") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetReservedDoublePunctuator
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?i-ss:a)", flags: "", code: ModifierRepeated, position: 5, argument: "s") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ModifierRepeated
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?:(?<a>x)|(?<a>y))(?<a>z)", flags: "", code: DuplicateGroupName, position: 19, argument: "a") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: DuplicateGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\P{}", flags: "v", code: UnknownLonePropertyName, position: 1, argument: "") [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{}", flags: "u", code: InvalidBracedEscape, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\q{a|}}]", flags: "v", code: ClassSetUnescapedSyntaxCharacter, position: 7, argument: "}") [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a\\", flags: "u", code: TrailingBackslash, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(a", flags: "", code: UnterminatedGroup, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a", flags: "", code: UnterminatedGroupName, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-\\d]", flags: "v", code: ClassSetRangeEndpointNotCharacter, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\d-z]", flags: "u", code: ClassRangeEndpointIsClass, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<=a)?", flags: "", code: QuantifiedAssertion, position: 6, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\P{}", flags: "v", code: UnknownLonePropertyName, position: 1, argument: "") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownLonePropertyName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\u{}", flags: "u", code: InvalidBracedEscape, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidBracedEscape
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\q{a|}}]", flags: "v", code: ClassSetUnescapedSyntaxCharacter, position: 7, argument: "}") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetUnescapedSyntaxCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a\\", flags: "u", code: TrailingBackslash, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: TrailingBackslash
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(a", flags: "", code: UnterminatedGroup, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedGroup
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a", flags: "", code: UnterminatedGroupName, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedGroupName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-\\d]", flags: "v", code: ClassSetRangeEndpointNotCharacter, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetRangeEndpointNotCharacter
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\d-z]", flags: "u", code: ClassRangeEndpointIsClass, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassRangeEndpointIsClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<=a)?", flags: "", code: QuantifiedAssertion, position: 6, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifiedAssertion
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a\\uD800>.)", flags: "", code: GroupNameInvalidPart, position: 4, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a--bc]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a[^\\q{ab}]]", flags: "v", code: NegatedClassMayContainStrings, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-z&&b]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k", flags: "u", code: NamedReferenceWithoutName, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<\\u0031>.)", flags: "u", code: GroupNameInvalidStart, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "^*", flags: "", code: QuantifiedAssertion, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\p{Basic_Emoji}]", flags: "u", code: PropertyOfStringsOutsideUnicodeSets, position: 2, argument: "Basic_Emoji") [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<a\\uD800>.)", flags: "", code: GroupNameInvalidPart, position: 4, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: GroupNameInvalidPart
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a--bc]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetMixedOperators
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a[^\\q{ab}]]", flags: "v", code: NegatedClassMayContainStrings, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NegatedClassMayContainStrings
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a-z&&b]", flags: "v", code: ClassSetMixedOperators, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: ClassSetMixedOperators
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k", flags: "u", code: NamedReferenceWithoutName, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NamedReferenceWithoutName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<\\u0031>.)", flags: "u", code: GroupNameInvalidStart, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: GroupNameInvalidStart
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "^*", flags: "", code: QuantifiedAssertion, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifiedAssertion
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\p{Basic_Emoji}]", flags: "u", code: PropertyOfStringsOutsideUnicodeSets, position: 2, argument: "Basic_Emoji") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: PropertyOfStringsOutsideUnicodeSets
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[^\\q{ab}]", flags: "v", code: NegatedClassMayContainStrings, position: 0, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<1>.)", flags: "", code: GroupNameInvalidStart, position: 3, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{letter}", flags: "u", code: UnknownLonePropertyName, position: 1, argument: "letter") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?=a)*", flags: "u", code: QuantifiedAssertion, position: 5, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\q{a", flags: "v", code: UnterminatedClassStringDisjunction, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[[a]", flags: "v", code: UnterminatedClass, position: 0, argument: null) [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{script=Greek}", flags: "u", code: UnknownPropertyName, position: 1, argument: "script=Greek") [FAIL]
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?x)", flags: "", code: InvalidGroup, position: 1, argument: null) [FAIL]
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a{2,1}", flags: "", code: QuantifierOutOfOrder, position: 1, argument: null) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[^\\q{ab}]", flags: "v", code: NegatedClassMayContainStrings, position: 0, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: NegatedClassMayContainStrings
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?<1>.)", flags: "", code: GroupNameInvalidStart, position: 3, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: GroupNameInvalidStart
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{letter}", flags: "u", code: UnknownLonePropertyName, position: 1, argument: "letter") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownLonePropertyName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?=a)*", flags: "u", code: QuantifiedAssertion, position: 5, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifiedAssertion
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[\\q{a", flags: "v", code: UnterminatedClassStringDisjunction, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedClassStringDisjunction
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[[a]", flags: "v", code: UnterminatedClass, position: 0, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{script=Greek}", flags: "u", code: UnknownPropertyName, position: 1, argument: "script=Greek") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownPropertyName
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "(?x)", flags: "", code: InvalidGroup, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: InvalidGroup
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "a{2,1}", flags: "", code: QuantifierOutOfOrder, position: 1, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: QuantifierOutOfOrder
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a", flags: "", code: UnterminatedClass, position: 2, argument: null) [FAIL]
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{Script=greek}", flags: "u", code: UnknownPropertyValue, position: 1, argument: "Script=greek") [FAIL]
+[xUnit.net 00:00:02.35]     Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "[a", flags: "", code: UnterminatedClass, position: 2, argument: null) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedClass
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\p{Script=greek}", flags: "u", code: UnknownPropertyValue, position: 1, argument: "Script=greek") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnknownPropertyValue
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 117
+   at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations [267 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: UnterminatedGroup
+Actual:   None
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.AssertSame(RegexDiagnostic expected, RegexDiagnostic actual) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 658
+   at Broiler.Regex.Tests.ValidateEntryTests.Agreement(String pattern, RegexFlags flags, Int32 nesting) in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 643
+   at Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations() in /home/user/rx-wit-plants/A-11.3-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 611
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-11.3-1/results/test.trx
+
+Failed!  - Failed:    96, Passed:    57, Skipped:     0, Total:   153, Duration: 679 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

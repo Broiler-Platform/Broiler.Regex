@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:29:59.217185712 +0000
+@@ -529,7 +529,7 @@
+     // Hairs-Human:        PENDING
+     private CodePointSet ToCodePointSet(ProviderSet set, CompileSite site)
+     {
+-        Account.Charge(site, set.RangeCount);
++        Account.Charge(site, 1L); // witness plant A-2.1
+         var ranges = new List<(int Lo, int Hi)>(set.RangeCount);
+         AddRanges(ranges, set);
+         return CodePointSet.FromRanges(ranges, Account);

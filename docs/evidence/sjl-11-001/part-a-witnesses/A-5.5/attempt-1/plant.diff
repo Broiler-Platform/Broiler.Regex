@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+--- a/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 10:39:40.081381932 +0000
+@@ -1498,7 +1498,7 @@
+             case 'v': _pos++; return '\v';
+             // CharacterEscape :: 0 [lookahead ∉ DecimalDigit], and DecimalDigit is the ASCII
+             // digits alone (§22.2.1): \0 before U+0661 ARABIC-INDIC DIGIT ONE is NUL, then that digit.
+-            case '0' when !char.IsAsciiDigit(PeekAt(1)): _pos++; return 0;
++            case '0' when !char.IsDigit(PeekAt(1)): _pos++; return 0; // witness plant A-5.5
+             case 'x' when _unicode || HasHexDigits(1, 2): return ReadHexEscape(2);
+             case 'u' when _unicode || HasHexDigits(1, 4): return ReadUnicodeEscape(_unicode);
+             case 'c': return ReadControlEscape();

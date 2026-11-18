@@ -1,0 +1,37 @@
+{
+ "run": "A-4.2-2",
+ "clause": "A-4.2",
+ "attempt": 2,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 59,
+  "passed": 100,
+  "skipped": 0,
+  "total": 159
+ },
+ "deciding-tests-failed": [
+  "NestingLimitTests.A_class_adds_a_level_under_v_only",
+  "NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more",
+  "NestingLimitTests.Every_kind_of_level_counts_toward_one_depth",
+  "NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level",
+  "NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error",
+  "NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack",
+  "NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "NestingLimitTests.A_class_adds_a_level_under_v_only": 1,
+  "NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more": 11,
+  "NestingLimitTests.Every_kind_of_level_counts_toward_one_depth": 1,
+  "NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level": 1,
+  "NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error": 1,
+  "NestingMaximumTests.One_level_past_the_maximum_is_refused_on_a_1_MiB_stack": 43,
+  "NestingMaximumTests.The_shapes_are_listed_once_and_nest_to_the_depth_they_are_built_for": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexNesting.cs"
+ ],
+ "library-sources-sha256": "c184325c0ffcf1ee1e782583c6763a33a527ec49c3bbbd61c3bd368d25f4c376",
+ "reading": "witness"
+}

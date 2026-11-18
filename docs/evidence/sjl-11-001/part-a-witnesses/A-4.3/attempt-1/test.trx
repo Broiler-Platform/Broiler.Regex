@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="06eaeb52-825e-493c-bde8-a0fd8a2d22b1" name="@vm 2026-11-18 10:35:07" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:35:07.6253719+00:00" queuing="2026-11-18T10:35:07.6253720+00:00" start="2026-11-18T10:35:05.0848340+00:00" finish="2026-11-18T10:35:07.8449508+00:00" />
+  <TestSettings name="default" id="e2709760-0a81-42fe-91c5-db45f92841d6">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_35_07" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="25144336-f65a-4915-b1bf-48647c5dc55c" testId="0b84d185-5c61-9828-7ee5-5c4c20fd5c70" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?:&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6888588+00:00" endTime="2026-11-18T10:35:07.6907834+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25144336-f65a-4915-b1bf-48647c5dc55c" />
+    <UnitTestResult executionId="b2dc9a84-776e-4a40-bd3b-fe2d231aa642" testId="d928d998-fe0c-1b22-cc82-0503b69bd48e" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?!&quot;)" computerName="vm" duration="00:00:00.0150000" startTime="2026-11-18T10:35:07.6547218+00:00" endTime="2026-11-18T10:35:07.6699398+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2dc9a84-776e-4a40-bd3b-fe2d231aa642" />
+    <UnitTestResult executionId="dc1db151-48dd-423b-b121-32f39c24623a" testId="68e6a5d2-c072-e029-a389-dde560b3d832" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?&lt;!&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6785899+00:00" endTime="2026-11-18T10:35:07.6804056+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc1db151-48dd-423b-b121-32f39c24623a" />
+    <UnitTestResult executionId="26f1d737-5361-4841-b6e7-2b7dd3ce2bd7" testId="4eca6213-3070-3393-a668-c79db440c9e2" testName="Broiler.Regex.Tests.NestingLimitTests.The_parser_answers_what_it_reads_first" computerName="vm" duration="00:00:00.0040000" startTime="2026-11-18T10:35:07.6491822+00:00" endTime="2026-11-18T10:35:07.6540666+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26f1d737-5361-4841-b6e7-2b7dd3ce2bd7" />
+    <UnitTestResult executionId="f85af7f9-38d4-429e-852a-e56e248c3efe" testId="88d863e8-5949-a834-375f-c3d9f7e9d11b" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?=&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6910230+00:00" endTime="2026-11-18T10:35:07.6927029+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f85af7f9-38d4-429e-852a-e56e248c3efe" />
+    <UnitTestResult executionId="bf34ecb2-e48e-4dbd-a6a7-985a7ca44d1f" testId="fa3b4a66-9dfc-479d-7f3a-636991c36b5a" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?&lt;!&quot;)" computerName="vm" duration="00:00:00.0310000" startTime="2026-11-18T10:35:07.5106713+00:00" endTime="2026-11-18T10:35:07.5425896+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf34ecb2-e48e-4dbd-a6a7-985a7ca44d1f" />
+    <UnitTestResult executionId="58180e2c-2399-4f1e-b3e1-b09e25363274" testId="0fbb2e53-b26a-1048-5862-4093142ef5e0" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?-i:&quot;)" computerName="vm" duration="00:00:00.0380000" startTime="2026-11-18T10:35:07.2537055+00:00" endTime="2026-11-18T10:35:07.2919578+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58180e2c-2399-4f1e-b3e1-b09e25363274" />
+    <UnitTestResult executionId="5d2e45bc-988c-41ef-b353-958155b28053" testId="e0411ac7-5dfb-b67e-3a8e-5b7b51ef2565" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?i:&quot;)" computerName="vm" duration="00:00:00.0720000" startTime="2026-11-18T10:35:07.1618262+00:00" endTime="2026-11-18T10:35:07.2480202+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5d2e45bc-988c-41ef-b353-958155b28053" />
+    <UnitTestResult executionId="ac45612e-fb98-4d66-a380-1bb5167e4b58" testId="ab737fb4-06c2-572b-a3a9-8953836c2977" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?-i:&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6865439+00:00" endTime="2026-11-18T10:35:07.6885662+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac45612e-fb98-4d66-a380-1bb5167e4b58" />
+    <UnitTestResult executionId="6c459f6a-e8f7-4122-b9bf-e56d5308650f" testId="1b1360eb-25c0-db39-e512-c044e231a231" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?!&quot;)" computerName="vm" duration="00:00:00.0240000" startTime="2026-11-18T10:35:07.3336924+00:00" endTime="2026-11-18T10:35:07.3586267+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c459f6a-e8f7-4122-b9bf-e56d5308650f" />
+    <UnitTestResult executionId="6da4d569-382f-4594-b73c-10fd33804c95" testId="78bab4af-2e3b-469a-c94f-c9f199fdb623" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?:&quot;)" computerName="vm" duration="00:00:00.0200000" startTime="2026-11-18T10:35:07.5789708+00:00" endTime="2026-11-18T10:35:07.5994840+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6da4d569-382f-4594-b73c-10fd33804c95" />
+    <UnitTestResult executionId="df0c2700-8f0e-4ef4-bfad-4812f871189e" testId="5dfceb43-8581-a17f-341d-02276fed8783" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?m-s:&quot;)" computerName="vm" duration="00:00:00.0260000" startTime="2026-11-18T10:35:07.6007142+00:00" endTime="2026-11-18T10:35:07.6274915+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df0c2700-8f0e-4ef4-bfad-4812f871189e" />
+    <UnitTestResult executionId="54bacef8-287a-4fcd-a7ca-9177365e459e" testId="6706e7c4-3519-e3f3-298d-d7e7ec6fb28d" testName="Broiler.Regex.Tests.NestingLimitTests.Every_kind_of_level_counts_toward_one_depth" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.7078593+00:00" endTime="2026-11-18T10:35:07.7093997+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54bacef8-287a-4fcd-a7ca-9177365e459e" />
+    <UnitTestResult executionId="16e0b8f8-f9d6-4f8d-a1ca-346befed3703" testId="e46ec84e-0280-de8b-f281-1b2e32e3acb7" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;class&quot;)" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:35:07.6806626+00:00" endTime="2026-11-18T10:35:07.6862782+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16e0b8f8-f9d6-4f8d-a1ca-346befed3703" />
+    <UnitTestResult executionId="174fa01f-91bc-46e7-bf7a-e8d004d26563" testId="a566adf4-6f7d-7699-cccf-6edf7c5dcb41" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?i:&quot;)" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:35:07.6702517+00:00" endTime="2026-11-18T10:35:07.6734446+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="174fa01f-91bc-46e7-bf7a-e8d004d26563" />
+    <UnitTestResult executionId="2837fce2-9c5e-4b87-bfb8-635c2c838065" testId="318bc497-86b7-730e-b8d0-3d9047b28b8e" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;class&quot;)" computerName="vm" duration="00:00:00.0120000" startTime="2026-11-18T10:35:07.5433371+00:00" endTime="2026-11-18T10:35:07.5556846+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2837fce2-9c5e-4b87-bfb8-635c2c838065" />
+    <UnitTestResult executionId="bf352950-541b-427f-b400-b37ec617db39" testId="e93c97b2-ddc0-c91e-d8d6-f05534eb6b8a" testName="Broiler.Regex.Tests.NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error" computerName="vm" duration="00:00:00.0160000" startTime="2026-11-18T10:35:07.7311182+00:00" endTime="2026-11-18T10:35:07.7479946+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf352950-541b-427f-b400-b37ec617db39" />
+    <UnitTestResult executionId="4b7173d5-b11d-4715-9003-e231de19a682" testId="429dd40a-75d2-9ba6-83a5-f2d2a513b18a" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(&quot;)" computerName="vm" duration="00:00:00.0210000" startTime="2026-11-18T10:35:07.5570062+00:00" endTime="2026-11-18T10:35:07.5781948+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4b7173d5-b11d-4715-9003-e231de19a682" />
+    <UnitTestResult executionId="4a60315b-557a-4f5d-8c2a-75f631176f0f" testId="6dfac2be-6713-2f61-809c-bd53e8acfac1" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?&lt;=&quot;)" computerName="vm" duration="00:00:00.0390000" startTime="2026-11-18T10:35:07.2923909+00:00" endTime="2026-11-18T10:35:07.3322239+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a60315b-557a-4f5d-8c2a-75f631176f0f" />
+    <UnitTestResult executionId="dd1c6443-9203-46a4-8435-29b71ed4800f" testId="428ae182-f21c-765c-1eef-876f129bd916" testName="Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum" computerName="vm" duration="00:00:00.0070000" startTime="2026-11-18T10:35:07.7099655+00:00" endTime="2026-11-18T10:35:07.7303994+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd1c6443-9203-46a4-8435-29b71ed4800f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.ArgumentOutOfRangeException)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum() in /home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 121
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cd92c72b-62e8-4682-94b9-d4c6eb1adf91" testId="09c0c4f5-44bd-8421-9e58-cce0d9a7d0b1" testName="Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6988378+00:00" endTime="2026-11-18T10:35:07.7006215+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd92c72b-62e8-4682-94b9-d4c6eb1adf91" />
+    <UnitTestResult executionId="15db5c6d-4e12-4ef9-b4fa-0213d5d244fe" testId="4970653d-3eb8-9f40-6c47-a4f8e161e6f2" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?=&quot;)" computerName="vm" duration="00:00:00.0180000" startTime="2026-11-18T10:35:07.6278691+00:00" endTime="2026-11-18T10:35:07.6462788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="15db5c6d-4e12-4ef9-b4fa-0213d5d244fe" />
+    <UnitTestResult executionId="d26382df-8761-4064-8a3e-5d4b1bca6169" testId="f5c9f98d-7e3c-d15d-0f4a-4d9859977f1f" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:35:07.6930031+00:00" endTime="2026-11-18T10:35:07.6951510+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d26382df-8761-4064-8a3e-5d4b1bca6169" />
+    <UnitTestResult executionId="683014dc-9b4e-4c9b-8c7c-cb8f14c738bc" testId="a9d5313d-3218-283a-4b7d-cb5634085685" testName="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;named&quot;)" computerName="vm" duration="00:00:00.1490000" startTime="2026-11-18T10:35:07.3593464+00:00" endTime="2026-11-18T10:35:07.5085479+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="683014dc-9b4e-4c9b-8c7c-cb8f14c738bc" />
+    <UnitTestResult executionId="47702ed1-8204-4ed8-82d4-b400bcd50976" testId="c56bd94e-3d5a-b952-fe2c-6900b0e71ecd" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;named&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:35:07.6954154+00:00" endTime="2026-11-18T10:35:07.6978608+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47702ed1-8204-4ed8-82d4-b400bcd50976" />
+    <UnitTestResult executionId="dfca71bc-f95b-4a72-91a8-06406585c00b" testId="56acd95e-ad75-3104-1982-fc6cd117fe3e" testName="Broiler.Regex.Tests.NestingLimitTests.A_class_adds_a_level_under_v_only" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:35:07.7012954+00:00" endTime="2026-11-18T10:35:07.7072698+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dfca71bc-f95b-4a72-91a8-06406585c00b" />
+    <UnitTestResult executionId="bde9f629-b625-4517-9554-db90d852d3ac" testId="94e8a4dd-9d65-ea37-87d4-9501edf8b361" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?&lt;=&quot;)" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:35:07.6760438+00:00" endTime="2026-11-18T10:35:07.6783246+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bde9f629-b625-4517-9554-db90d852d3ac" />
+    <UnitTestResult executionId="b76e3e10-9010-4281-9e39-9ad678b9453a" testId="32b1c9f7-fa4b-7e05-2ec2-415e672f6892" testName="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?m-s:&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:35:07.6737641+00:00" endTime="2026-11-18T10:35:07.6757924+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b76e3e10-9010-4281-9e39-9ad678b9453a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="78bab4af-2e3b-469a-c94f-c9f199fdb623">
+      <Execution id="6da4d569-382f-4594-b73c-10fd33804c95" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;class&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="318bc497-86b7-730e-b8d0-3d9047b28b8e">
+      <Execution id="2837fce2-9c5e-4b87-bfb8-635c2c838065" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e93c97b2-ddc0-c91e-d8d6-f05534eb6b8a">
+      <Execution id="bf352950-541b-427f-b400-b37ec617db39" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="The_members_that_take_no_limit_parse_under_the_maximum_and_refuse_past_it_as_a_syntax_error" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;named&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="a9d5313d-3218-283a-4b7d-cb5634085685">
+      <Execution id="683014dc-9b4e-4c9b-8c7c-cb8f14c738bc" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;class&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e46ec84e-0280-de8b-f281-1b2e32e3acb7">
+      <Execution id="16e0b8f8-f9d6-4f8d-a1ca-346befed3703" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;named&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c56bd94e-3d5a-b952-fe2c-6900b0e71ecd">
+      <Execution id="47702ed1-8204-4ed8-82d4-b400bcd50976" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_class_adds_a_level_under_v_only" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="56acd95e-ad75-3104-1982-fc6cd117fe3e">
+      <Execution id="dfca71bc-f95b-4a72-91a8-06406585c00b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_class_adds_a_level_under_v_only" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?&lt;=&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6dfac2be-6713-2f61-809c-bd53e8acfac1">
+      <Execution id="4a60315b-557a-4f5d-8c2a-75f631176f0f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="428ae182-f21c-765c-1eef-876f129bd916">
+      <Execution id="dd1c6443-9203-46a4-8435-29b71ed4800f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="The_limit_lies_between_1_and_the_documented_maximum" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?&lt;!&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="68e6a5d2-c072-e029-a389-dde560b3d832">
+      <Execution id="dc1db151-48dd-423b-b121-32f39c24623a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?=&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="88d863e8-5949-a834-375f-c3d9f7e9d11b">
+      <Execution id="f85af7f9-38d4-429e-852a-e56e248c3efe" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?m-s:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="5dfceb43-8581-a17f-341d-02276fed8783">
+      <Execution id="df0c2700-8f0e-4ef4-bfad-4812f871189e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?!&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d928d998-fe0c-1b22-cc82-0503b69bd48e">
+      <Execution id="b2dc9a84-776e-4a40-bd3b-fe2d231aa642" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="09c0c4f5-44bd-8421-9e58-cce0d9a7d0b1">
+      <Execution id="cd92c72b-62e8-4682-94b9-d4c6eb1adf91" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="Quantifiers_sequences_and_alternatives_add_no_level" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0b84d185-5c61-9828-7ee5-5c4c20fd5c70">
+      <Execution id="25144336-f65a-4915-b1bf-48647c5dc55c" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f5c9f98d-7e3c-d15d-0f4a-4d9859977f1f">
+      <Execution id="d26382df-8761-4064-8a3e-5d4b1bca6169" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?m-s:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="32b1c9f7-fa4b-7e05-2ec2-415e672f6892">
+      <Execution id="b76e3e10-9010-4281-9e39-9ad678b9453a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?=&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="4970653d-3eb8-9f40-6c47-a4f8e161e6f2">
+      <Execution id="15db5c6d-4e12-4ef9-b4fa-0213d5d244fe" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.The_parser_answers_what_it_reads_first" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="4eca6213-3070-3393-a668-c79db440c9e2">
+      <Execution id="26f1d737-5361-4841-b6e7-2b7dd3ce2bd7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="The_parser_answers_what_it_reads_first" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?&lt;!&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="fa3b4a66-9dfc-479d-7f3a-636991c36b5a">
+      <Execution id="bf34ecb2-e48e-4dbd-a6a7-985a7ca44d1f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?i:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="a566adf4-6f7d-7699-cccf-6edf7c5dcb41">
+      <Execution id="174fa01f-91bc-46e7-bf7a-e8d004d26563" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?-i:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="ab737fb4-06c2-572b-a3a9-8953836c2977">
+      <Execution id="ac45612e-fb98-4d66-a380-1bb5167e4b58" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?-i:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="0fbb2e53-b26a-1048-5862-4093142ef5e0">
+      <Execution id="58180e2c-2399-4f1e-b3e1-b09e25363274" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_limit_admits_its_own_depth_and_refuses_one_level_more(kind: &quot;(?&lt;=&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="94e8a4dd-9d65-ea37-87d4-9501edf8b361">
+      <Execution id="bde9f629-b625-4517-9554-db90d852d3ac" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_limit_admits_its_own_depth_and_refuses_one_level_more" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.Every_kind_of_level_counts_toward_one_depth" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6706e7c4-3519-e3f3-298d-d7e7ec6fb28d">
+      <Execution id="54bacef8-287a-4fcd-a7ca-9177365e459e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="Every_kind_of_level_counts_toward_one_depth" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?i:&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e0411ac7-5dfb-b67e-3a8e-5b7b51ef2565">
+      <Execution id="5d2e45bc-988c-41ef-b353-958155b28053" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(?!&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="1b1360eb-25c0-db39-e512-c044e231a231">
+      <Execution id="6c459f6a-e8f7-4122-b9bf-e56d5308650f" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.NestingLimitTests.A_pattern_far_past_the_limit_is_refused_without_descending(kind: &quot;(&quot;)" storage="/home/user/rx-wit-plants/a-4.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="429dd40a-75d2-9ba6-83a5-f2d2a513b18a">
+      <Execution id="4b7173d5-b11d-4715-9003-e231de19a682" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.NestingLimitTests" name="A_pattern_far_past_the_limit_is_refused_without_descending" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0b84d185-5c61-9828-7ee5-5c4c20fd5c70" executionId="25144336-f65a-4915-b1bf-48647c5dc55c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d928d998-fe0c-1b22-cc82-0503b69bd48e" executionId="b2dc9a84-776e-4a40-bd3b-fe2d231aa642" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="68e6a5d2-c072-e029-a389-dde560b3d832" executionId="dc1db151-48dd-423b-b121-32f39c24623a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4eca6213-3070-3393-a668-c79db440c9e2" executionId="26f1d737-5361-4841-b6e7-2b7dd3ce2bd7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88d863e8-5949-a834-375f-c3d9f7e9d11b" executionId="f85af7f9-38d4-429e-852a-e56e248c3efe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa3b4a66-9dfc-479d-7f3a-636991c36b5a" executionId="bf34ecb2-e48e-4dbd-a6a7-985a7ca44d1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fbb2e53-b26a-1048-5862-4093142ef5e0" executionId="58180e2c-2399-4f1e-b3e1-b09e25363274" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0411ac7-5dfb-b67e-3a8e-5b7b51ef2565" executionId="5d2e45bc-988c-41ef-b353-958155b28053" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab737fb4-06c2-572b-a3a9-8953836c2977" executionId="ac45612e-fb98-4d66-a380-1bb5167e4b58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b1360eb-25c0-db39-e512-c044e231a231" executionId="6c459f6a-e8f7-4122-b9bf-e56d5308650f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="78bab4af-2e3b-469a-c94f-c9f199fdb623" executionId="6da4d569-382f-4594-b73c-10fd33804c95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5dfceb43-8581-a17f-341d-02276fed8783" executionId="df0c2700-8f0e-4ef4-bfad-4812f871189e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6706e7c4-3519-e3f3-298d-d7e7ec6fb28d" executionId="54bacef8-287a-4fcd-a7ca-9177365e459e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e46ec84e-0280-de8b-f281-1b2e32e3acb7" executionId="16e0b8f8-f9d6-4f8d-a1ca-346befed3703" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a566adf4-6f7d-7699-cccf-6edf7c5dcb41" executionId="174fa01f-91bc-46e7-bf7a-e8d004d26563" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="318bc497-86b7-730e-b8d0-3d9047b28b8e" executionId="2837fce2-9c5e-4b87-bfb8-635c2c838065" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e93c97b2-ddc0-c91e-d8d6-f05534eb6b8a" executionId="bf352950-541b-427f-b400-b37ec617db39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="429dd40a-75d2-9ba6-83a5-f2d2a513b18a" executionId="4b7173d5-b11d-4715-9003-e231de19a682" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6dfac2be-6713-2f61-809c-bd53e8acfac1" executionId="4a60315b-557a-4f5d-8c2a-75f631176f0f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="428ae182-f21c-765c-1eef-876f129bd916" executionId="dd1c6443-9203-46a4-8435-29b71ed4800f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="09c0c4f5-44bd-8421-9e58-cce0d9a7d0b1" executionId="cd92c72b-62e8-4682-94b9-d4c6eb1adf91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4970653d-3eb8-9f40-6c47-a4f8e161e6f2" executionId="15db5c6d-4e12-4ef9-b4fa-0213d5d244fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f5c9f98d-7e3c-d15d-0f4a-4d9859977f1f" executionId="d26382df-8761-4064-8a3e-5d4b1bca6169" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9d5313d-3218-283a-4b7d-cb5634085685" executionId="683014dc-9b4e-4c9b-8c7c-cb8f14c738bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c56bd94e-3d5a-b952-fe2c-6900b0e71ecd" executionId="47702ed1-8204-4ed8-82d4-b400bcd50976" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56acd95e-ad75-3104-1982-fc6cd117fe3e" executionId="dfca71bc-f95b-4a72-91a8-06406585c00b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="94e8a4dd-9d65-ea37-87d4-9501edf8b361" executionId="bde9f629-b625-4517-9554-db90d852d3ac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="32b1c9f7-fa4b-7e05-2ec2-415e672f6892" executionId="b76e3e10-9010-4281-9e39-9ad678b9453a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="28" executed="28" passed="27" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.23]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.33]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.53]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:02.25]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.25]       Expected: typeof(System.ArgumentOutOfRangeException)
+[xUnit.net 00:00:02.25]       Stack Trace:
+[xUnit.net 00:00:02.25]         /home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/NestingLimitTests.cs(121,0): at Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum()
+[xUnit.net 00:00:02.25]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.25]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.29]   Finished:    Broiler.Regex.Tests (ID = 'fed204fbf77ae13ec4e229988ab646bb7da63335cc889967252c1bf6cf32e3ef')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:35:07.7377667+00:00">
+        <Text>[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

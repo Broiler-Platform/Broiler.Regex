@@ -1,0 +1,12 @@
+{
+ "clause": "A-6.2",
+ "what": "a reference to a duplicated name reads only the first group of the name, not the one that participated",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Compiling/ProgramCompiler.cs",
+   "anchor": "                foreach (var group in groupNames.GroupsNamed(reference.Name))\n                    _referenced.Add(group);\n",
+   "replacement": "                foreach (var group in groupNames.GroupsNamed(reference.Name))\n                {\n                    _referenced.Add(group);\n                    break; // witness plant A-6.2\n                }\n"
+  }
+ ],
+ "classes": "DuplicateNamedGroupTests"
+}

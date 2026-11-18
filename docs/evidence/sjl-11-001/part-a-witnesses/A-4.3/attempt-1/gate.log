@@ -1,0 +1,5 @@
+2026-11-18T10:34:40Z lock A-4.3-1 WAIT
+2026-11-18T10:34:40Z lock A-4.3-1 HELD
+2026-11-18T10:34:40Z gate A-4.3-1 WAIT load1=1.04 procs=none
+2026-11-18T10:34:50Z gate A-4.3-1 PASS load1=0.88 procs=none checks=1
+2026-11-18T10:35:08Z stop-servers: done, remaining:

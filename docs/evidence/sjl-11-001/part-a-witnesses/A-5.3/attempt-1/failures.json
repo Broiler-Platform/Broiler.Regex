@@ -1,0 +1,27 @@
+{
+ "run": "A-5.3-1",
+ "clause": "A-5.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 8,
+  "passed": 52,
+  "skipped": 0,
+  "total": 60
+ },
+ "deciding-tests-failed": [
+  "GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode",
+  "GroupNameTests.The_probe_cases_get_the_specification_answer"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode": 7,
+  "GroupNameTests.The_probe_cases_get_the_specification_answer": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexParser.cs"
+ ],
+ "library-sources-sha256": "697fcd03d805114e348c814b71b7a3e0d25491274744300f9a45e40f6ae07f0f",
+ "reading": "witness"
+}

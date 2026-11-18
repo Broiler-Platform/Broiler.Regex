@@ -1,0 +1,72 @@
+Test run for /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.05]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "iv") [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "iv") [5 ms]
+  Error Message:
+   a-b under /iv: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "iu") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "u") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "i") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "ms") [FAIL]
+[xUnit.net 00:00:02.06]     Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "v") [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "iu") [1 ms]
+  Error Message:
+   a-b under /iu: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "u") [1 ms]
+  Error Message:
+   a-b under /u: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "i") [1 ms]
+  Error Message:
+   a-b under /i: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "") [1 ms]
+  Error Message:
+   a-b under /: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "ms") [1 ms]
+  Error Message:
+   a-b under /ms: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(flags: "v") [1 ms]
+  Error Message:
+   a-b under /v: accepted
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(String flags) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 92
+   at InvokeStub_GroupNameTests.Every_refused_name_is_a_syntax_error_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.GroupNameTests.The_probe_cases_get_the_specification_answer(pattern: "(?<a-b>x)", flags: "", accepted: False) [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.The_probe_cases_get_the_specification_answer(pattern: "(?<a-b>x)", flags: "", accepted: False) [2 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.The_probe_cases_get_the_specification_answer(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-5.3-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 227
+   at InvokeStub_GroupNameTests.The_probe_cases_get_the_specification_answer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-5.3-1/results/test.trx
+
+Failed!  - Failed:     8, Passed:    52, Skipped:     0, Total:    60, Duration: 168 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

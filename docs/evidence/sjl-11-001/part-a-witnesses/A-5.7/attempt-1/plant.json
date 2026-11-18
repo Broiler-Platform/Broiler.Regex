@@ -1,0 +1,12 @@
+{
+ "clause": "A-5.7",
+ "what": "Annex B's legacy octal escape is read under u and v too",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "        if (!_unicode && c is >= '0' and <= '7')\n            return ReadLegacyOctalOrIdentity();\n",
+   "replacement": "        if (c is >= '0' and <= '7') // witness plant A-5.7\n            return ReadLegacyOctalOrIdentity();\n"
+  }
+ ],
+ "classes": "ValidateEntryTests,NamedReferenceTests,DecimalEscapeTests"
+}

@@ -1,0 +1,30 @@
+{
+ "run": "A-6.3-1",
+ "clause": "A-6.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 11,
+  "passed": 33,
+  "skipped": 0,
+  "total": 44
+ },
+ "deciding-tests-failed": [
+  "DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots",
+  "RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots"
+ ],
+ "other-tests-failed": [
+  "DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated"
+ ],
+ "failed-cases": {
+  "DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated": 9,
+  "DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots": 1,
+  "RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/RegexGroupNames.cs"
+ ],
+ "library-sources-sha256": "40a11ec8ecbe8f0695c5be731646af1b75f4a680999f057310cd3545d3fd1f71",
+ "reading": "witness"
+}

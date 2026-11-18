@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2e92107a-7972-4dd3-b01f-67d5b405cedb" name="@vm 2026-11-18 10:48:17" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:48:17.5498612+00:00" queuing="2026-11-18T10:48:17.5498613+00:00" start="2026-11-18T10:48:14.8296899+00:00" finish="2026-11-18T10:48:17.9232160+00:00" />
+  <TestSettings name="default" id="9ffea1be-9729-4dab-b5ad-61ec2c38acb2">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_48_17" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bbf96532-fe28-4f0b-a011-42854b5c5153" testId="772e99a0-dbab-97bf-660d-5d8430442772" testName="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_a_class_is_kept_the_solidus_among_them_but_the_line_terminators" computerName="vm" duration="00:00:00.0740000" startTime="2026-11-18T10:48:17.5198411+00:00" endTime="2026-11-18T10:48:17.5944031+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bbf96532-fe28-4f0b-a011-42854b5c5153" />
+    <UnitTestResult executionId="43938873-5845-4403-9fa4-7a5f8a97f137" testId="abbacd94-47c9-5507-b909-92c0687b6802" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;\\\\/&quot;, flags: &quot;&quot;, source: &quot;\\\\\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5081477+00:00" endTime="2026-11-18T10:48:17.5092785+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43938873-5845-4403-9fa4-7a5f8a97f137">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 2)
+Expected: "\\\\\\/"
+Actual:   "\\\\/"
+               ↑ (pos 2)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fde0f02b-014a-4cc6-bfbd-2b17176be48b" testId="56ebc9db-3010-8fbc-b7c3-d5d5b33951e0" testName="Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:48:17.4707881+00:00" endTime="2026-11-18T10:48:17.4733683+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fde0f02b-014a-4cc6-bfbd-2b17176be48b">
+      <Output>
+        <ErrorInfo>
+          <Message>test/staging/sm/RegExp/escape.js: "/" gives "/", test262 expects "\/"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 251
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6c5fe781-b870-49de-bdff-5df6a49f9ae8" testId="50431528-c7d7-a45f-eab0-c572e37e2c01" testName="Broiler.Regex.Tests.PatternSourceTests.A_text_longer_than_the_caller_s_maximum_is_refused_before_it_is_written" computerName="vm" duration="00:00:00.0090000" startTime="2026-11-18T10:48:17.7796162+00:00" endTime="2026-11-18T10:48:17.7892592+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c5fe781-b870-49de-bdff-5df6a49f9ae8" />
+    <UnitTestResult executionId="df4a1f38-4fa6-447b-a428-88ccbc295c9a" testId="6115a246-0c9a-471d-e3a8-ecf26079f552" testName="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.4677125+00:00" endTime="2026-11-18T10:48:17.4698095+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df4a1f38-4fa6-447b-a428-88ccbc295c9a">
+      <Output>
+        <ErrorInfo>
+          <Message>U+002F</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 88
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7b522638-dc84-43c3-a136-23413c433e64" testId="e8ee0479-b2fe-553a-84a0-3356fae57dda" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[[a]/]b/&quot;, flags: &quot;&quot;, source: &quot;[[a]\\/]b\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5177821+00:00" endTime="2026-11-18T10:48:17.5180759+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b522638-dc84-43c3-a136-23413c433e64">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "[[a]\\/]b\\/"
+Actual:   "[[a]/]b/"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="805c885a-c0b5-429d-a715-336b9989f604" testId="55e10978-1361-069c-0455-cc88e0b9f7ca" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[[a]\\/]&quot;, flags: &quot;v&quot;, source: &quot;[[a]\\/]&quot;)" computerName="vm" duration="00:00:00.0060000" startTime="2026-11-18T10:48:17.5002605+00:00" endTime="2026-11-18T10:48:17.5076882+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="805c885a-c0b5-429d-a715-336b9989f604" />
+    <UnitTestResult executionId="ff0573af-f11c-45cb-92b8-1360bc7a3fcd" testId="238ee74f-1c1a-8a96-9942-685b1c066fc2" testName="Broiler.Regex.Tests.PatternSourceTests.A_meter_that_throws_stops_the_operation_and_a_broken_precondition_is_an_argument_exception" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.7740451+00:00" endTime="2026-11-18T10:48:17.7753801+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff0573af-f11c-45cb-92b8-1360bc7a3fcd" />
+    <UnitTestResult executionId="28394ea1-634f-4945-9f4c-b72b16786cec" testId="f14a79c6-98d1-c119-1258-6a323603cfc0" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[\\\\]/&quot;, flags: &quot;&quot;, source: &quot;[\\\\]\\/&quot;)" computerName="vm" duration="00:00:00.0240000" startTime="2026-11-18T10:48:17.4755019+00:00" endTime="2026-11-18T10:48:17.4998281+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28394ea1-634f-4945-9f4c-b72b16786cec">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                 ↓ (pos 4)
+Expected: "[\\\\]\\/"
+Actual:   "[\\\\]/"
+                 ↑ (pos 4)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2e65b62e-2c46-4ea5-9da3-be15b81e8935" testId="faff7dbc-c554-cd31-ed17-e9321abe303f" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[\\]/]/&quot;, flags: &quot;&quot;, source: &quot;[\\]/]\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5171801+00:00" endTime="2026-11-18T10:48:17.5175013+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e65b62e-2c46-4ea5-9da3-be15b81e8935">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                 ↓ (pos 5)
+Expected: "[\\]/]\\/"
+Actual:   "[\\]/]/"
+                 ↑ (pos 5)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3da860d8-d5f5-4cfc-8d75-51cb3d88d457" testId="e9bb2255-b5f8-06c3-e051-4fe41e135427" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;\\u{2F}/&quot;, flags: &quot;u&quot;, source: &quot;\\u{2F}\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5161113+00:00" endTime="2026-11-18T10:48:17.5167620+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3da860d8-d5f5-4cfc-8d75-51cb3d88d457">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                  ↓ (pos 6)
+Expected: "\\u{2F}\\/"
+Actual:   "\\u{2F}/"
+                  ↑ (pos 6)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="55365e9b-cc0b-4110-8f6e-41db4d0f0034" testId="31248ea3-e440-d9f4-c13e-5247f3530f54" testName="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:48:17.7759217+00:00" endTime="2026-11-18T10:48:17.7791449+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55365e9b-cc0b-4110-8f6e-41db4d0f0034">
+      <Output>
+        <ErrorInfo>
+          <Message>"/" / compiles and gives "/", which is not a literal's body</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 165
+   at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 193
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="285b2d3d-a195-4a47-8d1f-eccd54f632c6" testId="d03f0359-71ec-6f32-f9c8-5ade71a2c2c3" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[a&amp;&amp;[^/]]&quot;, flags: &quot;&quot;, source: &quot;[a&amp;&amp;[^/]]&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5143418+00:00" endTime="2026-11-18T10:48:17.5151145+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="285b2d3d-a195-4a47-8d1f-eccd54f632c6" />
+    <UnitTestResult executionId="5f44382e-6504-42be-8e64-8b6919aeb85b" testId="d222fad0-2e58-2019-6f51-331e2c277969" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;(?&lt;a&gt;/)\\k&lt;a&gt;/&quot;, flags: &quot;u&quot;, source: &quot;(?&lt;a&gt;\\/)\\k&lt;a&gt;\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5096455+00:00" endTime="2026-11-18T10:48:17.5115174+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5f44382e-6504-42be-8e64-8b6919aeb85b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                ↓ (pos 5)
+Expected: "(?&lt;a&gt;\\/)\\k&lt;a&gt;\\/"
+Actual:   "(?&lt;a&gt;/)\\k&lt;a&gt;/"
+                ↑ (pos 5)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b76fa393-e455-4fd9-a05d-cd97cb521bc0" testId="12ad8e09-6b5e-3a88-9551-d8c0c134f047" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;(?&lt;=/)x/&quot;, flags: &quot;&quot;, source: &quot;(?&lt;=\\/)x\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5132596+00:00" endTime="2026-11-18T10:48:17.5140041+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b76fa393-e455-4fd9-a05d-cd97cb521bc0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "(?&lt;=\\/)x\\/"
+Actual:   "(?&lt;=/)x/"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2895b587-3353-45d4-9da1-dd27abec10b1" testId="734ac424-eaa8-5c55-9290-d43927120a4f" testName="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_a_backslash_is_kept_with_it_but_a_line_terminator_which_becomes_its_escape" computerName="vm" duration="00:00:00.1340000" startTime="2026-11-18T10:48:17.5953067+00:00" endTime="2026-11-18T10:48:17.7296491+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2895b587-3353-45d4-9da1-dd27abec10b1" />
+    <UnitTestResult executionId="2b5857c8-f4af-4077-9944-ea8b81e2f3ff" testId="1856ea92-bfd7-04da-2ee4-c46357acd342" testName="Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading" computerName="vm" duration="00:00:00.0350000" startTime="2026-11-18T10:48:17.3822762+00:00" endTime="2026-11-18T10:48:17.4558779+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b5857c8-f4af-4077-9944-ea8b81e2f3ff">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 2000
+Actual:   1000</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 289
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7541b971-629d-4b95-9a76-2bef96c506e3" testId="ba5fd44d-9042-fc3b-e5a9-38fd03fa52be" testName="Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.7898117+00:00" endTime="2026-11-18T10:48:17.7905956+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7541b971-629d-4b95-9a76-2bef96c506e3">
+      <Output>
+        <ErrorInfo>
+          <Message>"/" gives "/"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 270
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0cb6ced4-0620-4a83-bfd5-159cc81cf849" testId="fe39d8d8-ea9e-6931-0a9b-e04bba83fb66" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;a\\/b/c&quot;, flags: &quot;v&quot;, source: &quot;a\\/b\\/c&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5154857+00:00" endTime="2026-11-18T10:48:17.5158064+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0cb6ced4-0620-4a83-bfd5-159cc81cf849">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+                ↓ (pos 4)
+Expected: "a\\/b\\/c"
+Actual:   "a\\/b/c"
+                ↑ (pos 4)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f154e612-6d40-445e-89c8-b4fbebf50980" testId="d68dd966-8d72-c18d-74ce-bb3277e5d13e" testName="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[^/]/&quot;, flags: &quot;u&quot;, source: &quot;[^/]\\/&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5118672+00:00" endTime="2026-11-18T10:48:17.5128322+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f154e612-6d40-445e-89c8-b4fbebf50980">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "[^/]\\/"
+Actual:   "[^/]/"
+               ↑ (pos 4)</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e9e1e310-83a1-455d-a1b4-8ec53a70fcd5" testId="ea11933a-4d9b-776c-d3e9-dc3070c86e08" testName="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:48:17.5185890+00:00" endTime="2026-11-18T10:48:17.5192419+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9e1e310-83a1-455d-a1b4-8ec53a70fcd5">
+      <Output>
+        <ErrorInfo>
+          <Message>\[U+002F</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 129
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ec41749d-6647-4872-954f-1c6f205e2c52" testId="d30662d4-4491-6a79-eff7-d851b2b683e8" testName="Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties" computerName="vm" duration="00:00:00.0420000" startTime="2026-11-18T10:48:17.7306584+00:00" endTime="2026-11-18T10:48:17.7734714+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec41749d-6647-4872-954f-1c6f205e2c52">
+      <Output>
+        <ErrorInfo>
+          <Message>"/" / compiles and gives "/", which is not a literal's body</Message>
+          <StackTrace>   at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 165
+   at Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 213
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d30662d4-4491-6a79-eff7-d851b2b683e8">
+      <Execution id="ec41749d-6647-4872-954f-1c6f205e2c52" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;a\\/b/c&quot;, flags: &quot;v&quot;, source: &quot;a\\/b\\/c&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="fe39d8d8-ea9e-6931-0a9b-e04bba83fb66">
+      <Execution id="0cb6ced4-0620-4a83-bfd5-159cc81cf849" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;(?&lt;=/)x/&quot;, flags: &quot;&quot;, source: &quot;(?&lt;=\\/)x\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="12ad8e09-6b5e-3a88-9551-d8c0c134f047">
+      <Execution id="b76fa393-e455-4fd9-a05d-cd97cb521bc0" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;\\\\/&quot;, flags: &quot;&quot;, source: &quot;\\\\\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="abbacd94-47c9-5507-b909-92c0687b6802">
+      <Execution id="43938873-5845-4403-9fa4-7a5f8a97f137" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="ba5fd44d-9042-fc3b-e5a9-38fd03fa52be">
+      <Execution id="7541b971-629d-4b95-9a76-2bef96c506e3" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="31248ea3-e440-d9f4-c13e-5247f3530f54">
+      <Execution id="55365e9b-cc0b-4110-8f6e-41db4d0f0034" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="ea11933a-4d9b-776c-d3e9-dc3070c86e08">
+      <Execution id="e9e1e310-83a1-455d-a1b4-8ec53a70fcd5" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_code_unit_after_an_escaped_bracket_is_outside_a_class" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[^/]/&quot;, flags: &quot;u&quot;, source: &quot;[^/]\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d68dd966-8d72-c18d-74ce-bb3277e5d13e">
+      <Execution id="f154e612-6d40-445e-89c8-b4fbebf50980" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.A_text_longer_than_the_caller_s_maximum_is_refused_before_it_is_written" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="50431528-c7d7-a45f-eab0-c572e37e2c01">
+      <Execution id="6c5fe781-b870-49de-bdff-5df6a49f9ae8" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="A_text_longer_than_the_caller_s_maximum_is_refused_before_it_is_written" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="56ebc9db-3010-8fbc-b7c3-d5d5b33951e0">
+      <Execution id="fde0f02b-014a-4cc6-bfbd-2b17176be48b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Test262_s_staging_escape_js_cases_answer_as_test262_expects" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="1856ea92-bfd7-04da-2ee4-c46357acd342">
+      <Execution id="2b5857c8-f4af-4077-9944-ea8b81e2f3ff" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[[a]\\/]&quot;, flags: &quot;v&quot;, source: &quot;[[a]\\/]&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="55e10978-1361-069c-0455-cc88e0b9f7ca">
+      <Execution id="805c885a-c0b5-429d-a715-336b9989f604" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[\\\\]/&quot;, flags: &quot;&quot;, source: &quot;[\\\\]\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="f14a79c6-98d1-c119-1258-6a323603cfc0">
+      <Execution id="28394ea1-634f-4945-9f4c-b72b16786cec" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_a_backslash_is_kept_with_it_but_a_line_terminator_which_becomes_its_escape" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="734ac424-eaa8-5c55-9290-d43927120a4f">
+      <Execution id="2895b587-3353-45d4-9da1-dd27abec10b1" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_code_unit_after_a_backslash_is_kept_with_it_but_a_line_terminator_which_becomes_its_escape" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6115a246-0c9a-471d-e3a8-ecf26079f552">
+      <Execution id="df4a1f38-4fa6-447b-a428-88ccbc295c9a" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.A_meter_that_throws_stops_the_operation_and_a_broken_precondition_is_an_argument_exception" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="238ee74f-1c1a-8a96-9942-685b1c066fc2">
+      <Execution id="ff0573af-f11c-45cb-92b8-1360bc7a3fcd" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="A_meter_that_throws_stops_the_operation_and_a_broken_precondition_is_an_argument_exception" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_a_class_is_kept_the_solidus_among_them_but_the_line_terminators" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="772e99a0-dbab-97bf-660d-5d8430442772">
+      <Execution id="bbf96532-fe28-4f0b-a011-42854b5c5153" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Every_code_unit_in_a_class_is_kept_the_solidus_among_them_but_the_line_terminators" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[[a]/]b/&quot;, flags: &quot;&quot;, source: &quot;[[a]\\/]b\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e8ee0479-b2fe-553a-84a0-3356fae57dda">
+      <Execution id="7b522638-dc84-43c3-a136-23413c433e64" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[\\]/]/&quot;, flags: &quot;&quot;, source: &quot;[\\]/]\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="faff7dbc-c554-cd31-ed17-e9321abe303f">
+      <Execution id="2e65b62e-2c46-4ea5-9da3-be15b81e8935" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;[a&amp;&amp;[^/]]&quot;, flags: &quot;&quot;, source: &quot;[a&amp;&amp;[^/]]&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d03f0359-71ec-6f32-f9c8-5ade71a2c2c3">
+      <Execution id="285b2d3d-a195-4a47-8d1f-eccd54f632c6" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;(?&lt;a&gt;/)\\k&lt;a&gt;/&quot;, flags: &quot;u&quot;, source: &quot;(?&lt;a&gt;\\/)\\k&lt;a&gt;\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d222fad0-2e58-2019-6f51-331e2c277969">
+      <Execution id="5f44382e-6504-42be-8e64-8b6919aeb85b" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: &quot;\\u{2F}/&quot;, flags: &quot;u&quot;, source: &quot;\\u{2F}\\/&quot;)" storage="/home/user/rx-wit-plants/a-9.3-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e9bb2255-b5f8-06c3-e051-4fe41e135427">
+      <Execution id="3da860d8-d5f5-4cfc-8d75-51cb3d88d457" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.PatternSourceTests" name="Classes_escapes_and_groups_are_read_as_a_literal_reads_them" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="772e99a0-dbab-97bf-660d-5d8430442772" executionId="bbf96532-fe28-4f0b-a011-42854b5c5153" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abbacd94-47c9-5507-b909-92c0687b6802" executionId="43938873-5845-4403-9fa4-7a5f8a97f137" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56ebc9db-3010-8fbc-b7c3-d5d5b33951e0" executionId="fde0f02b-014a-4cc6-bfbd-2b17176be48b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="50431528-c7d7-a45f-eab0-c572e37e2c01" executionId="6c5fe781-b870-49de-bdff-5df6a49f9ae8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6115a246-0c9a-471d-e3a8-ecf26079f552" executionId="df4a1f38-4fa6-447b-a428-88ccbc295c9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e8ee0479-b2fe-553a-84a0-3356fae57dda" executionId="7b522638-dc84-43c3-a136-23413c433e64" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55e10978-1361-069c-0455-cc88e0b9f7ca" executionId="805c885a-c0b5-429d-a715-336b9989f604" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="238ee74f-1c1a-8a96-9942-685b1c066fc2" executionId="ff0573af-f11c-45cb-92b8-1360bc7a3fcd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f14a79c6-98d1-c119-1258-6a323603cfc0" executionId="28394ea1-634f-4945-9f4c-b72b16786cec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="faff7dbc-c554-cd31-ed17-e9321abe303f" executionId="2e65b62e-2c46-4ea5-9da3-be15b81e8935" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e9bb2255-b5f8-06c3-e051-4fe41e135427" executionId="3da860d8-d5f5-4cfc-8d75-51cb3d88d457" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31248ea3-e440-d9f4-c13e-5247f3530f54" executionId="55365e9b-cc0b-4110-8f6e-41db4d0f0034" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d03f0359-71ec-6f32-f9c8-5ade71a2c2c3" executionId="285b2d3d-a195-4a47-8d1f-eccd54f632c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d222fad0-2e58-2019-6f51-331e2c277969" executionId="5f44382e-6504-42be-8e64-8b6919aeb85b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="12ad8e09-6b5e-3a88-9551-d8c0c134f047" executionId="b76fa393-e455-4fd9-a05d-cd97cb521bc0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="734ac424-eaa8-5c55-9290-d43927120a4f" executionId="2895b587-3353-45d4-9da1-dd27abec10b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1856ea92-bfd7-04da-2ee4-c46357acd342" executionId="2b5857c8-f4af-4077-9944-ea8b81e2f3ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba5fd44d-9042-fc3b-e5a9-38fd03fa52be" executionId="7541b971-629d-4b95-9a76-2bef96c506e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe39d8d8-ea9e-6931-0a9b-e04bba83fb66" executionId="0cb6ced4-0620-4a83-bfd5-159cc81cf849" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d68dd966-8d72-c18d-74ce-bb3277e5d13e" executionId="f154e612-6d40-445e-89c8-b4fbebf50980" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ea11933a-4d9b-776c-d3e9-dc3070c86e08" executionId="e9e1e310-83a1-455d-a1b4-8ec53a70fcd5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d30662d4-4491-6a79-eff7-d851b2b683e8" executionId="ec41749d-6647-4872-954f-1c6f205e2c52" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="22" executed="22" passed="6" failed="16" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.26]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.63]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.93]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:02.17]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.17]       Expected: 2000
+[xUnit.net 00:00:02.17]       Actual:   1000
+[xUnit.net 00:00:02.17]       Stack Trace:
+[xUnit.net 00:00:02.17]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(289,0): at Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading()
+[xUnit.net 00:00:02.17]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.18]       U+002F
+[xUnit.net 00:00:02.18]       Stack Trace:
+[xUnit.net 00:00:02.18]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(88,0): at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators()
+[xUnit.net 00:00:02.18]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.18]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.18]       test/staging/sm/RegExp/escape.js: "/" gives "/", test262 expects "\/"
+[xUnit.net 00:00:02.18]       Stack Trace:
+[xUnit.net 00:00:02.18]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(251,0): at Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects()
+[xUnit.net 00:00:02.18]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.18]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.21]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.21]                        ↓ (pos 4)
+[xUnit.net 00:00:02.21]       Expected: "[\\\\]\\/"
+[xUnit.net 00:00:02.21]       Actual:   "[\\\\]/"
+[xUnit.net 00:00:02.21]                        ↑ (pos 4)
+[xUnit.net 00:00:02.21]       Stack Trace:
+[xUnit.net 00:00:02.21]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.21]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.21]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.22]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.22]                      ↓ (pos 2)
+[xUnit.net 00:00:02.22]       Expected: "\\\\\\/"
+[xUnit.net 00:00:02.22]       Actual:   "\\\\/"
+[xUnit.net 00:00:02.22]                      ↑ (pos 2)
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.22]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.22]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.22]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.22]                       ↓ (pos 5)
+[xUnit.net 00:00:02.22]       Expected: "(?&lt;a&gt;\\/)\\k&lt;a&gt;\\/"
+[xUnit.net 00:00:02.22]       Actual:   "(?&lt;a&gt;/)\\k&lt;a&gt;/"
+[xUnit.net 00:00:02.22]                       ↑ (pos 5)
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.22]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.22]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.22]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.22]                      ↓ (pos 4)
+[xUnit.net 00:00:02.22]       Expected: "[^/]\\/"
+[xUnit.net 00:00:02.22]       Actual:   "[^/]/"
+[xUnit.net 00:00:02.22]                      ↑ (pos 4)
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.22]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.22]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.22]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.22]                      ↓ (pos 4)
+[xUnit.net 00:00:02.22]       Expected: "(?&lt;=\\/)x\\/"
+[xUnit.net 00:00:02.22]       Actual:   "(?&lt;=/)x/"
+[xUnit.net 00:00:02.22]                      ↑ (pos 4)
+[xUnit.net 00:00:02.22]       Stack Trace:
+[xUnit.net 00:00:02.22]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.22]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.22]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.23]                       ↓ (pos 4)
+[xUnit.net 00:00:02.23]       Expected: "a\\/b\\/c"
+[xUnit.net 00:00:02.23]       Actual:   "a\\/b/c"
+[xUnit.net 00:00:02.23]                       ↑ (pos 4)
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.23]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.23]                         ↓ (pos 6)
+[xUnit.net 00:00:02.23]       Expected: "\\u{2F}\\/"
+[xUnit.net 00:00:02.23]       Actual:   "\\u{2F}/"
+[xUnit.net 00:00:02.23]                         ↑ (pos 6)
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.23]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.23]                        ↓ (pos 5)
+[xUnit.net 00:00:02.23]       Expected: "[\\]/]\\/"
+[xUnit.net 00:00:02.23]       Actual:   "[\\]/]/"
+[xUnit.net 00:00:02.23]                        ↑ (pos 5)
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.23]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.23]                      ↓ (pos 4)
+[xUnit.net 00:00:02.23]       Expected: "[[a]\\/]b\\/"
+[xUnit.net 00:00:02.23]       Actual:   "[[a]/]b/"
+[xUnit.net 00:00:02.23]                      ↑ (pos 4)
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(239,0): at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source)
+[xUnit.net 00:00:02.23]            at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]       \[U+002F
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(129,0): at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class()
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.48]       "/" / compiles and gives "/", which is not a literal's body
+[xUnit.net 00:00:02.48]       Stack Trace:
+[xUnit.net 00:00:02.48]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(165,0): at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags)
+[xUnit.net 00:00:02.48]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(213,0): at Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties()
+[xUnit.net 00:00:02.48]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.48]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.49]       "/" / compiles and gives "/", which is not a literal's body
+[xUnit.net 00:00:02.49]       Stack Trace:
+[xUnit.net 00:00:02.49]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(165,0): at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags)
+[xUnit.net 00:00:02.49]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(193,0): at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode()
+[xUnit.net 00:00:02.49]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.49]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.50]       "/" gives "/"
+[xUnit.net 00:00:02.50]       Stack Trace:
+[xUnit.net 00:00:02.50]         /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs(270,0): at Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask()
+[xUnit.net 00:00:02.50]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.50]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.53]   Finished:    Broiler.Regex.Tests (ID = 'eb3cd27f0e71ae07d80077a98b1ab4cea7dc9fee32fe53d0ca4bc5ef626f6a69')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.4641653+00:00">
+        <Text>[xUnit.net 00:00:02.17]     Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.4763498+00:00">
+        <Text>[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.4773062+00:00">
+        <Text>[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5010274+00:00">
+        <Text>[xUnit.net 00:00:02.21]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\\\]/", flags: "", source: "[\\\\]\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5104577+00:00">
+        <Text>[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\\\/", flags: "", source: "\\\\\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5125027+00:00">
+        <Text>[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?&lt;a&gt;/)\\k&lt;a&gt;/", flags: "u", source: "(?&lt;a&gt;\\/)\\k&lt;a&gt;\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5137016+00:00">
+        <Text>[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[^/]/", flags: "u", source: "[^/]\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5147783+00:00">
+        <Text>[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?&lt;=/)x/", flags: "", source: "(?&lt;=\\/)x\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5560936+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "a\\/b/c", flags: "v", source: "a\\/b\\/c") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5561245+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\u{2F}/", flags: "u", source: "\\u{2F}\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5561452+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\]/]/", flags: "", source: "[\\]/]\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5561706+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[[a]/]b/", flags: "", source: "[[a]\\/]b\\/") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.5561985+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.7750140+00:00">
+        <Text>[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.7824442+00:00">
+        <Text>[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:48:17.7914721+00:00">
+        <Text>[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:36:04.540976817 +0000
+@@ -426,6 +426,8 @@
+     // Hairs-Human:        PENDING
+     internal UnicodeCharSets.PropertyMatch? ResolveProperty(string name, string? value)
+     {
++        if (value is "Katakana_Or_Hiragana" or "Hrkt") // witness plant A-5.1
++            return null;
+         if (value != null)
+         {
+             return _properties.TryResolve(name, value, out var pair)

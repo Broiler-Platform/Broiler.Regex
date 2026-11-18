@@ -1,0 +1,25 @@
+{
+ "run": "A-10.4-1",
+ "clause": "A-10.4",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 16,
+  "skipped": 0,
+  "total": 17
+ },
+ "deciding-tests-failed": [
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "ccf76bba340d65d444b0fadb4fe1c11c0992d7fcce29e16c81515b6a9d8b7e7f",
+ "reading": "witness"
+}

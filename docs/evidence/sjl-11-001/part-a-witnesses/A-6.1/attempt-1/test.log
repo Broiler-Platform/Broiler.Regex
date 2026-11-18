@@ -1,0 +1,86 @@
+Test run for /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.91]     Broiler.Regex.Tests.DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees [FAIL]
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees [8 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees() in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 111
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "v") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "i") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "u") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "ms") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "iu") [FAIL]
+[xUnit.net 00:00:01.92]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "iv") [FAIL]
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "v") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "i") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "u") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "ms") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "iu") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(flags: "iv") [1 ms]
+  Error Message:
+   Assert.IsType() Failure: Value is null
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   null
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(String flags) in /home/user/rx-wit-plants/A-6.1-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 85
+   at InvokeStub_DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-6.1-1/results/test.trx
+
+Failed!  - Failed:     8, Passed:    36, Skipped:     0, Total:    44, Duration: 206 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

@@ -1,0 +1,12 @@
+{
+ "clause": "A-4.3",
+ "what": "a nesting limit above the documented maximum is accepted, read as the maximum, rather than refused",
+ "edits": [
+  {
+   "file": "Broiler.Regex/BroilerRegex.cs",
+   "anchor": "        ArgumentOutOfRangeException.ThrowIfGreaterThan(nestingLimit, MaximumNestingLimit);\n        if (compileBudget == 0)\n",
+   "replacement": "        nestingLimit = Math.Min(nestingLimit, MaximumNestingLimit); // witness plant A-4.3\n        if (compileBudget == 0)\n"
+  }
+ ],
+ "classes": "NestingLimitTests"
+}

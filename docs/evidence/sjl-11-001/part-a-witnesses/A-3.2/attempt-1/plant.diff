@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Engine/RegexMachine.cs b/Broiler.Regex/Engine/RegexMachine.cs
+--- a/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 10:32:09.860881938 +0000
+@@ -1178,7 +1178,7 @@
+             return true;
+         if (_cellsHeld == _trailCeiling)
+         {
+-            Exceeded = RegexLimit.Trail;
++            Exceeded = RegexLimit.Frames; // witness plant A-3.2
+             return false;
+         }
+ 

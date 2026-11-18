@@ -1,0 +1,12 @@
+{
+ "clause": "A-2.1",
+ "what": "a property escape's expansion is charged one unit whatever the ranges its set holds, not one per range (RegexUnicode.ToCodePointSet)",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "        Account.Charge(site, set.RangeCount);\n",
+   "replacement": "        Account.Charge(site, 1L); // witness plant A-2.1\n"
+  }
+ ],
+ "classes": "CompileChargingTests"
+}

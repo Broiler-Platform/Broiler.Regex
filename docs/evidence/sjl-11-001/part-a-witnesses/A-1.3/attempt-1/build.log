@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored /home/user/rx-wit-plants/A-1.3-1/tree/Broiler.Regex/Broiler.Regex.csproj (in 285 ms).
+  Restored /home/user/rx-wit-plants/A-1.3-1/tree/probes/Regex.Probe/Regex.Probe.csproj (in 285 ms).
+  Restored /home/user/rx-wit-plants/A-1.3-1/tree/Broiler.Regex.Tests/Broiler.Regex.Tests.csproj (in 424 ms).
+  Broiler.Regex -> /home/user/rx-wit-plants/A-1.3-1/tree/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+  Regex.Probe -> /home/user/rx-wit-plants/A-1.3-1/tree/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+  Broiler.Regex.Tests -> /home/user/rx-wit-plants/A-1.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:12.92

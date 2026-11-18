@@ -1,0 +1,27 @@
+{
+ "run": "A-6.1-1",
+ "clause": "A-6.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 8,
+  "passed": 36,
+  "skipped": 0,
+  "total": 44
+ },
+ "deciding-tests-failed": [
+  "DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group",
+  "DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "DuplicateNamedGroupTests.A_name_repeated_where_both_groups_might_participate_is_refused_at_the_later_group": 7,
+  "DuplicateNamedGroupTests.The_rule_agrees_with_MightBothParticipate_over_a_seeded_population_of_trees": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexParser.cs"
+ ],
+ "library-sources-sha256": "dcc0134a8ac0da1b6002150f7099a11393e1eda8dc1124fb1721a88f987008cb",
+ "reading": "witness"
+}

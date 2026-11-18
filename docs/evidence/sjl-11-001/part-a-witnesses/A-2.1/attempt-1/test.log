@@ -1,0 +1,75 @@
+Test run for /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:04.50]     Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[\\p{L}--\\p{Lu}]", flags: "vi") [FAIL]
+[xUnit.net 00:00:04.50]     Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[\\p{L}\\p{N}\\p{M}]", flags: "v") [FAIL]
+[xUnit.net 00:00:04.50]     Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "\\p{Script=Greek}\\P{Lu}", flags: "u") [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[\\p{L}--\\p{Lu}]", flags: "vi") [5 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 3 of a table of ranges with 1 units charged f"···, "read 4 of a table of ranges with 1 units charged f"···, "read 5 of a table of ranges with 1 units charged f"···, "read 6 of a table of ranges with 1 units charged f"···, "read 7 of a table of ranges with 1 units charged f"···]
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(String pattern, String flags) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 435
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[\\p{L}\\p{N}\\p{M}]", flags: "v") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 3 of a table of ranges with 1 units charged f"···, "read 4 of a table of ranges with 1 units charged f"···, "read 5 of a table of ranges with 1 units charged f"···, "read 6 of a table of ranges with 1 units charged f"···, "read 7 of a table of ranges with 1 units charged f"···]
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(String pattern, String flags) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 435
+   at InvokeStub_CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "\\p{Script=Greek}\\P{Lu}", flags: "u") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 3 of a table of ranges with 1 units charged f"···, "read 4 of a table of ranges with 1 units charged f"···, "read 5 of a table of ranges with 1 units charged f"···, "read 6 of a table of ranges with 1 units charged f"···, "read 7 of a table of ranges with 1 units charged f"···]
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(String pattern, String flags) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 435
+   at InvokeStub_CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.50]     Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[^a]", flags: "vi") [FAIL]
+[xUnit.net 00:00:04.50]     Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "\\p{L}", flags: "u") [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "[^a]", flags: "vi") [4 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 3 of a table of ranges with 1 units charged f"···, "read 4 of a table of ranges with 1 units charged f"···, "read 5 of a table of ranges with 1 units charged f"···, "read 6 of a table of ranges with 1 units charged f"···, "read 7 of a table of ranges with 1 units charged f"···]
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(String pattern, String flags) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 435
+   at InvokeStub_CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(pattern: "\\p{L}", flags: "u") [1 ms]
+  Error Message:
+   Assert.Empty() Failure: Collection was not empty
+Collection: ["read 3 of a table of ranges with 1 units charged f"···, "read 4 of a table of ranges with 1 units charged f"···, "read 5 of a table of ranges with 1 units charged f"···, "read 6 of a table of ranges with 1 units charged f"···, "read 7 of a table of ranges with 1 units charged f"···]
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(String pattern, String flags) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 435
+   at InvokeStub_CompileChargingTests.Each_range_copied_from_the_provider_is_charged_before_it_is_read(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:06.34]     Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "[\\P{Lu}]", flags: "v", place: "Property", declared: 655) [FAIL]
+[xUnit.net 00:00:06.35]     Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "\\p{L}", flags: "u", place: "Property", declared: 684) [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "[\\P{Lu}]", flags: "v", place: "Property", declared: 655) [1 ms]
+  Error Message:
+   /[\P{Lu}]/v: Property charged 1, fewer than the 655 declared
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(String pattern, String flags, String place, Int64 declared) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 366
+   at InvokeStub_CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "\\p{L}", flags: "u", place: "Property", declared: 684) [1 ms]
+  Error Message:
+   /\p{L}/u: Property charged 1, fewer than the 684 declared
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(String pattern, String flags, String place, Int64 declared) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 366
+   at InvokeStub_CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:06.35]     Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "\\p{Script=Greek}", flags: "u", place: "Property", declared: 36) [FAIL]
+  Failed Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(pattern: "\\p{Script=Greek}", flags: "u", place: "Property", declared: 36) [1 ms]
+  Error Message:
+   /\p{Script=Greek}/u: Property charged 1, fewer than the 36 declared
+  Stack Trace:
+     at Broiler.Regex.Tests.CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(String pattern, String flags, String place, Int64 declared) in /home/user/rx-wit-plants/A-2.1-1/tree/Broiler.Regex.Tests/CompileChargingTests.cs:line 366
+   at InvokeStub_CompileChargingTests.Each_place_charges_at_least_one_unit_per_range_and_per_string_its_expansion_touches(Object, Span`1)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-2.1-1/results/test.trx
+
+Failed!  - Failed:     8, Passed:    97, Skipped:     0, Total:   105, Duration: 4 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

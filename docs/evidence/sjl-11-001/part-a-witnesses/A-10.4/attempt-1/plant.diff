@@ -1,0 +1,13 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:50:27.936575249 +0000
+@@ -111,6 +111,9 @@
+     // Hairs-Human:        PENDING
+     internal CompileCharge Account { get; }
+ 
++    /// <summary>Witness plant A-10.4: a data version of the library's own.</summary>
++    internal const string UnicodeVersion = "17.0.0";
++
+     // ----- Canonicalize (§22.2.2.7.3) -----------------------------------------
+ 
+     /// <summary>

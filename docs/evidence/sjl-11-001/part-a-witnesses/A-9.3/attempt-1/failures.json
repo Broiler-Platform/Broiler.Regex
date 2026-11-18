@@ -1,0 +1,39 @@
+{
+ "run": "A-9.3-1",
+ "clause": "A-9.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 16,
+  "passed": 6,
+  "skipped": 0,
+  "total": 22
+ },
+ "deciding-tests-failed": [
+  "PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask",
+  "PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them",
+  "PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class",
+  "PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators",
+  "PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode",
+  "PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties",
+  "PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects",
+  "PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask": 1,
+  "PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them": 9,
+  "PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class": 1,
+  "PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators": 1,
+  "PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode": 1,
+  "PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties": 1,
+  "PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects": 1,
+  "PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Text/RegexEscaper.cs"
+ ],
+ "library-sources-sha256": "62089f1cd06b85065fa3814df362b6edb11d098b4694037c46fd5fc0380e45f4",
+ "reading": "witness"
+}

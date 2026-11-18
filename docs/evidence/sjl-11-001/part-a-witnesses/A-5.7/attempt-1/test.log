@@ -1,0 +1,97 @@
+Test run for /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\00]", flags: "u") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\1]", flags: "u") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\01", flags: "v") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\7]", flags: "u") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\01", flags: "u") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\08", flags: "u") [FAIL]
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\00]", flags: "u") [2 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\1]", flags: "u") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\01", flags: "v") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\7]", flags: "u") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\01", flags: "u") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\08", flags: "u") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\1]", flags: "v") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\00", flags: "u") [FAIL]
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\01]", flags: "v") [FAIL]
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\1]", flags: "v") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "\\00", flags: "u") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(pattern: "[\\01]", flags: "v") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+  Stack Trace:
+     at Broiler.Regex.Tests.DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(String pattern, String flags) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 80
+   at InvokeStub_DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:08.75]     Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\01", code: InvalidIdentityEscape, position: 1) [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(pattern: "\\01", code: InvalidIdentityEscape, position: 1) [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: SyntaxError
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(String pattern, RegexDiagnosticCode code, Int32 position) in /home/user/rx-wit-plants/A-5.7-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 312
+   at InvokeStub_ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-5.7-1/results/test.trx
+
+Failed!  - Failed:    10, Passed:   211, Skipped:     0, Total:   221, Duration: 6 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

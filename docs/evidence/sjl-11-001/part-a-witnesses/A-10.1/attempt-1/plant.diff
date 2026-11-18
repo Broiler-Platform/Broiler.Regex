@@ -1,0 +1,23 @@
+diff -ruN a/Broiler.Regex/Broiler.Regex.csproj b/Broiler.Regex/Broiler.Regex.csproj
+--- a/Broiler.Regex/Broiler.Regex.csproj	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Broiler.Regex.csproj	2026-11-18 10:48:18.899195691 +0000
+@@ -44,6 +44,7 @@
+ 
+   <ItemGroup>
+     <PackageReference Include="Broiler.Unicode.Algorithms" />
++    <PackageReference Include="Broiler.Unicode.Tables" /><!-- witness plant A-10.1 -->
+   </ItemGroup>
+ 
+   <!--
+diff -ruN a/Broiler.Regex/WitnessPlantA101.cs b/Broiler.Regex/WitnessPlantA101.cs
+--- a/Broiler.Regex/WitnessPlantA101.cs	1970-01-01 00:00:00.000000000 +0000
++++ b/Broiler.Regex/WitnessPlantA101.cs	2026-11-18 10:48:18.899358592 +0000
+@@ -0,0 +1,8 @@
++namespace Broiler.Regex;
++
++/// <summary>Witness plant A-10.1: a member read from a second package.</summary>
++internal static class WitnessPlantA101
++{
++    /// <summary>The second package's tables.</summary>
++    internal static object Tables => Broiler.Unicode.Tables.UnicodeTables.Instance;
++}

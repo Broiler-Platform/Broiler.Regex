@@ -1,0 +1,86 @@
+Test run for /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "u") [FAIL]
+[xUnit.net 00:00:01.94]     Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "iu") [FAIL]
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "u") [2 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Invalid escape \0 in Unicode mode
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1533
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 772
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 28
+   at InvokeStub_DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "iu") [1 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Invalid escape \0 in Unicode mode
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1533
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 772
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 28
+   at InvokeStub_DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "iv") [FAIL]
+[xUnit.net 00:00:01.95]     Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "v") [FAIL]
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "iv") [1 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Invalid escape \0 in Unicode mode
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1533
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 772
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 28
+   at InvokeStub_DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(flags: "v") [1 ms]
+  Error Message:
+   Broiler.Regex.RegexSyntaxException : Invalid escape \0 in Unicode mode
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadCharacterEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1533
+   at Broiler.Regex.Parsing.RegexParser.ParseAtomEscape() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 772
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 556
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(String flags) in /home/user/rx-wit-plants/A-5.5-1/tree/Broiler.Regex.Tests/DecimalEscapeTests.cs:line 28
+   at InvokeStub_DecimalEscapeTests.Nul_before_a_digit_that_is_not_ASCII_is_NUL_then_that_digit(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-5.5-1/results/test.trx
+
+Failed!  - Failed:     4, Passed:    36, Skipped:     0, Total:    40, Duration: 141 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

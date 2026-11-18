@@ -1,0 +1,12 @@
+{
+ "clause": "A-11.1",
+ "what": "an escaped astral group name read without u throws ArgumentOutOfRangeException, as RegexParser.ReadGroupName did in 0.1.0-preview.4",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "                codePoint = ReadUnicodeEscape(unicodeMode: true);\n",
+   "replacement": "                codePoint = ReadUnicodeEscape(unicodeMode: true);\n                if (codePoint > 0xFFFF && !_unicode) // witness plant A-11.1\n                    throw new ArgumentOutOfRangeException(nameof(codePoint));\n"
+  }
+ ],
+ "classes": "ValidateEntryTests,GroupNameTests"
+}

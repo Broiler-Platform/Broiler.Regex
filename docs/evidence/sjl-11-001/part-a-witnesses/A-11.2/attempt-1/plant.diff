@@ -1,0 +1,30 @@
+diff -ruN a/Broiler.Regex/Engine/RegexMachine.cs b/Broiler.Regex/Engine/RegexMachine.cs
+--- a/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 10:51:49.188567417 +0000
+@@ -149,6 +149,8 @@
+     private readonly bool _unicode;
+     private readonly RegexWorkCharge? _meter;
+ 
++    private static int[]? s_witnessPlantRegisters; // witness plant A-11.2
++
+     /// <summary>The Unicode owner's case folding, for the instructions that compare under <c>i</c>; null when none does.</summary>
+     private readonly UnicodeCaseFolding? _folding;
+ 
+@@ -218,7 +220,7 @@
+         _paid = meter is null ? ulong.MaxValue : 0;
+         _threshold = Math.Min(_paid, _stepCeiling);
+         _folding = program.Folding;
+-        _registers = ArrayPool<int>.Shared.Rent(program.RegisterCount);
++        _registers = s_witnessPlantRegisters is { } shared && shared.Length >= program.RegisterCount ? shared : (s_witnessPlantRegisters = new int[Math.Max(64, program.RegisterCount)]); // witness plant A-11.2
+         _registers.AsSpan(0, program.RegisterCount).Fill(-1);
+         _frames = ArrayPool<int>.Shared.Rent(16 * FrameSize);
+         _trail = ArrayPool<int>.Shared.Rent(16 * CellSize);
+@@ -232,7 +234,7 @@
+     // Hairs-Human:        PENDING
+     internal void Release()
+     {
+-        ArrayPool<int>.Shared.Return(_registers);
++        // witness plant A-11.2: the shared registers are not returned to the pool
+         ReturnToPool(_frames);
+         ReturnToPool(_trail);
+         if (_orbit.Length > 0)

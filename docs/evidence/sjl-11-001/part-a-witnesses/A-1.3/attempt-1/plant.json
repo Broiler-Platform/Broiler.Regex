@@ -1,0 +1,3 @@
+{"clause": "A-1.3", "what": "LimitExceeded naming steps is answered NoMatch (part C's control 1's line, as probes/Regex.Probe/AdversarialControls.targets declares it, applied to the library's source)",
+ "edits": [{"file": "Broiler.Regex/Engine/RegexProgram.cs", "anchor": "limit = machine.Exceeded;",
+  "replacement": "limit = machine.Exceeded; if (limit == RegexLimit.Steps) { status = RegexStatus.NoMatch; limit = RegexLimit.None; } // witness plant A-1.3"}]}

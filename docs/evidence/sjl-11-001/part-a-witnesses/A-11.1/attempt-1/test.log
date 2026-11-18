@@ -1,0 +1,267 @@
+Test run for /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.08]     Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "i") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "ms") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "") [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "i") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 74
+   at InvokeStub_GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "ms") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 74
+   at InvokeStub_GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(flags: "") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 74
+   at InvokeStub_GroupNameTests.Every_accepted_name_reads_the_same_in_every_mode(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(pattern: "(?<\\uD835\\uDC00>x)", flags: "", accepted: True) [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(pattern: "(?<\\uD835\\uDC00>x)", flags: "", accepted: True) [4 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'codePoint')
+   at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.<>c__DisplayClass5_0.<An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown>b__0() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 111
+   at Xunit.Record.Exception(Func`1 testCode) in /_/src/xunit.v3.core/Record.cs:line 55
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 113
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.11]     Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(pattern: "(?<\\u{1D400}>x)", flags: "", accepted: True) [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(pattern: "(?<\\u{1D400}>x)", flags: "", accepted: True) [1 ms]
+  Error Message:
+   Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values. (Parameter 'codePoint')
+   at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.<>c__DisplayClass5_0.<An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown>b__0() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 111
+   at Xunit.Record.Exception(Func`1 testCode) in /_/src/xunit.v3.core/Record.cs:line 55
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(String pattern, String flags, Boolean accepted) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 113
+   at InvokeStub_GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.15]     Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "") [FAIL]
+[xUnit.net 00:00:02.15]     Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "ms") [FAIL]
+[xUnit.net 00:00:02.16]     Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "i") [FAIL]
+[xUnit.net 00:00:02.16]     Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "") [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   typeof(System.ArgumentOutOfRangeException)
+---- System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.<>c__DisplayClass6_1.<A_duplicate_name_is_refused_after_its_escapes_are_decoded>b__0() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+  Failed Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "ms") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   typeof(System.ArgumentOutOfRangeException)
+---- System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+   at InvokeStub_GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.<>c__DisplayClass6_1.<A_duplicate_name_is_refused_after_its_escapes_are_decoded>b__0() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+  Failed Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(flags: "i") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(Broiler.Regex.RegexSyntaxException)
+Actual:   typeof(System.ArgumentOutOfRangeException)
+---- System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Tests.GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+   at InvokeStub_GroupNameTests.A_duplicate_name_is_refused_after_its_escapes_are_decoded(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.<>c__DisplayClass6_1.<A_duplicate_name_is_refused_after_its_escapes_are_decoded>b__0() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 132
+  Failed Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 162
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.17]     Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "i") [FAIL]
+[xUnit.net 00:00:02.17]     Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "ms") [FAIL]
+  Failed Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "i") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 162
+   at InvokeStub_GroupNameTests.A_reference_names_the_group_as_decoded(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(flags: "ms") [1 ms]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseTerm() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 381
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 326
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Parse(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Int32& captureCount, RegexGroupNames& groupNames) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 208
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, Boolean refusesAsSyntax) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 244
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, RegexFlags flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 221
+   at Broiler.Regex.BroilerRegex..ctor(String pattern, String flags, IUnicodeTables tables) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 181
+   at Broiler.Regex.Tests.TestRegex.Compile(String pattern, String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/TestRegex.cs:line 18
+   at Broiler.Regex.Tests.GroupNameTests.A_reference_names_the_group_as_decoded(String flags) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/GroupNameTests.cs:line 162
+   at InvokeStub_GroupNameTests.A_reference_names_the_group_as_decoded(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.74]     Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations [FAIL]
+  Failed Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations [2 s]
+  Error Message:
+   System.ArgumentOutOfRangeException : Specified argument was out of the range of valid values. (Parameter 'codePoint')
+  Stack Trace:
+     at Broiler.Regex.Parsing.RegexParser.ReadGroupName() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 1809
+   at Broiler.Regex.Parsing.RegexParser.ParseGroup() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 609
+   at Broiler.Regex.Parsing.RegexParser.ParseAtom() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 552
+   at Broiler.Regex.Parsing.RegexParser.ParseAlternative() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 348
+   at Broiler.Regex.Parsing.RegexParser.ParseDisjunction() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 331
+   at Broiler.Regex.Parsing.RegexParser.ParsePattern() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 249
+   at Broiler.Regex.Parsing.RegexParser.Validate(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/Parsing/RegexParser.cs:line 226
+   at Broiler.Regex.BroilerRegex.Validate(String pattern, RegexFlags flags, RegexUnicode data, RegexNesting nesting, RegexDiagnostic& diagnostic, RegexLimit& limit) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 491
+   at Broiler.Regex.BroilerRegex.Validate(String pattern, RegexFlags flags, IUnicodeTables tables, Int32 nestingLimit, RegexDiagnostic& diagnostic, RegexLimit& limit) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex/BroilerRegex.cs:line 437
+   at Broiler.Regex.Tests.ValidateEntryTests.Agreement(String pattern, RegexFlags flags, Int32 nesting) in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 628
+   at Broiler.Regex.Tests.ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations() in /home/user/rx-wit-plants/A-11.1-1/tree/Broiler.Regex.Tests/ValidateEntryTests.cs:line 611
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-11.1-1/results/test.trx
+
+Failed!  - Failed:    12, Passed:   201, Skipped:     0, Total:   213, Duration: 2 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

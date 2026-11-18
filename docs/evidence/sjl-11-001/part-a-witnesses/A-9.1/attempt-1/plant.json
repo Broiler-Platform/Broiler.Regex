@@ -1,0 +1,12 @@
+{
+ "clause": "A-9.1",
+ "what": "flag parsing never refuses a duplicate flag",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Text/RegexFlagsText.cs",
+   "anchor": "            if ((seen & flag) != 0)\n",
+   "replacement": "            if ((seen & flag) != 0 && flag == RegexFlags.None) // witness plant A-9.1\n"
+  }
+ ],
+ "classes": "FlagsTextTests"
+}

@@ -1,0 +1,12 @@
+{
+ "clause": "A-6.1",
+ "what": "a repeated group name is never refused: the check of MightBothParticipate is made unreachable",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Parsing/RegexParser.cs",
+   "anchor": "                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier))\n",
+   "replacement": "                if (_latestGroupOf.TryGetValue(name, out var earlier) && MightBothParticipate(earlier) && name.Length < 0) // witness plant A-6.1\n"
+  }
+ ],
+ "classes": "DuplicateNamedGroupTests,RegexGroupNamesTests"
+}

@@ -1,0 +1,12 @@
+{
+ "clause": "A-1.1",
+ "what": "the meter is charged after the work it pays for: Pay charges the whole blocks the units already spent fill (rounding down), not the blocks that cover them, so the meter trails the work by up to a block",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Engine/RegexMachine.cs",
+   "anchor": "var blocks = ((_spent - _paid) + Block - 1) / Block;",
+   "replacement": "var blocks = (_spent - _paid) / Block; // witness plant A-1.1"
+  }
+ ],
+ "classes": "ChargingTests"
+}

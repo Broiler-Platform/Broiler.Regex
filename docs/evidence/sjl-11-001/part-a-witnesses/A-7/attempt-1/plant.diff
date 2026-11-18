@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/BroilerRegex.cs b/Broiler.Regex/BroilerRegex.cs
+--- a/Broiler.Regex/BroilerRegex.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/BroilerRegex.cs	2026-11-18 10:44:31.337924911 +0000
+@@ -566,7 +566,7 @@
+     // Hairs-Falsified-If: /b/y unanchored on "ab" answers other than a match at 1, /b/ anchored at 0 of "ab" answers Match, a call that reaches a ceiling answers Match or NoMatch, or a call through a pattern of 1,000 or 16,384 groups allocates once the pool is warm
+     // Hairs-Human:        PENDING
+     public RegexStatus Match(ReadOnlySpan<char> subject, int start, bool anchored, Span<int> slots, RegexWorkCharge? meter, RegexMatchCeilings ceilings, out RegexLimit limit) =>
+-        _program.Match(subject, start, anchored, slots, meter, ceilings, out limit, out _);
++        _program.Match(subject, start, anchored || (Flags & RegexFlags.Sticky) != 0, slots, meter, ceilings, out limit, out _); // witness plant A-7
+ 
+     /// <summary>
+     /// Finds the first match at or after <paramref name="start"/>, or at <paramref name="start"/> alone when the

@@ -1,0 +1,116 @@
+Test run for /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.17]     Broiler.Regex.Tests.RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots [FAIL]
+  Failed Broiler.Regex.Tests.RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots [6 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.RegexGroupNamesTests.The_participating_group_is_read_from_the_offset_entry_s_slots() in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/RegexGroupNamesTests.cs:line 68
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "^(?:(?<a>x)|(?<a>y)|z){2}\\k<a>$", flags: "", subject: "xz", expected: "match 0,2 - -") [FAIL]
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "", subject: "xyyx", expected: "match 1,3 - 1,2") [FAIL]
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "i", subject: "yY", expected: "match 0,2 - 0,1") [FAIL]
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "^(?:(?<a>x)|(?<a>y)|z){2}\\k<a>$", flags: "", subject: "xz", expected: "match 0,2 - -") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "", subject: "xyyx", expected: "match 1,3 - 1,2") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "i", subject: "yY", expected: "match 0,2 - 0,1") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?:(?<x>a)|(?<x>b))\\k<x>){2}", flags: "", subject: "aabb", expected: "match 0,4 - 2,3") [FAIL]
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "", subject: "yy", expected: "match 0,2 - 0,1") [FAIL]
+[xUnit.net 00:00:03.44]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "", subject: "yyz", expected: "match 2,3 - 1,2") [FAIL]
+[xUnit.net 00:00:03.45]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y)|z)+\\k<a>", flags: "", subject: "zyy", expected: "match 0,3 - 1,2") [FAIL]
+[xUnit.net 00:00:03.45]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "\\k<a>(?:(?<a>x)|(?<a>y))", flags: "", subject: "y", expected: "match 0,1 - 0,1") [FAIL]
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?:(?<x>a)|(?<x>b))\\k<x>){2}", flags: "", subject: "aabb", expected: "match 0,4 - 2,3") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y))\\k<a>", flags: "", subject: "yy", expected: "match 0,2 - 0,1") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "", subject: "yyz", expected: "match 2,3 - 1,2") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?:(?<a>x)|(?<a>y)|z)+\\k<a>", flags: "", subject: "zyy", expected: "match 0,3 - 1,2") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "\\k<a>(?:(?<a>x)|(?<a>y))", flags: "", subject: "y", expected: "match 0,1 - 0,1") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.45]     Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "i", subject: "Yyz", expected: "match 2,3 - 1,2") [FAIL]
+[xUnit.net 00:00:03.45]     Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots [FAIL]
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(pattern: "(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z", flags: "i", subject: "Yyz", expected: "match 2,3 - 1,2") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(String pattern, String flags, String subject, String expected) in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 263
+   at InvokeStub_DuplicateNamedGroupTests.A_reference_to_a_duplicated_name_matches_the_group_that_participated(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2
+Actual:   1
+  Stack Trace:
+     at Broiler.Regex.Tests.DuplicateNamedGroupTests.The_participating_group_comes_from_the_offset_entry_s_slots() in /home/user/rx-wit-plants/A-6.3-1/tree/Broiler.Regex.Tests/DuplicateNamedGroupTests.cs:line 302
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-6.3-1/results/test.trx
+
+Failed!  - Failed:    11, Passed:    33, Skipped:     0, Total:    44, Duration: 1 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

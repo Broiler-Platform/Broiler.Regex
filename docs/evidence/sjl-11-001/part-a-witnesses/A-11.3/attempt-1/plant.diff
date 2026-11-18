@@ -1,0 +1,15 @@
+diff -ruN a/Broiler.Regex/BroilerRegex.cs b/Broiler.Regex/BroilerRegex.cs
+--- a/Broiler.Regex/BroilerRegex.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/BroilerRegex.cs	2026-11-18 10:52:25.776269565 +0000
+@@ -493,9 +493,9 @@
+             limit = RegexLimit.None;
+             return RegexStatus.Success;
+         }
+-        catch (RegexSyntaxException refusal)
++        catch (RegexSyntaxException)
+         {
+-            diagnostic = refusal.Diagnostic;
++            diagnostic = default; // witness plant A-11.3
+             limit = RegexLimit.None;
+             return RegexStatus.SyntaxError;
+         }

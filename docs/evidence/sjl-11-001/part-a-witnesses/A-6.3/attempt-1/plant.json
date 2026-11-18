@@ -1,0 +1,12 @@
+{
+ "clause": "A-6.3",
+ "what": "a name maps to the first group of the name whatever the slots say, not to the group that participated",
+ "edits": [
+  {
+   "file": "Broiler.Regex/RegexGroupNames.cs",
+   "anchor": "            if (slots[2 * group] >= 0 && slots[(2 * group) + 1] >= 0)\n                return group;\n",
+   "replacement": "            if (group > 0) // witness plant A-6.3\n                return group;\n"
+  }
+ ],
+ "classes": "DuplicateNamedGroupTests,RegexGroupNamesTests"
+}

@@ -1,0 +1,12 @@
+{
+ "clause": "A-7",
+ "what": "the offset entry's anchored argument depends on the y flag: a sticky pattern is matched anchored whatever the argument",
+ "edits": [
+  {
+   "file": "Broiler.Regex/BroilerRegex.cs",
+   "anchor": "        _program.Match(subject, start, anchored, slots, meter, ceilings, out limit, out _);",
+   "replacement": "        _program.Match(subject, start, anchored || (Flags & RegexFlags.Sticky) != 0, slots, meter, ceilings, out limit, out _); // witness plant A-7"
+  }
+ ],
+ "classes": "PublicEntryTests"
+}

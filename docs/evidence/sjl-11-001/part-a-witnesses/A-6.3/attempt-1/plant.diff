@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/RegexGroupNames.cs b/Broiler.Regex/RegexGroupNames.cs
+--- a/Broiler.Regex/RegexGroupNames.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/RegexGroupNames.cs	2026-11-18 10:42:59.324372075 +0000
+@@ -166,7 +166,7 @@
+ 
+         foreach (var group in GroupsNamed(name))
+         {
+-            if (slots[2 * group] >= 0 && slots[(2 * group) + 1] >= 0)
++            if (group > 0) // witness plant A-6.3
+                 return group;
+         }
+ 

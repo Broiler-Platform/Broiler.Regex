@@ -1,0 +1,25 @@
+{
+ "run": "A-4.3-1",
+ "clause": "A-4.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 1,
+  "passed": 27,
+  "skipped": 0,
+  "total": 28
+ },
+ "deciding-tests-failed": [
+  "NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/BroilerRegex.cs"
+ ],
+ "library-sources-sha256": "9414bf818b675afba78af087ced8aab34dff7372247ea786602556d6b6b0a2bf",
+ "reading": "witness"
+}

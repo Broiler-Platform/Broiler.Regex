@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+--- a/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Parsing/RegexParser.cs	2026-11-18 10:51:06.492272191 +0000
+@@ -1805,6 +1805,8 @@
+                 if (Peek() != 'u')
+                     throw Refuse(RegexDiagnosticCode.GroupNameInvalidEscape, at, "Only a \\u escape may appear in a group name");
+                 codePoint = ReadUnicodeEscape(unicodeMode: true);
++                if (codePoint > 0xFFFF && !_unicode) // witness plant A-11.1
++                    throw new ArgumentOutOfRangeException(nameof(codePoint));
+             }
+             else
+             {

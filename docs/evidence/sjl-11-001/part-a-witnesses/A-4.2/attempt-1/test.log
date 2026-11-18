@@ -1,0 +1,27 @@
+Test run for /home/user/rx-wit-plants/A-4.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.88]     Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level [FAIL]
+[xUnit.net 00:00:01.89]     Broiler.Regex.Tests.NestingLimitTests.The_parser_answers_what_it_reads_first [FAIL]
+  Failed Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level [59 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   Success
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.Quantifiers_sequences_and_alternatives_add_no_level() in /home/user/rx-wit-plants/A-4.2-1/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 101
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.NestingLimitTests.The_parser_answers_what_it_reads_first [3 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: LimitExceeded
+Actual:   SyntaxError
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.The_parser_answers_what_it_reads_first() in /home/user/rx-wit-plants/A-4.2-1/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 136
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:01:01.89]     [FATAL ERROR] Xunit.Sdk.TestPipelineException
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-4.2-1/results/test.trx
+
+Failed!  - Failed:     2, Passed:     0, Skipped:     0, Total:     2, Duration: 106 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

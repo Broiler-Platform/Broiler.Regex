@@ -1,0 +1,46 @@
+{
+ "run": "A-1.3-1",
+ "clause": "A-1.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 38,
+  "passed": 107,
+  "skipped": 0,
+  "total": 145
+ },
+ "deciding-tests-failed": [
+  "CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match",
+  "CeilingTests.The_step_ceiling_is_reached_at_the_unit_past_it",
+  "ChargingTests.A_scan_stopped_by_its_step_ceiling_has_tested_only_the_positions_it_paid_for",
+  "ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it",
+  "ChargingTests.An_anchored_call_makes_no_scan_and_a_scan_stops_at_the_step_ceiling"
+ ],
+ "other-tests-failed": [
+  "CeilingTests.A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares",
+  "CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure",
+  "CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match",
+  "CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself",
+  "ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset",
+  "ChargingTests.The_first_charge_comes_before_the_first_instruction"
+ ],
+ "failed-cases": {
+  "CeilingTests.A_back_reference_whose_length_passes_the_step_ceiling_stops_before_it_compares": 1,
+  "CeilingTests.A_catastrophic_case_with_a_step_ceiling_answers_LimitExceeded_naming_steps_and_never_a_match_or_no_match": 6,
+  "CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure": 10,
+  "CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match": 1,
+  "CeilingTests.The_step_ceiling_is_reached_at_the_unit_past_it": 1,
+  "CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself": 10,
+  "ChargingTests.A_scan_stopped_by_its_step_ceiling_has_tested_only_the_positions_it_paid_for": 1,
+  "ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it": 5,
+  "ChargingTests.An_anchored_call_makes_no_scan_and_a_scan_stops_at_the_step_ceiling": 1,
+  "ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset": 1,
+  "ChargingTests.The_first_charge_comes_before_the_first_instruction": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Engine/RegexProgram.cs"
+ ],
+ "library-sources-sha256": "f0170e620f88237f5c126c5e9f1f082774a86f3d52ce7dc0035655b227e9eb76",
+ "reading": "witness"
+}

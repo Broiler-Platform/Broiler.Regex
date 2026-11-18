@@ -1,0 +1,34 @@
+{
+ "run": "A-8-1",
+ "clause": "A-8",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 12,
+  "passed": 57,
+  "skipped": 0,
+  "total": 69
+ },
+ "deciding-tests-failed": [
+  "EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count",
+  "EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count",
+  "PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count",
+  "PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays"
+ ],
+ "other-tests-failed": [
+  "EntryTests.A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back"
+ ],
+ "failed-cases": {
+  "EntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count": 1,
+  "EntryTests.A_call_that_ends_with_the_meter_s_exception_gives_its_arrays_back": 1,
+  "EntryTests.A_call_through_task_2_4b_s_instructions_allocates_nothing_that_grows_with_the_capture_count": 7,
+  "PublicEntryTests.A_call_allocates_nothing_that_grows_with_the_capture_count": 1,
+  "PublicEntryTests.A_call_allocates_nothing_up_to_the_frames_and_trail_cells_the_pool_keeps_and_past_them_its_own_arrays": 2
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Engine/RegexProgram.cs"
+ ],
+ "library-sources-sha256": "f04174b5fb8644bfd547807ca4cf059f11e7233b04052e62cf2708fd42ebca5c",
+ "reading": "witness"
+}

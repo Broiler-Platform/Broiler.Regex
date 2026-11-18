@@ -1,0 +1,17 @@
+{
+ "clause": "A-10.3",
+ "what": "the case folding is read from the first provider the process hands the library, kept in a static field, not from each caller's tables",
+ "edits": [
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "        _folding = new UnicodeCaseFolding(tables);\n",
+   "replacement": "        _folding = s_witnessPlantFolding ??= new UnicodeCaseFolding(tables); // witness plant A-10.3\n"
+  },
+  {
+   "file": "Broiler.Regex/Unicode/RegexUnicode.cs",
+   "anchor": "    internal CompileCharge Account { get; }\n",
+   "replacement": "    internal CompileCharge Account { get; }\n\n    private static UnicodeCaseFolding? s_witnessPlantFolding; // witness plant A-10.3\n"
+  }
+ ],
+ "classes": "ProviderDataTests"
+}

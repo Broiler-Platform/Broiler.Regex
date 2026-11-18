@@ -1,0 +1,38 @@
+{
+ "run": "A-1.1-1",
+ "clause": "A-1.1",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 56,
+  "passed": 53,
+  "skipped": 0,
+  "total": 109
+ },
+ "deciding-tests-failed": [
+  "ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared",
+  "ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work",
+  "ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read",
+  "ChargingTests.The_first_charge_comes_before_the_first_instruction"
+ ],
+ "other-tests-failed": [
+  "ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan",
+  "ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it",
+  "ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset"
+ ],
+ "failed-cases": {
+  "ChargingTests.A_back_reference_s_length_is_charged_before_any_of_its_characters_is_compared": 3,
+  "ChargingTests.A_non_matching_subject_of_n_characters_charges_at_least_n_units_and_its_end_nothing_under_the_scan": 1,
+  "ChargingTests.A_step_ceiling_of_k_units_stops_the_call_before_the_instruction_that_would_pass_it": 5,
+  "ChargingTests.Before_the_kth_unit_of_work_at_least_k_units_are_charged_and_never_a_block_more_than_the_work": 36,
+  "ChargingTests.Each_character_a_fast_path_or_the_scan_examines_is_charged_before_it_is_read": 9,
+  "ChargingTests.One_call_charges_across_all_its_start_positions_with_no_reset": 1,
+  "ChargingTests.The_first_charge_comes_before_the_first_instruction": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Engine/RegexMachine.cs"
+ ],
+ "library-sources-sha256": "14ef046cea68935a8d49bb0213f0b367575ab22a91b938ed700ed8777f9c9edd",
+ "reading": "witness"
+}

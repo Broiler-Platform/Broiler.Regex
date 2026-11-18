@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Engine/RegexMachine.cs b/Broiler.Regex/Engine/RegexMachine.cs
+--- a/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Engine/RegexMachine.cs	2026-11-18 10:28:50.258717793 +0000
+@@ -914,7 +914,7 @@
+             return false;
+         }
+ 
+-        var blocks = ((_spent - _paid) + Block - 1) / Block;
++        var blocks = (_spent - _paid) / Block; // witness plant A-1.1
+         _meter!(blocks * Block);
+         _paid += blocks * Block;
+         _threshold = Math.Min(_paid, _stepCeiling);

@@ -1,0 +1,12 @@
+diff -ruN a/Broiler.Regex/Unicode/RegexUnicode.cs b/Broiler.Regex/Unicode/RegexUnicode.cs
+--- a/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 00:16:43.000000000 +0000
++++ b/Broiler.Regex/Unicode/RegexUnicode.cs	2026-11-18 10:53:32.593508396 +0000
+@@ -457,6 +457,8 @@
+     // Hairs-Human:        PENDING
+     internal PropertyKind ClassifyProperty(string name, string? value)
+     {
++        if (value is "Katakana_Or_Hiragana" or "Hrkt") // witness plant A-5.1, attempt 2
++            return PropertyKind.Unknown;
+         if (value != null)
+             return _properties.TryResolve(name, value, out _) ? PropertyKind.CodePoints : PropertyKind.Unknown;
+         if (_properties.TryResolve(name, out _))

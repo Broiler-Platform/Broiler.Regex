@@ -1,0 +1,27 @@
+{
+ "run": "A-5.7-1",
+ "clause": "A-5.7",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 10,
+  "passed": 211,
+  "skipped": 0,
+  "total": 221
+ },
+ "deciding-tests-failed": [
+  "DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error",
+  "ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "DecimalEscapeTests.Under_u_and_v_a_legacy_octal_escape_is_a_syntax_error": 9,
+  "ValidateEntryTests.An_Annex_B_extension_refused_under_u_or_v_has_its_own_code_of_row_EG0002": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Parsing/RegexParser.cs"
+ ],
+ "library-sources-sha256": "6e378b475f34b7d3fd868504da2206e4379da8434fbe00ab9a7c8141a782236f",
+ "reading": "witness"
+}

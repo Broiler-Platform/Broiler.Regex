@@ -1,0 +1,27 @@
+{
+ "run": "A-10.3-1",
+ "clause": "A-10.3",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 11,
+  "passed": 6,
+  "skipped": 0,
+  "total": 17
+ },
+ "deciding-tests-failed": [
+  "ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables",
+  "ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "ProviderDataTests.A_match_reads_its_case_folding_from_the_callers_tables": 3,
+  "ProviderDataTests.A_pattern_of_each_kind_reads_the_tables_through_the_callers_provider": 8
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Unicode/RegexUnicode.cs"
+ ],
+ "library-sources-sha256": "889e351aab37d9829b37d5f908e40eee073d3e3d95ffff44556a9bc9ff4d9cbf",
+ "reading": "witness"
+}

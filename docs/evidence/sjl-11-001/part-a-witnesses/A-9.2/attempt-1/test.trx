@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e1da76f1-9880-4543-acea-994bc95a5698" name="@vm 2026-11-18 10:47:13" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-18T10:47:13.3011770+00:00" queuing="2026-11-18T10:47:13.3011771+00:00" start="2026-11-18T10:47:10.0434566+00:00" finish="2026-11-18T10:47:14.2171038+00:00" />
+  <TestSettings name="default" id="f5ccfbd8-df78-4ce1-836c-d17c8348cb1a">
+    <Deployment runDeploymentRoot="_vm_2026-11-18_10_47_13" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e2a44363-812d-4ca3-ab73-6e437f5e5a16" testId="daf9c17d-c927-1af8-da68-11875cd61c0c" testName="Broiler.Regex.Tests.EscapeStringTests.A_text_that_needs_no_change_is_answered_as_itself_and_costs_its_reading_alone" computerName="vm" duration="00:00:00.0210000" startTime="2026-11-18T10:47:12.6947323+00:00" endTime="2026-11-18T10:47:12.7166606+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2a44363-812d-4ca3-ab73-6e437f5e5a16" />
+    <UnitTestResult executionId="3cfebdeb-2f65-401a-bffc-c936916f17a2" testId="6ac36481-8fb7-6f0a-8aaa-2c40b44c10fc" testName="Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2205526+00:00" endTime="2026-11-18T10:47:13.2218913+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3cfebdeb-2f65-401a-bffc-c936916f17a2">
+      <Output>
+        <ErrorInfo>
+          <Message>U+0040: "@" where the specification gives "\x40"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 134
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="942ff706-988b-4077-acd5-73b749a39120" testId="987b77ff-f664-7dcb-074c-7de488447126" testName="Broiler.Regex.Tests.EscapeStringTests.The_test_s_white_space_is_the_provider_s_at_the_version_it_pins" computerName="vm" duration="00:00:00.7910000" startTime="2026-11-18T10:47:13.2887435+00:00" endTime="2026-11-18T10:47:14.0806848+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="942ff706-988b-4077-acd5-73b749a39120" />
+    <UnitTestResult executionId="f5d90c83-c33d-4a8c-8560-76afa0b7bfb7" testId="a90a2301-40d3-686e-6720-16e39005b4a1" testName="Broiler.Regex.Tests.EscapeStringTests.A_meter_that_throws_stops_the_operation_with_its_own_exception" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:47:13.2315338+00:00" endTime="2026-11-18T10:47:13.2343318+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5d90c83-c33d-4a8c-8560-76afa0b7bfb7" />
+    <UnitTestResult executionId="0c0760c3-0d4a-482c-a7e2-919e6755a71e" testId="de774e15-e228-0a5a-f16b-c7519951145c" testName="Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it" computerName="vm" duration="00:00:00.0020000" startTime="2026-11-18T10:47:12.7176513+00:00" endTime="2026-11-18T10:47:12.7204522+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c0760c3-0d4a-482c-a7e2-919e6755a71e">
+      <Output>
+        <ErrorInfo>
+          <Message>U+0040: "_@" where the specification gives "_\x40"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 115
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2e00ac6c-9b0d-4b88-8850-9afe623e0e81" testId="a5c1932d-ff2d-090b-33ee-bdad8bf29cbb" testName="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\0&quot;, text: &quot;0&quot;, flags: &quot;&quot;, subject: &quot;\00&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2781575+00:00" endTime="2026-11-18T10:47:13.2790218+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e00ac6c-9b0d-4b88-8850-9afe623e0e81" />
+    <UnitTestResult executionId="72f6fabd-66c1-4517-8e28-6d3ebdb60b97" testId="264edc37-c851-d9fb-47ac-1a50eb060d57" testName="Broiler.Regex.Tests.EscapeStringTests.A_broken_precondition_is_an_argument_exception" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2868597+00:00" endTime="2026-11-18T10:47:13.2878903+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72f6fabd-66c1-4517-8e28-6d3ebdb60b97" />
+    <UnitTestResult executionId="a92c3b91-643d-40ef-9fa7-c13184c67b3e" testId="68707d28-b8d7-32cd-caf9-f20c554157b1" testName="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\c&quot;, text: &quot;J&quot;, flags: &quot;&quot;, subject: &quot;\\cJ&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2847275+00:00" endTime="2026-11-18T10:47:13.2852831+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a92c3b91-643d-40ef-9fa7-c13184c67b3e" />
+    <UnitTestResult executionId="0aec5cb4-adde-45c2-99b6-1c0d68886a6d" testId="7ea0de9d-07c7-3c31-eff2-04d33a27a560" testName="Broiler.Regex.Tests.EscapeStringTests.The_escaped_text_matches_the_text_and_not_another_in_every_mode" computerName="vm" duration="00:00:00.4970000" startTime="2026-11-18T10:47:12.7215585+00:00" endTime="2026-11-18T10:47:13.2192391+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0aec5cb4-adde-45c2-99b6-1c0d68886a6d" />
+    <UnitTestResult executionId="ce374d13-27e3-4a1d-93e1-f1b61274d645" testId="6fdfb3d3-ebcf-e8fd-72b6-a244c2e13ac5" testName="Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:14.0945153+00:00" endTime="2026-11-18T10:47:14.0956603+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce374d13-27e3-4a1d-93e1-f1b61274d645">
+      <Output>
+        <ErrorInfo>
+          <Message>"_,-=&lt;&gt;#&amp;!%:;@~'`"" gives "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22" is the specification's</Message>
+          <StackTrace>   at Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 214
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="da0ba7a0-44fd-493a-99d6-7644887e1b69" testId="fa76b93e-c3bc-f79c-009c-790ed5842843" testName="Broiler.Regex.Tests.EscapeStringTests.A_result_longer_than_the_caller_s_maximum_is_refused_after_the_reading_and_before_the_writing" computerName="vm" duration="00:00:00.0030000" startTime="2026-11-18T10:47:14.0832825+00:00" endTime="2026-11-18T10:47:14.0873124+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da0ba7a0-44fd-493a-99d6-7644887e1b69" />
+    <UnitTestResult executionId="533dc16d-10fe-4b4f-bb08-0330871c1421" testId="560c6de9-0cf5-d7ac-7de6-f9ff823313e2" testName="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\0&quot;, text: &quot;7&quot;, flags: &quot;u&quot;, subject: &quot;\07&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2798018+00:00" endTime="2026-11-18T10:47:13.2806860+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="533dc16d-10fe-4b4f-bb08-0330871c1421" />
+    <UnitTestResult executionId="265f26d5-99cb-42eb-82f9-1eec6ae3ee61" testId="e4238715-f8de-699d-c971-0a011bee2268" testName="Broiler.Regex.Tests.EscapeStringTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_never_a_block_more_than_the_work" computerName="vm" duration="00:00:00.0050000" startTime="2026-11-18T10:47:14.0883990+00:00" endTime="2026-11-18T10:47:14.0937894+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="265f26d5-99cb-42eb-82f9-1eec6ae3ee61" />
+    <UnitTestResult executionId="b36838d8-4fc2-4398-ab0e-3933ef60f9c5" testId="d431b1d9-1138-e131-03a6-0f7cd6d49c63" testName="Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did" computerName="vm" duration="00:00:00.0400000" startTime="2026-11-18T10:47:12.6085742+00:00" endTime="2026-11-18T10:47:12.6827739+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b36838d8-4fc2-4398-ab0e-3933ef60f9c5">
+      <Output>
+        <ErrorInfo>
+          <Message>",-=&lt;&gt;#&amp;!%:;@~'`"" gives "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where both engines gave "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 269
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a50e1a85-b552-4dbd-b0da-7a703153dcfa" testId="c10f88df-7c21-02c1-6c58-d90bfd338e05" testName="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;(a)\\1&quot;, text: &quot;1&quot;, flags: &quot;u&quot;, subject: &quot;aa1&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2859994+00:00" endTime="2026-11-18T10:47:13.2861845+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a50e1a85-b552-4dbd-b0da-7a703153dcfa" />
+    <UnitTestResult executionId="cb5eb89d-7ff9-40a8-89ce-1c61c784ee6c" testId="ade7c29a-8f01-d1f8-9a2d-30d342eda3c4" testName="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;(a)\\1&quot;, text: &quot;1&quot;, flags: &quot;&quot;, subject: &quot;aa1&quot;)" computerName="vm" duration="00:00:00.0010000" startTime="2026-11-18T10:47:13.2818231+00:00" endTime="2026-11-18T10:47:13.2840712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb5eb89d-7ff9-40a8-89ce-1c61c784ee6c" />
+    <UnitTestResult executionId="fc7aa353-505b-4081-87b3-7d11831216a1" testId="06f47966-1858-a25c-3522-5517bb616b70" testName="Broiler.Regex.Tests.EscapeStringTests.One_escaper_answers_threads_at_once_as_it_answers_one" computerName="vm" duration="00:00:00.0310000" startTime="2026-11-18T10:47:13.2353232+00:00" endTime="2026-11-18T10:47:13.2688784+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc7aa353-505b-4081-87b3-7d11831216a1" />
+    <UnitTestResult executionId="7b68dbf4-7783-4ec4-b12a-d7a645f17734" testId="6636be1c-160b-1c6d-0c42-243db167ce45" testName="Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects" computerName="vm" duration="00:00:00.0070000" startTime="2026-11-18T10:47:13.2230476+00:00" endTime="2026-11-18T10:47:13.2306020+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b68dbf4-7783-4ec4-b12a-d7a645f17734">
+      <Output>
+        <ErrorInfo>
+          <Message>escaped-otherpunctuators.js: "@" gives "@", test262 expects "\x40"</Message>
+          <StackTrace>   at Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 226
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.A_result_longer_than_the_caller_s_maximum_is_refused_after_the_reading_and_before_the_writing" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="fa76b93e-c3bc-f79c-009c-790ed5842843">
+      <Execution id="da0ba7a0-44fd-493a-99d6-7644887e1b69" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="A_result_longer_than_the_caller_s_maximum_is_refused_after_the_reading_and_before_the_writing" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.One_escaper_answers_threads_at_once_as_it_answers_one" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="06f47966-1858-a25c-3522-5517bb616b70">
+      <Execution id="fc7aa353-505b-4081-87b3-7d11831216a1" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="One_escaper_answers_threads_at_once_as_it_answers_one" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6fdfb3d3-ebcf-e8fd-72b6-a244c2e13ac5">
+      <Execution id="ce374d13-27e3-4a1d-93e1-f1b61274d645" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="Each_class_the_specification_names_is_escaped_as_it_says" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\0&quot;, text: &quot;0&quot;, flags: &quot;&quot;, subject: &quot;\00&quot;)" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="a5c1932d-ff2d-090b-33ee-bdad8bf29cbb">
+      <Execution id="2e00ac6c-9b0d-4b88-8850-9afe623e0e81" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_leading_rule_keeps_the_text_out_of_the_escape_before_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;(a)\\1&quot;, text: &quot;1&quot;, flags: &quot;&quot;, subject: &quot;aa1&quot;)" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="ade7c29a-8f01-d1f8-9a2d-30d342eda3c4">
+      <Execution id="cb5eb89d-7ff9-40a8-89ce-1c61c784ee6c" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_leading_rule_keeps_the_text_out_of_the_escape_before_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.A_text_that_needs_no_change_is_answered_as_itself_and_costs_its_reading_alone" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="daf9c17d-c927-1af8-da68-11875cd61c0c">
+      <Execution id="e2a44363-812d-4ca3-ab73-6e437f5e5a16" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="A_text_that_needs_no_change_is_answered_as_itself_and_costs_its_reading_alone" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.A_broken_precondition_is_an_argument_exception" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="264edc37-c851-d9fb-47ac-1a50eb060d57">
+      <Execution id="72f6fabd-66c1-4517-8e28-6d3ebdb60b97" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="A_broken_precondition_is_an_argument_exception" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="d431b1d9-1138-e131-03a6-0f7cd6d49c63">
+      <Execution id="b36838d8-4fc2-4398-ab0e-3933ef60f9c5" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="de774e15-e228-0a5a-f16b-c7519951145c">
+      <Execution id="0c0760c3-0d4a-482c-a7e2-919e6755a71e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_never_a_block_more_than_the_work" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="e4238715-f8de-699d-c971-0a011bee2268">
+      <Execution id="265f26d5-99cb-42eb-82f9-1eec6ae3ee61" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_meter_is_paid_in_whole_blocks_before_each_pass_and_never_a_block_more_than_the_work" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_test_s_white_space_is_the_provider_s_at_the_version_it_pins" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="987b77ff-f664-7dcb-074c-7de488447126">
+      <Execution id="942ff706-988b-4077-acd5-73b749a39120" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_test_s_white_space_is_the_provider_s_at_the_version_it_pins" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\0&quot;, text: &quot;7&quot;, flags: &quot;u&quot;, subject: &quot;\07&quot;)" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="560c6de9-0cf5-d7ac-7de6-f9ff823313e2">
+      <Execution id="533dc16d-10fe-4b4f-bb08-0330871c1421" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_leading_rule_keeps_the_text_out_of_the_escape_before_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_escaped_text_matches_the_text_and_not_another_in_every_mode" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="7ea0de9d-07c7-3c31-eff2-04d33a27a560">
+      <Execution id="0aec5cb4-adde-45c2-99b6-1c0d68886a6d" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_escaped_text_matches_the_text_and_not_another_in_every_mode" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;(a)\\1&quot;, text: &quot;1&quot;, flags: &quot;u&quot;, subject: &quot;aa1&quot;)" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="c10f88df-7c21-02c1-6c58-d90bfd338e05">
+      <Execution id="a50e1a85-b552-4dbd-b0da-7a703153dcfa" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_leading_rule_keeps_the_text_out_of_the_escape_before_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.The_leading_rule_keeps_the_text_out_of_the_escape_before_it(before: &quot;\\c&quot;, text: &quot;J&quot;, flags: &quot;&quot;, subject: &quot;\\cJ&quot;)" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="68707d28-b8d7-32cd-caf9-f20c554157b1">
+      <Execution id="a92c3b91-643d-40ef-9fa7-c13184c67b3e" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="The_leading_rule_keeps_the_text_out_of_the_escape_before_it" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6636be1c-160b-1c6d-0c42-243db167ce45">
+      <Execution id="7b68dbf4-7783-4ec4-b12a-d7a645f17734" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="Test262_s_RegExp_escape_cases_answer_as_test262_expects" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="6ac36481-8fb7-6f0a-8aaa-2c40b44c10fc">
+      <Execution id="3cfebdeb-2f65-401a-bffc-c936916f17a2" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say" />
+    </UnitTest>
+    <UnitTest name="Broiler.Regex.Tests.EscapeStringTests.A_meter_that_throws_stops_the_operation_with_its_own_exception" storage="/home/user/rx-wit-plants/a-9.2-1/tree/broiler.regex.tests/bin/release/net10.0/broiler.regex.tests.dll" id="a90a2301-40d3-686e-6720-16e39005b4a1">
+      <Execution id="f5d90c83-c33d-4a8c-8560-76afa0b7bfb7" />
+      <TestMethod codeBase="/home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Broiler.Regex.Tests.EscapeStringTests" name="A_meter_that_throws_stops_the_operation_with_its_own_exception" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="daf9c17d-c927-1af8-da68-11875cd61c0c" executionId="e2a44363-812d-4ca3-ab73-6e437f5e5a16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ac36481-8fb7-6f0a-8aaa-2c40b44c10fc" executionId="3cfebdeb-2f65-401a-bffc-c936916f17a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="987b77ff-f664-7dcb-074c-7de488447126" executionId="942ff706-988b-4077-acd5-73b749a39120" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a90a2301-40d3-686e-6720-16e39005b4a1" executionId="f5d90c83-c33d-4a8c-8560-76afa0b7bfb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de774e15-e228-0a5a-f16b-c7519951145c" executionId="0c0760c3-0d4a-482c-a7e2-919e6755a71e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5c1932d-ff2d-090b-33ee-bdad8bf29cbb" executionId="2e00ac6c-9b0d-4b88-8850-9afe623e0e81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="264edc37-c851-d9fb-47ac-1a50eb060d57" executionId="72f6fabd-66c1-4517-8e28-6d3ebdb60b97" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="68707d28-b8d7-32cd-caf9-f20c554157b1" executionId="a92c3b91-643d-40ef-9fa7-c13184c67b3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ea0de9d-07c7-3c31-eff2-04d33a27a560" executionId="0aec5cb4-adde-45c2-99b6-1c0d68886a6d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6fdfb3d3-ebcf-e8fd-72b6-a244c2e13ac5" executionId="ce374d13-27e3-4a1d-93e1-f1b61274d645" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa76b93e-c3bc-f79c-009c-790ed5842843" executionId="da0ba7a0-44fd-493a-99d6-7644887e1b69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="560c6de9-0cf5-d7ac-7de6-f9ff823313e2" executionId="533dc16d-10fe-4b4f-bb08-0330871c1421" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4238715-f8de-699d-c971-0a011bee2268" executionId="265f26d5-99cb-42eb-82f9-1eec6ae3ee61" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d431b1d9-1138-e131-03a6-0f7cd6d49c63" executionId="b36838d8-4fc2-4398-ab0e-3933ef60f9c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c10f88df-7c21-02c1-6c58-d90bfd338e05" executionId="a50e1a85-b552-4dbd-b0da-7a703153dcfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ade7c29a-8f01-d1f8-9a2d-30d342eda3c4" executionId="cb5eb89d-7ff9-40a8-89ce-1c61c784ee6c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="06f47966-1858-a25c-3522-5517bb616b70" executionId="fc7aa353-505b-4081-87b3-7d11831216a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6636be1c-160b-1c6d-0c42-243db167ce45" executionId="7b68dbf4-7783-4ec4-b12a-d7a645f17734" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="18" executed="18" passed="13" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v4.0.1+0f7d528729 (64-bit .NET 10.0.15)
+[xUnit.net 00:00:00.26]   Discovering: Broiler.Regex.Tests
+[xUnit.net 00:00:01.70]   Discovered:  Broiler.Regex.Tests
+[xUnit.net 00:00:01.97]   Starting:    Broiler.Regex.Tests
+[xUnit.net 00:00:02.20]       ",-=&lt;&gt;#&amp;!%:;@~'`"" gives "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where both engines gave "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22"
+[xUnit.net 00:00:02.20]       Stack Trace:
+[xUnit.net 00:00:02.20]         /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs(269,0): at Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did()
+[xUnit.net 00:00:02.20]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.20]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.23]       U+0040: "_@" where the specification gives "_\x40"
+[xUnit.net 00:00:02.23]       Stack Trace:
+[xUnit.net 00:00:02.23]         /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs(115,0): at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it()
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.73]       U+0040: "@" where the specification gives "\x40"
+[xUnit.net 00:00:02.73]       Stack Trace:
+[xUnit.net 00:00:02.73]         /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs(134,0): at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say()
+[xUnit.net 00:00:02.73]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.73]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.74]       escaped-otherpunctuators.js: "@" gives "@", test262 expects "\x40"
+[xUnit.net 00:00:02.74]       Stack Trace:
+[xUnit.net 00:00:02.74]         /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs(226,0): at Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects()
+[xUnit.net 00:00:02.74]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:02.74]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.60]       "_,-=&lt;&gt;#&amp;!%:;@~'`"" gives "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22" is the specification's
+[xUnit.net 00:00:03.60]       Stack Trace:
+[xUnit.net 00:00:03.61]         /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs(214,0): at Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says()
+[xUnit.net 00:00:03.61]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:03.61]            at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:03.64]   Finished:    Broiler.Regex.Tests (ID = '44e02f65d413db0e5e44c6569c0304341a7fe241c4b42349861544b2c2eb6a3e')
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:47:12.6918927+00:00">
+        <Text>[xUnit.net 00:00:02.20]     Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:47:12.7216780+00:00">
+        <Text>[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:47:13.2254677+00:00">
+        <Text>[xUnit.net 00:00:02.73]     Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:47:13.2319790+00:00">
+        <Text>[xUnit.net 00:00:02.74]     Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="vm" outcome="Error" timestamp="2026-11-18T10:47:14.0972025+00:00">
+        <Text>[xUnit.net 00:00:03.60]     Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

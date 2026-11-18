@@ -1,0 +1,33 @@
+{
+ "run": "A-9.2-1",
+ "clause": "A-9.2",
+ "attempt": 1,
+ "build-exit": 0,
+ "test-exit": 1,
+ "totals": {
+  "failed": 5,
+  "passed": 13,
+  "skipped": 0,
+  "total": 18
+ },
+ "deciding-tests-failed": [
+  "EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did",
+  "EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says",
+  "EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it",
+  "EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say",
+  "EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects"
+ ],
+ "other-tests-failed": [],
+ "failed-cases": {
+  "EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did": 1,
+  "EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says": 1,
+  "EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it": 1,
+  "EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say": 1,
+  "EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects": 1
+ },
+ "library-files-changed": [
+  "Broiler.Regex/Text/RegexEscaper.cs"
+ ],
+ "library-sources-sha256": "267c1d4382d94ee26707d0f722108079d91f92d728249438a22d4b4d4efd0d2e",
+ "reading": "witness"
+}

@@ -1,0 +1,15 @@
+Test run for /home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.25]     Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum [FAIL]
+  Failed Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum [7 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.ArgumentOutOfRangeException)
+  Stack Trace:
+     at Broiler.Regex.Tests.NestingLimitTests.The_limit_lies_between_1_and_the_documented_maximum() in /home/user/rx-wit-plants/A-4.3-1/tree/Broiler.Regex.Tests/NestingLimitTests.cs:line 121
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-4.3-1/results/test.trx
+
+Failed!  - Failed:     1, Passed:    27, Skipped:     0, Total:    28, Duration: 586 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

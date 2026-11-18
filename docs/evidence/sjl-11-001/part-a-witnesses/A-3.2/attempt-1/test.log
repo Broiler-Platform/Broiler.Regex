@@ -1,0 +1,216 @@
+Test run for /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.00]     Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [FAIL]
+[xUnit.net 00:00:02.09]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.10]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [FAIL]
+[xUnit.net 00:00:02.14]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [FAIL]
+[xUnit.net 00:00:02.15]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.19]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [FAIL]
+  Failed Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration [111 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Trail
+Actual:   Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_counted_loop_that_holds_no_choice_still_fills_the_trail_two_cells_an_iteration() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 78
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [72 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [6 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [42 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [42 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.29]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [FAIL]
+[xUnit.net 00:00:02.30]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [FAIL]
+[xUnit.net 00:00:02.34]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [FAIL]
+[xUnit.net 00:00:02.35]     Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [FAIL]
+[xUnit.net 00:00:02.35]     Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone [FAIL]
+[xUnit.net 00:00:02.36]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [FAIL]
+[xUnit.net 00:00:02.36]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.43]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [FAIL]
+[xUnit.net 00:00:02.45]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [FAIL]
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [98 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [10 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [42 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [2 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 204
+   at InvokeStub_CeilingTests.With_the_fast_paths_every_ceiling_below_what_a_call_needs_names_itself(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Trail)
+Actual:   Tuple (LimitExceeded, Frames)
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.The_trail_ceiling_is_reached_one_cell_past_the_writes_the_match_has_not_undone() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 53
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?<=\\1(a+))b", flags: "i", subject: "aaaaaaaaab") [4 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?=(?:(a)|b)*c)", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(a+)+\\1b", flags: "", subject: "aaaaaaa") [74 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<=(?:b(a+)+|ca*))", flags: "", subject: "caaaaaaa") [19 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.46]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [FAIL]
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [FAIL]
+[xUnit.net 00:00:02.51]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [FAIL]
+[xUnit.net 00:00:02.53]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [FAIL]
+[xUnit.net 00:00:02.55]     Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [FAIL]
+[xUnit.net 00:00:02.69]     Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match [FAIL]
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(\\w+)\\s\\1\\b", flags: "i", subject: "Word wORD wordy word WORD") [1 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?:(a)|b)*(?!\\1)c", flags: "", subject: "ababababababababababc") [34 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?!(?:(a+)+b|a*c))", flags: "u", subject: "aaaaaaac") [18 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "$(?<!(?:b(a+)+|ca*))", flags: "u", subject: "caaaaaaa") [19 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "^(?=(?:(a+)+b|a*c))", flags: "", subject: "aaaaaaac") [17 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(pattern: "(?!(?:a|ab)*d)a", flags: "", subject: "ababababababababababababc") [1 ms]
+  Error Message:
+   Trail 1: Frames
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.Needed(RegexProgram program, String subject, RegexLimit ceiling, ValueTuple`4 full) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 224
+   at Broiler.Regex.Tests.CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(String pattern, String flags, String subject) in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 181
+   at InvokeStub_CeilingTests.A_ceiling_reached_in_a_look_around_or_a_back_reference_names_itself_and_is_never_taken_for_the_body_s_failure(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: Tuple (LimitExceeded, Trail)
+Actual:   Tuple (LimitExceeded, Frames)
+  Stack Trace:
+     at Broiler.Regex.Tests.CeilingTests.A_negative_look_around_whose_body_reaches_a_ceiling_answers_LimitExceeded_not_a_match() in /home/user/rx-wit-plants/A-3.2-1/tree/Broiler.Regex.Tests/CeilingTests.cs:line 245
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-3.2-1/results/test.trx
+
+Failed!  - Failed:    23, Passed:    13, Skipped:     0, Total:    36, Duration: 970 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

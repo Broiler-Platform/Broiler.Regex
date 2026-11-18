@@ -1,0 +1,12 @@
+{
+ "clause": "A-11.3",
+ "what": "the validate entry answers a refusal's status with the default diagnostic: no code, no message identifier and no position",
+ "edits": [
+  {
+   "file": "Broiler.Regex/BroilerRegex.cs",
+   "anchor": "        catch (RegexSyntaxException refusal)\n        {\n            diagnostic = refusal.Diagnostic;\n            limit = RegexLimit.None;\n            return RegexStatus.SyntaxError;\n        }\n        catch (NestingLimitExceeded refusal)\n        {\n            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nesting.Limit, RegexNesting.RefusalMessage);",
+   "replacement": "        catch (RegexSyntaxException)\n        {\n            diagnostic = default; // witness plant A-11.3\n            limit = RegexLimit.None;\n            return RegexStatus.SyntaxError;\n        }\n        catch (NestingLimitExceeded refusal)\n        {\n            diagnostic = RegexDiagnostic.Nesting(refusal.Position, nesting.Limit, RegexNesting.RefusalMessage);"
+  }
+ ],
+ "classes": "ValidateEntryTests"
+}

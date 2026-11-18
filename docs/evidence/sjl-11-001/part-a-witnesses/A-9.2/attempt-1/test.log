@@ -1,0 +1,46 @@
+Test run for /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.20]     Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it [FAIL]
+[xUnit.net 00:00:02.73]     Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say [FAIL]
+[xUnit.net 00:00:02.74]     Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects [FAIL]
+  Failed Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did [40 ms]
+  Error Message:
+   ",-=<>#&!%:;@~'`"" gives "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where both engines gave "\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22"
+  Stack Trace:
+     at Broiler.Regex.Tests.EscapeStringTests.Broiler_VM_s_correspondence_row_T5_answers_as_both_engines_did() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 269
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it [2 ms]
+  Error Message:
+   U+0040: "_@" where the specification gives "_\x40"
+  Stack Trace:
+     at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_after_the_first_is_encoded_as_EncodeForRegExpEscape_encodes_it() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 115
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say [1 ms]
+  Error Message:
+   U+0040: "@" where the specification gives "\x40"
+  Stack Trace:
+     at Broiler.Regex.Tests.EscapeStringTests.Every_code_point_first_is_escaped_as_the_leading_rule_and_EncodeForRegExpEscape_say() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 134
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects [7 ms]
+  Error Message:
+   escaped-otherpunctuators.js: "@" gives "@", test262 expects "\x40"
+  Stack Trace:
+     at Broiler.Regex.Tests.EscapeStringTests.Test262_s_RegExp_escape_cases_answer_as_test262_expects() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 226
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.60]     Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says [FAIL]
+  Failed Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says [1 ms]
+  Error Message:
+   "_,-=<>#&!%:;@~'`"" gives "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b@\x7e\x27\x60\x22" where "_\x2c\x2d\x3d\x3c\x3e\x23\x26\x21\x25\x3a\x3b\x40\x7e\x27\x60\x22" is the specification's
+  Stack Trace:
+     at Broiler.Regex.Tests.EscapeStringTests.Each_class_the_specification_names_is_escaped_as_it_says() in /home/user/rx-wit-plants/A-9.2-1/tree/Broiler.Regex.Tests/EscapeStringTests.cs:line 214
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-9.2-1/results/test.trx
+
+Failed!  - Failed:     5, Passed:    13, Skipped:     0, Total:    18, Duration: 1 s - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.

@@ -1,0 +1,174 @@
+Test run for /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:02.17]     Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators [FAIL]
+[xUnit.net 00:00:02.18]     Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects [FAIL]
+[xUnit.net 00:00:02.21]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\\\]/", flags: "", source: "[\\\\]\\/") [FAIL]
+[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\\\/", flags: "", source: "\\\\\\/") [FAIL]
+[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?<a>/)\\k<a>/", flags: "u", source: "(?<a>\\/)\\k<a>\\/") [FAIL]
+[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[^/]/", flags: "u", source: "[^/]\\/") [FAIL]
+[xUnit.net 00:00:02.22]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?<=/)x/", flags: "", source: "(?<=\\/)x\\/") [FAIL]
+  Failed Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading [35 ms]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 2000
+Actual:   1000
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.The_meter_is_paid_in_whole_blocks_before_each_pass_and_a_pattern_that_needs_no_change_costs_its_reading() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 289
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators [1 ms]
+  Error Message:
+   U+002F
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_alone_is_itself_but_the_solidus_and_the_line_terminators() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 88
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects [2 ms]
+  Error Message:
+   test/staging/sm/RegExp/escape.js: "/" gives "/", test262 expects "\/"
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Test262_s_staging_escape_js_cases_answer_as_test262_expects() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 251
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\\\]/", flags: "", source: "[\\\\]\\/") [24 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                 ↓ (pos 4)
+Expected: "[\\\\]\\/"
+Actual:   "[\\\\]/"
+                 ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\\\/", flags: "", source: "\\\\\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 2)
+Expected: "\\\\\\/"
+Actual:   "\\\\/"
+               ↑ (pos 2)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?<a>/)\\k<a>/", flags: "u", source: "(?<a>\\/)\\k<a>\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                ↓ (pos 5)
+Expected: "(?<a>\\/)\\k<a>\\/"
+Actual:   "(?<a>/)\\k<a>/"
+                ↑ (pos 5)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[^/]/", flags: "u", source: "[^/]\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "[^/]\\/"
+Actual:   "[^/]/"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "(?<=/)x/", flags: "", source: "(?<=\\/)x\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "(?<=\\/)x\\/"
+Actual:   "(?<=/)x/"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "a\\/b/c", flags: "v", source: "a\\/b\\/c") [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\u{2F}/", flags: "u", source: "\\u{2F}\\/") [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\]/]/", flags: "", source: "[\\]/]\\/") [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[[a]/]b/", flags: "", source: "[[a]\\/]b\\/") [FAIL]
+[xUnit.net 00:00:02.23]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class [FAIL]
+[xUnit.net 00:00:02.48]     Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties [FAIL]
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "a\\/b/c", flags: "v", source: "a\\/b\\/c") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                ↓ (pos 4)
+Expected: "a\\/b\\/c"
+Actual:   "a\\/b/c"
+                ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "\\u{2F}/", flags: "u", source: "\\u{2F}\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                  ↓ (pos 6)
+Expected: "\\u{2F}\\/"
+Actual:   "\\u{2F}/"
+                  ↑ (pos 6)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[\\]/]/", flags: "", source: "[\\]/]\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+                 ↓ (pos 5)
+Expected: "[\\]/]\\/"
+Actual:   "[\\]/]/"
+                 ↑ (pos 5)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(pattern: "[[a]/]b/", flags: "", source: "[[a]\\/]b\\/") [1 ms]
+  Error Message:
+   Assert.Equal() Failure: Strings differ
+               ↓ (pos 4)
+Expected: "[[a]\\/]b\\/"
+Actual:   "[[a]/]b/"
+               ↑ (pos 4)
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(String pattern, String flags, String source) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 239
+   at InvokeStub_PatternSourceTests.Classes_escapes_and_groups_are_read_as_a_literal_reads_them(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class [1 ms]
+  Error Message:
+   \[U+002F
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_after_an_escaped_bracket_is_outside_a_class() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 129
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties [42 ms]
+  Error Message:
+   "/" / compiles and gives "/", which is not a literal's body
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 165
+   at Broiler.Regex.Tests.PatternSourceTests.Every_pattern_of_the_test_project_s_string_literals_holds_the_specification_s_properties() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 213
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:02.49]     Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode [FAIL]
+[xUnit.net 00:00:02.50]     Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask [FAIL]
+  Failed Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode [3 ms]
+  Error Message:
+   "/" / compiles and gives "/", which is not a literal's body
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.HoldsTheSpecificationsProperties(String pattern, String flags) in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 165
+   at Broiler.Regex.Tests.PatternSourceTests.Every_code_unit_in_five_shapes_holds_the_specification_s_properties_in_every_mode() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 193
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask [1 ms]
+  Error Message:
+   "/" gives "/"
+  Stack Trace:
+     at Broiler.Regex.Tests.PatternSourceTests.Broiler_VM_s_correspondence_rows_T1_to_T4_answer_as_the_specification_and_the_staging_test_ask() in /home/user/rx-wit-plants/A-9.3-1/tree/Broiler.Regex.Tests/PatternSourceTests.cs:line 270
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Results File: /tmp/claude-0/-home-user/0a6f6b61-1da7-5ce6-9020-88003835d4eb/scratchpad/sjl-rest/rx-wit/runs/A-9.3-1/results/test.trx
+
+Failed!  - Failed:    16, Passed:     6, Skipped:     0, Total:    22, Duration: 408 ms - Broiler.Regex.Tests.dll (net10.0)
+VSTEST_ARTIFACTS_DIRECTORY environment variable was not found, falling back to a user-private temporary directory. This is most likely caused by an outdated Microsoft.NET.Test.Sdk package reference in the test project.
