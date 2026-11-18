@@ -355,6 +355,37 @@ neither `--reduction` nor `--exclude`", and the note of 2026-11-15 says "`run-re
   CI green at the reading's commit (B-3), the reading's commit and the rule commit, and the reading itself. Nothing is
   declared met.
 
+*Dated note, 2026-11-17, task 2.10's host job (SJL-11.2; no rule file added or edited; nothing here is a reading).* The
+note of 2026-11-15 above reads "**Its host job does not**: B-1's retained commit is Broiler.JS's SJL-11.5 branch until
+it merges (decision D35), and that branch does not exist", and the note above says the candidate reading waits on "the
+host job (B-1, which needs Broiler.JS's SJL-11.5 branch, decision D35)".
+- **The host job exists.** CI's `test262-host` job checks Broiler.JS out at
+  **`f690836dba19ded358aacc4b6edb9c8107a53ccf`**, the head of its branch `sjl-11-5`, which
+  [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-17 names as D14's retained commit, and test262 at the pin.
+  [`scripts/test262-host/run.sh`](../../../scripts/test262-host/run.sh) packs the commit's library as the version that
+  Broiler.JS commit pins into a local feed listed first, builds the shell in Release against it, checks the shell holds
+  the packed DLL, runs Broiler.JS's `scripts/compliance/run_test262.py` with `--include-negative`, original variant, over
+  part B's population and staging's RegExp directory, and holds the report to
+  [`test262/host-expected-failures.txt`](../../../test262/host-expected-failures.txt), as B-1 reads.
+- **The expected-failures list** names one file, `test/built-ins/RegExp/proto-from-ctor-realm.js`, in the RegExp
+  object (its prototype taken from the running realm, not the new target's). Every file listing
+  `regexp-duplicate-named-groups` passes in the local run of the job's commands, the four task 2.6 left to this job
+  among them; the roadmap's record has the runs, a planted regression among them, and the choices taken with their
+  alternatives.
+- **The job has not run in CI**, and B-1 is read from CI's run at the reading's commit (B-3); part B's control is a
+  reading's. [`run-library-evidence.sh`](run-library-evidence.sh) records B-1 as not run, as before. Its header said
+  B-1 "waits for Broiler.JS's SJL-11.5 branch", and the log it writes for B-1 (`logs/test262-host.log`) said that "no
+  commit is named, because Broiler.JS's SJL-11.5 branch ... does not exist yet"; both were out of date and are
+  corrected at the review of this work. A reading taken at an earlier commit keeps the old text in that log.
+- **At review**, the population is fixed by the verdict, not by the job's script alone:
+  [`compare.py`](../../../scripts/test262-host/compare.py) holds B-1's population as decision-rule.md words it, plus
+  staging's RegExp directory, and is red on a run that leaves out any of those paths or whose files listing
+  `regexp-duplicate-named-groups` are not the 19 it declares at the pin; its tests hold that copy to the rule's line
+  and the workflow's sparse checkout to it. Broiler.JS's commit must stay reachable until a dated record moves it,
+  since `publish.yml` runs the job too.
+- **The candidate reading still waits on** CI green at the reading's commit (B-3), the reading's commit (recommended
+  `df5cfc2` with this tree's scripts and jobs) and the rule commit, and the reading itself. Nothing is declared met.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written

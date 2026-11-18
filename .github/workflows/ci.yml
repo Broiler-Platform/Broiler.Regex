@@ -202,7 +202,7 @@ jobs:
   # their structured helpers, as harness/regExpUtils.js runs them; a file it cannot read listed, with why, in
   # test262/library-unreadable.txt, which must name exactly those. Under Native AOT and under the JIT, the two reports
   # compared byte for byte per RID; any file that fails, or a list that is not exact, fails the step. The host job,
-  # B-1's test262-host, waits for Broiler.JS's SJL-11.5 branch (decision D35; docs/roadmap.md, task 2.10's record).
+  # B-1's test262-host, is the next job (added 2026-11-17, against Broiler.JS's SJL-11.5 branch, decision D35).
   test262-library:
     name: test262, the library job (${{ matrix.rid }})
     runs-on: ${{ matrix.os }}
@@ -263,6 +263,94 @@ jobs:
           path: |
             test262-library-aot.txt
             test262-library-jit.txt
+          if-no-files-found: warn
+
+  # Bundle sjl-11-001's check B-1, the host job of decision D14 (task 2.10 of SJL-11.2; R5, R6 and R10 of
+  # docs/roadmap.md section 6; decision D35): Broiler.JS checked out at the forty-digit commit docs/roadmap.md's record
+  # of 2026-11-17 names, its SJL-11.5 branch (BROILER_JS_COMMIT below), and test262 at the pin the library job uses, its
+  # commit and the git tree of its test/ checked. scripts/test262-host/run.sh packs this commit's Broiler.Regex as the
+  # version that Broiler.JS commit pins into a local feed listed first, the feed the only source of Broiler.Regex and the
+  # packages restored into an empty folder; builds Broiler.JS's shell in Release against it, and checks that the
+  # Broiler.Regex.dll beside BroilerJS.dll is the packed one; runs Broiler.JS's scripts/compliance/run_test262.py with
+  # --include-negative over part B's population, original variant, and staging's RegExp directory (three of the
+  # nineteen files of regexp-duplicate-named-groups); and holds the report to test262/host-expected-failures.txt with
+  # scripts/test262-host/compare.py. The job fails on a row that fails or times out and is not listed, on a listed file
+  # that does not fail, on a file the runner skips or drops, and on any row of a file listing
+  # regexp-duplicate-named-groups that does not pass, the four task 2.6 left to this job named. About 10 minutes
+  # locally on four cores, most of it the run. The population, the four files and the count of the feature's files at
+  # the test262 pin are compare.py's (POPULATION, REQUIRED, FEATURE_FILES), and the verdict's tests hold them to
+  # decision-rule.md, the sparse checkout below to the population, and TEST262_COMMIT and TEST262_TREE to the library
+  # job's pin. publish.yml calls this workflow, so the job gates a publish too: BROILER_JS_COMMIT must stay reachable
+  # in Broiler.JS (its branch or a kept ref) until a dated record moves it (both added 2026-11-17, at the review).
+  test262-host:
+    name: test262, the host job (Broiler.JS)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      BROILER_JS_COMMIT: f690836dba19ded358aacc4b6edb9c8107a53ccf
+      TEST262_COMMIT: ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+      TEST262_TREE: c022917030da8fbc09b7db8f9b7d55ccc5f5ebab
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # No credential is kept in this checkout either: the job runs Broiler.JS's build and runner in the same workspace,
+      # and nothing in it needs git credentials (added 2026-11-17, at the review of the host job).
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check out Broiler.JS at the pin
+        uses: actions/checkout@v7
+        with:
+          repository: Broiler-Platform/Broiler.JS
+          ref: ${{ env.BROILER_JS_COMMIT }}
+          path: host/broiler.js
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Check out test262 at the pin, the population's directories
+        uses: actions/checkout@v7
+        with:
+          repository: tc39/test262
+          ref: ${{ env.TEST262_COMMIT }}
+          path: suite/test262
+          persist-credentials: false
+          sparse-checkout: |
+            harness
+            test/built-ins/RegExp
+            test/language/literals/regexp
+            test/annexB/built-ins/RegExp
+            test/annexB/language/literals/regexp
+            test/built-ins/RegExpStringIteratorPrototype
+            test/built-ins/String/prototype/match
+            test/built-ins/String/prototype/matchAll
+            test/built-ins/String/prototype/replace
+            test/built-ins/String/prototype/replaceAll
+            test/built-ins/String/prototype/search
+            test/built-ins/String/prototype/split
+            test/staging/built-ins/RegExp
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Test the verdict's script
+        run: python3 -m unittest discover -s scripts/test262-host/tests
+      - name: Pack the candidate, build Broiler.JS's shell against it, run test262 and compare
+        timeout-minutes: 45
+        run: |
+          bash scripts/test262-host/run.sh --broiler-js host/broiler.js --broiler-js-commit "$BROILER_JS_COMMIT" \
+            --test262 suite/test262 --test262-commit "$TEST262_COMMIT" --test262-tree "$TEST262_TREE" \
+            --out "$RUNNER_TEMP/test262-host" --workers 4
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test262-host
+          path: |
+            ${{ runner.temp }}/test262-host/test262-host.json
+            ${{ runner.temp }}/test262-host/run_test262.log
+            ${{ runner.temp }}/test262-host/candidate.txt
+            ${{ runner.temp }}/test262-host/summary.txt
           if-no-files-found: warn
 
   # Part C's two controls (bundle sjl-11-001's decision rule; task 2.14 of SJL-11.2), each a scratch build of the probe

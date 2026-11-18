@@ -1,0 +1,11 @@
+# Bundle sjl-11-001's check B-1 (task 2.10 of SJL-11.2): the files of the host job's population that fail through
+# Broiler.JS's shell, built against this commit's Broiler.Regex, each with the host member it fails in and why that
+# member is the host's, at test262 ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e (test/ tree
+# c022917030da8fbc09b7db8f9b7d55ccc5f5ebab) and Broiler.JS f690836dba19ded358aacc4b6edb9c8107a53ccf, the commit
+# docs/roadmap.md's record of 2026-11-17 names. CI's test262-host job (scripts/test262-host/run.sh) fails on a row that
+# fails or times out and is not listed here, on a listed file whose row does not fail or time out, on a listed path the
+# population does not hold, and on an entry for a file listing regexp-duplicate-named-groups, every row of which must
+# pass (scripts/test262-host/compare.py). Each line: the path from the checkout's root, a tab, the host member, one of
+# B-1's five (the RegExp object, the protocols, species, GetSubstitution's evaluation, lastIndex), a tab, why. No entry
+# is attributed to pattern syntax, compilation or matching. Filed 2026-11-17 from a local run of the job's commands.
+test/built-ins/RegExp/proto-from-ctor-realm.js	the RegExp object	the RegExp constructor, called through Reflect.construct with a newTarget from another realm whose prototype property is null, takes the prototype from the running realm instead of the newTarget's (GetPrototypeFromConstructor, step 4: GetFunctionRealm of the newTarget); the object is allocated by the host (RegExpAlloc), before any pattern is read, and the pattern is empty
