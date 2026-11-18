@@ -765,15 +765,15 @@ owner's own, not one taken under the owner's direction of 2026-10-18.
   - "**Class (b)'s vector clause is the session's reading.** It was made after the runs were seen [...] The choice is
     the owner's.": confirmed; it stays a reading made after the runs were seen.
   - "Whether the unretained pre-fix run bears on it is the owner's to decide.": confirmed that it does not bear on the
-    arms' reading, and the rerun the reading's comparison matches byte for byte stands. The rule's "both runs are
-    retained" is not rewritten and stays not met as written.
+    arms' reading, and the rerun, which the reading's comparison matches byte for byte, stands. The rule's "both runs
+    are retained" is not rewritten and stays not met as written.
 
 The readings are unchanged: parts A to E and the reference arms keep theirs, read MET on the retained runs, part A at
 its second reading. Of the owner's open items listed above, only the scratch branch `sjl-11-2-control-b`'s deletion
 remains for task 4.2; [`docs/roadmap.md`](../../roadmap.md)'s dated note of the same date on what task 4.2 now waits on
-replaces its list, keeps the wording review as optional, and quotes what `decision-rule.md` says of the end reading,
-which it leaves to the owner. Nothing else is decided or declared met: SJL-11.5 in Broiler.JS and SJL-11.4 in
-Broiler.VM still wait on their own holds and their base runs.
+replaces its list, keeps the wording review as optional, and quotes what `decision-rule.md` says of the end reading;
+the rule does not say whether one is owed, and the note leaves that for the owner. Nothing else is decided or declared
+met: SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on their own holds and their base runs.
 
 ## No figure
 

@@ -4283,13 +4283,13 @@ candidate reading (D13)".
   judged."
 - *Not taken*: "Publish preview.7 first" — "You publish a new Regex version after the reading. Broiler.JS moves its pin
   before the SJL-11.5 base is taken, and Broiler.VM admits that version."
-- *What it settles.* D13 is settled by the owner: there is no new release of Broiler.Regex for the cut-overs. SJL-11.5
-  in Broiler.JS and SJL-11.4 in Broiler.VM both use `0.1.0-preview.6`, packed from `df5cfc2`. Its library sources are
-  the ones the candidate reading judged: `Broiler.Regex/` and the props are the same git trees at `df5cfc2` and at
-  `49d7be1f` (the record of the candidate reading, "**The commits**"). The published bytes stay unread, as that record
-  says ("**The reading judges the sources, not the published bytes.**"). The package was published before the
-  candidate reading, so D13's order "after the candidate reading" was not followed (the dated note of 2026-11-15 on the
-  tail's record); the owner keeps it as published. This work publishes nothing and dispatches no workflow, and no
+- *What it settles.* D13 is settled by the owner: there is no new release of Broiler.Regex ("No new Regex release").
+  SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM both use `0.1.0-preview.6`, packed from `df5cfc2`. Its library
+  sources are the ones the candidate reading judged: `Broiler.Regex/` and the props are the same git trees at `df5cfc2`
+  and at `49d7be1f` (the record of the candidate reading, "**The commits.**"). The published bytes stay unread, as
+  that record says ("**The reading judges the sources, not the published bytes.**"). The package was published before
+  the candidate reading, so D13's order "after the candidate reading" was not followed (the dated note of 2026-11-15 on
+  the tail's record); the owner keeps it as published. This work publishes nothing and dispatches no workflow, and no
   version file changes. The waiting list's item 1 is answered.
 
 **Answer 2: the candidate reading's four decisions.** The same list reads: "2. **The owner on the decisions and
@@ -4326,8 +4326,8 @@ own decision, confirmed. The record lines are not rewritten.
   "nothing of that run is retained here" (validation principle 5), and no record names where its files are. The MET
   line does not name the clause, so the arms' reading stands on the MET line. Whether the unretained pre-fix run bears
   on it is the owner's to decide." Confirmed: the unretained pre-fix run does not bear on the arms' reading, and the
-  rerun the reading's comparison matches byte for byte stands. The rule's "both runs are retained" is not rewritten and
-  stays not met as written.
+  rerun, which the reading's comparison matches byte for byte, stands. The rule's "both runs are retained" is not
+  rewritten and stays not met as written.
 
 By these answers the waiting list's items 1 and 2 are answered. The reference arms keep their reading, read MET on the
 retained runs, and parts A to E keep theirs. Nothing else is decided: SJL-11.5 in Broiler.JS and SJL-11.4 in
@@ -4355,9 +4355,9 @@ The record of part A's witnesses, as its note on review corrects it, lists:
 
 That list is replaced by the one below. Items 1 and 2 are answered by the owner's answers in the note above. The owner's
 chosen answer on the four decisions reads "task 4.2 then waits only on D13 and the scratch branch's deletion", and D13
-is answered too, so of the listed items only the scratch branch's deletion remains. Item 4 was never something task 4.2
-waits on: it reads "The owner may review", and it stays optional. Its blocking-line item was answered by the owner's
-ruling on the blocking line (its dated note above: "that wording item is answered"), so it is left out below.
+is answered too, so of the listed items only the scratch branch's deletion remains. Item 4 reads "The owner may
+review", so it stays optional and is not waited on. Its blocking-line item was answered by the owner's ruling on the
+blocking line (its dated note above: "that wording item is answered"), so it is left out below.
 
 **What task 4.2 now waits on**, replacing the list quoted above:
 1. **The scratch branch `sjl-11-2-control-b`'s deletion**, for the owner. On 2026-11-18, at this note, the branch is
@@ -4388,8 +4388,9 @@ candidate reading (the commit `0.2.0-preview.1` is packed from) and at the end r
   for the candidate reading, or the commit the reading was taken at. Read the first way, the commit both engines would
   pin does not differ; read the second way, it does. The rule also names a commit, not its library trees.
 
-Which reading holds, and so whether an end reading is owed, is the owner's; the rule leaves it there. The rule puts any
-end reading "after their cut-overs", so it is not among what task 4.2, the candidate reading, waits on.
+The rule does not say which way it is read; this note does not decide it, and leaves it for the owner. Read here, and
+not in the rule's words: the rule names the commit both engines pin "after their cut-overs", so an end reading, if one
+is owed, is not part of task 4.2, the candidate reading.
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.

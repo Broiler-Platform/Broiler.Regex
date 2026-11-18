@@ -227,8 +227,8 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
   - The owner's answers on publication and on the candidate reading's decisions (task 4.2, 2026-11-18; bundle
     `sjl-11-001`; process only, in neither the published package nor its API, and not in `df5cfc2`). On decision D13
     the owner chose "Keep preview.6": "No new Regex release. Both cut-overs use preview.6, whose library sources the
-    reading judged." So this entry's version, published from `df5cfc2`, is the one both cut-overs use, and no further
-    version is released for them. On the candidate reading's four decisions the owner chose "Confirm all four": the
+    reading judged." So this entry's version, published from `df5cfc2`, is the one both cut-overs use, and no new
+    version is released. On the candidate reading's four decisions the owner chose "Confirm all four": the
     reading's commit `49d7be1f` with its departure from the rule's packed-from line, the rule commit `e568b88`, the
     session's reading of class (b)'s vector clause, and class (c)'s unretained pre-fix run as not bearing on the arms'
     reading. Task 4.2 now waits only on the owner's deletion of the scratch branch `sjl-11-2-control-b`; whether an
