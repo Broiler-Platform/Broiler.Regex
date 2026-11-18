@@ -385,8 +385,13 @@
   },
   {
    "path": "candidate-reading/ci/artifacts/44206505415-fuzz-windows-latest/fuzz.log",
-   "sha256": "128a19263684c4963ddf52e217b3ac56dc6acd97a29a5554f1fede3a21122664",
-   "bytes": 1237
+   "sha256": "9626d66818764f266c56aad9b8da3faacbb674019b494501313e0703f0cfab49",
+   "bytes": 1204,
+   "as-fetched": {
+    "sha256": "128a19263684c4963ddf52e217b3ac56dc6acd97a29a5554f1fede3a21122664",
+    "bytes": 1237,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/probe-publish.log",
@@ -395,8 +400,13 @@
   },
   {
    "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/probe-publish.log",
-   "sha256": "a04e8296c01fc1e7bc4994df17a01373c4cf5d876b9c8dfa16910c50236a2b1e",
-   "bytes": 593
+   "sha256": "626f1cc787bc0a555d6d4a788c0a9c08e206057243fec6ae6c05f1a0ae3691b6",
+   "bytes": 586,
+   "as-fetched": {
+    "sha256": "a04e8296c01fc1e7bc4994df17a01373c4cf5d876b9c8dfa16910c50236a2b1e",
+    "bytes": 593,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/artifacts/44206505415-test262-host/candidate.txt",
@@ -445,13 +455,23 @@
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694553.log",
-   "sha256": "e19aaabc04cb3039d9856c8f8164deaadbd5b959281547b0b0334cb6d23081cc",
-   "bytes": 126245
+   "sha256": "e244ffd81ce92491c81054259a498895c48a71a802eef9512332fc6f78281ca2",
+   "bytes": 125404,
+   "as-fetched": {
+    "sha256": "e19aaabc04cb3039d9856c8f8164deaadbd5b959281547b0b0334cb6d23081cc",
+    "bytes": 126245,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694800.log",
-   "sha256": "c0559e08b4a4756d6c9984c90f7c9d3595036d17f14e952f58b07952352d5927",
-   "bytes": 22371
+   "sha256": "8bd5e7447fa5c0c375c75a685feb92f44f12e0dac823c88380090fe7333db06d",
+   "bytes": 22118,
+   "as-fetched": {
+    "sha256": "c0559e08b4a4756d6c9984c90f7c9d3595036d17f14e952f58b07952352d5927",
+    "bytes": 22371,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694801.log",
@@ -460,8 +480,13 @@
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694825.log",
-   "sha256": "25cbb4b63f11ce0172a4e902cab0a1ff77de33dfca3b05b8baac8281659fcccf",
-   "bytes": 19276
+   "sha256": "7241ef9d5b3313d760a0409a44248bdbae7e878b1d4be8ddc88e89327e86afa4",
+   "bytes": 19075,
+   "as-fetched": {
+    "sha256": "25cbb4b63f11ce0172a4e902cab0a1ff77de33dfca3b05b8baac8281659fcccf",
+    "bytes": 19276,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694923.log",
@@ -470,8 +495,13 @@
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694930.log",
-   "sha256": "bddfda6d95ac94b8ed10dc06a3047ce37c4a4c5a1e37cb513ba9a8364e54a412",
-   "bytes": 27550
+   "sha256": "8db41a3441583a93a68d952571e30a572a8ca9e316723dd392f97e9ec5ad9d9e",
+   "bytes": 27241,
+   "as-fetched": {
+    "sha256": "bddfda6d95ac94b8ed10dc06a3047ce37c4a4c5a1e37cb513ba9a8364e54a412",
+    "bytes": 27550,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134473694949.log",
@@ -495,8 +525,13 @@
   },
   {
    "path": "candidate-reading/ci/job-logs/134473695064.log",
-   "sha256": "21be7d1dd1e43e38e54eb8b912e6466afcea2d0d17b608cb877e56261783aeaa",
-   "bytes": 44676
+   "sha256": "1cd521303da17bc879b6d55007d69e44c2535008340d1575de413458d3ef36b5",
+   "bytes": 44189,
+   "as-fetched": {
+    "sha256": "21be7d1dd1e43e38e54eb8b912e6466afcea2d0d17b608cb877e56261783aeaa",
+    "bytes": 44676,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134473695079.log",
@@ -525,8 +560,13 @@
   },
   {
    "path": "candidate-reading/ci/job-logs/134575819759.log",
-   "sha256": "07881a5e288ea9f742cac3fe1243bf58987492698423a8cd74f6707d4b1f55f8",
-   "bytes": 44114
+   "sha256": "693444f2da3e22c60af31bfdaa190b7c7dcc77c7151bb9daa9d3c4ed649b1a13",
+   "bytes": 43640,
+   "as-fetched": {
+    "sha256": "07881a5e288ea9f742cac3fe1243bf58987492698423a8cd74f6707d4b1f55f8",
+    "bytes": 44114,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
   },
   {
    "path": "candidate-reading/ci/job-logs/134575819815.log",
