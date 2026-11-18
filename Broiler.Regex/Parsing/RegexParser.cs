@@ -255,7 +255,7 @@ internal sealed class RegexParser
         // \k<b>(?<a>x) as a compilation does.
         foreach (var (name, position) in _namedReferences)
         {
-            if (!_groupsByName.ContainsKey(name))
+            if (!_unicode && !_groupsByName.ContainsKey(name))
                 throw Refuse(RegexDiagnosticCode.UndefinedGroupName, position, "Reference to the undeclared group name '" + name + "'", name);
         }
 
