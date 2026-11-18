@@ -4334,6 +4334,63 @@ retained runs, and parts A to E keep theirs. Nothing else is decided: SJL-11.5 i
 Broiler.VM still wait on their own holds and on their base runs. What task 4.2 now waits on is in the note
 below.
 
+*Dated note, 2026-11-18, what task 4.2 now waits on (no rule file and no retained file changed; no reading changed).*
+The record of part A's witnesses, as its note on review corrects it, lists:
+
+> **What task 4.2 now waits on**, replacing the record above's list:
+> 1. **The owner on publication (D13).** `0.1.0-preview.6` was published from `df5cfc2` before the candidate reading,
+>    which read its sources and not its bytes. Whether to keep it, publish another version after a reading, or neither,
+>    is the owner's question.
+> 2. **The owner on the decisions and readings of the candidate reading**, any of which the owner can overturn: the
+>    reading's commit, with its departure from `decision-rule.md`'s line "taken at the commit `0.1.0-preview.6` is
+>    packed from"; the rule commit; the session's reading of class (b)'s vector clause; and class (c)'s "both runs are
+>    retained", whose pre-fix run is not retained.
+> 3. **The scratch branch `sjl-11-2-control-b`**, for the owner to delete.
+> 4. **The owner may review this revision's wording**: the choice is the owner's own; the clause list, the tests named
+>    for each clause and the two clauses read on their closest plant (A-4.4's Native AOT half, A-10.1's version) are
+>    this record's. So are the review's items in the dated note below: A-11.3's row, which names a test of A-5.6's among
+>    its own; the blocking line, which the revision lists as unchanged while pointing it, for part A, at the second
+>    reading; the two attempts not counted, a reading stricter than the revision's text; the guarantees inside a clause
+>    that have no plant of their own; and the revision's "0 failed", a result in a file that holds no figure.
+
+That list is replaced by the one below. Items 1 and 2 are answered by the owner's answers in the note above. The owner's
+chosen answer on the four decisions reads "task 4.2 then waits only on D13 and the scratch branch's deletion", and D13
+is answered too, so of the listed items only the scratch branch's deletion remains. Item 4 was never something task 4.2
+waits on: it reads "The owner may review", and it stays optional. Its blocking-line item was answered by the owner's
+ruling on the blocking line (its dated note above: "that wording item is answered"), so it is left out below.
+
+**What task 4.2 now waits on**, replacing the list quoted above:
+1. **The scratch branch `sjl-11-2-control-b`'s deletion**, for the owner. On 2026-11-18, at this note, the branch is
+   still on Broiler-Platform/Broiler.Regex, at `d0dd222` (part B's revert commit), as `git ls-remote` reads it. This
+   work does not delete it.
+
+*Optional, not waited on.* **The owner may review the revision's wording**: the choice is the owner's own; the clause
+list, the tests named for each clause and the two clauses read on their closest plant (A-4.4's Native AOT half,
+A-10.1's version) are the record's of part A's witnesses. So are the review's items in its note on review: A-11.3's
+row, which names a test of A-5.6's among its own; the two attempts not counted, a reading stricter than the revision's
+text; the guarantees inside a clause that have no plant of their own; and the revision's "0 failed", a result in a file
+that holds no figure.
+
+**Whether an end reading is owed: what the rule says.** This note does not decide it. `decision-rule.md` reads, under
+"The readings": "**The end reading** is taken at the commit both engines pin after their cut-overs, if it differs.
+Every part is judged at both." Under "How it is read" it reads: "Parts A to E are judged at the candidate reading from
+the logs retained for it, and again at the end reading, if there is one, from its own logs; a part MET at one reading
+says nothing of the other." The revision of 2026-11-18 lists among what it does not change "the end reading, at which
+every part, A included, is judged again from its own logs", and says of part A's second reading "It is not the end
+reading either". This roadmap's section 6 reads that the milestone's component clauses judge R1 to R11 "at the
+candidate reading (the commit `0.2.0-preview.1` is packed from) and at the end reading".
+- By answer 1, both cut-overs use `0.1.0-preview.6`, packed from `df5cfc2`.
+- `df5cfc2` is the commit the rule's dated note of 2026-11-01 reads the candidate reading as taken at ("The candidate
+  reading is read as taken at the commit `0.1.0-preview.6` is packed from").
+- `df5cfc2` is not `49d7be1f`, the commit the candidate reading was taken at, by the decision the owner confirmed in
+  answer 2. The library trees and props are the same at both.
+- The rule's "if it differs" does not say what the pinned commit is compared with: the commit the rule's line names
+  for the candidate reading, or the commit the reading was taken at. Read the first way, the commit both engines would
+  pin does not differ; read the second way, it does. The rule also names a commit, not its library trees.
+
+Which reading holds, and so whether an end reading is owed, is the owner's; the rule leaves it there. The rule puts any
+end reading "after their cut-overs", so it is not among what task 4.2, the candidate reading, waits on.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read
