@@ -642,7 +642,7 @@ candidate reading's result is its test logs' totals, 0 failed, read for each tes
 | A-10.4 | `ProviderDataTests` | passed | `A-10.4/attempt-1`: `ProviderDataTests.The_library_references_the_provider_alone_and_carries_no_table_or_data_version` |
 | A-11.1 | `GroupNameTests`, `ValidateEntryTests` | passed | `A-11.1/attempt-1`: `GroupNameTests.An_escaped_surrogate_in_a_name_is_read_or_refused_never_thrown`, `ValidateEntryTests.The_validate_entry_answers_as_Compile_over_the_suite_and_seeded_populations` |
 | A-11.2 | `CompileChargingTests`, `ConcurrentUseTests`, `EntryTests`, `FirstUseConcurrencyTests` | passed | `A-11.2/attempt-1`: `ConcurrentUseTests.Concurrent_first_compiles_and_matches_of_a_fresh_library_answer_as_one_thread_does`, `ConcurrentUseTests.Warm_concurrent_compiles_and_matches_answer_as_one_thread_does`, `EntryTests.One_program_shared_by_concurrent_calls_answers_each_as_it_answers_alone` |
-| A-11.3 | `ValidateEntryTests` | passed | `A-11.3/attempt-1`: `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`, `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`, `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException` |
+| A-11.3 | `ValidateEntryTests` | passed | `A-11.3/attempt-1`: `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`, `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException` (its log also names `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position` failing, a test the revision's A-5.6 row names and its A-11.3 row's exclusion leaves to A-5.6: the dated note on review below) |
 
 - **Part A: read MET on the retained runs**, at its second reading at `49d7be1f`, under the revision of 2026-11-18:
   every check passes at the reading (the candidate reading's logs, unchanged), and every clause of A-1 to A-11 has a
@@ -652,14 +652,68 @@ candidate reading's result is its test logs' totals, 0 failed, read for each tes
 - **What it bears on**, in the rule's words and the revision's. The rule reads "A part NOT MET at the candidate reading
   blocks both cut-overs (risk D10's stop)", unchanged. The revision reads: "For part A alone, the reading that line
   reads at the candidate reading's commit is, from this file's date, part A's second reading: if it reads MET, part A
-  no longer blocks the cut-overs by that line". So part A no longer blocks the cut-overs by that line, and no part read
-  at the candidate reading does. That is all it lifts: the revision also says "Nothing else of either engine's cut-over
+  no longer blocks the cut-overs by that line". So part A no longer blocks the cut-overs by that line; parts B to E read
+  MET at the candidate reading. That is all it lifts: the revision also says "Nothing else of either engine's cut-over
   is decided here", and the rule's "What this file does not decide" names "**Either engine's cut-over**". The
   cut-overs still wait on their own holds, H1 and H2, which this bundle does not decide, and on the owner's open items:
   publication (D13); the departure from the rule's packed-from line (the reading's commit); the session's reading of
   class (b)'s vector clause; class (c)'s unretained pre-fix run; and the scratch branch `sjl-11-2-control-b`'s
   deletion. Nothing else is declared met or accepted.
   [`docs/roadmap.md`](../../roadmap.md)'s record of 2026-11-18 on part A's witnesses has the runs and the choices taken.
+
+*Dated note, 2026-11-18, on review of part A's second reading (the revision, every rule file and every retained file
+unchanged; the reading unchanged).* Two places in the note above are corrected, each quoted here, and the review's
+other findings are recorded for the owner.
+- **A-11.3's deciding tests.** The table above read, in A-11.3's last cell, "`A-11.3/attempt-1`:
+  `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`,
+  `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`,
+  `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException`". The
+  revision's A-11.3 row names its deciding tests as "`ValidateEntryTests`, every test not named above for A-5.6, A-5.7
+  or A-11.1", and its A-5.6 row names `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`;
+  the same A-11.3 row then lists that test "among them". The row contradicts itself. By its exclusion clause that test
+  decides A-5.6, not A-11.3, and it is not counted for A-11.3 here. A-11.3 is witnessed by the two other deciding tests
+  its run's log names failing, `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`
+  and `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException`, neither
+  named for A-5.6, A-5.7 or A-11.1; the cell now says so. The attempt's retained `note.md` and `failures.json`, and
+  `part-a-witnesses/scripts/deciding.py`, whose A-11.3 exclusion leaves that test out, count it for A-11.3; they stay
+  unedited as retained files, and this note is how they are read. The row's wording is an item for the owner.
+- **What it bears on.** The bullet above read "So part A no longer blocks the cut-overs by that line, and no part read
+  at the candidate reading does." Part A's candidate reading is NOT MET and stays on record, and the revision points
+  the line at part A's second reading only; neither rule file says that no part blocks. It now reads "So part A no
+  longer blocks the cut-overs by that line; parts B to E read MET at the candidate reading."
+- **The blocking line, for the owner.** The revision lists "A part NOT MET at the candidate reading blocks both
+  cut-overs (risk D10's stop)" under "What it does not change", and under "How it is read" says that, for part A
+  alone, "the reading that line reads at the candidate reading's commit is, from this file's date, part A's second
+  reading". Read literally, the unchanged line still reads the candidate reading's NOT MET; the lift rests on the
+  revision's reading of that line, which its "What it revises" does not list. The owner's question framed part A's NOT
+  MET as what blocks the cut-overs, and the choice was to read part A again, so this note reads the lift as the
+  owner's intent. Whether the owner confirms it, and whether a later dated note names it among the revisions, is the
+  owner's.
+- **"Not counted", for the owner.** The revision reads "a clause is witnessed if and only if at least one of its
+  deciding tests fails in a retained witness run and is named failing in that run's test log", and names no attempt
+  "not counted". A-4.2's first attempt names two deciding tests failing before xUnit's fatal error, so by the
+  revision's words alone it would witness A-4.2. A-4.4's first test log is kept by its digest only, as the revision's
+  "a file over 2 MB by its digest only" allows. Setting both aside, the first by `decision-rule.md`'s "a step that
+  stopped before the end of its population is void" and the second because its log is not kept in the bundle, is the
+  session's own stricter reading, beyond the revision's text, made after the runs were seen; it is not a category the
+  revision defines. Each of the two clauses is witnessed by its second attempt either way.
+- **Guarantees with no plant of their own, for the owner.** The unit is the ";"-separated clause, so a clause that
+  states more than one guarantee is witnessed by a plant of one of them. A-1.4: the plant stops the meter's exception
+  from propagating, not the fresh call's answer. A-4.4: a pattern at the maximum under the JIT; not the flat sequence
+  of part C's class F, whose `StackDepthGuardTests` did not fail, nor the Native AOT probe. A-6.1: the "refused
+  otherwise" half, not the "accepted" half. A-8: the allocation half;
+  `PublicEntryTests.The_entry_s_signature_carries_no_string_and_answers_a_status` did not fail. A-9.1: the duplicate
+  flag, not the unknown flag or u with v. A-10.1: the second dependency, not the version pin. By the revision's
+  definition the retained runs witness these clauses, and not each guarantee in them; the evidence for the halves
+  listed is weaker.
+- **A result in the revision, for the owner.** Its header reads "**It holds no figure**", and its section "The
+  clauses" reads "Every test named passed at the reading: the candidate reading's logs carry totals per assembly, 0
+  failed". That is a result of the candidate reading, which `decision-rule.md`'s "Counts are results, not rules" puts
+  in this README. The revision stays unedited, since it was committed before the runs.
+- **Files kept by digest only.** A-4.4's first test log and trx and its second trx are named in
+  `part-a-witnesses/manifest.json` at the session's scratch directory, which a restart can clear; their digests are
+  recorded there. The retained test logs and scripts of `part-a-witnesses/` name that scratch path, as produced. None
+  of these decides a clause.
 
 ## No figure
 

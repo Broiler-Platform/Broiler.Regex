@@ -4144,7 +4144,7 @@ MET", quoted in the revision. It is the owner's own decision.
 | A-10.4 | 1 | the library declares a data version of its own, a constant UnicodeVersion (`Unicode/RegexUnicode.cs`) | 1 of 17 | witness: 1 deciding test(s) named failing |
 | A-11.1 | 1 | an escaped astral group name read without u throws ArgumentOutOfRangeException, as RegexParser.ReadGroupName did in 0.1.0-preview.4 (`Parsing/RegexParser.cs`) | 12 of 213 | witness: 2 deciding test(s) named failing |
 | A-11.2 | 1 | every call of every program shares one static register array instead of renting its own, so concurrent calls on shared instances overwrite each other's registers (`Engine/RegexMachine.cs`) | 3 of 123 | witness: 3 deciding test(s) named failing |
-| A-11.3 | 1 | the validate entry answers a refusal's status with the default diagnostic: no code, no message identifier and no position (`BroilerRegex.cs`) | 96 of 153 | witness: 3 deciding test(s) named failing |
+| A-11.3 | 1 | the validate entry answers a refusal's status with the default diagnostic: no code, no message identifier and no position (`BroilerRegex.cs`) | 96 of 153 | witness: 2 deciding test(s) named failing |
 
 **Part A's second reading at `49d7be1f`**, under the revision: every check passes at the reading (the candidate
 reading's logs, unchanged), and every clause has a retained witness run, 32 taken here and 3 the candidate reading
@@ -4155,14 +4155,16 @@ keep their candidate readings, MET on the retained runs, unchanged.
 **What it bears on**, by the rule's words and the revision's. The rule's line "A part NOT MET at the candidate reading
 blocks both cut-overs (risk D10's stop)" is unchanged; the revision reads that, for part A alone, the reading this line
 reads at the candidate reading's commit is part A's second reading, and "if it reads MET, part A no longer blocks the
-cut-overs by that line". So no part read at the candidate reading blocks the cut-overs by that line. Nothing more is
-lifted: the revision says "Nothing else of either engine's cut-over is decided here", and the rule's "What this file
-does not decide" names "**Either engine's cut-over**". SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on
-their own holds, H1 and H2, which this repository's records do not decide, and on the owner's items below.
+cut-overs by that line". So part A no longer blocks the cut-overs by that line; parts B to E read MET at the candidate
+reading. Nothing more is lifted: the revision says "Nothing else of either engine's cut-over is decided here", and the
+rule's "What this file does not decide" names "**Either engine's cut-over**". SJL-11.5 in Broiler.JS and SJL-11.4 in
+Broiler.VM still wait on their own holds, H1 and H2, which this repository's records do not decide, and on the owner's
+items below.
 
 **What task 4.2 now waits on**, replacing the record above's list:
 1. **The owner on publication (D13).** `0.1.0-preview.6` was published from `df5cfc2` before the candidate reading,
-   which read its sources and not its bytes.
+   which read its sources and not its bytes. Whether to keep it, publish another version after a reading, or neither,
+   is the owner's question.
 2. **The owner on the decisions and readings of the candidate reading**, any of which the owner can overturn: the
    reading's commit, with its departure from `decision-rule.md`'s line "taken at the commit `0.1.0-preview.6` is packed
    from"; the rule commit; the session's reading of class (b)'s vector clause; and class (c)'s "both runs are
@@ -4170,7 +4172,10 @@ their own holds, H1 and H2, which this repository's records do not decide, and o
 3. **The scratch branch `sjl-11-2-control-b`**, for the owner to delete.
 4. **The owner may review this revision's wording**: the choice is the owner's own; the clause list, the tests named
    for each clause and the two clauses read on their closest plant (A-4.4's Native AOT half, A-10.1's version) are
-   this record's.
+   this record's. So are the review's items in the dated note below: A-11.3's row, which names a test of A-5.6's among
+   its own; the blocking line, which the revision lists as unchanged while pointing it, for part A, at the second
+   reading; the two attempts not counted, a reading stricter than the revision's text; the guarantees inside a clause
+   that have no plant of their own; and the revision's "0 failed", a result in a file that holds no figure.
 
 **Choices taken, each with its alternative.**
 - *The unit split at ";"*, as the owner's choice and the brief say; a check without ";" (A-7, A-8) is one clause.
@@ -4203,6 +4208,42 @@ their own holds, H1 and H2, which this repository's records do not decide, and o
   The IL call-graph clause is A-4.1, which keeps its in-test witness and takes no plant; the stack clause is A-4.4.
 - The brief asks to extend `manifest.json` "by the repository's tooling". The repository holds no manifest tool; the
   sibling manifest was written by `part-a-witnesses/scripts/retain.py`, and `verify.py` beside it checks both.
+
+*Dated note, 2026-11-18, on review of the record above (no rule file and no retained file changed; part A's second
+reading unchanged).* Four places in the record above are corrected, each quoted here, and the review's other findings
+are added to the owner's wording items.
+- **A-11.3's row of the table** read "witness: 3 deciding test(s) named failing". The revision's A-11.3 row names its
+  deciding tests as "`ValidateEntryTests`, every test not named above for A-5.6, A-5.7 or A-11.1", and its A-5.6 row
+  names `ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position`, which the A-11.3
+  row then lists "among them". By the exclusion clause that test is A-5.6's, so A-11.3 rests on the other two its run's
+  log names failing, `ValidateEntryTests.A_flags_value_with_u_and_v_is_the_syntax_status_and_an_undefined_bit_a_broken_precondition`
+  and `ValidateEntryTests.No_public_type_is_an_exception_and_the_constructors_refuse_with_an_ArgumentException`. The row
+  now reads "witness: 2 deciding test(s) named failing". The attempt's retained `note.md` and `failures.json`, and
+  `part-a-witnesses/scripts/deciding.py`, count the third test for A-11.3 and stay unedited; the bundle README's dated
+  note on review reads them so.
+- **"What it bears on"** read "So no part read at the candidate reading blocks the cut-overs by that line." Part A's
+  candidate reading stays NOT MET on record, and the revision points the line at part A's second reading alone. It now
+  reads "So part A no longer blocks the cut-overs by that line; parts B to E read MET at the candidate reading."
+- **"What task 4.2 now waits on"** replaced the list of the record before it, which this record quoted at its start by
+  item 1 alone. That list's other items read: "2. **The owner on publication (D13).** `0.1.0-preview.6` was published
+  from `df5cfc2` before this reading, so the reading judges its sources and not its bytes. Whether to keep it, publish
+  another version after a reading, or neither, is the owner's question. 3. **The owner on the decisions and readings
+  above**, any of which the owner can overturn: - the reading's commit, with its departure from `decision-rule.md`'s
+  line "taken at the commit `0.1.0-preview.6` is packed from"; - the rule commit; - the session's reading of class
+  (b)'s vector clause; - class (c)'s "both runs are retained", whose pre-fix run is not retained. 4. **The scratch
+  branch `sjl-11-2-control-b`**, for the owner to delete." They are carried over as items 1 to 3 of the new list, item
+  2's sentence on the owner's question restored to item 1, which read "1. **The owner on publication (D13).**
+  `0.1.0-preview.6` was published from `df5cfc2` before the candidate reading, which read its sources and not its
+  bytes."
+- **Item 4 of the new list** read "4. **The owner may review this revision's wording**: the choice is the owner's own;
+  the clause list, the tests named for each clause and the two clauses read on their closest plant (A-4.4's Native AOT
+  half, A-10.1's version) are this record's." It now also names the review's wording items: A-11.3's row; the blocking
+  line, which the revision lists as unchanged while it points the line, for part A, at the second reading, a change of
+  the line's effect that its "What it revises" does not list (read here as the owner's intent, the question having
+  framed part A's NOT MET as what blocks); the two attempts not counted, the session's own stricter reading beyond the
+  revision's "witnessed if and only if", by which A-4.2's first attempt alone would witness its clause; the guarantees
+  inside a clause with no plant of their own (the bundle README's dated note on review lists them); and the revision's
+  "0 failed", a result in a file whose header reads "It holds no figure".
 
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
