@@ -1,0 +1,463 @@
+﻿2026-11-18T04:24:41.9191989Z Current runner version: '2.338.2'
+2026-11-18T04:24:41.9214929Z ##[group]Runner Image Provisioner
+2026-11-18T04:24:41.9215780Z Hosted Compute Agent
+2026-11-18T04:24:41.9216405Z Version: 20261103.629
+2026-11-18T04:24:41.9217060Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T04:24:41.9217800Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T04:24:41.9218546Z Worker ID: {0e0597c7-643c-4586-8d9f-54b039e0981a}
+2026-11-18T04:24:41.9219306Z Region: us-east-1
+2026-11-18T04:24:41.9219883Z Cloud: AWS
+2026-11-18T04:24:41.9220457Z ##[endgroup]
+2026-11-18T04:24:41.9222068Z ##[group]Operating System
+2026-11-18T04:24:41.9222879Z Ubuntu
+2026-11-18T04:24:41.9223428Z 24.04.5
+2026-11-18T04:24:41.9223937Z LTS
+2026-11-18T04:24:41.9224499Z ##[endgroup]
+2026-11-18T04:24:41.9225038Z ##[group]Runner Image
+2026-11-18T04:24:41.9225657Z Image: ubuntu-24.04
+2026-11-18T04:24:41.9226253Z Version: 20261111.127.1
+2026-11-18T04:24:41.9227424Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-18T04:24:41.9228997Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+2026-11-18T04:24:41.9230262Z ##[endgroup]
+2026-11-18T04:24:41.9231548Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T04:24:41.9233793Z Contents: read
+2026-11-18T04:24:41.9234408Z Metadata: read
+2026-11-18T04:24:41.9234975Z ##[endgroup]
+2026-11-18T04:24:41.9236855Z Secret source: Actions
+2026-11-18T04:24:41.9237831Z Cache mode: write
+2026-11-18T04:24:41.9238596Z Prepare workflow directory
+2026-11-18T04:24:41.9746623Z Prepare all required actions
+2026-11-18T04:24:41.9797617Z Getting action download info
+2026-11-18T04:24:42.1337842Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T04:24:43.8735642Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T04:24:44.0273799Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-11-18T04:24:44.2182818Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T04:24:44.4888585Z Complete job name: ubuntu-24.04 / Release
+2026-11-18T04:24:44.5586386Z ##[group]Run actions/checkout@v7
+2026-11-18T04:24:44.5587466Z with:
+2026-11-18T04:24:44.5588292Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:44.5595512Z   token: ***
+2026-11-18T04:24:44.5596240Z   ssh-strict: true
+2026-11-18T04:24:44.5597072Z   ssh-user: git
+2026-11-18T04:24:44.5597832Z   persist-credentials: true
+2026-11-18T04:24:44.5598668Z   clean: true
+2026-11-18T04:24:44.5599447Z   sparse-checkout-cone-mode: true
+2026-11-18T04:24:44.5600321Z   fetch-depth: 1
+2026-11-18T04:24:44.5601269Z   fetch-tags: false
+2026-11-18T04:24:44.5602065Z   show-progress: true
+2026-11-18T04:24:44.5602835Z   lfs: false
+2026-11-18T04:24:44.5603597Z   submodules: false
+2026-11-18T04:24:44.5604378Z   set-safe-directory: true
+2026-11-18T04:24:44.5605308Z   allow-unsafe-pr-checkout: false
+2026-11-18T04:24:44.5606410Z env:
+2026-11-18T04:24:44.5607085Z   PACKAGE_VERSION: 
+2026-11-18T04:24:44.5607805Z ##[endgroup]
+2026-11-18T04:24:48.5580343Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:48.5582106Z ##[group]Getting Git version info
+2026-11-18T04:24:48.5582660Z Working directory is '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T04:24:48.5583381Z [command]/usr/bin/git version
+2026-11-18T04:24:48.8068349Z git version 2.56.1
+2026-11-18T04:24:48.8081754Z ##[endgroup]
+2026-11-18T04:24:48.8088591Z Temporarily overriding HOME='/home/runner/work/_temp/0e635736-ad04-4958-9dac-82a6198f6ceb' before making global git config changes
+2026-11-18T04:24:48.8089501Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:24:48.8092897Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T04:24:48.8598193Z Deleting the contents of '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T04:24:48.8600395Z ##[group]Determining repository object format
+2026-11-18T04:24:48.8601975Z ##[endgroup]
+2026-11-18T04:24:48.8602489Z ##[group]Initializing the repository
+2026-11-18T04:24:48.8605476Z [command]/usr/bin/git init /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T04:24:48.9053822Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-18T04:24:48.9054620Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-18T04:24:48.9055356Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-18T04:24:48.9055740Z hint: call:
+2026-11-18T04:24:48.9056009Z hint:
+2026-11-18T04:24:48.9056379Z hint: 	git config --global init.defaultBranch <name>
+2026-11-18T04:24:48.9056752Z hint:
+2026-11-18T04:24:48.9057087Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-18T04:24:48.9057549Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-18T04:24:48.9058091Z hint:
+2026-11-18T04:24:48.9058367Z hint: 	git branch -m <name>
+2026-11-18T04:24:48.9058646Z hint:
+2026-11-18T04:24:48.9059040Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-18T04:24:48.9062973Z Initialized empty Git repository in /home/runner/work/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T04:24:48.9071185Z [command]/usr/bin/git remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:48.9117976Z ##[endgroup]
+2026-11-18T04:24:48.9118485Z ##[group]Disabling automatic garbage collection
+2026-11-18T04:24:48.9120126Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-18T04:24:48.9145733Z ##[endgroup]
+2026-11-18T04:24:48.9146358Z ##[group]Setting up auth
+2026-11-18T04:24:48.9146788Z Removing SSH command configuration
+2026-11-18T04:24:48.9150448Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:24:48.9178277Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T04:24:49.2464977Z Removing HTTP extra header
+2026-11-18T04:24:49.2469766Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:24:49.2502727Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T04:24:49.2645766Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:24:49.2656330Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:24:49.2678997Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T04:24:49.2830226Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-18T04:24:49.2857976Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path /home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:24:49.2880706Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:24:49.2904206Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:24:49.2924749Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:24:49.2944836Z ##[endgroup]
+2026-11-18T04:24:49.2945585Z ##[group]Fetching the repository
+2026-11-18T04:24:49.2950071Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +deac674863f3bf859c8e6564634b0df499c62f14:refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.8852545Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:49.8853075Z  * [new ref]         deac674863f3bf859c8e6564634b0df499c62f14 -> origin/sjl-11-2-control-b
+2026-11-18T04:24:49.8860296Z [command]/usr/bin/git branch --list --remote origin/sjl-11-2-control-b
+2026-11-18T04:24:49.8893361Z   origin/sjl-11-2-control-b
+2026-11-18T04:24:49.8899196Z [command]/usr/bin/git rev-parse refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.8918556Z deac674863f3bf859c8e6564634b0df499c62f14
+2026-11-18T04:24:49.8920142Z ##[endgroup]
+2026-11-18T04:24:49.8920553Z ##[group]Determining the checkout info
+2026-11-18T04:24:49.8921307Z ##[endgroup]
+2026-11-18T04:24:49.8924118Z [command]/usr/bin/git sparse-checkout disable
+2026-11-18T04:24:49.8975706Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-18T04:24:49.8997225Z ##[group]Checking out the ref
+2026-11-18T04:24:49.8999871Z [command]/usr/bin/git checkout --progress --force -B sjl-11-2-control-b refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.9258656Z Switched to a new branch 'sjl-11-2-control-b'
+2026-11-18T04:24:49.9263173Z branch 'sjl-11-2-control-b' set up to track 'origin/sjl-11-2-control-b'.
+2026-11-18T04:24:49.9267022Z ##[endgroup]
+2026-11-18T04:24:49.9301410Z [command]/usr/bin/git log -1 --format=%H
+2026-11-18T04:24:49.9321219Z deac674863f3bf859c8e6564634b0df499c62f14
+2026-11-18T04:24:49.9517449Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T04:24:49.9517776Z with:
+2026-11-18T04:24:49.9518001Z   dotnet-version: 10.0.x
+2026-11-18T04:24:49.9518255Z   skip-lts-prepass: false
+2026-11-18T04:24:49.9518505Z   cache: false
+2026-11-18T04:24:49.9518720Z env:
+2026-11-18T04:24:49.9518957Z   PACKAGE_VERSION: 
+2026-11-18T04:24:49.9519192Z ##[endgroup]
+2026-11-18T04:24:50.0508100Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-11-18T04:24:50.2672828Z dotnet-install: .NET Core Runtime with version '10.0.15' is already installed.
+2026-11-18T04:24:50.2692457Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+2026-11-18T04:24:50.3934170Z dotnet-install: .NET Core SDK with version '10.0.404' is already installed.
+2026-11-18T04:24:50.4100205Z ##[group]Run actions/setup-node@v7
+2026-11-18T04:24:50.4100470Z with:
+2026-11-18T04:24:50.4100683Z   node-version: 24
+2026-11-18T04:24:50.4101308Z   check-latest: false
+2026-11-18T04:24:50.4103206Z   token: ***
+2026-11-18T04:24:50.4103488Z   package-manager-cache: true
+2026-11-18T04:24:50.4103719Z env:
+2026-11-18T04:24:50.4103922Z   PACKAGE_VERSION: 
+2026-11-18T04:24:50.4104151Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T04:24:50.4104403Z ##[endgroup]
+2026-11-18T04:24:50.6614495Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+2026-11-18T04:24:52.4168115Z ##[group]Environment details
+2026-11-18T04:24:55.5697266Z node: v24.22.2
+2026-11-18T04:24:55.5697607Z npm: 11.19.1
+2026-11-18T04:24:55.5698054Z yarn: 1.22.22
+2026-11-18T04:24:55.5698703Z ##[endgroup]
+2026-11-18T04:24:55.5792732Z ##[group]Run node --test eng/resolve-preview-version.test.mjs
+2026-11-18T04:24:55.5793249Z [36;1mnode --test eng/resolve-preview-version.test.mjs[0m
+2026-11-18T04:24:55.9911344Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:24:55.9911696Z env:
+2026-11-18T04:24:55.9912168Z   PACKAGE_VERSION: 
+2026-11-18T04:24:55.9912410Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T04:24:55.9912685Z ##[endgroup]
+2026-11-18T04:24:56.1912213Z ✔ first publish uses the configured preview; later publishes increment numerically (0.933017ms)
+2026-11-18T04:24:56.1913848Z ✔ configured preview is a floor and other release lines do not affect it (0.112099ms)
+2026-11-18T04:24:56.1915471Z ✔ only unused previews on the configured release line are accepted (0.392732ms)
+2026-11-18T04:24:56.1926648Z ✔ all packages contribute, including a partially published newer preview (71.020836ms)
+2026-11-18T04:24:56.1927608Z ✔ feed failures and malformed responses stop publication (2.106906ms)
+2026-11-18T04:24:56.1928764Z ✔ retired-feed preview.3 plus nuget.org preview.2 resolves cumulatively to preview.4 (2.392146ms)
+2026-11-18T04:24:56.1929964Z ✔ nuget.org and case-insensitive history contribute only to their own package and release line (0.453518ms)
+2026-11-18T04:24:56.1931083Z ✔ explicit suffixes and tags must respect the cumulative sequence (0.617315ms)
+2026-11-18T04:24:56.1931781Z ✔ invalid history and feed failures cannot silently reset the sequence (0.39033ms)
+2026-11-18T04:24:56.1932400Z ✔ the committed history and the configured floor resolve to 0.1.0-preview.6 (1.423646ms)
+2026-11-18T04:24:56.2000130Z ℹ tests 10
+2026-11-18T04:24:56.2001947Z ℹ suites 0
+2026-11-18T04:24:56.2002566Z ℹ pass 10
+2026-11-18T04:24:56.2003097Z ℹ fail 0
+2026-11-18T04:24:56.2004159Z ℹ cancelled 0
+2026-11-18T04:24:56.2004486Z ℹ skipped 0
+2026-11-18T04:24:56.2004846Z ℹ todo 0
+2026-11-18T04:24:56.2005128Z ℹ duration_ms 171.700466
+2026-11-18T04:24:56.2070023Z ##[group]Run args=()
+2026-11-18T04:24:56.2070300Z [36;1margs=()[0m
+2026-11-18T04:24:56.2070553Z [36;1mif [ -n "$PACKAGE_VERSION" ]; then[0m
+2026-11-18T04:24:56.2071183Z [36;1m  args+=("-p:Version=$PACKAGE_VERSION" "-p:PackageVersion=$PACKAGE_VERSION")[0m
+2026-11-18T04:24:56.2071587Z [36;1mfi[0m
+2026-11-18T04:24:56.2071874Z [36;1mdotnet build Broiler.Regex.slnx -c Release --nologo "${args[@]}"[0m
+2026-11-18T04:24:56.2100157Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:24:56.2100470Z env:
+2026-11-18T04:24:56.2100748Z   PACKAGE_VERSION: 
+2026-11-18T04:24:56.2101418Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T04:24:56.2101680Z ##[endgroup]
+2026-11-18T04:25:06.3221008Z   Determining projects to restore...
+2026-11-18T04:25:08.3663670Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/Broiler.Regex.csproj (in 1.11 sec).
+2026-11-18T04:25:09.1715997Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/Broiler.Regex.Tests.csproj (in 2.13 sec).
+2026-11-18T04:25:09.1717570Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/Regex.Architecture.Tests.csproj (in 2.14 sec).
+2026-11-18T04:25:09.1718961Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/Regex.Fuzz.csproj (in 2.05 sec).
+2026-11-18T04:25:09.8573905Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/Regex.Probe.csproj (in 1.45 sec).
+2026-11-18T04:25:16.2585755Z   Broiler.Regex -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+2026-11-18T04:25:17.8587331Z   Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+2026-11-18T04:25:18.5384142Z   Regex.Fuzz -> /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll
+2026-11-18T04:25:21.8988785Z   Regex.Architecture.Tests -> /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/bin/Release/net10.0/Regex.Architecture.Tests.dll
+2026-11-18T04:25:22.0178014Z   Broiler.Regex.Tests -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll
+2026-11-18T04:25:22.0178475Z 
+2026-11-18T04:25:22.0178666Z Build succeeded.
+2026-11-18T04:25:22.0178938Z     0 Warning(s)
+2026-11-18T04:25:22.0179275Z     0 Error(s)
+2026-11-18T04:25:22.0179409Z 
+2026-11-18T04:25:22.0179599Z Time Elapsed 00:00:18.03
+2026-11-18T04:25:22.3463225Z ##[group]Run bash ./eng/run-tests.sh Release
+2026-11-18T04:25:22.3463783Z [36;1mbash ./eng/run-tests.sh Release[0m
+2026-11-18T04:25:22.3493268Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:25:22.3493592Z env:
+2026-11-18T04:25:22.3493952Z   PACKAGE_VERSION: 
+2026-11-18T04:25:22.3494241Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T04:25:22.3494489Z ##[endgroup]
+2026-11-18T04:25:23.1967995Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T04:25:23.7523407Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T04:25:23.7558305Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/bin/Release/net10.0/Regex.Architecture.Tests.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T04:25:23.7758597Z A total of 1 test files matched the specified pattern.
+2026-11-18T04:25:23.8952533Z A total of 1 test files matched the specified pattern.
+2026-11-18T04:25:23.9162110Z A total of 1 test files matched the specified pattern.
+2026-11-18T04:25:31.5530192Z [xUnit.net 00:00:03.54]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "u") [FAIL]
+2026-11-18T04:25:31.5613166Z [xUnit.net 00:00:03.54]     Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "v") [FAIL]
+2026-11-18T04:25:31.5648918Z   Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "u") [1 ms]
+2026-11-18T04:25:31.5649699Z   Error Message:
+2026-11-18T04:25:31.5811844Z    Assert.Equal() Failure: Values differ
+2026-11-18T04:25:31.5911181Z Expected: SyntaxError
+2026-11-18T04:25:31.5972190Z Actual:   Success
+2026-11-18T04:25:31.6001671Z   Stack Trace:
+2026-11-18T04:25:31.6152864Z      at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /_/Broiler.Regex.Tests/ValidateEntryTests.cs:line 332
+2026-11-18T04:25:31.6182204Z    at InvokeStub_ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(Object, Span`1)
+2026-11-18T04:25:31.6292528Z    at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:31.6352807Z   Failed Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(flags: "v") [1 ms]
+2026-11-18T04:25:31.6441923Z   Error Message:
+2026-11-18T04:25:31.6471665Z    Assert.Equal() Failure: Values differ
+2026-11-18T04:25:31.6651769Z Expected: SyntaxError
+2026-11-18T04:25:31.6702181Z Actual:   Success
+2026-11-18T04:25:31.6732113Z   Stack Trace:
+2026-11-18T04:25:31.6812902Z      at Broiler.Regex.Tests.ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(String flags) in /_/Broiler.Regex.Tests/ValidateEntryTests.cs:line 332
+2026-11-18T04:25:31.6882532Z    at InvokeStub_ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry(Object, Span`1)
+2026-11-18T04:25:31.6940179Z    at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:31.8073601Z [xUnit.net 00:00:03.78]     Broiler.Regex.Tests.SyntaxTests.LoneNamedBackreference_IsLiteralOutsideUnicodeMode [FAIL]
+2026-11-18T04:25:31.8158129Z   Failed Broiler.Regex.Tests.SyntaxTests.LoneNamedBackreference_IsLiteralOutsideUnicodeMode [32 ms]
+2026-11-18T04:25:31.8178957Z   Error Message:
+2026-11-18T04:25:31.8245736Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:31.8282013Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:31.8341761Z   Stack Trace:
+2026-11-18T04:25:31.8431720Z [xUnit.net 00:00:03.81]     Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k<b>(?<a>x)", flags: "u", code: UndefinedGroupName, position: 0, argument: "b") [FAIL]
+2026-11-18T04:25:31.8433485Z      at Broiler.Regex.Tests.SyntaxTests.LoneNamedBackreference_IsLiteralOutsideUnicodeMode() in /_/Broiler.Regex.Tests/SyntaxTests.cs:line 24
+2026-11-18T04:25:31.8462306Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:31.8463322Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:31.8612438Z   Failed Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(pattern: "\\k<b>(?<a>x)", flags: "u", code: UndefinedGroupName, position: 0, argument: "b") [1 ms]
+2026-11-18T04:25:31.8671550Z   Error Message:
+2026-11-18T04:25:31.8701531Z    Assert.Equal() Failure: Values differ
+2026-11-18T04:25:31.8785573Z Expected: SyntaxError
+2026-11-18T04:25:31.8818954Z Actual:   Success
+2026-11-18T04:25:31.8819379Z   Stack Trace:
+2026-11-18T04:25:31.8863077Z      at Broiler.Regex.Tests.ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(String pattern, String flags, RegexDiagnosticCode code, Int32 position, String argument) in /_/Broiler.Regex.Tests/ValidateEntryTests.cs:line 115
+2026-11-18T04:25:31.8961902Z    at InvokeStub_ValidateEntryTests.Every_refusal_is_answered_with_its_code_identifier_argument_and_position(Object, Span`1)
+2026-11-18T04:25:31.8999621Z    at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:40.5515364Z 
+2026-11-18T04:25:40.5663210Z Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 10 s - Regex.Fuzz.dll (net10.0)
+2026-11-18T04:25:40.7283048Z [xUnit.net 00:00:12.71]     Broiler.Regex.Tests.VectorsProbeTests.The_probe_reports_what_the_tests_read [FAIL]
+2026-11-18T04:25:40.7522628Z   Failed Broiler.Regex.Tests.VectorsProbeTests.The_probe_reports_what_the_tests_read [8 s]
+2026-11-18T04:25:40.7551961Z   Stack Trace:
+2026-11-18T04:25:40.7612698Z      at Broiler.Regex.Tests.VectorsProbeTests.The_probe_reports_what_the_tests_read() in /_/Broiler.Regex.Tests/VectorsProbeTests.cs:line 23
+2026-11-18T04:25:40.7642177Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:40.7663942Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:42.0112147Z [xUnit.net 00:00:13.99]     Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "(?<a>x)\\k<b>", flags: "u", position: 7) [FAIL]
+2026-11-18T04:25:42.0133743Z [xUnit.net 00:00:13.99]     Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<b>(?<a>x)", flags: "u", position: 0) [FAIL]
+2026-11-18T04:25:42.0135406Z   Failed Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "(?<a>x)\\k<b>", flags: "u", position: 7) [1 ms]
+2026-11-18T04:25:42.0136520Z   Error Message:
+2026-11-18T04:25:42.0163430Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:42.0172541Z [xUnit.net 00:00:13.99]     Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<b>(?<a>x)", flags: "v", position: 0) [FAIL]
+2026-11-18T04:25:42.0174398Z [xUnit.net 00:00:13.99]     Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<a>", flags: "v", position: 0) [FAIL]
+2026-11-18T04:25:42.0189997Z [xUnit.net 00:00:13.99]     Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<a>", flags: "u", position: 0) [FAIL]
+2026-11-18T04:25:42.0191878Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:42.0192293Z   Stack Trace:
+2026-11-18T04:25:42.0193464Z      at Broiler.Regex.Tests.NamedReferenceTests.ParseRefusal(String pattern, String flags) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 18
+2026-11-18T04:25:42.0195000Z    at Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(String pattern, String flags, Int32 position) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 32
+2026-11-18T04:25:42.0196404Z    at InvokeStub_NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(Object, Span`1)
+2026-11-18T04:25:42.0197527Z    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.0198902Z   Failed Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<b>(?<a>x)", flags: "u", position: 0) [1 ms]
+2026-11-18T04:25:42.0199777Z   Error Message:
+2026-11-18T04:25:42.0200244Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:42.0201108Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:42.0201609Z   Stack Trace:
+2026-11-18T04:25:42.0202504Z      at Broiler.Regex.Tests.NamedReferenceTests.ParseRefusal(String pattern, String flags) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 18
+2026-11-18T04:25:42.0204031Z    at Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(String pattern, String flags, Int32 position) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 32
+2026-11-18T04:25:42.0205342Z    at InvokeStub_NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(Object, Span`1)
+2026-11-18T04:25:42.0206527Z    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.0207970Z   Failed Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<b>(?<a>x)", flags: "v", position: 0) [2 ms]
+2026-11-18T04:25:42.0208831Z   Error Message:
+2026-11-18T04:25:42.0209260Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:42.0209905Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:42.0210310Z   Stack Trace:
+2026-11-18T04:25:42.0211429Z      at Broiler.Regex.Tests.NamedReferenceTests.ParseRefusal(String pattern, String flags) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 18
+2026-11-18T04:25:42.0212949Z    at Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(String pattern, String flags, Int32 position) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 32
+2026-11-18T04:25:42.0222597Z    at InvokeStub_NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(Object, Span`1)
+2026-11-18T04:25:42.0224180Z    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.0252419Z   Failed Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<a>", flags: "v", position: 0) [1 ms]
+2026-11-18T04:25:42.0281670Z   Error Message:
+2026-11-18T04:25:42.0311854Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:42.0321825Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:42.0341792Z   Stack Trace:
+2026-11-18T04:25:42.0372176Z      at Broiler.Regex.Tests.NamedReferenceTests.ParseRefusal(String pattern, String flags) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 18
+2026-11-18T04:25:42.0382794Z    at Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(String pattern, String flags, Int32 position) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 32
+2026-11-18T04:25:42.0384787Z    at InvokeStub_NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(Object, Span`1)
+2026-11-18T04:25:42.0386345Z    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.0388015Z   Failed Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(pattern: "\\k<a>", flags: "u", position: 0) [1 ms]
+2026-11-18T04:25:42.0389074Z   Error Message:
+2026-11-18T04:25:42.0389619Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:42.0390358Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:42.0391065Z   Stack Trace:
+2026-11-18T04:25:42.0392159Z      at Broiler.Regex.Tests.NamedReferenceTests.ParseRefusal(String pattern, String flags) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 18
+2026-11-18T04:25:42.0414831Z    at Broiler.Regex.Tests.NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(String pattern, String flags, Int32 position) in /_/Broiler.Regex.Tests/NamedReferenceTests.cs:line 32
+2026-11-18T04:25:42.0416551Z    at InvokeStub_NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone(Object, Span`1)
+2026-11-18T04:25:42.0442417Z    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.7515183Z [xUnit.net 00:00:14.73]     Broiler.Regex.Tests.Test262LibraryRunnerTests.A_negative_literal_file_passes_when_a_literal_is_refused_and_fails_otherwise [FAIL]
+2026-11-18T04:25:42.7552689Z [xUnit.net 00:00:14.74]     Broiler.Regex.Tests.Test262LibraryRunnerTests.A_positive_literal_file_passes_when_every_literal_is_accepted [FAIL]
+2026-11-18T04:25:42.7554206Z   Failed Broiler.Regex.Tests.Test262LibraryRunnerTests.A_negative_literal_file_passes_when_a_literal_is_refused_and_fails_otherwise [6 ms]
+2026-11-18T04:25:42.7569892Z   Error Message:
+2026-11-18T04:25:42.7602030Z    Assert.Equal() Failure: Strings differ
+2026-11-18T04:25:42.7602908Z            ↓ (pos 0)
+2026-11-18T04:25:42.7630033Z Expected: "pass"
+2026-11-18T04:25:42.7655150Z Actual:   "FAIL"
+2026-11-18T04:25:42.7681888Z            ↑ (pos 0)
+2026-11-18T04:25:42.7711564Z   Stack Trace:
+2026-11-18T04:25:42.7722508Z      at Broiler.Regex.Tests.Test262LibraryRunnerTests.A_negative_literal_file_passes_when_a_literal_is_refused_and_fails_otherwise() in /_/Broiler.Regex.Tests/Test262LibraryRunnerTests.cs:line 125
+2026-11-18T04:25:42.7742216Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:42.7772298Z    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:42.8708202Z   Failed Broiler.Regex.Tests.Test262LibraryRunnerTests.A_positive_literal_file_passes_when_every_literal_is_accepted [1 ms]
+2026-11-18T04:25:42.8741781Z   Error Message:
+2026-11-18T04:25:42.8772105Z    Assert.Equal() Failure: Strings differ
+2026-11-18T04:25:42.8773374Z            ↓ (pos 0)
+2026-11-18T04:25:42.8803268Z Expected: "FAIL"
+2026-11-18T04:25:42.8818213Z Actual:   "pass"
+2026-11-18T04:25:42.8819222Z            ↑ (pos 0)
+2026-11-18T04:25:42.8819777Z   Stack Trace:
+2026-11-18T04:25:42.8821327Z      at Broiler.Regex.Tests.Test262LibraryRunnerTests.A_positive_literal_file_passes_when_every_literal_is_accepted() in /_/Broiler.Regex.Tests/Test262LibraryRunnerTests.cs:line 136
+2026-11-18T04:25:42.8822895Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:42.8824742Z    at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:46.0884674Z [xUnit.net 00:00:18.07]     Broiler.Regex.Tests.AnnexBGrammarTests.NamedBackreferenceNeedsADeclaredNameSomewhereOutsideUnicodeMode [FAIL]
+2026-11-18T04:25:46.0886613Z   Failed Broiler.Regex.Tests.AnnexBGrammarTests.NamedBackreferenceNeedsADeclaredNameSomewhereOutsideUnicodeMode [3 ms]
+2026-11-18T04:25:46.0887646Z   Error Message:
+2026-11-18T04:25:46.0944139Z    Assert.Throws() Failure: No exception was thrown
+2026-11-18T04:25:46.0972260Z Expected: typeof(Broiler.Regex.RegexSyntaxException)
+2026-11-18T04:25:46.1002093Z   Stack Trace:
+2026-11-18T04:25:46.1032795Z      at Broiler.Regex.Tests.AnnexBGrammarTests.NamedBackreferenceNeedsADeclaredNameSomewhereOutsideUnicodeMode() in /_/Broiler.Regex.Tests/AnnexBGrammarTests.cs:line 209
+2026-11-18T04:25:46.1066459Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:46.1091388Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:46.1092715Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:46.1093542Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:47.6094085Z [xUnit.net 00:00:19.59]     Broiler.Regex.Tests.AdversarialCorpusTests.A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget [FAIL]
+2026-11-18T04:25:47.6112979Z   Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget [1 s]
+2026-11-18T04:25:47.6192545Z   Error Message:
+2026-11-18T04:25:47.6231985Z    Assert.Equal() Failure: Strings differ
+2026-11-18T04:25:47.6232964Z                ↓ (pos 4)
+2026-11-18T04:25:47.6259237Z Expected: "O19 syntax"
+2026-11-18T04:25:47.6271652Z Actual:   "O19 ok"
+2026-11-18T04:25:47.6272457Z                ↑ (pos 4)
+2026-11-18T04:25:47.6272937Z   Stack Trace:
+2026-11-18T04:25:47.6274452Z      at Broiler.Regex.Tests.AdversarialCorpusTests.A_validate_row_is_answered_by_the_validate_entry_with_no_meter_and_no_budget() in /_/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 101
+2026-11-18T04:25:47.6276384Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:47.6278204Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:47.6279615Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:47.6280751Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:48.0449978Z 
+2026-11-18T04:25:48.0483083Z Passed!  - Failed:     0, Passed:    49, Skipped:     0, Total:    49, Duration: 18 s - Regex.Architecture.Tests.dll (net10.0)
+2026-11-18T04:25:50.8543794Z [xUnit.net 00:00:22.84]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "O19") [FAIL]
+2026-11-18T04:25:50.9893111Z [xUnit.net 00:00:22.97]     Broiler.Regex.Tests.VectorsRunTests.The_report_is_deterministic_and_ordered_by_id [FAIL]
+2026-11-18T04:25:50.9932857Z   Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "O19") [181 ms]
+2026-11-18T04:25:50.9972833Z   Error Message:
+2026-11-18T04:25:50.9983958Z    Assert.Equal() Failure: Strings differ
+2026-11-18T04:25:51.0012365Z                ↓ (pos 4)
+2026-11-18T04:25:51.0013152Z Expected: "O19 syntax"
+2026-11-18T04:25:51.0026991Z Actual:   "O19 ok"
+2026-11-18T04:25:51.0052029Z                ↑ (pos 4)
+2026-11-18T04:25:51.0081744Z   Stack Trace:
+2026-11-18T04:25:51.0112382Z      at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /_/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+2026-11-18T04:25:51.0136393Z    at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+2026-11-18T04:25:51.0142340Z    at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:51.0161478Z   Failed Broiler.Regex.Tests.VectorsRunTests.The_report_is_deterministic_and_ordered_by_id [4 s]
+2026-11-18T04:25:51.0162284Z   Error Message:
+2026-11-18T04:25:51.0162852Z    Assert.Contains() Failure: Sub-string not found
+2026-11-18T04:25:51.0163815Z String:    "# Broiler.Regex: the vectors at library level (bun"···
+2026-11-18T04:25:51.0164467Z Not found: "\n# differences: 0\n"
+2026-11-18T04:25:51.0164973Z   Stack Trace:
+2026-11-18T04:25:51.0165899Z      at Broiler.Regex.Tests.VectorsRunTests.The_report_is_deterministic_and_ordered_by_id() in /_/Broiler.Regex.Tests/VectorsRunTests.cs:line 306
+2026-11-18T04:25:51.0167487Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:51.0169098Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:51.0170300Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:51.0171509Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:52.2745097Z   Failed Broiler.Regex.Tests.VectorsRunTests.Every_vector_the_rule_holds_to_its_out_gives_it [1 s]
+2026-11-18T04:25:52.2750364Z [xUnit.net 00:00:24.26]     Broiler.Regex.Tests.VectorsRunTests.Every_vector_the_rule_holds_to_its_out_gives_it [FAIL]
+2026-11-18T04:25:52.2751354Z   Error Message:
+2026-11-18T04:25:52.2752230Z    Assert.Empty() Failure: Collection was not empty
+2026-11-18T04:25:52.2753564Z Collection: ["regexp/literals/s1-s5-names/0005", "regexp/syntax/early-errors/0010", "regexp/syntax/s5-named-references/0001", "regexp/syntax/s5-named-references/0006"]
+2026-11-18T04:25:52.2754583Z   Stack Trace:
+2026-11-18T04:25:52.2755633Z      at Broiler.Regex.Tests.VectorsRunTests.Every_vector_the_rule_holds_to_its_out_gives_it() in /_/Broiler.Regex.Tests/VectorsRunTests.cs:line 252
+2026-11-18T04:25:52.2767489Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:52.2769330Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:52.2770621Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:52.2771965Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:25:52.7546493Z [xUnit.net 00:00:24.74]     Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "O18") [FAIL]
+2026-11-18T04:25:53.1953127Z   Failed Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(id: "O18") [93 ms]
+2026-11-18T04:25:53.1954020Z   Error Message:
+2026-11-18T04:25:53.2022512Z    Assert.Equal() Failure: Strings differ
+2026-11-18T04:25:53.2092712Z                ↓ (pos 4)
+2026-11-18T04:25:53.2135179Z Expected: "O18 syntax"
+2026-11-18T04:25:53.2140066Z Actual:   "O18 ok"
+2026-11-18T04:25:53.2193466Z                ↑ (pos 4)
+2026-11-18T04:25:53.2252060Z   Stack Trace:
+2026-11-18T04:25:53.2282904Z      at Broiler.Regex.Tests.AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(String id) in /_/Broiler.Regex.Tests/AdversarialCorpusTests.cs:line 67
+2026-11-18T04:25:53.2344269Z    at InvokeStub_AdversarialCorpusTests.A_row_the_new_backend_runs_answers_its_declared_status_in_a_child_process(Object, Span`1)
+2026-11-18T04:25:53.2373920Z    at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-11-18T04:25:53.6456238Z [xUnit.net 00:00:25.63]     Broiler.Regex.Tests.Test262DuplicateNamedGroupsTests.The_literal_syntax_tests_of_the_named_groups_directory [FAIL]
+2026-11-18T04:25:53.6642906Z   Failed Broiler.Regex.Tests.Test262DuplicateNamedGroupsTests.The_literal_syntax_tests_of_the_named_groups_directory [2 ms]
+2026-11-18T04:25:53.6671610Z   Error Message:
+2026-11-18T04:25:53.6693435Z    invalid-dangling-groupname-2-u.js: accepted
+2026-11-18T04:25:53.6693874Z   Stack Trace:
+2026-11-18T04:25:53.6694879Z      at Broiler.Regex.Tests.Test262DuplicateNamedGroupsTests.The_literal_syntax_tests_of_the_named_groups_directory() in /_/Broiler.Regex.Tests/Test262DuplicateNamedGroupsTests.cs:line 366
+2026-11-18T04:25:53.6696325Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:53.6697545Z    at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result)
+2026-11-18T04:25:53.6698531Z    at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+2026-11-18T04:25:53.6699351Z    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-11-18T04:26:04.7945807Z 
+2026-11-18T04:26:04.8003578Z Failed!  - Failed:    19, Passed:  2625, Skipped:     0, Total:  2644, Duration: 33 s - Broiler.Regex.Tests.dll (net10.0)
+2026-11-18T04:26:05.2398082Z ##[error]Process completed with exit code 1.
+2026-11-18T04:26:05.2507399Z Post job cleanup.
+2026-11-18T04:26:05.3180734Z [command]/usr/bin/git version
+2026-11-18T04:26:05.3218881Z git version 2.56.1
+2026-11-18T04:26:05.3243651Z Temporarily overriding HOME='/home/runner/work/_temp/95275a59-e857-4d8d-8768-749e9489cb09' before making global git config changes
+2026-11-18T04:26:05.3244710Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:26:05.3247819Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T04:26:05.3272433Z Removing SSH command configuration
+2026-11-18T04:26:05.3276459Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:26:05.3299980Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T04:26:05.3457091Z Removing HTTP extra header
+2026-11-18T04:26:05.3461693Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:26:05.3486259Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T04:26:05.3650059Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:26:05.3654305Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:26:05.3686360Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T04:26:05.3687257Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T04:26:05.3687811Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T04:26:05.3688420Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T04:26:05.3693202Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T04:26:05.3714383Z /home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:26:05.3724166Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-3250c04c\-bae4\-4068\-8687\-f5cf461c0ec0\.config
+2026-11-18T04:26:05.3760700Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T04:26:05.3778041Z /home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:26:05.3785592Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-3250c04c\-bae4\-4068\-8687\-f5cf461c0ec0\.config
+2026-11-18T04:26:05.3809289Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T04:26:05.3825335Z /github/runner_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:26:05.3831373Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-3250c04c\-bae4\-4068\-8687\-f5cf461c0ec0\.config
+2026-11-18T04:26:05.3862894Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T04:26:05.3876924Z /github/runner_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config
+2026-11-18T04:26:05.3881936Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-3250c04c\-bae4\-4068\-8687\-f5cf461c0ec0\.config
+2026-11-18T04:26:05.3907453Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T04:26:05.4061748Z Removing credentials config '/home/runner/work/_temp/git-credentials-3250c04c-bae4-4068-8687-f5cf461c0ec0.config'
+2026-11-18T04:26:05.4185756Z Cleaning up orphan processes
+2026-11-18T04:26:05.4419637Z Terminate orphan process: pid (2410) (MSBuild)
+2026-11-18T04:26:05.4446713Z Terminate orphan process: pid (2437) (MSBuild)
+2026-11-18T04:26:05.4472692Z Terminate orphan process: pid (2438) (MSBuild)
+2026-11-18T04:26:05.4500034Z Terminate orphan process: pid (2439) (MSBuild)
+2026-11-18T04:26:05.4527283Z Terminate orphan process: pid (2509) (VBCSCompiler)

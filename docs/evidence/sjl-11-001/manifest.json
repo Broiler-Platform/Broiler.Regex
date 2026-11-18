@@ -559,6 +559,21 @@
    "bytes": 17955
   },
   {
+   "path": "candidate-reading/ci/job-logs/134575819702.log",
+   "sha256": "0d0b18e1621c0f362d170569792d68aa0f875efd2b5b2c2e45d8fdbc8bc2c471",
+   "bytes": 47680,
+   "as-fetched": {
+    "sha256": "b1e1a6fc743263559102dfae14b1a00760817ca161df6fd4279ef404c573bb9d",
+    "bytes": 48138,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819708.log",
+   "sha256": "f8b849da081d67e97b78bc8289a71e578ec5d831a357003e5a5942bb400c9301",
+   "bytes": 47206
+  },
+  {
    "path": "candidate-reading/ci/job-logs/134575819759.log",
    "sha256": "693444f2da3e22c60af31bfdaa190b7c7dcc77c7151bb9daa9d3c4ed649b1a13",
    "bytes": 43640,
@@ -2400,22 +2415,24 @@
    "path": "candidate-reading/part-b-control/jobs/134575819702.log",
    "sha256": "b1e1a6fc743263559102dfae14b1a00760817ca161df6fd4279ef404c573bb9d",
    "bytes": 48138,
-   "where": "the session's scratch record of the control (rx-ctrlb/run1)",
-   "why": "a job of the control's red run that does not decide part B (it is red from the same plant); named by its job identifier in ci/api/jobs-44237117988.json"
+   "where": "scratch",
+   "why": "the bytes as fetched of candidate-reading/ci/job-logs/134575819702.log, which is stored with LF (its \"as-fetched\" digest)",
+   "same-as": "candidate-reading/ci/job-logs/134575819702.log"
   },
   {
    "path": "candidate-reading/part-b-control/jobs/134575819708.log",
    "sha256": "f8b849da081d67e97b78bc8289a71e578ec5d831a357003e5a5942bb400c9301",
    "bytes": 47206,
-   "where": "the session's scratch record of the control (rx-ctrlb/run1)",
-   "why": "a job of the control's red run that does not decide part B (it is red from the same plant); named by its job identifier in ci/api/jobs-44237117988.json"
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/job-logs/134575819708.log"
   },
   {
    "path": "candidate-reading/part-b-control/jobs/134575819759.log",
    "sha256": "07881a5e288ea9f742cac3fe1243bf58987492698423a8cd74f6707d4b1f55f8",
    "bytes": 44114,
    "where": "scratch",
-   "why": "the same bytes as a file retained here",
+   "why": "the bytes as fetched of candidate-reading/ci/job-logs/134575819759.log, which is stored with LF (its \"as-fetched\" digest)",
    "same-as": "candidate-reading/ci/job-logs/134575819759.log"
   },
   {
