@@ -1,0 +1,7 @@
+  Determining projects to restore...
+  Restored /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/Regex.Probe.csproj (in 1.56 sec).
+  Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/Broiler.Regex.csproj (in 1.56 sec).
+  Broiler.Regex -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+  Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/linux-x64/Broiler.Regex.Probe.dll
+  Generating native code
+  Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/linux-x64/publish/

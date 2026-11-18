@@ -1,0 +1,6 @@
+FAIL test/language/literals/regexp/named-groups/invalid-dangling-groupname-2-u.js: failed, and the expected-failures list does not name it: negative test expected SyntaxError but got different error
+FAIL test/language/literals/regexp/named-groups/invalid-dangling-groupname-3-u.js: failed, and the expected-failures list does not name it: negative test expected SyntaxError but got different error
+FAIL test/language/literals/regexp/named-groups/invalid-dangling-groupname-4-u.js: failed, and the expected-failures list does not name it: negative test expected SyntaxError but got different error
+FAIL test/language/literals/regexp/named-groups/invalid-dangling-groupname-u.js: failed, and the expected-failures list does not name it: negative test expected SyntaxError but got different error
+FAIL test/language/literals/regexp/named-groups/invalid-dangling-groupname-without-group-u.js: failed, and the expected-failures list does not name it: negative test expected SyntaxError but got different error
+test262-host: red; 2547 files, 2547 rows, 2541 passed, 6 failing of 1 listed; 19 files list regexp-duplicate-named-groups, 4 of them required by name; 5 failures

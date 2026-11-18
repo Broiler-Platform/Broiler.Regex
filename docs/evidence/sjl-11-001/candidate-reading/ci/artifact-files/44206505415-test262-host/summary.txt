@@ -1,0 +1,1 @@
+test262-host: green; 2547 files, 2547 rows, 2546 passed, 1 failing of 1 listed; 19 files list regexp-duplicate-named-groups, 4 of them required by name; 0 failures

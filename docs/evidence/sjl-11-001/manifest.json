@@ -26,7 +26,7 @@
   "publish-0.1.0-preview.6": 43736141111
  },
  "ci-artifacts": {
-  "how": "downloaded with curl and no token of this stage's, through the session's proxy to api.github.com, whose rate limit (ci/api/rate-limit.json) is an authenticated client's; each is unzipped under ci/artifacts/RUN-NAME/, and named here by the digest GitHub records for its zip",
+  "how": "downloaded with curl and no token of this stage's, through the session's proxy to api.github.com, whose rate limit (ci/api/rate-limit.json) is an authenticated client's; each is unzipped under ci/artifact-files/RUN-NAME/, and named here by the digest GitHub records for its zip",
   "artifacts": [
    {
     "run": 44206505415,
@@ -374,17 +374,17 @@
    "bytes": 5491
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-fuzz-control/fuzz-control.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-control/fuzz-control.log",
    "sha256": "37430cd5d21ca726f876580f61ba4a69cd56784033dd17f9840605e7e080cba1",
    "bytes": 12919
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-fuzz-ubuntu-24.04/fuzz.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-ubuntu-24.04/fuzz.log",
    "sha256": "2cdb2fc1e62e578a28efb1969b736dba0c9e45ba0420e414e340f2f509743920",
    "bytes": 1204
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-fuzz-windows-latest/fuzz.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-windows-latest/fuzz.log",
    "sha256": "9626d66818764f266c56aad9b8da3faacbb674019b494501313e0703f0cfab49",
    "bytes": 1204,
    "as-fetched": {
@@ -394,12 +394,12 @@
    }
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/probe-publish.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-publish.log",
    "sha256": "c9a6e8f1a796f655ed6614e23390f5e2f93579704ee83430cf4b9ed56fc8ad8f",
    "bytes": 653
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/probe-publish.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-publish.log",
    "sha256": "626f1cc787bc0a555d6d4a788c0a9c08e206057243fec6ae6c05f1a0ae3691b6",
    "bytes": 586,
    "as-fetched": {
@@ -409,47 +409,47 @@
    }
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-host/candidate.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/candidate.txt",
    "sha256": "d3363655cdef1b976567d4f2ecef5e71cfca1604c95ded6cb6c73cf03ec9b593",
    "bytes": 491
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-host/run_test262.log",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/run_test262.log",
    "sha256": "787b03cd8e40db6eb842cdea589a190b1f18969b52990ee62b0306e524c7121b",
    "bytes": 2084
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-host/summary.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/summary.txt",
    "sha256": "08433af1cef7c81efcd814172a82cff1e3878f0c61e2fb8d39de4814aa736a91",
    "bytes": 164
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-host/test262-host.json",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/test262-host.json",
    "sha256": "5b07be1258d7f0362c6b9608085b5231f10142ba3eac1031397ec18d018c887f",
    "bytes": 921613
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-host/candidate.txt",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/candidate.txt",
    "sha256": "48bc22cdd21900c1583d598af8df8ea519dd54a2ab9eebd05dec087fc4628ac0",
    "bytes": 491
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-host/run_test262.log",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/run_test262.log",
    "sha256": "e0626f72a41bd7a189eb5ae2690b51b42fa843be5f9ff6bb219d38e7fb64cf81",
    "bytes": 2649
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-host/summary.txt",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/summary.txt",
    "sha256": "5501cf6817cc37e02f6f970eaa1547de5e098cf34af86a2fa32ce9da5ce960bf",
    "bytes": 1167
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-library-linux-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-library-linux-x64/test262-library-aot.txt",
    "sha256": "51a0d1a52eee0573f8e96cb39c7f567c3186a665f80949d386134d818366fb04",
    "bytes": 111660
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-host/candidate.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/candidate.txt",
    "sha256": "2189a70d01d74d4a96f2b39bb20b95e997843b810abeadc1e3c8fdf28f15bdda",
    "bytes": 491
   },
@@ -2139,7 +2139,7 @@
    "why": "the driver's machine record, every process of the machine listed, with the stage's scratch paths; not read by the rule (the machine is in the .machine-sh.txt beside it)"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-adversarial-controls/control-nesting.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/control-nesting.txt",
    "sha256": "17cda6fddf65a07ff4649ae4b8fdc4358d089f99518c73986a0f15442ad8db6d",
    "bytes": 7570,
    "where": "scratch",
@@ -2147,7 +2147,7 @@
    "same-as": "candidate-reading/library-evidence/reports/control-nesting.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-adversarial-controls/control-steps.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/control-steps.txt",
    "sha256": "d561555dee1f765d27f11597f550ff88502274d3c7e0a830ae2c8d5c98e4b7cb",
    "bytes": 7676,
    "where": "scratch",
@@ -2155,7 +2155,7 @@
    "same-as": "candidate-reading/library-evidence/reports/control-steps.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-adversarial-controls/revert.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/revert.txt",
    "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
    "bytes": 7986,
    "where": "scratch",
@@ -2163,7 +2163,7 @@
    "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/adversarial-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/adversarial-aot.txt",
    "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
    "bytes": 7986,
    "where": "scratch",
@@ -2171,7 +2171,7 @@
    "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/adversarial-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/adversarial-jit.txt",
    "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
    "bytes": 7986,
    "where": "scratch",
@@ -2179,7 +2179,7 @@
    "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/probe-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-aot.txt",
    "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
    "bytes": 33741,
    "where": "scratch",
@@ -2187,7 +2187,7 @@
    "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/probe-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-jit.txt",
    "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
    "bytes": 33741,
    "where": "scratch",
@@ -2195,7 +2195,7 @@
    "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/vectors-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/vectors-aot.txt",
    "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
    "bytes": 215632,
    "where": "scratch",
@@ -2203,7 +2203,7 @@
    "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-linux-x64/vectors-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/vectors-jit.txt",
    "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
    "bytes": 215632,
    "where": "scratch",
@@ -2211,7 +2211,7 @@
    "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/adversarial-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/adversarial-aot.txt",
    "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
    "bytes": 7986,
    "where": "scratch",
@@ -2219,7 +2219,7 @@
    "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/adversarial-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/adversarial-jit.txt",
    "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
    "bytes": 7986,
    "where": "scratch",
@@ -2227,7 +2227,7 @@
    "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/probe-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-aot.txt",
    "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
    "bytes": 33741,
    "where": "scratch",
@@ -2235,7 +2235,7 @@
    "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/probe-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-jit.txt",
    "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
    "bytes": 33741,
    "where": "scratch",
@@ -2243,7 +2243,7 @@
    "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/vectors-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/vectors-aot.txt",
    "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
    "bytes": 215632,
    "where": "scratch",
@@ -2251,7 +2251,7 @@
    "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-native-aot-probe-win-x64/vectors-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/vectors-jit.txt",
    "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
    "bytes": 215632,
    "where": "scratch",
@@ -2259,21 +2259,21 @@
    "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.nupkg",
+   "path": "candidate-reading/ci/artifact-files/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.nupkg",
    "sha256": "74ef54b85cd3e4ad8c6693aedf2d560089453154c7be8273dce37a195a0b6fcb",
    "bytes": 147789,
    "where": "the artifact nuget-packages of run 44206505415 (downloaded to scratch)",
    "why": "a package of the CI pack (E-4): named by its digest; the windows-latest Release job's log decides E-4"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.snupkg",
+   "path": "candidate-reading/ci/artifact-files/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.snupkg",
    "sha256": "81baa2896d41d293a8e33a57572bfa927e59ba641a050cea24fb970608dfad73",
    "bytes": 27393,
    "where": "the artifact nuget-packages of run 44206505415 (downloaded to scratch)",
    "why": "a package of the CI pack (E-4): named by its digest; the windows-latest Release job's log decides E-4"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-library-linux-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-linux-x64/test262-library-aot.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2281,7 +2281,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-library-linux-x64/test262-library-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-linux-x64/test262-library-jit.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2289,7 +2289,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-library-win-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-win-x64/test262-library-aot.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2297,7 +2297,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44206505415-test262-library-win-x64/test262-library-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-win-x64/test262-library-jit.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2305,45 +2305,45 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-host/test262-host.json",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/test262-host.json",
    "sha256": "07b63a3ae46d743d171ad4f57e453b675f94dffc844eaf0d1d39cbf8b16262bd",
    "bytes": 923249,
    "where": "the artifact test262-host of the control's runs (downloaded to scratch)",
    "why": "the host runner's full report of a control run: summary.txt and the job's log decide the control; named by its digest"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44237117988-test262-library-win-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-library-win-x64/test262-library-aot.txt",
    "sha256": "51a0d1a52eee0573f8e96cb39c7f567c3186a665f80949d386134d818366fb04",
    "bytes": 111660,
    "where": "scratch",
    "why": "the same bytes as a file retained here",
-   "same-as": "candidate-reading/ci/artifacts/44237117988-test262-library-linux-x64/test262-library-aot.txt"
+   "same-as": "candidate-reading/ci/artifact-files/44237117988-test262-library-linux-x64/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-host/run_test262.log",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/run_test262.log",
    "sha256": "787b03cd8e40db6eb842cdea589a190b1f18969b52990ee62b0306e524c7121b",
    "bytes": 2084,
    "where": "scratch",
    "why": "the same bytes as a file retained here",
-   "same-as": "candidate-reading/ci/artifacts/44206505415-test262-host/run_test262.log"
+   "same-as": "candidate-reading/ci/artifact-files/44206505415-test262-host/run_test262.log"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-host/summary.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/summary.txt",
    "sha256": "08433af1cef7c81efcd814172a82cff1e3878f0c61e2fb8d39de4814aa736a91",
    "bytes": 164,
    "where": "scratch",
    "why": "the same bytes as a file retained here",
-   "same-as": "candidate-reading/ci/artifacts/44206505415-test262-host/summary.txt"
+   "same-as": "candidate-reading/ci/artifact-files/44206505415-test262-host/summary.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-host/test262-host.json",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/test262-host.json",
    "sha256": "f5d9ca2772ed9746765b04bee251daff4461f4559f00a5e08d64d5746dfd5075",
    "bytes": 921634,
    "where": "the artifact test262-host of the control's runs (downloaded to scratch)",
    "why": "the host runner's full report of a control run: summary.txt and the job's log decide the control; named by its digest"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-library-linux-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-linux-x64/test262-library-aot.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2351,7 +2351,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-library-linux-x64/test262-library-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-linux-x64/test262-library-jit.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2359,7 +2359,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-library-win-x64/test262-library-aot.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-win-x64/test262-library-aot.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",
@@ -2367,7 +2367,7 @@
    "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
   },
   {
-   "path": "candidate-reading/ci/artifacts/44238736222-test262-library-win-x64/test262-library-jit.txt",
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-win-x64/test262-library-jit.txt",
    "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
    "bytes": 111541,
    "where": "scratch",

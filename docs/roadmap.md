@@ -3859,7 +3859,7 @@ and their bytes as fetched are named beside them.
   written. Those records are not runs the manifest names. The architecture tests differ: their witnesses sit on disk
   and are run every time (E-3 below).
 - **Part B: read MET on the retained runs.**
-  - B-1: `ci/artifacts/44206505415-test262-host/summary.txt`, green. 2,547 files ran, and only the one listed file
+  - B-1: `ci/artifact-files/44206505415-test262-host/summary.txt`, green. 2,547 files ran, and only the one listed file
     fails. All 19 files listing `regexp-duplicate-named-groups` pass, the four required among them. The candidate's
     record shows the shell holding the packed DLL.
   - B-2: the library job's two reports per RID, under the JIT and through Native AOT, are one file (`374235…`). The
@@ -3963,6 +3963,9 @@ answered by the runs and decisions above; item 3's reading is this one):
 - *Windows logs stored with LF*, their bytes as fetched named by digest. *Not taken*: storing them as fetched, which
   `.gitattributes` and rule SL10 refuse.
 - *The packages, populations and listings named by digest.* *Not taken*: committing them.
+- *The artifacts' files under `ci/artifact-files/`*, since the repository's `.gitignore` ignores every directory named
+  `artifacts/`; the first commit of the files named them under `ci/artifacts/`, which Git left out, and the next one
+  moves them. *Not taken*: editing `.gitignore`, a file outside this reading's directory.
 
 **Where the brief and the sources differ, read at this record.**
 - The brief says to retain "the five red jobs' logs that decide it (B-1's and B-2's three)". Three jobs decide it, B-1's

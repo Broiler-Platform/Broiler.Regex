@@ -1,0 +1,20 @@
+[test262] Starting test262 run for suite ref ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e using local suite root /home/runner/work/Broiler.Regex/Broiler.Regex/suite/test262
+[test262] Selected 2547 runnable test(s) for shard 1/1 from 2547 selected file(s) and 2547 candidate path(s) using mode requested.
+[test262] Using Broiler script host at /home/runner/work/Broiler.Regex/Broiler.Regex/host/broiler.js/Broiler.JS/Broiler.JavaScript/bin/Release/net10.0/BroilerJS.dll
+[test262] Running 2547 test(s) for shard 1/1.
+[test262] Per-test timeout is 30s; POSIX memory cap is disabled.
+[test262] Using 4 parallel worker(s).
+[test262] Completed 254/2547 path(s), 254 variant case(s) (passed=254, failed=0, skipped=0, timedOut=0).
+[test262] Completed 508/2547 path(s), 508 variant case(s) (passed=508, failed=0, skipped=0, timedOut=0).
+[test262] Completed 762/2547 path(s), 762 variant case(s) (passed=762, failed=0, skipped=0, timedOut=0).
+[test262] Completed 1016/2547 path(s), 1016 variant case(s) (passed=1016, failed=0, skipped=0, timedOut=0).
+[test262] Failure 1 at test/built-ins/RegExp/proto-from-ctor-realm.js [original]
+[test262] Completed 1270/2547 path(s), 1270 variant case(s) (passed=1269, failed=1, skipped=0, timedOut=0).
+[test262] Completed 1524/2547 path(s), 1524 variant case(s) (passed=1523, failed=1, skipped=0, timedOut=0).
+[test262] Completed 1778/2547 path(s), 1778 variant case(s) (passed=1777, failed=1, skipped=0, timedOut=0).
+[test262] Completed 2032/2547 path(s), 2032 variant case(s) (passed=2031, failed=1, skipped=0, timedOut=0).
+[test262] Completed 2286/2547 path(s), 2286 variant case(s) (passed=2285, failed=1, skipped=0, timedOut=0).
+[test262] Completed 2540/2547 path(s), 2540 variant case(s) (passed=2539, failed=1, skipped=0, timedOut=0).
+[test262] Completed 2547/2547 path(s), 2547 variant case(s) (passed=2546, failed=1, skipped=0, timedOut=0).
+[test262] Wrote machine-readable summary to /home/runner/work/_temp/test262-host/test262-host.json
+[test262] Finished test262 run: variantCases=2547, executed=2547, passed=2546, failed=1, skipped=0, timedOut=0
