@@ -1,0 +1,33 @@
+regex-fuzz: seed 20261027, iterations 0 to 23999, 4 worker processes, stack 1048576 bytes, watchdog 120 s
+regex-fuzz: library under test: Broiler.Regex.dll 0.1.0.0
+regex-fuzz: 24000 iterations completed in 19.4 s
+regex-fuzz: reached:
+       1485  compile:limit:compile
+       5089  compile:limit:nesting
+        236  compile:meter
+      29344  compile:ok
+      11846  compile:syntax
+       1149  escape-pattern:limit
+      10543  escape-pattern:ok
+        751  escape-string:limit
+      10963  escape-string:ok
+          9  is-match:throws
+      15678  matches:compared
+          8  matches:limit
+        261  matches:prefix
+        323  offset:limit:frames
+       3616  offset:limit:steps
+        618  offset:limit:trail
+      47998  offset:match
+        675  offset:meter
+      57773  offset:nomatch
+        848  probes
+          9  string:limit
+      21570  string:match
+      24299  string:nomatch
+       5424  validate:limit:nesting
+      30499  validate:ok
+      12077  validate:syntax
+regex-fuzz: 122 construct classes reached, of 122 the generator can write
+regex-fuzz: transcript digest 902fbd151db4d37af1cff3a2424e4df0dc8dc768879ef190a22313ff536ee39d
+regex-fuzz: no finding in 24000 iterations

@@ -1,0 +1,270 @@
+{
+  "classes": {
+    "P4": {
+      "S-answers": {
+        "accept:accept": 473852,
+        "accept:refuse": 181508,
+        "exec:limit": 4068,
+        "exec:match": 3986084,
+        "exec:null": 3591480,
+        "exec:refuse": 2904128
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 655360,
+          "different": 35331,
+          "equal": 620029
+        },
+        "accept/J.lt-LT": {
+          "compared": 655360,
+          "different": 35324,
+          "equal": 620036
+        },
+        "accept/J.tr-TR": {
+          "compared": 655360,
+          "different": 35324,
+          "equal": 620036
+        },
+        "accept/V": {
+          "compared": 655360,
+          "different": 102,
+          "equal": 655258
+        },
+        "exec/J": {
+          "compared": 10485760,
+          "different": 591237,
+          "equal": 9894523
+        },
+        "exec/J.lt-LT": {
+          "compared": 10485760,
+          "different": 597086,
+          "equal": 9888674
+        },
+        "exec/J.tr-TR": {
+          "compared": 10485760,
+          "different": 600737,
+          "equal": 9885023
+        },
+        "exec/V": {
+          "compared": 10485760,
+          "different": 4848,
+          "equal": 10480912
+        }
+      },
+      "charges-recorded": {
+        "S": 41620830720,
+        "V": 27682703064
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    }
+  },
+  "comparison": "sjl-11-001-comparison@1",
+  "differences": 1899989,
+  "differences-sha256": "ed275bfb158b160a9af6c735c0c8574b9198edac79c7abb995d873dc09cd3f38",
+  "population": {
+    "manifest-sha256": "ad7d237082e057f9961d4c6d07c925b12b731eb7529feda710f25aa0ff2a9b2a",
+    "partial": false
+  },
+  "runs": {
+    "run.J.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1930 cases of this run"
+    },
+    "run.J.lt-LT.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "lt-LT",
+      "current-culture": "lt-LT",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1930 cases of this run"
+    },
+    "run.J.tr-TR.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "tr-TR",
+      "current-culture": "tr-TR",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1928 cases of this run"
+    },
+    "run.S.json": {
+      "arm": "S",
+      "calls": {
+        "Broiler.Regex": "0.1.0.0 0.1.0-preview.6+49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.6+ccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+        "Broiler.Unicode.Tables": "0.1.0-preview.6+ccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+        "ample-policy": "meter recording, steps none, frames 16777216, trail 33554432, nesting the case's, compile none",
+        "default-policy": "meter recording, steps 10000000, frames 1048576, trail 2097152, nesting 512, compile none"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+    },
+    "run.V.json": {
+      "arm": "V",
+      "calls": {
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "ample-policy": "no allowance; the matcher's own ceilings",
+        "copy": "Broiler.VM aaa39fb: JsRegExpMatcher.cs f125341255294259e3acecdad74d2310a8260d51, JsUnicodeData.cs b4646317dbc07ea7365a91b03ab1cfb3bc20472d, JsRealm.RegExp.cs 6c6e487ba1d7130e945c0bf9de7a2ec9609a5a0e",
+        "default-policy": "allowance 10000000 units per exec; the matcher's own ceilings (frames 1048576, trail 2097152, nesting 512)"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+    }
+  }
+}

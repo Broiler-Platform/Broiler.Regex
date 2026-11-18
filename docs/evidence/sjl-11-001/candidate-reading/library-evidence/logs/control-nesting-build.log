@@ -1,0 +1,12 @@
+$ dotnet build probes/Regex.Probe -c Release --nologo --disable-build-servers -p:RegexAdversarialControl=nesting
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Regex.Probe: adversarial control 'nesting' is built from the library's sources with Parsing/RegexNesting.cs changed in a copy (/dev/shm/rx-read-libev/tree/probes/Regex.Probe/obj/Release/net10.0/adversarial-control/RegexNesting.cs); this build tests that copy, not Broiler.Regex.dll.
+  Regex.Probe -> /dev/shm/rx-read-libev/tree/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.78
+exit 0

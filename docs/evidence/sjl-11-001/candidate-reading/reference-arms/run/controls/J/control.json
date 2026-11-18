@@ -1,0 +1,49 @@
+{
+  "answers-changed": [
+    {
+      "control": "P1-regexp:matching:m1-notes:0001\tmatch:0,2\t-",
+      "run": "P1-regexp:matching:m1-notes:0001\tmatch:0,1\t-"
+    }
+  ],
+  "arm": "J",
+  "blind": [
+    {
+      "class": "c",
+      "row": "-",
+      "why": "arm J is wrong by the arbiter and no row of the correspondence names the input"
+    }
+  ],
+  "c-revert": 0,
+  "c-run": 0,
+  "case": "P1-regexp:matching:m1-notes:0001",
+  "class": "P1",
+  "control-case": "P1-regexp:matching:m1-notes:0001",
+  "counts-blind": {
+    "a": 440,
+    "a'": 9,
+    "b": 15,
+    "b'": 1,
+    "c": 1
+  },
+  "counts-control": {
+    "a": 440,
+    "a'": 9,
+    "b": 15,
+    "b'": 1,
+    "unclassified": 1
+  },
+  "counts-revert": {
+    "a": 440,
+    "a'": 9,
+    "b": 15,
+    "b'": 1
+  },
+  "listed": [
+    "P1-regexp:matching:m1-notes:0001\tP1\texec\tJ\tmatch:0,1\tmatch:0,2\t-\tunclassified\t-\tthe negative control's planted difference"
+  ],
+  "problems": [],
+  "reported": [
+    "P1-regexp:matching:m1-notes:0001\tP1\texec\tJ\t0061007C00610062\t.\t006100620063\t0\tdefault\tmatch:0,1\tmatch:0,2"
+  ],
+  "reported-unclassified": true
+}

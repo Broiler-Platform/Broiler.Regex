@@ -1,0 +1,7 @@
+  Determining projects to restore...
+  Restored D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\Broiler.Regex.csproj (in 16.01 sec).
+  Restored D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\Regex.Probe.csproj (in 16.31 sec).
+  Broiler.Regex -> D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\bin\Release\net10.0\Broiler.Regex.dll
+  Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\Broiler.Regex.Probe.dll
+  Generating native code
+  Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\publish\

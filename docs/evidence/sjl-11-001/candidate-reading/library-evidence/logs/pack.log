@@ -1,0 +1,7 @@
+$ dotnet pack Broiler.Regex/Broiler.Regex.csproj -c Release --nologo --disable-build-servers -o /dev/shm/rx-read-libev/packages
+  Determining projects to restore...
+  Restored /dev/shm/rx-read-libev/tree/Broiler.Regex/Broiler.Regex.csproj (in 264 ms).
+  Broiler.Regex -> /dev/shm/rx-read-libev/tree/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+  Successfully created package '/dev/shm/rx-read-libev/packages/Broiler.Regex.0.1.0-preview.6.nupkg'.
+  Successfully created package '/dev/shm/rx-read-libev/packages/Broiler.Regex.0.1.0-preview.6.snupkg'.
+exit 0

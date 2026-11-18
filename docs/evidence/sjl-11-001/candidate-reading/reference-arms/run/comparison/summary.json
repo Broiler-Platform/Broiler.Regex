@@ -1,0 +1,557 @@
+{
+  "classes": {
+    "P1": {
+      "S-answers": {
+        "accept:accept": 295,
+        "accept:refuse": 390,
+        "exec:match": 436,
+        "exec:null": 197,
+        "exec:refuse": 5
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 685,
+          "different": 87,
+          "equal": 598
+        },
+        "accept/J.lt-LT": {
+          "compared": 685,
+          "different": 87,
+          "equal": 598
+        },
+        "accept/J.tr-TR": {
+          "compared": 685,
+          "different": 87,
+          "equal": 598
+        },
+        "accept/V": {
+          "compared": 685,
+          "different": 19,
+          "equal": 666
+        },
+        "exec/J": {
+          "compared": 638,
+          "different": 38,
+          "equal": 600
+        },
+        "exec/J.lt-LT": {
+          "compared": 638,
+          "different": 51,
+          "equal": 587
+        },
+        "exec/J.tr-TR": {
+          "compared": 638,
+          "different": 55,
+          "equal": 583
+        },
+        "exec/V": {
+          "compared": 638,
+          "different": 41,
+          "equal": 597
+        }
+      },
+      "charges-recorded": {
+        "S": 45392384,
+        "V": 58025137
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P2": {
+      "S-answers": {
+        "accept:accept": 5274,
+        "accept:refuse": 654,
+        "exec:match": 32967,
+        "exec:null": 27771,
+        "exec:refuse": 6776
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 5928,
+          "different": 34,
+          "equal": 5894
+        },
+        "accept/J.lt-LT": {
+          "compared": 5928,
+          "different": 34,
+          "equal": 5894
+        },
+        "accept/J.tr-TR": {
+          "compared": 5928,
+          "different": 34,
+          "equal": 5894
+        },
+        "accept/V": {
+          "compared": 5928,
+          "different": 33,
+          "equal": 5895
+        },
+        "exec/J": {
+          "compared": 67514,
+          "different": 4,
+          "equal": 67510
+        },
+        "exec/J.lt-LT": {
+          "compared": 67514,
+          "different": 4,
+          "equal": 67510
+        },
+        "exec/J.tr-TR": {
+          "compared": 67514,
+          "different": 4,
+          "equal": 67510
+        },
+        "exec/V": {
+          "compared": 67514,
+          "different": 409,
+          "equal": 67105
+        }
+      },
+      "charges-recorded": {
+        "S": 41285632,
+        "V": 54819484
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P3": {
+      "S-answers": {
+        "exec:match": 21,
+        "exec:null": 2
+      },
+      "by-operation-and-run": {
+        "exec/J": {
+          "compared": 23,
+          "different": 2,
+          "equal": 21
+        },
+        "exec/J.lt-LT": {
+          "compared": 23,
+          "different": 1,
+          "equal": 22
+        },
+        "exec/J.tr-TR": {
+          "compared": 23,
+          "different": 2,
+          "equal": 21
+        },
+        "exec/V": {
+          "compared": 23,
+          "different": 2,
+          "equal": 21
+        }
+      },
+      "charges-recorded": {
+        "S": 21572608,
+        "V": 20868096
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P4": {
+      "S-answers": {
+        "accept:accept": 473852,
+        "accept:refuse": 181508,
+        "exec:limit": 4068,
+        "exec:match": 3986084,
+        "exec:null": 3591480,
+        "exec:refuse": 2904128
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 655360,
+          "different": 35331,
+          "equal": 620029
+        },
+        "accept/J.lt-LT": {
+          "compared": 655360,
+          "different": 35324,
+          "equal": 620036
+        },
+        "accept/J.tr-TR": {
+          "compared": 655360,
+          "different": 35324,
+          "equal": 620036
+        },
+        "accept/V": {
+          "compared": 655360,
+          "different": 102,
+          "equal": 655258
+        },
+        "exec/J": {
+          "compared": 10485760,
+          "different": 591237,
+          "equal": 9894523
+        },
+        "exec/J.lt-LT": {
+          "compared": 10485760,
+          "different": 597086,
+          "equal": 9888674
+        },
+        "exec/J.tr-TR": {
+          "compared": 10485760,
+          "different": 600737,
+          "equal": 9885023
+        },
+        "exec/V": {
+          "compared": 10485760,
+          "different": 4848,
+          "equal": 10480912
+        }
+      },
+      "charges-recorded": {
+        "S": 41620830720,
+        "V": 27682703064
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P5": {
+      "S-answers": {
+        "accept:accept": 6684632,
+        "accept:refuse": 40,
+        "exec:match": 6702389,
+        "exec:null": 789,
+        "exec:refuse": 40
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 6684672,
+          "different": 11,
+          "equal": 6684661
+        },
+        "accept/J.lt-LT": {
+          "compared": 6684672,
+          "different": 11,
+          "equal": 6684661
+        },
+        "accept/J.tr-TR": {
+          "compared": 6684672,
+          "different": 11,
+          "equal": 6684661
+        },
+        "accept/V": {
+          "compared": 6684672,
+          "equal": 6684672
+        },
+        "exec/J": {
+          "compared": 6703218,
+          "different": 151,
+          "equal": 6703067
+        },
+        "exec/J.lt-LT": {
+          "compared": 6703218,
+          "different": 151,
+          "equal": 6703067
+        },
+        "exec/J.tr-TR": {
+          "compared": 6703218,
+          "different": 157,
+          "equal": 6703061
+        },
+        "exec/V": {
+          "compared": 6703218,
+          "equal": 6703218
+        }
+      },
+      "charges-recorded": {
+        "S": 6854606848,
+        "V": 128408614
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P6": {
+      "S-answers": {
+        "accept:accept": 7067,
+        "accept:refuse": 299357
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 306424,
+          "equal": 306424
+        },
+        "accept/J.lt-LT": {
+          "compared": 306424,
+          "equal": 306424
+        },
+        "accept/J.tr-TR": {
+          "compared": 306424,
+          "equal": 306424
+        },
+        "accept/V": {
+          "compared": 306424,
+          "equal": 306424
+        }
+      },
+      "charges-recorded": {
+        "S": 158490624,
+        "V": 0
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    },
+    "P7": {
+      "S-answers": {
+        "accept:accept": 1180642,
+        "accept:refuse": 7732254
+      },
+      "by-operation-and-run": {
+        "accept/J": {
+          "compared": 8912896,
+          "equal": 8912896
+        },
+        "accept/J.lt-LT": {
+          "compared": 8912896,
+          "equal": 8912896
+        },
+        "accept/J.tr-TR": {
+          "compared": 8912896,
+          "equal": 8912896
+        },
+        "accept/V": {
+          "compared": 8912896,
+          "equal": 8912896
+        }
+      },
+      "charges-recorded": {
+        "S": 4563402752,
+        "V": 0
+      },
+      "runs": [
+        "J.lt-LT",
+        "J.tr-TR",
+        "J",
+        "V"
+      ]
+    }
+  },
+  "comparison": "sjl-11-001-comparison@1",
+  "differences": 1901509,
+  "differences-sha256": "0a8345fd6275347eeaaae432d95aacfdc3c946a4271dca72c9be576f6e5ab677",
+  "population": {
+    "manifest-sha256": "ad7d237082e057f9961d4c6d07c925b12b731eb7529feda710f25aa0ff2a9b2a",
+    "partial": false
+  },
+  "runs": {
+    "run.J.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1930 cases of this run"
+    },
+    "run.J.lt-LT.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "lt-LT",
+      "current-culture": "lt-LT",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1930 cases of this run"
+    },
+    "run.J.tr-TR.json": {
+      "arm": "J",
+      "calls": {
+        "Broiler.Regex": "0.1.0-preview.4+c1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file's header)",
+        "policy": "Broiler.JS's own: no meter; Broiler.Regex 0.1.0-preview.4's internal step limit; .NET Regex with no match timeout"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "tr-TR",
+      "current-culture": "tr-TR",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1928 cases of this run"
+    },
+    "run.S.json": {
+      "arm": "S",
+      "calls": {
+        "Broiler.Regex": "0.1.0.0 0.1.0-preview.6+49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.6+ccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+        "Broiler.Unicode.Tables": "0.1.0-preview.6+ccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+        "ample-policy": "meter recording, steps none, frames 16777216, trail 33554432, nesting the case's, compile none",
+        "default-policy": "meter recording, steps 10000000, frames 1048576, trail 2097152, nesting 512, compile none"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+    },
+    "run.V.json": {
+      "arm": "V",
+      "calls": {
+        "Broiler.Unicode.Algorithms": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "Broiler.Unicode.Tables": "0.1.0-preview.5+b80201436e8f8ff0402ed75c0b9657fe3616d730",
+        "ample-policy": "no allowance; the matcher's own ceilings",
+        "copy": "Broiler.VM aaa39fb: JsRegExpMatcher.cs f125341255294259e3acecdad74d2310a8260d51, JsUnicodeData.cs b4646317dbc07ea7365a91b03ab1cfb3bc20472d, JsRealm.RegExp.cs 6c6e487ba1d7130e945c0bf9de7a2ec9609a5a0e",
+        "default-policy": "allowance 10000000 units per exec; the matcher's own ceilings (frames 1048576, trail 2097152, nesting 512)"
+      },
+      "cases": {
+        "P1": 1323,
+        "P2": 73442,
+        "P3": 23,
+        "P4": 11141120,
+        "P5": 13387890,
+        "P6": 306424,
+        "P7": 8912896
+      },
+      "control-case": null,
+      "culture": "invariant",
+      "current-culture": "",
+      "dynamic-code-compiled": true,
+      "invariant-globalization": false,
+      "limits": {
+        "calibration-case-processor-seconds": "5",
+        "calibration-case-processor-seconds-after-a-stop": "2",
+        "calibration-case-processor-seconds-ample-policy": "20",
+        "default-steps": "10000000",
+        "harness-stop": "limit:harness",
+        "run-backstop-processor-seconds": "60",
+        "slow-case-seconds": "1",
+        "stack-bytes": "16777216",
+        "wall-clock-backstop-seconds": "900",
+        "worker-environment": "DOTNET_TieredCompilation=0",
+        "workers": "6"
+      },
+      "runtime": ".NET 10.0.15",
+      "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+    }
+  }
+}

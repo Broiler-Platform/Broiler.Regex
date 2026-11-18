@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/controls.py copy --root /home/user/rx-read-arms/tree --arm V --case P4-01234-u-05 --out /home/user/rx-read-arms/run/controls/V/copy
+copied arm V to /home/user/rx-read-arms/run/controls/V/copy; its Program.cs sets the control case P4-01234-u-05

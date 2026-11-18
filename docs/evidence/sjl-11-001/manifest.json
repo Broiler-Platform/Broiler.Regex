@@ -1,0 +1,2454 @@
+{
+ "bundle": "sjl-11-001",
+ "reading": "the candidate reading (task 4.2 of SJL-11.2)",
+ "taken": "2026-11-18",
+ "commits": {
+  "reading": "49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+  "reading-library-tree": "b8001a304dbfba43ea5eee34b02563083b5e8e1d",
+  "published-0.1.0-preview.6": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e",
+  "rule": "e568b88248c7de5dd75210e22cd357197108e644",
+  "rule-files-as-filed": "edfb2d8495510b50cd51332461ba5625a054e237",
+  "engines-inputs": "c2aa77167cb3ded40ef50b5c3eeae26f8f7c0b54",
+  "test262": "ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e",
+  "test262-test-tree": "c022917030da8fbc09b7db8f9b7d55ccc5f5ebab",
+  "broiler-js-vectors-and-arbiter": "b2c2e2243a086285d806866a64b83297791a8ec5",
+  "broiler-js-host-job": "f690836dba19ded358aacc4b6edb9c8107a53ccf",
+  "broiler-vm-correspondence": "5e90bfe485aad60b3637d9f69e54ed71adcd73af",
+  "broiler-vm-correspondence-blob": "2831290201cca3fb6b524a9be8680755eb566f37",
+  "broiler-unicode": "0bcb917564d514feadaa27ce7dd1e0b57b585c90",
+  "part-b-control-plant": "deac674863f3bf859c8e6564634b0df499c62f14",
+  "part-b-control-revert": "d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb"
+ },
+ "ci-runs": {
+  "reading": 44206505415,
+  "part-b-control-plant": 44237117988,
+  "part-b-control-revert": 44238736222,
+  "publish-0.1.0-preview.6": 43736141111
+ },
+ "ci-artifacts": {
+  "how": "downloaded with curl and no token of this stage's, through the session's proxy to api.github.com, whose rate limit (ci/api/rate-limit.json) is an authenticated client's; each is unzipped under ci/artifact-files/RUN-NAME/, and named here by the digest GitHub records for its zip",
+  "artifacts": [
+   {
+    "run": 44206505415,
+    "artifact": 14385175532,
+    "name": "test262-host",
+    "bytes": 60156,
+    "digest": "sha256:13e97839115575d262fcd82bbeef38dcc3236efb1ad073a7ca9c7aea4b901126",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14384510364,
+    "name": "fuzz-ubuntu-24.04",
+    "bytes": 643,
+    "digest": "sha256:18a6d32879422d19dee0cd8f122ba732888eb36858da2519050b359cf1f4fd00",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14384450834,
+    "name": "test262-library-linux-x64",
+    "bytes": 12590,
+    "digest": "sha256:7801b3054af27e17c180ec2a9dfaa92cb9b12537f256c4ecc93b758d74bf37ff",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14384271201,
+    "name": "adversarial-controls",
+    "bytes": 3755,
+    "digest": "sha256:b03c6f32aaac789ffc76f4a93fb9d0c9657cb70d673f19b138eb82a6f1caecdb",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14383967154,
+    "name": "test262-library-win-x64",
+    "bytes": 12590,
+    "digest": "sha256:76a6ea0fce292ec38800185f945e24549ba3213c3c8402ce9639b6994d45dfef",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14383628365,
+    "name": "nuget-packages",
+    "bytes": 174995,
+    "digest": "sha256:217a0aa13671298b82106d2f56b0540869acbdbc3a4b3affab045da3795ab6b0",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14383314267,
+    "name": "fuzz-windows-latest",
+    "bytes": 651,
+    "digest": "sha256:bf90fd60c1e9f340a05f8dfd79a09c2fb1ca96643afa23650c662c0e99ce1c30",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14383293658,
+    "name": "native-aot-probe-win-x64",
+    "bytes": 45919,
+    "digest": "sha256:b4dea8913c22956851c1663dbcbdf4ff513c7b82a208dfd8d6dd2e02796a19d7",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14382844468,
+    "name": "fuzz-control",
+    "bytes": 2495,
+    "digest": "sha256:4fd7579986c522bf59f7462e9b86fcc0097529428c93d6c325f4b915a15ec1e1",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44206505415,
+    "artifact": 14382699686,
+    "name": "native-aot-probe-linux-x64",
+    "bytes": 45925,
+    "digest": "sha256:bf0a12a13495a9fcf8bc42b17343a3931cf01a162a7b5dceb3f15e18556205cf",
+    "expires": "2027-02-16T00:16:46Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398610092,
+    "name": "native-aot-probe-win-x64",
+    "bytes": 9683,
+    "digest": "sha256:78d3ea203a4f3a5850fb101f51d28ed5abaac7841abe9f891e75257da1b7e88e",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398495818,
+    "name": "test262-library-win-x64",
+    "bytes": 6345,
+    "digest": "sha256:4e778e57e76827e577a0a693899c5bd725154482c09079f9d474aa108423b968",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398487301,
+    "name": "test262-host",
+    "bytes": 60727,
+    "digest": "sha256:4013efddb4e8ce317f162b85dc416be9c7d7c9bb10ccb4749be807c98d48cd07",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398395394,
+    "name": "native-aot-probe-linux-x64",
+    "bytes": 9684,
+    "digest": "sha256:75ed5eff8a4ed61c24359f096f0e3d3e6556abd2ccedbb771cb0a567bb56612e",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398240569,
+    "name": "adversarial-controls",
+    "bytes": 1296,
+    "digest": "sha256:7c2caf731c27c6ef867cdb6088f03d8445e4ab794a6b8268c9da50af83b1c3fc",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14398185694,
+    "name": "fuzz-windows-latest",
+    "bytes": 648,
+    "digest": "sha256:dc4ff8283f25a5cca70bb255bb12e7f9fbec09d0fb0b39814d85fa6eadf03cdd",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14397766539,
+    "name": "fuzz-ubuntu-24.04",
+    "bytes": 640,
+    "digest": "sha256:dbea00f9d7890ada4ccd99e48c45b8e6629f33d1dd0baf67f9850f1138f4f15c",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14397722584,
+    "name": "test262-library-linux-x64",
+    "bytes": 6345,
+    "digest": "sha256:aba56f737c992d58bf6ad89282a8648b223d6bba4ca109adf41b5268d7c726e6",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44237117988,
+    "artifact": 14397444026,
+    "name": "fuzz-control",
+    "bytes": 2233,
+    "digest": "sha256:7e56a403002fb884e0f275a8338c9ea4a1cecafe8c9688ccd396d4e7d54bd25b",
+    "expires": "2027-02-16T04:24:38Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14399026319,
+    "name": "native-aot-probe-win-x64",
+    "bytes": 45921,
+    "digest": "sha256:c6032c16f0eaf404c71de9ee75903ec0307d28c6fffac3ef1bb688a9803e7292",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398996453,
+    "name": "test262-library-win-x64",
+    "bytes": 12590,
+    "digest": "sha256:1dc70f89ef905c77deed3de3db5f63e42623588aaa260e82e122ebc9fa9f4f31",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398887044,
+    "name": "nuget-packages",
+    "bytes": 175012,
+    "digest": "sha256:1be9db267ea48d8fa19d73a10840fa2401710bbe5ae31acb04285af0def65987",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398577855,
+    "name": "fuzz-windows-latest",
+    "bytes": 651,
+    "digest": "sha256:1977901552428b90fcb4a3dc5b8b0a1c59f918932964644e790a500cefcd4517",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398467174,
+    "name": "adversarial-controls",
+    "bytes": 3755,
+    "digest": "sha256:fa160b134c893c734993219a70eaa0ccd23a9e17aca2bf4048d8ec9853274d8f",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398413076,
+    "name": "fuzz-ubuntu-24.04",
+    "bytes": 643,
+    "digest": "sha256:20a78c606cb47f7e06d108d38be72eae55e41eee00062e2f74749bf8e488fea4",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398393151,
+    "name": "test262-library-linux-x64",
+    "bytes": 12590,
+    "digest": "sha256:2e2c88b541f5b2a50534c8dcffdbe3edf64d7ca85d6de5d1aa7db82ba86b6091",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398312415,
+    "name": "fuzz-control",
+    "bytes": 2493,
+    "digest": "sha256:394957d6a0c1cebc894e8a1771b3aa167be70b1ca9d8c80867ac59a29e9534f3",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14398044274,
+    "name": "test262-host",
+    "bytes": 60171,
+    "digest": "sha256:e4a63db0315aec5df5da58aa8ec46fb5ffe87cacfc62f6278e9cccf506d4c41a",
+    "expires": "2027-02-16T04:38:35Z"
+   },
+   {
+    "run": 44238736222,
+    "artifact": 14397919709,
+    "name": "native-aot-probe-linux-x64",
+    "bytes": 45925,
+    "digest": "sha256:2e267f85145767ebf911cf063947de745c5214e01aaf92c659a2707c51e2f9da",
+    "expires": "2027-02-16T04:38:35Z"
+   }
+  ]
+ },
+ "retained": [
+  {
+   "path": "candidate-reading/ci/api/artifacts-43736141111.json",
+   "sha256": "80f0ce844865dfb6d5f2b3d87ba700b856123402e35de8110c2bbb291b574c91",
+   "bytes": 6128
+  },
+  {
+   "path": "candidate-reading/ci/api/artifacts-44206505415.json",
+   "sha256": "2abaf63ce586c880f8de26b0481911eead27e0a05e9772c1cb7d9278b8c5e83d",
+   "bytes": 8742
+  },
+  {
+   "path": "candidate-reading/ci/api/artifacts-44237117988.json",
+   "sha256": "a5f6808b8677114f719af1ac85067df185ca05486ba4271f59fce71b75373db0",
+   "bytes": 7997
+  },
+  {
+   "path": "candidate-reading/ci/api/artifacts-44238736222.json",
+   "sha256": "3ad804e1b9512fa3e41a17d3f29a8dd6730c346f5e896c87206591145448ff95",
+   "bytes": 8882
+  },
+  {
+   "path": "candidate-reading/ci/api/branch-main.json",
+   "sha256": "c16547b0cc89e3a6ce2606771dbc9bfaa7cbc2a3cdfa7e7115e922911858d8a6",
+   "bytes": 6201
+  },
+  {
+   "path": "candidate-reading/ci/api/check-runs-49d7be1f.json",
+   "sha256": "dd0cf44bf0f4baaf1ac549b70dcd5eaf20157455566d11b898e055204f823bac",
+   "bytes": 60791
+  },
+  {
+   "path": "candidate-reading/ci/api/commit-d0dd222.json",
+   "sha256": "3eb4ea004bbab1800b1c57058a787d63a242f5f09211ac16b52b93cb6f150460",
+   "bytes": 6466
+  },
+  {
+   "path": "candidate-reading/ci/api/commit-deac674.json",
+   "sha256": "6254101174a17566997cd7a16055890b393430b8ff025916e95b1c757e82258c",
+   "bytes": 6472
+  },
+  {
+   "path": "candidate-reading/ci/api/fetch.log",
+   "sha256": "54245e94562fbca0baa35901396551e4ed2e51479574d981d16c137101b20152",
+   "bytes": 6622
+  },
+  {
+   "path": "candidate-reading/ci/api/jobs-43736141111.json",
+   "sha256": "54c97e790661bbcbdf257f2bbcd8991d5bd85f4025c1474a6431a21c4dd3a306",
+   "bytes": 49016
+  },
+  {
+   "path": "candidate-reading/ci/api/jobs-44206505415.json",
+   "sha256": "e24a8c5299a49ef8ce6bd01a2256881e71f9cdba947d918a5e9c547a6d66a042",
+   "bytes": 56216
+  },
+  {
+   "path": "candidate-reading/ci/api/jobs-44237117988.json",
+   "sha256": "6cd7b2e5e200d06b64f6b7ea2b40c577d6dac575b122a07d963d7b852e91c29d",
+   "bytes": 56412
+  },
+  {
+   "path": "candidate-reading/ci/api/jobs-44238736222.json",
+   "sha256": "853f104d3b3c953ce0a5d2300a60d400c034766c56f8022a601203092d92d3b7",
+   "bytes": 56412
+  },
+  {
+   "path": "candidate-reading/ci/api/pulls-control-b.json",
+   "sha256": "2ba33ca0557f1bb5b7ba88d67f9d0093c7185a36ec51fe2b7bd9372d3e001d6d",
+   "bytes": 5
+  },
+  {
+   "path": "candidate-reading/ci/api/rate-limit.json",
+   "sha256": "52fbd6245f89ad1403fa6a130c2da5b4e0aa60178d4dc73116c6b605cbdee893",
+   "bytes": 1925
+  },
+  {
+   "path": "candidate-reading/ci/api/ref-control-b.json",
+   "sha256": "3fd473a0fddbf58484842e1bfdd413974a48ad4099b2f8673e7bfd6f14e53a6c",
+   "bytes": 444
+  },
+  {
+   "path": "candidate-reading/ci/api/run-43736141111.json",
+   "sha256": "3c4ae8403155e568844bba3a01ad1e7b3eef9a5e48285adb4b4a6271a6ecc3d1",
+   "bytes": 14717
+  },
+  {
+   "path": "candidate-reading/ci/api/run-44206505415.json",
+   "sha256": "4acc1bbbd914cd7ce6b715f946dacb7e1dd1ecdd7fb21eca0f331b83ff6f7e4a",
+   "bytes": 14572
+  },
+  {
+   "path": "candidate-reading/ci/api/run-44237117988.json",
+   "sha256": "b4588801821972527c7a270c4219b1b61d56458a2c297593d8259d8683fd98a6",
+   "bytes": 14834
+  },
+  {
+   "path": "candidate-reading/ci/api/run-44238736222.json",
+   "sha256": "1b2ce8356683c3e7b5af475411c53d274347ca11ba60e57fe3b19ca44a589ba8",
+   "bytes": 14831
+  },
+  {
+   "path": "candidate-reading/ci/api/runs-at-49d7be1f.json",
+   "sha256": "34914387493b45d14408e94801fddc721783689bd67e8ba91751b77e449840c4",
+   "bytes": 15525
+  },
+  {
+   "path": "candidate-reading/ci/api/status-49d7be1f.json",
+   "sha256": "2e6aaf7ad42b8890b4838312859668cace9b5f20df991116614bd9ebe0074ebf",
+   "bytes": 5491
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-control/fuzz-control.log",
+   "sha256": "37430cd5d21ca726f876580f61ba4a69cd56784033dd17f9840605e7e080cba1",
+   "bytes": 12919
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-ubuntu-24.04/fuzz.log",
+   "sha256": "2cdb2fc1e62e578a28efb1969b736dba0c9e45ba0420e414e340f2f509743920",
+   "bytes": 1204
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-fuzz-windows-latest/fuzz.log",
+   "sha256": "9626d66818764f266c56aad9b8da3faacbb674019b494501313e0703f0cfab49",
+   "bytes": 1204,
+   "as-fetched": {
+    "sha256": "128a19263684c4963ddf52e217b3ac56dc6acd97a29a5554f1fede3a21122664",
+    "bytes": 1237,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-publish.log",
+   "sha256": "c9a6e8f1a796f655ed6614e23390f5e2f93579704ee83430cf4b9ed56fc8ad8f",
+   "bytes": 653
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-publish.log",
+   "sha256": "626f1cc787bc0a555d6d4a788c0a9c08e206057243fec6ae6c05f1a0ae3691b6",
+   "bytes": 586,
+   "as-fetched": {
+    "sha256": "a04e8296c01fc1e7bc4994df17a01373c4cf5d876b9c8dfa16910c50236a2b1e",
+    "bytes": 593,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/candidate.txt",
+   "sha256": "d3363655cdef1b976567d4f2ecef5e71cfca1604c95ded6cb6c73cf03ec9b593",
+   "bytes": 491
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/run_test262.log",
+   "sha256": "787b03cd8e40db6eb842cdea589a190b1f18969b52990ee62b0306e524c7121b",
+   "bytes": 2084
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/summary.txt",
+   "sha256": "08433af1cef7c81efcd814172a82cff1e3878f0c61e2fb8d39de4814aa736a91",
+   "bytes": 164
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-host/test262-host.json",
+   "sha256": "5b07be1258d7f0362c6b9608085b5231f10142ba3eac1031397ec18d018c887f",
+   "bytes": 921613
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/candidate.txt",
+   "sha256": "48bc22cdd21900c1583d598af8df8ea519dd54a2ab9eebd05dec087fc4628ac0",
+   "bytes": 491
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/run_test262.log",
+   "sha256": "e0626f72a41bd7a189eb5ae2690b51b42fa843be5f9ff6bb219d38e7fb64cf81",
+   "bytes": 2649
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/summary.txt",
+   "sha256": "5501cf6817cc37e02f6f970eaa1547de5e098cf34af86a2fa32ce9da5ce960bf",
+   "bytes": 1167
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-library-linux-x64/test262-library-aot.txt",
+   "sha256": "51a0d1a52eee0573f8e96cb39c7f567c3186a665f80949d386134d818366fb04",
+   "bytes": 111660
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/candidate.txt",
+   "sha256": "2189a70d01d74d4a96f2b39bb20b95e997843b810abeadc1e3c8fdf28f15bdda",
+   "bytes": 491
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694553.log",
+   "sha256": "e244ffd81ce92491c81054259a498895c48a71a802eef9512332fc6f78281ca2",
+   "bytes": 125404,
+   "as-fetched": {
+    "sha256": "e19aaabc04cb3039d9856c8f8164deaadbd5b959281547b0b0334cb6d23081cc",
+    "bytes": 126245,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694800.log",
+   "sha256": "8bd5e7447fa5c0c375c75a685feb92f44f12e0dac823c88380090fe7333db06d",
+   "bytes": 22118,
+   "as-fetched": {
+    "sha256": "c0559e08b4a4756d6c9984c90f7c9d3595036d17f14e952f58b07952352d5927",
+    "bytes": 22371,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694801.log",
+   "sha256": "86d292206ac401366627f37dd33a3e9c67f2c2a2ae32e6cece87110b18b7f8b1",
+   "bytes": 63989
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694825.log",
+   "sha256": "7241ef9d5b3313d760a0409a44248bdbae7e878b1d4be8ddc88e89327e86afa4",
+   "bytes": 19075,
+   "as-fetched": {
+    "sha256": "25cbb4b63f11ce0172a4e902cab0a1ff77de33dfca3b05b8baac8281659fcccf",
+    "bytes": 19276,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694923.log",
+   "sha256": "b913bad966dff7d50e97efd98f09574e3ec347d23bb62548b63ee028970aa792",
+   "bytes": 36648
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694930.log",
+   "sha256": "8db41a3441583a93a68d952571e30a572a8ca9e316723dd392f97e9ec5ad9d9e",
+   "bytes": 27241,
+   "as-fetched": {
+    "sha256": "bddfda6d95ac94b8ed10dc06a3047ce37c4a4c5a1e37cb513ba9a8364e54a412",
+    "bytes": 27550,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473694949.log",
+   "sha256": "832f64c721d159fb13869b550d6b512379b7ad19bd27047e891d1745f2ce0710",
+   "bytes": 17692
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695043.log",
+   "sha256": "bb732e070e6ba827a9bb088f3df6f24f0037fc99dfec8c932ecb5429d99e8caa",
+   "bytes": 123930
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695048.log",
+   "sha256": "7d12cf6988c24aaed8c846f9638362c07ca88ad7b3d02fd810bf2c45a3eca204",
+   "bytes": 15776
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695052.log",
+   "sha256": "6d70cfc968211282eed9edee670c5bb3fcaaa61b81178d6f65d25fb69b9062ba",
+   "bytes": 33049
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695064.log",
+   "sha256": "1cd521303da17bc879b6d55007d69e44c2535008340d1575de413458d3ef36b5",
+   "bytes": 44189,
+   "as-fetched": {
+    "sha256": "21be7d1dd1e43e38e54eb8b912e6466afcea2d0d17b608cb877e56261783aeaa",
+    "bytes": 44676,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695079.log",
+   "sha256": "9e0e55f8f8e31da0d97ac427ecf9bcc64f89b26417757e7ae3d9156bef1d4b1e",
+   "bytes": 24998
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695222.log",
+   "sha256": "17c7c32d86b742254e6f4c3b6a21ce4fc913aa5b1ab6f81cd066b2cf4343cb99",
+   "bytes": 20760
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134473695300.log",
+   "sha256": "767b45b20378dd6f15af7f5502238d71af941bf349747899db4b0a6ebadb1758",
+   "bytes": 22529
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819645.log",
+   "sha256": "0aea655bdd56f9f2697e0a8d686cf7010ba296111b394540d7a1a8bae88cbf0f",
+   "bytes": 65759
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819693.log",
+   "sha256": "eaf9091b10b5e73dd1a68d49e879d9eff46ee5f96dd1a83c635ddd1702735817",
+   "bytes": 17955
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819702.log",
+   "sha256": "0d0b18e1621c0f362d170569792d68aa0f875efd2b5b2c2e45d8fdbc8bc2c471",
+   "bytes": 47680,
+   "as-fetched": {
+    "sha256": "b1e1a6fc743263559102dfae14b1a00760817ca161df6fd4279ef404c573bb9d",
+    "bytes": 48138,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819708.log",
+   "sha256": "f8b849da081d67e97b78bc8289a71e578ec5d831a357003e5a5942bb400c9301",
+   "bytes": 47206
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819759.log",
+   "sha256": "693444f2da3e22c60af31bfdaa190b7c7dcc77c7151bb9daa9d3c4ed649b1a13",
+   "bytes": 43640,
+   "as-fetched": {
+    "sha256": "07881a5e288ea9f742cac3fe1243bf58987492698423a8cd74f6707d4b1f55f8",
+    "bytes": 44114,
+    "stored": "CR LF stored as LF (.gitattributes, convention 17)"
+   }
+  },
+  {
+   "path": "candidate-reading/ci/job-logs/134575819815.log",
+   "sha256": "f996796f04f79f46f6b5d967a1ffc25f154ac6c785e32078f7ce9fd53b017cfd",
+   "bytes": 35948
+  },
+  {
+   "path": "candidate-reading/library-evidence/digests.sha256",
+   "sha256": "870a36d621f3a8e91893201d04895798ce429f1edc7a28f6dd31cf8027a21559",
+   "bytes": 923
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/commands.log",
+   "sha256": "32c7ab13bd838667035a70795ccc73db2249225c89747f35d2fd0bd3a0f0cb7b",
+   "bytes": 209
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/gate.log",
+   "sha256": "85c435a3731713d6f79d252882c9501dc653682659018a8078191aae016612e6",
+   "bytes": 194
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.err.txt",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.exit.txt",
+   "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "bytes": 2
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.machine-sh.txt",
+   "sha256": "f31322eb226d4e697aaabb98e3b6e95c94232504dfaa24ccedbb9221edff665d",
+   "bytes": 384
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.out.txt",
+   "sha256": "fe22a9d406f21d1b74506a545067423d6596f9dea09bb102f11bd23d2654e79d",
+   "bytes": 29
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.time.txt",
+   "sha256": "ea4ca2e492fb13c6b04e7ee4b9faf130774557701774296583a66ba1a4460966",
+   "bytes": 26
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/runs.tsv",
+   "sha256": "b51b2e6ff73e2a9fae8300c0558dc8071b5caa394c3717ea69024346274ea630",
+   "bytes": 93
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/script.txt",
+   "sha256": "5dfd3ff28a416672662ad7e470baa8e3b0706761bad55e9845c2809b0f4e8ffd",
+   "bytes": 254
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/status.txt",
+   "sha256": "ab85a152406fb66975272416c90a979cd68093232a8ea30b79f99343e4d0d377",
+   "bytes": 172
+  },
+  {
+   "path": "candidate-reading/library-evidence/environment.txt",
+   "sha256": "7beff063b91cc760212dde31d3b027900c887054091aaf278632e49b359924e8",
+   "bytes": 194
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/adversarial-aot.log",
+   "sha256": "38dbf100005032e8ebf420f2897edea21c21f09dff259a2ab5b058d3c7d401a4",
+   "bytes": 8175
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/adversarial-jit.log",
+   "sha256": "3240f1010ad744c9401e73153ec06de91c37d3fc50e74027f991e3ddd53b7a9b",
+   "bytes": 8168
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/adversarial-same.log",
+   "sha256": "2e4736cb9e1dd8318612d737c8e4bc30131990d16d0b66e58446f0496656f3f0",
+   "bytes": 90
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/assurance-clean.log",
+   "sha256": "11985d0edbabac526f1328a7dfc969dd93e652a83eeda9e733c682c5918b1a84",
+   "bytes": 25
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/assurance-restore.log",
+   "sha256": "7389303ea2352d9e9a1acab5770007e5cfee572766230a8bf93d7f9e8be2094b",
+   "bytes": 139
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/assurance.log",
+   "sha256": "aaf383f203bbc55e862a4c088a6ecd92d03097dd84810c2185f35d4d7a5797fb",
+   "bytes": 77
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/build-no-warning.log",
+   "sha256": "f004782894052c69cbb95e317d12fec26ae8c2115db93811a5bdfbac482acd4a",
+   "bytes": 71
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/build.log",
+   "sha256": "d0a85b6a1eb9b172b1d6204d543b8abd7d3f4220b61b2c2b307095738bcf407f",
+   "bytes": 1234
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/clean.log",
+   "sha256": "11985d0edbabac526f1328a7dfc969dd93e652a83eeda9e733c682c5918b1a84",
+   "bytes": 25
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-nesting-build.log",
+   "sha256": "9fc6033f88d46a51a2b9b45360341d2d1d4661bda41d6007d089a1a2015a7892",
+   "bytes": 669
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-nesting-holds.log",
+   "sha256": "3958c681a7a613b73dec1957728c1f653e0634d29653a834f7d6b1e83c124075",
+   "bytes": 278
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-nesting.log",
+   "sha256": "a71f48ab714aaca02485c7461475842ac6b86bc975775e2ad1f38aab6c35117c",
+   "bytes": 345
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-steps-build.log",
+   "sha256": "ae6b9c4b4d9ee0a1bbfd2122d0bd87a1e38b0993bc4bde4412aa5136ebb5e207",
+   "bytes": 713
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-steps-holds.log",
+   "sha256": "ca972d5b52d4414d09f3e7dd134fdc3056264d1300be774b0aa7993fd2ab2a85",
+   "bytes": 278
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/control-steps.log",
+   "sha256": "5238a3d19a3389a6d2087346e18e002763dd1d87937bb5600aa61ae7427c75ec",
+   "bytes": 347
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/controls-no-library.log",
+   "sha256": "8d52242513508a377c52370e45dbb9eccfee372d01b7365dce5cc4afa147d517",
+   "bytes": 70
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/fuzz-control-found.log",
+   "sha256": "2573823062ccf24077f02f7332f6028f0c6db601dae3a428e2e62566ea5c7e99",
+   "bytes": 79
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/fuzz-control.log",
+   "sha256": "1017cc1f9a3377cc406f7bc1ab42a3f8c3061b83399a7aaa233da318ca90a37c",
+   "bytes": 13034
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/fuzz-no-finding.log",
+   "sha256": "2c73450395528627e7acb05e0cdb1feb468b0dbd3fbfe81c859e6fb12fb14082",
+   "bytes": 73
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/fuzz-plant-build.log",
+   "sha256": "40daeb9123e8a7bccdbfd365567c250c9f838e7bf625673ae4207f3897ca9c6c",
+   "bytes": 613
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/fuzz-session.log",
+   "sha256": "bb8fc150303eaae101de97c4e56bc34a769ed4a3c9e90765df5e154d37199332",
+   "bytes": 1272
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/pack.log",
+   "sha256": "ce0133925dd40b9c6477305f91fbea01baf71abffdf7a5f5b02428b7f93dc07b",
+   "bytes": 563
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/probe-aot.log",
+   "sha256": "39c1e50a2169e88b6c2522c9af3d8ef64fa579bc513c40d6065f52ab0be8b73a",
+   "bytes": 33881
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/probe-jit.log",
+   "sha256": "11b3fbdae462742f359e2155de8936773e0da9083bca511413a79db37fbab4b0",
+   "bytes": 33874
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/probe-same.log",
+   "sha256": "3d004126ce27ffc058f392976aac87cb32718ca5edcb15ad863f9d8e43dadd62",
+   "bytes": 99
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/publish-no-assembly.log",
+   "sha256": "a90c5ff8d09d56de46843b6325d19b644fa82a8fb0497d2e2ccdf6bcfcdb93a4",
+   "bytes": 81
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/publish-no-warning.log",
+   "sha256": "346330985889cf81a3b2dbeb02979093ab54be3876899dc5de3c776cb89503c6",
+   "bytes": 78
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/publish.log",
+   "sha256": "06e7f00ac42df96ab172e720ba8ba4babf0734b84edb12d57c9b764943002ac4",
+   "bytes": 659
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/revert-build.log",
+   "sha256": "91aa20e612a07b2ba89db593bd54107a75edba9f024fe47b06fde586cbeeb975",
+   "bytes": 582
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/revert-lacks.log",
+   "sha256": "d271b1b1b8f052edc1394a070f2f419f4692c3662a0523912edc382de12712dc",
+   "bytes": 299
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/revert.log",
+   "sha256": "27d556bd2c74992c16597c9aec66cc96163fbfa0708697e6425a6f69552eff33",
+   "bytes": 274
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/test262-host.log",
+   "sha256": "86aea0933dad338ba52a95de1f752b60a9820c0237368a1ec8315534ec21a8fa",
+   "bytes": 322
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/test262-library-aot.log",
+   "sha256": "d23de5a737d3950ff6b0f70b5ccf6ed904654cbedec3d3e961892ad2a6b96458",
+   "bytes": 111773
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/test262-library-jit.log",
+   "sha256": "d55783f9433c227e47be934ab8a42ae9b4dd235e8195e8e2f26c8eb7f830abf0",
+   "bytes": 111766
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/test262-library-same.log",
+   "sha256": "3d8ada03a1e0ccc2d0c674f2a93e4514fefaa5fa0427d3e69c8339b977e860ea",
+   "bytes": 101
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/test262-pin.log",
+   "sha256": "3a1bcbd55bb6e9c16998f5961e6cf8ec74e7b2dae9341a6b836a8490d3ab0b66",
+   "bytes": 169
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/tests.log",
+   "sha256": "1c89f2fae817e098ebb94fc629f96c57a86c9073ca9c4961026fe4ec6aad3d9f",
+   "bytes": 1684
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/vectors-aot.log",
+   "sha256": "17d59bf0b33a11c752f8c55f4bae4ee383a38555b4d9875547888a4025f9b5c0",
+   "bytes": 215798
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/vectors-jit.log",
+   "sha256": "f620a3df004616158e647128e77414a5d884c4cb66dc31947343b45abce1b0e9",
+   "bytes": 215791
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/vectors-same.log",
+   "sha256": "6cbcfb0b3546a295da2d5eeb95beb3c0db26d7daa81270e0f79a1c73bd100c90",
+   "bytes": 82
+  },
+  {
+   "path": "candidate-reading/library-evidence/logs/worktree.log",
+   "sha256": "48814b63ee85faf5251ea496a4d3be1797f710376b62ef27157d32d604a77262",
+   "bytes": 257
+  },
+  {
+   "path": "candidate-reading/library-evidence/packages.sha256",
+   "sha256": "0773a7025b0332297c5787593998765ed76007bfe63acfc2b9bf70f233c2ca85",
+   "bytes": 205
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/adversarial-aot.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/adversarial-jit.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/control-nesting.txt",
+   "sha256": "17cda6fddf65a07ff4649ae4b8fdc4358d089f99518c73986a0f15442ad8db6d",
+   "bytes": 7570
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/control-steps.txt",
+   "sha256": "d561555dee1f765d27f11597f550ff88502274d3c7e0a830ae2c8d5c98e4b7cb",
+   "bytes": 7676
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/probe-aot.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/probe-jit.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/revert.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/test262-library-aot.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/test262-library-jit.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/vectors-aot.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632
+  },
+  {
+   "path": "candidate-reading/library-evidence/reports/vectors-jit.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632
+  },
+  {
+   "path": "candidate-reading/library-evidence/steps.tsv",
+   "sha256": "20476a3e4609cfedea993e70b1c660600ef0cad79769186f92deaacfcc88b844",
+   "bytes": 764
+  },
+  {
+   "path": "candidate-reading/part-b-control/plant.diff",
+   "sha256": "456d4541eefa2a35eb2c2e0743e36732d49a92da7af41cecc9d18fc253c9ad24",
+   "bytes": 1286
+  },
+  {
+   "path": "candidate-reading/part-b-control/record.md",
+   "sha256": "d3041841effc88a8b62ae801e3d37784bc2c6ec6c8f22a30aa45a4f357034013",
+   "bytes": 1933
+  },
+  {
+   "path": "candidate-reading/part-b-control/run1-SHA256SUMS",
+   "sha256": "050d1ea1961f84ec01153812129d5727e743f74aa51b66a8a3c121c70a37ef36",
+   "bytes": 704
+  },
+  {
+   "path": "candidate-reading/reference-arms/digests.sha256",
+   "sha256": "e3f2bfa8269ae785ef9fe240678c38db39a273f9f25880024e88f99dcaf1593a",
+   "bytes": 10471
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.err.txt",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.exit.txt",
+   "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "bytes": 2
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.machine-sh.txt",
+   "sha256": "8d5749019616fb4a103c729cceb0c78e9e20fa23468abd779ed0be8aa5ac5a28",
+   "bytes": 383
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.out.txt",
+   "sha256": "5b7ebf4443e097e4b6d3f427e1c11b34fa7c05d82ae950df7f73f654c42d6177",
+   "bytes": 137
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.time.txt",
+   "sha256": "bdc3723e71e575a21ca4dddf2888dd4ab29e365d451de279ed9804f4a677485d",
+   "bytes": 27
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/commands.log",
+   "sha256": "137aefd8fda4a571628c1caead02d1dfffa861d5625d024cb3f787dab2754f4c",
+   "bytes": 392
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/gate.log",
+   "sha256": "bbba07f821c9465ddca8d105bafa05d5f616cf72ec5311a4d2dab5b547660501",
+   "bytes": 191
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/runs.tsv",
+   "sha256": "7189f61c4602a17facc3caeac1d68887d6f1f728cc3931d55eaf2f933a537a16",
+   "bytes": 93
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/script.txt",
+   "sha256": "abeb92fba40d3f45db2777d0d92106c360ed32edd86232b3b64b46f27eb3291e",
+   "bytes": 400
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/status.txt",
+   "sha256": "56138dce506f2d2088fe2dd65153f91a61526397573a302454c3137ca1731e40",
+   "bytes": 117
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/watch.log",
+   "sha256": "26b6214af49e6ebbede5ffb3cf3f09ab4d28fc6dae36c38bf9b92b4a2cdcba42",
+   "bytes": 24513
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs.txt",
+   "sha256": "45c4666fde988f018939bd5b3460b1a145aebeca459ea97aeaec8877aa758621",
+   "bytes": 496
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/check-correspondence.log",
+   "sha256": "9fb6ec68ad11014f4f0112712e7777e977558f26c9b1bed184cac59eedf28c8e",
+   "bytes": 211
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/check-test262.log",
+   "sha256": "36a048d4f37cec8ed72e3269cf6d982ed3b2346b89d78378dc5b43fa76c0ea2c",
+   "bytes": 178
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/check-unicode.log",
+   "sha256": "609fb38fb5be615c1418dc83b908431097c7a217f09310c84e6acdb2ba186240",
+   "bytes": 166
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/check-vectors.log",
+   "sha256": "2c25c65e2ef0b8a84716f4a73c65abb9ae9716f40768e59e69b38b35c54c9196",
+   "bytes": 844
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/run-sh.log",
+   "sha256": "d12e054365e9617effb06b12571186e0faa208b308afdc13a60c44b926fd244b",
+   "bytes": 489
+  },
+  {
+   "path": "candidate-reading/reference-arms/logs/worktree.log",
+   "sha256": "24737ac518ea2007bfd8c1cbdd6eb514dacee5212ad94990e7ea2c05f315c3b8",
+   "bytes": 258
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/classification/classification.json",
+   "sha256": "d6ca3a14537b1413ca39c40d49fa510a21ac9185bb99cd10bbc145d2fe7e5a8d",
+   "bytes": 6831
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/comparison/classification.json",
+   "sha256": "9739455cb31c2190430d9a0d5b9a0ee80b39ce966cac71e7c94726f7d90ed7ac",
+   "bytes": 5868
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/comparison/summary.json",
+   "sha256": "df9d66afa0a33bb29cb4685f75c49bd6f96c68215151a6883248530112bc8138",
+   "bytes": 16444
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/blind/classification.json",
+   "sha256": "f03b1e6c3225970fd7e1db5b87c44754443551803d481767c0ef8b8112242f62",
+   "bytes": 3090
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/control/classification.json",
+   "sha256": "d44263af62d9a529e8e223e64e83046745d57dcf214e7ece6fda688d19c99f3e",
+   "bytes": 3159
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/control/summary.json",
+   "sha256": "d43f9c4b2419daec4bcf1bdfda58f00377706dad1d87bf059c6813c258fd69a3",
+   "bytes": 10151
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/control.json",
+   "sha256": "2b3708e32bea37a78eda14c1ad287ed8c1b0998ae15d5f6c3de4a1e9528ea0eb",
+   "bytes": 1114
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/revert/classification.json",
+   "sha256": "e5f234f66f1a570692d40b2e62de32b2763fb7b874bd6823819bd752ec4cd545",
+   "bytes": 3059
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/revert/summary.json",
+   "sha256": "eb94d2715d367a86e062c79b1b70a3bea1ced0f4702593e4fe2b409122535a02",
+   "bytes": 10253
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/runs/run.J.json",
+   "sha256": "b8b956d48caf273c1c2c5c98a64f8f9fb8364e8c06281f4c4727b0ccf3bbfe82",
+   "bytes": 1538
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/blind/classification.json",
+   "sha256": "0edf9153f47da665d1a027ba5f163073918b4dd683a6ed2810e118d522a18259",
+   "bytes": 4769
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/control/classification.json",
+   "sha256": "00e9197a4165d572c3d0c9f9bed2a6d93823a3d3410f2ec4bd4d872a457eaeec",
+   "bytes": 4819
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/control/summary.json",
+   "sha256": "f962aa6d84ddbc54dded4d8b03faac9df69f3762a622d047fc27a3cb82b7c186",
+   "bytes": 10279
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/control.json",
+   "sha256": "7c502637799d23caa8a515aea756a7ec8e8dc582166b5d269e754c9d55915ec3",
+   "bytes": 1104
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/revert/classification.json",
+   "sha256": "a3aaa5b78aaed8f70a45a64b88a8c189112b0ad904730751aebe0d737ceda491",
+   "bytes": 4738
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/revert/summary.json",
+   "sha256": "73553d914a14b006199a0de0fc9cfd9e7fc0e9efdce1f3b2106950df3b7c1b07",
+   "bytes": 10396
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/runs/run.V.json",
+   "sha256": "8cb2e4192cebb2aab148813c0bac1c48c1f64c98ab1725254bbb228d093585c1",
+   "bytes": 1473
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/environment.txt",
+   "sha256": "ff0e9771f01115bc7ca79b5b6a6110e41f0341a544750f60ee8f692896f03b96",
+   "bytes": 139
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/fast-paths/fast-path-summary.json",
+   "sha256": "3cb4bb7955261c9946854924a2638a7b7304aa205e47f2c7917d40dc6a2e3d17",
+   "bytes": 492
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/arm-J-lt-LT.log",
+   "sha256": "965d5e72457fded132f54c4f7b26d04bab72054fb49ffc3c7fe90a7693d5e9a6",
+   "bytes": 253
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/arm-J-tr-TR.log",
+   "sha256": "3fddc565e337421b907405e20d6a5b2eaec8d41d20edd8ba827a9e2006ef94d7",
+   "bytes": 253
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/arm-J.log",
+   "sha256": "a56393aae44164d7ffd3e32f4ac8c1c09020a2f090188966039e88d4d1c65281",
+   "bytes": 237
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/arm-S.log",
+   "sha256": "1ffea7336f12430f8e3cd1f2c11948baee54d956fff1b7c02e814db3d7236113",
+   "bytes": 237
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/arm-V.log",
+   "sha256": "9dc6579f592a4cfb6ce71879c206dc0250aefb3376ed6852140f7d3f2c32a9cf",
+   "bytes": 237
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/build-FastPaths.log",
+   "sha256": "080c53d0536adb0361bbfab03115d830dcd0ac47efecbba3ee6ef534fdabd331",
+   "bytes": 461
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/build-J.log",
+   "sha256": "439de6b723cc56cd6ee866c15c05bd49d7c3db4794c027b4d0a91ce3cc379c4b",
+   "bytes": 413
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/build-S.log",
+   "sha256": "39fe2dd4b239d66859882819a5c70f52f3eb671c6a09550daffff638e8e49bf1",
+   "bytes": 605
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/build-V.log",
+   "sha256": "7c40ba76ed25b9460f55d4c938a41f4649ebf37df09219684bf0beb3b053cd13",
+   "bytes": 413
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/classify-revised.log",
+   "sha256": "a159bec27b5a6ac2f08bd0d1abd0d3a567090290a797211083b55c9889b524dc",
+   "bytes": 660
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/classify.log",
+   "sha256": "e853aed611c081354dbe6f8dd40f7e99a12d3026a58b808050d79bacce6ca9dd",
+   "bytes": 538
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/compare.log",
+   "sha256": "0fda9394003d2f27148bc7baed5b98f32675b10abfc7a77b9f0032c1e10b2738",
+   "bytes": 207
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-assemble.log",
+   "sha256": "faedf3b77c58aeff3d50eeb339e09f9bbeac90a68f9b7b1f16799b4f5222ea53",
+   "bytes": 354
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-build.log",
+   "sha256": "34f771d22057e29965dad8b0da8685448aee14bb67aecd04df9de9ba5aac5324",
+   "bytes": 487
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-check.log",
+   "sha256": "237360cc39ed8299e64a229b11d0588790e5e70a0b660949d1d5b42b8a1a6659",
+   "bytes": 443
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-classify-blind.log",
+   "sha256": "30f0654691f52ce2516904319dbc4730a3e65bdb682660692d2b26abee5309be",
+   "bytes": 668
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-classify-revert.log",
+   "sha256": "0eda1ac6dfc8bf951ca751357a37907bbdf7f41c0356c2d6ec0aff1b9f39a3b9",
+   "bytes": 660
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-classify.log",
+   "sha256": "1363dd9386ef521ba09193c74557b7c4e30cb1d185eeb7ee797827ff5f206664",
+   "bytes": 682
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-compare-revert.log",
+   "sha256": "ea293a35c8e298ef837bf4316a1e9b39b49098e4ff84dfb758277f43a9d02c97",
+   "bytes": 228
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-compare.log",
+   "sha256": "96fee7ef49ce27d782efb58422cf9dd19cce1806de86953e2a0ff88bdb9f8dde",
+   "bytes": 230
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-copy.log",
+   "sha256": "f9833533ad5a86e1a49fe13df3dbb2331a29ca1cb17da8e7aa0c75efba342d66",
+   "bytes": 321
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-J-run.log",
+   "sha256": "c401576089ba6e7511525c8c996296c900ec2b5249449ba9f4dc9f19a5b0682d",
+   "bytes": 274
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-assemble.log",
+   "sha256": "35252ce8472a0efd4d353f222b6f154359ab76e580cb9fea50b1d008cabeaa3a",
+   "bytes": 354
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-build.log",
+   "sha256": "2383c86f92fd3335ee3bc6e8534f07a315c0cc1858897a39836d6a0350e36d22",
+   "bytes": 487
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-check.log",
+   "sha256": "0b9383265ddcab2c5a0754882a44488cc0e96238b048830d1595829316eb2bea",
+   "bytes": 405
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-classify-blind.log",
+   "sha256": "1d8d5a725e2b42a3df872c2699f7a57bb7375ddf2fa16019e848b4ac3b2d5591",
+   "bytes": 686
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-classify-revert.log",
+   "sha256": "70adfd3068b61121ee52c35a9be15accbef22bdb9f986dcbe99d15de46046e33",
+   "bytes": 678
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-classify.log",
+   "sha256": "733e2d32f79af296d8fbf73301d18fa8f49f824e1f47418bf89418780c51797a",
+   "bytes": 700
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-compare-revert.log",
+   "sha256": "8c13f6a897629a9aa969d1fe788ee6df14ab0d52058fc8619cba830a9298ff7b",
+   "bytes": 232
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-compare.log",
+   "sha256": "ba8b8f2f2e394380681107496bfddec57cb105144a82c20c1212054f245d16cd",
+   "bytes": 234
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-copy.log",
+   "sha256": "ccf1384045955a8baddb4a06691bf6364c77376be804ea8f31a2c17190dfcb39",
+   "bytes": 283
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/control-V-run.log",
+   "sha256": "a7f8b47dd4bace249771a75c30bafc9e87c92c7324103704064484ba09be73e5",
+   "bytes": 274
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/fast-paths.log",
+   "sha256": "9e8de18bb49353d8d8a4b733a573e19669ee0907ebc679da45221e1a4fdc6ad2",
+   "bytes": 622
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/population.log",
+   "sha256": "c039c8e2a97c9865101fde1b22ba898facb501bf497540bf2429b56fc5624458",
+   "bytes": 302
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-arm-J-lt-LT.log",
+   "sha256": "c9b36525ab45c7b1bd5c84b26b79c2925270b159739cc3e2122a393e8f030977",
+   "bytes": 261
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-arm-J-tr-TR.log",
+   "sha256": "6eb6f54df339b007338c28e1d53070b7da000b003b37ed9d44e0c4f554d8d0d3",
+   "bytes": 261
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-arm-J.log",
+   "sha256": "145edd68b2332e0d421ddb8918aa4c6249b8dad6ce291107247bc0de871c532a",
+   "bytes": 245
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-arm-S.log",
+   "sha256": "5d3ef93d5b6435ec181466e275006f61c1acbc714c3093d326729c07e73f8a9d",
+   "bytes": 245
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-arm-V.log",
+   "sha256": "3894e51ee58c2d82548895943297848e85932f2f448a9b9e701aad2715549aa4",
+   "bytes": 245
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-classify.log",
+   "sha256": "dac4fc43fe33105ee70344b403d6e1cf0c355113740ac420a964b1ada4d91a2a",
+   "bytes": 579
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-compare.log",
+   "sha256": "4d5f599f77c0ad280cd744f4ad2fd814e776157740282755a74b6616887b19a6",
+   "bytes": 231
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-prefixes.log",
+   "sha256": "595f1b8d35ee597bfee76cb48fb1fad04f9b300301c4c0f21b68cebd5ddac246",
+   "bytes": 371
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/reduction-read.log",
+   "sha256": "7a2a7f02421b63a84b521d65be657a1fb898ce329901b0309bc246ac25cc27f1",
+   "bytes": 513
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/script-tests.log",
+   "sha256": "ea99babfe34949fed6e07b03bd516d65212b97e8eda78ba8562172da19f88e1a",
+   "bytes": 9001
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/logs/unlisted-stops.log",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/manifest.json",
+   "sha256": "ad7d237082e057f9961d4c6d07c925b12b731eb7529feda710f25aa0ff2a9b2a",
+   "bytes": 4873
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/comparison/classification.json",
+   "sha256": "e485c93e0b373f88e3955412877f1f61d199556ac2c2d95b2bd3619b3bdbd940",
+   "bytes": 1319
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/comparison/summary.json",
+   "sha256": "2e1f4fd31abaa71d3cb7f9e475cad0d9529081c92b9bfeca69f59ef76ceedd60",
+   "bytes": 10388
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/outcomes.json",
+   "sha256": "2379e634b80d0707cd84c47b8adb980abf8aa74cf1615eda1b5493a5d6ecf4b7",
+   "bytes": 499
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/population/manifest.json",
+   "sha256": "08cb7f776e39711496144142becb5aba6ca3026e57c081d2de74a9bf07200f11",
+   "bytes": 172
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/run.J.json",
+   "sha256": "9a733a7d32cfcadaac109e107d0f4ddbf813d6ab4413919ddfa13b25a7ae18c0",
+   "bytes": 1533
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/run.J.lt-LT.json",
+   "sha256": "97f81e07094715851cac22c1f5c483fa9d6da31a6839b979c00ceb3e5b0558a2",
+   "bytes": 1534
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/run.J.tr-TR.json",
+   "sha256": "d6ddca25baaf48a8edeb8fc2346e87634f68cd191ec5e269759d70bae5e6d999",
+   "bytes": 1534
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/run.S.json",
+   "sha256": "d7dfab4ec08cbfd4e0ac2a2e8dc4fa71b687716505705dd4d0abdd97089c1743",
+   "bytes": 1395
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/run.V.json",
+   "sha256": "24a39456f0181bfb28135d1d241276bc4afcd5630204eb663083ba67ada13e44",
+   "bytes": 1483
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/run.J.json",
+   "sha256": "6be8a6682630ea856ad7fb31cfb2b797d9a82400570a54eaec673d93af9cb321",
+   "bytes": 1616
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/run.J.lt-LT.json",
+   "sha256": "4248417304845da20925abcd082dd32008d4505db4acda1336cd6cb2b6bac175",
+   "bytes": 1617
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/run.J.tr-TR.json",
+   "sha256": "63eedc9ef7d8107c25b254d859be84017a862848b462e2e9383b7eee7dc75130",
+   "bytes": 1617
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/run.S.json",
+   "sha256": "769c834778d0e6290868f1e71bf75f1985e21bb174039523398ff4209131a22a",
+   "bytes": 1478
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/run.V.json",
+   "sha256": "520a1757908fb14da7224a70ad2491dc97d64f096cd8affc9f7a14f67841c612",
+   "bytes": 1566
+  }
+ ],
+ "not-kept": [
+  {
+   "path": "candidate-reading/library-evidence/packages/Broiler.Regex.0.1.0-preview.6.nupkg",
+   "sha256": "720a59bf6af9a2d7e8b161cc13f8a630bbdae4bf748725abfcf3405b36f20826",
+   "bytes": 147609,
+   "where": "run-library-evidence.sh OUT/packages (scratch)",
+   "why": "check E-4's packages: they do not reproduce (the pack writes times into them), carry the commit's version and are never pushed to a feed; pack.log decides E-4, and packages.sha256 names them"
+  },
+  {
+   "path": "candidate-reading/library-evidence/packages/Broiler.Regex.0.1.0-preview.6.snupkg",
+   "sha256": "9a94562a44f9cf8a1580ab98c1c8d203379d97526f215c3fec8316ff46ce5d13",
+   "bytes": 27347,
+   "where": "run-library-evidence.sh OUT/packages (scratch)",
+   "why": "check E-4's packages: they do not reproduce (the pack writes times into them), carry the commit's version and are never pushed to a feed; pack.log decides E-4, and packages.sha256 names them"
+  },
+  {
+   "path": "candidate-reading/library-evidence/driver/libev.machine.txt",
+   "sha256": "fc22011cd1ecc8c8ce58012b12e7ec18035aa2b4a7d03e8ed84bee6930d03ac4",
+   "bytes": 5853,
+   "where": "the driver logs (scratch)",
+   "why": "the driver's machine record, every process of the machine listed, with the stage's scratch paths; not read by the rule (the machine is in the .machine-sh.txt beside it)"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/correspondence/correspondence.md",
+   "sha256": "39d0d58d036d688b9556ae4f7bf6ced2f28fa2e203b6ed6e18f1f2e3757b8e2c",
+   "bytes": 172851,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/budget.vectors",
+   "sha256": "1726b9f08ffae85f210eb32cd2ffa33ca4041ff95e62f8206db8c866e19645db",
+   "bytes": 44502,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/case-insensitive.vectors",
+   "sha256": "43e0e9141928432cd755cdc80485909813475ef3a319a9b4f6a6a0d6a374bf64",
+   "bytes": 103166,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/last-index.vectors",
+   "sha256": "0468645f946c9699773ddec4e974a0e78ab9a30ed35e9bcdf8dadd582119d630",
+   "bytes": 90818,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/literals.vectors",
+   "sha256": "6d4491cc6c6dd48ae890bcc74c40714bd84ac63f566a3107cfcc3ed9711362e0",
+   "bytes": 118198,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/matching.vectors",
+   "sha256": "348d7c0d6806ab2c51fc0b5f313d93f8b52a894db31972932331825a0a88650a",
+   "bytes": 558062,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/properties.vectors",
+   "sha256": "351e6f00d75da2b3b9f9d7c4daf5b01693632d26b00ac0042a85a41deb2d72a6",
+   "bytes": 59714,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/syntax.vectors",
+   "sha256": "8c843a29136c4fc901767287eacb5fe35a4791f44cfdff645faa8a08431e93cf",
+   "bytes": 398286,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/inputs/vectors/conformance/vectors/regexp/text.vectors",
+   "sha256": "00ba6f921c5aaa57d81e07d4f18b3bcaac81e52487df14eaee07e3fa2e33f634",
+   "bytes": 44791,
+   "where": "run-reference-arms.sh OUT/inputs (scratch)",
+   "why": "an input's copy: Broiler.VM's correspondence at the commit inputs.txt names, or Broiler.JS's vectors at the commit the pin file names; each is that repository's file, named by its commit"
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/classification/classified.tsv.gz",
+   "sha256": "5dd1a9607d58d4b5515ee1721d24a8b7bfddb22b2cc1e11fc66c1870613ab652",
+   "bytes": 6986517,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1901510
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/comparison/classified.tsv.gz",
+   "sha256": "a3af4e58bcf2499f68ab9d6e7842e899b676c4357d78bb88ea6dbaa93b361c93",
+   "bytes": 6980883,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1901510
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/comparison/differences.tsv.gz",
+   "sha256": "0a8345fd6275347eeaaae432d95aacfdc3c946a4271dca72c9be576f6e5ab677",
+   "bytes": 17412497,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1901510
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/blind/classified.tsv.gz",
+   "sha256": "7cd67b857d01015b7aa67eb1b7e760baa6f6a919ea49832a15ac23dbc6f6cd71",
+   "bytes": 3208,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 467
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/control/classified.tsv.gz",
+   "sha256": "c36b6db64deaad98bb8df0d9ec3f0fd5ce1514ff3c7ead7b8ea4afc7c16b449b",
+   "bytes": 3200,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 467
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/control/differences.tsv.gz",
+   "sha256": "6f4b581413aea74febf72dda5c4a083386c9143feee3588962366144fcb2eb91",
+   "bytes": 4361,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 467
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/revert/classified.tsv.gz",
+   "sha256": "bb96475e09c2f5c7b881dc22ac2043e7376c07fa9fbe60bac9a2bde0a97edc56",
+   "bytes": 3147,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 466
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/revert/differences.tsv.gz",
+   "sha256": "29758ce2a0ba786f325caf8a94bdbd5ad3c851950502a9fe2455b8f88081fdbd",
+   "bytes": 4332,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 466
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/J/runs/P1.J.tsv.gz",
+   "sha256": "696e59a76487fb4e410b1548d90cda03f5e867bbd945d22acff4bc955784dd26",
+   "bytes": 8436,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/blind/classified.tsv.gz",
+   "sha256": "90ec618c34457586cae9bc595220e762ba99441d8c56247d45a91d1abeb53a14",
+   "bytes": 6977627,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1899991
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/control/classified.tsv.gz",
+   "sha256": "8ed4fc00324258e9c5cf8055c254cae5664ff43c2de4b0e19e05bd3ad9558e37",
+   "bytes": 6977622,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1899991
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/control/differences.tsv.gz",
+   "sha256": "00bfd7f0e70ba440a70b35fe6aeaf19573699f9998f68500ef9791c53d023999",
+   "bytes": 17399205,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1899991
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/revert/classified.tsv.gz",
+   "sha256": "53e728da78444805cbb2e74224d0af24b73511251d73ba7a9a01c493eb3c3411",
+   "bytes": 6977575,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1899990
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/revert/differences.tsv.gz",
+   "sha256": "ed275bfb158b160a9af6c735c0c8574b9198edac79c7abb995d873dc09cd3f38",
+   "bytes": 17399176,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 1899990
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/controls/V/runs/P4.V.tsv.gz",
+   "sha256": "06761e59b59c8d528d5fc9ee37b6a871685f401669672df220139552535ed473",
+   "bytes": 60889376,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/fast-paths/fast-path-disagreements.tsv",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")"
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P1.tsv.gz",
+   "sha256": "911470c6887e21fa6cdacaca66302b4a4cac931049f654d78d9e610d28515a30",
+   "bytes": 13824,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1324
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P2.tsv.gz",
+   "sha256": "9587498e6ef520464ab3f09b2c79658257861675e72245a14ce7c9d0b597e514",
+   "bytes": 576464,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73443
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P3.tsv.gz",
+   "sha256": "341845c8d01b26895503076a6b797064a99d4de0e33fe54eaa99b916ab6582a3",
+   "bytes": 478,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 24
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P4.tsv.gz",
+   "sha256": "e5f51ab68f0f099fea93ad8356df1a8af61dd7bdef1d0e335b6b664b15a93314",
+   "bytes": 103211617,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 11141121
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P5.tsv.gz",
+   "sha256": "6d01fd7c5751945cadcb47973cc148896c01f1d92eac7dff819f0f7cb204e25b",
+   "bytes": 85588159,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 13387891
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P6.tsv.gz",
+   "sha256": "c44d9539ad96c94cbb88144a0008ebac48ce6a378e03454c4dc8134237c7fde0",
+   "bytes": 2392656,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306425
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/population/P7.tsv.gz",
+   "sha256": "eb9b2a11e0abe355ef1171221e5c2c3614a6f7811b423133ff81fd624f97dd2b",
+   "bytes": 43282836,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 8912897
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/comparison/classified.tsv.gz",
+   "sha256": "b71ed577a71c00a823f6a1bc30b89082991cd3987d0fb4609bee9dfac1a41cea",
+   "bytes": 181,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 7
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/comparison/differences.tsv.gz",
+   "sha256": "6c35a2c1fb3b47c9be8ac8ebd4c5ebef90ae6eefd970e14ebfb2e48560e40ea7",
+   "bytes": 287,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 7
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/outcomes.tsv",
+   "sha256": "dd4329c069137baa3924cbfc9c656c0e9862414045932dbb18c37be8311bb4a1",
+   "bytes": 527949,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")"
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/population/P1.tsv.gz",
+   "sha256": "fdb19b913c93fc65696d46159543696dbce81d73e3d061a32f28738cef25f029",
+   "bytes": 149,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 2
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/population/P3.tsv.gz",
+   "sha256": "f4c268463d13d45cca315743c2a81decf6f33ba7e8f2ed12660e31ae1d50f33c",
+   "bytes": 130,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 2
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/population/P4.tsv.gz",
+   "sha256": "f6cc7111ad3fe3446fd88e672694a6376d145a6072efdf56ea1166f0d8d41ceb",
+   "bytes": 11234,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a population: kept by its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 896
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/reductions.tsv",
+   "sha256": "b3e053014bbbdd8c2cf48419edc4f0053b520b642166a45d5acdbabfd3b56237",
+   "bytes": 90398,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")"
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P1.J.lt-LT.tsv.gz",
+   "sha256": "0422293a18864651022528601b3978fe428a7b25cb514fe76d5bb747276241aa",
+   "bytes": 74,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P1.J.tr-TR.tsv.gz",
+   "sha256": "0422293a18864651022528601b3978fe428a7b25cb514fe76d5bb747276241aa",
+   "bytes": 74,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P1.J.tsv.gz",
+   "sha256": "0422293a18864651022528601b3978fe428a7b25cb514fe76d5bb747276241aa",
+   "bytes": 74,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P1.S.tsv.gz",
+   "sha256": "f4284fd928c86c7ff7f0574835d720c454b91fa3518d2d364e9d8b16aa42e94d",
+   "bytes": 80,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P1.V.tsv.gz",
+   "sha256": "30d1e11def49e6ab1c99f490904a9a5e0910bf33494c613b1070766038c913bb",
+   "bytes": 80,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P3.J.lt-LT.tsv.gz",
+   "sha256": "f8919cae56c2c5cc1efeab1dfa4bd795e07be61cb956e8bbb32404dd5a963758",
+   "bytes": 53,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P3.J.tr-TR.tsv.gz",
+   "sha256": "f8919cae56c2c5cc1efeab1dfa4bd795e07be61cb956e8bbb32404dd5a963758",
+   "bytes": 53,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P3.J.tsv.gz",
+   "sha256": "f8919cae56c2c5cc1efeab1dfa4bd795e07be61cb956e8bbb32404dd5a963758",
+   "bytes": 53,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P3.S.tsv.gz",
+   "sha256": "39507dcc41fba2f0d979fd1b3c73cdd54c64df3adc314b3fcc8205134809f774",
+   "bytes": 59,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P3.V.tsv.gz",
+   "sha256": "6b5a2dbed5a8495e361594210360bb561bebb5653a329441dd2db8f3cc717836",
+   "bytes": 59,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P4.J.lt-LT.tsv.gz",
+   "sha256": "ede16f9a14b06e1a0ae1960752fdcb8046097479bdf2a44084dc7089f11a035e",
+   "bytes": 5086,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 895
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P4.J.tr-TR.tsv.gz",
+   "sha256": "ede16f9a14b06e1a0ae1960752fdcb8046097479bdf2a44084dc7089f11a035e",
+   "bytes": 5086,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 895
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P4.J.tsv.gz",
+   "sha256": "ede16f9a14b06e1a0ae1960752fdcb8046097479bdf2a44084dc7089f11a035e",
+   "bytes": 5086,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 895
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P4.S.tsv.gz",
+   "sha256": "65ee0a6a5dc6bc2744dfb1b115729dbc56fef0538e25fb6e12ac3afd9d8215f0",
+   "bytes": 5998,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 895
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/reduction/runs/P4.V.tsv.gz",
+   "sha256": "fe3be284b90927bf6c3a350eff98db0608bde86b343d236644011e70cdacefc2",
+   "bytes": 6140,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 895
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P1.J.lt-LT.tsv.gz",
+   "sha256": "9d7591da37f735f4d897d01867a8fa3a163474ff09a82e2f9797f5dbddcce9ed",
+   "bytes": 8454,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P1.J.tr-TR.tsv.gz",
+   "sha256": "070030777f74b3a6620a50bb622caf551d417d436699cd4851a460386a9874df",
+   "bytes": 8463,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P1.J.tsv.gz",
+   "sha256": "006a8c64a81a380716fb64a5c736ad7a00d28c8de20efa9b6fe8432daaff46fa",
+   "bytes": 8438,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P1.S.tsv.gz",
+   "sha256": "cd144c96d0730a24de71e7b7fc0140b545144339dad98e135cc31ce1c2e2d559",
+   "bytes": 8841,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P1.V.tsv.gz",
+   "sha256": "cb87e6bff18000211f733e7676933e80f3b99b00be144c41a7229663fe9c19ce",
+   "bytes": 9281,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 1323
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P2.J.lt-LT.tsv.gz",
+   "sha256": "a3d9aa0dd96e14a3072a159ddcd11d1c709bcb85f41481121ffa29a1e9f83fbc",
+   "bytes": 387305,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73442
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P2.J.tr-TR.tsv.gz",
+   "sha256": "a3d9aa0dd96e14a3072a159ddcd11d1c709bcb85f41481121ffa29a1e9f83fbc",
+   "bytes": 387305,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73442
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P2.J.tsv.gz",
+   "sha256": "a3d9aa0dd96e14a3072a159ddcd11d1c709bcb85f41481121ffa29a1e9f83fbc",
+   "bytes": 387305,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73442
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P2.S.tsv.gz",
+   "sha256": "a568e71c6e1bb08c4f06c5d3e2b923c92bdf29556679ef5a02a01ee8b005dffa",
+   "bytes": 391104,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73442
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P2.V.tsv.gz",
+   "sha256": "1f4d0e0b5f67e86c81836bf654f357a40d2a36bfbbef8970003722fcea5a3a6f",
+   "bytes": 441320,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 73442
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P3.J.lt-LT.tsv.gz",
+   "sha256": "3f1be21ad468e06436533d86b3691381f813b050e4fadb495e6255fdf4e23cbc",
+   "bytes": 448,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 23
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P3.J.tr-TR.tsv.gz",
+   "sha256": "026853c705d91bc739ae21b9a4c2463c8ef01dfec52ad8e220db02c36239631a",
+   "bytes": 459,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 23
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P3.J.tsv.gz",
+   "sha256": "026853c705d91bc739ae21b9a4c2463c8ef01dfec52ad8e220db02c36239631a",
+   "bytes": 459,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 23
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P3.S.tsv.gz",
+   "sha256": "f9257f42bced877116e11c6247f3713200f9b6afdd3323a90df0466398a66068",
+   "bytes": 522,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 23
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P3.V.tsv.gz",
+   "sha256": "d704f8ad28901cd9eeec0ad49fc54bdd537866ea9d842425b4f67df8752f35ac",
+   "bytes": 517,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 23
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P4.J.lt-LT.tsv.gz",
+   "sha256": "4f81c5ab5b95d7fc7acdc36041ab934ceb689cad96df7b610e52a4720d9a2d78",
+   "bytes": 51785160,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P4.J.tr-TR.tsv.gz",
+   "sha256": "d41341aa8e33df1abdbe7a41eae0cd6cb81afca255553aceb07f28b396746dc2",
+   "bytes": 51785851,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P4.J.tsv.gz",
+   "sha256": "df7ed2b3e4c7a73dd8d7b32654c0fe34315d1c96c613de4d323474ccb77694d5",
+   "bytes": 51768901,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P4.S.tsv.gz",
+   "sha256": "e983a751c509622d3102b17cb880f523a2f29b70993598ccdfc3263c03c6a9be",
+   "bytes": 53100760,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P4.V.tsv.gz",
+   "sha256": "3481518064c7d8b9082b50ca6ba6a6ecf27cdb09acf83bea68d2bdd135be3610",
+   "bytes": 60889384,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 11141120
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P5.J.lt-LT.tsv.gz",
+   "sha256": "05f227e0490e5fde5e5a3b62db3c8cd4b4c390231b22563bbac65922cd7ec196",
+   "bytes": 69568621,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 13387890
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P5.J.tr-TR.tsv.gz",
+   "sha256": "99b368e99be1ab22d009f8f803e3f092d4a42ee6028de61c838d4be8941d06b0",
+   "bytes": 69569232,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 13387890
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P5.J.tsv.gz",
+   "sha256": "05f227e0490e5fde5e5a3b62db3c8cd4b4c390231b22563bbac65922cd7ec196",
+   "bytes": 69568621,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 13387890
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P5.S.tsv.gz",
+   "sha256": "081c7e6cc8ba4dab5f056359d8d03d36673f36616d7447383bc175233e5e631d",
+   "bytes": 70306574,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 13387890
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P5.V.tsv.gz",
+   "sha256": "3707d3a9f3ec5b237e34514c3e9181c76b71109fb24f380eeccead74b9b1390f",
+   "bytes": 76553939,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 13387890
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P6.J.lt-LT.tsv.gz",
+   "sha256": "2b7192c7ec41c2c5036c68cc07137bab5334cbbaa22b849a0bfd552cc734b054",
+   "bytes": 1268705,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306424
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P6.J.tr-TR.tsv.gz",
+   "sha256": "2b7192c7ec41c2c5036c68cc07137bab5334cbbaa22b849a0bfd552cc734b054",
+   "bytes": 1268705,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306424
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P6.J.tsv.gz",
+   "sha256": "2b7192c7ec41c2c5036c68cc07137bab5334cbbaa22b849a0bfd552cc734b054",
+   "bytes": 1268705,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306424
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P6.S.tsv.gz",
+   "sha256": "cbad60a74ca6277f3dac243291fec780351b05c2977b3dbc083404a1525f76af",
+   "bytes": 1270782,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306424
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P6.V.tsv.gz",
+   "sha256": "6fb51fd2135f42960ec6ca35aada6b8fc96cbc5a192fd41dd0ea63d03bbca310",
+   "bytes": 1268705,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\")",
+   "lines": 306424
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P7.J.lt-LT.tsv.gz",
+   "sha256": "e8f607e591953d7ed710081e8b9d0fa989f4b13c3ae2365089aaa66c355ccb4f",
+   "bytes": 45989907,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 8912896
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P7.J.tr-TR.tsv.gz",
+   "sha256": "e8f607e591953d7ed710081e8b9d0fa989f4b13c3ae2365089aaa66c355ccb4f",
+   "bytes": 45989907,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 8912896
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P7.J.tsv.gz",
+   "sha256": "e8f607e591953d7ed710081e8b9d0fa989f4b13c3ae2365089aaa66c355ccb4f",
+   "bytes": 45989907,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 8912896
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P7.S.tsv.gz",
+   "sha256": "054034d258b93b2a6278f841da268afadcf8e56b89e9dd91fa0e05d0d8a5d7e0",
+   "bytes": 46106698,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 8912896
+  },
+  {
+   "path": "candidate-reading/reference-arms/run/runs/P7.V.tsv.gz",
+   "sha256": "6cba6da7208e5cf2cffdb7a6ca29e0ea4c25cc1601735d7a4682386bcdfb5f8e",
+   "bytes": 45989907,
+   "where": "run-reference-arms.sh OUT/run (scratch)",
+   "why": "a listing or an arm's answers: regenerated byte for byte from the commit and the population; the bundle keeps its digest and line count (reference-arms.md, \"How it is read\"); over 2 MB",
+   "lines": 8912896
+  },
+  {
+   "path": "candidate-reading/reference-arms/driver/arms.machine.txt",
+   "sha256": "6d1ce66fdf813c94882699f9a342d3ea20cd0fd70239a9712860c662162db07f",
+   "bytes": 5616,
+   "where": "the driver logs (scratch)",
+   "why": "the driver's machine record, every process of the machine listed, with the stage's scratch paths; not read by the rule (the machine is in the .machine-sh.txt beside it)"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/control-nesting.txt",
+   "sha256": "17cda6fddf65a07ff4649ae4b8fdc4358d089f99518c73986a0f15442ad8db6d",
+   "bytes": 7570,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/control-nesting.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/control-steps.txt",
+   "sha256": "d561555dee1f765d27f11597f550ff88502274d3c7e0a830ae2c8d5c98e4b7cb",
+   "bytes": 7676,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/control-steps.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-adversarial-controls/revert.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/adversarial-aot.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/adversarial-jit.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-aot.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/probe-jit.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/vectors-aot.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-linux-x64/vectors-jit.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/adversarial-aot.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/adversarial-jit.txt",
+   "sha256": "3f7fc5387c9015ebe26436f0e40334755a05a4e214d33d6b68f558e0ea70dc75",
+   "bytes": 7986,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/adversarial-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-aot.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/probe-jit.txt",
+   "sha256": "8f40ae86b4e9afec3e3e2e8f2c1dbbfbde5c7cc1e8834bb52a0d22509b185f0b",
+   "bytes": 33741,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/probe-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/vectors-aot.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-native-aot-probe-win-x64/vectors-jit.txt",
+   "sha256": "3b35a4757d294b97441548b93b1fbf31d44587eaffb47055a4ad3b2888603e1b",
+   "bytes": 215632,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/vectors-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.nupkg",
+   "sha256": "74ef54b85cd3e4ad8c6693aedf2d560089453154c7be8273dce37a195a0b6fcb",
+   "bytes": 147789,
+   "where": "the artifact nuget-packages of run 44206505415 (downloaded to scratch)",
+   "why": "a package of the CI pack (E-4): named by its digest; the windows-latest Release job's log decides E-4"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-nuget-packages/Broiler.Regex.0.1.0-preview.6.snupkg",
+   "sha256": "81baa2896d41d293a8e33a57572bfa927e59ba641a050cea24fb970608dfad73",
+   "bytes": 27393,
+   "where": "the artifact nuget-packages of run 44206505415 (downloaded to scratch)",
+   "why": "a package of the CI pack (E-4): named by its digest; the windows-latest Release job's log decides E-4"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-linux-x64/test262-library-aot.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-linux-x64/test262-library-jit.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-win-x64/test262-library-aot.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44206505415-test262-library-win-x64/test262-library-jit.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-host/test262-host.json",
+   "sha256": "07b63a3ae46d743d171ad4f57e453b675f94dffc844eaf0d1d39cbf8b16262bd",
+   "bytes": 923249,
+   "where": "the artifact test262-host of the control's runs (downloaded to scratch)",
+   "why": "the host runner's full report of a control run: summary.txt and the job's log decide the control; named by its digest"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44237117988-test262-library-win-x64/test262-library-aot.txt",
+   "sha256": "51a0d1a52eee0573f8e96cb39c7f567c3186a665f80949d386134d818366fb04",
+   "bytes": 111660,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/artifact-files/44237117988-test262-library-linux-x64/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/run_test262.log",
+   "sha256": "787b03cd8e40db6eb842cdea589a190b1f18969b52990ee62b0306e524c7121b",
+   "bytes": 2084,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/artifact-files/44206505415-test262-host/run_test262.log"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/summary.txt",
+   "sha256": "08433af1cef7c81efcd814172a82cff1e3878f0c61e2fb8d39de4814aa736a91",
+   "bytes": 164,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/artifact-files/44206505415-test262-host/summary.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-host/test262-host.json",
+   "sha256": "f5d9ca2772ed9746765b04bee251daff4461f4559f00a5e08d64d5746dfd5075",
+   "bytes": 921634,
+   "where": "the artifact test262-host of the control's runs (downloaded to scratch)",
+   "why": "the host runner's full report of a control run: summary.txt and the job's log decide the control; named by its digest"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-linux-x64/test262-library-aot.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-linux-x64/test262-library-jit.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-win-x64/test262-library-aot.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/ci/artifact-files/44238736222-test262-library-win-x64/test262-library-jit.txt",
+   "sha256": "374235078880ad51c2aa0c39131fc3a5d278829ff4d0ec0fabbc00001b5d7b4d",
+   "bytes": 111541,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/library-evidence/reports/test262-library-aot.txt"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819322.log",
+   "sha256": "adbdbe5458211a893afa1d1d4556f436f4d88a7d520d7cdbf8479a589cf72271",
+   "bytes": 72497,
+   "where": "the session's scratch record of the control (rx-ctrlb/run1)",
+   "why": "a job of the control's red run that does not decide part B (it is red from the same plant); named by its job identifier in ci/api/jobs-44237117988.json"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819645.log",
+   "sha256": "0aea655bdd56f9f2697e0a8d686cf7010ba296111b394540d7a1a8bae88cbf0f",
+   "bytes": 65759,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/job-logs/134575819645.log"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819690.log",
+   "sha256": "db6d5aae057fe67b95dd5119751c27366d291fd43d8968fad8d9f72ebf947b48",
+   "bytes": 19641,
+   "where": "the session's scratch record of the control (rx-ctrlb/run1)",
+   "why": "a job of the control's red run that does not decide part B (it is red from the same plant); named by its job identifier in ci/api/jobs-44237117988.json"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819702.log",
+   "sha256": "b1e1a6fc743263559102dfae14b1a00760817ca161df6fd4279ef404c573bb9d",
+   "bytes": 48138,
+   "where": "scratch",
+   "why": "the bytes as fetched of candidate-reading/ci/job-logs/134575819702.log, which is stored with LF (its \"as-fetched\" digest)",
+   "same-as": "candidate-reading/ci/job-logs/134575819702.log"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819708.log",
+   "sha256": "f8b849da081d67e97b78bc8289a71e578ec5d831a357003e5a5942bb400c9301",
+   "bytes": 47206,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/job-logs/134575819708.log"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819759.log",
+   "sha256": "07881a5e288ea9f742cac3fe1243bf58987492698423a8cd74f6707d4b1f55f8",
+   "bytes": 44114,
+   "where": "scratch",
+   "why": "the bytes as fetched of candidate-reading/ci/job-logs/134575819759.log, which is stored with LF (its \"as-fetched\" digest)",
+   "same-as": "candidate-reading/ci/job-logs/134575819759.log"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819815.log",
+   "sha256": "f996796f04f79f46f6b5d967a1ffc25f154ac6c785e32078f7ce9fd53b017cfd",
+   "bytes": 35948,
+   "where": "scratch",
+   "why": "the same bytes as a file retained here",
+   "same-as": "candidate-reading/ci/job-logs/134575819815.log"
+  },
+  {
+   "path": "candidate-reading/part-b-control/jobs/134575819845.log",
+   "sha256": "626c875b69784a0812e8b8ecc1adb57215cef503bfacaec70ef1e2ae62e9f03e",
+   "bytes": 70566,
+   "where": "the session's scratch record of the control (rx-ctrlb/run1)",
+   "why": "a job of the control's red run that does not decide part B (it is red from the same plant); named by its job identifier in ci/api/jobs-44237117988.json"
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+package: Broiler.Regex 0.1.0-preview.6, Broiler.Regex.0.1.0-preview.6.nupkg sha256 5c17683366c43bef888213cf76f49245f7df6ac40586f37be3fd6394e784b4dc
+packed lib/net10.0/Broiler.Regex.dll: sha256 f35a7fdb5f23103b9ea06edd60259ea2bfbd2dc185c4cf6a0a2a2240cecf4e4b
+restored from: /home/runner/work/_temp/test262-host/feed
+beside the shell: sha256 f35a7fdb5f23103b9ea06edd60259ea2bfbd2dc185c4cf6a0a2a2240cecf4e4b
+the shell holds the candidate
+Broiler.Regex: d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb

@@ -1,0 +1,33 @@
+{
+  "arm": "V",
+  "calls": {
+    "Broiler.Unicode.Algorithms": "0.1.0-preview.5\u002Bb80201436e8f8ff0402ed75c0b9657fe3616d730",
+    "Broiler.Unicode.Tables": "0.1.0-preview.5\u002Bb80201436e8f8ff0402ed75c0b9657fe3616d730",
+    "ample-policy": "no allowance; the matcher\u0027s own ceilings",
+    "copy": "Broiler.VM aaa39fb: JsRegExpMatcher.cs f125341255294259e3acecdad74d2310a8260d51, JsUnicodeData.cs b4646317dbc07ea7365a91b03ab1cfb3bc20472d, JsRealm.RegExp.cs 6c6e487ba1d7130e945c0bf9de7a2ec9609a5a0e",
+    "default-policy": "allowance 10000000 units per exec; the matcher\u0027s own ceilings (frames 1048576, trail 2097152, nesting 512)"
+  },
+  "cases": {
+    "P4": 11141120
+  },
+  "control-case": "P4-01234-u-05",
+  "culture": "invariant",
+  "current-culture": "",
+  "dynamic-code-compiled": true,
+  "invariant-globalization": false,
+  "limits": {
+    "calibration-case-processor-seconds": "5",
+    "calibration-case-processor-seconds-after-a-stop": "2",
+    "calibration-case-processor-seconds-ample-policy": "20",
+    "default-steps": "10000000",
+    "harness-stop": "limit:harness",
+    "run-backstop-processor-seconds": "60",
+    "slow-case-seconds": "1",
+    "stack-bytes": "16777216",
+    "wall-clock-backstop-seconds": "900",
+    "worker-environment": "DOTNET_TieredCompilation=0",
+    "workers": "6"
+  },
+  "runtime": ".NET 10.0.15",
+  "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+}

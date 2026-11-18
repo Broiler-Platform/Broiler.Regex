@@ -1,0 +1,2 @@
+$ git clean -xfdq
+exit 0

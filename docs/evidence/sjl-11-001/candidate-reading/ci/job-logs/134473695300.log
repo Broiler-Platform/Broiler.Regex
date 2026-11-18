@@ -1,0 +1,263 @@
+﻿2026-11-18T00:16:50.4611104Z Current runner version: '2.338.2'
+2026-11-18T00:16:50.4628580Z ##[group]Runner Image Provisioner
+2026-11-18T00:16:50.4629292Z Hosted Compute Agent
+2026-11-18T00:16:50.4629720Z Version: 20261103.629
+2026-11-18T00:16:50.4630172Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T00:16:50.4630777Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T00:16:50.4631295Z Worker ID: {9bb91986-f290-4f08-9a32-32d922897934}
+2026-11-18T00:16:50.4631839Z Region: us-west-2
+2026-11-18T00:16:50.4632287Z Cloud: AWS
+2026-11-18T00:16:50.4632656Z ##[endgroup]
+2026-11-18T00:16:50.4633571Z ##[group]Operating System
+2026-11-18T00:16:50.4634034Z Ubuntu
+2026-11-18T00:16:50.4634408Z 24.04.5
+2026-11-18T00:16:50.4635056Z LTS
+2026-11-18T00:16:50.4635439Z ##[endgroup]
+2026-11-18T00:16:50.4635853Z ##[group]Runner Image
+2026-11-18T00:16:50.4636323Z Image: ubuntu-24.04
+2026-11-18T00:16:50.4636736Z Version: 20261111.127.1
+2026-11-18T00:16:50.4637743Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-18T00:16:50.4638986Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+2026-11-18T00:16:50.4639757Z ##[endgroup]
+2026-11-18T00:16:50.4640580Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T00:16:50.4642297Z Contents: read
+2026-11-18T00:16:50.4642767Z Metadata: read
+2026-11-18T00:16:50.4643195Z ##[endgroup]
+2026-11-18T00:16:50.4644944Z Secret source: Actions
+2026-11-18T00:16:50.4645654Z Cache mode: write
+2026-11-18T00:16:50.4646283Z Prepare workflow directory
+2026-11-18T00:16:50.4996682Z Prepare all required actions
+2026-11-18T00:16:50.5033479Z Getting action download info
+2026-11-18T00:16:50.8830196Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T00:16:53.1745023Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T00:16:53.5494277Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-11-18T00:16:53.9292809Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T00:16:54.2647625Z Complete job name: ubuntu-24.04 / Release
+2026-11-18T00:16:54.3162682Z ##[group]Run actions/checkout@v7
+2026-11-18T00:16:54.3163097Z with:
+2026-11-18T00:16:54.3163343Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:54.3165726Z   token: ***
+2026-11-18T00:16:54.3165974Z   ssh-strict: true
+2026-11-18T00:16:54.3166209Z   ssh-user: git
+2026-11-18T00:16:54.3166477Z   persist-credentials: true
+2026-11-18T00:16:54.3166711Z   clean: true
+2026-11-18T00:16:54.3166985Z   sparse-checkout-cone-mode: true
+2026-11-18T00:16:54.3167251Z   fetch-depth: 1
+2026-11-18T00:16:54.3167471Z   fetch-tags: false
+2026-11-18T00:16:54.3167711Z   show-progress: true
+2026-11-18T00:16:54.3167997Z   lfs: false
+2026-11-18T00:16:54.3168215Z   submodules: false
+2026-11-18T00:16:54.3168454Z   set-safe-directory: true
+2026-11-18T00:16:54.3168701Z   allow-unsafe-pr-checkout: false
+2026-11-18T00:16:54.3169140Z env:
+2026-11-18T00:16:54.3169349Z   PACKAGE_VERSION: 
+2026-11-18T00:16:54.3169593Z ##[endgroup]
+2026-11-18T00:16:57.7857531Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:57.7858946Z ##[group]Getting Git version info
+2026-11-18T00:16:57.7859372Z Working directory is '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:57.7859961Z [command]/usr/bin/git version
+2026-11-18T00:16:57.9779174Z git version 2.56.1
+2026-11-18T00:16:57.9795365Z ##[endgroup]
+2026-11-18T00:16:57.9801827Z Temporarily overriding HOME='/home/runner/work/_temp/fc79e29c-b150-49b0-9e9e-ff635405ee23' before making global git config changes
+2026-11-18T00:16:57.9802848Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:16:57.9807224Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:57.9860809Z Deleting the contents of '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:57.9863232Z ##[group]Determining repository object format
+2026-11-18T00:16:57.9864656Z ##[endgroup]
+2026-11-18T00:16:57.9865320Z ##[group]Initializing the repository
+2026-11-18T00:16:57.9868612Z [command]/usr/bin/git init /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:58.0758795Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-18T00:16:58.0759358Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-18T00:16:58.0759918Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-18T00:16:58.0760404Z hint: call:
+2026-11-18T00:16:58.0760645Z hint:
+2026-11-18T00:16:58.0760975Z hint: 	git config --global init.defaultBranch <name>
+2026-11-18T00:16:58.0761264Z hint:
+2026-11-18T00:16:58.0761566Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-18T00:16:58.0761987Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-18T00:16:58.0762349Z hint:
+2026-11-18T00:16:58.0762637Z hint: 	git branch -m <name>
+2026-11-18T00:16:58.0762878Z hint:
+2026-11-18T00:16:58.0763200Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-18T00:16:58.0769052Z Initialized empty Git repository in /home/runner/work/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T00:16:58.0776975Z [command]/usr/bin/git remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:58.0841536Z ##[endgroup]
+2026-11-18T00:16:58.0842122Z ##[group]Disabling automatic garbage collection
+2026-11-18T00:16:58.0844153Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-18T00:16:58.0867398Z ##[endgroup]
+2026-11-18T00:16:58.0867872Z ##[group]Setting up auth
+2026-11-18T00:16:58.0868212Z Removing SSH command configuration
+2026-11-18T00:16:58.0870962Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:16:58.0898443Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:16:58.3804769Z Removing HTTP extra header
+2026-11-18T00:16:58.3809804Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:16:58.3835773Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:16:58.3980595Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:16:58.3984660Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:16:58.4007781Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:16:58.4157573Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-18T00:16:58.4181733Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path /home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:16:58.4203369Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:16:58.4225772Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:16:58.4248108Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:16:58.4268881Z ##[endgroup]
+2026-11-18T00:16:58.4269429Z ##[group]Fetching the repository
+2026-11-18T00:16:58.4275119Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +49d7be1f3ef148f9c262f0e52b8c360c07fd838d:refs/remotes/origin/main
+2026-11-18T00:16:59.1989062Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:59.1989662Z  * [new ref]         49d7be1f3ef148f9c262f0e52b8c360c07fd838d -> origin/main
+2026-11-18T00:16:59.1998615Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-18T00:16:59.2039289Z   origin/main
+2026-11-18T00:16:59.2069277Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-18T00:16:59.2069665Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:59.2070840Z ##[endgroup]
+2026-11-18T00:16:59.2071219Z ##[group]Determining the checkout info
+2026-11-18T00:16:59.2071998Z ##[endgroup]
+2026-11-18T00:16:59.2076476Z [command]/usr/bin/git sparse-checkout disable
+2026-11-18T00:16:59.2137192Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-18T00:16:59.2159371Z ##[group]Checking out the ref
+2026-11-18T00:16:59.2163057Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-18T00:16:59.2405695Z Switched to a new branch 'main'
+2026-11-18T00:16:59.2416638Z branch 'main' set up to track 'origin/main'.
+2026-11-18T00:16:59.2420327Z ##[endgroup]
+2026-11-18T00:16:59.2462717Z [command]/usr/bin/git log -1 --format=%H
+2026-11-18T00:16:59.2482248Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:59.2672458Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T00:16:59.2672729Z with:
+2026-11-18T00:16:59.2672955Z   dotnet-version: 10.0.x
+2026-11-18T00:16:59.2673210Z   skip-lts-prepass: false
+2026-11-18T00:16:59.2673449Z   cache: false
+2026-11-18T00:16:59.2673670Z env:
+2026-11-18T00:16:59.2673888Z   PACKAGE_VERSION: 
+2026-11-18T00:16:59.2674298Z ##[endgroup]
+2026-11-18T00:16:59.3676687Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-11-18T00:17:00.0273647Z dotnet-install: .NET Core Runtime with version '10.0.15' is already installed.
+2026-11-18T00:17:00.0292377Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+2026-11-18T00:17:00.4977999Z dotnet-install: .NET Core SDK with version '10.0.404' is already installed.
+2026-11-18T00:17:00.5132029Z ##[group]Run actions/setup-node@v7
+2026-11-18T00:17:00.5132307Z with:
+2026-11-18T00:17:00.5132540Z   node-version: 24
+2026-11-18T00:17:00.5132766Z   check-latest: false
+2026-11-18T00:17:00.5135021Z   token: ***
+2026-11-18T00:17:00.5135275Z   package-manager-cache: true
+2026-11-18T00:17:00.5135537Z env:
+2026-11-18T00:17:00.5135749Z   PACKAGE_VERSION: 
+2026-11-18T00:17:00.5135971Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:00.5136222Z ##[endgroup]
+2026-11-18T00:17:00.7770739Z Found in cache @ /opt/hostedtoolcache/node/24.22.2/x64
+2026-11-18T00:17:01.9008675Z ##[group]Environment details
+2026-11-18T00:17:04.5777360Z node: v24.22.2
+2026-11-18T00:17:04.5777885Z npm: 11.19.1
+2026-11-18T00:17:04.5778169Z yarn: 1.22.22
+2026-11-18T00:17:04.5778839Z ##[endgroup]
+2026-11-18T00:17:04.5873803Z ##[group]Run node --test eng/resolve-preview-version.test.mjs
+2026-11-18T00:17:04.5874325Z [36;1mnode --test eng/resolve-preview-version.test.mjs[0m
+2026-11-18T00:17:04.8732596Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:04.8733109Z env:
+2026-11-18T00:17:04.8733328Z   PACKAGE_VERSION: 
+2026-11-18T00:17:04.8733560Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:04.8733857Z ##[endgroup]
+2026-11-18T00:17:05.0670098Z ✔ first publish uses the configured preview; later publishes increment numerically (0.892217ms)
+2026-11-18T00:17:05.0671316Z ✔ configured preview is a floor and other release lines do not affect it (0.108884ms)
+2026-11-18T00:17:05.0672240Z ✔ only unused previews on the configured release line are accepted (0.358439ms)
+2026-11-18T00:17:05.0673469Z ✔ all packages contribute, including a partially published newer preview (59.203858ms)
+2026-11-18T00:17:05.0674268Z ✔ feed failures and malformed responses stop publication (2.1718ms)
+2026-11-18T00:17:05.0675659Z ✔ retired-feed preview.3 plus nuget.org preview.2 resolves cumulatively to preview.4 (2.457035ms)
+2026-11-18T00:17:05.0676767Z ✔ nuget.org and case-insensitive history contribute only to their own package and release line (0.445571ms)
+2026-11-18T00:17:05.0677737Z ✔ explicit suffixes and tags must respect the cumulative sequence (0.619845ms)
+2026-11-18T00:17:05.0678585Z ✔ invalid history and feed failures cannot silently reset the sequence (0.404952ms)
+2026-11-18T00:17:05.0679494Z ✔ the committed history and the configured floor resolve to 0.1.0-preview.6 (1.40343ms)
+2026-11-18T00:17:05.0772297Z ℹ tests 10
+2026-11-18T00:17:05.0772714Z ℹ suites 0
+2026-11-18T00:17:05.0773013Z ℹ pass 10
+2026-11-18T00:17:05.0773275Z ℹ fail 0
+2026-11-18T00:17:05.0773550Z ℹ cancelled 0
+2026-11-18T00:17:05.0773844Z ℹ skipped 0
+2026-11-18T00:17:05.0774055Z ℹ todo 0
+2026-11-18T00:17:05.0774582Z ℹ duration_ms 168.435011
+2026-11-18T00:17:05.0840802Z ##[group]Run args=()
+2026-11-18T00:17:05.0841116Z [36;1margs=()[0m
+2026-11-18T00:17:05.0841363Z [36;1mif [ -n "$PACKAGE_VERSION" ]; then[0m
+2026-11-18T00:17:05.0841781Z [36;1m  args+=("-p:Version=$PACKAGE_VERSION" "-p:PackageVersion=$PACKAGE_VERSION")[0m
+2026-11-18T00:17:05.0842143Z [36;1mfi[0m
+2026-11-18T00:17:05.0842437Z [36;1mdotnet build Broiler.Regex.slnx -c Release --nologo "${args[@]}"[0m
+2026-11-18T00:17:05.0869000Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:05.0869377Z env:
+2026-11-18T00:17:05.0869604Z   PACKAGE_VERSION: 
+2026-11-18T00:17:05.0869838Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:05.0870122Z ##[endgroup]
+2026-11-18T00:17:16.9635812Z   Determining projects to restore...
+2026-11-18T00:17:20.4216785Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/Regex.Fuzz.csproj (in 2.42 sec).
+2026-11-18T00:17:20.4218297Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/Broiler.Regex.Tests.csproj (in 2.56 sec).
+2026-11-18T00:17:20.4219637Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/Regex.Architecture.Tests.csproj (in 2.51 sec).
+2026-11-18T00:17:20.4614861Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/Broiler.Regex.csproj (in 53 ms).
+2026-11-18T00:17:20.6220393Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/Regex.Probe.csproj (in 2.82 sec).
+2026-11-18T00:17:27.3835557Z   Broiler.Regex -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+2026-11-18T00:17:28.8624939Z   Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+2026-11-18T00:17:29.5440034Z   Regex.Fuzz -> /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll
+2026-11-18T00:17:32.8625128Z   Regex.Architecture.Tests -> /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/bin/Release/net10.0/Regex.Architecture.Tests.dll
+2026-11-18T00:17:32.9014832Z   Broiler.Regex.Tests -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll
+2026-11-18T00:17:32.9418162Z 
+2026-11-18T00:17:32.9418826Z Build succeeded.
+2026-11-18T00:17:32.9419163Z     0 Warning(s)
+2026-11-18T00:17:32.9419557Z     0 Error(s)
+2026-11-18T00:17:32.9419718Z 
+2026-11-18T00:17:32.9419891Z Time Elapsed 00:00:18.58
+2026-11-18T00:17:33.3540884Z ##[group]Run bash ./eng/run-tests.sh Release
+2026-11-18T00:17:33.3541253Z [36;1mbash ./eng/run-tests.sh Release[0m
+2026-11-18T00:17:33.3567621Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:33.3568357Z env:
+2026-11-18T00:17:33.3568579Z   PACKAGE_VERSION: 
+2026-11-18T00:17:33.3568837Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:33.3569097Z ##[endgroup]
+2026-11-18T00:17:34.2237018Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex.Tests/bin/Release/net10.0/Broiler.Regex.Tests.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T00:17:34.5777156Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Architecture.Tests/bin/Release/net10.0/Regex.Architecture.Tests.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T00:17:34.6254912Z Test run for /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll (.NETCoreApp,Version=v10.0)
+2026-11-18T00:17:34.7334945Z A total of 1 test files matched the specified pattern.
+2026-11-18T00:17:34.7836512Z A total of 1 test files matched the specified pattern.
+2026-11-18T00:17:34.8056121Z A total of 1 test files matched the specified pattern.
+2026-11-18T00:17:51.3485172Z 
+2026-11-18T00:17:51.3546130Z Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 10 s - Regex.Fuzz.dll (net10.0)
+2026-11-18T00:17:58.8532111Z 
+2026-11-18T00:17:58.8582251Z Passed!  - Failed:     0, Passed:    49, Skipped:     0, Total:    49, Duration: 18 s - Regex.Architecture.Tests.dll (net10.0)
+2026-11-18T00:18:14.0540700Z 
+2026-11-18T00:18:14.0595864Z Passed!  - Failed:     0, Passed:  2644, Skipped:     0, Total:  2644, Duration: 31 s - Broiler.Regex.Tests.dll (net10.0)
+2026-11-18T00:18:14.6781865Z Post job cleanup.
+2026-11-18T00:18:14.7707348Z Post job cleanup.
+2026-11-18T00:18:14.8649612Z Post job cleanup.
+2026-11-18T00:18:14.9341040Z [command]/usr/bin/git version
+2026-11-18T00:18:14.9374542Z git version 2.56.1
+2026-11-18T00:18:14.9402756Z Temporarily overriding HOME='/home/runner/work/_temp/2549a6a0-9981-4ae1-959d-bd058f780bda' before making global git config changes
+2026-11-18T00:18:14.9403591Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:18:14.9407392Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:18:14.9431576Z Removing SSH command configuration
+2026-11-18T00:18:14.9436497Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:18:14.9462194Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:18:14.9617817Z Removing HTTP extra header
+2026-11-18T00:18:14.9621714Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:18:14.9645241Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:18:14.9804823Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:18:14.9806109Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:18:14.9827823Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:18:14.9829457Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:18:14.9830631Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:18:14.9831560Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:18:14.9834618Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:18:14.9849875Z /home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:18:14.9857697Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-0a69c3d5\-c39a\-415e\-a717\-59dc05489a68\.config
+2026-11-18T00:18:14.9880288Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:18:14.9903040Z /home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:18:14.9908573Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-0a69c3d5\-c39a\-415e\-a717\-59dc05489a68\.config
+2026-11-18T00:18:14.9930271Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:18:14.9945530Z /github/runner_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:18:14.9951229Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-0a69c3d5\-c39a\-415e\-a717\-59dc05489a68\.config
+2026-11-18T00:18:14.9990858Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:18:14.9994917Z /github/runner_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config
+2026-11-18T00:18:14.9999022Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-0a69c3d5\-c39a\-415e\-a717\-59dc05489a68\.config
+2026-11-18T00:18:15.0022493Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:18:15.0177517Z Removing credentials config '/home/runner/work/_temp/git-credentials-0a69c3d5-c39a-415e-a717-59dc05489a68.config'
+2026-11-18T00:18:15.0286953Z Cleaning up orphan processes
+2026-11-18T00:18:15.0505657Z Terminate orphan process: pid (2520) (MSBuild)
+2026-11-18T00:18:15.0528039Z Terminate orphan process: pid (2546) (MSBuild)
+2026-11-18T00:18:15.0549402Z Terminate orphan process: pid (2547) (MSBuild)
+2026-11-18T00:18:15.0570985Z Terminate orphan process: pid (2548) (MSBuild)
+2026-11-18T00:18:15.0592417Z Terminate orphan process: pid (2626) (VBCSCompiler)

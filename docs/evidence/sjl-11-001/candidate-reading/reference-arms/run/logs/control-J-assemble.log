@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/controls.py assemble --runs /home/user/rx-read-arms/run/runs --control /home/user/rx-read-arms/run/controls/J/runs --arm J --class P1 --out /home/user/rx-read-arms/run/controls/J
+assembled 5 answer files of P1: /home/user/rx-read-arms/run/controls/J/control-runs, /home/user/rx-read-arms/run/controls/J/revert-runs

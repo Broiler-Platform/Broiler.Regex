@@ -1,0 +1,185 @@
+{
+  "total_count": 9,
+  "artifacts": [
+    {
+      "id": 14398610092,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODYxMDA5Mg==",
+      "name": "native-aot-probe-win-x64",
+      "size_in_bytes": 9683,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398610092",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398610092/zip",
+      "expired": false,
+      "digest": "sha256:78d3ea203a4f3a5850fb101f51d28ed5abaac7841abe9f891e75257da1b7e88e",
+      "created_at": "2026-11-18T04:26:13Z",
+      "updated_at": "2026-11-18T04:26:13Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14398495818,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODQ5NTgxOA==",
+      "name": "test262-library-win-x64",
+      "size_in_bytes": 6345,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398495818",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398495818/zip",
+      "expired": false,
+      "digest": "sha256:4e778e57e76827e577a0a693899c5bd725154482c09079f9d474aa108423b968",
+      "created_at": "2026-11-18T04:26:55Z",
+      "updated_at": "2026-11-18T04:26:55Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14398487301,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODQ4NzMwMQ==",
+      "name": "test262-host",
+      "size_in_bytes": 60727,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398487301",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398487301/zip",
+      "expired": false,
+      "digest": "sha256:4013efddb4e8ce317f162b85dc416be9c7d7c9bb10ccb4749be807c98d48cd07",
+      "created_at": "2026-11-18T04:36:45Z",
+      "updated_at": "2026-11-18T04:36:45Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14398395394,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODM5NTM5NA==",
+      "name": "native-aot-probe-linux-x64",
+      "size_in_bytes": 9684,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398395394",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398395394/zip",
+      "expired": false,
+      "digest": "sha256:75ed5eff8a4ed61c24359f096f0e3d3e6556abd2ccedbb771cb0a567bb56612e",
+      "created_at": "2026-11-18T04:25:20Z",
+      "updated_at": "2026-11-18T04:25:20Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14398240569,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODI0MDU2OQ==",
+      "name": "adversarial-controls",
+      "size_in_bytes": 1296,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398240569",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398240569/zip",
+      "expired": false,
+      "digest": "sha256:7c2caf731c27c6ef867cdb6088f03d8445e4ab794a6b8268c9da50af83b1c3fc",
+      "created_at": "2026-11-18T04:25:14Z",
+      "updated_at": "2026-11-18T04:25:14Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14398185694,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5ODE4NTY5NA==",
+      "name": "fuzz-windows-latest",
+      "size_in_bytes": 648,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398185694",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14398185694/zip",
+      "expired": false,
+      "digest": "sha256:dc4ff8283f25a5cca70bb255bb12e7f9fbec09d0fb0b39814d85fa6eadf03cdd",
+      "created_at": "2026-11-18T04:26:02Z",
+      "updated_at": "2026-11-18T04:26:02Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14397766539,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5Nzc2NjUzOQ==",
+      "name": "fuzz-ubuntu-24.04",
+      "size_in_bytes": 640,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397766539",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397766539/zip",
+      "expired": false,
+      "digest": "sha256:dbea00f9d7890ada4ccd99e48c45b8e6629f33d1dd0baf67f9850f1138f4f15c",
+      "created_at": "2026-11-18T04:25:19Z",
+      "updated_at": "2026-11-18T04:25:19Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14397722584,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5NzcyMjU4NA==",
+      "name": "test262-library-linux-x64",
+      "size_in_bytes": 6345,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397722584",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397722584/zip",
+      "expired": false,
+      "digest": "sha256:aba56f737c992d58bf6ad89282a8648b223d6bba4ca109adf41b5268d7c726e6",
+      "created_at": "2026-11-18T04:25:44Z",
+      "updated_at": "2026-11-18T04:25:44Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    },
+    {
+      "id": 14397444026,
+      "node_id": "MDg6QXJ0aWZhY3QxNDM5NzQ0NDAyNg==",
+      "name": "fuzz-control",
+      "size_in_bytes": 2233,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397444026",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14397444026/zip",
+      "expired": false,
+      "digest": "sha256:7e56a403002fb884e0f275a8338c9ea4a1cecafe8c9688ccd396d4e7d54bd25b",
+      "created_at": "2026-11-18T04:25:09Z",
+      "updated_at": "2026-11-18T04:25:09Z",
+      "expires_at": "2027-02-16T04:24:38Z",
+      "workflow_run": {
+        "id": 44237117988,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "sjl-11-2-control-b",
+        "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14"
+      }
+    }
+  ]
+}

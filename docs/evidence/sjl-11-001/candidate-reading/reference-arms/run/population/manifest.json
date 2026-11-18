@@ -1,0 +1,172 @@
+{
+  "classes": {
+    "P1": {
+      "accept": 685,
+      "exec": 638,
+      "file": "P1.tsv.gz",
+      "files": {
+        "budget.vectors": "1726b9f08ffae85f210eb32cd2ffa33ca4041ff95e62f8206db8c866e19645db",
+        "case-insensitive.vectors": "43e0e9141928432cd755cdc80485909813475ef3a319a9b4f6a6a0d6a374bf64",
+        "last-index.vectors": "0468645f946c9699773ddec4e974a0e78ab9a30ed35e9bcdf8dadd582119d630",
+        "literals.vectors": "6d4491cc6c6dd48ae890bcc74c40714bd84ac63f566a3107cfcc3ed9711362e0",
+        "matching.vectors": "348d7c0d6806ab2c51fc0b5f313d93f8b52a894db31972932331825a0a88650a",
+        "properties.vectors": "351e6f00d75da2b3b9f9d7c4daf5b01693632d26b00ac0042a85a41deb2d72a6",
+        "syntax.vectors": "8c843a29136c4fc901767287eacb5fe35a4791f44cfdff645faa8a08431e93cf",
+        "text.vectors": "00ba6f921c5aaa57d81e07d4f18b3bcaac81e52487df14eaee07e3fa2e33f634"
+      },
+      "not-patterns": 97,
+      "sha256": "911470c6887e21fa6cdacaca66302b4a4cac931049f654d78d9e610d28515a30"
+    },
+    "P2": {
+      "accept": 5928,
+      "cap": 4096,
+      "directories": [
+        "test/built-ins/RegExp",
+        "test/language/literals/regexp",
+        "test/annexB",
+        "test/built-ins/String/prototype/match",
+        "test/built-ins/String/prototype/matchAll",
+        "test/built-ins/String/prototype/replace",
+        "test/built-ins/String/prototype/replaceAll",
+        "test/built-ins/String/prototype/search",
+        "test/built-ins/String/prototype/split"
+      ],
+      "exec": 67514,
+      "file": "P2.tsv.gz",
+      "files": 3542,
+      "patterns-capped": 0,
+      "pin": "ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e",
+      "sha256": "9587498e6ef520464ab3f09b2c79658257861675e72245a14ce7c9d0b597e514",
+      "tree": "c022917030da8fbc09b7db8f9b7d55ccc5f5ebab"
+    },
+    "P3": {
+      "accept": 0,
+      "corpus": "tests/Adversarial/corpus.tsv",
+      "corpus-sha256": "1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5",
+      "exec": 23,
+      "file": "P3.tsv.gz",
+      "rows": 23,
+      "sha256": "341845c8d01b26895503076a6b797064a99d4de0e33fe54eaa99b916ab6582a3"
+    },
+    "P4": {
+      "accept": 655360,
+      "draws": 20434311,
+      "exec": 10485760,
+      "file": "P4.tsv.gz",
+      "flag-sets": [
+        "",
+        "i",
+        "m",
+        "s",
+        "u",
+        "v",
+        "iu",
+        "iv",
+        "y",
+        "d"
+      ],
+      "patterns": 65536,
+      "seed": "0x534a4c31312d3031",
+      "sha256": "e5f51ab68f0f099fea93ad8356df1a8af61dd7bdef1d0e335b6b664b15a93314",
+      "subject-lengths": [
+        31768,
+        31660,
+        31764,
+        31698,
+        31679,
+        31977,
+        31778,
+        31833,
+        31894,
+        31657,
+        31432,
+        31943,
+        31585,
+        32079,
+        31796,
+        31796,
+        31830,
+        32015,
+        31976,
+        31575,
+        31987,
+        31424,
+        31857,
+        31788,
+        31731,
+        31546,
+        31585,
+        31544,
+        31975,
+        31795,
+        31772,
+        31990,
+        31847
+      ],
+      "subjects": 16
+    },
+    "P5": {
+      "accept": 6684672,
+      "code-points": 1114112,
+      "exec": 6703218,
+      "file": "P5.tsv.gz",
+      "flag-sets": [
+        "i",
+        "iu",
+        "iv"
+      ],
+      "sha256": "6d01fd7c5751945cadcb47973cc148896c01f1d92eac7dff819f0f7cb204e25b",
+      "step": 1
+    },
+    "P6": {
+      "accept": 306424,
+      "exec": 0,
+      "file": "P6.tsv.gz",
+      "names": 76606,
+      "sha256": "c44d9539ad96c94cbb88144a0008ebac48ce6a378e03454c4dc8134237c7fde0",
+      "subclasses": [
+        "ecma262",
+        "property-aliases",
+        "value-aliases",
+        "pairs",
+        "refused-case",
+        "refused-underscore",
+        "refused-space-hyphen",
+        "refused-is",
+        "refused-wrong-property",
+        "outside-tables",
+        "cells",
+        "random"
+      ],
+      "u2-draws": 16384,
+      "u2-seed": "0x534a4c372d303031"
+    },
+    "P7": {
+      "accept": 8912896,
+      "code-points": 1114112,
+      "exec": 0,
+      "file": "P7.tsv.gz",
+      "sha256": "eb9b2a11e0abe355ef1171221e5c2c3614a6f7811b423133ff81fd624f97dd2b",
+      "step": 1
+    }
+  },
+  "commit": "49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+  "generator": "scripts/reference-arms/generate_population.py",
+  "generator_version": "sjl-11-001-population@1",
+  "inputs": {
+    "broiler-unicode": {
+      "blobs": {
+        "generate_population.py": "e005f2fe90db6ee86f29ad4a885889682bb8d594",
+        "unicoderef.py": "d120e4c1077a3448be2e56f5af97730957f2103d"
+      },
+      "commit": "0bcb917564d514feadaa27ce7dd1e0b57b585c90",
+      "pin": {
+        "sha256": "7eb0f08f0b408d278f1c08b29ea93d17a3216c02c45d6dfbe4bbd440cbcd51b0",
+        "version": "17.0.0"
+      }
+    }
+  },
+  "partial": false,
+  "rule": "docs/evidence/sjl-11-001/reference-arms.md",
+  "size": "full"
+}

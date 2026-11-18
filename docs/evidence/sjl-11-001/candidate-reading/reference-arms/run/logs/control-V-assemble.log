@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/controls.py assemble --runs /home/user/rx-read-arms/run/runs --control /home/user/rx-read-arms/run/controls/V/runs --arm V --class P4 --out /home/user/rx-read-arms/run/controls/V
+assembled 5 answer files of P4: /home/user/rx-read-arms/run/controls/V/control-runs, /home/user/rx-read-arms/run/controls/V/revert-runs

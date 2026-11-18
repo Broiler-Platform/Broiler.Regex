@@ -1,0 +1,101 @@
+{
+  "sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+  "node_id": "C_kwDOTFrfBtoAKGRlYWM2NzQ4NjNmM2JmODU5YzhlNjU2NDYzNGIwZGY0OTljNjJmMTQ",
+  "commit": {
+    "author": {
+      "name": "Claude",
+      "email": "noreply@anthropic.com",
+      "date": "2026-11-18T04:24:30Z"
+    },
+    "committer": {
+      "name": "Claude",
+      "email": "noreply@anthropic.com",
+      "date": "2026-11-18T04:24:30Z"
+    },
+    "message": "SJL-11.2: part B's control, the plant (scratch, never merged)\n\nBundle sjl-11-001's part B control: a scratch commit of this repository,\nnever merged, that accepts \\k<name> to an undeclared name under u. B-1 or\nB-2 must turn red; the next commit on this branch reverts it. The branch\nsjl-11-2-control-b is deleted after both runs are recorded.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01EvynDJNoDfZb8zqpgEWykW",
+    "tree": {
+      "sha": "570414385479f61d7f4f709e0d074a9fe49196c8",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/git/trees/570414385479f61d7f4f709e0d074a9fe49196c8"
+    },
+    "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/git/commits/deac674863f3bf859c8e6564634b0df499c62f14",
+    "comment_count": 0,
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgrLzsfFISF4by8Q+FKz27YpkK1USsBB+m\namu1QkJnbDsAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAAQJGNSMEI\n8j9EtCpCHFegtjpx0ZT2/ZBtP/QxEdvyzqsO9DuldHp18rOHybEvXPjtHWrAOcw7lHjEtZPkFNAl\nJQU=\n-----END SSH SIGNATURE-----",
+      "payload": "tree 570414385479f61d7f4f709e0d074a9fe49196c8\nparent 49d7be1f3ef148f9c262f0e52b8c360c07fd838d\nauthor Claude <noreply@anthropic.com> 1794975870 +0000\ncommitter Claude <noreply@anthropic.com> 1794975870 +0000\n\nSJL-11.2: part B's control, the plant (scratch, never merged)\n\nBundle sjl-11-001's part B control: a scratch commit of this repository,\nnever merged, that accepts \\k<name> to an undeclared name under u. B-1 or\nB-2 must turn red; the next commit on this branch reverts it. The branch\nsjl-11-2-control-b is deleted after both runs are recorded.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01EvynDJNoDfZb8zqpgEWykW\n",
+      "verified_at": "2026-11-18T04:24:33Z"
+    }
+  },
+  "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/deac674863f3bf859c8e6564634b0df499c62f14",
+  "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/commit/deac674863f3bf859c8e6564634b0df499c62f14",
+  "comments_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/deac674863f3bf859c8e6564634b0df499c62f14/comments",
+  "author": {
+    "login": "claude",
+    "id": 81847,
+    "node_id": "MDQ6VXNlcjgxODQ3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/81847?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/claude",
+    "html_url": "https://github.com/claude",
+    "followers_url": "https://api.github.com/users/claude/followers",
+    "following_url": "https://api.github.com/users/claude/following{/other_user}",
+    "gists_url": "https://api.github.com/users/claude/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/claude/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/claude/subscriptions",
+    "organizations_url": "https://api.github.com/users/claude/orgs",
+    "repos_url": "https://api.github.com/users/claude/repos",
+    "events_url": "https://api.github.com/users/claude/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/claude/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "claude",
+    "id": 81847,
+    "node_id": "MDQ6VXNlcjgxODQ3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/81847?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/claude",
+    "html_url": "https://github.com/claude",
+    "followers_url": "https://api.github.com/users/claude/followers",
+    "following_url": "https://api.github.com/users/claude/following{/other_user}",
+    "gists_url": "https://api.github.com/users/claude/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/claude/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/claude/subscriptions",
+    "organizations_url": "https://api.github.com/users/claude/orgs",
+    "repos_url": "https://api.github.com/users/claude/repos",
+    "events_url": "https://api.github.com/users/claude/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/claude/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/commit/49d7be1f3ef148f9c262f0e52b8c360c07fd838d"
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "additions": 1,
+    "deletions": 1
+  },
+  "files": [
+    {
+      "sha": "7251f712c7be43badc0342291b6c0806a4262ce2",
+      "filename": "Broiler.Regex/Parsing/RegexParser.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Broiler-Platform/Broiler.Regex/blob/deac674863f3bf859c8e6564634b0df499c62f14/Broiler.Regex%2FParsing%2FRegexParser.cs",
+      "raw_url": "https://github.com/Broiler-Platform/Broiler.Regex/raw/deac674863f3bf859c8e6564634b0df499c62f14/Broiler.Regex%2FParsing%2FRegexParser.cs",
+      "contents_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/contents/Broiler.Regex%2FParsing%2FRegexParser.cs?ref=deac674863f3bf859c8e6564634b0df499c62f14",
+      "patch": "@@ -255,7 +255,7 @@ private RegexNode ParsePattern()\n         // \\k<b>(?<a>x) as a compilation does.\n         foreach (var (name, position) in _namedReferences)\n         {\n-            if (!_groupsByName.ContainsKey(name))\n+            if (!_unicode && !_groupsByName.ContainsKey(name))\n                 throw Refuse(RegexDiagnosticCode.UndefinedGroupName, position, \"Reference to the undeclared group name '\" + name + \"'\", name);\n         }\n "
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+$ no_library_build
+# neither control built the library project
+exit 0

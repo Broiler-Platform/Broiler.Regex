@@ -1,0 +1,101 @@
+{
+  "arbiter": {
+    "blobs": {
+      "conformance/vectors/sources/unicode.pin": "367ea91f93dd02fc93d9d5878de9ebbd21ce17c9",
+      "scripts/conformance/regexpref.py": "d031add54099d2d54f8c57c31a490a3e5b6c20b2",
+      "scripts/conformance/unicoderef.py": "a34541d4aef97777a8804ead6c32385c556e7fd0"
+    },
+    "commit": "b2c2e2243a086285d806866a64b83297791a8ec5",
+    "cutoff": 1000000,
+    "version": "regexpref@1"
+  },
+  "by-class-row-run-population": {
+    "a'/U3/J.lt-LT/P1": 3,
+    "a'/U3/J.tr-TR/P1": 3,
+    "a'/U3/J/P1": 3,
+    "a/F3/J.lt-LT/P1": 1,
+    "a/F3/J.tr-TR/P1": 1,
+    "a/F3/J/P1": 1,
+    "a/M2/J.lt-LT/P1": 4,
+    "a/M2/J.tr-TR/P1": 4,
+    "a/M2/J/P1": 4,
+    "a/M2a/J.lt-LT/P1": 13,
+    "a/M2a/J.tr-TR/P1": 17,
+    "a/M2b/J.lt-LT/P1": 3,
+    "a/M2b/J.tr-TR/P1": 3,
+    "a/M2b/J/P1": 3,
+    "a/M3/J.lt-LT/P1": 12,
+    "a/M3/J.tr-TR/P1": 12,
+    "a/M3/J/P1": 12,
+    "a/M4/J.lt-LT/P1": 6,
+    "a/M4/J.tr-TR/P1": 6,
+    "a/M4/J/P1": 6,
+    "a/M4/V/P1": 7,
+    "a/M7/J.lt-LT/P1": 1,
+    "a/M7/J.tr-TR/P1": 1,
+    "a/M7/J/P1": 1,
+    "a/M7/V/P1": 5,
+    "a/S1/V/P1": 33,
+    "a/S10/J.lt-LT/P1": 3,
+    "a/S10/J.tr-TR/P1": 3,
+    "a/S10/J/P1": 3,
+    "a/S10/V/P1": 14,
+    "a/S2a/J.lt-LT/P1": 5,
+    "a/S2a/J.tr-TR/P1": 5,
+    "a/S2a/J/P1": 5,
+    "a/S5/J.lt-LT/P1": 4,
+    "a/S5/J.tr-TR/P1": 4,
+    "a/S5/J/P1": 4,
+    "a/S7/J.lt-LT/P1": 11,
+    "a/S7/J.tr-TR/P1": 11,
+    "a/S7/J/P1": 11,
+    "a/S8/J.lt-LT/P1": 67,
+    "a/S8/J.tr-TR/P1": 67,
+    "a/S8/J/P1": 67,
+    "b'/-/V/P1": 1,
+    "b/M4/J.lt-LT/P1": 1,
+    "b/M4/J.tr-TR/P1": 1,
+    "b/M4/J/P1": 1,
+    "b/S3/J.lt-LT/P1": 4,
+    "b/S3/J.tr-TR/P1": 4,
+    "b/S3/J/P1": 4,
+    "c/-/J/P1": 1
+  },
+  "classifier": "sjl-11-001-classification@9",
+  "controls": {},
+  "correspondence": {
+    "blob": "2831290201cca3fb6b524a9be8680755eb566f37",
+    "name": "correspondence.md",
+    "sha256": "39d0d58d036d688b9556ae4f7bf6ced2f28fa2e203b6ed6e18f1f2e3757b8e2c"
+  },
+  "counts": {
+    "a": 440,
+    "a'": 9,
+    "b": 15,
+    "b'": 1,
+    "c": 1
+  },
+  "exclusion": {
+    "name": "p4-excluded.tsv",
+    "patterns": 19,
+    "rule": "reference-arms-revised-2026-11-16b.md (the owner's ruling of 2026-11-16)",
+    "sha256": "3e2e080b9debfc6505e4e64aa16cbf0edca30ecae18d3945bf47f9ad7d271185"
+  },
+  "reduction": {
+    "comparison/differences.tsv.gz": "6c35a2c1fb3b47c9be8ac8ebd4c5ebef90ae6eefd970e14ebfb2e48560e40ea7",
+    "reducer": "sjl-11-001-reduction@1",
+    "reductions.tsv": "b3e053014bbbdd8c2cf48419edc4f0053b520b642166a45d5acdbabfd3b56237",
+    "rule": "reference-arms-revised-2026-11-16.md (option R)",
+    "runs": {
+      "P1.S.tsv.gz": "f4284fd928c86c7ff7f0574835d720c454b91fa3518d2d364e9d8b16aa42e94d",
+      "P3.S.tsv.gz": "39507dcc41fba2f0d979fd1b3c73cdd54c64df3adc314b3fcc8205134809f774",
+      "P4.S.tsv.gz": "65ee0a6a5dc6bc2744dfb1b115729dbc56fef0538e25fb6e12ac3afd9d8215f0"
+    }
+  },
+  "rows-read-from": {
+    "blob": "2831290201cca3fb6b524a9be8680755eb566f37",
+    "commit": "5e90bfe485aad60b3637d9f69e54ed71adcd73af",
+    "path": "docs/evidence/sjl-11-001/correspondence.md",
+    "repository": "Broiler.VM"
+  }
+}

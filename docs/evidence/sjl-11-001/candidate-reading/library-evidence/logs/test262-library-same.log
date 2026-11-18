@@ -1,0 +1,3 @@
+$ same test262-library-aot.txt test262-library-jit.txt
+# check B-2's two reports are one file
+exit 0

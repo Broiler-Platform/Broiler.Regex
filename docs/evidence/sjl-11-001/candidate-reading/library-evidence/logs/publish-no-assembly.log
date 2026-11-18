@@ -1,0 +1,3 @@
+$ no_managed_assembly
+# no managed assembly beside the native image (E-2)
+exit 0

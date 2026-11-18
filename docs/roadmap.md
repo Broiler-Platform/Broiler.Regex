@@ -3760,6 +3760,314 @@ stay reachable in Broiler.JS: its branch kept, or a tag or other kept ref on it.
   retained commit, does not exist yet". It does not run B-1, which the rule reads from CI. Both texts were out of date;
   at review (below) they are corrected, and the script still records B-1 as not run.
 
+*Dated record, 2026-11-18 (SJL-11.2: task 4.2, the candidate reading of bundle `sjl-11-001` at `49d7be1f`; the
+reading's commit and the rule commit named). No rule file, script, workflow or library source was changed. The per-part
+readings below are the only judgement this record makes, and nothing beyond them is declared met or accepted.*
+
+*Corrected at review, the same day, before this record reached the default branch. Its first text said of part A:
+"This reading retains no run of any part A witness failing, and the bundle held none before it". Part B's control run
+turned A-5's `\k` witnesses red, and its two Release-job logs are now retained; part A is read check by check below,
+and still reads NOT MET. The review also added these: the departure from `decision-rule.md`'s packed-from line, the
+class (b) reading's status, class (c)'s rerun clause, the excluded patterns' gap, and the arms run's four launches.
+It corrected the machine line, which named memory and swap that no retained file records.*
+
+**The commits.** Two decisions, taken under the owner's direction of 2026-10-18 ("Please do all recommended decisions
+and skip waiting for review"). They are this session's recommended decisions, not the owner's own words, and the owner
+can overturn either.
+1. **The reading's commit is `49d7be1f3ef148f9c262f0e52b8c360c07fd838d`** (the merge of
+   Broiler-Platform/Broiler.Regex#27, `main` on 2026-11-18). Its library sources and props are those of `df5cfc2`, the
+   commit `0.1.0-preview.6` was published from (publish run 43736141111). The git trees are equal at both commits:
+   `Broiler.Regex/` is `b8001a304dbfba43ea5eee34b02563083b5e8e1d`, `Directory.Build.props` `5b60c39e…`,
+   `Directory.Packages.props` `5df30d7c…`, `NuGet.config` `dba156c8…` and `eng/` `083d0d65…`. So the reading reads the
+   published package's sources with this tree's scripts, runner and jobs, as item 2 of the record of the host job above
+   recommends ("at a later commit whose library tree is `df5cfc2`'s it judges `df5cfc2`'s library").
+   - *Not taken*: `df5cfc2` itself. Its tree has no `test262-library` job, no runner, no host job and neither script,
+     so B-2, B-3 and the scripts cannot run there.
+   - *Not taken*: a new `0.1.0-preview.7` packed from the reading's commit. Publication is the owner's (D13).
+   - **This departs from a line of the rule.** `decision-rule.md`'s dated note of 2026-11-01 reads "The candidate
+     reading is read as taken at the commit `0.1.0-preview.6` is packed from", which is `df5cfc2`. The reading is
+     taken at `49d7be1f`, which is not that commit. What is the same is the library tree and props. A later commit's
+     tests, scripts, probe, workflow and test262 lists come with it: `git diff --name-only df5cfc2 49d7be1f` names 4
+     files under `Broiler.Regex.Tests/`, 4 under `probes/`, 15 under `scripts/`, 2 under `test262/`, 2 under `tests/`
+     and `.github/workflows/ci.yml`, besides `docs/`, `CHANGELOG.md` and `.gitignore`. The published bytes are not
+     read. Every per-part reading below is a reading at `49d7be1f`, not at the commit the rule's line names. The owner
+     can overturn this departure with the decision.
+   - **The reading judges the sources, not the published bytes.** No local build reproduces the published DLL (the
+     record of the host job above: the published `Broiler.Regex.dll` is `dbc27afe…`, and every local pack gave
+     another). CI's host job at the reading's commit packed a DLL of SHA-256 `8ffe19e5…` from the same sources.
+2. **The rule commit is `e568b88248c7de5dd75210e22cd357197108e644`** (the merge of Broiler-Platform/Broiler.Regex#6).
+   Its rule files are `edfb2d8`'s, and every `rule` block of both rule files is byte for byte the same at `e568b88`,
+   `edfb2d8` and the reading's commit. Broiler.VM's half of this bundle, and bundles `sjl-12-001` and `sjl-13-001`,
+   name the default-branch merge in the same way.
+   - *Not taken*: `fca7a6d`, the branch commit that first added the bundle (the README's note of 2026-11-15).
+
+**The reading's runs**, both from a clean tree at the reading's commit, each behind the machine's shared build lock
+(`flock` on one lock file) and its hard idle gate: a load of 1.0 or less, and no `dotnet`, test host, compiler server,
+MSBuild, ILC or `Broiler.*` process other than the run's own. Release, `--disable-build-servers`, the .NET SDK
+`10.0.404`. *The machine*: four cores (`nproc`, in each run's retained `driver/*.machine-sh.txt`), Linux 6.18.44
+(x86_64) and Python 3.13.18 (`reference-arms/run/environment.txt`). Ubuntu 24.04.5 LTS is from the driver's machine
+record, which is kept out by digest (`reference-arms/driver/arms.machine.txt`, `6d1ce66f…`). During the arms run,
+`reference-arms/driver/watch.log` shows at least 11,958 MiB of memory available and at least 7,601 MiB free on `/`.
+- **`docs/evidence/sjl-11-001/run-library-evidence.sh 49d7be1f <OUT> --test262 <DIR>`**, linux-x64, test262's `test/`
+  checked as the pin's tree `c022917030da8fbc09b7db8f9b7d55ccc5f5ebab` at `ccaac100`. It ran from 04:27:21 to 04:30:59
+  UTC (218 seconds) and exited **0**. All 39 steps that run ended as the rule expects, and B-1 is recorded as not
+  run, by design. The gate passed at a load of 0.43.
+- **`docs/evidence/sjl-11-001/run-reference-arms.sh 49d7be1f <OUT> --test262 <DIR> --unicode <DIR> --broiler-js <DIR>
+  --broiler-vm <DIR> --correspondence-commit 5e90bfe485aad60b3637d9f69e54ed71adcd73af`**. It ran over all seven classes,
+  with Broiler.Unicode at the script's default `0bcb917`, Broiler.JS at the pin file's `b2c2e224` (P1 and the arbiter)
+  and Broiler.VM's correspondence at `5e90bfe4`. It ran from 06:24:48 to 08:48:18 UTC (8,610 seconds, at most 3.7 GB of
+  memory), exited **0**, and took both negative controls (its last line: "negative controls taken: J V"). The gate
+  passed at a load of 0.27. While it ran, another stage's build waited on the lock and did not start.
+- **The arms run was launched four times, and only the fourth is a reading.**
+  - The first, at 04:32:35 UTC (`runs/arms`), wrote its output to `/dev/shm`, and a container restart wiped it.
+  - The second, at 05:51:19 UTC (`runs/arms2`), was stopped by the implementer at 05:51 during its test262 check,
+    before any build, so that it could be relaunched detached.
+  - The third, at 05:51:47 UTC (`runs/arms3`), wrote to `/dev/shm` again, and a second restart wiped it.
+  - The machine's tmpfs counts against its memory, and memory exhaustion is the likely cause of those two restarts.
+  - A third restart followed, at about 06:22 UTC, with no arms run going.
+  - The fourth, at 06:24:48 UTC (`runs/arms4`), wrote its output and inputs to the disk. It is the run above, and the
+    one kept.
+  - The library run's output was copied to the disk when it ended, so it survived, and it is the reading's. It was
+    not run again: its `digests.sha256` and `packages.sha256` verify, and its logs are whole.
+
+**CI's runs at the reading's commit**, by identifier, from GitHub's API (fetched with `curl`, no token of this stage's):
+- **Run 44206505415**, workflow CI (`ci.yml`), the push to `main` at `49d7be1f`. It is the only run at that commit, and
+  all 14 of its jobs succeeded. Each job and the checks it serves:
+  - B-1: the host job, 134473694801;
+  - B-2: the library job, linux-x64 134473694923 and win-x64 134473695064;
+  - B-3: both of the above, on the default branch at the reading's commit;
+  - C and D (and E-2): the Native AOT probe, linux-x64 134473695043 and win-x64 134473694553;
+  - C: part C's controls, 134473695079;
+  - A, D's test runs and E-1: the Release jobs, ubuntu-24.04 134473695300 and windows-latest 134473694930 (the latter
+    also packs, E-4);
+  - E-3 and E-7: the architecture tests, ubuntu-24.04 134473694949 and windows-latest 134473694825;
+  - E-5: the fuzz target, ubuntu-24.04 134473695222 and windows-latest 134473694800, and its planted-defect control,
+    134473695052;
+  - E-6: the assurance check, 134473695048.
+- **Part B's control**, taken in CI under the owner's permission of 2026-11-18 ("Allow scratch branch"). A scratch
+  branch `sjl-11-2-control-b` was made from `49d7be1f`; it was never merged and has no pull request.
+  - The plant is `deac674863f3bf859c8e6564634b0df499c62f14`: `!_unicode &&` added to the undeclared-name check of
+    `RegexParser.Parse`.
+  - Its run, **44237117988**, is red. B-1's host job 134575819645 is red on exactly the five files
+    `test/language/literals/regexp/named-groups/invalid-dangling-groupname{,-2,-3,-4,-without-group}-u.js`. B-2's
+    library jobs, linux-x64 134575819815 and win-x64 134575819759, are red on the same five.
+  - The same plant also turned red the Release jobs, the probe jobs, part C's controls and the assurance check
+    (134575819693, on `RegexParser.cs`'s fingerprint drift).
+  - The revert is `d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb`, whose tree equals `49d7be1f`'s. Its run, **44238736222**,
+    is green on all 14 jobs.
+  - **The scratch branch could not be deleted**: the session's git remote refused the delete push. It stays on GitHub
+    at `d0dd222`, unmerged and with no pull request, until the owner deletes it.
+- The publish run of `0.1.0-preview.6`, 43736141111 (`df5cfc2`), is named for the record and is not read.
+
+Every artifact of run 44206505415 was downloaded, along with the test262 artifacts of the two control runs and the
+job logs the rule reads. Each zip's SHA-256 is the digest GitHub records for it. Their reports are retained, except the
+packages, which are named by digest. The local library run's reports are byte for byte CI's linux-x64 reports.
+
+**The retained files**: [`candidate-reading/`](evidence/sjl-11-001/candidate-reading/) beside the bundle's README,
+with [`manifest.json`](evidence/sjl-11-001/manifest.json). The manifest names every retained file by its SHA-256 and
+size, and the commits and CI runs read. Each file kept out is named by its digest, with where it was and why it is
+kept out: the populations, the arms' answers and the listings (by digest and line count, as `reference-arms.md`
+says), the packages, the inputs' copies, and the machine records that list every process. No file is over 2 MB, so
+none is kept out for size. A file with the same bytes as one already retained, or with the bytes as fetched of a log
+retained with LF, is named with that file's path. Nine logs from Windows runners are stored with LF, as
+`.gitattributes` stores every text file (convention 17, rule SL10), and their bytes as fetched are named beside them.
+Eight were stored so by the reading's first commits. The ninth, the control's windows-latest Release job, was added
+at review.
+
+**The reading, per part, at `49d7be1f`**, with the check and the file that decides it:
+- **Part A: read NOT MET.** Every check's tests pass: 2,644 library tests, 49 architecture tests and 11 fuzz-target
+  tests, none failed, in `library-evidence/logs/tests.log` and in both Release jobs' logs. Those logs carry totals per
+  assembly. A failing test would be named in them, as the control's Release logs name theirs, so the totals with 0
+  failed stand for each test. But the rule's MET reads "and each witness was watched failing once". "How it is read"
+  decides that "by the retained run of its witness failing once; a check whose witness was not seen failing is not
+  met", and adds that "a file the manifest does not name decides nothing". The bundle README's table reads part A
+  check by check: the deciding test classes, their result, and each witness. A witness is counted on the standard
+  E-3 is read on: a plant its test refuses on every run, or a retained run in which its test failed.
+  - **A-1**: the metadata half has an in-test witness, run every time (`MeterMetadataTests`, a copy of the library
+    with the old names planted). The charging halves have none.
+  - **A-4**: the matcher half has an in-test witness, run every time
+    (`MatcherRecursionTests.A4_A_recursive_helper_planted_in_a_copy_of_the_library_is_refused`). The nesting check and
+    the stack clauses have none.
+  - **A-5**: the clause "`\k<name>` to an undeclared name refused by the parser and by the validate entry" has a
+    retained run of its witness failing. That is part B's control run 44237117988. In its Release jobs, 134575819708
+    (ubuntu-24.04) and 134575819702 (windows-latest), 19 of 2,644 library tests failed.
+    `NamedReferenceTests.A_reference_to_an_undeclared_name_is_refused_by_the_parse_alone` and
+    `ValidateEntryTests.The_critic_s_k_case_is_refused_by_the_validate_entry` are among them, and the revert's run
+    44238736222 is green. Those two logs were first named in the manifest as not kept, as jobs "that do not decide part
+    B". They are now retained under `ci/job-logs/`. A-5's other clauses have no witness run.
+  - **A-2, A-3 and A-6 to A-11** have no witness run.
+  - So part A reads NOT MET whether a check needs a witness for every clause or one witness in all. The roadmap's task
+    records say, in prose, that tests were watched failing when they were written. Those records are not runs the
+    manifest names.
+- **Part B: read MET on the retained runs.**
+  - B-1: `ci/artifact-files/44206505415-test262-host/summary.txt`, green. 2,547 files ran, and only the one listed file
+    fails. All 19 files listing `regexp-duplicate-named-groups` pass, the four required among them. The candidate's
+    record shows the shell holding the packed DLL.
+  - B-2: the library job's two reports per RID, under the JIT and through Native AOT, are one file (`374235…`). The
+    report says "failed: 0", and 43 unreadable files are listed with why.
+  - B-3: both jobs are green in run 44206505415, a push to `main` at the reading's commit.
+  - The control turned B-1 and B-2 red, and its revert is green. The three red jobs' logs are retained under
+    `ci/job-logs/`. The manifest also names them under their `part-b-control/jobs/` paths, as not-kept entries with
+    `same-as` pointing to those files. The record is under `part-b-control/`. Its `run1-SHA256SUMS` names the logs
+    as `run1/<job>.log`, their folder in the session's notes, which is not in the bundle. Each digest there is the
+    manifest's digest for the `part-b-control/jobs/` entry of the same job. For the two Windows logs retained with LF
+    (134575819759, 134575819702), that is the retained file's `as-fetched` digest.
+- **Part C: read MET on the retained runs.** Per RID, the probe's `adversarial-aot.txt` and `adversarial-jit.txt` are
+  one file (`3f7fc538…`, on both RIDs and locally). In it, 65 rows give their declared status, none differs and none
+  ends abnormally. Part C's controls job wrote `control-steps.txt` (the 17 rows of K, A, L, W and G reported),
+  `control-nesting.txt` (every N row past the limit reported) and `revert.txt`, which equals the reports. The local run
+  wrote the same bytes, and its `-holds`, `-lacks` and `controls-no-library` logs pass.
+- **Part D: read MET on the retained runs.** Per RID, `vectors-aot.txt` and `vectors-jit.txt` are one file
+  (`3b35a475…`). Its header shows the pin check before the run: corpus revision 32 at `b2c2e224`, the pin file
+  `3be30a80…`.
+  - Every normative and divergence vector whose op the library implements gives its out.
+  - All 18 status vectors give their status.
+  - All 85 implementation-defined vectors are reported.
+  - The 27 vectors of ops the library does not implement are listed under six named ops of the object model.
+  - The Release jobs ran `VectorsRunTests` and `VectorsProbeTests` within the 2,644 tests. Their logs carry totals
+    only, read as each test's result (part A above).
+- **Part E: read MET on the retained runs.**
+  - E-1: `build-no-warning.log`, and both Release jobs' logs.
+  - E-2: `publish-no-warning.log`, `publish-no-assembly.log` and the probe's `probe-publish.log` per RID. The default
+    population's two reports per RID are one file (`8f40ae86…`), and parts C and D's are as above.
+  - E-3: the architecture tests' 49 pass. Their register holds SL1 to SL10 and C1, C3 and C5, each Active with a
+    witness on disk, and the witnesses are run every time. That is the standard part A's witnesses are read on above.
+  - E-4: `pack.log` and the windows-latest Release job's pack. Package validation runs in the pack against
+    `0.1.0-preview.5`, the baseline as the rule's dated note reads it. Each of the 29 suppressions is listed in
+    `docs/suppressions.md`, and under Changed in the CHANGELOG, whose entry has the Observable changes and Data
+    headings.
+  - E-5: the fuzz jobs, their `fuzz.log` artifacts and the control job's `fuzz-control.log`. The session reached 122
+    construct classes of 122 with no finding in 24,000 iterations, and the declared seed found the planted defect.
+  - E-6: the assurance job ("no violations") and its drift control. The plant's run turned the assurance job red on
+    drift (job 134575819693: `RegexParser.cs`'s recorded fingerprint against the current one), and the revert's
+    assurance job, 134581114155, is green. `HUMAN_REVIEW.md` names the revision it reviewed and says that no review
+    covers the current code.
+  - E-7: the architecture tests (SL10, `.gitattributes` LF, the project settings).
+- **The reference arms: read MET on the retained runs**, under the rule as revised: option R, confirmed by the owner on
+  2026-11-17, and the owner's rulings of 2026-11-16 (16b, the exclusion; 16c, `O06`), each weaker evidence by its own
+  header.
+  - The population is whole (`population/manifest.json`, `"partial": false`, all seven classes). S, V and J under the
+    invariant culture, tr-TR and lt-LT ran over it.
+  - The comparison's `differences.tsv.gz` holds 1,901,509 differences (`0a8345fd…`), byte for byte task 2.13's
+    retained comparison.
+  - *As filed* (`comparison/classification.json`, exit 1): a 1,886,022, a' 45, b 8,983, c 6,459.
+  - The declared reduction (`reduction/reductions.tsv`) is byte for byte that of 2026-11-15 (`b3e05301…`).
+  - *As revised* (`classification/classification.json` `d6ca3a14…`, and `classified.tsv.gz` `5dd1a960…`, kept by
+    digest; `run/logs/classify-revised.log`, exit 0): a 1,885,368, a' 45, b 4,876, b' 2,250, excluded 8,970, **no
+    class (c)**. These are the `@9` classification's bytes.
+  - The excluded patterns' differences are listed apart, as `excluded`, in `classified.tsv.gz`: 8,970, outside the
+    judged population. Revision 16b says they "are reported with every reading, outside the judged population", and
+    its owner's note calls the exclusion "A known gap, not a verified agreement". None of them is checked against the
+    specification here.
+  - Of the 4,876 class (b) differences, 15 are P1 vectors at corpus revision 32: row S3's nesting refusal (12) and row
+    M4's empty match under decision D41 (3). The other 4,861 are P4 stops at a declared policy (rows D10 and B6), where
+    the specification gives an answer and admits neither side's stop. So every class (b) difference the specification
+    admits is in a vector at a named corpus revision. **This is the session's reading of class (b)'s vector clause,
+    made after the runs were seen**, under the owner's direction of 2026-10-18. Its alternative is in the choices
+    below; under it the arms would read NOT MET. The owner can overturn it.
+  - **Class (c)'s "both runs are retained"** is not met as written. The rule reads "every other difference is class
+    (c), a defect of S, fixed before the candidate reading, after which the whole comparison is run again and both runs
+    are retained". The one defect of S the records name, `\k` in a class without `u` (718 differences, the record of
+    task 2.13 above), was found in task 2.13's unjudged run at `86c1377` (`differences.tsv.gz` `23aba8d0…`; this
+    roadmap holds only that prefix). Task 2.12's `2e35cbb` fixed it. The whole comparison was then run again: task
+    2.13's run, taken twice at `a113c91` (`0a8345fd…`), which this reading's comparison matches byte for byte and the
+    manifest names by digest. The pre-fix run is not retained: the bundle README says "nothing of that run is retained
+    here" (validation principle 5), and no record names where its files are. The MET line does not name the clause,
+    so the arms' reading stands on the MET line. Whether the unretained pre-fix run bears on it is the owner's to
+    decide.
+  - **Both negative controls were reported unclassified** (`controls/V/control.json`, `controls/J/control.json`;
+    `controls.py check` found no problem in either):
+
+| | V over P4, `P4-01234-u-05` | J over P1, `P1-regexp:matching:m1-notes:0001` |
+|---|---|---|
+| The copy's change | `match:0,1` for `match:0,0` | `match:0,2` for `match:0,1` |
+| *Control* (the case named) | unclassified 1; exit 0 | unclassified 1; exit 0 |
+| *Blind* (no case named) | **c 1**, "arm V is wrong by the arbiter and no row of the correspondence names the input"; exit 1 | **c 1**, the same for arm J; exit 1 |
+| *Revert* (the arm's own answers) | no (c), the run's classification for P4; exit 0 | no (c), the run's classification for P1; exit 0 |
+
+The fast-path differential ran to the end, with no disagreement. It is not judged.
+
+**So by the rule, part A's NOT MET blocks both cut-overs** (risk D10's stop; `decision-rule.md`: "A part NOT MET at
+the candidate reading blocks both cut-overs"). No rule, script or library code was changed to turn it. Parts B to E
+and the reference arms read MET on the retained runs. That is not the gate: the gate waits on part A and on the owner.
+
+**Part B's local check, not rerun.** The patch of the plant is in this stage's notes. A first try at a local check of
+it, outside CI, was started on 2026-11-18 and left no result when the container restarted. It is superseded by the
+control above, taken in CI, which is the rule's control. The host job's local proof (the record of the host job above)
+had already shown the same plant red on the same five files.
+
+**What task 4.2 still waits on**, replacing the record of the host job's list (items 1 and 2 of that list are
+answered by the runs and decisions above; item 3's reading is this one):
+1. **Part A's witnesses** for the checks and clauses that have none: A-2, A-3 and A-6 to A-11 whole, A-1's charging
+   halves, A-4's nesting check and stack clauses, and A-5's clauses other than `\k<name>` (the bundle README's table).
+   Each needs a retained run of its witness failing once, named in a later reading's manifest, or the owner's reading
+   of how the roadmap's accounts stand for them. Until then part A reads NOT MET at the candidate reading, and the
+   cut-overs stay blocked.
+2. **The owner on publication (D13).** `0.1.0-preview.6` was published from `df5cfc2` before this reading, so the
+   reading judges its sources and not its bytes. Whether to keep it, publish another version after a reading, or
+   neither, is the owner's question.
+3. **The owner on the decisions and readings above**, any of which the owner can overturn:
+   - the reading's commit, with its departure from `decision-rule.md`'s line "taken at the commit `0.1.0-preview.6`
+     is packed from";
+   - the rule commit;
+   - the session's reading of class (b)'s vector clause;
+   - class (c)'s "both runs are retained", whose pre-fix run is not retained.
+4. **The scratch branch `sjl-11-2-control-b`**, for the owner to delete.
+
+**Choices taken, each with its alternative.**
+- *The library run kept, not rerun*, as its checks verify. *Not taken*: running it again after the restarts.
+- *The arms' output on the disk.* *Not taken*: `/dev/shm`, which lost two tries.
+- *The CI artifacts downloaded.* The requests carried no token of this stage's, but they went through the session's
+  proxy, whose rate limit (15,000 an hour, `ci/api/rate-limit.json`) is an authenticated client's. *Not taken*: naming
+  the artifacts by identifier only, which leaves the reports the rule reads unretained.
+- *Class (b)'s vector clause read as above*, after the runs were seen: a stop at a policy bound against an answer, or
+  against another stop, is not an answer the specification admits. *Not taken*: reading every policy stop as admitted
+  by the specification. That would need vectors for 4,861 P4 inputs, of which the corpus holds none, and the arms
+  would read NOT MET.
+- *Part A read NOT MET* on the words "the retained run of its witness failing once", check by check. *Not taken*:
+  reading the roadmap's accounts as retained runs, which the rule's "a file the manifest does not name decides
+  nothing" refuses.
+- *Part A's witnesses counted on E-3's standard*: an in-test plant refused on every run, or a retained failing run.
+  *Not taken*: counting only retained failing runs, which would leave A-1 and A-4 with none. Part A reads NOT MET
+  either way.
+- *The control's two Release-job logs retained* (134575819708, 134575819702), under `ci/job-logs/` beside the
+  control's other retained logs, as A-5's witness run. *Not taken*: keeping them out as not deciding part B, as the
+  reading's first manifest did. *Not taken either*: a new `part-b-control/jobs/` directory, since the manifest names
+  every `part-b-control/jobs/` path as a not-kept entry.
+- *The totals with 0 failed read as each test's result.* *Not taken*: a per-test listing (`trx` or `--list-tests`),
+  which needs a new build and run of the tests.
+- *The drift control read from the control's run*, whose assurance job was red on drift. *Not taken*: a separate
+  drift plant, which would need a second scratch commit.
+- *A file retained once*, with later copies of the same bytes named in the manifest. *Not taken*: a copy each.
+- *Windows logs stored with LF*, their bytes as fetched named by digest. *Not taken*: storing them as fetched, which
+  `.gitattributes` and rule SL10 refuse.
+- *The packages, populations and listings named by digest.* *Not taken*: committing them.
+- *The artifacts' files under `ci/artifact-files/`*, since the repository's `.gitignore` ignores every directory named
+  `artifacts/`; the first commit of the files named them under `ci/artifacts/`, which Git left out, and the next one
+  moves them. *Not taken*: editing `.gitignore`, a file outside this reading's directory.
+
+**Where the brief and the sources differ, read at this record.**
+- The brief says to retain "the five red jobs' logs that decide it (B-1's and B-2's three)". Three jobs decide it, B-1's
+  and B-2's two; five is the number of failing files. The three are retained.
+- The control's record in this stage's notes opens with "deleted after both runs", and ends with the delete refused.
+  `git ls-remote` shows the branch at `d0dd222`. It is retained as written, and this record says the branch stands.
+- The brief asks for `curl` "unauthenticated". No token was sent, but the session's proxy authenticates, so whether
+  the artifacts are reachable with no credential at all was not tested.
+- The brief's lists of what the reading reads, and the record of the host job's list of what task 4.2 waits on, name
+  no part A witness run. The rule's "How it is read" asks for one for each check. This reading finds one for A-5's
+  `\k` clause, in part B's control run, and in-test witnesses for A-1's metadata half and A-4's matcher half.
+- The brief's decision 1 names `49d7be1f` as the reading's commit. `decision-rule.md`'s dated note of 2026-11-01
+  reads the candidate reading "as taken at the commit `0.1.0-preview.6` is packed from", `df5cfc2`. The reading
+  departs from that line, as recorded under the commits above.
+- The brief says the machine has "15 GB of RAM and no swap". No retained file records the memory total or swap, so
+  this record gives only what the retained files show.
+- No CI run at the reading's commit is a separate drift control for E-6. The one read is the assurance job of part
+  B's plant run.
+- GitHub's combined commit status for `49d7be1f` reads `pending`, because the commit has no legacy status. All 14 of
+  its check runs succeeded.
+- The library run's output and test262 copy were on `/dev/shm` (the first try, before the rule of the brief's second
+  addendum). Its retained logs name those paths.
+
 **R11, read (decision D11).** Unicode data reaches the library through `Broiler.Unicode.Algorithms`
 `0.1.0-preview.5` alone, the version both engines admit, and compilation takes an `IUnicodeTables`.
 `CaseFolding`, its generated table and its generator are deleted. The tests and the probe read

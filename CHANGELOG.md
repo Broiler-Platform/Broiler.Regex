@@ -202,6 +202,16 @@ the owner's to decide ([`docs/roadmap.md`](docs/roadmap.md), the note of 2026-11
     object; every file of duplicate named groups must pass. The verdict holds the population to B-1's words and
     staging's RegExp directory, and the 19 files of duplicate named groups at the pin (at review). The job has not run
     in CI, and nothing is declared met (`docs/roadmap.md`, the record of the host job).
+  - The candidate reading (task 4.2, 2026-11-18; bundle `sjl-11-001`; process only, in neither the published package
+    nor its API, and not in `df5cfc2`). Both of the bundle's scripts were run at `49d7be1f`, whose library sources are
+    `df5cfc2`'s, with both negative controls of the reference arms. CI's runs at that commit and part B's control are
+    named by identifier. The logs and reports are retained in `docs/evidence/sjl-11-001/candidate-reading/`, with the
+    bundle's `manifest.json`. The rule commit is named as `e568b88`. Parts B to E and the reference arms read MET on
+    the retained runs, at `49d7be1f` rather than at the commit the rule's dated note names (`df5cfc2`, which the
+    package was packed from). Part A reads NOT MET, and that blocks both cut-overs. Only A-5's `\k` clause has a
+    retained run of its witness failing (part B's control run), and A-1's and A-4's in-test witnesses each cover one
+    half of their check. The other checks have none. No rule, script or library source changed (`docs/roadmap.md`,
+    the record of the candidate reading).
 - **The caller's nesting limit, answered as a status (R4; task 2.3, decisions D6, D7 and D9).**
   `BroilerRegex.Compile(string, RegexFlags, IUnicodeTables, int nestingLimit, out BroilerRegex?, out RegexLimit)`
   compiles a pattern under the caller's limit and answers a `RegexStatus`: `Success` with the compiled pattern, or

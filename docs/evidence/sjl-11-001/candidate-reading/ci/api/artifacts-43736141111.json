@@ -1,0 +1,145 @@
+{
+  "total_count": 7,
+  "artifacts": [
+    {
+      "id": 14170292722,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE3MDI5MjcyMg==",
+      "name": "native-aot-probe-win-x64",
+      "size_in_bytes": 45920,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14170292722",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14170292722/zip",
+      "expired": false,
+      "digest": "sha256:49d11357b7df91c3bfe611f31cf30dc6b73eb819ecf258905a778ecac901e975",
+      "created_at": "2026-11-15T16:35:28Z",
+      "updated_at": "2026-11-15T16:35:28Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14170184466,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE3MDE4NDQ2Ng==",
+      "name": "nuget-packages",
+      "size_in_bytes": 174984,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14170184466",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14170184466/zip",
+      "expired": false,
+      "digest": "sha256:0d1cb680d29e62a0707318d71055dd4da4f2754e8ffa5bfe4c8067589dcbb711",
+      "created_at": "2026-11-15T16:36:47Z",
+      "updated_at": "2026-11-15T16:36:47Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14169998177,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE2OTk5ODE3Nw==",
+      "name": "adversarial-controls",
+      "size_in_bytes": 3755,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169998177",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169998177/zip",
+      "expired": false,
+      "digest": "sha256:2f4ff7c30f7029342a975684c83f68d7666c79736f60cf130782e69f871c6224",
+      "created_at": "2026-11-15T16:34:48Z",
+      "updated_at": "2026-11-15T16:34:48Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14169964665,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE2OTk2NDY2NQ==",
+      "name": "fuzz-control",
+      "size_in_bytes": 2492,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169964665",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169964665/zip",
+      "expired": false,
+      "digest": "sha256:c6654be7e49a364ce5021d13410ce90614d2724e5a26157dfb87d9d09802df66",
+      "created_at": "2026-11-15T16:34:19Z",
+      "updated_at": "2026-11-15T16:34:19Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14169929791,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE2OTkyOTc5MQ==",
+      "name": "native-aot-probe-linux-x64",
+      "size_in_bytes": 45921,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169929791",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169929791/zip",
+      "expired": false,
+      "digest": "sha256:b4017e68c1db3e87e1a2f2a1052df6faaf26a1e5c290e8d4679786c142475c88",
+      "created_at": "2026-11-15T16:34:38Z",
+      "updated_at": "2026-11-15T16:34:38Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14169703670,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE2OTcwMzY3MA==",
+      "name": "fuzz-windows-latest",
+      "size_in_bytes": 651,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169703670",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169703670/zip",
+      "expired": false,
+      "digest": "sha256:875c042c1bd6377791b993467317bb753dc7cc63e577118f332f2d45f1e32ee8",
+      "created_at": "2026-11-15T16:34:59Z",
+      "updated_at": "2026-11-15T16:34:59Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    },
+    {
+      "id": 14169439313,
+      "node_id": "MDg6QXJ0aWZhY3QxNDE2OTQzOTMxMw==",
+      "name": "fuzz-ubuntu-24.04",
+      "size_in_bytes": 643,
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169439313",
+      "archive_download_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/artifacts/14169439313/zip",
+      "expired": false,
+      "digest": "sha256:6c76813fec4b456ede68b10f0823d8c43955ff6ffedd0831f9f11ddf6b43ad95",
+      "created_at": "2026-11-15T16:34:36Z",
+      "updated_at": "2026-11-15T16:34:36Z",
+      "expires_at": "2027-02-13T16:33:30Z",
+      "workflow_run": {
+        "id": 43736141111,
+        "repository_id": 1281023750,
+        "head_repository_id": 1281023750,
+        "head_branch": "main",
+        "head_sha": "df5cfc2cc7d71cf0824aa8963dcdb956ac7fca9e"
+      }
+    }
+  ]
+}

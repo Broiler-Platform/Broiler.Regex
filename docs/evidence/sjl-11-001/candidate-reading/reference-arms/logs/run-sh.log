@@ -1,0 +1,2 @@
+$ bash /home/user/rx-read-arms/tree/scripts/reference-arms/run.sh /home/user/rx-read-arms/run --test262 /home/user/rx-read-in/test262 --unicode /home/user/rx-read-in/broiler.unicode --broiler-js /home/user/broiler.js --commit b2c2e2243a086285d806866a64b83297791a8ec5 --correspondence /home/user/rx-read-arms/inputs/correspondence/correspondence.md --vectors /home/user/rx-read-arms/inputs/vectors/conformance/vectors/regexp
+done: /home/user/rx-read-arms/run (negative controls taken: V J)

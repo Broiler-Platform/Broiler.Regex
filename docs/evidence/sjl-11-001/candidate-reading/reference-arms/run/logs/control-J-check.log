@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/controls.py check --dir /home/user/rx-read-arms/run/controls/J --arm J --class P1 --case P1-regexp:matching:m1-notes:0001 --main /home/user/rx-read-arms/run/classification
+{"arm": "J", "blind": [{"class": "c", "row": "-", "why": "arm J is wrong by the arbiter and no row of the correspondence names the input"}], "case": "P1-regexp:matching:m1-notes:0001", "problems": [], "reported-unclassified": true}

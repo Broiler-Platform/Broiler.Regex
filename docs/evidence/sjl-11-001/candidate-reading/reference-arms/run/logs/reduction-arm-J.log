@@ -1,0 +1,1 @@
+$ dotnet tests/ReferenceArms/J/bin/Release/net10.0/Regex.ReferenceArms.J.dll --population /home/user/rx-read-arms/run/reduction/population --out /home/user/rx-read-arms/run/reduction/runs --classes P1,P3,P4 --stops tests/ReferenceArms/stops.tsv

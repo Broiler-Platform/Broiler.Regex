@@ -1,0 +1,1 @@
+$ python3 -I -B scripts/reference-arms/generate_population.py --out /home/user/rx-read-arms/run/population --test262 /home/user/rx-read-in/test262 --unicode /home/user/rx-read-in/broiler.unicode --classes P1,P2,P3,P4,P5,P6,P7 --vectors /home/user/rx-read-arms/inputs/vectors/conformance/vectors/regexp

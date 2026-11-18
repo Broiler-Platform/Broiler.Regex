@@ -1,0 +1,27 @@
+commit deac674863f3bf859c8e6564634b0df499c62f14
+Author: Claude <noreply@anthropic.com>
+Date:   Wed Nov 18 04:24:30 2026 +0000
+
+    SJL-11.2: part B's control, the plant (scratch, never merged)
+    
+    Bundle sjl-11-001's part B control: a scratch commit of this repository,
+    never merged, that accepts \k<name> to an undeclared name under u. B-1 or
+    B-2 must turn red; the next commit on this branch reverts it. The branch
+    sjl-11-2-control-b is deleted after both runs are recorded.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_01EvynDJNoDfZb8zqpgEWykW
+
+diff --git a/Broiler.Regex/Parsing/RegexParser.cs b/Broiler.Regex/Parsing/RegexParser.cs
+index cc35725..7251f71 100644
+--- a/Broiler.Regex/Parsing/RegexParser.cs
++++ b/Broiler.Regex/Parsing/RegexParser.cs
+@@ -255,7 +255,7 @@ internal sealed class RegexParser
+         // \k<b>(?<a>x) as a compilation does.
+         foreach (var (name, position) in _namedReferences)
+         {
+-            if (!_groupsByName.ContainsKey(name))
++            if (!_unicode && !_groupsByName.ContainsKey(name))
+                 throw Refuse(RegexDiagnosticCode.UndefinedGroupName, position, "Reference to the undeclared group name '" + name + "'", name);
+         }
+ 

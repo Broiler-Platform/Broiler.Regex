@@ -1,0 +1,101 @@
+{
+  "sha": "d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb",
+  "node_id": "C_kwDOTFrfBtoAKGQwZGQyMjJkM2YxYTRmOWE3ZGQ1ZmY0NDQ5YjA4MDNjYmU5NGE1Y2I",
+  "commit": {
+    "author": {
+      "name": "Claude",
+      "email": "noreply@anthropic.com",
+      "date": "2026-11-18T04:38:27Z"
+    },
+    "committer": {
+      "name": "Claude",
+      "email": "noreply@anthropic.com",
+      "date": "2026-11-18T04:38:27Z"
+    },
+    "message": "SJL-11.2: part B's control, the revert (scratch, never merged)\n\nReverts deac674, the plant of bundle sjl-11-001's part B control. CI run\n44237117988 at deac674 turned B-1 (the host job) and B-2 (the library\njob, linux-x64 and win-x64) red on the five invalid-dangling-groupname\nfiles under u. After this commit the tree is 49d7be1f's again.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01EvynDJNoDfZb8zqpgEWykW",
+    "tree": {
+      "sha": "18d61ae475a85cc9d4ee997910134b497e39bdcd",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/git/trees/18d61ae475a85cc9d4ee997910134b497e39bdcd"
+    },
+    "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/git/commits/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb",
+    "comment_count": 0,
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgrLzsfFISF4by8Q+FKz27YpkK1USsBB+m\namu1QkJnbDsAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAAQHw9tDC5\nBvLcFAKZ9OGsAqVRcLRDJiC4ZQkrTlMO82yn339yB0LvZJxh3VLg+baW8I7+hfHXTj2KG+GkL2D4\neAU=\n-----END SSH SIGNATURE-----",
+      "payload": "tree 18d61ae475a85cc9d4ee997910134b497e39bdcd\nparent deac674863f3bf859c8e6564634b0df499c62f14\nauthor Claude <noreply@anthropic.com> 1794976707 +0000\ncommitter Claude <noreply@anthropic.com> 1794976707 +0000\n\nSJL-11.2: part B's control, the revert (scratch, never merged)\n\nReverts deac674, the plant of bundle sjl-11-001's part B control. CI run\n44237117988 at deac674 turned B-1 (the host job) and B-2 (the library\njob, linux-x64 and win-x64) red on the five invalid-dangling-groupname\nfiles under u. After this commit the tree is 49d7be1f's again.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01EvynDJNoDfZb8zqpgEWykW\n",
+      "verified_at": "2026-11-18T04:38:30Z"
+    }
+  },
+  "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb",
+  "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/commit/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb",
+  "comments_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb/comments",
+  "author": {
+    "login": "claude",
+    "id": 81847,
+    "node_id": "MDQ6VXNlcjgxODQ3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/81847?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/claude",
+    "html_url": "https://github.com/claude",
+    "followers_url": "https://api.github.com/users/claude/followers",
+    "following_url": "https://api.github.com/users/claude/following{/other_user}",
+    "gists_url": "https://api.github.com/users/claude/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/claude/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/claude/subscriptions",
+    "organizations_url": "https://api.github.com/users/claude/orgs",
+    "repos_url": "https://api.github.com/users/claude/repos",
+    "events_url": "https://api.github.com/users/claude/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/claude/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "claude",
+    "id": 81847,
+    "node_id": "MDQ6VXNlcjgxODQ3",
+    "avatar_url": "https://avatars.githubusercontent.com/u/81847?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/claude",
+    "html_url": "https://github.com/claude",
+    "followers_url": "https://api.github.com/users/claude/followers",
+    "following_url": "https://api.github.com/users/claude/following{/other_user}",
+    "gists_url": "https://api.github.com/users/claude/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/claude/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/claude/subscriptions",
+    "organizations_url": "https://api.github.com/users/claude/orgs",
+    "repos_url": "https://api.github.com/users/claude/repos",
+    "events_url": "https://api.github.com/users/claude/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/claude/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/commits/deac674863f3bf859c8e6564634b0df499c62f14",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/commit/deac674863f3bf859c8e6564634b0df499c62f14"
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "additions": 1,
+    "deletions": 1
+  },
+  "files": [
+    {
+      "sha": "cc35725a65d891a751fc7fea5a3b1ce8376dad2f",
+      "filename": "Broiler.Regex/Parsing/RegexParser.cs",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/Broiler-Platform/Broiler.Regex/blob/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb/Broiler.Regex%2FParsing%2FRegexParser.cs",
+      "raw_url": "https://github.com/Broiler-Platform/Broiler.Regex/raw/d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb/Broiler.Regex%2FParsing%2FRegexParser.cs",
+      "contents_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/contents/Broiler.Regex%2FParsing%2FRegexParser.cs?ref=d0dd222d3f1a4f9a7dd5ff4449b0803cbe94a5cb",
+      "patch": "@@ -255,7 +255,7 @@ private RegexNode ParsePattern()\n         // \\k<b>(?<a>x) as a compilation does.\n         foreach (var (name, position) in _namedReferences)\n         {\n-            if (!_unicode && !_groupsByName.ContainsKey(name))\n+            if (!_groupsByName.ContainsKey(name))\n                 throw Refuse(RegexDiagnosticCode.UndefinedGroupName, position, \"Reference to the undeclared group name '\" + name + \"'\", name);\n         }\n "
+    }
+  ]
+}
