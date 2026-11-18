@@ -715,6 +715,23 @@ other findings are recorded for the owner.
   recorded there. The retained test logs and scripts of `part-a-witnesses/` name that scratch path, as produced. None
   of these decides a clause.
 
+*Dated note, 2026-11-18, the owner's ruling on the blocking line (no rule file and no retained file changed; part A's
+second reading unchanged).* The note on review above names, among the owner's wording items, "the blocking line, which
+the revision lists as unchanged while it points the line, for part A, at the second reading", read there "as the
+owner's intent". The owner was asked: "Part A of the Broiler.Regex reading now reads MET at its second reading (32
+witnesses taken, 3 already on record, none missing). But the 2026-11-18 revision kept the rule's line "A part NOT MET
+at the candidate reading blocks both cut-overs" unchanged, and the candidate reading's part A NOT MET stays on record.
+Read strictly, the block would never lift. Should part A's MET at its second reading lift that block for both
+cut-overs (SJL-11.5 in Broiler.JS, SJL-11.4 in Broiler.VM)?" The owner answered "Yes, the second reading lifts it" —
+"A dated note records your reading: the block on both cut-overs is lifted as far as part A goes. The cut-overs still
+wait on their own holds (H1, H2), their base runs, and your open items." The alternative not taken was "No, keep the
+block" — "Both cut-overs stay blocked by the candidate reading's part A NOT MET. Only the end reading or a further
+revision could lift the block." This is the owner's own ruling, not one taken under the owner's direction of
+2026-10-18. By it, part A's MET at its second reading lifts the block of "A part NOT MET at the candidate reading
+blocks both cut-overs (risk D10's stop)" on both cut-overs, as far as part A goes; that wording item is answered.
+Nothing else is decided: SJL-11.5 in Broiler.JS and SJL-11.4 in Broiler.VM still wait on their own holds, H1 and H2,
+their base runs, and the owner's other open items.
+
 ## No figure
 
 This bundle's rules hold no figure: where a count matters it is a parameter of the protocol. Results are written
