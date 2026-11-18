@@ -1,0 +1,12 @@
+$ dotnet build probes/Regex.Probe -c Release --nologo --disable-build-servers -p:RegexAdversarialControl=steps
+  Determining projects to restore...
+  Restored /dev/shm/rx-read-libev/tree/probes/Regex.Probe/Regex.Probe.csproj (in 3.86 sec).
+  Regex.Probe: adversarial control 'steps' is built from the library's sources with Engine/RegexProgram.cs changed in a copy (/dev/shm/rx-read-libev/tree/probes/Regex.Probe/obj/Release/net10.0/adversarial-control/RegexProgram.cs); this build tests that copy, not Broiler.Regex.dll.
+  Regex.Probe -> /dev/shm/rx-read-libev/tree/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:18.79
+exit 0

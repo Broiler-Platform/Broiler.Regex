@@ -1,0 +1,848 @@
+﻿2026-11-18T00:16:49.8651016Z Current runner version: '2.338.2'
+2026-11-18T00:16:49.8680152Z ##[group]Runner Image Provisioner
+2026-11-18T00:16:49.8680892Z Hosted Compute Agent
+2026-11-18T00:16:49.8681353Z Version: 20261103.629
+2026-11-18T00:16:49.8681841Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T00:16:49.8682446Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T00:16:49.8682989Z Worker ID: {b7ae15f6-3761-40e7-af93-9f45a3eddeed}
+2026-11-18T00:16:49.8683514Z Region: centralus
+2026-11-18T00:16:49.8683940Z Cloud: Azure
+2026-11-18T00:16:49.8684341Z ##[endgroup]
+2026-11-18T00:16:49.8685413Z ##[group]Operating System
+2026-11-18T00:16:49.8685906Z Microsoft Windows Server 2025
+2026-11-18T00:16:49.8686348Z 10.0.26100
+2026-11-18T00:16:49.8686757Z Datacenter
+2026-11-18T00:16:49.8687227Z ##[endgroup]
+2026-11-18T00:16:49.8687633Z ##[group]Runner Image
+2026-11-18T00:16:49.8688207Z Image: windows-2025-vs2026
+2026-11-18T00:16:49.8688710Z Version: 20261103.298.1
+2026-11-18T00:16:49.8690024Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261103.298/images/windows/Windows2025-VS2026-Readme.md
+2026-11-18T00:16:49.8691273Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261103.298
+2026-11-18T00:16:49.8692012Z ##[endgroup]
+2026-11-18T00:16:49.8692963Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T00:16:49.8694628Z Contents: read
+2026-11-18T00:16:49.8695053Z Metadata: read
+2026-11-18T00:16:49.8695526Z ##[endgroup]
+2026-11-18T00:16:49.8697779Z Secret source: Actions
+2026-11-18T00:16:49.8698518Z Cache mode: write
+2026-11-18T00:16:49.8699057Z Prepare workflow directory
+2026-11-18T00:16:49.9242506Z Prepare all required actions
+2026-11-18T00:16:49.9286239Z Getting action download info
+2026-11-18T00:16:50.1628999Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T00:16:50.6045990Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T00:16:51.0803695Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T00:16:51.5638099Z Complete job name: Native AOT probe (win-x64)
+2026-11-18T00:16:51.7831235Z ##[group]Run actions/checkout@v7
+2026-11-18T00:16:51.7833139Z with:
+2026-11-18T00:16:51.7833921Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:51.7839712Z   token: ***
+2026-11-18T00:16:51.7840340Z   ssh-strict: true
+2026-11-18T00:16:51.7840980Z   ssh-user: git
+2026-11-18T00:16:51.7841650Z   persist-credentials: true
+2026-11-18T00:16:51.7842359Z   clean: true
+2026-11-18T00:16:51.7843015Z   sparse-checkout-cone-mode: true
+2026-11-18T00:16:51.7843775Z   fetch-depth: 1
+2026-11-18T00:16:51.7844417Z   fetch-tags: false
+2026-11-18T00:16:51.7845097Z   show-progress: true
+2026-11-18T00:16:51.7845779Z   lfs: false
+2026-11-18T00:16:51.7846402Z   submodules: false
+2026-11-18T00:16:51.7847063Z   set-safe-directory: true
+2026-11-18T00:16:51.7847807Z   allow-unsafe-pr-checkout: false
+2026-11-18T00:16:51.7848884Z env:
+2026-11-18T00:16:51.7849471Z   PACKAGE_VERSION: 
+2026-11-18T00:16:51.7850111Z ##[endgroup]
+2026-11-18T00:16:51.9355669Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:51.9360272Z ##[group]Getting Git version info
+2026-11-18T00:16:51.9362346Z Working directory is 'D:\a\Broiler.Regex\Broiler.Regex'
+2026-11-18T00:16:51.9988998Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T00:16:52.5428751Z git version 2.56.0.windows.4
+2026-11-18T00:16:52.5484341Z ##[endgroup]
+2026-11-18T00:16:52.5500969Z Temporarily overriding HOME='D:\a\_temp\82953731-281d-4812-a47c-c2d00408e7b5' before making global git config changes
+2026-11-18T00:16:52.5502228Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:16:52.5511856Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T00:16:52.7888920Z Deleting the contents of 'D:\a\Broiler.Regex\Broiler.Regex'
+2026-11-18T00:16:52.7894285Z ##[group]Determining repository object format
+2026-11-18T00:16:52.7895515Z ##[endgroup]
+2026-11-18T00:16:52.7896036Z ##[group]Initializing the repository
+2026-11-18T00:16:52.7904033Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T00:16:52.8690208Z Initialized empty Git repository in D:/a/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T00:16:52.8737827Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:53.0187734Z ##[endgroup]
+2026-11-18T00:16:53.0188278Z ##[group]Disabling automatic garbage collection
+2026-11-18T00:16:53.0197396Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-18T00:16:53.0646108Z ##[endgroup]
+2026-11-18T00:16:53.0647226Z ##[group]Setting up auth
+2026-11-18T00:16:53.0648176Z Removing SSH command configuration
+2026-11-18T00:16:53.0659569Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:16:53.1178887Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T00:16:54.8460012Z Removing HTTP extra header
+2026-11-18T00:16:54.8470020Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:16:54.8821488Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T00:16:55.4914926Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:16:55.4915726Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:16:55.5288813Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T00:16:56.0748020Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-18T00:16:56.1098161Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:16:56.1442120Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:16:56.2217072Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:16:56.2567758Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:16:56.2921438Z ##[endgroup]
+2026-11-18T00:16:56.2921768Z ##[group]Fetching the repository
+2026-11-18T00:16:56.2932929Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +49d7be1f3ef148f9c262f0e52b8c360c07fd838d:refs/remotes/origin/main
+2026-11-18T00:16:58.1688311Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:58.1688948Z  * [new ref]         49d7be1f3ef148f9c262f0e52b8c360c07fd838d -> origin/main
+2026-11-18T00:16:58.1741013Z [command]"C:\Program Files\Git\bin\git.exe" branch --list --remote origin/main
+2026-11-18T00:16:58.2145151Z   origin/main
+2026-11-18T00:16:58.2196587Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse refs/remotes/origin/main
+2026-11-18T00:16:58.2571551Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:58.2609031Z ##[endgroup]
+2026-11-18T00:16:58.2609401Z ##[group]Determining the checkout info
+2026-11-18T00:16:58.2610377Z ##[endgroup]
+2026-11-18T00:16:58.2619420Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-18T00:16:58.3065401Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-18T00:16:58.3416607Z ##[group]Checking out the ref
+2026-11-18T00:16:58.3425011Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B main refs/remotes/origin/main
+2026-11-18T00:16:58.6453672Z Switched to a new branch 'main'
+2026-11-18T00:16:58.6559342Z branch 'main' set up to track 'origin/main'.
+2026-11-18T00:16:58.6606087Z ##[endgroup]
+2026-11-18T00:16:58.7233770Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-18T00:16:58.7548205Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:58.8056284Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T00:16:58.8056602Z with:
+2026-11-18T00:16:58.8056769Z   dotnet-version: 10.0.x
+2026-11-18T00:16:58.8056955Z   skip-lts-prepass: false
+2026-11-18T00:16:58.8057135Z   cache: false
+2026-11-18T00:16:58.8057270Z env:
+2026-11-18T00:16:58.8057408Z   PACKAGE_VERSION: 
+2026-11-18T00:16:58.8057557Z ##[endgroup]
+2026-11-18T00:16:59.0306653Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v6\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Runtime dotnet -Channel LTS
+2026-11-18T00:17:02.9716748Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.15/dotnet-runtime-10.0.15-win-x64.zip size is 36980907 bytes.
+2026-11-18T00:17:02.9720879Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-11-18T00:17:02.9750557Z dotnet-install: Extracting the archive.
+2026-11-18T00:17:05.5236364Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-11-18T00:17:05.5239181Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-11-18T00:17:05.5243338Z dotnet-install: Installed version is 10.0.15
+2026-11-18T00:17:05.5247598Z dotnet-install: Installation finished
+2026-11-18T00:17:05.6610641Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v6\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Channel 10.0
+2026-11-18T00:17:19.7857922Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-win-x64.zip size is 303618098 bytes.
+2026-11-18T00:17:19.7865547Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-11-18T00:17:19.7895874Z dotnet-install: Extracting the archive.
+2026-11-18T00:17:47.0160621Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-11-18T00:17:47.0163396Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-11-18T00:17:47.0167264Z dotnet-install: Installed version is 10.0.404
+2026-11-18T00:17:47.0171825Z dotnet-install: Installation finished
+2026-11-18T00:17:47.0819149Z ##[group]Run set -o pipefail
+2026-11-18T00:17:47.0819507Z [36;1mset -o pipefail[0m
+2026-11-18T00:17:47.0819889Z [36;1mdotnet publish probes/Regex.Probe -c Release -r win-x64 --nologo 2>&1 | tee probe-publish.log[0m
+2026-11-18T00:17:47.0820374Z [36;1m# Warnings are errors already; this states the zero convention 12 asks for.[0m
+2026-11-18T00:17:47.0820745Z [36;1mif grep -E "warning [A-Z]+[0-9]+" probe-publish.log; then[0m
+2026-11-18T00:17:47.0821292Z [36;1m  echo "::error::the Native AOT publish reported a warning"[0m
+2026-11-18T00:17:47.0821541Z [36;1m  exit 1[0m
+2026-11-18T00:17:47.0821691Z [36;1mfi[0m
+2026-11-18T00:17:47.0821919Z [36;1mpublish=probes/Regex.Probe/bin/Release/net10.0/win-x64/publish[0m
+2026-11-18T00:17:47.0822223Z [36;1mif ls "$publish"/*.dll >/dev/null 2>&1; then[0m
+2026-11-18T00:17:47.0822515Z [36;1m  echo "::error::the publish directory holds a managed assembly"[0m
+2026-11-18T00:17:47.0822774Z [36;1m  exit 1[0m
+2026-11-18T00:17:47.0822963Z [36;1mfi[0m
+2026-11-18T00:17:47.0840022Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:47.0840351Z env:
+2026-11-18T00:17:47.0840506Z   PACKAGE_VERSION: 
+2026-11-18T00:17:47.0840683Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:17:47.0840887Z ##[endgroup]
+2026-11-18T00:17:50.3831876Z   Determining projects to restore...
+2026-11-18T00:18:06.8358910Z   Restored D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\Broiler.Regex.csproj (in 16.01 sec).
+2026-11-18T00:18:07.1216320Z   Restored D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\Regex.Probe.csproj (in 16.31 sec).
+2026-11-18T00:18:10.6610791Z   Broiler.Regex -> D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\bin\Release\net10.0\Broiler.Regex.dll
+2026-11-18T00:18:11.7544982Z   Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\Broiler.Regex.Probe.dll
+2026-11-18T00:18:21.8645699Z   Generating native code
+2026-11-18T00:18:28.2822932Z   Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\publish\
+2026-11-18T00:18:28.7164567Z ##[group]Run ./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --report probe-aot.txt
+2026-11-18T00:18:28.7165312Z [36;1m./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --report probe-aot.txt[0m
+2026-11-18T00:18:28.7176533Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:28.7176856Z env:
+2026-11-18T00:18:28.7177013Z   PACKAGE_VERSION: 
+2026-11-18T00:18:28.7177190Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:28.7177385Z ##[endgroup]
+2026-11-18T00:18:30.5590810Z Broiler.Regex.Probe population smoke-1
+2026-11-18T00:18:30.5591272Z C01 /a/ @0 "bab": match 1,2
+2026-11-18T00:18:30.5591560Z C02 /abc/ @0 "xxabcxx": match 2,5
+2026-11-18T00:18:30.5591929Z C03 /^abc$/m @0 "x\u000Aabc\u000Ay": match 2,5
+2026-11-18T00:18:30.5592273Z C04 /a.c/ @0 "a\u000Ac abc": match 4,7
+2026-11-18T00:18:30.5592571Z C05 /a.c/s @0 "a\u000Ac": match 0,3
+2026-11-18T00:18:30.5593101Z C06 /\u005Cd+/ @0 "ab123cd": match 2,5
+2026-11-18T00:18:30.5593468Z C07 /\u005Cw+\u005Cs\u005Cw+/ @0 "hello world": match 0,11
+2026-11-18T00:18:30.5593877Z C08 /[a-z]+/i @0 "ABC def": match 0,3
+2026-11-18T00:18:30.5594523Z C09 /colou?r/ all "color colour": match 0,5 | match 6,12
+2026-11-18T00:18:30.5594885Z C10 /a{2,3}/ @0 "aaaa": match 0,3
+2026-11-18T00:18:30.5595216Z C11 /a+?/ @0 "aaa": match 0,1
+2026-11-18T00:18:30.5595518Z C12 /(a)|(b)/ @0 "b": match 0,1 - 0,1
+2026-11-18T00:18:30.5595824Z C13 /(a*)*b/ @0 "aaab": match 0,4 0,3
+2026-11-18T00:18:30.5596219Z C14 /(z)((a+)?(b+)?(c))*/ @0 "zaacbbbcac": match 0,10 0,1 8,10 8,9 - 9,10
+2026-11-18T00:18:30.5596614Z C15 /\u005Cbfoo\u005Cb/ @0 "a foo b": match 2,5
+2026-11-18T00:18:30.5596834Z C16 /[^]/ @0 "x": match 0,1
+2026-11-18T00:18:30.5597082Z C17 /\u005CcJ/ @0 "\u000A": match 0,1
+2026-11-18T00:18:30.5597283Z C18 /a/ @5 "aaa": nomatch
+2026-11-18T00:18:30.5597625Z G01 /(?<year>\u005Cd{4})-(?<month>\u005Cd{2})/ @0 "on 2026-10": match 3,10 3,7 8,10 names month=2,year=1
+2026-11-18T00:18:30.5597951Z G02 /(a)\u005C1/ @0 "aa": match 0,2 0,1
+2026-11-18T00:18:30.5598189Z G03 /(?<x>a)\u005Ck<x>/ @0 "aa": match 0,2 0,1 names x=1
+2026-11-18T00:18:30.5598422Z G04 /(?=a)a/ @0 "ba": match 1,2
+2026-11-18T00:18:30.5598617Z G05 /(?!a)\u005Cw/ @0 "ab": match 1,2
+2026-11-18T00:18:30.5598837Z G06 /(?<=\u005C$)\u005Cd+/ @0 "cost $42": match 6,8
+2026-11-18T00:18:30.5599385Z G07 /(?<!\u005C$)\u005Cb\u005Cd+/ @0 "$42 17": match 4,6
+2026-11-18T00:18:30.5599654Z G08 /(?<=(\u005Cd+)(\u005Cd+))$/ @0 "1053": match 4,4 0,1 1,4
+2026-11-18T00:18:30.5599894Z G09 /(?i:a)b/ all "Ab aB": match 0,2
+2026-11-18T00:18:30.5600183Z G10 /(?<a>.)(?<b>.)\u005Ck<b>\u005Ck<a>/u @0 "xabba": match 1,5 1,2 2,3 names a=1,b=2
+2026-11-18T00:18:30.5600469Z F01 /a/y @0 "ba": nomatch
+2026-11-18T00:18:30.5600649Z F02 /a/y @1 "ba": match 1,2
+2026-11-18T00:18:30.5600878Z F03 // all "abc": match 0,0 | match 1,1 | match 2,2 | match 3,3
+2026-11-18T00:18:30.5601152Z F04 //u all "\uD83D\uDE00": match 0,0 | match 2,2
+2026-11-18T00:18:30.5601481Z F05 // all "\uD83D\uDE00": match 0,0 | match 1,1 | match 2,2
+2026-11-18T00:18:30.5601771Z B01 /\u005C0/ @0 "\u0000": match 0,1
+2026-11-18T00:18:30.5601970Z B02 /\u005C8/ @0 "8": match 0,1
+2026-11-18T00:18:30.5602157Z B03 /[\u005Cd-x]/ @0 "-": match 0,1
+2026-11-18T00:18:30.5602350Z B04 /a{/ @0 "a{": match 0,2
+2026-11-18T00:18:30.5602533Z B05 /\u005C101/ @0 "A": match 0,1
+2026-11-18T00:18:30.5602725Z U01 /\u017F/i @0 "s": nomatch
+2026-11-18T00:18:30.5602907Z U02 /\u017F/iu @0 "S": match 0,1
+2026-11-18T00:18:30.5603124Z U03 /\u005Cu{1F600}/u @0 "x\uD83D\uDE00": match 1,3
+2026-11-18T00:18:30.5603472Z U04 /^.$/u @0 "\uD83D\uDE00": match 0,2
+2026-11-18T00:18:30.5603769Z U05 /^.$/ @0 "\uD83D\uDE00": nomatch
+2026-11-18T00:18:30.5604033Z U06 /\u005Cu{10400}/iu @0 "\uD801\uDC28": match 0,2
+2026-11-18T00:18:30.5604253Z U07 /\u005Cw/iu @0 "\u212A": match 0,1
+2026-11-18T00:18:30.5604468Z U08 /\u005CW/iu @0 "\u017F": nomatch
+2026-11-18T00:18:30.5606936Z P01 /\u005Cp{Script=Greek}+/u @0 "123\u03B1\u03B2": match 3,5
+2026-11-18T00:18:30.5607384Z P02 /\u005Cp{L}+/u @0 "123\u00F1\u00FC": match 3,5
+2026-11-18T00:18:30.5607745Z P03 /\u005CP{L}+/u @0 "ab12cd": match 2,4
+2026-11-18T00:18:30.5607968Z P04 /\u005Cp{Lu}/iu @0 "a": match 0,1
+2026-11-18T00:18:30.5608199Z P05 /[\u005Cp{L}--[a-z]]+/v @0 "abcDEF": match 3,6
+2026-11-18T00:18:30.5608456Z P06 /[\u005Cp{Lu}&&[A-C]]+/v @0 "ABCDE": match 0,3
+2026-11-18T00:18:30.5608699Z P07 /[\u005Cq{abc|d}]/v @0 "xabc": match 1,4
+2026-11-18T00:18:30.5608990Z P08 /\u005Cp{RGI_Emoji}/v @0 "a\uD83D\uDC4D\uD83C\uDFFDb": match 1,5
+2026-11-18T00:18:30.5609303Z P09 /[^\u005CP{Lowercase_Letter}]/iv @0 "A": match 0,1
+2026-11-18T00:18:30.5609593Z P10 /\u005Cp{Script_Extensions=Latin}/u @0 "\u0363": match 0,1
+2026-11-18T00:18:30.5609844Z R01 /(/ @0 "": syntax @1
+2026-11-18T00:18:30.5610028Z R02 /a{2,1}/ @0 "": syntax @1
+2026-11-18T00:18:30.5610224Z R03 /\u005Cp{Foo}/u @0 "": syntax @1
+2026-11-18T00:18:30.5610436Z R04 /a/gg @0 "": syntax @-1
+2026-11-18T00:18:30.5610613Z R05 /a/uv @0 "": syntax @-1
+2026-11-18T00:18:30.5610794Z R06 /(?<a>x)(?<a>y)/ @0 "": syntax @7
+2026-11-18T00:18:30.5610988Z R07 /[z-a]/ @0 "": syntax @1
+2026-11-18T00:18:30.5611172Z R08 /\u005Ck<a>/u @0 "": syntax @0
+2026-11-18T00:18:30.5611432Z R09 /(?<\u005Cu{1D400}>x)/ @0 "x": match 0,1 0,1 names \uD835\uDC00=1
+2026-11-18T00:18:30.5611693Z R10 /a**/ @0 "": syntax @2
+2026-11-18T00:18:30.5611956Z R11 /(?<\u005CuD835\u005CuDC00>x)/ @0 "x": match 0,1 0,1 names \uD835\uDC00=1
+2026-11-18T00:18:30.5612253Z R12 /(?:(?<a>x)|(?<a>y))(?<a>z)/ @0 "": syntax @19
+2026-11-18T00:18:30.5612474Z R13 /(?<a>x|(?<a>y))/ @0 "": syntax @7
+2026-11-18T00:18:30.5612704Z D01 /(?<a>x)|(?<a>y)/ @0 "y": match 0,1 - 0,1 names a=1+2:2
+2026-11-18T00:18:30.5613002Z D02 /(?:(?<a>x)|(?<a>y))\u005Ck<a>/ @0 "xyy": match 1,3 - 1,2 names a=1+2:2
+2026-11-18T00:18:30.5613316Z D03 /(?:(?<a>x)|(?<a>y))\u005Ck<a>/iu @0 "Yy": match 0,2 - 0,1 names a=1+2:2
+2026-11-18T00:18:30.5613643Z D04 /(?<=\u005Ck<a>(?:(?<a>x)|(?<a>y)))z/ @0 "yyz": match 2,3 - 1,2 names a=1+2:2
+2026-11-18T00:18:30.5613983Z D05 /^(?:(?<a>x)|(?<a>y)|z){2}\u005Ck<a>$/ @0 "xz": match 0,2 - - names a=1+2:-
+2026-11-18T00:18:30.5614355Z D06 /(?:(?<x>a)|(?<y>a)(?<x>b))(?:(?<z>c)|(?<z>d))/ @0 "abc": match 0,3 - 0,1 1,2 2,3 - names x=1+3:3,y=2,z=4+5:4
+2026-11-18T00:18:30.5614716Z D07 /(?<\u005Cu0061>x)|(?<a>y)/ all "x": match 0,1 0,1 - names a=1+2:1
+2026-11-18T00:18:30.5615665Z N01 /'('^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1 0,1^511
+2026-11-18T00:18:30.5615945Z N02 /'('^512 + 'a' + ')'^512/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:30.5616215Z N03 /'(?:'^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:30.5616484Z N04 /'(?:'^512 + 'a' + ')'^512/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:30.5616755Z N05 /'['^511 + 'a' + ']'^511/v nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:30.5617017Z N06 /'['^512 + 'a' + ']'^512/v nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:30.5617283Z N07 /'(?='^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,0
+2026-11-18T00:18:30.5617552Z N08 /'a' + '(?<='^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:30.5617818Z N09 /'(?i:'^511 + 'a' + ')'^511/ nesting 512 @0 "A": match 0,1
+2026-11-18T00:18:30.5618128Z N10 /'(?:b|x'^511 + 'a' + 'x)+'^511/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023
+2026-11-18T00:18:30.5618464Z N11 /'(?:x?'^511 + 'a' + 'x?)'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:30.5618756Z N12 /'('^1000000 + 'a' + ')'^1000000/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:30.5619059Z N13 /'['^1000000 + 'a' + ']'^1000000/v nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:30.5619340Z N14 /'('^512 + 'a' + ')'^512/ @0 "a": syntax @511
+2026-11-18T00:18:30.5619601Z N15 /'('^511 + 'a' + ')+'^511/ nesting 512 @0 "a": match 0,1 0,1^511
+2026-11-18T00:18:30.5619917Z N16 /'(?:b|x'^511 + 'a' + 'x)'^511/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023
+2026-11-18T00:18:30.5633294Z N17 /'(b|x\u005Ck\u005CB' for k = 1 to 511 + 'a' + '\u005Ckx)' for k = 511 to 1/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513
+2026-11-18T00:18:30.5645999Z N18 /'(b|x\u005Ck\u005CB' for k = 1 to 512 + 'a' + '\u005Ckx)' for k = 512 to 1/ nesting 512 @0 'x'^512 + 'a' + 'x'^512: limit:nesting
+2026-11-18T00:18:30.5646841Z cases 94, answers sha256 7ecb1528bed4ca7a98560b007679890d159bb3018d4a754dc2910c1f8e78bf61
+2026-11-18T00:18:30.5647393Z Broiler.Regex.Probe engine population engine-1
+2026-11-18T00:18:30.5648279Z E01 F03 match@0 /"(?:a)" * 100000/- "a" * 100000 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,100000 units 100001
+2026-11-18T00:18:30.5649399Z E02 F04 match@0 /"(?:a|b)" * 100000/- "a" * 100000 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,100000 units 300001
+2026-11-18T00:18:30.5650561Z E03 N01 match@0 /"(" * 511 + "a" + ")" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 0,1^511 units 1024
+2026-11-18T00:18:30.5651657Z E04 N07 match@0 /"(?:" * 511 + "a" + ")" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 2
+2026-11-18T00:18:30.5652701Z E05 N13 match@0 /"[" * 511 + "a" + "]" * 511/v "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 2
+2026-11-18T00:18:30.5653823Z E06 N02 compile /"(" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5655009Z E07 N11 compile /"(?:" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5656207Z E08 - match@0 /"(" * 511 + "a" + ")+" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 0,1^511 units 659192
+2026-11-18T00:18:30.5671810Z E09 - match@0 /"(b|x" * 511 + "a" + "x)" * 511/- "x" * 511 + "a" + "x" * 511 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513 units 3068
+2026-11-18T00:18:30.5699085Z E10 - match@0 /"(b|x" * 511 + "a" + "x)+" * 511/- "x" * 511 + "a" + "x" * 511 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513 units 531188
+2026-11-18T00:18:30.5711709Z E11 K01 match@0 /"(a+)+b"/- "b" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5712727Z E12 M01 match@0 /"(?:a|ab)*c"/- "ab" * 10000 + "c" meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none: limit:frames units 1659
+2026-11-18T00:18:30.5714354Z E13 M02 match@0 /"(?:(a)|b)*c"/- "a" * 10000 + "c" meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none: limit:trail units 203
+2026-11-18T00:18:30.5715375Z E14 O12 match@0 /"[0-9]+x"/- "x" + "1" * 1000000 meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none: meter-exception units 10240
+2026-11-18T00:18:30.5716432Z E15 O13 match@0 /"[0-9]+x"/- "1" * 100 + "x" meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none: match 0,101 units 104
+2026-11-18T00:18:30.5717433Z E16 O15 match@0 /"(?:(a)|b)*c"/- "a" * 100 + "c" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,101 99,100 units 1009
+2026-11-18T00:18:30.5718516Z E17 - match@0 /"(a?)*?b|(?:(x)|y)+"/- "yxy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,3 - - units 53
+2026-11-18T00:18:30.5719439Z E18 O09 anchored@0 /"b"/- "ab" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: nomatch units 1
+2026-11-18T00:18:30.5720393Z E19 O10 anchored@1 /"b"/- "ab" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,2 units 2
+2026-11-18T00:18:30.5721441Z E20 - match@1 /"[^a]\\u{1F600}."/u "a\ud83d\ude00\ud83d\ude00b" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,6 units 5
+2026-11-18T00:18:30.5722551Z E21 - match@0 /"(?<x>a{2,3}?)(?<y>[\\s\\S]{1,2})"/s "aaaa\n" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,4 0,2 2,4 units 11
+2026-11-18T00:18:30.5723775Z E22 - match@0 /"(?<=\\1(\\w+))c"/- "ababc" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 4,5 2,4 units 100
+2026-11-18T00:18:30.5724913Z E23 - compile /"a{2,1}"/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:30.5725925Z E24 K05 match@0 /"^(\\w+\\s?)*$"/- "a" * 30 + "!" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5726924Z E25 G03 match@0 /"^[a]*$"/u "a" * 10000001 meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 50000
+2026-11-18T00:18:30.5727975Z E26 L01 match@0 /"^(?!(?:(a+)+b|a*c))"/- "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5729072Z E27 L02 match@0 /"^(?!(?:(a+)+b|a*c))"/u "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5730065Z E28 L03 match@0 /"^(?=(?:(a+)+b|a*c))"/- "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5731169Z E29 L04 match@0 /"$(?<=(?:b(a+)+|ca*))"/- "c" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5732203Z E30 L05 match@0 /"$(?<!(?:b(a+)+|ca*))"/u "c" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:30.5733226Z E31 F01 match@0 /"\\B" * 100000/- "" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,0 units 500001
+2026-11-18T00:18:30.5734246Z E32 F02 match@0 /"\\B" * 100000/u "" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,0 units 500001
+2026-11-18T00:18:30.5735218Z E33 O02 match@0 /"^(?!(?:(a+)+b|a*c))"/u "a" * 12 + "c" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: nomatch units 53274
+2026-11-18T00:18:30.5736305Z E34 O03 match@0 /"$(?<=(?:b(a+)+|ca*))"/- "c" + "a" * 12 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 13,13 - units 53275
+2026-11-18T00:18:30.5737478Z E35 O16 match@0 /"[" + "\\p{L}" * 50 + "]"/iv "A" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 12
+2026-11-18T00:18:30.5738544Z E36 O17 match@0 /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v "\ud83d\ude00" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 units 17
+2026-11-18T00:18:30.5753101Z E37 - match@0 /"[\\s\\S]*(?<=" + "(b|x" * 510 + "a" + "x)" * 510 + ")"/- "x" * 510 + "a" + "x" * 510 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1021 0,1021 1,1020 2,1019 3,1018 4,1017 5,1016 6,1015 7,1014 8,1013 9,1012 10,1011 11,1010 12,1009 13,1008 14,1007 15,1006 16,1005 17,1004 18,1003 19,1002 20,1001 21,1000 22,999 23,998 24,997 25,996 26,995 27,994 28,993 29,992 30,991 31,990 32,989 33,988 34,987 35,986 36,985 37,984 38,983 39,982 40,981 41,980 42,979 43,978 44,977 45,976 46,975 47,974 48,973 49,972 50,971 51,970 52,969 53,968 54,967 55,966 56,965 57,964 58,963 59,962 60,961 61,960 62,959 63,958 64,957 65,956 66,955 67,954 68,953 69,952 70,951 71,950 72,949 73,948 74,947 75,946 76,945 77,944 78,943 79,942 80,941 81,940 82,939 83,938 84,937 85,936 86,935 87,934 88,933 89,932 90,931 91,930 92,929 93,928 94,927 95,926 96,925 97,924 98,923 99,922 100,921 101,920 102,919 103,918 104,917 105,916 106,915 107,914 108,913 109,912 110,911 111,910 112,909 113,908 114,907 115,906 116,905 117,904 118,903 119,902 120,901 121,900 122,899 123,898 124,897 125,896 126,895 127,894 128,893 129,892 130,891 131,890 132,889 133,888 134,887 135,886 136,885 137,884 138,883 139,882 140,881 141,880 142,879 143,878 144,877 145,876 146,875 147,874 148,873 149,872 150,871 151,870 152,869 153,868 154,867 155,866 156,865 157,864 158,863 159,862 160,861 161,860 162,859 163,858 164,857 165,856 166,855 167,854 168,853 169,852 170,851 171,850 172,849 173,848 174,847 175,846 176,845 177,844 178,843 179,842 180,841 181,840 182,839 183,838 184,837 185,836 186,835 187,834 188,833 189,832 190,831 191,830 192,829 193,828 194,827 195,826 196,825 197,824 198,823 199,822 200,821 201,820 202,819 203,818 204,817 205,816 206,815 207,814 208,813 209,812 210,811 211,810 212,809 213,808 214,807 215,806 216,805 217,804 218,803 219,802 220,801 221,800 222,799 223,798 224,797 225,796 226,795 227,794 228,793 229,792 230,791 231,790 232,789 233,788 234,787 235,786 236,785 237,784 238,783 239,782 240,781 241,780 242,779 243,778 244,777 245,776 246,775 247,774 248,773 249,772 250,771 251,770 252,769 253,768 254,767 255,766 256,765 257,764 258,763 259,762 260,761 261,760 262,759 263,758 264,757 265,756 266,755 267,754 268,753 269,752 270,751 271,750 272,749 273,748 274,747 275,746 276,745 277,744 278,743 279,742 280,741 281,740 282,739 283,738 284,737 285,736 286,735 287,734 288,733 289,732 290,731 291,730 292,729 293,728 294,727 295,726 296,725 297,724 298,723 299,722 300,721 301,720 302,719 303,718 304,717 305,716 306,715 307,714 308,713 309,712 310,711 311,710 312,709 313,708 314,707 315,706 316,705 317,704 318,703 319,702 320,701 321,700 322,699 323,698 324,697 325,696 326,695 327,694 328,693 329,692 330,691 331,690 332,689 333,688 334,687 335,686 336,685 337,684 338,683 339,682 340,681 341,680 342,679 343,678 344,677 345,676 346,675 347,674 348,673 349,672 350,671 351,670 352,669 353,668 354,667 355,666 356,665 357,664 358,663 359,662 360,661 361,660 362,659 363,658 364,657 365,656 366,655 367,654 368,653 369,652 370,651 371,650 372,649 373,648 374,647 375,646 376,645 377,644 378,643 379,642 380,641 381,640 382,639 383,638 384,637 385,636 386,635 387,634 388,633 389,632 390,631 391,630 392,629 393,628 394,627 395,626 396,625 397,624 398,623 399,622 400,621 401,620 402,619 403,618 404,617 405,616 406,615 407,614 408,613 409,612 410,611 411,610 412,609 413,608 414,607 415,606 416,605 417,604 418,603 419,602 420,601 421,600 422,599 423,598 424,597 425,596 426,595 427,594 428,593 429,592 430,591 431,590 432,589 433,588 434,587 435,586 436,585 437,584 438,583 439,582 440,581 441,580 442,579 443,578 444,577 445,576 446,575 447,574 448,573 449,572 450,571 451,570 452,569 453,568 454,567 455,566 456,565 457,564 458,563 459,562 460,561 461,560 462,559 463,558 464,557 465,556 466,555 467,554 468,553 469,552 470,551 471,550 472,549 473,548 474,547 475,546 476,545 477,544 478,543 479,542 480,541 481,540 482,539 483,538 484,537 485,536 486,535 487,534 488,533 489,532 490,531 491,530 492,529 493,528 494,527 495,526 496,525 497,524 498,523 499,522 500,521 501,520 502,519 503,518 504,517 505,516 506,515 507,514 508,513 509,512 units 4087
+2026-11-18T00:18:30.5766525Z E38 O05 match@0 /"[a]*"/- "a" * 10000001 meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,10000001 units 10000004
+2026-11-18T00:18:30.5767724Z E39 O06 match@0 /"^[a]*$"/u "a" * 10000001 meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,10000001 units 10000006
+2026-11-18T00:18:30.5768947Z E40 - match@0 /"(?<=[\\d]{2,}?x|ab)\\w*?cd"/- "12xyzcdabq" * 40 + "12xcd" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,7 units 32
+2026-11-18T00:18:30.5770337Z E41 - match@0 /"(?:[\\q{abc|ab|}x]|(?<=[\\q{\\u{1F600}a|b}]))+y"/vi "ABcXab" * 50 + "\ud83d\ude00Ay" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 303,304 units 692834
+2026-11-18T00:18:30.5771806Z E42 - match@3 /"\\p{RGI_Emoji}+"/v "abc\ud83d\udc4d\ud83c\udffd\ud83d\ude00!" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,9 units 63
+2026-11-18T00:18:30.5773127Z E43 V01 compile /"[" + "\\p{L}" * 50 + "]"/v - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:30.5774198Z E44 V02 compile /"[" + "\\p{L}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:30.5775221Z E45 V03 compile /"[" + "\\p{L}" * 50 + "]"/iu - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:30.5776332Z E46 V04 compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: limit:compile units 999
+2026-11-18T00:18:30.5777435Z E47 V05 compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: limit:compile units 999
+2026-11-18T00:18:30.5778543Z E48 - compile /"[" + "\\p{L}" * 50 + "]"/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 136368
+2026-11-18T00:18:30.5779528Z E49 - compile /"[" + "\\p{L}" * 50 + "]"/iv - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 1350949
+2026-11-18T00:18:30.5780492Z E50 - compile /"[" + "\\p{L}" * 50 + "]"/iu - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 136368
+2026-11-18T00:18:30.5781508Z E51 - compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 3099677
+2026-11-18T00:18:30.5782576Z E52 - compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 4942927
+2026-11-18T00:18:30.5784011Z E53 O07 match@0 /"(?<a>x)|(?<a>y)"/- "y" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 - 0,1 units 7
+2026-11-18T00:18:30.5784721Z E54 O08 match@0 /"(?:(?<a>x)|(?<a>y))\\k<a>"/- "yy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 - 0,1 units 9
+2026-11-18T00:18:30.5786687Z E55 - match@0 /"(?:(?<a>x)|(?<a>y))\\k<a>"/i "zyY" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,3 - 1,2 units 14
+2026-11-18T00:18:30.5787409Z E56 - match@0 /"(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z"/- "xyyz" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,4 - 2,3 units 37
+2026-11-18T00:18:30.5788145Z E57 - match@0 /"(?:" + "(?<n>x)|" * 999 + "(?<n>y))\\k<n>"/- "yy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 -^999 0,1 units 3003
+2026-11-18T00:18:30.5790011Z E58 N03 validate /"(" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5791225Z E59 N06 validate /"(" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5792205Z E60 N09 validate /"(?:" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5792907Z E61 N12 validate /"(?:" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5794833Z E62 N15 validate /"[" * 512 + "a" + "]" * 512/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5796077Z E63 N18 validate /"[" * 1000000 + "a" + "]" * 1000000/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:30.5797207Z E64 O19 validate /"\\k<b>(?<a>x)"/u - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:30.5798436Z E65 - validate /"(" * 511 + "a" + ")" * 511/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 0
+2026-11-18T00:18:30.5801084Z E66 - validate /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: ok units 0
+2026-11-18T00:18:30.5801956Z E67 - validate /"\\k<b>(?<a>x)"/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:30.5802937Z E68 - validate /"("/gg - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:30.5803473Z cases 68, answers sha256 7c26890f4ea5d4d479b99a7c38f5c945015cb413cae3c499868b091ec1af8c1a
+2026-11-18T00:18:30.5803846Z Broiler.Regex.Probe text population text-1
+2026-11-18T00:18:30.5804264Z flags: inputs 175137, answers sha256 8768fa8e677f76bf0e998e400f0adb7a7976600717acdbec9d1dce8174f9bca4
+2026-11-18T00:18:30.5804808Z escape: inputs 2228224, answers sha256 e1f3c0fb6f69fe6cf567df216b38bb2054faba9812192670915835560a9c4a2a
+2026-11-18T00:18:30.5805646Z source: inputs 262144, answers sha256 c355e40f8f27cbd4b9170b91bdbd56a49fedd7f348b2c3ad5abe5a8ecfb8b2fa
+2026-11-18T00:18:30.5806009Z flags "": Success ""
+2026-11-18T00:18:30.5806180Z flags "g": Success "g"
+2026-11-18T00:18:30.5806369Z flags "gg": DuplicateFlag at 1
+2026-11-18T00:18:30.5806568Z flags "x": UnknownFlag at 0
+2026-11-18T00:18:30.5806750Z flags "G": UnknownFlag at 0
+2026-11-18T00:18:30.5806953Z flags "uv": UnicodeWithUnicodeSets at 1
+2026-11-18T00:18:30.5807185Z flags "vu": UnicodeWithUnicodeSets at 1
+2026-11-18T00:18:30.5807400Z flags "uvx": UnknownFlag at 2
+2026-11-18T00:18:30.5807607Z flags "dgimsuy": Success "dgimsuy"
+2026-11-18T00:18:30.5807810Z flags "yg": Success "gy"
+2026-11-18T00:18:30.5807995Z escape "abc": "\u005Cx61bc"
+2026-11-18T00:18:30.5808175Z escape "1a": "\u005Cx31a"
+2026-11-18T00:18:30.5808338Z escape "_": "_"
+2026-11-18T00:18:30.5808504Z escape "a b": "\u005Cx61\u005Cx20b"
+2026-11-18T00:18:30.5808700Z escape "\u0085": "\u0085"
+2026-11-18T00:18:30.5808884Z escape "\u00A0": "\u005Cxa0"
+2026-11-18T00:18:30.5809066Z escape "\uFEFF": "\u005Cufeff"
+2026-11-18T00:18:30.5809393Z escape "\u2028": "\u005Cu2028"
+2026-11-18T00:18:30.5809790Z escape "\u180E": "\u180E"
+2026-11-18T00:18:30.5810125Z escape "\uD800": "\u005Cud800"
+2026-11-18T00:18:30.5810327Z escape "\uD83D\uDE00": "\uD83D\uDE00"
+2026-11-18T00:18:30.5810540Z escape "x\uD83D": "\u005Cx78\u005Cud83d"
+2026-11-18T00:18:30.5811111Z escape ",-=<>#&!%:;@~'`\u0022": "\u005Cx2c\u005Cx2d\u005Cx3d\u005Cx3c\u005Cx3e\u005Cx23\u005Cx26\u005Cx21\u005Cx25\u005Cx3a\u005Cx3b\u005Cx40\u005Cx7e\u005Cx27\u005Cx60\u005Cx22"
+2026-11-18T00:18:30.5812013Z escape "^$\u005C.*+?()[]{}|/": "\u005C^\u005C$\u005C\u005C\u005C.\u005C*\u005C+\u005C?\u005C(\u005C)\u005C[\u005C]\u005C{\u005C}\u005C|\u005C/"
+2026-11-18T00:18:30.5812506Z escape "\u0009\u000A\u000B\u000C\u000D": "\u005Ct\u005Cn\u005Cv\u005Cf\u005Cr"
+2026-11-18T00:18:30.5812777Z source "": "(?:)"
+2026-11-18T00:18:30.5812935Z source "/": "\u005C/"
+2026-11-18T00:18:30.5813102Z source "\u005C/": "\u005C/"
+2026-11-18T00:18:30.5813280Z source "a/b": "a\u005C/b"
+2026-11-18T00:18:30.5813450Z source "[/]": "[/]"
+2026-11-18T00:18:30.5813610Z source "\u000A": "\u005Cn"
+2026-11-18T00:18:30.5813790Z source "\u005C\u000A": "\u005Cn"
+2026-11-18T00:18:30.5835966Z source "\u005C\u2028": "\u005Cu2028"
+2026-11-18T00:18:30.5836447Z source "\u2029": "\u005Cu2029"
+2026-11-18T00:18:30.5836737Z source "\uD800": "\uD800"
+2026-11-18T00:18:30.5836993Z source "\u0085": "\u0085"
+2026-11-18T00:18:30.5837300Z source "\u005C[/\u005C]": "\u005C[\u005C/\u005C]"
+2026-11-18T00:18:30.5837696Z source "\u2028\u2028" under 11: LimitExceeded
+2026-11-18T00:18:30.5838074Z escape "." * 1000 charges 1024 2048 (Success)
+2026-11-18T00:18:30.5838457Z source "/" * 1000 charges 1024 2048 (Success)
+2026-11-18T00:18:30.5972984Z ##[group]Run ./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --adversarial tests/Adversarial/corpus.tsv --report adversarial-aot.txt
+2026-11-18T00:18:30.5973952Z [36;1m./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --adversarial tests/Adversarial/corpus.tsv --report adversarial-aot.txt[0m
+2026-11-18T00:18:30.5984802Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:30.5985110Z env:
+2026-11-18T00:18:30.5985254Z   PACKAGE_VERSION: 
+2026-11-18T00:18:30.5985425Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:30.5985634Z ##[endgroup]
+2026-11-18T00:18:32.4138956Z Broiler.Regex.Probe adversarial corpus adversarial-1
+2026-11-18T00:18:32.4140210Z corpus sha256 1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5
+2026-11-18T00:18:32.4141300Z corpus-format 1, stack-bytes 1048576, rows 65, each run in a child process (--engine-row) on a thread of stack-bytes, stopped after 120 s
+2026-11-18T00:18:32.4142264Z A01 A match@0 declared "limit:steps": exit 0, status line "A01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4143106Z A02 A match@0 declared "limit:steps": exit 0, status line "A02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4143923Z F01 F match@0 declared "match 0,0": exit 0, status line "F01 match 0,0", units 500001: gives its declared status
+2026-11-18T00:18:32.4144715Z F02 F match@0 declared "match 0,0": exit 0, status line "F02 match 0,0", units 500001: gives its declared status
+2026-11-18T00:18:32.4145608Z F03 F match@0 declared "match 0,100000": exit 0, status line "F03 match 0,100000", units 100001: gives its declared status
+2026-11-18T00:18:32.4146266Z F04 F match@0 declared "match 0,100000": exit 0, status line "F04 match 0,100000", units 300001: gives its declared status
+2026-11-18T00:18:32.4146842Z G01 G match@0 declared "limit:steps": exit 0, status line "G01 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:32.4147378Z G02 G match@0 declared "limit:steps": exit 0, status line "G02 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:32.4147901Z G03 G match@0 declared "limit:steps": exit 0, status line "G03 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:32.4148682Z K01 K match@0 declared "limit:steps": exit 0, status line "K01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4149663Z K02 K match@0 declared "limit:steps": exit 0, status line "K02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4150256Z K03 K match@0 declared "limit:steps": exit 0, status line "K03 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4151123Z K04 K match@0 declared "limit:steps": exit 0, status line "K04 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4151690Z K05 K match@0 declared "limit:steps": exit 0, status line "K05 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4152224Z L01 L match@0 declared "limit:steps": exit 0, status line "L01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4152750Z L02 L match@0 declared "limit:steps": exit 0, status line "L02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4153296Z L03 L match@0 declared "limit:steps": exit 0, status line "L03 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4153836Z L04 L match@0 declared "limit:steps": exit 0, status line "L04 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4154373Z L05 L match@0 declared "limit:steps": exit 0, status line "L05 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4154923Z M01 M match@0 declared "limit:frames": exit 0, status line "M01 limit:frames", units 1659: gives its declared status
+2026-11-18T00:18:32.4157768Z M02 M match@0 declared "limit:trail": exit 0, status line "M02 limit:trail", units 203: gives its declared status
+2026-11-18T00:18:32.4158543Z N01 N match@0 declared "match 0,1 0,1^511": exit 0, status line "N01 match 0,1 0,1^511", units 1024: gives its declared status
+2026-11-18T00:18:32.4159137Z N02 N compile declared "limit:nesting": exit 0, status line "N02 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4159716Z N03 N validate declared "limit:nesting": exit 0, status line "N03 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4160267Z N04 N compile declared "limit:nesting": exit 0, status line "N04 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4160827Z N05 N compile declared "limit:nesting": exit 0, status line "N05 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4161695Z N06 N validate declared "limit:nesting": exit 0, status line "N06 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4162559Z N07 N match@0 declared "match 0,1": exit 0, status line "N07 match 0,1", units 2: gives its declared status
+2026-11-18T00:18:32.4163419Z N08 N compile declared "limit:nesting": exit 0, status line "N08 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4164372Z N09 N validate declared "limit:nesting": exit 0, status line "N09 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4164938Z N10 N compile declared "limit:nesting": exit 0, status line "N10 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4165476Z N11 N compile declared "limit:nesting": exit 0, status line "N11 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4166014Z N12 N validate declared "limit:nesting": exit 0, status line "N12 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4166546Z N13 N match@0 declared "match 0,1": exit 0, status line "N13 match 0,1", units 2: gives its declared status
+2026-11-18T00:18:32.4167071Z N14 N compile declared "limit:nesting": exit 0, status line "N14 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4167608Z N15 N validate declared "limit:nesting": exit 0, status line "N15 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4168155Z N16 N compile declared "limit:nesting": exit 0, status line "N16 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4168686Z N17 N compile declared "limit:nesting": exit 0, status line "N17 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4169220Z N18 N validate declared "limit:nesting": exit 0, status line "N18 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:32.4169817Z O01 O match@0 declared "match 0,13 -": exit 0, status line "O01 match 0,13 -", units 53259: gives its declared status
+2026-11-18T00:18:32.4171979Z O02 O match@0 declared "nomatch": exit 0, status line "O02 nomatch", units 53274: gives its declared status
+2026-11-18T00:18:32.4173170Z O03 O match@0 declared "match 13,13 -": exit 0, status line "O03 match 13,13 -", units 53275: gives its declared status
+2026-11-18T00:18:32.4174106Z O04 O match@0 declared "match 0,13 0,12": exit 0, status line "O04 match 0,13 0,12", units 32: gives its declared status
+2026-11-18T00:18:32.4175329Z O05 O match@0 declared "match 0,10000001": exit 0, status line "O05 match 0,10000001", units 10000004: gives its declared status
+2026-11-18T00:18:32.4176322Z O06 O match@0 declared "match 0,10000001": exit 0, status line "O06 match 0,10000001", units 10000006: gives its declared status
+2026-11-18T00:18:32.4177247Z O07 O match@0 declared "match 0,1 - 0,1": exit 0, status line "O07 match 0,1 - 0,1", units 7: gives its declared status
+2026-11-18T00:18:32.4178129Z O08 O match@0 declared "match 0,2 - 0,1": exit 0, status line "O08 match 0,2 - 0,1", units 9: gives its declared status
+2026-11-18T00:18:32.4178915Z O09 O anchored@0 declared "nomatch": exit 0, status line "O09 nomatch", units 1: gives its declared status
+2026-11-18T00:18:32.4181363Z O10 O anchored@1 declared "match 1,2": exit 0, status line "O10 match 1,2", units 2: gives its declared status
+2026-11-18T00:18:32.4182249Z O11 O match@1 declared "match 2,3": exit 0, status line "O11 match 2,3", units 3: gives its declared status
+2026-11-18T00:18:32.4183239Z O12 O match@0 declared "meter-exception": exit 0, status line "O12 meter-exception", units 10240: gives its declared status
+2026-11-18T00:18:32.4184149Z O13 O match@0 declared "match 0,101": exit 0, status line "O13 match 0,101", units 104: gives its declared status
+2026-11-18T00:18:32.4184959Z O14 O match@0 declared "match 0,201": exit 0, status line "O14 match 0,201", units 1707: gives its declared status
+2026-11-18T00:18:32.4185830Z O15 O match@0 declared "match 0,101 99,100": exit 0, status line "O15 match 0,101 99,100", units 1009: gives its declared status
+2026-11-18T00:18:32.4186632Z O16 O match@0 declared "match 0,1": exit 0, status line "O16 match 0,1", units 12: gives its declared status
+2026-11-18T00:18:32.4187408Z O17 O match@0 declared "match 0,2": exit 0, status line "O17 match 0,2", units 17: gives its declared status
+2026-11-18T00:18:32.4188180Z O18 O compile declared "syntax": exit 0, status line "O18 syntax", units 0: gives its declared status
+2026-11-18T00:18:32.4188975Z O19 O validate declared "syntax": exit 0, status line "O19 syntax", units 0: gives its declared status
+2026-11-18T00:18:32.4189875Z V01 V compile declared "limit:compile": exit 0, status line "V01 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:32.4190849Z V02 V compile declared "limit:compile": exit 0, status line "V02 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:32.4191762Z V03 V compile declared "limit:compile": exit 0, status line "V03 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:32.4192682Z V04 V compile declared "limit:compile": exit 0, status line "V04 limit:compile", units 999: gives its declared status
+2026-11-18T00:18:32.4193856Z V05 V compile declared "limit:compile": exit 0, status line "V05 limit:compile", units 999: gives its declared status
+2026-11-18T00:18:32.4194734Z W01 W match@0 declared "limit:steps": exit 0, status line "W01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4195628Z W02 W match@0 declared "limit:steps": exit 0, status line "W02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:32.4196534Z rows 65: 65 give their declared status, 0 differ, 0 end abnormally, 0 wait for task 2.8 (the validate entry)
+2026-11-18T00:18:32.4197087Z waiting: none
+2026-11-18T00:18:32.4197301Z reported: none
+2026-11-18T00:18:32.4357700Z ##[group]Run ./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --vectors tests/Vectors --report vectors-aot.txt > /dev/null
+2026-11-18T00:18:32.4358818Z [36;1m./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --vectors tests/Vectors --report vectors-aot.txt > /dev/null[0m
+2026-11-18T00:18:32.4369933Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:32.4370235Z env:
+2026-11-18T00:18:32.4370375Z   PACKAGE_VERSION: 
+2026-11-18T00:18:32.4370544Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:32.4370745Z ##[endgroup]
+2026-11-18T00:18:33.5186659Z ##[group]Run dotnet build probes/Regex.Probe -c Release --nologo
+2026-11-18T00:18:33.5187099Z [36;1mdotnet build probes/Regex.Probe -c Release --nologo[0m
+2026-11-18T00:18:33.5187530Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --report probe-jit.txt[0m
+2026-11-18T00:18:33.5187917Z [36;1mcmp probe-aot.txt probe-jit.txt[0m
+2026-11-18T00:18:33.5199652Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:33.5199968Z env:
+2026-11-18T00:18:33.5200110Z   PACKAGE_VERSION: 
+2026-11-18T00:18:33.5200280Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:33.5200475Z ##[endgroup]
+2026-11-18T00:18:34.2278150Z   Determining projects to restore...
+2026-11-18T00:18:34.8697645Z   Restored D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\Regex.Probe.csproj (in 294 ms).
+2026-11-18T00:18:34.8698201Z   Restored D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\Broiler.Regex.csproj (in 294 ms).
+2026-11-18T00:18:35.3397586Z   Broiler.Regex -> D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\bin\Release\net10.0\Broiler.Regex.dll
+2026-11-18T00:18:36.5039483Z   Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\Broiler.Regex.Probe.dll
+2026-11-18T00:18:36.5171238Z 
+2026-11-18T00:18:36.5179154Z Build succeeded.
+2026-11-18T00:18:36.5180768Z     0 Warning(s)
+2026-11-18T00:18:36.5181257Z     0 Error(s)
+2026-11-18T00:18:36.5182492Z 
+2026-11-18T00:18:36.5182792Z Time Elapsed 00:00:02.70
+2026-11-18T00:18:38.8451784Z Broiler.Regex.Probe population smoke-1
+2026-11-18T00:18:38.8452241Z C01 /a/ @0 "bab": match 1,2
+2026-11-18T00:18:38.8452540Z C02 /abc/ @0 "xxabcxx": match 2,5
+2026-11-18T00:18:38.8452858Z C03 /^abc$/m @0 "x\u000Aabc\u000Ay": match 2,5
+2026-11-18T00:18:38.8453181Z C04 /a.c/ @0 "a\u000Ac abc": match 4,7
+2026-11-18T00:18:38.8453505Z C05 /a.c/s @0 "a\u000Ac": match 0,3
+2026-11-18T00:18:38.8453821Z C06 /\u005Cd+/ @0 "ab123cd": match 2,5
+2026-11-18T00:18:38.8454243Z C07 /\u005Cw+\u005Cs\u005Cw+/ @0 "hello world": match 0,11
+2026-11-18T00:18:38.8454620Z C08 /[a-z]+/i @0 "ABC def": match 0,3
+2026-11-18T00:18:38.8454996Z C09 /colou?r/ all "color colour": match 0,5 | match 6,12
+2026-11-18T00:18:38.8455343Z C10 /a{2,3}/ @0 "aaaa": match 0,3
+2026-11-18T00:18:38.8455615Z C11 /a+?/ @0 "aaa": match 0,1
+2026-11-18T00:18:38.8455911Z C12 /(a)|(b)/ @0 "b": match 0,1 - 0,1
+2026-11-18T00:18:38.8456232Z C13 /(a*)*b/ @0 "aaab": match 0,4 0,3
+2026-11-18T00:18:38.8456642Z C14 /(z)((a+)?(b+)?(c))*/ @0 "zaacbbbcac": match 0,10 0,1 8,10 8,9 - 9,10
+2026-11-18T00:18:38.8457075Z C15 /\u005Cbfoo\u005Cb/ @0 "a foo b": match 2,5
+2026-11-18T00:18:38.8457401Z C16 /[^]/ @0 "x": match 0,1
+2026-11-18T00:18:38.8457682Z C17 /\u005CcJ/ @0 "\u000A": match 0,1
+2026-11-18T00:18:38.8457996Z C18 /a/ @5 "aaa": nomatch
+2026-11-18T00:18:38.8458468Z G01 /(?<year>\u005Cd{4})-(?<month>\u005Cd{2})/ @0 "on 2026-10": match 3,10 3,7 8,10 names month=2,year=1
+2026-11-18T00:18:38.8458997Z G02 /(a)\u005C1/ @0 "aa": match 0,2 0,1
+2026-11-18T00:18:38.8459379Z G03 /(?<x>a)\u005Ck<x>/ @0 "aa": match 0,2 0,1 names x=1
+2026-11-18T00:18:38.8459738Z G04 /(?=a)a/ @0 "ba": match 1,2
+2026-11-18T00:18:38.8460035Z G05 /(?!a)\u005Cw/ @0 "ab": match 1,2
+2026-11-18T00:18:38.8460386Z G06 /(?<=\u005C$)\u005Cd+/ @0 "cost $42": match 6,8
+2026-11-18T00:18:38.8460790Z G07 /(?<!\u005C$)\u005Cb\u005Cd+/ @0 "$42 17": match 4,6
+2026-11-18T00:18:38.8461056Z G08 /(?<=(\u005Cd+)(\u005Cd+))$/ @0 "1053": match 4,4 0,1 1,4
+2026-11-18T00:18:38.8463153Z G09 /(?i:a)b/ all "Ab aB": match 0,2
+2026-11-18T00:18:38.8463590Z G10 /(?<a>.)(?<b>.)\u005Ck<b>\u005Ck<a>/u @0 "xabba": match 1,5 1,2 2,3 names a=1,b=2
+2026-11-18T00:18:38.8464010Z F01 /a/y @0 "ba": nomatch
+2026-11-18T00:18:38.8464250Z F02 /a/y @1 "ba": match 1,2
+2026-11-18T00:18:38.8464567Z F03 // all "abc": match 0,0 | match 1,1 | match 2,2 | match 3,3
+2026-11-18T00:18:38.8464967Z F04 //u all "\uD83D\uDE00": match 0,0 | match 2,2
+2026-11-18T00:18:38.8467248Z F05 // all "\uD83D\uDE00": match 0,0 | match 1,1 | match 2,2
+2026-11-18T00:18:38.8467694Z B01 /\u005C0/ @0 "\u0000": match 0,1
+2026-11-18T00:18:38.8467997Z B02 /\u005C8/ @0 "8": match 0,1
+2026-11-18T00:18:38.8468273Z B03 /[\u005Cd-x]/ @0 "-": match 0,1
+2026-11-18T00:18:38.8468544Z B04 /a{/ @0 "a{": match 0,2
+2026-11-18T00:18:38.8468774Z B05 /\u005C101/ @0 "A": match 0,1
+2026-11-18T00:18:38.8469014Z U01 /\u017F/i @0 "s": nomatch
+2026-11-18T00:18:38.8469281Z U02 /\u017F/iu @0 "S": match 0,1
+2026-11-18T00:18:38.8469584Z U03 /\u005Cu{1F600}/u @0 "x\uD83D\uDE00": match 1,3
+2026-11-18T00:18:38.8469939Z U04 /^.$/u @0 "\uD83D\uDE00": match 0,2
+2026-11-18T00:18:38.8470227Z U05 /^.$/ @0 "\uD83D\uDE00": nomatch
+2026-11-18T00:18:38.8470505Z U06 /\u005Cu{10400}/iu @0 "\uD801\uDC28": match 0,2
+2026-11-18T00:18:38.8470818Z U07 /\u005Cw/iu @0 "\u212A": match 0,1
+2026-11-18T00:18:38.8471105Z U08 /\u005CW/iu @0 "\u017F": nomatch
+2026-11-18T00:18:38.8471444Z P01 /\u005Cp{Script=Greek}+/u @0 "123\u03B1\u03B2": match 3,5
+2026-11-18T00:18:38.8471854Z P02 /\u005Cp{L}+/u @0 "123\u00F1\u00FC": match 3,5
+2026-11-18T00:18:38.8472203Z P03 /\u005CP{L}+/u @0 "ab12cd": match 2,4
+2026-11-18T00:18:38.8472508Z P04 /\u005Cp{Lu}/iu @0 "a": match 0,1
+2026-11-18T00:18:38.8472832Z P05 /[\u005Cp{L}--[a-z]]+/v @0 "abcDEF": match 3,6
+2026-11-18T00:18:38.8473432Z P06 /[\u005Cp{Lu}&&[A-C]]+/v @0 "ABCDE": match 0,3
+2026-11-18T00:18:38.8473798Z P07 /[\u005Cq{abc|d}]/v @0 "xabc": match 1,4
+2026-11-18T00:18:38.8474227Z P08 /\u005Cp{RGI_Emoji}/v @0 "a\uD83D\uDC4D\uD83C\uDFFDb": match 1,5
+2026-11-18T00:18:38.8474695Z P09 /[^\u005CP{Lowercase_Letter}]/iv @0 "A": match 0,1
+2026-11-18T00:18:38.8475147Z P10 /\u005Cp{Script_Extensions=Latin}/u @0 "\u0363": match 0,1
+2026-11-18T00:18:38.8475520Z R01 /(/ @0 "": syntax @1
+2026-11-18T00:18:38.8475753Z R02 /a{2,1}/ @0 "": syntax @1
+2026-11-18T00:18:38.8476024Z R03 /\u005Cp{Foo}/u @0 "": syntax @1
+2026-11-18T00:18:38.8476301Z R04 /a/gg @0 "": syntax @-1
+2026-11-18T00:18:38.8476544Z R05 /a/uv @0 "": syntax @-1
+2026-11-18T00:18:38.8476825Z R06 /(?<a>x)(?<a>y)/ @0 "": syntax @7
+2026-11-18T00:18:38.8477126Z R07 /[z-a]/ @0 "": syntax @1
+2026-11-18T00:18:38.8477421Z R08 /\u005Ck<a>/u @0 "": syntax @0
+2026-11-18T00:18:38.8477807Z R09 /(?<\u005Cu{1D400}>x)/ @0 "x": match 0,1 0,1 names \uD835\uDC00=1
+2026-11-18T00:18:38.8478203Z R10 /a**/ @0 "": syntax @2
+2026-11-18T00:18:38.8478623Z R11 /(?<\u005CuD835\u005CuDC00>x)/ @0 "x": match 0,1 0,1 names \uD835\uDC00=1
+2026-11-18T00:18:38.8479107Z R12 /(?:(?<a>x)|(?<a>y))(?<a>z)/ @0 "": syntax @19
+2026-11-18T00:18:38.8479414Z R13 /(?<a>x|(?<a>y))/ @0 "": syntax @7
+2026-11-18T00:18:38.8479737Z D01 /(?<a>x)|(?<a>y)/ @0 "y": match 0,1 - 0,1 names a=1+2:2
+2026-11-18T00:18:38.8480267Z D02 /(?:(?<a>x)|(?<a>y))\u005Ck<a>/ @0 "xyy": match 1,3 - 1,2 names a=1+2:2
+2026-11-18T00:18:38.8480759Z D03 /(?:(?<a>x)|(?<a>y))\u005Ck<a>/iu @0 "Yy": match 0,2 - 0,1 names a=1+2:2
+2026-11-18T00:18:38.8481222Z D04 /(?<=\u005Ck<a>(?:(?<a>x)|(?<a>y)))z/ @0 "yyz": match 2,3 - 1,2 names a=1+2:2
+2026-11-18T00:18:38.8481677Z D05 /^(?:(?<a>x)|(?<a>y)|z){2}\u005Ck<a>$/ @0 "xz": match 0,2 - - names a=1+2:-
+2026-11-18T00:18:38.8482462Z D06 /(?:(?<x>a)|(?<y>a)(?<x>b))(?:(?<z>c)|(?<z>d))/ @0 "abc": match 0,3 - 0,1 1,2 2,3 - names x=1+3:3,y=2,z=4+5:4
+2026-11-18T00:18:38.8483027Z D07 /(?<\u005Cu0061>x)|(?<a>y)/ all "x": match 0,1 0,1 - names a=1+2:1
+2026-11-18T00:18:38.8483468Z N01 /'('^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1 0,1^511
+2026-11-18T00:18:38.8484428Z N02 /'('^512 + 'a' + ')'^512/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:38.8484833Z N03 /'(?:'^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:38.8485240Z N04 /'(?:'^512 + 'a' + ')'^512/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:38.8485618Z N05 /'['^511 + 'a' + ']'^511/v nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:38.8485964Z N06 /'['^512 + 'a' + ']'^512/v nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:38.8486349Z N07 /'(?='^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,0
+2026-11-18T00:18:38.8487189Z N08 /'a' + '(?<='^511 + 'a' + ')'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:38.8487576Z N09 /'(?i:'^511 + 'a' + ')'^511/ nesting 512 @0 "A": match 0,1
+2026-11-18T00:18:38.8488034Z N10 /'(?:b|x'^511 + 'a' + 'x)+'^511/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023
+2026-11-18T00:18:38.8488516Z N11 /'(?:x?'^511 + 'a' + 'x?)'^511/ nesting 512 @0 "a": match 0,1
+2026-11-18T00:18:38.8488960Z N12 /'('^1000000 + 'a' + ')'^1000000/ nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:38.8489399Z N13 /'['^1000000 + 'a' + ']'^1000000/v nesting 512 @0 "a": limit:nesting
+2026-11-18T00:18:38.8489828Z N14 /'('^512 + 'a' + ')'^512/ @0 "a": syntax @511
+2026-11-18T00:18:38.8490229Z N15 /'('^511 + 'a' + ')+'^511/ nesting 512 @0 "a": match 0,1 0,1^511
+2026-11-18T00:18:38.8490665Z N16 /'(?:b|x'^511 + 'a' + 'x)'^511/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023
+2026-11-18T00:18:38.8504907Z N17 /'(b|x\u005Ck\u005CB' for k = 1 to 511 + 'a' + '\u005Ckx)' for k = 511 to 1/ nesting 512 @0 'x'^511 + 'a' + 'x'^511: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513
+2026-11-18T00:18:38.8517949Z N18 /'(b|x\u005Ck\u005CB' for k = 1 to 512 + 'a' + '\u005Ckx)' for k = 512 to 1/ nesting 512 @0 'x'^512 + 'a' + 'x'^512: limit:nesting
+2026-11-18T00:18:38.8518684Z cases 94, answers sha256 7ecb1528bed4ca7a98560b007679890d159bb3018d4a754dc2910c1f8e78bf61
+2026-11-18T00:18:38.8519240Z Broiler.Regex.Probe engine population engine-1
+2026-11-18T00:18:38.8520024Z E01 F03 match@0 /"(?:a)" * 100000/- "a" * 100000 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,100000 units 100001
+2026-11-18T00:18:38.8521140Z E02 F04 match@0 /"(?:a|b)" * 100000/- "a" * 100000 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,100000 units 300001
+2026-11-18T00:18:38.8522262Z E03 N01 match@0 /"(" * 511 + "a" + ")" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 0,1^511 units 1024
+2026-11-18T00:18:38.8523630Z E04 N07 match@0 /"(?:" * 511 + "a" + ")" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 2
+2026-11-18T00:18:38.8524801Z E05 N13 match@0 /"[" * 511 + "a" + "]" * 511/v "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 2
+2026-11-18T00:18:38.8525849Z E06 N02 compile /"(" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8526986Z E07 N11 compile /"(?:" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8528107Z E08 - match@0 /"(" * 511 + "a" + ")+" * 511/- "a" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 0,1^511 units 659192
+2026-11-18T00:18:38.8543109Z E09 - match@0 /"(b|x" * 511 + "a" + "x)" * 511/- "x" * 511 + "a" + "x" * 511 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513 units 3068
+2026-11-18T00:18:38.8570300Z E10 - match@0 /"(b|x" * 511 + "a" + "x)+" * 511/- "x" * 511 + "a" + "x" * 511 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1023 0,1023 1,1022 2,1021 3,1020 4,1019 5,1018 6,1017 7,1016 8,1015 9,1014 10,1013 11,1012 12,1011 13,1010 14,1009 15,1008 16,1007 17,1006 18,1005 19,1004 20,1003 21,1002 22,1001 23,1000 24,999 25,998 26,997 27,996 28,995 29,994 30,993 31,992 32,991 33,990 34,989 35,988 36,987 37,986 38,985 39,984 40,983 41,982 42,981 43,980 44,979 45,978 46,977 47,976 48,975 49,974 50,973 51,972 52,971 53,970 54,969 55,968 56,967 57,966 58,965 59,964 60,963 61,962 62,961 63,960 64,959 65,958 66,957 67,956 68,955 69,954 70,953 71,952 72,951 73,950 74,949 75,948 76,947 77,946 78,945 79,944 80,943 81,942 82,941 83,940 84,939 85,938 86,937 87,936 88,935 89,934 90,933 91,932 92,931 93,930 94,929 95,928 96,927 97,926 98,925 99,924 100,923 101,922 102,921 103,920 104,919 105,918 106,917 107,916 108,915 109,914 110,913 111,912 112,911 113,910 114,909 115,908 116,907 117,906 118,905 119,904 120,903 121,902 122,901 123,900 124,899 125,898 126,897 127,896 128,895 129,894 130,893 131,892 132,891 133,890 134,889 135,888 136,887 137,886 138,885 139,884 140,883 141,882 142,881 143,880 144,879 145,878 146,877 147,876 148,875 149,874 150,873 151,872 152,871 153,870 154,869 155,868 156,867 157,866 158,865 159,864 160,863 161,862 162,861 163,860 164,859 165,858 166,857 167,856 168,855 169,854 170,853 171,852 172,851 173,850 174,849 175,848 176,847 177,846 178,845 179,844 180,843 181,842 182,841 183,840 184,839 185,838 186,837 187,836 188,835 189,834 190,833 191,832 192,831 193,830 194,829 195,828 196,827 197,826 198,825 199,824 200,823 201,822 202,821 203,820 204,819 205,818 206,817 207,816 208,815 209,814 210,813 211,812 212,811 213,810 214,809 215,808 216,807 217,806 218,805 219,804 220,803 221,802 222,801 223,800 224,799 225,798 226,797 227,796 228,795 229,794 230,793 231,792 232,791 233,790 234,789 235,788 236,787 237,786 238,785 239,784 240,783 241,782 242,781 243,780 244,779 245,778 246,777 247,776 248,775 249,774 250,773 251,772 252,771 253,770 254,769 255,768 256,767 257,766 258,765 259,764 260,763 261,762 262,761 263,760 264,759 265,758 266,757 267,756 268,755 269,754 270,753 271,752 272,751 273,750 274,749 275,748 276,747 277,746 278,745 279,744 280,743 281,742 282,741 283,740 284,739 285,738 286,737 287,736 288,735 289,734 290,733 291,732 292,731 293,730 294,729 295,728 296,727 297,726 298,725 299,724 300,723 301,722 302,721 303,720 304,719 305,718 306,717 307,716 308,715 309,714 310,713 311,712 312,711 313,710 314,709 315,708 316,707 317,706 318,705 319,704 320,703 321,702 322,701 323,700 324,699 325,698 326,697 327,696 328,695 329,694 330,693 331,692 332,691 333,690 334,689 335,688 336,687 337,686 338,685 339,684 340,683 341,682 342,681 343,680 344,679 345,678 346,677 347,676 348,675 349,674 350,673 351,672 352,671 353,670 354,669 355,668 356,667 357,666 358,665 359,664 360,663 361,662 362,661 363,660 364,659 365,658 366,657 367,656 368,655 369,654 370,653 371,652 372,651 373,650 374,649 375,648 376,647 377,646 378,645 379,644 380,643 381,642 382,641 383,640 384,639 385,638 386,637 387,636 388,635 389,634 390,633 391,632 392,631 393,630 394,629 395,628 396,627 397,626 398,625 399,624 400,623 401,622 402,621 403,620 404,619 405,618 406,617 407,616 408,615 409,614 410,613 411,612 412,611 413,610 414,609 415,608 416,607 417,606 418,605 419,604 420,603 421,602 422,601 423,600 424,599 425,598 426,597 427,596 428,595 429,594 430,593 431,592 432,591 433,590 434,589 435,588 436,587 437,586 438,585 439,584 440,583 441,582 442,581 443,580 444,579 445,578 446,577 447,576 448,575 449,574 450,573 451,572 452,571 453,570 454,569 455,568 456,567 457,566 458,565 459,564 460,563 461,562 462,561 463,560 464,559 465,558 466,557 467,556 468,555 469,554 470,553 471,552 472,551 473,550 474,549 475,548 476,547 477,546 478,545 479,544 480,543 481,542 482,541 483,540 484,539 485,538 486,537 487,536 488,535 489,534 490,533 491,532 492,531 493,530 494,529 495,528 496,527 497,526 498,525 499,524 500,523 501,522 502,521 503,520 504,519 505,518 506,517 507,516 508,515 509,514 510,513 units 531188
+2026-11-18T00:18:38.8585117Z E11 K01 match@0 /"(a+)+b"/- "b" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8586312Z E12 M01 match@0 /"(?:a|ab)*c"/- "ab" * 10000 + "c" meter=none steps=none frames=100 trail=8388608 nesting=512 compile=none: limit:frames units 1659
+2026-11-18T00:18:38.8587443Z E13 M02 match@0 /"(?:(a)|b)*c"/- "a" * 10000 + "c" meter=none steps=none frames=4194304 trail=100 nesting=512 compile=none: limit:trail units 203
+2026-11-18T00:18:38.8588848Z E14 O12 match@0 /"[0-9]+x"/- "x" + "1" * 1000000 meter=10000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none: meter-exception units 10240
+2026-11-18T00:18:38.8589972Z E15 O13 match@0 /"[0-9]+x"/- "1" * 100 + "x" meter=1000000 steps=none frames=4194304 trail=8388608 nesting=512 compile=none: match 0,101 units 104
+2026-11-18T00:18:38.8591636Z E16 O15 match@0 /"(?:(a)|b)*c"/- "a" * 100 + "c" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,101 99,100 units 1009
+2026-11-18T00:18:38.8592818Z E17 - match@0 /"(a?)*?b|(?:(x)|y)+"/- "yxy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,3 - - units 53
+2026-11-18T00:18:38.8593894Z E18 O09 anchored@0 /"b"/- "ab" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: nomatch units 1
+2026-11-18T00:18:38.8594937Z E19 O10 anchored@1 /"b"/- "ab" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,2 units 2
+2026-11-18T00:18:38.8596120Z E20 - match@1 /"[^a]\\u{1F600}."/u "a\ud83d\ude00\ud83d\ude00b" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,6 units 5
+2026-11-18T00:18:38.8597374Z E21 - match@0 /"(?<x>a{2,3}?)(?<y>[\\s\\S]{1,2})"/s "aaaa\n" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,4 0,2 2,4 units 11
+2026-11-18T00:18:38.8598568Z E22 - match@0 /"(?<=\\1(\\w+))c"/- "ababc" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 4,5 2,4 units 100
+2026-11-18T00:18:38.8599656Z E23 - compile /"a{2,1}"/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:38.8600775Z E24 K05 match@0 /"^(\\w+\\s?)*$"/- "a" * 30 + "!" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8601956Z E25 G03 match@0 /"^[a]*$"/u "a" * 10000001 meter=none steps=50000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 50000
+2026-11-18T00:18:38.8603137Z E26 L01 match@0 /"^(?!(?:(a+)+b|a*c))"/- "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8604344Z E27 L02 match@0 /"^(?!(?:(a+)+b|a*c))"/u "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8605557Z E28 L03 match@0 /"^(?=(?:(a+)+b|a*c))"/- "a" * 30 + "c" meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8606758Z E29 L04 match@0 /"$(?<=(?:b(a+)+|ca*))"/- "c" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8607961Z E30 L05 match@0 /"$(?<!(?:b(a+)+|ca*))"/u "c" + "a" * 30 meter=none steps=1000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:steps units 1000000
+2026-11-18T00:18:38.8609134Z E31 F01 match@0 /"\\B" * 100000/- "" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,0 units 500001
+2026-11-18T00:18:38.8610216Z E32 F02 match@0 /"\\B" * 100000/u "" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,0 units 500001
+2026-11-18T00:18:38.8611709Z E33 O02 match@0 /"^(?!(?:(a+)+b|a*c))"/u "a" * 12 + "c" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: nomatch units 53274
+2026-11-18T00:18:38.8612902Z E34 O03 match@0 /"$(?<=(?:b(a+)+|ca*))"/- "c" + "a" * 12 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 13,13 - units 53275
+2026-11-18T00:18:38.8614037Z E35 O16 match@0 /"[" + "\\p{L}" * 50 + "]"/iv "A" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 units 12
+2026-11-18T00:18:38.8615591Z E36 O17 match@0 /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v "\ud83d\ude00" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 units 17
+2026-11-18T00:18:38.8631729Z E37 - match@0 /"[\\s\\S]*(?<=" + "(b|x" * 510 + "a" + "x)" * 510 + ")"/- "x" * 510 + "a" + "x" * 510 meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1021 0,1021 1,1020 2,1019 3,1018 4,1017 5,1016 6,1015 7,1014 8,1013 9,1012 10,1011 11,1010 12,1009 13,1008 14,1007 15,1006 16,1005 17,1004 18,1003 19,1002 20,1001 21,1000 22,999 23,998 24,997 25,996 26,995 27,994 28,993 29,992 30,991 31,990 32,989 33,988 34,987 35,986 36,985 37,984 38,983 39,982 40,981 41,980 42,979 43,978 44,977 45,976 46,975 47,974 48,973 49,972 50,971 51,970 52,969 53,968 54,967 55,966 56,965 57,964 58,963 59,962 60,961 61,960 62,959 63,958 64,957 65,956 66,955 67,954 68,953 69,952 70,951 71,950 72,949 73,948 74,947 75,946 76,945 77,944 78,943 79,942 80,941 81,940 82,939 83,938 84,937 85,936 86,935 87,934 88,933 89,932 90,931 91,930 92,929 93,928 94,927 95,926 96,925 97,924 98,923 99,922 100,921 101,920 102,919 103,918 104,917 105,916 106,915 107,914 108,913 109,912 110,911 111,910 112,909 113,908 114,907 115,906 116,905 117,904 118,903 119,902 120,901 121,900 122,899 123,898 124,897 125,896 126,895 127,894 128,893 129,892 130,891 131,890 132,889 133,888 134,887 135,886 136,885 137,884 138,883 139,882 140,881 141,880 142,879 143,878 144,877 145,876 146,875 147,874 148,873 149,872 150,871 151,870 152,869 153,868 154,867 155,866 156,865 157,864 158,863 159,862 160,861 161,860 162,859 163,858 164,857 165,856 166,855 167,854 168,853 169,852 170,851 171,850 172,849 173,848 174,847 175,846 176,845 177,844 178,843 179,842 180,841 181,840 182,839 183,838 184,837 185,836 186,835 187,834 188,833 189,832 190,831 191,830 192,829 193,828 194,827 195,826 196,825 197,824 198,823 199,822 200,821 201,820 202,819 203,818 204,817 205,816 206,815 207,814 208,813 209,812 210,811 211,810 212,809 213,808 214,807 215,806 216,805 217,804 218,803 219,802 220,801 221,800 222,799 223,798 224,797 225,796 226,795 227,794 228,793 229,792 230,791 231,790 232,789 233,788 234,787 235,786 236,785 237,784 238,783 239,782 240,781 241,780 242,779 243,778 244,777 245,776 246,775 247,774 248,773 249,772 250,771 251,770 252,769 253,768 254,767 255,766 256,765 257,764 258,763 259,762 260,761 261,760 262,759 263,758 264,757 265,756 266,755 267,754 268,753 269,752 270,751 271,750 272,749 273,748 274,747 275,746 276,745 277,744 278,743 279,742 280,741 281,740 282,739 283,738 284,737 285,736 286,735 287,734 288,733 289,732 290,731 291,730 292,729 293,728 294,727 295,726 296,725 297,724 298,723 299,722 300,721 301,720 302,719 303,718 304,717 305,716 306,715 307,714 308,713 309,712 310,711 311,710 312,709 313,708 314,707 315,706 316,705 317,704 318,703 319,702 320,701 321,700 322,699 323,698 324,697 325,696 326,695 327,694 328,693 329,692 330,691 331,690 332,689 333,688 334,687 335,686 336,685 337,684 338,683 339,682 340,681 341,680 342,679 343,678 344,677 345,676 346,675 347,674 348,673 349,672 350,671 351,670 352,669 353,668 354,667 355,666 356,665 357,664 358,663 359,662 360,661 361,660 362,659 363,658 364,657 365,656 366,655 367,654 368,653 369,652 370,651 371,650 372,649 373,648 374,647 375,646 376,645 377,644 378,643 379,642 380,641 381,640 382,639 383,638 384,637 385,636 386,635 387,634 388,633 389,632 390,631 391,630 392,629 393,628 394,627 395,626 396,625 397,624 398,623 399,622 400,621 401,620 402,619 403,618 404,617 405,616 406,615 407,614 408,613 409,612 410,611 411,610 412,609 413,608 414,607 415,606 416,605 417,604 418,603 419,602 420,601 421,600 422,599 423,598 424,597 425,596 426,595 427,594 428,593 429,592 430,591 431,590 432,589 433,588 434,587 435,586 436,585 437,584 438,583 439,582 440,581 441,580 442,579 443,578 444,577 445,576 446,575 447,574 448,573 449,572 450,571 451,570 452,569 453,568 454,567 455,566 456,565 457,564 458,563 459,562 460,561 461,560 462,559 463,558 464,557 465,556 466,555 467,554 468,553 469,552 470,551 471,550 472,549 473,548 474,547 475,546 476,545 477,544 478,543 479,542 480,541 481,540 482,539 483,538 484,537 485,536 486,535 487,534 488,533 489,532 490,531 491,530 492,529 493,528 494,527 495,526 496,525 497,524 498,523 499,522 500,521 501,520 502,519 503,518 504,517 505,516 506,515 507,514 508,513 509,512 units 4087
+2026-11-18T00:18:38.8645310Z E38 O05 match@0 /"[a]*"/- "a" * 10000001 meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,10000001 units 10000004
+2026-11-18T00:18:38.8646813Z E39 O06 match@0 /"^[a]*$"/u "a" * 10000001 meter=none steps=2000000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,10000001 units 10000006
+2026-11-18T00:18:38.8648148Z E40 - match@0 /"(?<=[\\d]{2,}?x|ab)\\w*?cd"/- "12xyzcdabq" * 40 + "12xcd" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,7 units 32
+2026-11-18T00:18:38.8649640Z E41 - match@0 /"(?:[\\q{abc|ab|}x]|(?<=[\\q{\\u{1F600}a|b}]))+y"/vi "ABcXab" * 50 + "\ud83d\ude00Ay" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 303,304 units 692834
+2026-11-18T00:18:38.8651186Z E42 - match@3 /"\\p{RGI_Emoji}+"/v "abc\ud83d\udc4d\ud83c\udffd\ud83d\ude00!" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,9 units 63
+2026-11-18T00:18:38.8652795Z E43 V01 compile /"[" + "\\p{L}" * 50 + "]"/v - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:38.8653865Z E44 V02 compile /"[" + "\\p{L}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:38.8654923Z E45 V03 compile /"[" + "\\p{L}" * 50 + "]"/iu - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=300: limit:compile units 252
+2026-11-18T00:18:38.8656085Z E46 V04 compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: limit:compile units 999
+2026-11-18T00:18:38.8657298Z E47 V05 compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: limit:compile units 999
+2026-11-18T00:18:38.8659119Z E48 - compile /"[" + "\\p{L}" * 50 + "]"/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 136368
+2026-11-18T00:18:38.8660152Z E49 - compile /"[" + "\\p{L}" * 50 + "]"/iv - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 1350949
+2026-11-18T00:18:38.8661106Z E50 - compile /"[" + "\\p{L}" * 50 + "]"/iu - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 136368
+2026-11-18T00:18:38.8662062Z E51 - compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 3099677
+2026-11-18T00:18:38.8663057Z E52 - compile /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 4942927
+2026-11-18T00:18:38.8664156Z E53 O07 match@0 /"(?<a>x)|(?<a>y)"/- "y" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,1 - 0,1 units 7
+2026-11-18T00:18:38.8665208Z E54 O08 match@0 /"(?:(?<a>x)|(?<a>y))\\k<a>"/- "yy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 - 0,1 units 9
+2026-11-18T00:18:38.8666301Z E55 - match@0 /"(?:(?<a>x)|(?<a>y))\\k<a>"/i "zyY" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 1,3 - 1,2 units 14
+2026-11-18T00:18:38.8667428Z E56 - match@0 /"(?<=\\k<a>(?:(?<a>x)|(?<a>y)))z"/- "xyyz" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 3,4 - 2,3 units 37
+2026-11-18T00:18:38.8668595Z E57 - match@0 /"(?:" + "(?<n>x)|" * 999 + "(?<n>y))\\k<n>"/- "yy" meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: match 0,2 -^999 0,1 units 3003
+2026-11-18T00:18:38.8669916Z E58 N03 validate /"(" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8671079Z E59 N06 validate /"(" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8672235Z E60 N09 validate /"(?:" * 512 + "a" + ")" * 512/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8674514Z E61 N12 validate /"(?:" * 1000000 + "a" + ")" * 1000000/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8675725Z E62 N15 validate /"[" * 512 + "a" + "]" * 512/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8676436Z E63 N18 validate /"[" * 1000000 + "a" + "]" * 1000000/v - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: limit:nesting units 0
+2026-11-18T00:18:38.8677118Z E64 O19 validate /"\\k<b>(?<a>x)"/u - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:38.8677731Z E65 - validate /"(" * 511 + "a" + ")" * 511/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: ok units 0
+2026-11-18T00:18:38.8678359Z E66 - validate /"[" + "\\p{RGI_Emoji}" * 50 + "]"/iv - meter=none steps=none frames=4194304 trail=8388608 nesting=512 compile=1000: ok units 0
+2026-11-18T00:18:38.8678957Z E67 - validate /"\\k<b>(?<a>x)"/- - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:38.8679546Z E68 - validate /"("/gg - meter=none steps=100000000 frames=4194304 trail=8388608 nesting=512 compile=none: syntax units 0
+2026-11-18T00:18:38.8680076Z cases 68, answers sha256 7c26890f4ea5d4d479b99a7c38f5c945015cb413cae3c499868b091ec1af8c1a
+2026-11-18T00:18:38.8680429Z Broiler.Regex.Probe text population text-1
+2026-11-18T00:18:38.8680837Z flags: inputs 175137, answers sha256 8768fa8e677f76bf0e998e400f0adb7a7976600717acdbec9d1dce8174f9bca4
+2026-11-18T00:18:38.8681367Z escape: inputs 2228224, answers sha256 e1f3c0fb6f69fe6cf567df216b38bb2054faba9812192670915835560a9c4a2a
+2026-11-18T00:18:38.8681895Z source: inputs 262144, answers sha256 c355e40f8f27cbd4b9170b91bdbd56a49fedd7f348b2c3ad5abe5a8ecfb8b2fa
+2026-11-18T00:18:38.8682242Z flags "": Success ""
+2026-11-18T00:18:38.8682410Z flags "g": Success "g"
+2026-11-18T00:18:38.8682588Z flags "gg": DuplicateFlag at 1
+2026-11-18T00:18:38.8682774Z flags "x": UnknownFlag at 0
+2026-11-18T00:18:38.8682953Z flags "G": UnknownFlag at 0
+2026-11-18T00:18:38.8683139Z flags "uv": UnicodeWithUnicodeSets at 1
+2026-11-18T00:18:38.8683360Z flags "vu": UnicodeWithUnicodeSets at 1
+2026-11-18T00:18:38.8683560Z flags "uvx": UnknownFlag at 2
+2026-11-18T00:18:38.8683750Z flags "dgimsuy": Success "dgimsuy"
+2026-11-18T00:18:38.8683941Z flags "yg": Success "gy"
+2026-11-18T00:18:38.8684110Z escape "abc": "\u005Cx61bc"
+2026-11-18T00:18:38.8684278Z escape "1a": "\u005Cx31a"
+2026-11-18T00:18:38.8684435Z escape "_": "_"
+2026-11-18T00:18:38.8684594Z escape "a b": "\u005Cx61\u005Cx20b"
+2026-11-18T00:18:38.8684784Z escape "\u0085": "\u0085"
+2026-11-18T00:18:38.8684959Z escape "\u00A0": "\u005Cxa0"
+2026-11-18T00:18:38.8685131Z escape "\uFEFF": "\u005Cufeff"
+2026-11-18T00:18:38.8685309Z escape "\u2028": "\u005Cu2028"
+2026-11-18T00:18:38.8685484Z escape "\u180E": "\u180E"
+2026-11-18T00:18:38.8685659Z escape "\uD800": "\u005Cud800"
+2026-11-18T00:18:38.8685846Z escape "\uD83D\uDE00": "\uD83D\uDE00"
+2026-11-18T00:18:38.8686047Z escape "x\uD83D": "\u005Cx78\u005Cud83d"
+2026-11-18T00:18:38.8686580Z escape ",-=<>#&!%:;@~'`\u0022": "\u005Cx2c\u005Cx2d\u005Cx3d\u005Cx3c\u005Cx3e\u005Cx23\u005Cx26\u005Cx21\u005Cx25\u005Cx3a\u005Cx3b\u005Cx40\u005Cx7e\u005Cx27\u005Cx60\u005Cx22"
+2026-11-18T00:18:38.8687426Z escape "^$\u005C.*+?()[]{}|/": "\u005C^\u005C$\u005C\u005C\u005C.\u005C*\u005C+\u005C?\u005C(\u005C)\u005C[\u005C]\u005C{\u005C}\u005C|\u005C/"
+2026-11-18T00:18:38.8687901Z escape "\u0009\u000A\u000B\u000C\u000D": "\u005Ct\u005Cn\u005Cv\u005Cf\u005Cr"
+2026-11-18T00:18:38.8688165Z source "": "(?:)"
+2026-11-18T00:18:38.8688315Z source "/": "\u005C/"
+2026-11-18T00:18:38.8688475Z source "\u005C/": "\u005C/"
+2026-11-18T00:18:38.8688644Z source "a/b": "a\u005C/b"
+2026-11-18T00:18:38.8688798Z source "[/]": "[/]"
+2026-11-18T00:18:38.8689032Z source "\u000A": "\u005Cn"
+2026-11-18T00:18:38.8689206Z source "\u005C\u000A": "\u005Cn"
+2026-11-18T00:18:38.8689391Z source "\u005C\u2028": "\u005Cu2028"
+2026-11-18T00:18:38.8689585Z source "\u2029": "\u005Cu2029"
+2026-11-18T00:18:38.8689751Z source "\uD800": "\uD800"
+2026-11-18T00:18:38.8689910Z source "\u0085": "\u0085"
+2026-11-18T00:18:38.8690091Z source "\u005C[/\u005C]": "\u005C[\u005C/\u005C]"
+2026-11-18T00:18:38.8690326Z source "\u2028\u2028" under 11: LimitExceeded
+2026-11-18T00:18:38.8690556Z escape "." * 1000 charges 1024 2048 (Success)
+2026-11-18T00:18:38.8690769Z source "/" * 1000 charges 1024 2048 (Success)
+2026-11-18T00:18:38.9299708Z ##[group]Run dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report adversarial-jit.txt
+2026-11-18T00:18:38.9301133Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report adversarial-jit.txt[0m
+2026-11-18T00:18:38.9301971Z [36;1mcmp adversarial-aot.txt adversarial-jit.txt[0m
+2026-11-18T00:18:38.9321745Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:38.9322218Z env:
+2026-11-18T00:18:38.9322431Z   PACKAGE_VERSION: 
+2026-11-18T00:18:38.9322687Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:38.9322982Z ##[endgroup]
+2026-11-18T00:18:44.7566700Z Broiler.Regex.Probe adversarial corpus adversarial-1
+2026-11-18T00:18:44.7567429Z corpus sha256 1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5
+2026-11-18T00:18:44.7568135Z corpus-format 1, stack-bytes 1048576, rows 65, each run in a child process (--engine-row) on a thread of stack-bytes, stopped after 120 s
+2026-11-18T00:18:44.7568974Z A01 A match@0 declared "limit:steps": exit 0, status line "A01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7569831Z A02 A match@0 declared "limit:steps": exit 0, status line "A02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7570355Z F01 F match@0 declared "match 0,0": exit 0, status line "F01 match 0,0", units 500001: gives its declared status
+2026-11-18T00:18:44.7570851Z F02 F match@0 declared "match 0,0": exit 0, status line "F02 match 0,0", units 500001: gives its declared status
+2026-11-18T00:18:44.7571372Z F03 F match@0 declared "match 0,100000": exit 0, status line "F03 match 0,100000", units 100001: gives its declared status
+2026-11-18T00:18:44.7571928Z F04 F match@0 declared "match 0,100000": exit 0, status line "F04 match 0,100000", units 300001: gives its declared status
+2026-11-18T00:18:44.7572458Z G01 G match@0 declared "limit:steps": exit 0, status line "G01 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:44.7572981Z G02 G match@0 declared "limit:steps": exit 0, status line "G02 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:44.7573491Z G03 G match@0 declared "limit:steps": exit 0, status line "G03 limit:steps", units 50000: gives its declared status
+2026-11-18T00:18:44.7574013Z K01 K match@0 declared "limit:steps": exit 0, status line "K01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7574535Z K02 K match@0 declared "limit:steps": exit 0, status line "K02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7575056Z K03 K match@0 declared "limit:steps": exit 0, status line "K03 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7575875Z K04 K match@0 declared "limit:steps": exit 0, status line "K04 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7576414Z K05 K match@0 declared "limit:steps": exit 0, status line "K05 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7576934Z L01 L match@0 declared "limit:steps": exit 0, status line "L01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7577441Z L02 L match@0 declared "limit:steps": exit 0, status line "L02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7577952Z L03 L match@0 declared "limit:steps": exit 0, status line "L03 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7578477Z L04 L match@0 declared "limit:steps": exit 0, status line "L04 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7578999Z L05 L match@0 declared "limit:steps": exit 0, status line "L05 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7579531Z M01 M match@0 declared "limit:frames": exit 0, status line "M01 limit:frames", units 1659: gives its declared status
+2026-11-18T00:18:44.7582414Z M02 M match@0 declared "limit:trail": exit 0, status line "M02 limit:trail", units 203: gives its declared status
+2026-11-18T00:18:44.7583197Z N01 N match@0 declared "match 0,1 0,1^511": exit 0, status line "N01 match 0,1 0,1^511", units 1024: gives its declared status
+2026-11-18T00:18:44.7583762Z N02 N compile declared "limit:nesting": exit 0, status line "N02 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7584317Z N03 N validate declared "limit:nesting": exit 0, status line "N03 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7584869Z N04 N compile declared "limit:nesting": exit 0, status line "N04 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7585410Z N05 N compile declared "limit:nesting": exit 0, status line "N05 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7585971Z N06 N validate declared "limit:nesting": exit 0, status line "N06 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7586484Z N07 N match@0 declared "match 0,1": exit 0, status line "N07 match 0,1", units 2: gives its declared status
+2026-11-18T00:18:44.7586989Z N08 N compile declared "limit:nesting": exit 0, status line "N08 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7587519Z N09 N validate declared "limit:nesting": exit 0, status line "N09 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7588045Z N10 N compile declared "limit:nesting": exit 0, status line "N10 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7588565Z N11 N compile declared "limit:nesting": exit 0, status line "N11 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7589087Z N12 N validate declared "limit:nesting": exit 0, status line "N12 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7589902Z N13 N match@0 declared "match 0,1": exit 0, status line "N13 match 0,1", units 2: gives its declared status
+2026-11-18T00:18:44.7590413Z N14 N compile declared "limit:nesting": exit 0, status line "N14 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7591000Z N15 N validate declared "limit:nesting": exit 0, status line "N15 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7593039Z N16 N compile declared "limit:nesting": exit 0, status line "N16 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7593654Z N17 N compile declared "limit:nesting": exit 0, status line "N17 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7594213Z N18 N validate declared "limit:nesting": exit 0, status line "N18 limit:nesting", units 0: gives its declared status
+2026-11-18T00:18:44.7594787Z O01 O match@0 declared "match 0,13 -": exit 0, status line "O01 match 0,13 -", units 53259: gives its declared status
+2026-11-18T00:18:44.7595590Z O02 O match@0 declared "nomatch": exit 0, status line "O02 nomatch", units 53274: gives its declared status
+2026-11-18T00:18:44.7596120Z O03 O match@0 declared "match 13,13 -": exit 0, status line "O03 match 13,13 -", units 53275: gives its declared status
+2026-11-18T00:18:44.7596644Z O04 O match@0 declared "match 0,13 0,12": exit 0, status line "O04 match 0,13 0,12", units 32: gives its declared status
+2026-11-18T00:18:44.7597196Z O05 O match@0 declared "match 0,10000001": exit 0, status line "O05 match 0,10000001", units 10000004: gives its declared status
+2026-11-18T00:18:44.7597893Z O06 O match@0 declared "match 0,10000001": exit 0, status line "O06 match 0,10000001", units 10000006: gives its declared status
+2026-11-18T00:18:44.7598439Z O07 O match@0 declared "match 0,1 - 0,1": exit 0, status line "O07 match 0,1 - 0,1", units 7: gives its declared status
+2026-11-18T00:18:44.7598946Z O08 O match@0 declared "match 0,2 - 0,1": exit 0, status line "O08 match 0,2 - 0,1", units 9: gives its declared status
+2026-11-18T00:18:44.7599456Z O09 O anchored@0 declared "nomatch": exit 0, status line "O09 nomatch", units 1: gives its declared status
+2026-11-18T00:18:44.7600736Z O10 O anchored@1 declared "match 1,2": exit 0, status line "O10 match 1,2", units 2: gives its declared status
+2026-11-18T00:18:44.7601312Z O11 O match@1 declared "match 2,3": exit 0, status line "O11 match 2,3", units 3: gives its declared status
+2026-11-18T00:18:44.7602040Z O12 O match@0 declared "meter-exception": exit 0, status line "O12 meter-exception", units 10240: gives its declared status
+2026-11-18T00:18:44.7602709Z O13 O match@0 declared "match 0,101": exit 0, status line "O13 match 0,101", units 104: gives its declared status
+2026-11-18T00:18:44.7603216Z O14 O match@0 declared "match 0,201": exit 0, status line "O14 match 0,201", units 1707: gives its declared status
+2026-11-18T00:18:44.7603740Z O15 O match@0 declared "match 0,101 99,100": exit 0, status line "O15 match 0,101 99,100", units 1009: gives its declared status
+2026-11-18T00:18:44.7604263Z O16 O match@0 declared "match 0,1": exit 0, status line "O16 match 0,1", units 12: gives its declared status
+2026-11-18T00:18:44.7604860Z O17 O match@0 declared "match 0,2": exit 0, status line "O17 match 0,2", units 17: gives its declared status
+2026-11-18T00:18:44.7605493Z O18 O compile declared "syntax": exit 0, status line "O18 syntax", units 0: gives its declared status
+2026-11-18T00:18:44.7605980Z O19 O validate declared "syntax": exit 0, status line "O19 syntax", units 0: gives its declared status
+2026-11-18T00:18:44.7606516Z V01 V compile declared "limit:compile": exit 0, status line "V01 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:44.7607054Z V02 V compile declared "limit:compile": exit 0, status line "V02 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:44.7607583Z V03 V compile declared "limit:compile": exit 0, status line "V03 limit:compile", units 252: gives its declared status
+2026-11-18T00:18:44.7608116Z V04 V compile declared "limit:compile": exit 0, status line "V04 limit:compile", units 999: gives its declared status
+2026-11-18T00:18:44.7608819Z V05 V compile declared "limit:compile": exit 0, status line "V05 limit:compile", units 999: gives its declared status
+2026-11-18T00:18:44.7609367Z W01 W match@0 declared "limit:steps": exit 0, status line "W01 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7609890Z W02 W match@0 declared "limit:steps": exit 0, status line "W02 limit:steps", units 1000000: gives its declared status
+2026-11-18T00:18:44.7610572Z rows 65: 65 give their declared status, 0 differ, 0 end abnormally, 0 wait for task 2.8 (the validate entry)
+2026-11-18T00:18:44.7610910Z waiting: none
+2026-11-18T00:18:44.7611048Z reported: none
+2026-11-18T00:18:44.8127122Z ##[group]Run dotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --vectors tests/Vectors --report vectors-jit.txt > /dev/null
+2026-11-18T00:18:44.8127969Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --vectors tests/Vectors --report vectors-jit.txt > /dev/null[0m
+2026-11-18T00:18:44.8128652Z [36;1mcmp vectors-aot.txt vectors-jit.txt[0m
+2026-11-18T00:18:44.8139845Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:18:44.8140140Z env:
+2026-11-18T00:18:44.8140288Z   PACKAGE_VERSION: 
+2026-11-18T00:18:44.8140463Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:44.8140659Z ##[endgroup]
+2026-11-18T00:18:46.0188843Z ##[group]Run actions/upload-artifact@v7
+2026-11-18T00:18:46.0189111Z with:
+2026-11-18T00:18:46.0189278Z   name: native-aot-probe-win-x64
+2026-11-18T00:18:46.0189741Z   path: probe-publish.log
+probe-aot.txt
+probe-jit.txt
+adversarial-aot.txt
+adversarial-jit.txt
+vectors-aot.txt
+vectors-jit.txt
+
+2026-11-18T00:18:46.0190173Z   if-no-files-found: warn
+2026-11-18T00:18:46.0190349Z   compression-level: 6
+2026-11-18T00:18:46.0190504Z   overwrite: false
+2026-11-18T00:18:46.0190662Z   include-hidden-files: false
+2026-11-18T00:18:46.0190848Z   archive: true
+2026-11-18T00:18:46.0190985Z env:
+2026-11-18T00:18:46.0191118Z   PACKAGE_VERSION: 
+2026-11-18T00:18:46.0191280Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T00:18:46.0191468Z ##[endgroup]
+2026-11-18T00:18:46.1746864Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-18T00:18:46.1750335Z The least common ancestor is D:\a\Broiler.Regex\Broiler.Regex. This will be the root directory of the artifact
+2026-11-18T00:18:46.1750989Z With the provided path, there will be 7 files uploaded
+2026-11-18T00:18:46.1754849Z Artifact name is valid!
+2026-11-18T00:18:46.1756111Z Root directory input is valid!
+2026-11-18T00:18:46.4532319Z Uploading artifact: native-aot-probe-win-x64.zip
+2026-11-18T00:18:46.4566991Z Beginning upload of artifact content to blob storage
+2026-11-18T00:18:46.7521098Z Uploaded bytes 45919
+2026-11-18T00:18:46.8019054Z Finished uploading artifact content to blob storage!
+2026-11-18T00:18:46.8020459Z SHA256 digest of uploaded artifact is b4dea8913c22956851c1663dbcbdf4ff513c7b82a208dfd8d6dd2e02796a19d7
+2026-11-18T00:18:46.8020907Z Finalizing artifact upload
+2026-11-18T00:18:47.2518785Z Artifact native-aot-probe-win-x64 successfully finalized. Artifact ID 14383293658
+2026-11-18T00:18:47.2519410Z Artifact native-aot-probe-win-x64 has been successfully uploaded! Final size is 45919 bytes. Artifact ID is 14383293658
+2026-11-18T00:18:47.2526608Z Artifact download URL: https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44206505415/artifacts/14383293658
+2026-11-18T00:18:47.2820965Z Post job cleanup.
+2026-11-18T00:18:47.4372136Z Post job cleanup.
+2026-11-18T00:18:47.5828763Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T00:18:47.6159356Z git version 2.56.0.windows.4
+2026-11-18T00:18:47.6230427Z Temporarily overriding HOME='D:\a\_temp\93e01ed6-b75f-43cd-b2ea-bae489eea118' before making global git config changes
+2026-11-18T00:18:47.6231446Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:18:47.6241274Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T00:18:47.6600338Z Removing SSH command configuration
+2026-11-18T00:18:47.6610800Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:18:47.6959858Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T00:18:48.2106277Z Removing HTTP extra header
+2026-11-18T00:18:48.2116011Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:18:48.2458478Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T00:18:48.7289897Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:18:48.7299535Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:18:48.7597718Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:18:48.7598494Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:18:48.7598980Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:18:48.7599452Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:18:48.7640931Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:18:48.7934302Z D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:18:48.7984215Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path D\:\\a\\_temp\\git\-credentials\-469f9361\-27d8\-4fa8\-9b10\-cd3b29c6c436\.config
+2026-11-18T00:18:48.8332975Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:18:48.8624016Z D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:18:48.8666380Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path D\:\\a\\_temp\\git\-credentials\-469f9361\-27d8\-4fa8\-9b10\-cd3b29c6c436\.config
+2026-11-18T00:18:48.9007789Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:18:48.9301203Z /github/runner_temp/git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:18:48.9341210Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-469f9361\-27d8\-4fa8\-9b10\-cd3b29c6c436\.config
+2026-11-18T00:18:48.9677469Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:18:48.9968150Z /github/runner_temp/git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config
+2026-11-18T00:18:49.0013206Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-469f9361\-27d8\-4fa8\-9b10\-cd3b29c6c436\.config
+2026-11-18T00:18:49.0353294Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T00:18:49.5835997Z Removing credentials config 'D:\a\_temp\git-credentials-469f9361-27d8-4fa8-9b10-cd3b29c6c436.config'
+2026-11-18T00:18:49.6039226Z Cleaning up orphan processes
+2026-11-18T00:18:49.6523539Z Terminate orphan process: pid (1868) (VBCSCompiler)
+2026-11-18T00:18:49.6626417Z Terminate orphan process: pid (4500) (conhost)
+2026-11-18T00:18:49.6762758Z Terminate orphan process: pid (4224) (vctip)

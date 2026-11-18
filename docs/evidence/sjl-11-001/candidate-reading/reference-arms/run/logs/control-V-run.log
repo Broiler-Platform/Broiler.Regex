@@ -1,0 +1,1 @@
+$ dotnet /home/user/rx-read-arms/run/controls/V/copy/tests/ReferenceArms/V/bin/Release/net10.0/Regex.ReferenceArms.V.dll --population /home/user/rx-read-arms/run/population --out /home/user/rx-read-arms/run/controls/V/runs --classes P4 --stops tests/ReferenceArms/stops.tsv

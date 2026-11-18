@@ -1,0 +1,3 @@
+$ no_warning publish
+# the Native AOT publish reports no warning (E-2)
+exit 0

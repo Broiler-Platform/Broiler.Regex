@@ -1,0 +1,10 @@
+$ dotnet build tests/ReferenceArms/FastPaths -c Release --disable-build-servers
+  Determining projects to restore...
+  Restored /home/user/rx-read-arms/tree/tests/ReferenceArms/FastPaths/Regex.ReferenceArms.FastPaths.csproj (in 329 ms).
+  Regex.ReferenceArms.FastPaths -> /home/user/rx-read-arms/tree/tests/ReferenceArms/FastPaths/bin/Release/net10.0/Regex.ReferenceArms.FastPaths.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.63

@@ -1,0 +1,4 @@
+# not run: check B-1, the host job test262-host
+# It builds Broiler.JS's shell, at the commit docs/roadmap.md names by a dated record, against this commit's
+# package. The rule reads B-1 from CI's run at the reading's commit (B-3); CI's test262-host job runs
+# scripts/test262-host/run.sh, which this script does not run.

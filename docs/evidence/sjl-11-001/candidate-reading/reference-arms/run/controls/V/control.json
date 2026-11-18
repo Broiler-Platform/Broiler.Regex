@@ -1,0 +1,49 @@
+{
+  "answers-changed": [
+    {
+      "control": "P4-01234-u-05\tmatch:0,1\t25",
+      "run": "P4-01234-u-05\tmatch:0,0\t25"
+    }
+  ],
+  "arm": "V",
+  "blind": [
+    {
+      "class": "c",
+      "row": "-",
+      "why": "arm V is wrong by the arbiter and no row of the correspondence names the input"
+    }
+  ],
+  "c-revert": 0,
+  "c-run": 0,
+  "case": "P4-01234-u-05",
+  "class": "P4",
+  "control-case": "P4-01234-u-05",
+  "counts-blind": {
+    "a": 1883909,
+    "b": 4861,
+    "b'": 2249,
+    "c": 1,
+    "excluded": 8970
+  },
+  "counts-control": {
+    "a": 1883909,
+    "b": 4861,
+    "b'": 2249,
+    "excluded": 8970,
+    "unclassified": 1
+  },
+  "counts-revert": {
+    "a": 1883909,
+    "b": 4861,
+    "b'": 2249,
+    "excluded": 8970
+  },
+  "listed": [
+    "P4-01234-u-05\tP4\texec\tV\tmatch:0,0\tmatch:0,1\t-\tunclassified\t-\tthe negative control's planted difference"
+  ],
+  "problems": [],
+  "reported": [
+    "P4-01234-u-05\tP4\texec\tV\t005B005C0064005D007C0028003F00210020002B003F0029\tu\tD801DC280028005C0064D83DDE00\t0\tdefault\tmatch:0,0\tmatch:0,1"
+  ],
+  "reported-unclassified": true
+}

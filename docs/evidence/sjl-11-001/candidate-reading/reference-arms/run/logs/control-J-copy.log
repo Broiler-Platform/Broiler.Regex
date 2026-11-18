@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/controls.py copy --root /home/user/rx-read-arms/tree --arm J --case P1-regexp:matching:m1-notes:0001 --out /home/user/rx-read-arms/run/controls/J/copy
+copied arm J to /home/user/rx-read-arms/run/controls/J/copy; its Program.cs sets the control case P1-regexp:matching:m1-notes:0001

@@ -1,0 +1,71 @@
+Broiler.Regex.Probe adversarial corpus adversarial-1
+corpus sha256 1a0f8c56bb970fa784fc6e573e9968e939d298d3e912320ed8c1a407fa997dd5
+corpus-format 1, stack-bytes 1048576, rows 65, each run in a child process (--engine-row) on a thread of stack-bytes, stopped after 120 s
+A01 A match@0 declared "limit:steps": exit 0, status line "A01 limit:steps", units 1000000: gives its declared status
+A02 A match@0 declared "limit:steps": exit 0, status line "A02 limit:steps", units 1000000: gives its declared status
+F01 F match@0 declared "match 0,0": exit 0, status line "F01 match 0,0", units 500001: gives its declared status
+F02 F match@0 declared "match 0,0": exit 0, status line "F02 match 0,0", units 500001: gives its declared status
+F03 F match@0 declared "match 0,100000": exit 0, status line "F03 match 0,100000", units 100001: gives its declared status
+F04 F match@0 declared "match 0,100000": exit 0, status line "F04 match 0,100000", units 300001: gives its declared status
+G01 G match@0 declared "limit:steps": exit 0, status line "G01 limit:steps", units 50000: gives its declared status
+G02 G match@0 declared "limit:steps": exit 0, status line "G02 limit:steps", units 50000: gives its declared status
+G03 G match@0 declared "limit:steps": exit 0, status line "G03 limit:steps", units 50000: gives its declared status
+K01 K match@0 declared "limit:steps": exit 0, status line "K01 limit:steps", units 1000000: gives its declared status
+K02 K match@0 declared "limit:steps": exit 0, status line "K02 limit:steps", units 1000000: gives its declared status
+K03 K match@0 declared "limit:steps": exit 0, status line "K03 limit:steps", units 1000000: gives its declared status
+K04 K match@0 declared "limit:steps": exit 0, status line "K04 limit:steps", units 1000000: gives its declared status
+K05 K match@0 declared "limit:steps": exit 0, status line "K05 limit:steps", units 1000000: gives its declared status
+L01 L match@0 declared "limit:steps": exit 0, status line "L01 limit:steps", units 1000000: gives its declared status
+L02 L match@0 declared "limit:steps": exit 0, status line "L02 limit:steps", units 1000000: gives its declared status
+L03 L match@0 declared "limit:steps": exit 0, status line "L03 limit:steps", units 1000000: gives its declared status
+L04 L match@0 declared "limit:steps": exit 0, status line "L04 limit:steps", units 1000000: gives its declared status
+L05 L match@0 declared "limit:steps": exit 0, status line "L05 limit:steps", units 1000000: gives its declared status
+M01 M match@0 declared "limit:frames": exit 0, status line "M01 limit:frames", units 1659: gives its declared status
+M02 M match@0 declared "limit:trail": exit 0, status line "M02 limit:trail", units 203: gives its declared status
+N01 N match@0 declared "match 0,1 0,1^511": exit 0, status line "N01 match 0,1 0,1^511", units 1024: gives its declared status
+N02 N compile declared "limit:nesting": exit 0, status line "N02 ok", units 1025: differs
+N03 N validate declared "limit:nesting": exit 0, status line "N03 ok", units 0: differs
+N04 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N05 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N06 N validate declared "limit:nesting": exit 134, no status line: ends abnormally
+N07 N match@0 declared "match 0,1": exit 0, status line "N07 match 0,1", units 2: gives its declared status
+N08 N compile declared "limit:nesting": exit 0, status line "N08 ok", units 2049: differs
+N09 N validate declared "limit:nesting": exit 0, status line "N09 ok", units 0: differs
+N10 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N11 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N12 N validate declared "limit:nesting": exit 134, no status line: ends abnormally
+N13 N match@0 declared "match 0,1": exit 0, status line "N13 match 0,1", units 2: gives its declared status
+N14 N compile declared "limit:nesting": exit 0, status line "N14 ok", units 1026: differs
+N15 N validate declared "limit:nesting": exit 0, status line "N15 ok", units 0: differs
+N16 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N17 N compile declared "limit:nesting": exit 134, no status line: ends abnormally
+N18 N validate declared "limit:nesting": exit 134, no status line: ends abnormally
+O01 O match@0 declared "match 0,13 -": exit 0, status line "O01 match 0,13 -", units 53259: gives its declared status
+O02 O match@0 declared "nomatch": exit 0, status line "O02 nomatch", units 53274: gives its declared status
+O03 O match@0 declared "match 13,13 -": exit 0, status line "O03 match 13,13 -", units 53275: gives its declared status
+O04 O match@0 declared "match 0,13 0,12": exit 0, status line "O04 match 0,13 0,12", units 32: gives its declared status
+O05 O match@0 declared "match 0,10000001": exit 0, status line "O05 match 0,10000001", units 10000004: gives its declared status
+O06 O match@0 declared "match 0,10000001": exit 0, status line "O06 match 0,10000001", units 10000006: gives its declared status
+O07 O match@0 declared "match 0,1 - 0,1": exit 0, status line "O07 match 0,1 - 0,1", units 7: gives its declared status
+O08 O match@0 declared "match 0,2 - 0,1": exit 0, status line "O08 match 0,2 - 0,1", units 9: gives its declared status
+O09 O anchored@0 declared "nomatch": exit 0, status line "O09 nomatch", units 1: gives its declared status
+O10 O anchored@1 declared "match 1,2": exit 0, status line "O10 match 1,2", units 2: gives its declared status
+O11 O match@1 declared "match 2,3": exit 0, status line "O11 match 2,3", units 3: gives its declared status
+O12 O match@0 declared "meter-exception": exit 0, status line "O12 meter-exception", units 10240: gives its declared status
+O13 O match@0 declared "match 0,101": exit 0, status line "O13 match 0,101", units 104: gives its declared status
+O14 O match@0 declared "match 0,201": exit 0, status line "O14 match 0,201", units 1707: gives its declared status
+O15 O match@0 declared "match 0,101 99,100": exit 0, status line "O15 match 0,101 99,100", units 1009: gives its declared status
+O16 O match@0 declared "match 0,1": exit 0, status line "O16 match 0,1", units 12: gives its declared status
+O17 O match@0 declared "match 0,2": exit 0, status line "O17 match 0,2", units 17: gives its declared status
+O18 O compile declared "syntax": exit 0, status line "O18 syntax", units 0: gives its declared status
+O19 O validate declared "syntax": exit 0, status line "O19 syntax", units 0: gives its declared status
+V01 V compile declared "limit:compile": exit 0, status line "V01 limit:compile", units 252: gives its declared status
+V02 V compile declared "limit:compile": exit 0, status line "V02 limit:compile", units 252: gives its declared status
+V03 V compile declared "limit:compile": exit 0, status line "V03 limit:compile", units 252: gives its declared status
+V04 V compile declared "limit:compile": exit 0, status line "V04 limit:compile", units 999: gives its declared status
+V05 V compile declared "limit:compile": exit 0, status line "V05 limit:compile", units 999: gives its declared status
+W01 W match@0 declared "limit:steps": exit 0, status line "W01 limit:steps", units 1000000: gives its declared status
+W02 W match@0 declared "limit:steps": exit 0, status line "W02 limit:steps", units 1000000: gives its declared status
+rows 65: 50 give their declared status, 6 differ, 9 end abnormally, 0 wait for task 2.8 (the validate entry)
+waiting: none
+reported: N02 N03 N04 N05 N06 N08 N09 N10 N11 N12 N14 N15 N16 N17 N18

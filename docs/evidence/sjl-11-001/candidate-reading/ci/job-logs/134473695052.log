@@ -1,0 +1,262 @@
+﻿2026-11-18T00:16:49.3963510Z Current runner version: '2.338.2'
+2026-11-18T00:16:49.3992123Z ##[group]Runner Image Provisioner
+2026-11-18T00:16:49.3993107Z Hosted Compute Agent
+2026-11-18T00:16:49.3993811Z Version: 20261103.629
+2026-11-18T00:16:49.3994700Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T00:16:49.3995703Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T00:16:49.3996639Z Worker ID: {233f3c53-0017-4791-889b-455aecef626e}
+2026-11-18T00:16:49.3997736Z Region: eastus
+2026-11-18T00:16:49.3998449Z Cloud: Azure
+2026-11-18T00:16:49.3999207Z ##[endgroup]
+2026-11-18T00:16:49.4000767Z ##[group]Operating System
+2026-11-18T00:16:49.4001668Z Ubuntu
+2026-11-18T00:16:49.4002398Z 24.04.5
+2026-11-18T00:16:49.4003040Z LTS
+2026-11-18T00:16:49.4003749Z ##[endgroup]
+2026-11-18T00:16:49.4004483Z ##[group]Runner Image
+2026-11-18T00:16:49.4005210Z Image: ubuntu-24.04
+2026-11-18T00:16:49.4006040Z Version: 20261111.370.1
+2026-11-18T00:16:49.4007800Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.370/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-18T00:16:49.4010017Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.370
+2026-11-18T00:16:49.4011231Z ##[endgroup]
+2026-11-18T00:16:49.4012574Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T00:16:49.4014832Z Contents: read
+2026-11-18T00:16:49.4015608Z Metadata: read
+2026-11-18T00:16:49.4016296Z ##[endgroup]
+2026-11-18T00:16:49.4018755Z Secret source: Actions
+2026-11-18T00:16:49.4019895Z Cache mode: write
+2026-11-18T00:16:49.4021163Z Prepare workflow directory
+2026-11-18T00:16:49.4580052Z Prepare all required actions
+2026-11-18T00:16:49.4637563Z Getting action download info
+2026-11-18T00:16:49.6299572Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T00:16:49.7443684Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T00:16:49.9300031Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T00:16:50.1138444Z Complete job name: Fuzz target, planted-defect control
+2026-11-18T00:16:50.1763770Z ##[group]Run actions/checkout@v7
+2026-11-18T00:16:50.1764419Z with:
+2026-11-18T00:16:50.1764811Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:50.1767923Z   token: ***
+2026-11-18T00:16:50.1768321Z   ssh-strict: true
+2026-11-18T00:16:50.1768680Z   ssh-user: git
+2026-11-18T00:16:50.1769048Z   persist-credentials: true
+2026-11-18T00:16:50.1769446Z   clean: true
+2026-11-18T00:16:50.1769808Z   sparse-checkout-cone-mode: true
+2026-11-18T00:16:50.1770230Z   fetch-depth: 1
+2026-11-18T00:16:50.1770580Z   fetch-tags: false
+2026-11-18T00:16:50.1770934Z   show-progress: true
+2026-11-18T00:16:50.1771295Z   lfs: false
+2026-11-18T00:16:50.1771630Z   submodules: false
+2026-11-18T00:16:50.1771991Z   set-safe-directory: true
+2026-11-18T00:16:50.1772390Z   allow-unsafe-pr-checkout: false
+2026-11-18T00:16:50.1772991Z env:
+2026-11-18T00:16:50.1773320Z   PACKAGE_VERSION: 
+2026-11-18T00:16:50.1773696Z ##[endgroup]
+2026-11-18T00:16:50.3979021Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:50.3981749Z ##[group]Getting Git version info
+2026-11-18T00:16:50.3982931Z Working directory is '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:50.3985062Z [command]/usr/bin/git version
+2026-11-18T00:16:50.4083589Z git version 2.56.1
+2026-11-18T00:16:50.4105211Z ##[endgroup]
+2026-11-18T00:16:50.4124989Z Temporarily overriding HOME='/home/runner/work/_temp/ca2cbc1d-6c85-4f79-9a28-5eb5d203f290' before making global git config changes
+2026-11-18T00:16:50.4127520Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:16:50.4139902Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:50.4194187Z Deleting the contents of '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:50.4230816Z ##[group]Determining repository object format
+2026-11-18T00:16:50.4232694Z ##[endgroup]
+2026-11-18T00:16:50.4233612Z ##[group]Initializing the repository
+2026-11-18T00:16:50.4238637Z [command]/usr/bin/git init /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:50.4337340Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-18T00:16:50.4338796Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-18T00:16:50.4340076Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-18T00:16:50.4340873Z hint: call:
+2026-11-18T00:16:50.4358117Z hint:
+2026-11-18T00:16:50.4358830Z hint: 	git config --global init.defaultBranch <name>
+2026-11-18T00:16:50.4360055Z hint:
+2026-11-18T00:16:50.4361066Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-18T00:16:50.4362561Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-18T00:16:50.4363761Z hint:
+2026-11-18T00:16:50.4364503Z hint: 	git branch -m <name>
+2026-11-18T00:16:50.4365445Z hint:
+2026-11-18T00:16:50.4366536Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-18T00:16:50.4370733Z Initialized empty Git repository in /home/runner/work/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T00:16:50.4377309Z [command]/usr/bin/git remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:50.4439350Z ##[endgroup]
+2026-11-18T00:16:50.4440854Z ##[group]Disabling automatic garbage collection
+2026-11-18T00:16:50.4442079Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-18T00:16:50.4478444Z ##[endgroup]
+2026-11-18T00:16:50.4479983Z ##[group]Setting up auth
+2026-11-18T00:16:50.4481114Z Removing SSH command configuration
+2026-11-18T00:16:50.4485793Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:16:50.4525177Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:16:50.4873250Z Removing HTTP extra header
+2026-11-18T00:16:50.4880547Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:16:50.4923121Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:16:50.5151181Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:16:50.5157238Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:16:50.5198772Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:16:50.5417902Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-18T00:16:50.5463271Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path /home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:16:50.5503788Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:16:50.5546848Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:16:50.5587211Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:16:50.5624836Z ##[endgroup]
+2026-11-18T00:16:50.5625908Z ##[group]Fetching the repository
+2026-11-18T00:16:50.5632669Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +49d7be1f3ef148f9c262f0e52b8c360c07fd838d:refs/remotes/origin/main
+2026-11-18T00:16:51.0384911Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:51.0386641Z  * [new ref]         49d7be1f3ef148f9c262f0e52b8c360c07fd838d -> origin/main
+2026-11-18T00:16:51.0391696Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-18T00:16:51.0430297Z   origin/main
+2026-11-18T00:16:51.0438814Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-18T00:16:51.0469668Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:51.0474498Z ##[endgroup]
+2026-11-18T00:16:51.0475937Z ##[group]Determining the checkout info
+2026-11-18T00:16:51.0477846Z ##[endgroup]
+2026-11-18T00:16:51.0479312Z [command]/usr/bin/git sparse-checkout disable
+2026-11-18T00:16:51.0537243Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-18T00:16:51.0576541Z ##[group]Checking out the ref
+2026-11-18T00:16:51.0577953Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-18T00:16:51.0859031Z Switched to a new branch 'main'
+2026-11-18T00:16:51.0863917Z branch 'main' set up to track 'origin/main'.
+2026-11-18T00:16:51.0871118Z ##[endgroup]
+2026-11-18T00:16:51.0917166Z [command]/usr/bin/git log -1 --format=%H
+2026-11-18T00:16:51.0949445Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:51.1338310Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T00:16:51.1339332Z with:
+2026-11-18T00:16:51.1340047Z   dotnet-version: 10.0.x
+2026-11-18T00:16:51.1340917Z   skip-lts-prepass: false
+2026-11-18T00:16:51.1341769Z   cache: false
+2026-11-18T00:16:51.1342495Z env:
+2026-11-18T00:16:51.1343196Z   PACKAGE_VERSION: 
+2026-11-18T00:16:51.1343974Z ##[endgroup]
+2026-11-18T00:16:51.2440610Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-11-18T00:16:51.4755275Z dotnet-install: .NET Core Runtime with version '10.0.15' is already installed.
+2026-11-18T00:16:51.4776267Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+2026-11-18T00:16:51.7475665Z dotnet-install: .NET Core SDK with version '10.0.404' is already installed.
+2026-11-18T00:16:51.7620966Z ##[group]Run dotnet build tests/Regex.Fuzz -c Release --nologo -p:RegexFuzzPlant=true
+2026-11-18T00:16:51.7621594Z [36;1mdotnet build tests/Regex.Fuzz -c Release --nologo -p:RegexFuzzPlant=true[0m
+2026-11-18T00:16:51.7643848Z shell: /usr/bin/bash -e {0}
+2026-11-18T00:16:51.7644083Z env:
+2026-11-18T00:16:51.7644272Z   PACKAGE_VERSION: 
+2026-11-18T00:16:51.7644477Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:16:51.7644696Z ##[endgroup]
+2026-11-18T00:16:56.5329297Z   Determining projects to restore...
+2026-11-18T00:16:58.8004860Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/Regex.Fuzz.csproj (in 1.81 sec).
+2026-11-18T00:17:01.0402783Z   Regex.Fuzz: the declared defect is planted in a copy of the parser (/home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/obj/Release/net10.0/planted/RegexParser.cs); this build tests that copy, not Broiler.Regex.dll.
+2026-11-18T00:17:04.7610221Z   Regex.Fuzz -> /home/runner/work/Broiler.Regex/Broiler.Regex/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll
+2026-11-18T00:17:04.7999542Z 
+2026-11-18T00:17:04.7999979Z Build succeeded.
+2026-11-18T00:17:04.8000324Z     0 Warning(s)
+2026-11-18T00:17:04.8000587Z     0 Error(s)
+2026-11-18T00:17:04.8000745Z 
+2026-11-18T00:17:04.8000958Z Time Elapsed 00:00:09.19
+2026-11-18T00:17:05.1126264Z ##[group]Run set +e
+2026-11-18T00:17:05.1126544Z [36;1mset +e[0m
+2026-11-18T00:17:05.1127212Z [36;1mdotnet tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll --stop-when-found "planted defect (D32 control)" > fuzz-control.log 2>&1[0m
+2026-11-18T00:17:05.1127818Z [36;1mcode=$?[0m
+2026-11-18T00:17:05.1128011Z [36;1mset -e[0m
+2026-11-18T00:17:05.1128229Z [36;1mcat fuzz-control.log[0m
+2026-11-18T00:17:05.1128898Z [36;1mif [ "$code" -ne 1 ] || ! grep -q "FINDING at iteration .* planted defect (D32 control)" fuzz-control.log; then[0m
+2026-11-18T00:17:05.1129461Z [36;1m  echo "::error::the declared seed did not report the planted defect (exit $code)"[0m
+2026-11-18T00:17:05.1129834Z [36;1m  exit 1[0m
+2026-11-18T00:17:05.1130053Z [36;1mfi[0m
+2026-11-18T00:17:05.1150732Z shell: /usr/bin/bash -e {0}
+2026-11-18T00:17:05.1150953Z env:
+2026-11-18T00:17:05.1151164Z   PACKAGE_VERSION: 
+2026-11-18T00:17:05.1151355Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:05.1151602Z ##[endgroup]
+2026-11-18T00:17:07.5190652Z regex-fuzz: seed 20261027, iterations 0 to 23999, 4 worker processes, stack 1048576 bytes, watchdog 120 s
+2026-11-18T00:17:07.5191682Z regex-fuzz: library under test: the library's sources compiled into Regex.Fuzz with the declared defect planted (-p:RegexFuzzPlant=true)
+2026-11-18T00:17:07.5194578Z regex-fuzz: FINDING at iteration 6008 (seed 20261027): exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5196938Z regex-fuzz:   replay: dotnet Regex.Fuzz.dll --replay --seed 20261027 --iteration 6008
+2026-11-18T00:17:07.5199583Z regex-fuzz: FINDING at iteration 12010 (seed 20261027): exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5201908Z regex-fuzz:   replay: dotnet Regex.Fuzz.dll --replay --seed 20261027 --iteration 12010
+2026-11-18T00:17:07.5204516Z regex-fuzz: FINDING at iteration 18005 (seed 20261027): exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5206959Z regex-fuzz:   replay: dotnet Regex.Fuzz.dll --replay --seed 20261027 --iteration 18005
+2026-11-18T00:17:07.5207784Z regex-fuzz: 44 iterations completed in 0.7 s
+2026-11-18T00:17:07.5208183Z regex-fuzz: reached:
+2026-11-18T00:17:07.5208671Z regex-fuzz: 0 construct classes reached, of 122 the generator can write
+2026-11-18T00:17:07.5230551Z regex-fuzz: not reached: construct:alternation, construct:empty-alternative, construct:assertion-start, construct:assertion-end, construct:word-boundary, construct:non-word-boundary, construct:lookahead, construct:negative-lookahead, construct:lookbehind, construct:negative-lookbehind, construct:quantified-lookahead, construct:dot, construct:literal, construct:non-ascii-literal, construct:astral-literal, construct:lone-surrogate-literal, construct:line-terminator-literal, construct:annex-b-literal-brace, construct:class-escape, construct:control-escape, construct:control-letter, construct:nul-escape, construct:hex-escape, construct:unicode-escape, construct:surrogate-escape, construct:braced-unicode-escape, construct:surrogate-pair-escape, construct:identity-escape, construct:annex-b-identity-escape, construct:annex-b-octal-escape, construct:annex-b-incomplete-escape, construct:property, construct:property-value, construct:negated-property, construct:property-of-strings, construct:property-in-class, construct:class, construct:negated-class, construct:class-nothing, construct:class-everything, construct:class-range, construct:astral-class-range, construct:class-escape-in-class, construct:annex-b-class-escape-range, construct:escape-in-class, construct:annex-b-class-escape, construct:class-set, construct:negated-class-set, construct:class-set-union, construct:class-set-intersection, construct:class-set-subtraction, construct:class-set-range, construct:nested-class-set, construct:class-string-disjunction, construct:empty-class-string, construct:class-escape-in-class-set, construct:escaped-class-set-character, construct:capturing-group, construct:non-capturing-group, construct:named-group, construct:escaped-group-name, construct:astral-group-name, construct:repeated-group-name, construct:modifier-group, construct:back-reference, construct:forward-or-missing-back-reference, construct:named-back-reference, construct:star, construct:plus, construct:question, construct:exact-bound, construct:open-bound, construct:range-bound, construct:large-bound, construct:huge-bound, construct:lazy, construct:mode-none, construct:mode-u, construct:mode-v, construct:mode-u-and-v, construct:flag-i, construct:flag-m, construct:flag-s, construct:flag-y, construct:subject-empty, construct:subject-long-run, construct:subject-surrogate-pair, construct:subject-lone-surrogate, construct:class-K, construct:class-A, construct:class-L, construct:class-G, construct:class-W, construct:class-N, construct:class-F, construct:class-M, construct:class-V, construct:class-O, construct:nesting-below-limit, construct:nesting-at-limit, construct:nesting-one-past, construct:nesting-far-past, construct:engine-ceiling-subject, construct:near-miss-range-out-of-order, construct:near-miss-swap-bounds, construct:near-miss-unclosed-group, construct:near-miss-stray-close, construct:near-miss-unclosed-class, construct:near-miss-duplicate-name, construct:near-miss-undeclared-name, construct:near-miss-property-name, construct:near-miss-string-property, construct:near-miss-unicode-escape, construct:near-miss-quantified-assertion, construct:near-miss-class-set-operators, construct:near-miss-group-name, construct:near-miss-modifier, construct:near-miss-nothing-to-repeat, construct:near-miss-back-reference, construct:near-miss-flags-u-and-v, construct:near-miss-edit, construct:near-miss-truncate, compile:ok, compile:syntax, compile:limit:nesting, compile:limit:compile, compile:meter, validate:ok, validate:syntax, validate:limit:nesting, offset:match, offset:nomatch, offset:limit:steps, offset:limit:frames, offset:limit:trail, offset:meter, string:match, string:nomatch, string:limit, is-match:throws, matches:compared, matches:prefix, matches:limit, escape-pattern:ok, escape-pattern:limit, escape-string:ok, escape-string:limit, probes
+2026-11-18T00:17:07.5249106Z regex-fuzz: transcript digest c4ecc08d9203abab1f9bf0cb965d54b16b75e6f30a9fb16f9a72689a53cc7cdb (of an incomplete session)
+2026-11-18T00:17:07.5249594Z regex-fuzz: 3 findings
+2026-11-18T00:17:07.5249910Z regex-fuzz: replaying iteration 6008 to reduce its exception at compile/full
+2026-11-18T00:17:07.5252099Z regex-fuzz:   case: iteration 6008, shape grammar: pattern "|[^\\S--[^\\p{Emoji_Keycap_Sequence}--\\p{gc=Lu}--\\p{Z}]]\\1", flags gmsvy, subject ""; starts [0]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 278, budget 37233108, meter counting); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps none, frames 47, trail 959110, meter 5285) at 0
+2026-11-18T00:17:07.5254686Z regex-fuzz:   record: case=ddcb9873731c89a3;full=escaped:u1536;tight=escaped:u1536;validate/full=syntax@7:63;validate/tight=syntax@7:63;escape-pattern=Success;escape-string=Success;
+2026-11-18T00:17:07.5258063Z regex-fuzz:   finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5261989Z regex-fuzz:   finding: exception at compile/tight: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5266406Z regex-fuzz:   reduced (exception|compile/full|System.InvalidOperationException): iteration 6008, shape grammar: pattern "[\\p{Emoji_Keycap_Sequence}--p", flags v, subject ""; starts [0]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 278, budget 37233108, meter counting); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps none, frames 47, trail 959110, meter 5285) at 0
+2026-11-18T00:17:07.5270787Z regex-fuzz:   reduced finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5273129Z regex-fuzz: replaying iteration 12010 to reduce its exception at compile/full
+2026-11-18T00:17:07.5275372Z regex-fuzz:   case: iteration 12010, shape class-V: pattern "[\\p{L}--\\p{Lu}--[a-z]]", flags iv, subject "\u03bb"; starts [0,1]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 2, budget 37986516, meter 51429); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps none, frames 40, trail 1150645, meter 12251) at 1
+2026-11-18T00:17:07.5278125Z regex-fuzz:   record: case=c67b33c5a7b01157;full=escaped:u35840;tight=escaped:u35840;validate/full=ok;validate/tight=limit:nesting;escape-pattern=LimitExceeded;escape-string=LimitExceeded;
+2026-11-18T00:17:07.5281064Z regex-fuzz:   finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5285094Z regex-fuzz:   finding: exception at compile/tight: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5288217Z regex-fuzz:   reduced (exception|compile/full|System.InvalidOperationException): iteration 12010, shape class-V: pattern "[\\}--p", flags v, subject ""; starts [0]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 2, budget 37986516, meter 51429); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps none, frames 40, trail 1150645, meter 12251) at 0
+2026-11-18T00:17:07.5290433Z regex-fuzz:   reduced finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5291683Z regex-fuzz: replaying iteration 18005 to reduce its exception at compile/full
+2026-11-18T00:17:07.5295892Z regex-fuzz:   case: iteration 18005, shape grammar: pattern "(?:){7078,7079}|(?<\u01c4>\u000a*?\u00a0.)\\uD83D\\uDE00y+[\u2029\u2029c-g]\\b|\\P{Script=Greek}\ud83c\uddeb(?=\\p{General_Category=Decimal_Number}*b\\x82[k-k]\u00a0{5}?|'|^)\ud83c\uddeb[\u3042]|_\\uD83D\\uDE00[^\\!--[g-r\ud801\udc28]]($\\k<\u01c4>^\u03a3[^7&&\\P{Script_Extensions=Latin}&&\\%&&\\-])\\3[\\p{RGI_Emoji_Modifier_Sequence}m-m[\\p{sc=Grek}--\\D--_--\\p{Hex_Digit}]]", flags dsv, subject "\u000a\u000a\u00a0\udbff\ud83d\ude00yy\ud83d\ude00yc"; starts [0,5,6,11,12]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 126, budget 39295993, meter 36168); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps 213549, frames 64589, trail 2205, meter 5252) at 12
+2026-11-18T00:17:07.5299971Z regex-fuzz:   record: case=7e4ff9f4338b0f4f;full=escaped:u1024;tight=escaped:u1024;validate/full=syntax@213:30;validate/tight=syntax@213:30;
+2026-11-18T00:17:07.5302665Z regex-fuzz:   finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5306712Z regex-fuzz:   finding: exception at compile/tight: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5310883Z regex-fuzz:   reduced (exception|compile/full|System.InvalidOperationException): iteration 18005, shape grammar: pattern "[\\}--D", flags v, subject ""; starts [0]; full compile (nesting 512, budget 67108864, meter counting); tight compile (nesting 126, budget 39295993, meter 36168); wide match (steps 262144, frames 1048576, trail 2097152, meter counting); narrow match (steps 213549, frames 64589, trail 2205, meter 5252) at 0
+2026-11-18T00:17:07.5313170Z regex-fuzz:   reduced finding: exception at compile/full: System.InvalidOperationException: planted defect (D32 control): class-set subtraction at Broiler.Regex.Parsing.RegexParser.ParseClassSubtraction (RegexParser.cs:1144) < Broiler.Regex.Parsing.RegexParser.ParseClassSetExpression (RegexParser.cs:1082) < Broiler.Regex.Parsing.RegexParser.ParseNestedClass (RegexParser.cs:1045)
+2026-11-18T00:17:07.5369049Z ##[group]Run actions/upload-artifact@v7
+2026-11-18T00:17:07.5369273Z with:
+2026-11-18T00:17:07.5369435Z   name: fuzz-control
+2026-11-18T00:17:07.5369619Z   path: fuzz-control.log
+2026-11-18T00:17:07.5369818Z   if-no-files-found: warn
+2026-11-18T00:17:07.5370007Z   compression-level: 6
+2026-11-18T00:17:07.5370185Z   overwrite: false
+2026-11-18T00:17:07.5370363Z   include-hidden-files: false
+2026-11-18T00:17:07.5370555Z   archive: true
+2026-11-18T00:17:07.5370713Z env:
+2026-11-18T00:17:07.5370865Z   PACKAGE_VERSION: 
+2026-11-18T00:17:07.5371044Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:07.5371238Z ##[endgroup]
+2026-11-18T00:17:07.6589073Z With the provided path, there will be 1 file uploaded
+2026-11-18T00:17:07.6593148Z Artifact name is valid!
+2026-11-18T00:17:07.6594005Z Root directory input is valid!
+2026-11-18T00:17:07.8617303Z Uploading artifact: fuzz-control.zip
+2026-11-18T00:17:07.8648056Z Beginning upload of artifact content to blob storage
+2026-11-18T00:17:07.9239972Z Uploaded bytes 2495
+2026-11-18T00:17:07.9388037Z Finished uploading artifact content to blob storage!
+2026-11-18T00:17:07.9388863Z SHA256 digest of uploaded artifact is 4fd7579986c522bf59f7462e9b86fcc0097529428c93d6c325f4b915a15ec1e1
+2026-11-18T00:17:07.9389577Z Finalizing artifact upload
+2026-11-18T00:17:08.3815195Z Artifact fuzz-control successfully finalized. Artifact ID 14382844468
+2026-11-18T00:17:08.3816032Z Artifact fuzz-control has been successfully uploaded! Final size is 2495 bytes. Artifact ID is 14382844468
+2026-11-18T00:17:08.3819411Z Artifact download URL: https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44206505415/artifacts/14382844468
+2026-11-18T00:17:08.3972786Z Post job cleanup.
+2026-11-18T00:17:08.5047556Z Post job cleanup.
+2026-11-18T00:17:08.5787131Z [command]/usr/bin/git version
+2026-11-18T00:17:08.5827876Z git version 2.56.1
+2026-11-18T00:17:08.5859260Z Temporarily overriding HOME='/home/runner/work/_temp/f1bffa8a-c503-4788-908e-be8698ef1428' before making global git config changes
+2026-11-18T00:17:08.5860317Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:17:08.5863617Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:17:08.5897421Z Removing SSH command configuration
+2026-11-18T00:17:08.5901828Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:17:08.5938749Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:17:08.6162197Z Removing HTTP extra header
+2026-11-18T00:17:08.6168882Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:17:08.6204900Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:17:08.6430480Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:17:08.6447281Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:17:08.6489201Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:17:08.6489980Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:17:08.6490573Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:17:08.6490907Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:17:08.6498417Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:17:08.6535295Z /home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:17:08.6544276Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-875aa4c4\-532b\-43d1\-a00a\-37ff18744bf7\.config
+2026-11-18T00:17:08.6593864Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:17:08.6624387Z /home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:17:08.6632149Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-875aa4c4\-532b\-43d1\-a00a\-37ff18744bf7\.config
+2026-11-18T00:17:08.6670815Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:17:08.6701321Z /github/runner_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:17:08.6739948Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-875aa4c4\-532b\-43d1\-a00a\-37ff18744bf7\.config
+2026-11-18T00:17:08.6778373Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:17:08.6807921Z /github/runner_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config
+2026-11-18T00:17:08.6814344Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-875aa4c4\-532b\-43d1\-a00a\-37ff18744bf7\.config
+2026-11-18T00:17:08.6853461Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:17:08.7059100Z Removing credentials config '/home/runner/work/_temp/git-credentials-875aa4c4-532b-43d1-a00a-37ff18744bf7.config'
+2026-11-18T00:17:08.7198036Z Cleaning up orphan processes
+2026-11-18T00:17:08.7462278Z Terminate orphan process: pid (2458) (MSBuild)
+2026-11-18T00:17:08.7492273Z Terminate orphan process: pid (2519) (VBCSCompiler)

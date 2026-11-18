@@ -1,0 +1,35 @@
+{
+  "arm": "S",
+  "calls": {
+    "Broiler.Regex": "0.1.0.0 0.1.0-preview.6\u002B49d7be1f3ef148f9c262f0e52b8c360c07fd838d",
+    "Broiler.Unicode.Algorithms": "0.1.0-preview.6\u002Bccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+    "Broiler.Unicode.Tables": "0.1.0-preview.6\u002Bccef653c8aa903f7eecf25faafb8bc5d458e6cc4",
+    "ample-policy": "meter recording, steps none, frames 16777216, trail 33554432, nesting the case\u0027s, compile none",
+    "default-policy": "meter recording, steps 10000000, frames 1048576, trail 2097152, nesting 512, compile none"
+  },
+  "cases": {
+    "P1": 1,
+    "P3": 1,
+    "P4": 895
+  },
+  "control-case": null,
+  "culture": "invariant",
+  "current-culture": "",
+  "dynamic-code-compiled": true,
+  "invariant-globalization": false,
+  "limits": {
+    "calibration-case-processor-seconds": "5",
+    "calibration-case-processor-seconds-after-a-stop": "2",
+    "calibration-case-processor-seconds-ample-policy": "20",
+    "default-steps": "10000000",
+    "harness-stop": "limit:harness",
+    "run-backstop-processor-seconds": "60",
+    "slow-case-seconds": "1",
+    "stack-bytes": "16777216",
+    "wall-clock-backstop-seconds": "900",
+    "worker-environment": "DOTNET_TieredCompilation=0",
+    "workers": "6"
+  },
+  "runtime": ".NET 10.0.15",
+  "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 0 cases of this run"
+}

@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/reduce.py prefixes --comparison /home/user/rx-read-arms/run/comparison --broiler-js /home/user/broiler.js --commit b2c2e2243a086285d806866a64b83297791a8ec5 --unicode-pins /home/user/rx-read-in/broiler.unicode/data/unicode/pins --out /home/user/rx-read-arms/run/reduction
+{"differences": 6459, "inputs": 2166, "reduced-inputs": 897}

@@ -1,0 +1,12 @@
+{
+  "classes": [
+    "P1",
+    "P3",
+    "P4"
+  ],
+  "cutoff": 1000000,
+  "differences": 6459,
+  "inputs": 2166,
+  "partial": true,
+  "reducer": "sjl-11-001-reduction@1"
+}

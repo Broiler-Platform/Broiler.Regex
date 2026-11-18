@@ -1,0 +1,39 @@
+{
+  "arm": "J",
+  "calls": {
+    "Broiler.Regex": "0.1.0-preview.4\u002Bc1422f4d824aa28ff6edd4766d56be25ba7c8a15",
+    "Broiler.Unicode.Algorithms": "0.1.0-preview.5\u002Bb80201436e8f8ff0402ed75c0b9657fe3616d730",
+    "Broiler.Unicode.Tables": "0.1.0-preview.5\u002Bb80201436e8f8ff0402ed75c0b9657fe3616d730",
+    "copy": "Broiler.JS 1f91b8f1: JSRegExp.cs, JSRegExp.Broiler.cs, JSRegExp.UnicodeSets.cs, JSRegExpPrototype.cs, RegExpUnicodeValidator.cs, RegExpGroupNames.cs, JSUnicodePropertyNames.cs, JSUnicode.cs (blobs in each file\u0027s header)",
+    "policy": "Broiler.JS\u0027s own: no meter; Broiler.Regex 0.1.0-preview.4\u0027s internal step limit; .NET Regex with no match timeout"
+  },
+  "cases": {
+    "P1": 1323,
+    "P2": 73442,
+    "P3": 23,
+    "P4": 11141120,
+    "P5": 13387890,
+    "P6": 306424,
+    "P7": 8912896
+  },
+  "control-case": null,
+  "culture": "lt-LT",
+  "current-culture": "lt-LT",
+  "dynamic-code-compiled": true,
+  "invariant-globalization": false,
+  "limits": {
+    "calibration-case-processor-seconds": "5",
+    "calibration-case-processor-seconds-after-a-stop": "2",
+    "calibration-case-processor-seconds-ample-policy": "20",
+    "default-steps": "10000000",
+    "harness-stop": "limit:harness",
+    "run-backstop-processor-seconds": "60",
+    "slow-case-seconds": "1",
+    "stack-bytes": "16777216",
+    "wall-clock-backstop-seconds": "900",
+    "worker-environment": "DOTNET_TieredCompilation=0",
+    "workers": "6"
+  },
+  "runtime": ".NET 10.0.15",
+  "stops": "the stop list of SHA-256 d427109dbd91de9fdd55ec0c0fb1c129b81a63a4f41b79ca57fc1cd150b426db, 1930 cases of this run"
+}

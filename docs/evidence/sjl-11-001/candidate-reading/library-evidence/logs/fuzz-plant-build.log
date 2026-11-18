@@ -1,0 +1,12 @@
+$ dotnet build tests/Regex.Fuzz -c Release --nologo --disable-build-servers -p:RegexFuzzPlant=true
+  Determining projects to restore...
+  Restored /dev/shm/rx-read-libev/tree/tests/Regex.Fuzz/Regex.Fuzz.csproj (in 323 ms).
+  Regex.Fuzz: the declared defect is planted in a copy of the parser (/dev/shm/rx-read-libev/tree/tests/Regex.Fuzz/obj/Release/net10.0/planted/RegexParser.cs); this build tests that copy, not Broiler.Regex.dll.
+  Regex.Fuzz -> /dev/shm/rx-read-libev/tree/tests/Regex.Fuzz/bin/Release/net10.0/Regex.Fuzz.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.07
+exit 0

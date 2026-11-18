@@ -1,0 +1,13 @@
+{
+  "compared under the second ceiling": 2441,
+  "disagreements": 0,
+  "exec cases compared": 7579193,
+  "patterns compiled twice": 473852,
+  "patterns not compiled (refused under their flags)": 181508,
+  "reached a frame or trail ceiling": 1660,
+  "stopped at the first ceiling: both": 4415,
+  "stopped at the first ceiling: without them alone": 465,
+  "stopped at the second ceiling too: not compared": 2439,
+  "units with the fast paths": 9605872487,
+  "units without them": 10376908013
+}

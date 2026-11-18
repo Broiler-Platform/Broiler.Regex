@@ -1,0 +1,121 @@
+$ env BROILER_UNICODE=/home/user/rx-read-in/broiler.unicode BROILER_VM_CORRESPONDENCE=/home/user/rx-read-arms/inputs/correspondence/correspondence.md python3 -m unittest discover -s scripts/reference-arms/tests
+......................................refused:
+  row S1's class does not name Broiler.VM as corrected in the words 'Correction of Broiler.VM': nothing
+  row S2a is not in the correspondence
+  row S5 is not in the correspondence
+  row S7 is not in the correspondence
+  row S8 is not in the correspondence
+  row S10 is not in the correspondence
+  row S10 is not in the correspondence
+  row M2a is not in the correspondence
+  row M2b is not in the correspondence
+  row M2 is not in the correspondence
+  row M3 is not in the correspondence
+  row M4 is not in the correspondence
+  row M4 is not in the correspondence
+  row M7 is not in the correspondence
+  row M7 is not in the correspondence
+  row B2 is not in the correspondence
+  row B8 is not in the correspondence
+  row F3 is not in the correspondence
+  row M4 is not in the correspondence
+  row S8a is not in the correspondence
+  row S12 is not in the correspondence
+  row S13 is not in the correspondence
+  row S15 is not in the correspondence
+  row S14 is not in the correspondence
+  row M8 is not in the correspondence
+  row M9 is not in the correspondence
+  row M10 is not in the correspondence
+  row M11 is not in the correspondence
+  row M12 is not in the correspondence
+  row M13 is not in the correspondence
+  row M14 is not in the correspondence
+  row M15 is not in the correspondence
+  row M16 is not in the correspondence
+  row M17 is not in the correspondence
+  row M18 is not in the correspondence
+  row M19 is not in the correspondence
+  row M20 is not in the correspondence
+  row M21 is not in the correspondence
+  row M22 is not in the correspondence
+  row M23 is not in the correspondence
+  row M24 is not in the correspondence
+  row M25 is not in the correspondence
+  row M26 is not in the correspondence
+  row M27 is not in the correspondence
+  policy row S3 is not in the correspondence
+  policy row B6 is not in the correspondence
+  policy row B7 is not in the correspondence
+  policy row S3 is not in the correspondence
+  row U3 is not the correspondence's data decision
+  row B1 is not in the correspondence
+  row B1 does not name its input or mechanism in the words '`/^[a]*$/u` over 10,000,001 `a` (`P3-O06`)'
+  row B1 does not name its input or mechanism in the words "the class's run ends at the budget's early exit this row cites"
+Traceback (most recent call last):
+  File "/home/user/rx-read-arms/tree/scripts/reference-arms/classify.py", line 2797, in main
+    return run(argv)
+  File "/home/user/rx-read-arms/tree/scripts/reference-arms/classify.py", line 2835, in run
+    arbiter = Arbiter(args.broiler_js, args.commit, args.unicode_pins, args.cutoff)
+  File "/home/user/rx-read-arms/tree/scripts/reference-arms/classify.py", line 271, in __init__
+    self.commit = subprocess.run(["git", "-C", str(checkout), "rev-parse", commit], check=True, capture_output=True,
+                  ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                 text=True).stdout.strip()
+                                 ^^^^^^^^^^
+  File "/usr/local/lib/python3.13/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', '-C', '/tmp/tmpzuzoj6va/no-checkout', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+failed: the classification did not run to its end, and wrote no classification.json
+usage: python3 -m unittest [-h] --comparison COMPARISON --runs RUNS
+                           --broiler-js BROILER_JS --commit COMMIT
+                           --correspondence CORRESPONDENCE
+                           --unicode-pins UNICODE_PINS [--cutoff CUTOFF]
+                           [--out OUT] [--reduction REDUCTION] [--cache CACHE]
+                           [--exclude EXCLUDE]
+python3 -m unittest: error: argument --comparison: expected one argument
+.Traceback (most recent call last):
+  File "/home/user/rx-read-arms/tree/scripts/reference-arms/classify.py", line 2797, in main
+    return run(argv)
+  File "/home/user/rx-read-arms/tree/scripts/reference-arms/tests/test_classify.py", line 1269, in <lambda>
+    C.run = lambda argv: 1 // 0
+                         ~~^^~~
+ZeroDivisionError: integer division or modulo by zero
+failed: the classification did not run to its end, and wrote no classification.json
+.{"a": 1, "c": 1}
+{"a": 1, "excluded": 1}
+refused: P4-00002-none-00: the exclusion lists P4-00002 with another pattern
+.{"a": 1, "c": 1}
+{"a": 1, "c": 1}
+.................................................assembled 3 answer files of P4: /tmp/controls-rhn2ep0s/dir/control-runs, /tmp/controls-rhn2ep0s/dir/revert-runs
+{"arm": "V", "blind": [{"class": "excluded", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the blind classification gives the case ['excluded'], not class (c)", "the blind classification counts {'a': 1, 'excluded': 1}, not the revert's with one more in class (c)"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-nacvyz3c/dir/control-runs, /tmp/controls-nacvyz3c/dir/revert-runs
+{"arm": "V", "blind": [{"class": "a", "row": "M1", "why": "w"}], "case": "P4-1", "problems": ["the blind classification gives the case ['a'], not class (c)", "the blind classification counts {'a': 2}, not the revert's with one more in class (c)"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-9bvuimpa/dir/control-runs, /tmp/controls-9bvuimpa/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the control's classification lists the case as ['c'], not unclassified"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-ywig30t5/dir/control-runs, /tmp/controls-ywig30t5/dir/revert-runs
+{"arm": "V", "blind": [], "case": "P4-1", "problems": ["the control's comparison holds 0 differences of the case in run V, not one", "the blind classification gives the case [], not class (c)", "the blind classification counts {'a': 1}, not the revert's with one more in class (c)"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-xbjfwz7q/dir/control-runs, /tmp/controls-xbjfwz7q/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": [], "reported-unclassified": true}
+.assembled 3 answer files of P4: /tmp/controls-uww18omx/dir/control-runs, /tmp/controls-uww18omx/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the control copy's answers differ from the arm's in 2 lines, not in the case's alone"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-6k74az_z/dir/control-runs, /tmp/controls-6k74az_z/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the revert's classification is not the run's restricted to P4, line for line"], "reported-unclassified": false}
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the revert's classification is not the run's restricted to P4, line for line"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-83x6ok4y/dir/control-runs, /tmp/controls-83x6ok4y/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the control's classification differs from the revert's in more than the case's line"], "reported-unclassified": false}
+.assembled 3 answer files of P4: /tmp/controls-23dxc05m/dir/control-runs, /tmp/controls-23dxc05m/dir/revert-runs
+.assembled 3 answer files of P4: /tmp/controls-etsx9oka/dir/control-runs, /tmp/controls-etsx9oka/dir/revert-runs
+{"arm": "V", "blind": [{"class": "c", "row": "-", "why": "w"}], "case": "P4-1", "problems": ["the blind classification counts {'a': 1, 'c': 2}, not the revert's with one more in class (c)"], "reported-unclassified": false}
+.copied arm V to /tmp/tmp0xs8r4d5/copy; its Program.cs sets the control case P4-1
+..........................{"differences": 2, "inputs": 1, "problems": []}
+{"differences": 2, "inputs": 1, "problems": ["the manifest counts 1 inputs and 3 differences, the comparison 1 and 2"]}
+{"differences": 2, "inputs": 1, "problems": ["the manifest names the cut-off 500000, not 1000000"]}
+{"differences": 2, "inputs": 1, "problems": []}
+{"differences": 2, "inputs": 1, "problems": ["reductions.tsv lists 1 inputs, the comparison leaves 1 unreachable; 1 listed and not left, 1 left and not listed"]}
+.{"agrees/J/P4": 1, "no-prefix/J/P4": 1, "reduced/J/P4": 1}
+...................
+----------------------------------------------------------------------
+Ran 146 tests in 29.359s
+
+OK

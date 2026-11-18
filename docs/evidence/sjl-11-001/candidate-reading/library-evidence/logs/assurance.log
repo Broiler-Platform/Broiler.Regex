@@ -1,0 +1,3 @@
+$ dotnet hairs assurance check --root .
+Broiler.RegEx: no violations.
+exit 0

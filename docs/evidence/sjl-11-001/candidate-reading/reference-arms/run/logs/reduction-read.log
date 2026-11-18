@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/reduce.py read --comparison /home/user/rx-read-arms/run/comparison --reduced /home/user/rx-read-arms/run/reduction
+{"agrees/J.lt-LT/P3": 1, "agrees/J.lt-LT/P4": 886, "agrees/J.tr-TR/P3": 1, "agrees/J.tr-TR/P4": 880, "agrees/J/P3": 1, "agrees/J/P4": 882, "agrees/V/P1": 1, "agrees/V/P4": 12, "differs-otherwise/J.lt-LT/P4": 2, "differs-otherwise/J.tr-TR/P4": 2, "differs-otherwise/J/P4": 2, "no-prefix/J.lt-LT/P4": 1258, "no-prefix/J.tr-TR/P4": 1268, "no-prefix/J/P4": 1263}

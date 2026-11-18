@@ -1,0 +1,3 @@
+$ git -C /home/user/rx-read worktree add --detach /dev/shm/rx-read-libev/tree 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+Preparing worktree (detached HEAD 49d7be1)
+HEAD is now at 49d7be1 Merge pull request #27 from Broiler-Platform/claude/busy-lamport-m3yprr

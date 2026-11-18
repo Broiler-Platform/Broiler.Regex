@@ -1,0 +1,3 @@
+$ python3 -I -B eng/adversarial-controls.py --control nesting --corpus tests/Adversarial/corpus.tsv --report /dev/shm/rx-read-libev/reports/control-nesting.txt --exit 1
+adversarial-controls: control 'nesting' holds: 15 rows reported (N02 N03 N04 N05 N06 N08 N09 N10 N11 N12 N14 N15 N16 N17 N18), 50 give their declared status, none waits
+exit 0

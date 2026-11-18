@@ -1,0 +1,10 @@
+$ dotnet build tests/ReferenceArms/V -c Release --disable-build-servers
+  Determining projects to restore...
+  Restored /home/user/rx-read-arms/tree/tests/ReferenceArms/V/Regex.ReferenceArms.V.csproj (in 547 ms).
+  Regex.ReferenceArms.V -> /home/user/rx-read-arms/tree/tests/ReferenceArms/V/bin/Release/net10.0/Regex.ReferenceArms.V.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.73

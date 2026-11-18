@@ -1,0 +1,3 @@
+$ same adversarial-aot.txt adversarial-jit.txt
+# part C's two reports are one file
+exit 0

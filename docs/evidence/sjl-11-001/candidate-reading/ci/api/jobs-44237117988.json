@@ -1,0 +1,1669 @@
+{
+  "total_count": 14,
+  "jobs": [
+    {
+      "id": 134575819322,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgKOg",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819322",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819322",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:40Z",
+      "completed_at": "2026-11-18T04:26:16Z",
+      "name": "Native AOT probe (win-x64)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:42Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:25:26Z"
+        },
+        {
+          "name": "Publish with Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:25:26Z",
+          "completed_at": "2026-11-18T04:26:07Z"
+        },
+        {
+          "name": "Run the population under Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:26:07Z",
+          "completed_at": "2026-11-18T04:26:10Z"
+        },
+        {
+          "name": "Run the adversarial corpus under Native AOT",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 6,
+          "started_at": "2026-11-18T04:26:10Z",
+          "completed_at": "2026-11-18T04:26:12Z"
+        },
+        {
+          "name": "Run the vectors under Native AOT",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-18T04:26:12Z",
+          "completed_at": "2026-11-18T04:26:12Z"
+        },
+        {
+          "name": "Run it under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-18T04:26:12Z",
+          "completed_at": "2026-11-18T04:26:12Z"
+        },
+        {
+          "name": "Run the adversarial corpus under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:26:12Z",
+          "completed_at": "2026-11-18T04:26:12Z"
+        },
+        {
+          "name": "Run the vectors under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-18T04:26:12Z",
+          "completed_at": "2026-11-18T04:26:12Z"
+        },
+        {
+          "name": "Keep the logs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:26:12Z",
+          "completed_at": "2026-11-18T04:26:13Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-11-18T04:26:13Z",
+          "completed_at": "2026-11-18T04:26:13Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-18T04:26:13Z",
+          "completed_at": "2026-11-18T04:26:15Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-18T04:26:15Z",
+          "completed_at": "2026-11-18T04:26:15Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819322",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000026429,
+      "runner_name": "GitHub Actions 1000026429",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819549,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLHQ",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819549",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819549",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:40Z",
+      "completed_at": "2026-11-18T04:25:53Z",
+      "name": "Architecture tests (windows-latest)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:42Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:47Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:47Z",
+          "completed_at": "2026-11-18T04:25:09Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:25:09Z",
+          "completed_at": "2026-11-18T04:25:37Z"
+        },
+        {
+          "name": "SL1 to SL10, C1, C3 and C5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:37Z",
+          "completed_at": "2026-11-18T04:25:50Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-18T04:25:50Z",
+          "completed_at": "2026-11-18T04:25:50Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T04:25:50Z",
+          "completed_at": "2026-11-18T04:25:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:52Z",
+          "completed_at": "2026-11-18T04:25:52Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819549",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000026431,
+      "runner_name": "GitHub Actions 1000026431",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819564,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLLA",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819564",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819564",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:26:07Z",
+      "name": "Fuzz target (windows-latest)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:25:19Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:25:19Z",
+          "completed_at": "2026-11-18T04:25:35Z"
+        },
+        {
+          "name": "The declared session",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:35Z",
+          "completed_at": "2026-11-18T04:26:00Z"
+        },
+        {
+          "name": "Keep the log",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:26:00Z",
+          "completed_at": "2026-11-18T04:26:02Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:26:02Z",
+          "completed_at": "2026-11-18T04:26:03Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-18T04:26:03Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819564",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000026430,
+      "runner_name": "GitHub Actions 1000026430",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819582,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLPg",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819582",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819582",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:11Z",
+      "name": "Fuzz target, planted-defect control",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:42Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:43Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:43Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Build with the declared defect planted",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:25:04Z"
+        },
+        {
+          "name": "The declared seed finds it",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:04Z",
+          "completed_at": "2026-11-18T04:25:09Z"
+        },
+        {
+          "name": "Keep the log",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:09Z",
+          "completed_at": "2026-11-18T04:25:10Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:10Z",
+          "completed_at": "2026-11-18T04:25:10Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-18T04:25:10Z",
+          "completed_at": "2026-11-18T04:25:10Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-18T04:25:10Z",
+          "completed_at": "2026-11-18T04:25:10Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819582",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026433,
+      "runner_name": "GitHub Actions 1000026433",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819645,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLfQ",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819645",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819645",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:36:48Z",
+      "name": "test262, the host job (Broiler.JS)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:43Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:43Z",
+          "completed_at": "2026-11-18T04:24:45Z"
+        },
+        {
+          "name": "Check out Broiler.JS at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:45Z",
+          "completed_at": "2026-11-18T04:25:05Z"
+        },
+        {
+          "name": "Check out test262 at the pin, the population's directories",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:25:05Z",
+          "completed_at": "2026-11-18T04:25:08Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:08Z",
+          "completed_at": "2026-11-18T04:25:09Z"
+        },
+        {
+          "name": "Test the verdict's script",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:09Z",
+          "completed_at": "2026-11-18T04:25:09Z"
+        },
+        {
+          "name": "Pack the candidate, build Broiler.JS's shell against it, run test262 and compare",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 7,
+          "started_at": "2026-11-18T04:25:09Z",
+          "completed_at": "2026-11-18T04:36:43Z"
+        },
+        {
+          "name": "Keep the report",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-18T04:36:43Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-18T04:36:45Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        },
+        {
+          "name": "Post Check out test262 at the pin, the population's directories",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-18T04:36:45Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        },
+        {
+          "name": "Post Check out Broiler.JS at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-18T04:36:45Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-18T04:36:45Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-18T04:36:45Z",
+          "completed_at": "2026-11-18T04:36:45Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819645",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026435,
+      "runner_name": "GitHub Actions 1000026435",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819690,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLqg",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819690",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819690",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:15Z",
+      "name": "Adversarial corpus, part C's controls",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:48Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:48Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Control 1, LimitExceeded naming steps answered NoMatch",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:25:13Z"
+        },
+        {
+          "name": "Control 2, the nesting check removed",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:13Z",
+          "completed_at": "2026-11-18T04:25:13Z"
+        },
+        {
+          "name": "Neither control built the library",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:13Z",
+          "completed_at": "2026-11-18T04:25:13Z"
+        },
+        {
+          "name": "The revert, every row its declared status, and no control in the library",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-18T04:25:13Z",
+          "completed_at": "2026-11-18T04:25:13Z"
+        },
+        {
+          "name": "Keep the reports",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-18T04:25:13Z",
+          "completed_at": "2026-11-18T04:25:14Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15,
+          "started_at": "2026-11-18T04:25:14Z",
+          "completed_at": "2026-11-18T04:25:14Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-18T04:25:14Z",
+          "completed_at": "2026-11-18T04:25:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-18T04:25:14Z",
+          "completed_at": "2026-11-18T04:25:14Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819690",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026436,
+      "runner_name": "GitHub Actions 1000026436",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819693,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLrQ",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819693",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819693",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:04Z",
+      "name": "Assurance check (SL8)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:45Z"
+        },
+        {
+          "name": "Check out Broiler.RegEx",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:45Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:24:50Z"
+        },
+        {
+          "name": "Restore Hairs.Cli",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:50Z",
+          "completed_at": "2026-11-18T04:24:59Z"
+        },
+        {
+          "name": "Check the library against its generated artefacts",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 5,
+          "started_at": "2026-11-18T04:24:59Z",
+          "completed_at": "2026-11-18T04:25:02Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:25:02Z",
+          "completed_at": "2026-11-18T04:25:02Z"
+        },
+        {
+          "name": "Post Check out Broiler.RegEx",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T04:25:02Z",
+          "completed_at": "2026-11-18T04:25:02Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:02Z",
+          "completed_at": "2026-11-18T04:25:02Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819693",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026437,
+      "runner_name": "GitHub Actions 1000026437",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819702,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLtg",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819702",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819702",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:27:29Z",
+      "name": "windows-latest / Release",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:43Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:51Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:51Z",
+          "completed_at": "2026-11-18T04:25:29Z"
+        },
+        {
+          "name": "Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:25:29Z",
+          "completed_at": "2026-11-18T04:25:35Z"
+        },
+        {
+          "name": "Test preview version selection",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:35Z",
+          "completed_at": "2026-11-18T04:25:36Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:36Z",
+          "completed_at": "2026-11-18T04:26:20Z"
+        },
+        {
+          "name": "Test",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 7,
+          "started_at": "2026-11-18T04:26:20Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Pack and verify every package",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Verify consumer restore from nuget.org (dry run)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Upload packages",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Post Set up Node.js",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:25Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T04:27:25Z",
+          "completed_at": "2026-11-18T04:27:27Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-18T04:27:27Z",
+          "completed_at": "2026-11-18T04:27:28Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819702",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000026432,
+      "runner_name": "GitHub Actions 1000026432",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819708,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgLvA",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819708",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819708",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:26:06Z",
+      "name": "ubuntu-24.04 / Release",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:24:50Z"
+        },
+        {
+          "name": "Set up Node.js",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:50Z",
+          "completed_at": "2026-11-18T04:24:55Z"
+        },
+        {
+          "name": "Test preview version selection",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:24:55Z",
+          "completed_at": "2026-11-18T04:24:56Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:24:56Z",
+          "completed_at": "2026-11-18T04:25:22Z"
+        },
+        {
+          "name": "Test",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 7,
+          "started_at": "2026-11-18T04:25:22Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Pack and verify every package",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Verify consumer restore from nuget.org (dry run)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Upload packages",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Post Set up Node.js",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-18T04:26:05Z",
+          "completed_at": "2026-11-18T04:26:05Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819708",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026434,
+      "runner_name": "GitHub Actions 1000026434",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819759,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgL7w",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819759",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819759",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:27:01Z",
+      "name": "test262, the library job (win-x64)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:43Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:43Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Keep test262's line endings as committed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Check out test262 at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:25:08Z"
+        },
+        {
+          "name": "Check the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:08Z",
+          "completed_at": "2026-11-18T04:25:08Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:08Z",
+          "completed_at": "2026-11-18T04:25:35Z"
+        },
+        {
+          "name": "Publish the probe with Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-18T04:25:35Z",
+          "completed_at": "2026-11-18T04:26:18Z"
+        },
+        {
+          "name": "Run the library job under Native AOT",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 8,
+          "started_at": "2026-11-18T04:26:18Z",
+          "completed_at": "2026-11-18T04:26:54Z"
+        },
+        {
+          "name": "Run it under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:26:54Z",
+          "completed_at": "2026-11-18T04:26:54Z"
+        },
+        {
+          "name": "Keep the reports",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T04:26:54Z",
+          "completed_at": "2026-11-18T04:26:55Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-11-18T04:26:55Z",
+          "completed_at": "2026-11-18T04:26:55Z"
+        },
+        {
+          "name": "Post Check out test262 at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-18T04:26:55Z",
+          "completed_at": "2026-11-18T04:26:57Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T04:26:57Z",
+          "completed_at": "2026-11-18T04:26:59Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-18T04:26:59Z",
+          "completed_at": "2026-11-18T04:26:59Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819759",
+      "labels": [
+        "windows-latest"
+      ],
+      "runner_id": 1000026442,
+      "runner_name": "GitHub Actions 1000026442",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819794,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgMEg",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819794",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819794",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:22Z",
+      "name": "Fuzz target (ubuntu-24.04)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:43Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:43Z",
+          "completed_at": "2026-11-18T04:24:45Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:45Z",
+          "completed_at": "2026-11-18T04:24:46Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:46Z",
+          "completed_at": "2026-11-18T04:25:01Z"
+        },
+        {
+          "name": "The declared session",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:01Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Keep the log",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:19Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:19Z",
+          "completed_at": "2026-11-18T04:25:19Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-18T04:25:19Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-18T04:25:20Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819794",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026440,
+      "runner_name": "GitHub Actions 1000026440",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819815,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgMJw",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819815",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819815",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:46Z",
+      "name": "test262, the library job (linux-x64)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Keep test262's line endings as committed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:24:49Z"
+        },
+        {
+          "name": "Check out test262 at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:49Z",
+          "completed_at": "2026-11-18T04:24:52Z"
+        },
+        {
+          "name": "Check the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:24:52Z",
+          "completed_at": "2026-11-18T04:24:52Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-18T04:24:52Z",
+          "completed_at": "2026-11-18T04:24:53Z"
+        },
+        {
+          "name": "Publish the probe with Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-18T04:24:53Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        },
+        {
+          "name": "Run the library job under Native AOT",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 8,
+          "started_at": "2026-11-18T04:25:20Z",
+          "completed_at": "2026-11-18T04:25:43Z"
+        },
+        {
+          "name": "Run it under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:25:43Z",
+          "completed_at": "2026-11-18T04:25:43Z"
+        },
+        {
+          "name": "Keep the reports",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T04:25:43Z",
+          "completed_at": "2026-11-18T04:25:44Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18,
+          "started_at": "2026-11-18T04:25:44Z",
+          "completed_at": "2026-11-18T04:25:44Z"
+        },
+        {
+          "name": "Post Check out test262 at the pin",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-18T04:25:44Z",
+          "completed_at": "2026-11-18T04:25:45Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-18T04:25:45Z",
+          "completed_at": "2026-11-18T04:25:45Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-18T04:25:45Z",
+          "completed_at": "2026-11-18T04:25:45Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819815",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026438,
+      "runner_name": "GitHub Actions 1000026438",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819845,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgMRQ",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819845",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819845",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:23Z",
+      "name": "Native AOT probe (linux-x64)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:47Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:47Z",
+          "completed_at": "2026-11-18T04:24:48Z"
+        },
+        {
+          "name": "Publish with Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:48Z",
+          "completed_at": "2026-11-18T04:25:16Z"
+        },
+        {
+          "name": "Run the population under Native AOT",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:16Z",
+          "completed_at": "2026-11-18T04:25:17Z"
+        },
+        {
+          "name": "Run the adversarial corpus under Native AOT",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 6,
+          "started_at": "2026-11-18T04:25:17Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Run the vectors under Native AOT",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Run it under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Run the adversarial corpus under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Run the vectors under the JIT, and compare",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:18Z"
+        },
+        {
+          "name": "Keep the logs",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:18Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-11-18T04:25:20Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-18T04:25:20Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-18T04:25:20Z",
+          "completed_at": "2026-11-18T04:25:20Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819845",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026439,
+      "runner_name": "GitHub Actions 1000026439",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 134575819873,
+      "run_id": 44237117988,
+      "workflow_name": "CI",
+      "head_branch": "sjl-11-2-control-b",
+      "run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/runs/44237117988",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOTFrfBs8AAAAfVVgMYQ",
+      "head_sha": "deac674863f3bf859c8e6564634b0df499c62f14",
+      "url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/actions/jobs/134575819873",
+      "html_url": "https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/job/134575819873",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-18T04:24:39Z",
+      "started_at": "2026-11-18T04:24:41Z",
+      "completed_at": "2026-11-18T04:25:59Z",
+      "name": "Architecture tests (ubuntu-24.04)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-18T04:24:41Z",
+          "completed_at": "2026-11-18T04:24:42Z"
+        },
+        {
+          "name": "Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-18T04:24:42Z",
+          "completed_at": "2026-11-18T04:24:44Z"
+        },
+        {
+          "name": "Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-18T04:24:44Z",
+          "completed_at": "2026-11-18T04:24:45Z"
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-18T04:24:45Z",
+          "completed_at": "2026-11-18T04:25:27Z"
+        },
+        {
+          "name": "SL1 to SL10, C1, C3 and C5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-18T04:25:27Z",
+          "completed_at": "2026-11-18T04:25:57Z"
+        },
+        {
+          "name": "Post Set up .NET",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-18T04:25:57Z",
+          "completed_at": "2026-11-18T04:25:57Z"
+        },
+        {
+          "name": "Post Check out",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-18T04:25:57Z",
+          "completed_at": "2026-11-18T04:25:58Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-18T04:25:58Z",
+          "completed_at": "2026-11-18T04:25:58Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/Broiler-Platform/Broiler.Regex/check-runs/134575819873",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000026441,
+      "runner_name": "GitHub Actions 1000026441",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

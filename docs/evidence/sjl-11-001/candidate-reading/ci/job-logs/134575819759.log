@@ -1,0 +1,476 @@
+﻿2026-11-18T04:24:42.3440343Z Current runner version: '2.338.2'
+2026-11-18T04:24:42.3463565Z ##[group]Runner Image Provisioner
+2026-11-18T04:24:42.3464319Z Hosted Compute Agent
+2026-11-18T04:24:42.3464754Z Version: 20261103.629
+2026-11-18T04:24:42.3465234Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T04:24:42.3465804Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T04:24:42.3466328Z Worker ID: {2b6157f1-6b93-4687-90d8-f41ac32ff8e9}
+2026-11-18T04:24:42.3466844Z Region: westus2
+2026-11-18T04:24:42.3467288Z Cloud: Azure
+2026-11-18T04:24:42.3467733Z ##[endgroup]
+2026-11-18T04:24:42.3468802Z ##[group]Operating System
+2026-11-18T04:24:42.3469280Z Microsoft Windows Server 2025
+2026-11-18T04:24:42.3469731Z 10.0.26100
+2026-11-18T04:24:42.3470129Z Datacenter
+2026-11-18T04:24:42.3470512Z ##[endgroup]
+2026-11-18T04:24:42.3470922Z ##[group]Runner Image
+2026-11-18T04:24:42.3471391Z Image: windows-2025-vs2026
+2026-11-18T04:24:42.3471832Z Version: 20261103.298.1
+2026-11-18T04:24:42.3473111Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261103.298/images/windows/Windows2025-VS2026-Readme.md
+2026-11-18T04:24:42.3474376Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261103.298
+2026-11-18T04:24:42.3475184Z ##[endgroup]
+2026-11-18T04:24:42.3476050Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T04:24:42.3477548Z Contents: read
+2026-11-18T04:24:42.3477994Z Metadata: read
+2026-11-18T04:24:42.3478418Z ##[endgroup]
+2026-11-18T04:24:42.3480171Z Secret source: Actions
+2026-11-18T04:24:42.3480849Z Cache mode: write
+2026-11-18T04:24:42.3481458Z Prepare workflow directory
+2026-11-18T04:24:42.3947682Z Prepare all required actions
+2026-11-18T04:24:42.3987044Z Getting action download info
+2026-11-18T04:24:42.7437258Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T04:24:42.8680603Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T04:24:43.1493370Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T04:24:43.4269512Z Complete job name: test262, the library job (win-x64)
+2026-11-18T04:24:43.7846306Z ##[group]Run actions/checkout@v7
+2026-11-18T04:24:43.7847334Z with:
+2026-11-18T04:24:43.7847757Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:43.7853926Z   token: ***
+2026-11-18T04:24:43.7854287Z   ssh-strict: true
+2026-11-18T04:24:43.7854654Z   ssh-user: git
+2026-11-18T04:24:43.7855039Z   persist-credentials: true
+2026-11-18T04:24:43.7855488Z   clean: true
+2026-11-18T04:24:43.7855871Z   sparse-checkout-cone-mode: true
+2026-11-18T04:24:43.7856452Z   fetch-depth: 1
+2026-11-18T04:24:43.7856822Z   fetch-tags: false
+2026-11-18T04:24:43.7857228Z   show-progress: true
+2026-11-18T04:24:43.7857607Z   lfs: false
+2026-11-18T04:24:43.7857946Z   submodules: false
+2026-11-18T04:24:43.7858333Z   set-safe-directory: true
+2026-11-18T04:24:43.7858782Z   allow-unsafe-pr-checkout: false
+2026-11-18T04:24:43.7859531Z env:
+2026-11-18T04:24:43.7859867Z   PACKAGE_VERSION: 
+2026-11-18T04:24:43.7860236Z ##[endgroup]
+2026-11-18T04:24:43.9115993Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:43.9117714Z ##[group]Getting Git version info
+2026-11-18T04:24:43.9118367Z Working directory is 'D:\a\Broiler.Regex\Broiler.Regex'
+2026-11-18T04:24:43.9706684Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T04:24:44.5362501Z git version 2.56.0.windows.4
+2026-11-18T04:24:44.5405254Z ##[endgroup]
+2026-11-18T04:24:44.5418041Z Temporarily overriding HOME='D:\a\_temp\c3cb8d7f-7581-4372-9e08-06303469d3d7' before making global git config changes
+2026-11-18T04:24:44.5419667Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:24:44.5425644Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T04:24:44.5995714Z Deleting the contents of 'D:\a\Broiler.Regex\Broiler.Regex'
+2026-11-18T04:24:44.5999729Z ##[group]Determining repository object format
+2026-11-18T04:24:44.6001352Z ##[endgroup]
+2026-11-18T04:24:44.6002810Z ##[group]Initializing the repository
+2026-11-18T04:24:44.6007623Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T04:24:44.7109760Z Initialized empty Git repository in D:/a/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T04:24:44.7153269Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:44.7891420Z ##[endgroup]
+2026-11-18T04:24:44.7892839Z ##[group]Disabling automatic garbage collection
+2026-11-18T04:24:44.7898028Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-18T04:24:44.8199551Z ##[endgroup]
+2026-11-18T04:24:44.8200849Z ##[group]Setting up auth
+2026-11-18T04:24:44.8201794Z Removing SSH command configuration
+2026-11-18T04:24:44.8208773Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:24:44.8514274Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T04:24:46.7466721Z Removing HTTP extra header
+2026-11-18T04:24:46.7475543Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:24:46.7780737Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T04:24:47.2391524Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:24:47.2400735Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:24:47.2754808Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T04:24:47.7236479Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-18T04:24:47.7537616Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:24:47.7842125Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:24:47.8219695Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:24:47.8560669Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:24:47.8893473Z ##[endgroup]
+2026-11-18T04:24:47.8893958Z ##[group]Fetching the repository
+2026-11-18T04:24:47.8905448Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +deac674863f3bf859c8e6564634b0df499c62f14:refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.2435515Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T04:24:49.2437104Z  * [new ref]         deac674863f3bf859c8e6564634b0df499c62f14 -> origin/sjl-11-2-control-b
+2026-11-18T04:24:49.2486811Z [command]"C:\Program Files\Git\bin\git.exe" branch --list --remote origin/sjl-11-2-control-b
+2026-11-18T04:24:49.2860417Z   origin/sjl-11-2-control-b
+2026-11-18T04:24:49.2907829Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.3264562Z deac674863f3bf859c8e6564634b0df499c62f14
+2026-11-18T04:24:49.3294915Z ##[endgroup]
+2026-11-18T04:24:49.3295255Z ##[group]Determining the checkout info
+2026-11-18T04:24:49.3296182Z ##[endgroup]
+2026-11-18T04:24:49.3304151Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-18T04:24:49.3697552Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-18T04:24:49.4003362Z ##[group]Checking out the ref
+2026-11-18T04:24:49.4012246Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B sjl-11-2-control-b refs/remotes/origin/sjl-11-2-control-b
+2026-11-18T04:24:49.5149495Z Switched to a new branch 'sjl-11-2-control-b'
+2026-11-18T04:24:49.5250125Z branch 'sjl-11-2-control-b' set up to track 'origin/sjl-11-2-control-b'.
+2026-11-18T04:24:49.5301182Z ##[endgroup]
+2026-11-18T04:24:49.5749869Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-18T04:24:49.6035857Z deac674863f3bf859c8e6564634b0df499c62f14
+2026-11-18T04:24:49.6486154Z ##[group]Run git config --global core.autocrlf false
+2026-11-18T04:24:49.6486567Z [36;1mgit config --global core.autocrlf false[0m
+2026-11-18T04:24:49.6502213Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:24:49.6502527Z env:
+2026-11-18T04:24:49.6502679Z   PACKAGE_VERSION: 
+2026-11-18T04:24:49.6502846Z ##[endgroup]
+2026-11-18T04:24:49.8780950Z ##[group]Run actions/checkout@v7
+2026-11-18T04:24:49.8781202Z with:
+2026-11-18T04:24:49.8781364Z   repository: tc39/test262
+2026-11-18T04:24:49.8781574Z   ref: ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:24:49.8781798Z   path: suite/test262
+2026-11-18T04:24:49.8781992Z   persist-credentials: false
+2026-11-18T04:24:49.8784069Z   token: ***
+2026-11-18T04:24:49.8784234Z   ssh-strict: true
+2026-11-18T04:24:49.8784390Z   ssh-user: git
+2026-11-18T04:24:49.8784555Z   clean: true
+2026-11-18T04:24:49.8784723Z   sparse-checkout-cone-mode: true
+2026-11-18T04:24:49.8784916Z   fetch-depth: 1
+2026-11-18T04:24:49.8785069Z   fetch-tags: false
+2026-11-18T04:24:49.8785223Z   show-progress: true
+2026-11-18T04:24:49.8785379Z   lfs: false
+2026-11-18T04:24:49.8785520Z   submodules: false
+2026-11-18T04:24:49.8785676Z   set-safe-directory: true
+2026-11-18T04:24:49.8785866Z   allow-unsafe-pr-checkout: false
+2026-11-18T04:24:49.8786060Z env:
+2026-11-18T04:24:49.8786222Z   PACKAGE_VERSION: 
+2026-11-18T04:24:49.8786377Z ##[endgroup]
+2026-11-18T04:24:49.9731221Z Syncing repository: tc39/test262
+2026-11-18T04:24:49.9739322Z ##[group]Getting Git version info
+2026-11-18T04:24:49.9739832Z Working directory is 'D:\a\Broiler.Regex\Broiler.Regex\suite\test262'
+2026-11-18T04:24:50.0305135Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T04:24:50.0581692Z git version 2.56.0.windows.4
+2026-11-18T04:24:50.0618667Z ##[endgroup]
+2026-11-18T04:24:50.0628046Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\82457210-3a11-4ec0-bd16-a579f5f57d59\.gitconfig'
+2026-11-18T04:24:50.0647148Z Temporarily overriding HOME='D:\a\_temp\82457210-3a11-4ec0-bd16-a579f5f57d59' before making global git config changes
+2026-11-18T04:24:50.0647698Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:24:50.0655120Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex\suite\test262
+2026-11-18T04:24:50.0961673Z ##[group]Determining repository object format
+2026-11-18T04:24:50.0963889Z ##[endgroup]
+2026-11-18T04:24:50.0964232Z ##[group]Initializing the repository
+2026-11-18T04:24:50.0971161Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\Broiler.Regex\Broiler.Regex\suite\test262
+2026-11-18T04:24:50.1308500Z Initialized empty Git repository in D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git/
+2026-11-18T04:24:50.1356305Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/tc39/test262
+2026-11-18T04:24:50.1712434Z ##[endgroup]
+2026-11-18T04:24:50.1712799Z ##[group]Disabling automatic garbage collection
+2026-11-18T04:24:50.1724240Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-18T04:24:50.2122076Z ##[endgroup]
+2026-11-18T04:24:50.2122496Z ##[group]Setting up auth
+2026-11-18T04:24:50.2123434Z Removing SSH command configuration
+2026-11-18T04:24:50.2136960Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:24:50.2475152Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T04:24:50.7632913Z Removing HTTP extra header
+2026-11-18T04:24:50.7643820Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:24:50.7949748Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T04:24:51.2883380Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:24:51.2892542Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:24:51.3201166Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T04:24:51.7943307Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-18T04:24:51.8244287Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git.path D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:24:51.8548133Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git/worktrees/*.path D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:24:51.8880459Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/suite/test262/.git.path /github/runner_temp/git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:24:51.9191749Z [command]"C:\Program Files\Git\bin\git.exe" config --local includeIf.gitdir:/github/workspace/suite/test262/.git/worktrees/*.path /github/runner_temp/git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:24:51.9476899Z ##[endgroup]
+2026-11-18T04:24:51.9477200Z ##[group]Fetching the repository
+2026-11-18T04:24:51.9486881Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:24:54.1830900Z From https://github.com/tc39/test262
+2026-11-18T04:24:54.1831503Z  * branch              ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e -> FETCH_HEAD
+2026-11-18T04:24:54.1874574Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse --verify --quiet ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e^{object}
+2026-11-18T04:24:54.2147485Z ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:24:54.2178761Z ##[endgroup]
+2026-11-18T04:24:54.2179058Z ##[group]Determining the checkout info
+2026-11-18T04:24:54.2180069Z ##[endgroup]
+2026-11-18T04:24:54.2188249Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-18T04:24:54.2528693Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-18T04:24:54.2839627Z ##[group]Checking out the ref
+2026-11-18T04:24:54.2847560Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:24:55.4646897Z Updating files:  10% (5755/56560)
+2026-11-18T04:24:55.5531999Z Updating files:  11% (6222/56560)
+2026-11-18T04:24:55.6499962Z Updating files:  12% (6788/56560)
+2026-11-18T04:24:55.9252389Z Updating files:  13% (7353/56560)
+2026-11-18T04:24:56.0234126Z Updating files:  14% (7919/56560)
+2026-11-18T04:24:56.1214425Z Updating files:  15% (8484/56560)
+2026-11-18T04:24:56.2148819Z Updating files:  16% (9050/56560)
+2026-11-18T04:24:56.3066838Z Updating files:  17% (9616/56560)
+2026-11-18T04:24:56.3595174Z Updating files:  18% (10181/56560)
+2026-11-18T04:24:56.3996827Z Updating files:  18% (10509/56560)
+2026-11-18T04:24:56.4946710Z Updating files:  19% (10747/56560)
+2026-11-18T04:24:56.5883234Z Updating files:  20% (11312/56560)
+2026-11-18T04:24:56.6761226Z Updating files:  21% (11878/56560)
+2026-11-18T04:24:56.7661529Z Updating files:  22% (12444/56560)
+2026-11-18T04:24:56.8578105Z Updating files:  23% (13009/56560)
+2026-11-18T04:24:56.9469859Z Updating files:  24% (13575/56560)
+2026-11-18T04:24:57.0341382Z Updating files:  25% (14140/56560)
+2026-11-18T04:24:57.1290749Z Updating files:  26% (14706/56560)
+2026-11-18T04:24:57.3657638Z Updating files:  27% (15272/56560)
+2026-11-18T04:24:57.4357953Z Updating files:  27% (15432/56560)
+2026-11-18T04:24:57.5303929Z Updating files:  28% (15837/56560)
+2026-11-18T04:24:57.6294444Z Updating files:  29% (16403/56560)
+2026-11-18T04:24:57.7264050Z Updating files:  30% (16968/56560)
+2026-11-18T04:24:57.8240406Z Updating files:  31% (17534/56560)
+2026-11-18T04:24:57.9153690Z Updating files:  32% (18100/56560)
+2026-11-18T04:24:58.0642187Z Updating files:  33% (18665/56560)
+2026-11-18T04:24:58.1573590Z Updating files:  34% (19231/56560)
+2026-11-18T04:24:58.2553891Z Updating files:  35% (19796/56560)
+2026-11-18T04:24:58.3509978Z Updating files:  36% (20362/56560)
+2026-11-18T04:24:58.3784144Z Updating files:  37% (20928/56560)
+2026-11-18T04:24:58.4453337Z Updating files:  37% (21094/56560)
+2026-11-18T04:24:58.5405561Z Updating files:  38% (21493/56560)
+2026-11-18T04:24:58.8546842Z Updating files:  39% (22059/56560)
+2026-11-18T04:24:58.9482151Z Updating files:  40% (22624/56560)
+2026-11-18T04:24:59.0836250Z Updating files:  41% (23190/56560)
+2026-11-18T04:24:59.1788623Z Updating files:  42% (23756/56560)
+2026-11-18T04:24:59.2747680Z Updating files:  43% (24321/56560)
+2026-11-18T04:24:59.3724102Z Updating files:  44% (24887/56560)
+2026-11-18T04:24:59.3788682Z Updating files:  45% (25452/56560)
+2026-11-18T04:24:59.4697676Z Updating files:  45% (25488/56560)
+2026-11-18T04:24:59.5673367Z Updating files:  46% (26018/56560)
+2026-11-18T04:24:59.6622240Z Updating files:  47% (26584/56560)
+2026-11-18T04:24:59.7549694Z Updating files:  48% (27149/56560)
+2026-11-18T04:24:59.8532233Z Updating files:  49% (27715/56560)
+2026-11-18T04:24:59.9532005Z Updating files:  50% (28280/56560)
+2026-11-18T04:25:00.2958924Z Updating files:  51% (28846/56560)
+2026-11-18T04:25:00.3875487Z Updating files:  52% (29412/56560)
+2026-11-18T04:25:00.3940334Z Updating files:  52% (29942/56560)
+2026-11-18T04:25:00.4932154Z Updating files:  53% (29977/56560)
+2026-11-18T04:25:00.5897389Z Updating files:  54% (30543/56560)
+2026-11-18T04:25:00.6847553Z Updating files:  55% (31108/56560)
+2026-11-18T04:25:00.7824779Z Updating files:  56% (31674/56560)
+2026-11-18T04:25:00.8793469Z Updating files:  57% (32240/56560)
+2026-11-18T04:25:00.9739260Z Updating files:  58% (32805/56560)
+2026-11-18T04:25:01.0733530Z Updating files:  59% (33371/56560)
+2026-11-18T04:25:01.2476267Z Updating files:  60% (33936/56560)
+2026-11-18T04:25:01.3488149Z Updating files:  61% (34502/56560)
+2026-11-18T04:25:01.3995932Z Updating files:  62% (35068/56560)
+2026-11-18T04:25:01.6100202Z Updating files:  62% (35176/56560)
+2026-11-18T04:25:01.7101902Z Updating files:  63% (35633/56560)
+2026-11-18T04:25:01.8126448Z Updating files:  64% (36199/56560)
+2026-11-18T04:25:01.9112749Z Updating files:  65% (36764/56560)
+2026-11-18T04:25:02.0119958Z Updating files:  66% (37330/56560)
+2026-11-18T04:25:02.1100127Z Updating files:  67% (37896/56560)
+2026-11-18T04:25:02.2038939Z Updating files:  68% (38461/56560)
+2026-11-18T04:25:02.3046658Z Updating files:  69% (39027/56560)
+2026-11-18T04:25:02.4012679Z Updating files:  70% (39592/56560)
+2026-11-18T04:25:02.4128724Z Updating files:  71% (40158/56560)
+2026-11-18T04:25:02.4972158Z Updating files:  71% (40226/56560)
+2026-11-18T04:25:02.6699483Z Updating files:  72% (40724/56560)
+2026-11-18T04:25:02.9727085Z Updating files:  73% (41289/56560)
+2026-11-18T04:25:03.0723565Z Updating files:  74% (41855/56560)
+2026-11-18T04:25:03.1681816Z Updating files:  75% (42420/56560)
+2026-11-18T04:25:03.2618450Z Updating files:  76% (42986/56560)
+2026-11-18T04:25:03.3546972Z Updating files:  77% (43552/56560)
+2026-11-18T04:25:03.4192946Z Updating files:  78% (44117/56560)
+2026-11-18T04:25:03.4489789Z Updating files:  78% (44501/56560)
+2026-11-18T04:25:03.5436528Z Updating files:  79% (44683/56560)
+2026-11-18T04:25:03.6411595Z Updating files:  80% (45248/56560)
+2026-11-18T04:25:03.8168425Z Updating files:  81% (45814/56560)
+2026-11-18T04:25:03.9177110Z Updating files:  82% (46380/56560)
+2026-11-18T04:25:04.0193610Z Updating files:  83% (46945/56560)
+2026-11-18T04:25:04.2423526Z Updating files:  84% (47511/56560)
+2026-11-18T04:25:04.3756915Z Updating files:  85% (48076/56560)
+2026-11-18T04:25:04.4309652Z Updating files:  86% (48642/56560)
+2026-11-18T04:25:04.4771708Z Updating files:  86% (48947/56560)
+2026-11-18T04:25:04.5799841Z Updating files:  87% (49208/56560)
+2026-11-18T04:25:04.6815635Z Updating files:  88% (49773/56560)
+2026-11-18T04:25:04.7826178Z Updating files:  89% (50339/56560)
+2026-11-18T04:25:04.8851566Z Updating files:  90% (50904/56560)
+2026-11-18T04:25:04.9804295Z Updating files:  91% (51470/56560)
+2026-11-18T04:25:05.0756921Z Updating files:  92% (52036/56560)
+2026-11-18T04:25:05.1719314Z Updating files:  93% (52601/56560)
+2026-11-18T04:25:05.2685360Z Updating files:  94% (53167/56560)
+2026-11-18T04:25:05.3653615Z Updating files:  95% (53732/56560)
+2026-11-18T04:25:05.4444668Z Updating files:  96% (54298/56560)
+2026-11-18T04:25:05.4613892Z Updating files:  96% (54769/56560)
+2026-11-18T04:25:05.8594070Z Updating files:  97% (54864/56560)
+2026-11-18T04:25:05.9675776Z Updating files:  98% (55429/56560)
+2026-11-18T04:25:06.0631912Z Updating files:  99% (55995/56560)
+2026-11-18T04:25:06.0632243Z Updating files: 100% (56560/56560)
+2026-11-18T04:25:06.0632745Z Updating files: 100% (56560/56560), done.
+2026-11-18T04:25:06.1263011Z Note: switching to 'ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e'.
+2026-11-18T04:25:06.1263337Z 
+2026-11-18T04:25:06.1263550Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-18T04:25:06.1264059Z changes and commit them, and you can discard any commits you make in this
+2026-11-18T04:25:06.1264525Z state without impacting any branches by switching back to a branch.
+2026-11-18T04:25:06.1264838Z 
+2026-11-18T04:25:06.1265021Z If you want to create a new branch to retain commits you create, you may
+2026-11-18T04:25:06.1265450Z do so (now or later) by using -c with the switch command. Example:
+2026-11-18T04:25:06.1265728Z 
+2026-11-18T04:25:06.1266150Z   git switch -c <new-branch-name>
+2026-11-18T04:25:06.1266296Z 
+2026-11-18T04:25:06.1266377Z Or undo this operation with:
+2026-11-18T04:25:06.1266501Z 
+2026-11-18T04:25:06.1266563Z   git switch -
+2026-11-18T04:25:06.1266660Z 
+2026-11-18T04:25:06.1266836Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-18T04:25:06.1267057Z 
+2026-11-18T04:25:06.1267223Z HEAD is now at ccaac100 [immutable-arraybuffer] TypedArray static functions
+2026-11-18T04:25:06.1360686Z ##[endgroup]
+2026-11-18T04:25:06.1716610Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-18T04:25:06.2002879Z ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:25:06.2048176Z ##[group]Removing auth
+2026-11-18T04:25:06.2048714Z Removing SSH command configuration
+2026-11-18T04:25:06.2057383Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:25:06.2398191Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T04:25:06.7146696Z Removing HTTP extra header
+2026-11-18T04:25:06.7156239Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:25:06.7473807Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T04:25:07.2646767Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:25:07.2658228Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:25:07.2947230Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git.path
+2026-11-18T04:25:07.2947716Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git/worktrees/*.path
+2026-11-18T04:25:07.2948380Z includeif.gitdir:/github/workspace/suite/test262/.git.path
+2026-11-18T04:25:07.2948701Z includeif.gitdir:/github/workspace/suite/test262/.git/worktrees/*.path
+2026-11-18T04:25:07.2985547Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git.path
+2026-11-18T04:25:07.3260775Z D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:25:07.3301358Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git.path D\:\\a\\_temp\\git\-credentials\-14200354\-bf39\-4d26\-93b5\-8ff3090cfcf5\.config
+2026-11-18T04:25:07.3619309Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git/worktrees/*.path
+2026-11-18T04:25:07.3894470Z D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:25:07.3934072Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/suite/test262/.git/worktrees/*.path D\:\\a\\_temp\\git\-credentials\-14200354\-bf39\-4d26\-93b5\-8ff3090cfcf5\.config
+2026-11-18T04:25:07.4248787Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/suite/test262/.git.path
+2026-11-18T04:25:07.4534574Z /github/runner_temp/git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:25:07.4575120Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/suite/test262/.git.path \/github\/runner_temp\/git\-credentials\-14200354\-bf39\-4d26\-93b5\-8ff3090cfcf5\.config
+2026-11-18T04:25:07.4902062Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/suite/test262/.git/worktrees/*.path
+2026-11-18T04:25:07.5175643Z /github/runner_temp/git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config
+2026-11-18T04:25:07.5213579Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/suite/test262/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-14200354\-bf39\-4d26\-93b5\-8ff3090cfcf5\.config
+2026-11-18T04:25:07.5527607Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T04:25:08.0278536Z Removing credentials config 'D:\a\_temp\git-credentials-14200354-bf39-4d26-93b5-8ff3090cfcf5.config'
+2026-11-18T04:25:08.0289400Z ##[endgroup]
+2026-11-18T04:25:08.0531601Z ##[group]Run test "$(git -C suite/test262 rev-parse HEAD)" = ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e
+2026-11-18T04:25:08.0532418Z [36;1mtest "$(git -C suite/test262 rev-parse HEAD)" = ccaac100ff49d81e9ff47a75ff4c60e0bd3f262e[0m
+2026-11-18T04:25:08.0532904Z [36;1mtest "$(git -C suite/test262 rev-parse HEAD:test)" = c022917030da8fbc09b7db8f9b7d55ccc5f5ebab[0m
+2026-11-18T04:25:08.0543640Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:25:08.0543936Z env:
+2026-11-18T04:25:08.0544091Z   PACKAGE_VERSION: 
+2026-11-18T04:25:08.0544255Z ##[endgroup]
+2026-11-18T04:25:08.1724118Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T04:25:08.1724426Z with:
+2026-11-18T04:25:08.1724593Z   dotnet-version: 10.0.x
+2026-11-18T04:25:08.1724788Z   skip-lts-prepass: false
+2026-11-18T04:25:08.1724967Z   cache: false
+2026-11-18T04:25:08.1725122Z env:
+2026-11-18T04:25:08.1725266Z   PACKAGE_VERSION: 
+2026-11-18T04:25:08.1725439Z ##[endgroup]
+2026-11-18T04:25:08.3738245Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v6\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Runtime dotnet -Channel LTS
+2026-11-18T04:25:11.3361811Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.15/dotnet-runtime-10.0.15-win-x64.zip size is 36980907 bytes.
+2026-11-18T04:25:11.3364429Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-11-18T04:25:11.3385313Z dotnet-install: Extracting the archive.
+2026-11-18T04:25:12.6490566Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-11-18T04:25:12.6493971Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-11-18T04:25:12.6498596Z dotnet-install: Installed version is 10.0.15
+2026-11-18T04:25:12.6503623Z dotnet-install: Installation finished
+2026-11-18T04:25:12.8014780Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v6\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Channel 10.0
+2026-11-18T04:25:20.4130824Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-win-x64.zip size is 303618098 bytes.
+2026-11-18T04:25:20.4136048Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-11-18T04:25:20.4157803Z dotnet-install: Extracting the archive.
+2026-11-18T04:25:35.6980356Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-11-18T04:25:35.6982527Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-11-18T04:25:35.6986594Z dotnet-install: Installed version is 10.0.404
+2026-11-18T04:25:35.6990674Z dotnet-install: Installation finished
+2026-11-18T04:25:35.7581421Z ##[group]Run dotnet publish probes/Regex.Probe -c Release -r win-x64 --nologo
+2026-11-18T04:25:35.7581928Z [36;1mdotnet publish probes/Regex.Probe -c Release -r win-x64 --nologo[0m
+2026-11-18T04:25:35.7594220Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:25:35.7594532Z env:
+2026-11-18T04:25:35.7594685Z   PACKAGE_VERSION: 
+2026-11-18T04:25:35.7594869Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T04:25:35.7595079Z ##[endgroup]
+2026-11-18T04:25:37.5974650Z   Determining projects to restore...
+2026-11-18T04:25:49.0330918Z   Restored D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\Broiler.Regex.csproj (in 10.96 sec).
+2026-11-18T04:25:52.6715222Z   Restored D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\Regex.Probe.csproj (in 14.61 sec).
+2026-11-18T04:25:56.0729723Z   Broiler.Regex -> D:\a\Broiler.Regex\Broiler.Regex\Broiler.Regex\bin\Release\net10.0\Broiler.Regex.dll
+2026-11-18T04:25:57.6073266Z   Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\Broiler.Regex.Probe.dll
+2026-11-18T04:26:12.5260313Z   Generating native code
+2026-11-18T04:26:18.1038682Z   Regex.Probe -> D:\a\Broiler.Regex\Broiler.Regex\probes\Regex.Probe\bin\Release\net10.0\win-x64\publish\
+2026-11-18T04:26:18.4391959Z ##[group]Run ./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-aot.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-aot.txt || true; exit $code; }
+2026-11-18T04:26:18.4393472Z [36;1m./probes/Regex.Probe/bin/Release/net10.0/win-x64/publish/Broiler.Regex.Probe.exe --test262 suite/test262 --unreadable test262/library-unreadable.txt --report test262-library-aot.txt > /dev/null || { code=$?; grep -E '^FAIL' test262-library-aot.txt || true; exit $code; }[0m
+2026-11-18T04:26:18.4405252Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-18T04:26:18.4405554Z env:
+2026-11-18T04:26:18.4405712Z   PACKAGE_VERSION: 
+2026-11-18T04:26:18.4405896Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T04:26:18.4406107Z ##[endgroup]
+2026-11-18T04:26:54.5163257Z FAIL literals test/language/literals/regexp/named-groups/invalid-dangling-groupname-2-u.js: negative, 1 literals, 0 refused; no literal refused
+2026-11-18T04:26:54.5164130Z FAIL literals test/language/literals/regexp/named-groups/invalid-dangling-groupname-3-u.js: negative, 1 literals, 0 refused; no literal refused
+2026-11-18T04:26:54.5165116Z FAIL literals test/language/literals/regexp/named-groups/invalid-dangling-groupname-4-u.js: negative, 1 literals, 0 refused; no literal refused
+2026-11-18T04:26:54.5166222Z FAIL literals test/language/literals/regexp/named-groups/invalid-dangling-groupname-u.js: negative, 1 literals, 0 refused; no literal refused
+2026-11-18T04:26:54.5167590Z FAIL literals test/language/literals/regexp/named-groups/invalid-dangling-groupname-without-group-u.js: negative, 1 literals, 0 refused; no literal refused
+2026-11-18T04:26:54.5212593Z ##[error]Process completed with exit code 1.
+2026-11-18T04:26:54.5367672Z ##[group]Run actions/upload-artifact@v7
+2026-11-18T04:26:54.5367948Z with:
+2026-11-18T04:26:54.5368121Z   name: test262-library-win-x64
+2026-11-18T04:26:54.5368403Z   path: test262-library-aot.txt
+test262-library-jit.txt
+
+2026-11-18T04:26:54.5368664Z   if-no-files-found: warn
+2026-11-18T04:26:54.5368846Z   compression-level: 6
+2026-11-18T04:26:54.5369015Z   overwrite: false
+2026-11-18T04:26:54.5369182Z   include-hidden-files: false
+2026-11-18T04:26:54.5369364Z   archive: true
+2026-11-18T04:26:54.5369516Z env:
+2026-11-18T04:26:54.5369664Z   PACKAGE_VERSION: 
+2026-11-18T04:26:54.5369842Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-11-18T04:26:54.5370055Z ##[endgroup]
+2026-11-18T04:26:54.6813214Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-18T04:26:54.6815425Z The least common ancestor is D:\a\Broiler.Regex\Broiler.Regex. This will be the root directory of the artifact
+2026-11-18T04:26:54.6816054Z With the provided path, there will be 1 file uploaded
+2026-11-18T04:26:54.6819305Z Artifact name is valid!
+2026-11-18T04:26:54.6820311Z Root directory input is valid!
+2026-11-18T04:26:55.0545195Z Uploading artifact: test262-library-win-x64.zip
+2026-11-18T04:26:55.0575003Z Beginning upload of artifact content to blob storage
+2026-11-18T04:26:55.3694017Z Uploaded bytes 6345
+2026-11-18T04:26:55.4474189Z Finished uploading artifact content to blob storage!
+2026-11-18T04:26:55.4474904Z SHA256 digest of uploaded artifact is 4e778e57e76827e577a0a693899c5bd725154482c09079f9d474aa108423b968
+2026-11-18T04:26:55.4475314Z Finalizing artifact upload
+2026-11-18T04:26:55.9588485Z Artifact test262-library-win-x64 successfully finalized. Artifact ID 14398495818
+2026-11-18T04:26:55.9589397Z Artifact test262-library-win-x64 has been successfully uploaded! Final size is 6345 bytes. Artifact ID is 14398495818
+2026-11-18T04:26:55.9597257Z Artifact download URL: https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44237117988/artifacts/14398495818
+2026-11-18T04:26:55.9904241Z Post job cleanup.
+2026-11-18T04:26:56.1272884Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T04:26:56.1561551Z git version 2.56.0.windows.4
+2026-11-18T04:26:56.1615022Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\21277cbe-349b-4a29-9508-ec7f382c242a\.gitconfig'
+2026-11-18T04:26:56.1632182Z Temporarily overriding HOME='D:\a\_temp\21277cbe-349b-4a29-9508-ec7f382c242a' before making global git config changes
+2026-11-18T04:26:56.1633062Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:26:56.1640969Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex\suite\test262
+2026-11-18T04:26:56.1970025Z Removing SSH command configuration
+2026-11-18T04:26:56.1983272Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:26:56.2326563Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T04:26:56.7303036Z Removing HTTP extra header
+2026-11-18T04:26:56.7312018Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:26:56.7617988Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T04:26:57.2714962Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:26:57.2724822Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:26:57.3039255Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T04:26:57.8043642Z Post job cleanup.
+2026-11-18T04:26:57.9470821Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-18T04:26:57.9752055Z git version 2.56.0.windows.4
+2026-11-18T04:26:57.9802541Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\34011ce8-7d85-4101-a814-5b9fb87bec22\.gitconfig'
+2026-11-18T04:26:57.9819062Z Temporarily overriding HOME='D:\a\_temp\34011ce8-7d85-4101-a814-5b9fb87bec22' before making global git config changes
+2026-11-18T04:26:57.9819985Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T04:26:57.9830510Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\Broiler.Regex\Broiler.Regex
+2026-11-18T04:26:58.0208010Z Removing SSH command configuration
+2026-11-18T04:26:58.0218201Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T04:26:58.0538663Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-18T04:26:58.5329077Z Removing HTTP extra header
+2026-11-18T04:26:58.5337732Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T04:26:58.5677272Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-18T04:26:59.0520804Z Removing includeIf entries pointing to credentials config files
+2026-11-18T04:26:59.0530614Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T04:26:59.0803960Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T04:26:59.0804931Z includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T04:26:59.0805317Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T04:26:59.0805661Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T04:26:59.0845711Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T04:26:59.1130700Z D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:26:59.1180067Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git.path D\:\\a\\_temp\\git\-credentials\-858a8c80\-15c3\-4457\-ac6e\-68a84a272a89\.config
+2026-11-18T04:26:59.1509296Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T04:26:59.1779196Z D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:26:59.1817297Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:D:/a/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path D\:\\a\\_temp\\git\-credentials\-858a8c80\-15c3\-4457\-ac6e\-68a84a272a89\.config
+2026-11-18T04:26:59.2137134Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T04:26:59.2418362Z /github/runner_temp/git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:26:59.2461746Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-858a8c80\-15c3\-4457\-ac6e\-68a84a272a89\.config
+2026-11-18T04:26:59.2793320Z [command]"C:\Program Files\Git\bin\git.exe" config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T04:26:59.3058429Z /github/runner_temp/git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config
+2026-11-18T04:26:59.3123125Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-858a8c80\-15c3\-4457\-ac6e\-68a84a272a89\.config
+2026-11-18T04:26:59.3422852Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-18T04:26:59.7959149Z Removing credentials config 'D:\a\_temp\git-credentials-858a8c80-15c3-4457-ac6e-68a84a272a89.config'
+2026-11-18T04:26:59.8132250Z Cleaning up orphan processes
+2026-11-18T04:26:59.8381292Z Terminate orphan process: pid (5552) (VBCSCompiler)
+2026-11-18T04:26:59.8433399Z Terminate orphan process: pid (3772) (conhost)
+2026-11-18T04:26:59.8703010Z Terminate orphan process: pid (8664) (vctip)

@@ -1,0 +1,4 @@
+rc=0
+/home/user/broiler.regex  ec796fc [main]
+/home/user/rx-read        49d7be1 [sjl-11-4-2-reading]
+df 7.5G shm 16G

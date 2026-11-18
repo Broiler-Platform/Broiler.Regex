@@ -1,0 +1,4 @@
+$ test262_pin
+# test262's test/ is the pin's tree
+test262 test/ tree c022917030da8fbc09b7db8f9b7d55ccc5f5ebab, the pin's c022917030da8fbc09b7db8f9b7d55ccc5f5ebab
+exit 0

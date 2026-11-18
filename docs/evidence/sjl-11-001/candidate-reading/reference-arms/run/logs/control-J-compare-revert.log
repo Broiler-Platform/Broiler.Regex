@@ -1,0 +1,2 @@
+$ python3 -I -B scripts/reference-arms/compare.py --population /home/user/rx-read-arms/run/population --runs /home/user/rx-read-arms/run/controls/J/revert-runs --out /home/user/rx-read-arms/run/controls/J/revert
+465 differences

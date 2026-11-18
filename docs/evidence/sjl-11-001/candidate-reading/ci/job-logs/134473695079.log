@@ -1,0 +1,286 @@
+﻿2026-11-18T00:16:50.1375903Z Current runner version: '2.338.2'
+2026-11-18T00:16:50.1393478Z ##[group]Runner Image Provisioner
+2026-11-18T00:16:50.1394530Z Hosted Compute Agent
+2026-11-18T00:16:50.1394987Z Version: 20261103.629
+2026-11-18T00:16:50.1395450Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-18T00:16:50.1396010Z Build Date: 2026-11-03T17:26:59Z
+2026-11-18T00:16:50.1396498Z Worker ID: {2bf9fa09-7eac-43f2-95ca-c79789c6f077}
+2026-11-18T00:16:50.1397008Z Region: us-east-1
+2026-11-18T00:16:50.1397396Z Cloud: AWS
+2026-11-18T00:16:50.1397761Z ##[endgroup]
+2026-11-18T00:16:50.1398727Z ##[group]Operating System
+2026-11-18T00:16:50.1399182Z Ubuntu
+2026-11-18T00:16:50.1399599Z 24.04.5
+2026-11-18T00:16:50.1399959Z LTS
+2026-11-18T00:16:50.1400327Z ##[endgroup]
+2026-11-18T00:16:50.1400727Z ##[group]Runner Image
+2026-11-18T00:16:50.1401135Z Image: ubuntu-24.04
+2026-11-18T00:16:50.1401541Z Version: 20261111.127.1
+2026-11-18T00:16:50.1402452Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-18T00:16:50.1403592Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+2026-11-18T00:16:50.1404462Z ##[endgroup]
+2026-11-18T00:16:50.1405312Z ##[group]GITHUB_TOKEN Permissions
+2026-11-18T00:16:50.1406857Z Contents: read
+2026-11-18T00:16:50.1407266Z Metadata: read
+2026-11-18T00:16:50.1407670Z ##[endgroup]
+2026-11-18T00:16:50.1409109Z Secret source: Actions
+2026-11-18T00:16:50.1409742Z Cache mode: write
+2026-11-18T00:16:50.1410248Z Prepare workflow directory
+2026-11-18T00:16:50.1766432Z Prepare all required actions
+2026-11-18T00:16:50.1803360Z Getting action download info
+2026-11-18T00:16:50.3149755Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-18T00:16:52.6614478Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-18T00:16:52.8338263Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-11-18T00:16:53.1417343Z Complete job name: Adversarial corpus, part C's controls
+2026-11-18T00:16:53.2032977Z ##[group]Run actions/checkout@v7
+2026-11-18T00:16:53.2033671Z with:
+2026-11-18T00:16:53.2034193Z   repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:53.2037900Z   token: ***
+2026-11-18T00:16:53.2038332Z   ssh-strict: true
+2026-11-18T00:16:53.2038780Z   ssh-user: git
+2026-11-18T00:16:53.2039250Z   persist-credentials: true
+2026-11-18T00:16:53.2039713Z   clean: true
+2026-11-18T00:16:53.2040136Z   sparse-checkout-cone-mode: true
+2026-11-18T00:16:53.2040623Z   fetch-depth: 1
+2026-11-18T00:16:53.2041069Z   fetch-tags: false
+2026-11-18T00:16:53.2041522Z   show-progress: true
+2026-11-18T00:16:53.2041972Z   lfs: false
+2026-11-18T00:16:53.2042366Z   submodules: false
+2026-11-18T00:16:53.2042779Z   set-safe-directory: true
+2026-11-18T00:16:53.2043302Z   allow-unsafe-pr-checkout: false
+2026-11-18T00:16:53.2043937Z env:
+2026-11-18T00:16:53.2044528Z   PACKAGE_VERSION: 
+2026-11-18T00:16:53.2045009Z ##[endgroup]
+2026-11-18T00:16:57.1376680Z Syncing repository: Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:57.1378395Z ##[group]Getting Git version info
+2026-11-18T00:16:57.1378925Z Working directory is '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:57.1379543Z [command]/usr/bin/git version
+2026-11-18T00:16:57.4241272Z git version 2.56.1
+2026-11-18T00:16:57.4256509Z ##[endgroup]
+2026-11-18T00:16:57.4265224Z Temporarily overriding HOME='/home/runner/work/_temp/74a10c5a-83b9-4192-b72a-960cac5928d7' before making global git config changes
+2026-11-18T00:16:57.4266019Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:16:57.4270045Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:57.4859526Z Deleting the contents of '/home/runner/work/Broiler.Regex/Broiler.Regex'
+2026-11-18T00:16:57.4861910Z ##[group]Determining repository object format
+2026-11-18T00:16:57.4863164Z ##[endgroup]
+2026-11-18T00:16:57.4867733Z ##[group]Initializing the repository
+2026-11-18T00:16:57.4868163Z [command]/usr/bin/git init /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:16:57.5802516Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-18T00:16:57.5803216Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-18T00:16:57.5803657Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-18T00:16:57.5803986Z hint: call:
+2026-11-18T00:16:57.5804224Z hint:
+2026-11-18T00:16:57.5804722Z hint: 	git config --global init.defaultBranch <name>
+2026-11-18T00:16:57.5805025Z hint:
+2026-11-18T00:16:57.5805330Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-18T00:16:57.5805739Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-18T00:16:57.5806099Z hint:
+2026-11-18T00:16:57.5806344Z hint: 	git branch -m <name>
+2026-11-18T00:16:57.5806636Z hint:
+2026-11-18T00:16:57.5806949Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-18T00:16:57.5817771Z Initialized empty Git repository in /home/runner/work/Broiler.Regex/Broiler.Regex/.git/
+2026-11-18T00:16:57.5828287Z [command]/usr/bin/git remote add origin https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:57.5873714Z ##[endgroup]
+2026-11-18T00:16:57.5874555Z ##[group]Disabling automatic garbage collection
+2026-11-18T00:16:57.5876651Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-18T00:16:57.5901826Z ##[endgroup]
+2026-11-18T00:16:57.5902247Z ##[group]Setting up auth
+2026-11-18T00:16:57.5902583Z Removing SSH command configuration
+2026-11-18T00:16:57.5906665Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:16:57.5934119Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:16:58.0080002Z Removing HTTP extra header
+2026-11-18T00:16:58.0085150Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:16:58.0110286Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:16:58.0257703Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:16:58.0261878Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:16:58.0286642Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:16:58.0436645Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-18T00:16:58.0465646Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path /home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:16:58.0487953Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:16:58.0510221Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:16:58.0531663Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:16:58.0551431Z ##[endgroup]
+2026-11-18T00:16:58.0551874Z ##[group]Fetching the repository
+2026-11-18T00:16:58.0557327Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +49d7be1f3ef148f9c262f0e52b8c360c07fd838d:refs/remotes/origin/main
+2026-11-18T00:16:58.6117876Z From https://github.com/Broiler-Platform/Broiler.Regex
+2026-11-18T00:16:58.6118694Z  * [new ref]         49d7be1f3ef148f9c262f0e52b8c360c07fd838d -> origin/main
+2026-11-18T00:16:58.6126643Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-18T00:16:58.6160369Z   origin/main
+2026-11-18T00:16:58.6171596Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-18T00:16:58.6185262Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:58.6187673Z ##[endgroup]
+2026-11-18T00:16:58.6188274Z ##[group]Determining the checkout info
+2026-11-18T00:16:58.6188847Z ##[endgroup]
+2026-11-18T00:16:58.6191122Z [command]/usr/bin/git sparse-checkout disable
+2026-11-18T00:16:58.6252312Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-18T00:16:58.6273318Z ##[group]Checking out the ref
+2026-11-18T00:16:58.6276485Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-18T00:16:58.6531960Z Switched to a new branch 'main'
+2026-11-18T00:16:58.6538955Z branch 'main' set up to track 'origin/main'.
+2026-11-18T00:16:58.6542574Z ##[endgroup]
+2026-11-18T00:16:58.6576160Z [command]/usr/bin/git log -1 --format=%H
+2026-11-18T00:16:58.6593724Z 49d7be1f3ef148f9c262f0e52b8c360c07fd838d
+2026-11-18T00:16:58.6786008Z ##[group]Run actions/setup-dotnet@v6
+2026-11-18T00:16:58.6786308Z with:
+2026-11-18T00:16:58.6786542Z   dotnet-version: 10.0.x
+2026-11-18T00:16:58.6786791Z   skip-lts-prepass: false
+2026-11-18T00:16:58.6787046Z   cache: false
+2026-11-18T00:16:58.6787256Z env:
+2026-11-18T00:16:58.6787473Z   PACKAGE_VERSION: 
+2026-11-18T00:16:58.6787710Z ##[endgroup]
+2026-11-18T00:16:58.7765684Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-11-18T00:16:59.0627255Z dotnet-install: .NET Core Runtime with version '10.0.15' is already installed.
+2026-11-18T00:16:59.0645143Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+2026-11-18T00:16:59.2019378Z dotnet-install: .NET Core SDK with version '10.0.404' is already installed.
+2026-11-18T00:16:59.2139070Z ##[group]Run dotnet build probes/Regex.Probe -c Release --nologo -p:RegexAdversarialControl=steps
+2026-11-18T00:16:59.2139692Z [36;1mdotnet build probes/Regex.Probe -c Release --nologo -p:RegexAdversarialControl=steps[0m
+2026-11-18T00:16:59.2140184Z [36;1mset +e[0m
+2026-11-18T00:16:59.2140707Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report control-steps.txt > /dev/null[0m
+2026-11-18T00:16:59.2141254Z [36;1mcode=$?[0m
+2026-11-18T00:16:59.2141464Z [36;1mset -e[0m
+2026-11-18T00:16:59.2141916Z [36;1mpython3 eng/adversarial-controls.py --control steps --corpus tests/Adversarial/corpus.tsv --report control-steps.txt --exit "$code"[0m
+2026-11-18T00:16:59.2142765Z [36;1mpython3 eng/adversarial-controls.py --holds "adversarial control 1 (part C)" probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll[0m
+2026-11-18T00:16:59.6462384Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:16:59.6463044Z env:
+2026-11-18T00:16:59.6463331Z   PACKAGE_VERSION: 
+2026-11-18T00:16:59.6463674Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:16:59.6463959Z ##[endgroup]
+2026-11-18T00:17:07.5054345Z   Determining projects to restore...
+2026-11-18T00:17:09.3064683Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/Regex.Probe.csproj (in 1.26 sec).
+2026-11-18T00:17:11.8264057Z   Regex.Probe: adversarial control 'steps' is built from the library's sources with Engine/RegexProgram.cs changed in a copy (/home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/obj/Release/net10.0/adversarial-control/RegexProgram.cs); this build tests that copy, not Broiler.Regex.dll.
+2026-11-18T00:17:16.3063709Z   Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+2026-11-18T00:17:16.3064183Z 
+2026-11-18T00:17:16.3064544Z Build succeeded.
+2026-11-18T00:17:16.3064944Z     0 Warning(s)
+2026-11-18T00:17:16.3065246Z     0 Error(s)
+2026-11-18T00:17:16.3065398Z 
+2026-11-18T00:17:16.3065563Z Time Elapsed 00:00:10.32
+2026-11-18T00:17:22.3311340Z adversarial-controls: control 'steps' holds: 17 rows reported (A01 A02 G01 G02 G03 K01 K02 K03 K04 K05 L01 L02 L03 L04 L05 W01 W02), 48 give their declared status, none waits
+2026-11-18T00:17:22.3544952Z adversarial-controls: probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll: holds 'adversarial control 1 (part C)'
+2026-11-18T00:17:22.3607359Z ##[group]Run dotnet build probes/Regex.Probe -c Release --nologo -p:RegexAdversarialControl=nesting
+2026-11-18T00:17:22.3607971Z [36;1mdotnet build probes/Regex.Probe -c Release --nologo -p:RegexAdversarialControl=nesting[0m
+2026-11-18T00:17:22.3608365Z [36;1mset +e[0m
+2026-11-18T00:17:22.3608927Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report control-nesting.txt > /dev/null[0m
+2026-11-18T00:17:22.3609465Z [36;1mcode=$?[0m
+2026-11-18T00:17:22.3609670Z [36;1mset -e[0m
+2026-11-18T00:17:22.3610140Z [36;1mpython3 eng/adversarial-controls.py --control nesting --corpus tests/Adversarial/corpus.tsv --report control-nesting.txt --exit "$code"[0m
+2026-11-18T00:17:22.3610898Z [36;1mpython3 eng/adversarial-controls.py --holds "adversarial control 2 (part C)" probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll[0m
+2026-11-18T00:17:22.3637095Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:22.3637468Z env:
+2026-11-18T00:17:22.3637712Z   PACKAGE_VERSION: 
+2026-11-18T00:17:22.3637944Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:22.3638195Z ##[endgroup]
+2026-11-18T00:17:22.6039415Z   Determining projects to restore...
+2026-11-18T00:17:22.6039912Z   All projects are up-to-date for restore.
+2026-11-18T00:17:22.6855875Z   Regex.Probe: adversarial control 'nesting' is built from the library's sources with Parsing/RegexNesting.cs changed in a copy (/home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/obj/Release/net10.0/adversarial-control/RegexNesting.cs); this build tests that copy, not Broiler.Regex.dll.
+2026-11-18T00:17:24.3809985Z   Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+2026-11-18T00:17:24.3815066Z 
+2026-11-18T00:17:24.3826609Z Build succeeded.
+2026-11-18T00:17:24.3827089Z     0 Warning(s)
+2026-11-18T00:17:24.3827359Z     0 Error(s)
+2026-11-18T00:17:24.3827502Z 
+2026-11-18T00:17:24.3827717Z Time Elapsed 00:00:01.85
+2026-11-18T00:17:31.5867476Z adversarial-controls: control 'nesting' holds: 15 rows reported (N02 N03 N04 N05 N06 N08 N09 N10 N11 N12 N14 N15 N16 N17 N18), 50 give their declared status, none waits
+2026-11-18T00:17:31.6097748Z adversarial-controls: probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll: holds 'adversarial control 2 (part C)'
+2026-11-18T00:17:31.6156214Z ##[group]Run if [ -e Broiler.Regex/bin ]; then
+2026-11-18T00:17:31.6156555Z [36;1mif [ -e Broiler.Regex/bin ]; then[0m
+2026-11-18T00:17:31.6156862Z [36;1m  echo "::error::a control build built the library project"[0m
+2026-11-18T00:17:31.6157159Z [36;1m  exit 1[0m
+2026-11-18T00:17:31.6157372Z [36;1mfi[0m
+2026-11-18T00:17:31.6182461Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:31.6182770Z env:
+2026-11-18T00:17:31.6182961Z   PACKAGE_VERSION: 
+2026-11-18T00:17:31.6183227Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:31.6183461Z ##[endgroup]
+2026-11-18T00:17:31.6259047Z ##[group]Run dotnet build probes/Regex.Probe -c Release --nologo
+2026-11-18T00:17:31.6259725Z [36;1mdotnet build probes/Regex.Probe -c Release --nologo[0m
+2026-11-18T00:17:31.6260147Z [36;1mset +e[0m
+2026-11-18T00:17:31.6261005Z [36;1mdotnet probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll --adversarial tests/Adversarial/corpus.tsv --report revert.txt > /dev/null[0m
+2026-11-18T00:17:31.6261877Z [36;1mcode=$?[0m
+2026-11-18T00:17:31.6262161Z [36;1mset -e[0m
+2026-11-18T00:17:31.6262820Z [36;1mpython3 eng/adversarial-controls.py --control none --corpus tests/Adversarial/corpus.tsv --report revert.txt --exit "$code"[0m
+2026-11-18T00:17:31.6264005Z [36;1mpython3 eng/adversarial-controls.py --lacks "adversarial control" --lacks RegexAdversarialControl Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll[0m
+2026-11-18T00:17:31.6291035Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-18T00:17:31.6291497Z env:
+2026-11-18T00:17:31.6292017Z   PACKAGE_VERSION: 
+2026-11-18T00:17:31.6292460Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:31.6292852Z ##[endgroup]
+2026-11-18T00:17:31.8381794Z   Determining projects to restore...
+2026-11-18T00:17:31.9564225Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/Regex.Probe.csproj (in 26 ms).
+2026-11-18T00:17:32.0366293Z   Restored /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/Broiler.Regex.csproj (in 83 ms).
+2026-11-18T00:17:33.3998092Z   Broiler.Regex -> /home/runner/work/Broiler.Regex/Broiler.Regex/Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll
+2026-11-18T00:17:34.8159988Z   Regex.Probe -> /home/runner/work/Broiler.Regex/Broiler.Regex/probes/Regex.Probe/bin/Release/net10.0/Broiler.Regex.Probe.dll
+2026-11-18T00:17:34.8160433Z 
+2026-11-18T00:17:34.8160548Z Build succeeded.
+2026-11-18T00:17:34.8160839Z     0 Warning(s)
+2026-11-18T00:17:34.8161048Z     0 Error(s)
+2026-11-18T00:17:34.8161155Z 
+2026-11-18T00:17:34.8161294Z Time Elapsed 00:00:03.01
+2026-11-18T00:17:39.7993187Z adversarial-controls: control 'none' holds: 0 rows reported (none), 65 give their declared status, none waits
+2026-11-18T00:17:39.8230489Z adversarial-controls: Broiler.Regex/bin/Release/net10.0/Broiler.Regex.dll: lacks 'adversarial control'; lacks 'RegexAdversarialControl'
+2026-11-18T00:17:39.8328231Z ##[group]Run actions/upload-artifact@v7
+2026-11-18T00:17:39.8328514Z with:
+2026-11-18T00:17:39.8328726Z   name: adversarial-controls
+2026-11-18T00:17:39.8329054Z   path: control-steps.txt
+control-nesting.txt
+revert.txt
+
+2026-11-18T00:17:39.8329392Z   if-no-files-found: warn
+2026-11-18T00:17:39.8329627Z   compression-level: 6
+2026-11-18T00:17:39.8329866Z   overwrite: false
+2026-11-18T00:17:39.8330107Z   include-hidden-files: false
+2026-11-18T00:17:39.8330365Z   archive: true
+2026-11-18T00:17:39.8330589Z env:
+2026-11-18T00:17:39.8330794Z   PACKAGE_VERSION: 
+2026-11-18T00:17:39.8331032Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-18T00:17:39.8331275Z ##[endgroup]
+2026-11-18T00:17:39.9516148Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-18T00:17:39.9518370Z The least common ancestor is /home/runner/work/Broiler.Regex/Broiler.Regex. This will be the root directory of the artifact
+2026-11-18T00:17:39.9519346Z With the provided path, there will be 3 files uploaded
+2026-11-18T00:17:39.9520309Z Artifact name is valid!
+2026-11-18T00:17:39.9520764Z Root directory input is valid!
+2026-11-18T00:17:40.1599300Z Uploading artifact: adversarial-controls.zip
+2026-11-18T00:17:40.1627381Z Beginning upload of artifact content to blob storage
+2026-11-18T00:17:40.5211285Z Uploaded bytes 3755
+2026-11-18T00:17:40.5369494Z Finished uploading artifact content to blob storage!
+2026-11-18T00:17:40.5370421Z SHA256 digest of uploaded artifact is b03c6f32aaac789ffc76f4a93fb9d0c9657cb70d673f19b138eb82a6f1caecdb
+2026-11-18T00:17:40.5371168Z Finalizing artifact upload
+2026-11-18T00:17:40.8606652Z Artifact adversarial-controls successfully finalized. Artifact ID 14384271201
+2026-11-18T00:17:40.8607648Z Artifact adversarial-controls has been successfully uploaded! Final size is 3755 bytes. Artifact ID is 14384271201
+2026-11-18T00:17:40.8610285Z Artifact download URL: https://github.com/Broiler-Platform/Broiler.Regex/actions/runs/44206505415/artifacts/14384271201
+2026-11-18T00:17:40.8743832Z Post job cleanup.
+2026-11-18T00:17:40.9728899Z Post job cleanup.
+2026-11-18T00:17:41.0554740Z [command]/usr/bin/git version
+2026-11-18T00:17:41.0595186Z git version 2.56.1
+2026-11-18T00:17:41.0632458Z Temporarily overriding HOME='/home/runner/work/_temp/3e80ce18-0dc5-4be7-9327-9a2723977e1b' before making global git config changes
+2026-11-18T00:17:41.0643840Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-18T00:17:41.0644921Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Broiler.Regex/Broiler.Regex
+2026-11-18T00:17:41.0689756Z Removing SSH command configuration
+2026-11-18T00:17:41.0690528Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-18T00:17:41.0730265Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-18T00:17:41.1176268Z Removing HTTP extra header
+2026-11-18T00:17:41.1177398Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-18T00:17:41.1211575Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-18T00:17:41.1473961Z Removing includeIf entries pointing to credentials config files
+2026-11-18T00:17:41.1481084Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-18T00:17:41.1508711Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:17:41.1509843Z includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:17:41.1510692Z includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:17:41.1511350Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:17:41.1515869Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path
+2026-11-18T00:17:41.1532477Z /home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:17:41.1539971Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-f453a4ae\-94c6\-40f6\-a9e7\-90b55898c1ee\.config
+2026-11-18T00:17:41.1565667Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path
+2026-11-18T00:17:41.1590006Z /home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:17:41.1597547Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Broiler.Regex/Broiler.Regex/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-f453a4ae\-94c6\-40f6\-a9e7\-90b55898c1ee\.config
+2026-11-18T00:17:41.1619857Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-18T00:17:41.1635843Z /github/runner_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:17:41.1640507Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-f453a4ae\-94c6\-40f6\-a9e7\-90b55898c1ee\.config
+2026-11-18T00:17:41.1662740Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-18T00:17:41.1679079Z /github/runner_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config
+2026-11-18T00:17:41.1683926Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f453a4ae\-94c6\-40f6\-a9e7\-90b55898c1ee\.config
+2026-11-18T00:17:41.1706811Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-18T00:17:41.1850280Z Removing credentials config '/home/runner/work/_temp/git-credentials-f453a4ae-94c6-40f6-a9e7-90b55898c1ee.config'
+2026-11-18T00:17:41.1980345Z Cleaning up orphan processes
+2026-11-18T00:17:41.2296445Z Terminate orphan process: pid (2353) (MSBuild)
+2026-11-18T00:17:41.2320186Z Terminate orphan process: pid (2402) (VBCSCompiler)
